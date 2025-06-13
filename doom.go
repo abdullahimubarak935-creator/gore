@@ -3,7 +3,6 @@ package main
 import (
 	"image"
 	"image/color"
-	"log"
 	"reflect"
 	"unsafe"
 
@@ -67391,8 +67390,6 @@ func I_ReadScreen(tls *libc.TLS, scr uintptr) {
 
 func I_SetPalette(tls *libc.TLS, palette uintptr) {
 	for i := range 256 {
-		base := *(*uint32)(unsafe.Pointer(palette))
-		log.Printf("color %d: 0x%x", i, base)
 		colors[i].R = *(*uint8)(unsafe.Pointer(palette))
 		colors[i].G = *(*uint8)(unsafe.Pointer(palette + 1))
 		colors[i].B = *(*uint8)(unsafe.Pointer(palette + 2))
