@@ -1,7 +1,8 @@
+GOFILES=$(wildcard *.go)
 default: doom
 
-doom: platform.go doom.go
-	go build -o doom platform.go doom.go
+doom: $(GOFILES)
+	go build -o doom .
 
 clean:
 	rm -f doom

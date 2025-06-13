@@ -1,0 +1,31 @@
+<html>
+    <img src="/stream.mjpg" alt="Live Stream" style="width: 50%; height: auto;">
+
+    <script>
+        function sendKey(keyCode, state) {
+            const url = "/key/" + keyCode + "/" + state;
+            console.log("Key change: " + keyCode + " State: " + state + " URL: " + url);
+            fetch(url, { method: 'POST' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    console.log("Response from server: " + data);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+        document.onkeydown = function(evt) {
+            evt = evt || window.event;
+            sendKey(evt.keyCode, 1);
+        };
+        document.onkeyup = function(evt) {
+            evt = evt || window.event;
+            sendKey(evt.keyCode, 0);
+        };
+    </script>
+</html>

@@ -2,35 +2,81 @@ package main
 
 import (
 	"image"
-	"image/png"
 	"log"
-	"os"
+	"net/http"
+	"strconv"
+	"sync"
 	"time"
+	"unsafe"
 
 	"modernc.org/libc"
 )
 
+type keyChange struct {
+	Key   int
+	State bool
+}
+
 var (
 	start time.Time
+
+	streamer   MJPEGHandler
+	keyChanges []keyChange
+	keyLock    sync.Mutex
 )
+
+func handleKey(key string, state string) error {
+	keyVal, err := strconv.Atoi(key)
+	if err != nil {
+		return err
+	}
+	stateVal, err := strconv.Atoi(state)
+	if err != nil {
+		return err
+	}
+	stateBool := stateVal != 0
+
+	keyLock.Lock()
+	defer keyLock.Unlock()
+	keyChanges = append(keyChanges, keyChange{
+		Key:   keyVal,
+		State: stateBool,
+	})
+	log.Printf("Key event received: key=%s, state=%s\n", key, state)
+	return nil
+}
 
 func DG_Init(tls *libc.TLS) {
 	log.Printf("DG_Init called\n")
 	start = time.Now()
+	addr := ":8080"
+
+	mux := http.NewServeMux()
+
+	mux.Handle("GET /stream.mjpg", &streamer)
+	mux.HandleFunc("POST /key/{key}/{state}", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Received key event: %s\n", r.URL.Path)
+		key := r.PathValue("key")
+		state := r.PathValue("state")
+		if err := handleKey(key, state); err != nil {
+			http.Error(w, "Invalid key or state value", http.StatusBadRequest)
+			log.Printf("Error handling key event: %v\n", err)
+			return
+		}
+	})
+	mux.Handle("GET /", http.FileServer(http.Dir("./static")))
+
+	go func() {
+		log.Printf("Starting HTTP server on %s\n", addr)
+		if err := http.ListenAndServe(addr, mux); err != nil {
+			log.Fatalf("Failed to start HTTP server: %v\n", err)
+		}
+	}()
 }
 
 func DG_DrawFrame(tls *libc.TLS, frame *image.RGBA) {
-	log.Printf("DG_DrawFrame called\n")
-	output := "output.png"
-	f, err := os.Create(output)
-	if err != nil {
-		log.Printf("Error creating output file: %v\n", err)
-		return
-	}
-	defer f.Close()
-	if err := png.Encode(f, frame); err != nil {
-		log.Printf("Error encoding PNG: %v\n", err)
-		return
+	if _, err := streamer.AddImage(frame); err != nil {
+		log.Printf("Error adding image to MJPEG stream: %v\n", err)
 	}
 }
 
@@ -47,8 +93,46 @@ func DG_GetTicksMs(tls *libc.TLS) (r int64) {
 }
 
 func DG_GetKey(tls *libc.TLS, pressed uintptr, doomKey uintptr) (r int32) {
-	log.Printf("DG_GetKey called with pressed: %d, doomKey: %d\n", pressed, doomKey)
 	// This is a stub; actual key handling would depend on the platform and input system.
+	keyLock.Lock()
+	defer keyLock.Unlock()
+	//log.Printf("DG_GetKey called with pressed: %d, doomKey: %d outstanding entries %d\n", pressed, doomKey, len(keyChanges))
+	if len(keyChanges) > 0 {
+		change := keyChanges[0]
+		keyChanges = keyChanges[1:]
+		log.Printf("Processing key change: key=%d, state=%t\n", change.Key, change.State)
+
+		var thisDoomKey int32
+		switch change.Key {
+		case 38:
+			thisDoomKey = key_up
+		case 40:
+			thisDoomKey = key_down
+		case 37:
+			thisDoomKey = key_left
+		case 39:
+			thisDoomKey = key_right
+		case 17: // Ctrl
+			thisDoomKey = key_fire
+		case 32:
+			thisDoomKey = key_use
+		case 13:
+			thisDoomKey = key_menu_forward
+		case 27:
+			thisDoomKey = key_menu_activate
+		default:
+			log.Printf("Unknown key %d, ignoring", change.Key)
+			return 0
+		}
+
+		if change.State {
+			*(*uint32)(unsafe.Pointer(pressed)) = 1
+		} else {
+			*(*uint32)(unsafe.Pointer(pressed)) = 0
+		}
+		*(*uint8)(unsafe.Pointer(doomKey)) = uint8(thisDoomKey)
+		return 1
+	}
 	return 0 // Return 0 to indicate no key pressed
 }
 
