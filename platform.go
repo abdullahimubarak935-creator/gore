@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"sync"
 	"time"
-
-	"modernc.org/libc"
 )
 
 type keyChange struct {
@@ -126,7 +124,7 @@ func DG_GetKey(event *DoomKeyEvent) bool {
 	return false
 }
 
-func DG_SetWindowTitle(title uintptr) {
-	log.Printf("DG_SetWindowTitle called with title: %s\n", libc.GoString(title))
+func DG_SetWindowTitle(title string) {
+	log.Printf("DG_SetWindowTitle called with title: %s\n", title)
 	// This is a stub; actual window title setting would depend on the platform and windowing system.
 }

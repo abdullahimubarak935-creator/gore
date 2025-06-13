@@ -64918,7 +64918,7 @@ func I_EndRead(tls *libc.TLS) {
 }
 
 func I_SetWindowTitle(title uintptr) {
-	DG_SetWindowTitle(title)
+	DG_SetWindowTitle(libc.GoString(title))
 }
 
 func I_GraphicsCheckCommandLine(tls *libc.TLS) {
