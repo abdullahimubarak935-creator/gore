@@ -4,7 +4,6 @@
     <script>
         function sendKey(keyCode, state) {
             const url = "/key/" + keyCode + "/" + state;
-            console.log("Key change: " + keyCode + " State: " + state + " URL: " + url);
             fetch(url, { method: 'POST' })
                 .then(response => {
                     if (!response.ok) {

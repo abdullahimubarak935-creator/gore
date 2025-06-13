@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"sync"
 	"time"
-	"unsafe"
 
 	"modernc.org/libc"
 )
@@ -42,7 +41,6 @@ func handleKey(key string, state string) error {
 		Key:   keyVal,
 		State: stateBool,
 	})
-	log.Printf("Key event received: key=%s, state=%s\n", key, state)
 	return nil
 }
 
@@ -55,7 +53,6 @@ func DG_Init(tls *libc.TLS) {
 
 	mux.Handle("GET /stream.mjpg", &streamer)
 	mux.HandleFunc("POST /key/{key}/{state}", func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("Received key event: %s\n", r.URL.Path)
 		key := r.PathValue("key")
 		state := r.PathValue("state")
 		if err := handleKey(key, state); err != nil {
@@ -86,13 +83,10 @@ func DG_SleepMs(tls *libc.TLS, ms uint32) {
 
 func DG_GetTicksMs(tls *libc.TLS) (r int64) {
 	since := time.Since(start)
-	//if since > time.Second {
-	//log.Panic("Exiting early")
-	//}
 	return since.Milliseconds()
 }
 
-func DG_GetKey(tls *libc.TLS, pressed uintptr, doomKey uintptr) (r int32) {
+func DG_GetKey(event *DoomKeyEvent) bool {
 	// This is a stub; actual key handling would depend on the platform and input system.
 	keyLock.Lock()
 	defer keyLock.Unlock()
@@ -122,18 +116,14 @@ func DG_GetKey(tls *libc.TLS, pressed uintptr, doomKey uintptr) (r int32) {
 			thisDoomKey = key_menu_activate
 		default:
 			log.Printf("Unknown key %d, ignoring", change.Key)
-			return 0
+			return false
 		}
 
-		if change.State {
-			*(*uint32)(unsafe.Pointer(pressed)) = 1
-		} else {
-			*(*uint32)(unsafe.Pointer(pressed)) = 0
-		}
-		*(*uint8)(unsafe.Pointer(doomKey)) = uint8(thisDoomKey)
-		return 1
+		event.Pressed = change.State
+		event.Key = uint8(thisDoomKey)
+		return true
 	}
-	return 0 // Return 0 to indicate no key pressed
+	return false
 }
 
 func DG_SetWindowTitle(tls *libc.TLS, title uintptr) {

@@ -66831,22 +66831,9 @@ var shiftxform = [128]int8{
 	127: int8(127),
 }
 
-func TranslateKey(tls *libc.TLS, key uint8) (r uint8) {
-	return key
-	/*
-	   if (key < sizeof(at_to_doom))
-	       return at_to_doom[key];
-	   else
-	       return 0x0;
-	*/
-	//default:
-	//  return tolower(key);
-}
-
 // Get the equivalent ASCII (Unicode?) character for a keypress.
 
 func GetTypedChar(tls *libc.TLS, key uint8) (r uint8) {
-	key = TranslateKey(tls, key)
 	// Is shift held down?  If so, perform a translation.
 	if shiftdown > 0 {
 		if libc.Int32FromUint8(key) >= 0 && uint64(key) < libc.Uint64FromInt64(128)/libc.Uint64FromInt64(1) {
@@ -66871,27 +66858,35 @@ func UpdateShiftStatus(tls *libc.TLS, pressed int32, key uint8) {
 	}
 }
 
+type DoomKeyEvent struct {
+	Pressed bool
+	Key     uint8
+}
+
 func I_GetEvent(tls *libc.TLS) {
 	bp := tls.Alloc(32)
 	defer tls.Free(32)
-	var _ /* event at bp+0 */ event_t
-	var _ /* key at bp+24 */ uint8
-	var _ /* pressed at bp+20 */ int32
-	for DG_GetKey(tls, bp+20, bp+24) != 0 {
-		UpdateShiftStatus(tls, *(*int32)(unsafe.Pointer(bp + 20)), *(*uint8)(unsafe.Pointer(bp + 24)))
+	var event DoomKeyEvent
+	for DG_GetKey(&event) {
+		var pressed int32
+		if event.Pressed {
+			pressed = 1
+		}
+
+		UpdateShiftStatus(tls, pressed, event.Key)
 		// process event
-		if *(*int32)(unsafe.Pointer(bp + 20)) != 0 {
+		if event.Pressed {
 			// data1 has the key pressed, data2 has the character
 			// (shift-translated, etc)
 			(*(*event_t)(unsafe.Pointer(bp))).Ftype1 = int32(ev_keydown)
-			(*(*event_t)(unsafe.Pointer(bp))).Fdata1 = libc.Int32FromUint8(TranslateKey(tls, *(*uint8)(unsafe.Pointer(bp + 24))))
-			(*(*event_t)(unsafe.Pointer(bp))).Fdata2 = libc.Int32FromUint8(GetTypedChar(tls, *(*uint8)(unsafe.Pointer(bp + 24))))
+			(*(*event_t)(unsafe.Pointer(bp))).Fdata1 = int32(event.Key)
+			(*(*event_t)(unsafe.Pointer(bp))).Fdata2 = libc.Int32FromUint8(GetTypedChar(tls, event.Key))
 			if (*(*event_t)(unsafe.Pointer(bp))).Fdata1 != 0 {
 				D_PostEvent(tls, bp)
 			}
 		} else {
 			(*(*event_t)(unsafe.Pointer(bp))).Ftype1 = int32(ev_keyup)
-			(*(*event_t)(unsafe.Pointer(bp))).Fdata1 = libc.Int32FromUint8(TranslateKey(tls, *(*uint8)(unsafe.Pointer(bp + 24))))
+			(*(*event_t)(unsafe.Pointer(bp))).Fdata1 = int32(event.Key)
 			// data2 is just initialized to zero for ev_keyup.
 			// For ev_keydown it's the shifted Unicode character
 			// that was typed, but if something wants to detect
