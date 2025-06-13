@@ -2438,39 +2438,6 @@ func init() {
 }
 
 func init() {
-	triangle_guy = [3]mline_t{
-		0: {
-			Fa: mpoint_t{
-				Fx: int32(-libc.Float64FromFloat64(0.867) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
-				Fy: int32(-libc.Float64FromFloat64(0.5) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
-			},
-			Fb: mpoint_t{
-				Fx: int32(libc.Float64FromFloat64(0.867) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
-				Fy: int32(-libc.Float64FromFloat64(0.5) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
-			},
-		},
-		1: {
-			Fa: mpoint_t{
-				Fx: int32(libc.Float64FromFloat64(0.867) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
-				Fy: int32(-libc.Float64FromFloat64(0.5) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
-			},
-			Fb: mpoint_t{
-				Fy: libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS),
-			},
-		},
-		2: {
-			Fa: mpoint_t{
-				Fy: libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS),
-			},
-			Fb: mpoint_t{
-				Fx: int32(-libc.Float64FromFloat64(0.867) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
-				Fy: int32(-libc.Float64FromFloat64(0.5) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
-			},
-		},
-	}
-}
-
-func init() {
 	thintriangle_guy = [3]mline_t{
 		0: {
 			Fa: mpoint_t{
@@ -2506,7 +2473,6 @@ func init() {
 var cheating = int32(0)
 var grid = int32(0)
 
-var leveljuststarted = int32(1) // kluge until AM_LevelInit() is called
 var finit_width = int32(SCREENWIDTH)
 var finit_height = libc.Int32FromInt32(SCREENHEIGHT) - libc.Int32FromInt32(32)
 
@@ -2863,11 +2829,8 @@ func AM_clearMarks(tls *libc.TLS) {
 //	// right now, i figure it out myself
 //	//
 func AM_LevelInit(tls *libc.TLS) {
-	var v1 int32
-	leveljuststarted = 0
-	v1 = libc.Int32FromInt32(0)
-	f_y = v1
-	f_x = v1
+	f_y = 0
+	f_x = 0
 	f_w = finit_width
 	f_h = finit_height
 	AM_clearMarks(tls)
@@ -21970,413 +21933,107 @@ const KEY_USE1 = 162
 
 func init() {
 	key_right = int32(KEY_RIGHTARROW1)
-}
-
-func init() {
 	key_left = int32(KEY_LEFTARROW1)
-}
-
-func init() {
 	key_up = int32(KEY_UPARROW1)
-}
-
-func init() {
 	key_down = int32(KEY_DOWNARROW1)
-}
-
-func init() {
 	key_strafeleft = int32(KEY_STRAFE_L1)
-}
-
-func init() {
 	key_straferight = int32(KEY_STRAFE_R1)
-}
-
-func init() {
 	key_fire = int32(KEY_FIRE1)
-}
-
-func init() {
 	key_use = int32(KEY_USE1)
-}
-
-func init() {
 	key_strafe = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x38)
-}
-
-func init() {
 	key_speed = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x36)
-}
-
-func init() {
 	key_flyup = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x49)
-}
-
-func init() {
 	key_flydown = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x52)
-}
-
-func init() {
 	key_flycenter = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x47)
-}
-
-func init() {
 	key_lookup = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x51)
-}
-
-func init() {
 	key_lookdown = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x53)
-}
-
-func init() {
 	key_lookcenter = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x4f)
-}
-
-func init() {
 	key_invleft = int32('[')
-}
-
-func init() {
 	key_invright = int32(']')
-}
-
-func init() {
 	key_useartifact = int32(KEY_ENTER)
-}
-
-func init() {
 	key_jump = int32('/')
-}
-
-func init() {
 	key_arti_all = int32(KEY_BACKSPACE3)
-}
-
-func init() {
 	key_arti_health = int32('\\')
-}
-
-func init() {
 	key_arti_poisonbag = int32('0')
-}
-
-func init() {
 	key_arti_blastradius = int32('9')
-}
-
-func init() {
 	key_arti_teleport = int32('8')
-}
-
-func init() {
 	key_arti_teleportother = int32('7')
-}
-
-func init() {
 	key_arti_egg = int32('6')
-}
-
-func init() {
 	key_arti_invulnerability = int32('5')
-}
-
-func init() {
 	key_usehealth = int32('h')
-}
-
-func init() {
 	key_invquery = int32('q')
-}
-
-func init() {
 	key_mission = int32('w')
-}
-
-func init() {
 	key_invpop = int32('z')
-}
-
-func init() {
 	key_invkey = int32('k')
-}
-
-func init() {
 	key_invhome = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x47)
-}
-
-func init() {
 	key_invend = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x4f)
-}
-
-func init() {
 	key_invuse = int32(KEY_ENTER)
-}
-
-func init() {
 	key_invdrop = int32(KEY_BACKSPACE3)
-}
-
-func init() {
 	mousebstrafe = int32(1)
-}
-
-func init() {
 	mousebforward = int32(2)
-}
-
-func init() {
 	mousebjump = -int32(1)
-}
-
-func init() {
 	mousebstrafeleft = -int32(1)
-}
-
-func init() {
 	mousebstraferight = -int32(1)
-}
-
-func init() {
 	mousebbackward = -int32(1)
-}
-
-func init() {
 	mousebuse = -int32(1)
-}
-
-func init() {
 	mousebprevweapon = -int32(1)
-}
-
-func init() {
 	mousebnextweapon = -int32(1)
-}
-
-func init() {
 	key_message_refresh = int32(KEY_ENTER)
-}
-
-func init() {
 	key_pause = int32(KEY_PAUSE1)
-}
-
-func init() {
 	key_demo_quit = int32('q')
-}
-
-func init() {
 	key_spy = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x58)
-}
-
-func init() {
 	key_multi_msg = int32('t')
-}
-
-func init() {
 	key_weapon1 = int32('1')
-}
-
-func init() {
 	key_weapon2 = int32('2')
-}
-
-func init() {
 	key_weapon3 = int32('3')
-}
-
-func init() {
 	key_weapon4 = int32('4')
-}
-
-func init() {
 	key_weapon5 = int32('5')
-}
-
-func init() {
 	key_weapon6 = int32('6')
-}
-
-func init() {
 	key_weapon7 = int32('7')
-}
-
-func init() {
 	key_weapon8 = int32('8')
-}
-
-func init() {
 	key_map_north = int32(KEY_UPARROW1)
-}
-
-func init() {
 	key_map_south = int32(KEY_DOWNARROW1)
-}
-
-func init() {
 	key_map_east = int32(KEY_RIGHTARROW1)
-}
-
-func init() {
 	key_map_west = int32(KEY_LEFTARROW1)
-}
-
-func init() {
 	key_map_zoomin = int32('=')
-}
-
-func init() {
 	key_map_zoomout = int32('-')
-}
-
-func init() {
 	key_map_toggle = int32(KEY_TAB)
-}
-
-func init() {
 	key_map_maxzoom = int32('0')
-}
-
-func init() {
 	key_map_follow = int32('f')
-}
-
-func init() {
 	key_map_grid = int32('g')
-}
-
-func init() {
 	key_map_mark = int32('m')
-}
-
-func init() {
 	key_map_clearmark = int32('c')
-}
-
-func init() {
 	key_menu_activate = int32(KEY_ESCAPE)
-}
-
-func init() {
 	key_menu_up = int32(KEY_UPARROW1)
-}
-
-func init() {
 	key_menu_down = int32(KEY_DOWNARROW1)
-}
-
-func init() {
 	key_menu_left = int32(KEY_LEFTARROW1)
-}
-
-func init() {
 	key_menu_right = int32(KEY_RIGHTARROW1)
-}
-
-func init() {
 	key_menu_back = int32(KEY_BACKSPACE3)
-}
-
-func init() {
 	key_menu_forward = int32(KEY_ENTER)
-}
-
-func init() {
 	key_menu_confirm = int32('y')
-}
-
-func init() {
 	key_menu_abort = int32('n')
-}
-
-func init() {
 	key_menu_help = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x3b)
-}
-
-func init() {
 	key_menu_save = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x3c)
-}
-
-func init() {
 	key_menu_load = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x3d)
-}
-
-func init() {
 	key_menu_volume = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x3e)
-}
-
-func init() {
 	key_menu_detail = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x3f)
-}
-
-func init() {
 	key_menu_qsave = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x40)
-}
-
-func init() {
 	key_menu_endgame = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x41)
-}
-
-func init() {
 	key_menu_messages = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x42)
-}
-
-func init() {
 	key_menu_qload = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x43)
-}
-
-func init() {
 	key_menu_quit = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x44)
-}
-
-func init() {
 	key_menu_gamma = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x57)
-}
-
-func init() {
 	key_menu_incscreen = int32(KEY_EQUALS1)
-}
-
-func init() {
 	key_menu_decscreen = int32(KEY_MINUS1)
-}
-
-func init() {
 	joybstrafe = int32(1)
-}
-
-func init() {
 	joybuse = int32(3)
-}
-
-func init() {
 	joybspeed = int32(2)
-}
-
-func init() {
 	joybstrafeleft = -int32(1)
-}
-
-func init() {
 	joybstraferight = -int32(1)
-}
-
-func init() {
 	joybjump = -int32(1)
-}
-
-func init() {
 	joybprevweapon = -int32(1)
-}
-
-func init() {
 	joybnextweapon = -int32(1)
-}
-
-func init() {
 	joybmenu = -int32(1)
-}
-
-func init() {
 	dclick_use = int32(1)
 }
 
@@ -26596,7 +26253,6 @@ func A_VileChase(tls *libc.TLS, actor uintptr) {
 		xh = (viletryx - bmaporgx + libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(2)) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
 		yl = (viletryy - bmaporgy - libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(2)) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
 		yh = (viletryy - bmaporgy + libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(2)) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-		vileobj = actor
 		bx = xl
 		for {
 			if !(bx <= xh) {
@@ -37922,7 +37578,6 @@ func R_Subsector(tls *libc.TLS, num int32) {
 	if num >= numsubsectors {
 		I_Error(tls, __ccgo_ts+25894, libc.VaList(bp+8, num, numsubsectors))
 	}
-	sscount++
 	sub = subsectors + uintptr(num)*16
 	frontsector = (*subsector_t)(unsafe.Pointer(sub)).Fsector
 	count = int32((*subsector_t)(unsafe.Pointer(sub)).Fnumlines)
@@ -38662,7 +38317,6 @@ func R_PrecacheLevel(tls *libc.TLS) {
 		;
 		i++
 	}
-	flatmemory = 0
 	i = 0
 	for {
 		if !(i < numflats) {
@@ -38670,7 +38324,6 @@ func R_PrecacheLevel(tls *libc.TLS) {
 		}
 		if *(*int8)(unsafe.Pointer(flatpresent + uintptr(i))) != 0 {
 			lump = firstflat + i
-			flatmemory += (*(*lumpinfo_t)(unsafe.Pointer(lumpinfo + uintptr(lump)*40))).Fsize
 			W_CacheLumpNum(tls, lump, int32(PU_CACHE))
 		}
 		goto _2
@@ -38702,7 +38355,6 @@ func R_PrecacheLevel(tls *libc.TLS) {
 	//  a wall texture, with an episode dependend
 	//  name.
 	*(*int8)(unsafe.Pointer(texturepresent + uintptr(skytexture))) = int8(1)
-	texturememory = 0
 	i = 0
 	for {
 		if !(i < numtextures) {
@@ -38718,7 +38370,6 @@ func R_PrecacheLevel(tls *libc.TLS) {
 				break
 			}
 			lump = (*(*texpatch_t)(unsafe.Pointer(texture + 28 + uintptr(j)*8))).Fpatch
-			texturememory += (*(*lumpinfo_t)(unsafe.Pointer(lumpinfo + uintptr(lump)*40))).Fsize
 			W_CacheLumpNum(tls, lump, int32(PU_CACHE))
 			goto _5
 		_5:
@@ -38747,7 +38398,6 @@ func R_PrecacheLevel(tls *libc.TLS) {
 		;
 		th = (*thinker_t)(unsafe.Pointer(th)).Fnext
 	}
-	spritememory = 0
 	i = 0
 	for {
 		if !(i < numsprites) {
@@ -38768,7 +38418,6 @@ func R_PrecacheLevel(tls *libc.TLS) {
 					break
 				}
 				lump = firstspritelump + int32(*(*int16)(unsafe.Pointer(sf + 4 + uintptr(k)*2)))
-				spritememory += (*(*lumpinfo_t)(unsafe.Pointer(lumpinfo + uintptr(lump)*40))).Fsize
 				W_CacheLumpNum(tls, lump, int32(PU_CACHE))
 				goto _9
 			_9:
@@ -40050,7 +39699,6 @@ func R_SetupFrame(tls *libc.TLS, player uintptr) {
 	viewz = (*player_t)(unsafe.Pointer(player)).Fviewz
 	viewsin = finesine[viewangle>>int32(ANGLETOFINESHIFT)]
 	viewcos = *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(viewangle>>int32(ANGLETOFINESHIFT))*4))
-	sscount = 0
 	if (*player_t)(unsafe.Pointer(player)).Ffixedcolormap != 0 {
 		fixedcolormap = colormaps + uintptr(libc.Uint64FromInt32((*player_t)(unsafe.Pointer(player)).Ffixedcolormap*int32(256))*uint64(1))
 		walllights = uintptr(unsafe.Pointer(&scalelightfixed))
@@ -43698,23 +43346,8 @@ var lu_palette int32
 
 // C documentation
 //
-//	// used for making messages go away
-var st_msgcounter = int32(0)
-
-// C documentation
-//
 //	// whether left-side main status bar is active
 var st_statusbaron boolean
-
-// C documentation
-//
-//	// whether status bar chat is active
-var st_chat boolean
-
-// C documentation
-//
-//	// value of st_chat before message popped up
-var st_oldchat boolean
 
 // C documentation
 //
@@ -44387,7 +44020,7 @@ var lastattackdown = -int32(1)
 var priority int32
 
 func ST_updateWidgets(tls *libc.TLS) {
-	var i, v2, v4 int32
+	var i, v2 int32
 	// must redirect the pointer if the ready weapon has changed.
 	//  if (w_ready.data != plyr->readyweapon)
 	//  {
@@ -44453,12 +44086,6 @@ func ST_updateWidgets(tls *libc.TLS) {
 	_3:
 		;
 		i++
-	}
-	// get rid of chat window if up because of message
-	st_msgcounter--
-	v4 = st_msgcounter
-	if !(v4 != 0) {
-		st_chat = st_oldchat
 	}
 }
 
@@ -44724,13 +44351,9 @@ func ST_loadData(tls *libc.TLS) {
 
 func ST_initData(tls *libc.TLS) {
 	var i int32
-	var v1 boolean
 	st_firsttime = uint32(true1)
 	plyr = uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328
 	st_statusbaron = uint32(true1)
-	v1 = uint32(false1)
-	st_chat = v1
-	st_oldchat = v1
 	st_faceindex = 0
 	st_palette = -int32(1)
 	st_oldhealth = -int32(1)
@@ -62728,11 +62351,6 @@ var cnt int32
 //	// used for timing of background animation
 var bcnt int32
 
-// C documentation
-//
-//	// signals to refresh everything for one frame
-var firstrefresh int32
-
 var cnt_kills [4]int32
 var cnt_items [4]int32
 var cnt_secret [4]int32
@@ -64129,7 +63747,6 @@ func WI_initVariables(tls *libc.TLS, wbstartstruct uintptr) {
 	v1 = libc.Int32FromInt32(0)
 	bcnt = v1
 	cnt = v1
-	firstrefresh = int32(1)
 	me = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpnum
 	plrs = wbs + 40
 	if !((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills != 0) {
@@ -66156,14 +65773,6 @@ var fixedcolormap uintptr
 
 // C documentation
 //
-//	//
-//	// R_PrecacheLevel
-//	// Preloads all relevant graphics for the level.
-//	//
-var flatmemory int32
-
-// C documentation
-//
 //	// for global animation
 var flattranslation uintptr
 
@@ -67253,8 +66862,6 @@ var spechit [20]uintptr
 
 var spritelights uintptr
 
-var spritememory int32
-
 var spritename uintptr
 
 var spriteoffset uintptr
@@ -67283,8 +66890,6 @@ var sprtemp [29]spriteframe_t
 var sprtopscreen fixed_t
 
 var spryscale fixed_t
-
-var sscount int32
 
 //
 // Copyright(C) 1993-1996 Id Software, Inc.
@@ -67446,8 +67051,6 @@ var texturecompositesize uintptr
 //	// needed for texture pegging
 var textureheight uintptr
 
-var texturememory int32
-
 var textures uintptr
 
 var textures_hashtable uintptr
@@ -67580,8 +67183,6 @@ var transcolfunc uintptr
 
 var translationtables uintptr
 
-var triangle_guy [3]mline_t
-
 var turbodetected [4]boolean
 
 // Gamma correction level to use
@@ -67647,8 +67248,6 @@ var viewx fixed_t
 var viewy fixed_t
 
 var viewz fixed_t
-
-var vileobj uintptr
 
 var viletryx fixed_t
 
