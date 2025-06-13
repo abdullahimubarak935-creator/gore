@@ -2786,7 +2786,7 @@ func AM_loadPics(tls *libc.TLS) {
 		if !(i < int32(10)) {
 			break
 		}
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts, libc.VaList(bp+24, i))
+		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(0), libc.VaList(bp+24, i))
 		marknums[i] = W_CacheLumpName(tls, bp, int32(PU_STATIC))
 		goto _1
 	_1:
@@ -2803,7 +2803,7 @@ func AM_unloadPics(tls *libc.TLS) {
 		if !(i < int32(10)) {
 			break
 		}
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts, libc.VaList(bp+24, i))
+		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(0), libc.VaList(bp+24, i))
 		W_ReleaseLumpName(tls, bp)
 		goto _1
 	_1:
@@ -2983,27 +2983,27 @@ func AM_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 												followplayer = libc.BoolInt32(!(followplayer != 0))
 												f_oldloc.Fx = int32(INT_MAX1)
 												if followplayer != 0 {
-													(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts + 9
+													(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts(9)
 												} else {
-													(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts + 24
+													(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts(24)
 												}
 											} else {
 												if key == key_map_grid {
 													grid = libc.BoolInt32(!(grid != 0))
 													if grid != 0 {
-														(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts + 40
+														(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts(40)
 													} else {
-														(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts + 48
+														(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts(48)
 													}
 												} else {
 													if key == key_map_mark {
-														M_snprintf(tls, uintptr(unsafe.Pointer(&buffer)), uint64(20), __ccgo_ts+57, libc.VaList(bp+8, __ccgo_ts+63, markpointnum))
+														M_snprintf(tls, uintptr(unsafe.Pointer(&buffer)), uint64(20), __ccgo_ts(57), libc.VaList(bp+8, __ccgo_ts(63), markpointnum))
 														(*player_t)(unsafe.Pointer(plr)).Fmessage = uintptr(unsafe.Pointer(&buffer))
 														AM_addMark(tls)
 													} else {
 														if key == key_map_clearmark {
 															AM_clearMarks(tls)
-															(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts + 75
+															(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts(75)
 														} else {
 															rc = int32(false1)
 														}
@@ -3317,7 +3317,7 @@ func AM_drawFline(tls *libc.TLS, fl uintptr, color int32) {
 	if (*fline_t)(unsafe.Pointer(fl)).Fa.Fx < 0 || (*fline_t)(unsafe.Pointer(fl)).Fa.Fx >= f_w || (*fline_t)(unsafe.Pointer(fl)).Fa.Fy < 0 || (*fline_t)(unsafe.Pointer(fl)).Fa.Fy >= f_h || (*fline_t)(unsafe.Pointer(fl)).Fb.Fx < 0 || (*fline_t)(unsafe.Pointer(fl)).Fb.Fx >= f_w || (*fline_t)(unsafe.Pointer(fl)).Fb.Fy < 0 || (*fline_t)(unsafe.Pointer(fl)).Fb.Fy >= f_h {
 		v1 = fuck
 		fuck++
-		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+93, libc.VaList(bp+8, v1))
+		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(93), libc.VaList(bp+8, v1))
 		return
 	}
 	dx = (*fline_t)(unsafe.Pointer(fl)).Fb.Fx - (*fline_t)(unsafe.Pointer(fl)).Fa.Fx
@@ -3686,27 +3686,27 @@ func init() {
 
 func init() {
 	doom1_endmsg = [8]uintptr{
-		0: __ccgo_ts + 103,
-		1: __ccgo_ts + 150,
-		2: __ccgo_ts + 200,
-		3: __ccgo_ts + 251,
-		4: __ccgo_ts + 302,
-		5: __ccgo_ts + 359,
-		6: __ccgo_ts + 414,
-		7: __ccgo_ts + 470,
+		0: __ccgo_ts(103),
+		1: __ccgo_ts(150),
+		2: __ccgo_ts(200),
+		3: __ccgo_ts(251),
+		4: __ccgo_ts(302),
+		5: __ccgo_ts(359),
+		6: __ccgo_ts(414),
+		7: __ccgo_ts(470),
 	}
 }
 
 func init() {
 	doom2_endmsg = [8]uintptr{
-		0: __ccgo_ts + 103,
-		1: __ccgo_ts + 505,
-		2: __ccgo_ts + 555,
-		3: __ccgo_ts + 628,
-		4: __ccgo_ts + 680,
-		5: __ccgo_ts + 734,
-		6: __ccgo_ts + 792,
-		7: __ccgo_ts + 852,
+		0: __ccgo_ts(103),
+		1: __ccgo_ts(505),
+		2: __ccgo_ts(555),
+		3: __ccgo_ts(628),
+		4: __ccgo_ts(680),
+		5: __ccgo_ts(734),
+		6: __ccgo_ts(792),
+		7: __ccgo_ts(852),
 	}
 }
 
@@ -3830,82 +3830,82 @@ type iwad_t = struct {
 
 var iwads = [14]iwad_t{
 	0: {
-		Fname:        __ccgo_ts + 911,
+		Fname:        __ccgo_ts(911),
 		Fmission:     int32(doom2),
 		Fmode:        int32(commercial),
-		Fdescription: __ccgo_ts + 921,
+		Fdescription: __ccgo_ts(921),
 	},
 	1: {
-		Fname:        __ccgo_ts + 929,
+		Fname:        __ccgo_ts(929),
 		Fmission:     int32(pack_plut),
 		Fmode:        int32(commercial),
-		Fdescription: __ccgo_ts + 942,
+		Fdescription: __ccgo_ts(942),
 	},
 	2: {
-		Fname:        __ccgo_ts + 974,
+		Fname:        __ccgo_ts(974),
 		Fmission:     int32(pack_tnt),
 		Fmode:        int32(commercial),
-		Fdescription: __ccgo_ts + 982,
+		Fdescription: __ccgo_ts(982),
 	},
 	3: {
-		Fname:        __ccgo_ts + 1009,
+		Fname:        __ccgo_ts(1009),
 		Fmode:        int32(retail),
-		Fdescription: __ccgo_ts + 1018,
+		Fdescription: __ccgo_ts(1018),
 	},
 	4: {
-		Fname:        __ccgo_ts + 1023,
-		Fdescription: __ccgo_ts + 1033,
+		Fname:        __ccgo_ts(1023),
+		Fdescription: __ccgo_ts(1033),
 	},
 	5: {
-		Fname:        __ccgo_ts + 1048,
+		Fname:        __ccgo_ts(1048),
 		Fmission:     int32(pack_chex),
-		Fdescription: __ccgo_ts + 1057,
+		Fdescription: __ccgo_ts(1057),
 	},
 	6: {
-		Fname:        __ccgo_ts + 1068,
+		Fname:        __ccgo_ts(1068),
 		Fmission:     int32(pack_hacx),
 		Fmode:        int32(commercial),
-		Fdescription: __ccgo_ts + 1077,
+		Fdescription: __ccgo_ts(1077),
 	},
 	7: {
-		Fname:        __ccgo_ts + 1082,
+		Fname:        __ccgo_ts(1082),
 		Fmission:     int32(doom2),
 		Fmode:        int32(commercial),
-		Fdescription: __ccgo_ts + 1093,
+		Fdescription: __ccgo_ts(1093),
 	},
 	8: {
-		Fname:        __ccgo_ts + 1100,
+		Fname:        __ccgo_ts(1100),
 		Fmission:     int32(doom2),
 		Fmode:        int32(commercial),
-		Fdescription: __ccgo_ts + 1114,
+		Fdescription: __ccgo_ts(1114),
 	},
 	9: {
-		Fname:        __ccgo_ts + 1132,
+		Fname:        __ccgo_ts(1132),
 		Fmode:        int32(retail),
-		Fdescription: __ccgo_ts + 1146,
+		Fdescription: __ccgo_ts(1146),
 	},
 	10: {
-		Fname:        __ccgo_ts + 1164,
+		Fname:        __ccgo_ts(1164),
 		Fmission:     int32(heretic),
 		Fmode:        int32(retail),
-		Fdescription: __ccgo_ts + 1176,
+		Fdescription: __ccgo_ts(1176),
 	},
 	11: {
-		Fname:        __ccgo_ts + 1184,
+		Fname:        __ccgo_ts(1184),
 		Fmission:     int32(heretic),
-		Fdescription: __ccgo_ts + 1197,
+		Fdescription: __ccgo_ts(1197),
 	},
 	12: {
-		Fname:        __ccgo_ts + 1215,
+		Fname:        __ccgo_ts(1215),
 		Fmission:     int32(hexen),
 		Fmode:        int32(commercial),
-		Fdescription: __ccgo_ts + 1225,
+		Fdescription: __ccgo_ts(1225),
 	},
 	13: {
-		Fname:        __ccgo_ts + 1231,
+		Fname:        __ccgo_ts(1231),
 		Fmission:     int32(strife),
 		Fmode:        int32(commercial),
-		Fdescription: __ccgo_ts + 1243,
+		Fdescription: __ccgo_ts(1243),
 	},
 }
 
@@ -3953,12 +3953,12 @@ func CheckDirectoryHasIWAD(tls *libc.TLS, dir uintptr, iwadname uintptr) (r uint
 	}
 	// Construct the full path to the IWAD if it is located in
 	// this directory, and check if it exists.
-	if !(libc.Xstrcmp(tls, dir, __ccgo_ts+1250) != 0) {
+	if !(libc.Xstrcmp(tls, dir, __ccgo_ts(1250)) != 0) {
 		filename = libc.Xstrdup(tls, iwadname)
 	} else {
-		filename = M_StringJoin(tls, dir, libc.VaList(bp+8, __ccgo_ts+1252, iwadname, libc.UintptrFromInt32(0)))
+		filename = M_StringJoin(tls, dir, libc.VaList(bp+8, __ccgo_ts(1252), iwadname, libc.UintptrFromInt32(0)))
 	}
-	libc.Xprintf(tls, __ccgo_ts+1254, libc.VaList(bp+8, filename))
+	libc.Xprintf(tls, __ccgo_ts(1254), libc.VaList(bp+8, filename))
 	if M_FileExists(tls, filename) != 0 {
 		return filename
 	}
@@ -4033,7 +4033,7 @@ func IdentifyIWADByName(tls *libc.TLS, name uintptr, mask int32) (r GameMission_
 //
 
 func BuildIWADDirList(tls *libc.TLS) {
-	AddIWADDir(tls, __ccgo_ts+1250)
+	AddIWADDir(tls, __ccgo_ts(1250))
 	// Don't run this function again.
 	iwad_dirs_built = uint32(true1)
 }
@@ -4064,7 +4064,7 @@ func D_FindWADByName(tls *libc.TLS, name uintptr) (r uintptr) {
 			return libc.Xstrdup(tls, iwad_dirs[i])
 		}
 		// Construct a string for the full path
-		path = M_StringJoin(tls, iwad_dirs[i], libc.VaList(bp+8, __ccgo_ts+1252, name, libc.UintptrFromInt32(0)))
+		path = M_StringJoin(tls, iwad_dirs[i], libc.VaList(bp+8, __ccgo_ts(1252), name, libc.UintptrFromInt32(0)))
 		if M_FileExists(tls, path) != 0 {
 			return path
 		}
@@ -4113,18 +4113,18 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
 	//
 	// @arg <file>
 	//
-	iwadparm = M_CheckParmWithArgs(tls, __ccgo_ts+1275, int32(1))
+	iwadparm = M_CheckParmWithArgs(tls, __ccgo_ts(1275), int32(1))
 	if iwadparm != 0 {
 		// Search through IWAD dirs for an IWAD with the given name.
 		iwadfile = *(*uintptr)(unsafe.Pointer(myargv + uintptr(iwadparm+int32(1))*8))
 		result = D_FindWADByName(tls, iwadfile)
 		if result == libc.UintptrFromInt32(0) {
-			I_Error(tls, __ccgo_ts+1281, libc.VaList(bp+8, iwadfile))
+			I_Error(tls, __ccgo_ts(1281), libc.VaList(bp+8, iwadfile))
 		}
 		*(*GameMission_t)(unsafe.Pointer(mission)) = IdentifyIWADByName(tls, result, mask)
 	} else {
 		// Search through the list and look for an IWAD
-		libc.Xprintf(tls, __ccgo_ts+1307, 0)
+		libc.Xprintf(tls, __ccgo_ts(1307), 0)
 		result = libc.UintptrFromInt32(0)
 		BuildIWADDirList(tls)
 		i = 0
@@ -4168,7 +4168,7 @@ func D_SaveGameIWADName(tls *libc.TLS, gamemission GameMission_t) (r uintptr) {
 		i++
 	}
 	// Default fallback:
-	return __ccgo_ts + 1353
+	return __ccgo_ts(1353)
 }
 
 func D_SuggestGameName(tls *libc.TLS, mission GameMission_t, mode GameMode_t) (r uintptr) {
@@ -4186,7 +4186,7 @@ func D_SuggestGameName(tls *libc.TLS, mission GameMission_t, mode GameMode_t) (r
 		;
 		i++
 	}
-	return __ccgo_ts + 1365
+	return __ccgo_ts(1365)
 }
 
 // The complete set of data for a particular tic.
@@ -4538,7 +4538,7 @@ func TryRunTics(tls *libc.TLS) {
 		NetUpdate(tls)
 		lowtic = GetLowTic(tls)
 		if lowtic < gametic/ticdup {
-			I_Error(tls, __ccgo_ts+1446, 0)
+			I_Error(tls, __ccgo_ts(1446), 0)
 		}
 		// Don't stay in this loop forever.  The menu is still running,
 		// so return to update the screen
@@ -4567,7 +4567,7 @@ func TryRunTics(tls *libc.TLS) {
 				break
 			}
 			if gametic/ticdup > lowtic {
-				I_Error(tls, __ccgo_ts+1475, 0)
+				I_Error(tls, __ccgo_ts(1475), 0)
 			}
 			libc.Xmemcpy(tls, uintptr(unsafe.Pointer(&local_playeringame)), set+128, uint64(32))
 			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*loop_interface_t)(unsafe.Pointer(loop_interface)).FRunTic})))(tls, set, set+128)
@@ -4883,7 +4883,7 @@ func D_Display(tls *libc.TLS) {
 	}
 	// clean up border stuff
 	if gamestate != oldgamestate1 && gamestate != int32(GS_LEVEL) {
-		I_SetPalette(tls, W_CacheLumpName(tls, __ccgo_ts+1490, int32(PU_CACHE)))
+		I_SetPalette(tls, W_CacheLumpName(tls, __ccgo_ts(1490), int32(PU_CACHE)))
 	}
 	// see if the border needs to be initially drawn
 	if gamestate == int32(GS_LEVEL) && oldgamestate1 != int32(GS_LEVEL) {
@@ -4917,7 +4917,7 @@ func D_Display(tls *libc.TLS) {
 		} else {
 			y = viewwindowy + int32(4)
 		}
-		V_DrawPatchDirect(tls, viewwindowx+(scaledviewwidth-int32(68))/int32(2), y, W_CacheLumpName(tls, __ccgo_ts+1498, int32(PU_CACHE)))
+		V_DrawPatchDirect(tls, viewwindowx+(scaledviewwidth-int32(68))/int32(2), y, W_CacheLumpName(tls, __ccgo_ts(1498), int32(PU_CACHE)))
 	}
 	// menus go directly to the screen
 	M_Drawer(tls)  // menu is drawn even on top of everything
@@ -4976,23 +4976,23 @@ func D_BindVariables(tls *libc.TLS) {
 	key_multi_msgplayer[int32(1)] = int32('i')
 	key_multi_msgplayer[int32(2)] = int32('b')
 	key_multi_msgplayer[int32(3)] = int32('r')
-	M_BindVariable(tls, __ccgo_ts+1506, uintptr(unsafe.Pointer(&mouseSensitivity)))
-	M_BindVariable(tls, __ccgo_ts+1524, uintptr(unsafe.Pointer(&sfxVolume)))
-	M_BindVariable(tls, __ccgo_ts+1535, uintptr(unsafe.Pointer(&musicVolume)))
-	M_BindVariable(tls, __ccgo_ts+1548, uintptr(unsafe.Pointer(&showMessages)))
-	M_BindVariable(tls, __ccgo_ts+1562, uintptr(unsafe.Pointer(&screenblocks)))
-	M_BindVariable(tls, __ccgo_ts+1575, uintptr(unsafe.Pointer(&detailLevel)))
-	M_BindVariable(tls, __ccgo_ts+1587, uintptr(unsafe.Pointer(&snd_channels)))
-	M_BindVariable(tls, __ccgo_ts+1600, uintptr(unsafe.Pointer(&vanilla_savegame_limit)))
-	M_BindVariable(tls, __ccgo_ts+1623, uintptr(unsafe.Pointer(&vanilla_demo_limit)))
-	M_BindVariable(tls, __ccgo_ts+1642, uintptr(unsafe.Pointer(&show_endoom)))
+	M_BindVariable(tls, __ccgo_ts(1506), uintptr(unsafe.Pointer(&mouseSensitivity)))
+	M_BindVariable(tls, __ccgo_ts(1524), uintptr(unsafe.Pointer(&sfxVolume)))
+	M_BindVariable(tls, __ccgo_ts(1535), uintptr(unsafe.Pointer(&musicVolume)))
+	M_BindVariable(tls, __ccgo_ts(1548), uintptr(unsafe.Pointer(&showMessages)))
+	M_BindVariable(tls, __ccgo_ts(1562), uintptr(unsafe.Pointer(&screenblocks)))
+	M_BindVariable(tls, __ccgo_ts(1575), uintptr(unsafe.Pointer(&detailLevel)))
+	M_BindVariable(tls, __ccgo_ts(1587), uintptr(unsafe.Pointer(&snd_channels)))
+	M_BindVariable(tls, __ccgo_ts(1600), uintptr(unsafe.Pointer(&vanilla_savegame_limit)))
+	M_BindVariable(tls, __ccgo_ts(1623), uintptr(unsafe.Pointer(&vanilla_demo_limit)))
+	M_BindVariable(tls, __ccgo_ts(1642), uintptr(unsafe.Pointer(&show_endoom)))
 	// Multiplayer chat macros
 	i = 0
 	for {
 		if !(i < int32(10)) {
 			break
 		}
-		M_snprintf(tls, bp, uint64(12), __ccgo_ts+1654, libc.VaList(bp+24, i))
+		M_snprintf(tls, bp, uint64(12), __ccgo_ts(1654), libc.VaList(bp+24, i))
 		M_BindVariable(tls, bp, uintptr(unsafe.Pointer(&chat_macros))+uintptr(i)*8)
 		goto _1
 	_1:
@@ -5036,7 +5036,7 @@ func doomgeneric_Tick(tls *libc.TLS) {
 //	//
 func D_DoomLoop(tls *libc.TLS) {
 	if bfgedition != 0 && (demorecording != 0 || gameaction == int32(ga_playdemo) || netgame != 0) {
-		libc.Xprintf(tls, __ccgo_ts+1666, 0)
+		libc.Xprintf(tls, __ccgo_ts(1666), 0)
 	}
 	if demorecording != 0 {
 		G_BeginRecording(tls)
@@ -5123,47 +5123,47 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 			pagetic = int32(170)
 		}
 		gamestate = int32(GS_DEMOSCREEN)
-		pagename = __ccgo_ts + 1896
+		pagename = __ccgo_ts(1896)
 		if gamemode == int32(commercial) {
 			S_StartMusic(tls, int32(mus_dm2ttl))
 		} else {
 			S_StartMusic(tls, int32(mus_intro))
 		}
 	case int32(1):
-		G_DeferedPlayDemo(tls, __ccgo_ts+1905)
+		G_DeferedPlayDemo(tls, __ccgo_ts(1905))
 	case int32(2):
 		pagetic = int32(200)
 		gamestate = int32(GS_DEMOSCREEN)
-		pagename = __ccgo_ts + 1911
+		pagename = __ccgo_ts(1911)
 	case int32(3):
-		G_DeferedPlayDemo(tls, __ccgo_ts+1918)
+		G_DeferedPlayDemo(tls, __ccgo_ts(1918))
 	case int32(4):
 		gamestate = int32(GS_DEMOSCREEN)
 		if gamemode == int32(commercial) {
 			pagetic = libc.Int32FromInt32(TICRATE) * libc.Int32FromInt32(11)
-			pagename = __ccgo_ts + 1896
+			pagename = __ccgo_ts(1896)
 			S_StartMusic(tls, int32(mus_dm2ttl))
 		} else {
 			pagetic = int32(200)
 			if gamemode == int32(retail) {
-				pagename = __ccgo_ts + 1911
+				pagename = __ccgo_ts(1911)
 			} else {
-				pagename = __ccgo_ts + 1924
+				pagename = __ccgo_ts(1924)
 			}
 		}
 	case int32(5):
-		G_DeferedPlayDemo(tls, __ccgo_ts+1930)
+		G_DeferedPlayDemo(tls, __ccgo_ts(1930))
 		break
 		// THE DEFINITIVE DOOM Special Edition demo
 		fallthrough
 	case int32(6):
-		G_DeferedPlayDemo(tls, __ccgo_ts+1936)
+		G_DeferedPlayDemo(tls, __ccgo_ts(1936))
 		break
 	}
 	// The Doom 3: BFG Edition version of doom2.wad does not have a
 	// TITLETPIC lump. Use INTERPIC instead as a workaround.
-	if bfgedition != 0 && !(libc.Xstrcasecmp(tls, pagename, __ccgo_ts+1896) != 0) && W_CheckNumForName(tls, __ccgo_ts+1942) < 0 {
-		pagename = __ccgo_ts + 1951
+	if bfgedition != 0 && !(libc.Xstrcasecmp(tls, pagename, __ccgo_ts(1896)) != 0) && W_CheckNumForName(tls, __ccgo_ts(1942)) < 0 {
+		pagename = __ccgo_ts(1951)
 	}
 }
 
@@ -5184,13 +5184,13 @@ func D_StartTitle(tls *libc.TLS) {
 // not used in any dehacked patches
 
 var banners = [7]uintptr{
-	0: __ccgo_ts + 1960,
-	1: __ccgo_ts + 2041,
-	2: __ccgo_ts + 2126,
-	3: __ccgo_ts + 2212,
-	4: __ccgo_ts + 2291,
-	5: __ccgo_ts + 2373,
-	6: __ccgo_ts + 2452,
+	0: __ccgo_ts(1960),
+	1: __ccgo_ts(2041),
+	2: __ccgo_ts(2126),
+	3: __ccgo_ts(2212),
+	4: __ccgo_ts(2291),
+	5: __ccgo_ts(2373),
+	6: __ccgo_ts(2452),
 }
 
 //
@@ -5270,19 +5270,19 @@ func SetMissionForPackName(tls *libc.TLS, pack_name uintptr) {
 		;
 		i++
 	}
-	libc.Xprintf(tls, __ccgo_ts+2552, 0)
+	libc.Xprintf(tls, __ccgo_ts(2552), 0)
 	i = 0
 	for {
 		if !(libc.Uint64FromInt32(i) < libc.Uint64FromInt64(48)/libc.Uint64FromInt64(16)) {
 			break
 		}
-		libc.Xprintf(tls, __ccgo_ts+2578, libc.VaList(bp+8, packs[i].Fname))
+		libc.Xprintf(tls, __ccgo_ts(2578), libc.VaList(bp+8, packs[i].Fname))
 		goto _2
 	_2:
 		;
 		i++
 	}
-	I_Error(tls, __ccgo_ts+2583, libc.VaList(bp+8, pack_name))
+	I_Error(tls, __ccgo_ts(2583), libc.VaList(bp+8, pack_name))
 }
 
 var packs = [3]struct {
@@ -5290,15 +5290,15 @@ var packs = [3]struct {
 	Fmission int32
 }{
 	0: {
-		Fname:    __ccgo_ts + 2533,
+		Fname:    __ccgo_ts(2533),
 		Fmission: int32(doom2),
 	},
 	1: {
-		Fname:    __ccgo_ts + 2539,
+		Fname:    __ccgo_ts(2539),
 		Fmission: int32(pack_tnt),
 	},
 	2: {
-		Fname:    __ccgo_ts + 2543,
+		Fname:    __ccgo_ts(2543),
 		Fmission: int32(pack_plut),
 	},
 }
@@ -5321,11 +5321,11 @@ func D_IdentifyVersion(tls *libc.TLS) {
 			if !(i < numlumps) {
 				break
 			}
-			if !(libc.Xstrncasecmp(tls, lumpinfo+uintptr(i)*40, __ccgo_ts+2613, uint64(8)) != 0) {
+			if !(libc.Xstrncasecmp(tls, lumpinfo+uintptr(i)*40, __ccgo_ts(2613), uint64(8)) != 0) {
 				gamemission = int32(doom2)
 				break
 			} else {
-				if !(libc.Xstrncasecmp(tls, lumpinfo+uintptr(i)*40, __ccgo_ts+2619, uint64(8)) != 0) {
+				if !(libc.Xstrncasecmp(tls, lumpinfo+uintptr(i)*40, __ccgo_ts(2619), uint64(8)) != 0) {
 					gamemission = int32(doom)
 					break
 				}
@@ -5337,7 +5337,7 @@ func D_IdentifyVersion(tls *libc.TLS) {
 		}
 		if gamemission == int32(none) {
 			// Still no idea.  I don't think this is going to work.
-			I_Error(tls, __ccgo_ts+2624, 0)
+			I_Error(tls, __ccgo_ts(2624), 0)
 		}
 	}
 	// Make sure gamemode is set up correctly
@@ -5353,11 +5353,11 @@ func D_IdentifyVersion(tls *libc.TLS) {
 	}
 	if v2 == int32(doom) {
 		// Doom 1.  But which version?
-		if W_CheckNumForName(tls, __ccgo_ts+2654) > 0 {
+		if W_CheckNumForName(tls, __ccgo_ts(2654)) > 0 {
 			// Ultimate Doom
 			gamemode = int32(retail)
 		} else {
-			if W_CheckNumForName(tls, __ccgo_ts+2659) > 0 {
+			if W_CheckNumForName(tls, __ccgo_ts(2659)) > 0 {
 				gamemode = int32(registered)
 			} else {
 				gamemode = int32(shareware)
@@ -5376,7 +5376,7 @@ func D_IdentifyVersion(tls *libc.TLS) {
 		// detecting it based on the filename. Valid values are: "doom2",
 		// "tnt" and "plutonia".
 		//
-		p = M_CheckParmWithArgs(tls, __ccgo_ts+2664, int32(1))
+		p = M_CheckParmWithArgs(tls, __ccgo_ts(2664), int32(1))
 		if p > 0 {
 			SetMissionForPackName(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		}
@@ -5388,9 +5388,9 @@ func D_IdentifyVersion(tls *libc.TLS) {
 func D_SetGameDescription(tls *libc.TLS) {
 	var is_freedm, is_freedoom boolean
 	var v1, v2, v3, v4, v5, v6, v7, v8 int32
-	is_freedoom = libc.BoolUint32(W_CheckNumForName(tls, __ccgo_ts+2670) >= 0)
-	is_freedm = libc.BoolUint32(W_CheckNumForName(tls, __ccgo_ts+2679) >= 0)
-	gamedescription = __ccgo_ts + 2686
+	is_freedoom = libc.BoolUint32(W_CheckNumForName(tls, __ccgo_ts(2670)) >= 0)
+	is_freedm = libc.BoolUint32(W_CheckNumForName(tls, __ccgo_ts(2679)) >= 0)
+	gamedescription = __ccgo_ts(2686)
 	if gamemission == int32(pack_chex) {
 		v1 = int32(doom)
 	} else {
@@ -5404,17 +5404,17 @@ func D_SetGameDescription(tls *libc.TLS) {
 	if v1 == int32(doom) {
 		// Doom 1.  But which version?
 		if is_freedoom != 0 {
-			gamedescription = GetGameName(tls, __ccgo_ts+1146)
+			gamedescription = GetGameName(tls, __ccgo_ts(1146))
 		} else {
 			if gamemode == int32(retail) {
 				// Ultimate Doom
-				gamedescription = GetGameName(tls, __ccgo_ts+2694)
+				gamedescription = GetGameName(tls, __ccgo_ts(2694))
 			} else {
 				if gamemode == int32(registered) {
-					gamedescription = GetGameName(tls, __ccgo_ts+2712)
+					gamedescription = GetGameName(tls, __ccgo_ts(2712))
 				} else {
 					if gamemode == int32(shareware) {
-						gamedescription = GetGameName(tls, __ccgo_ts+2728)
+						gamedescription = GetGameName(tls, __ccgo_ts(2728))
 					}
 				}
 			}
@@ -5423,9 +5423,9 @@ func D_SetGameDescription(tls *libc.TLS) {
 		// Doom 2 of some kind.  But which mission?
 		if is_freedoom != 0 {
 			if is_freedm != 0 {
-				gamedescription = GetGameName(tls, __ccgo_ts+1093)
+				gamedescription = GetGameName(tls, __ccgo_ts(1093))
 			} else {
-				gamedescription = GetGameName(tls, __ccgo_ts+1114)
+				gamedescription = GetGameName(tls, __ccgo_ts(1114))
 			}
 		} else {
 			if gamemission == int32(pack_chex) {
@@ -5439,7 +5439,7 @@ func D_SetGameDescription(tls *libc.TLS) {
 				v3 = v4
 			}
 			if v3 == int32(doom2) {
-				gamedescription = GetGameName(tls, __ccgo_ts+2743)
+				gamedescription = GetGameName(tls, __ccgo_ts(2743))
 			} else {
 				if gamemission == int32(pack_chex) {
 					v5 = int32(doom)
@@ -5452,7 +5452,7 @@ func D_SetGameDescription(tls *libc.TLS) {
 					v5 = v6
 				}
 				if v5 == int32(pack_plut) {
-					gamedescription = GetGameName(tls, __ccgo_ts+2765)
+					gamedescription = GetGameName(tls, __ccgo_ts(2765))
 				} else {
 					if gamemission == int32(pack_chex) {
 						v7 = int32(doom)
@@ -5465,7 +5465,7 @@ func D_SetGameDescription(tls *libc.TLS) {
 						v7 = v8
 					}
 					if v7 == int32(pack_tnt) {
-						gamedescription = GetGameName(tls, __ccgo_ts+2793)
+						gamedescription = GetGameName(tls, __ccgo_ts(2793))
 					}
 				}
 			}
@@ -5476,7 +5476,7 @@ func D_SetGameDescription(tls *libc.TLS) {
 func D_AddFile(tls *libc.TLS, filename uintptr) (r boolean) {
 	bp := alloc(16)
 	var handle uintptr
-	libc.Xprintf(tls, __ccgo_ts+2817, libc.VaList(bp+8, filename))
+	libc.Xprintf(tls, __ccgo_ts(2817), libc.VaList(bp+8, filename))
 	handle = W_AddFile(tls, filename)
 	return libc.BoolUint32(handle != libc.UintptrFromInt32(0))
 }
@@ -5486,9 +5486,9 @@ func D_AddFile(tls *libc.TLS, filename uintptr) (r boolean) {
 // replaced by dehacked.
 
 var copyright_banners = [3]uintptr{
-	0: __ccgo_ts + 2829,
-	1: __ccgo_ts + 3245,
-	2: __ccgo_ts + 3521,
+	0: __ccgo_ts(2829),
+	1: __ccgo_ts(3245),
+	2: __ccgo_ts(3521),
 }
 
 // Prints a message only if it has been modified by dehacked.
@@ -5504,11 +5504,11 @@ func PrintDehackedBanners(tls *libc.TLS) {
 		}
 		deh_s = copyright_banners[i]
 		if deh_s != copyright_banners[i] {
-			libc.Xprintf(tls, __ccgo_ts+3717, libc.VaList(bp+8, deh_s))
+			libc.Xprintf(tls, __ccgo_ts(3717), libc.VaList(bp+8, deh_s))
 			// Make sure the modified banner always ends in a newline character.
 			// If it doesn't, add a newline.  This fixes av.wad.
 			if int32(*(*int8)(unsafe.Pointer(deh_s + uintptr(libc.Xstrlen(tls, deh_s)-uint64(1))))) != int32('\n') {
-				libc.Xprintf(tls, __ccgo_ts+3720, 0)
+				libc.Xprintf(tls, __ccgo_ts(3720), 0)
 			}
 		}
 		goto _1
@@ -5524,48 +5524,48 @@ var gameversions = [10]struct {
 	Fversion     GameVersion_t
 }{
 	0: {
-		Fdescription: __ccgo_ts + 3722,
-		Fcmdline:     __ccgo_ts + 3733,
+		Fdescription: __ccgo_ts(3722),
+		Fcmdline:     __ccgo_ts(3733),
 		Fversion:     int32(exe_doom_1_666),
 	},
 	1: {
-		Fdescription: __ccgo_ts + 3739,
-		Fcmdline:     __ccgo_ts + 3753,
+		Fdescription: __ccgo_ts(3739),
+		Fcmdline:     __ccgo_ts(3753),
 		Fversion:     int32(exe_doom_1_7),
 	},
 	2: {
-		Fdescription: __ccgo_ts + 3757,
-		Fcmdline:     __ccgo_ts + 3766,
+		Fdescription: __ccgo_ts(3757),
+		Fcmdline:     __ccgo_ts(3766),
 		Fversion:     int32(exe_doom_1_8),
 	},
 	3: {
-		Fdescription: __ccgo_ts + 3770,
-		Fcmdline:     __ccgo_ts + 3779,
+		Fdescription: __ccgo_ts(3770),
+		Fcmdline:     __ccgo_ts(3779),
 		Fversion:     int32(exe_doom_1_9),
 	},
 	4: {
-		Fdescription: __ccgo_ts + 1077,
-		Fcmdline:     __ccgo_ts + 3783,
+		Fdescription: __ccgo_ts(1077),
+		Fcmdline:     __ccgo_ts(3783),
 		Fversion:     int32(exe_hacx),
 	},
 	5: {
-		Fdescription: __ccgo_ts + 3788,
-		Fcmdline:     __ccgo_ts + 3802,
+		Fdescription: __ccgo_ts(3788),
+		Fcmdline:     __ccgo_ts(3802),
 		Fversion:     int32(exe_ultimate),
 	},
 	6: {
-		Fdescription: __ccgo_ts + 3811,
-		Fcmdline:     __ccgo_ts + 3822,
+		Fdescription: __ccgo_ts(3811),
+		Fcmdline:     __ccgo_ts(3822),
 		Fversion:     int32(exe_final),
 	},
 	7: {
-		Fdescription: __ccgo_ts + 3828,
-		Fcmdline:     __ccgo_ts + 3845,
+		Fdescription: __ccgo_ts(3828),
+		Fcmdline:     __ccgo_ts(3845),
 		Fversion:     int32(exe_final2),
 	},
 	8: {
-		Fdescription: __ccgo_ts + 1057,
-		Fcmdline:     __ccgo_ts + 3852,
+		Fdescription: __ccgo_ts(1057),
+		Fcmdline:     __ccgo_ts(3852),
 		Fversion:     int32(exe_chex),
 	},
 	9: {},
@@ -5583,7 +5583,7 @@ func InitGameVersion(tls *libc.TLS) {
 	// Emulate a specific version of Doom.  Valid values are "1.9",
 	// "ultimate", "final", "final2", "hacx" and "chex".
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts+3857, int32(1))
+	p = M_CheckParmWithArgs(tls, __ccgo_ts(3857), int32(1))
 	if p != 0 {
 		i = 0
 		for {
@@ -5600,19 +5600,19 @@ func InitGameVersion(tls *libc.TLS) {
 			i++
 		}
 		if gameversions[i].Fdescription == libc.UintptrFromInt32(0) {
-			libc.Xprintf(tls, __ccgo_ts+3870, 0)
+			libc.Xprintf(tls, __ccgo_ts(3870), 0)
 			i = 0
 			for {
 				if !(gameversions[i].Fdescription != libc.UintptrFromInt32(0)) {
 					break
 				}
-				libc.Xprintf(tls, __ccgo_ts+3896, libc.VaList(bp+8, gameversions[i].Fcmdline, gameversions[i].Fdescription))
+				libc.Xprintf(tls, __ccgo_ts(3896), libc.VaList(bp+8, gameversions[i].Fcmdline, gameversions[i].Fdescription))
 				goto _2
 			_2:
 				;
 				i++
 			}
-			I_Error(tls, __ccgo_ts+3906, libc.VaList(bp+8, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))
+			I_Error(tls, __ccgo_ts(3906), libc.VaList(bp+8, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))
 		}
 	} else {
 		// Determine automatically
@@ -5668,7 +5668,7 @@ func PrintGameVersion(tls *libc.TLS) {
 			break
 		}
 		if gameversions[i].Fversion == gameversion {
-			libc.Xprintf(tls, __ccgo_ts+3932, libc.VaList(bp+8, gameversions[i].Fdescription))
+			libc.Xprintf(tls, __ccgo_ts(3932), libc.VaList(bp+8, gameversions[i].Fdescription))
 			break
 		}
 		goto _1
@@ -5685,10 +5685,10 @@ func D_Endoom(tls *libc.TLS) {
 	// Don't show ENDOOM if we have it disabled, or we're running
 	// in screensaver or control test mode. Only show it once the
 	// game has actually started.
-	if !(show_endoom != 0) || !(main_loop_started != 0) || screensaver_mode != 0 || M_CheckParm(tls, __ccgo_ts+3980) > 0 {
+	if !(show_endoom != 0) || !(main_loop_started != 0) || screensaver_mode != 0 || M_CheckParm(tls, __ccgo_ts(3980)) > 0 {
 		return
 	}
-	endoom = W_CacheLumpName(tls, __ccgo_ts+3994, int32(PU_STATIC))
+	endoom = W_CacheLumpName(tls, __ccgo_ts(3994), int32(PU_STATIC))
 	I_Endoom(tls, endoom)
 	libc.Xexit(tls, 0)
 }
@@ -5703,34 +5703,34 @@ func D_DoomMain(tls *libc.TLS) {
 	var i, p, scale, v1 int32
 	I_AtExit(tls, __ccgo_fp(D_Endoom), uint32(false1))
 	// print banner
-	I_PrintBanner(tls, __ccgo_ts+4001)
-	libc.Xprintf(tls, __ccgo_ts+4018, 0)
+	I_PrintBanner(tls, __ccgo_ts(4001))
+	libc.Xprintf(tls, __ccgo_ts(4018), 0)
 	Z_Init(tls)
 	//!
 	// @vanilla
 	//
 	// Disable monsters.
 	//
-	nomonsters = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts+4064))
+	nomonsters = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts(4064)))
 	//!
 	// @vanilla
 	//
 	// Monsters respawn after being killed.
 	//
-	respawnparm = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts+4076))
+	respawnparm = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts(4076)))
 	//!
 	// @vanilla
 	//
 	// Monsters move faster.
 	//
-	fastparm = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts+4085))
+	fastparm = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts(4085)))
 	//!
 	// @vanilla
 	//
 	// Developer mode.  F1 saves a screenshot in the current working
 	// directory.
 	//
-	devparm = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts+4091))
+	devparm = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts(4091)))
 	I_DisplayFPSDots(tls, devparm)
 	//!
 	// @category net
@@ -5738,7 +5738,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Start a deathmatch game.
 	//
-	if M_CheckParm(tls, __ccgo_ts+4100) != 0 {
+	if M_CheckParm(tls, __ccgo_ts(4100)) != 0 {
 		deathmatch = int32(1)
 	}
 	//!
@@ -5748,11 +5748,11 @@ func D_DoomMain(tls *libc.TLS) {
 	// Start a deathmatch 2.0 game.  Weapons do not stay in place and
 	// all items respawn after 30 seconds.
 	//
-	if M_CheckParm(tls, __ccgo_ts+4112) != 0 {
+	if M_CheckParm(tls, __ccgo_ts(4112)) != 0 {
 		deathmatch = int32(2)
 	}
 	if devparm != 0 {
-		libc.Xprintf(tls, __ccgo_ts+4122, 0)
+		libc.Xprintf(tls, __ccgo_ts(4122), 0)
 	}
 	// find which dir to use for config files
 	// Auto-detect the configuration dir.
@@ -5764,7 +5764,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Turbo mode.  The player's speed is multiplied by x%.  If unspecified,
 	// x defaults to 200.  Values are rounded up to 10 and down to 400.
 	//
-	v1 = M_CheckParm(tls, __ccgo_ts+4144)
+	v1 = M_CheckParm(tls, __ccgo_ts(4144))
 	p = v1
 	if v1 != 0 {
 		scale = int32(200)
@@ -5777,18 +5777,18 @@ func D_DoomMain(tls *libc.TLS) {
 		if scale > int32(400) {
 			scale = int32(400)
 		}
-		libc.Xprintf(tls, __ccgo_ts+4151, libc.VaList(bp+464, scale))
+		libc.Xprintf(tls, __ccgo_ts(4151), libc.VaList(bp+464, scale))
 		forwardmove[0] = forwardmove[0] * scale / int32(100)
 		forwardmove[int32(1)] = forwardmove[int32(1)] * scale / int32(100)
 		sidemove[0] = sidemove[0] * scale / int32(100)
 		sidemove[int32(1)] = sidemove[int32(1)] * scale / int32(100)
 	}
 	// init subsystems
-	libc.Xprintf(tls, __ccgo_ts+4170, 0)
+	libc.Xprintf(tls, __ccgo_ts(4170), 0)
 	V_Init(tls)
 	// Load configuration files before initialising other subsystems.
-	libc.Xprintf(tls, __ccgo_ts+4197, 0)
-	M_SetConfigFilenames(tls, __ccgo_ts+4236, __ccgo_ts+4248)
+	libc.Xprintf(tls, __ccgo_ts(4197), 0)
+	M_SetConfigFilenames(tls, __ccgo_ts(4236), __ccgo_ts(4248))
 	D_BindVariables(tls)
 	M_LoadDefaults(tls)
 	// Save configuration at exit.
@@ -5797,10 +5797,10 @@ func D_DoomMain(tls *libc.TLS) {
 	iwadfile = D_FindIWAD(tls, libc.Int32FromInt32(1)<<int32(doom)|libc.Int32FromInt32(1)<<int32(doom2)|libc.Int32FromInt32(1)<<int32(pack_tnt)|libc.Int32FromInt32(1)<<int32(pack_plut)|libc.Int32FromInt32(1)<<int32(pack_chex)|libc.Int32FromInt32(1)<<int32(pack_hacx), uintptr(unsafe.Pointer(&gamemission)))
 	// None found?
 	if iwadfile == libc.UintptrFromInt32(0) {
-		I_Error(tls, __ccgo_ts+4268, 0)
+		I_Error(tls, __ccgo_ts(4268), 0)
 	}
 	modifiedgame = uint32(false1)
-	libc.Xprintf(tls, __ccgo_ts+4380, 0)
+	libc.Xprintf(tls, __ccgo_ts(4380), 0)
 	D_AddFile(tls, iwadfile)
 	W_CheckCorrectIWAD(tls, int32(doom))
 	// Now that we've loaded the IWAD, we can figure out what gamemission
@@ -5814,8 +5814,8 @@ func D_DoomMain(tls *libc.TLS) {
 	// of doom2.wad is missing the TITLEPIC lump.
 	// We specifically check for DMENUPIC here, before PWADs have been
 	// loaded which could probably include a lump of that name.
-	if W_CheckNumForName(tls, __ccgo_ts+4404) >= 0 {
-		libc.Xprintf(tls, __ccgo_ts+4413, 0)
+	if W_CheckNumForName(tls, __ccgo_ts(4404)) >= 0 {
+		libc.Xprintf(tls, __ccgo_ts(4413), 0)
 		bfgedition = uint32(true1)
 		// BFG Edition changes the names of the secret levels to
 		// censor the Wolfenstein references. It also has an extra
@@ -5843,7 +5843,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Play back the demo named demo.lmp.
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts+4456, int32(1))
+	p = M_CheckParmWithArgs(tls, __ccgo_ts(4456), int32(1))
 	if !(p != 0) {
 		//!
 		// @arg <demo>
@@ -5853,15 +5853,15 @@ func D_DoomMain(tls *libc.TLS) {
 		// Play back the demo named demo.lmp, determining the framerate
 		// of the screen.
 		//
-		p = M_CheckParmWithArgs(tls, __ccgo_ts+4466, int32(1))
+		p = M_CheckParmWithArgs(tls, __ccgo_ts(4466), int32(1))
 	}
 	if p != 0 {
 		// With Vanilla you have to specify the file without extension,
 		// but make that optional.
-		if M_StringEndsWith(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts+4476) != 0 {
+		if M_StringEndsWith(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(4476)) != 0 {
 			M_StringCopy(tls, bp, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uint64(256))
 		} else {
-			libc.X__builtin_snprintf(tls, bp, uint64(256), __ccgo_ts+4481, libc.VaList(bp+464, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))
+			libc.X__builtin_snprintf(tls, bp, uint64(256), __ccgo_ts(4481), libc.VaList(bp+464, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))
 		}
 		if D_AddFile(tls, bp) != 0 {
 			M_StringCopy(tls, bp+256, lumpinfo+uintptr(numlumps-uint32(1))*40, uint64(9))
@@ -5871,7 +5871,7 @@ func D_DoomMain(tls *libc.TLS) {
 			// tricks like "-playdemo demo1" possible.
 			M_StringCopy(tls, bp+256, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uint64(9))
 		}
-		libc.Xprintf(tls, __ccgo_ts+4488, libc.VaList(bp+464, bp))
+		libc.Xprintf(tls, __ccgo_ts(4488), libc.VaList(bp+464, bp))
 	}
 	I_AtExit(tls, __ccgo_fp(G_CheckDemoStatus), uint32(true1))
 	// Generate the WAD hash table.  Speed things up a bit.
@@ -5912,7 +5912,7 @@ func D_DoomMain(tls *libc.TLS) {
 			22: {'s', 'p', 'i', 'd', 'a', '1', 'd', '1'},
 		}
 		if gamemode == int32(shareware) {
-			I_Error(tls, __ccgo_ts+4506, 0)
+			I_Error(tls, __ccgo_ts(4506), 0)
 		}
 		// Check for fake IWAD with right name,
 		// but w/o all the lumps of the registered version.
@@ -5923,7 +5923,7 @@ func D_DoomMain(tls *libc.TLS) {
 					break
 				}
 				if W_CheckNumForName(tls, bp+265+uintptr(i)*8) < 0 {
-					I_Error(tls, __ccgo_ts+4562, 0)
+					I_Error(tls, __ccgo_ts(4562), 0)
 				}
 				goto _2
 			_2:
@@ -5932,20 +5932,20 @@ func D_DoomMain(tls *libc.TLS) {
 			}
 		}
 	}
-	if W_CheckNumForName(tls, __ccgo_ts+4599) >= 0 || W_CheckNumForName(tls, __ccgo_ts+4608) >= 0 {
+	if W_CheckNumForName(tls, __ccgo_ts(4599)) >= 0 || W_CheckNumForName(tls, __ccgo_ts(4608)) >= 0 {
 		I_PrintDivider(tls)
-		libc.Xprintf(tls, __ccgo_ts+4615, 0)
+		libc.Xprintf(tls, __ccgo_ts(4615), 0)
 	}
 	I_PrintStartupBanner(tls, gamedescription)
 	PrintDehackedBanners(tls)
 	// Freedoom's IWADs are Boom-compatible, which means they usually
 	// don't work in Vanilla (though FreeDM is okay). Show a warning
 	// message and give a link to the website.
-	if W_CheckNumForName(tls, __ccgo_ts+2670) >= 0 && W_CheckNumForName(tls, __ccgo_ts+2679) < 0 {
-		libc.Xprintf(tls, __ccgo_ts+4767, 0)
+	if W_CheckNumForName(tls, __ccgo_ts(2670)) >= 0 && W_CheckNumForName(tls, __ccgo_ts(2679)) < 0 {
+		libc.Xprintf(tls, __ccgo_ts(4767), 0)
 		I_PrintDivider(tls)
 	}
-	libc.Xprintf(tls, __ccgo_ts+4992, 0)
+	libc.Xprintf(tls, __ccgo_ts(4992), 0)
 	I_CheckIsScreensaver(tls)
 	I_InitTimer(tls)
 	I_InitJoystick(tls)
@@ -5965,7 +5965,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Set the game skill, 1-5 (1: easiest, 5: hardest).  A skill of
 	// 0 disables all monsters.
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts+5027, int32(1))
+	p = M_CheckParmWithArgs(tls, __ccgo_ts(5027), int32(1))
 	if p != 0 {
 		startskill = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('1')
 		autostart = uint32(true1)
@@ -5976,7 +5976,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Start playing on episode n (1-4)
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts+5034, int32(1))
+	p = M_CheckParmWithArgs(tls, __ccgo_ts(5034), int32(1))
 	if p != 0 {
 		startepisode = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('0')
 		startmap = int32(1)
@@ -5990,7 +5990,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// For multiplayer games: exit each level after n minutes.
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts+5043, int32(1))
+	p = M_CheckParmWithArgs(tls, __ccgo_ts(5043), int32(1))
 	if p != 0 {
 		timelimit = libc.Xatoi(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 	}
@@ -6000,7 +6000,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Austin Virtual Gaming: end levels after 20 minutes.
 	//
-	p = M_CheckParm(tls, __ccgo_ts+5050)
+	p = M_CheckParm(tls, __ccgo_ts(5050))
 	if p != 0 {
 		timelimit = int32(20)
 	}
@@ -6011,7 +6011,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Start a game immediately, warping to ExMy (Doom 1) or MAPxy
 	// (Doom 2)
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts+5055, int32(1))
+	p = M_CheckParmWithArgs(tls, __ccgo_ts(5055), int32(1))
 	if p != 0 {
 		if gamemode == int32(commercial) {
 			startmap = libc.Xatoi(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
@@ -6027,7 +6027,7 @@ func D_DoomMain(tls *libc.TLS) {
 	}
 	// Undocumented:
 	// Invoked by setup to test the controls.
-	p = M_CheckParm(tls, __ccgo_ts+3980)
+	p = M_CheckParm(tls, __ccgo_ts(3980))
 	if p > 0 {
 		startepisode = int32(1)
 		startmap = int32(1)
@@ -6043,37 +6043,37 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Load the game in slot s.
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts+5061, int32(1))
+	p = M_CheckParmWithArgs(tls, __ccgo_ts(5061), int32(1))
 	if p != 0 {
 		startloadgame = libc.Xatoi(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 	} else {
 		// Not loading a game
 		startloadgame = -int32(1)
 	}
-	libc.Xprintf(tls, __ccgo_ts+5071, 0)
+	libc.Xprintf(tls, __ccgo_ts(5071), 0)
 	M_Init(tls)
-	libc.Xprintf(tls, __ccgo_ts+5105, 0)
+	libc.Xprintf(tls, __ccgo_ts(5105), 0)
 	R_Init(tls)
-	libc.Xprintf(tls, __ccgo_ts+5141, 0)
+	libc.Xprintf(tls, __ccgo_ts(5141), 0)
 	P_Init(tls)
-	libc.Xprintf(tls, __ccgo_ts+5172, 0)
+	libc.Xprintf(tls, __ccgo_ts(5172), 0)
 	S_Init(tls, sfxVolume*int32(8), musicVolume*int32(8))
-	libc.Xprintf(tls, __ccgo_ts+5199, 0)
+	libc.Xprintf(tls, __ccgo_ts(5199), 0)
 	D_CheckNetGame(tls)
 	PrintGameVersion(tls)
-	libc.Xprintf(tls, __ccgo_ts+5246, 0)
+	libc.Xprintf(tls, __ccgo_ts(5246), 0)
 	HU_Init(tls)
-	libc.Xprintf(tls, __ccgo_ts+5285, 0)
+	libc.Xprintf(tls, __ccgo_ts(5285), 0)
 	ST_Init(tls)
 	// If Doom II without a MAP01 lump, this is a store demo.
 	// Moved this here so that MAP01 isn't constantly looked up
 	// in the main loop.
-	if gamemode == int32(commercial) && W_CheckNumForName(tls, __ccgo_ts+5312) < 0 {
+	if gamemode == int32(commercial) && W_CheckNumForName(tls, __ccgo_ts(5312)) < 0 {
 		storedemo = uint32(true1)
 	}
-	if M_CheckParmWithArgs(tls, __ccgo_ts+5318, int32(1)) != 0 {
+	if M_CheckParmWithArgs(tls, __ccgo_ts(5318), int32(1)) != 0 {
 		I_AtExit(tls, __ccgo_fp(StatDump), uint32(true1))
-		libc.Xprintf(tls, __ccgo_ts+5328, 0)
+		libc.Xprintf(tls, __ccgo_ts(5328), 0)
 	}
 	//!
 	// @arg <x>
@@ -6082,19 +6082,19 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Record a demo named x.lmp.
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts+5361, int32(1))
+	p = M_CheckParmWithArgs(tls, __ccgo_ts(5361), int32(1))
 	if p != 0 {
 		G_RecordDemo(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		autostart = uint32(true1)
 	}
-	p = M_CheckParmWithArgs(tls, __ccgo_ts+4456, int32(1))
+	p = M_CheckParmWithArgs(tls, __ccgo_ts(4456), int32(1))
 	if p != 0 {
 		singledemo = uint32(true1) // quit after one demo
 		G_DeferedPlayDemo(tls, bp+256)
 		D_DoomLoop(tls)
 		return
 	}
-	p = M_CheckParmWithArgs(tls, __ccgo_ts+4466, int32(1))
+	p = M_CheckParmWithArgs(tls, __ccgo_ts(4466), int32(1))
 	if p != 0 {
 		G_TimeDemo(tls, bp+256)
 		D_DoomLoop(tls)
@@ -6119,25 +6119,25 @@ func D_GameMissionString(tls *libc.TLS, mission GameMission_t) (r uintptr) {
 	case int32(none):
 		fallthrough
 	default:
-		return __ccgo_ts + 5369
+		return __ccgo_ts(5369)
 	case int32(doom):
-		return __ccgo_ts + 5374
+		return __ccgo_ts(5374)
 	case int32(doom2):
-		return __ccgo_ts + 2533
+		return __ccgo_ts(2533)
 	case int32(pack_tnt):
-		return __ccgo_ts + 2539
+		return __ccgo_ts(2539)
 	case int32(pack_plut):
-		return __ccgo_ts + 2543
+		return __ccgo_ts(2543)
 	case int32(pack_hacx):
-		return __ccgo_ts + 3783
+		return __ccgo_ts(3783)
 	case int32(pack_chex):
-		return __ccgo_ts + 3852
+		return __ccgo_ts(3852)
 	case int32(heretic):
-		return __ccgo_ts + 5379
+		return __ccgo_ts(5379)
 	case int32(hexen):
-		return __ccgo_ts + 5387
+		return __ccgo_ts(5387)
 	case int32(strife):
-		return __ccgo_ts + 5393
+		return __ccgo_ts(5393)
 	}
 	return r
 }
@@ -6153,7 +6153,7 @@ func PlayerQuitGame(tls *libc.TLS, player uintptr) {
 	player_num = libc.Uint32FromInt64((int64(player) - __predefined_ptrdiff_t(uintptr(unsafe.Pointer(&players)))) / 328)
 	// Do this the same way as Vanilla Doom does, to allow dehacked
 	// replacements of this message
-	M_StringCopy(tls, uintptr(unsafe.Pointer(&exitmsg)), __ccgo_ts+5400, uint64(80))
+	M_StringCopy(tls, uintptr(unsafe.Pointer(&exitmsg)), __ccgo_ts(5400), uint64(80))
 	p1 = uintptr(unsafe.Pointer(&exitmsg)) + 7
 	*(*int8)(unsafe.Pointer(p1)) = int8(uint32(*(*int8)(unsafe.Pointer(p1))) + player_num)
 	playeringame[player_num] = uint32(false1)
@@ -6218,7 +6218,7 @@ func LoadGameSettings(tls *libc.TLS, settings uintptr) {
 	timelimit = (*net_gamesettings_t)(unsafe.Pointer(settings)).Ftimelimit
 	consoleplayer = (*net_gamesettings_t)(unsafe.Pointer(settings)).Fconsoleplayer
 	if lowres_turn != 0 {
-		libc.Xprintf(tls, __ccgo_ts+5423, 0)
+		libc.Xprintf(tls, __ccgo_ts(5423), 0)
 	}
 	i = uint32(0)
 	for {
@@ -6249,7 +6249,7 @@ func SaveGameSettings(tls *libc.TLS, settings uintptr) {
 	(*net_gamesettings_t)(unsafe.Pointer(settings)).Ffast_monsters = libc.Int32FromUint32(fastparm)
 	(*net_gamesettings_t)(unsafe.Pointer(settings)).Frespawn_monsters = libc.Int32FromUint32(respawnparm)
 	(*net_gamesettings_t)(unsafe.Pointer(settings)).Ftimelimit = timelimit
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Flowres_turn = libc.BoolInt32(M_CheckParm(tls, __ccgo_ts+5361) > 0 && M_CheckParm(tls, __ccgo_ts+5530) == 0)
+	(*net_gamesettings_t)(unsafe.Pointer(settings)).Flowres_turn = libc.BoolInt32(M_CheckParm(tls, __ccgo_ts(5361)) > 0 && M_CheckParm(tls, __ccgo_ts(5530)) == 0)
 }
 
 func InitConnectData(tls *libc.TLS, connect_data uintptr) {
@@ -6260,7 +6260,7 @@ func InitConnectData(tls *libc.TLS, connect_data uintptr) {
 	//
 	// Run as the left screen in three screen mode.
 	//
-	if M_CheckParm(tls, __ccgo_ts+5540) > 0 {
+	if M_CheckParm(tls, __ccgo_ts(5540)) > 0 {
 		viewangleoffset = int32(ANG901)
 		(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fdrone = int32(true1)
 	}
@@ -6269,7 +6269,7 @@ func InitConnectData(tls *libc.TLS, connect_data uintptr) {
 	//
 	// Run as the right screen in three screen mode.
 	//
-	if M_CheckParm(tls, __ccgo_ts+5546) > 0 {
+	if M_CheckParm(tls, __ccgo_ts(5546)) > 0 {
 		viewangleoffset = libc.Int32FromUint32(ANG2701)
 		(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fdrone = int32(true1)
 	}
@@ -6280,11 +6280,11 @@ func InitConnectData(tls *libc.TLS, connect_data uintptr) {
 	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fgamemode = gamemode
 	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fgamemission = gamemission
 	// Are we recording a demo? Possibly set lowres turn mode
-	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Flowres_turn = libc.BoolInt32(M_CheckParm(tls, __ccgo_ts+5361) > 0 && M_CheckParm(tls, __ccgo_ts+5530) == 0)
+	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Flowres_turn = libc.BoolInt32(M_CheckParm(tls, __ccgo_ts(5361)) > 0 && M_CheckParm(tls, __ccgo_ts(5530)) == 0)
 	// Read checksums of our WAD directory and dehacked information
 	W_Checksum(tls, connect_data+24)
 	// Are we playing with the Freedoom IWAD?
-	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fis_freedoom = libc.BoolInt32(W_CheckNumForName(tls, __ccgo_ts+2670) >= 0)
+	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fis_freedoom = libc.BoolInt32(W_CheckNumForName(tls, __ccgo_ts(2670)) >= 0)
 }
 
 func D_ConnectNetGame(tls *libc.TLS) {
@@ -6298,7 +6298,7 @@ func D_ConnectNetGame(tls *libc.TLS) {
 	// player.  This can also be used to play back single player netgame
 	// demos.
 	//
-	if M_CheckParm(tls, __ccgo_ts+5553) > 0 {
+	if M_CheckParm(tls, __ccgo_ts(5553)) > 0 {
 		netgame = uint32(true1)
 	}
 }
@@ -6318,19 +6318,19 @@ func D_CheckNetGame(tls *libc.TLS) {
 	SaveGameSettings(tls, bp)
 	D_StartNetGame(tls, bp, libc.UintptrFromInt32(0))
 	LoadGameSettings(tls, bp)
-	libc.Xprintf(tls, __ccgo_ts+5563, libc.VaList(bp+112, startskill, deathmatch, startmap, startepisode))
-	libc.Xprintf(tls, __ccgo_ts+5626, libc.VaList(bp+112, consoleplayer+int32(1), (*(*net_gamesettings_t)(unsafe.Pointer(bp))).Fnum_players, (*(*net_gamesettings_t)(unsafe.Pointer(bp))).Fnum_players))
+	libc.Xprintf(tls, __ccgo_ts(5563), libc.VaList(bp+112, startskill, deathmatch, startmap, startepisode))
+	libc.Xprintf(tls, __ccgo_ts(5626), libc.VaList(bp+112, consoleplayer+int32(1), (*(*net_gamesettings_t)(unsafe.Pointer(bp))).Fnum_players, (*(*net_gamesettings_t)(unsafe.Pointer(bp))).Fnum_players))
 	// Show players here; the server might have specified a time limit
 	if timelimit > 0 && deathmatch != 0 {
 		// Gross hack to work like Vanilla:
-		if timelimit == int32(20) && M_CheckParm(tls, __ccgo_ts+5050) != 0 {
-			libc.Xprintf(tls, __ccgo_ts+5654, 0)
+		if timelimit == int32(20) && M_CheckParm(tls, __ccgo_ts(5050)) != 0 {
+			libc.Xprintf(tls, __ccgo_ts(5654), 0)
 		} else {
-			libc.Xprintf(tls, __ccgo_ts+5711, libc.VaList(bp+112, timelimit))
+			libc.Xprintf(tls, __ccgo_ts(5711), libc.VaList(bp+112, timelimit))
 			if timelimit > int32(1) {
-				libc.Xprintf(tls, __ccgo_ts+5743, 0)
+				libc.Xprintf(tls, __ccgo_ts(5743), 0)
 			}
-			libc.Xprintf(tls, __ccgo_ts+5745, 0)
+			libc.Xprintf(tls, __ccgo_ts(5745), 0)
 		}
 	}
 }
@@ -6357,152 +6357,152 @@ var textscreens = [22]textscreen_t{
 	0: {
 		Fepisode:    int32(1),
 		Flevel:      int32(8),
-		Fbackground: __ccgo_ts + 5748,
-		Ftext:       __ccgo_ts + 5757,
+		Fbackground: __ccgo_ts(5748),
+		Ftext:       __ccgo_ts(5757),
 	},
 	1: {
 		Fepisode:    int32(2),
 		Flevel:      int32(8),
-		Fbackground: __ccgo_ts + 6198,
-		Ftext:       __ccgo_ts + 6206,
+		Fbackground: __ccgo_ts(6198),
+		Ftext:       __ccgo_ts(6206),
 	},
 	2: {
 		Fepisode:    int32(3),
 		Flevel:      int32(8),
-		Fbackground: __ccgo_ts + 6673,
-		Ftext:       __ccgo_ts + 6681,
+		Fbackground: __ccgo_ts(6673),
+		Ftext:       __ccgo_ts(6681),
 	},
 	3: {
 		Fepisode:    int32(4),
 		Flevel:      int32(8),
-		Fbackground: __ccgo_ts + 7174,
-		Ftext:       __ccgo_ts + 7182,
+		Fbackground: __ccgo_ts(7174),
+		Ftext:       __ccgo_ts(7182),
 	},
 	4: {
 		Fmission:    int32(doom2),
 		Fepisode:    int32(1),
 		Flevel:      int32(6),
-		Fbackground: __ccgo_ts + 7686,
-		Ftext:       __ccgo_ts + 7694,
+		Fbackground: __ccgo_ts(7686),
+		Ftext:       __ccgo_ts(7694),
 	},
 	5: {
 		Fmission:    int32(doom2),
 		Fepisode:    int32(1),
 		Flevel:      int32(11),
-		Fbackground: __ccgo_ts + 8100,
-		Ftext:       __ccgo_ts + 8108,
+		Fbackground: __ccgo_ts(8100),
+		Ftext:       __ccgo_ts(8108),
 	},
 	6: {
 		Fmission:    int32(doom2),
 		Fepisode:    int32(1),
 		Flevel:      int32(20),
-		Fbackground: __ccgo_ts + 8726,
-		Ftext:       __ccgo_ts + 8734,
+		Fbackground: __ccgo_ts(8726),
+		Ftext:       __ccgo_ts(8734),
 	},
 	7: {
 		Fmission:    int32(doom2),
 		Fepisode:    int32(1),
 		Flevel:      int32(30),
-		Fbackground: __ccgo_ts + 9047,
-		Ftext:       __ccgo_ts + 9055,
+		Fbackground: __ccgo_ts(9047),
+		Ftext:       __ccgo_ts(9055),
 	},
 	8: {
 		Fmission:    int32(doom2),
 		Fepisode:    int32(1),
 		Flevel:      int32(15),
-		Fbackground: __ccgo_ts + 9550,
-		Ftext:       __ccgo_ts + 9558,
+		Fbackground: __ccgo_ts(9550),
+		Ftext:       __ccgo_ts(9558),
 	},
 	9: {
 		Fmission:    int32(doom2),
 		Fepisode:    int32(1),
 		Flevel:      int32(31),
-		Fbackground: __ccgo_ts + 9723,
-		Ftext:       __ccgo_ts + 9731,
+		Fbackground: __ccgo_ts(9723),
+		Ftext:       __ccgo_ts(9731),
 	},
 	10: {
 		Fmission:    int32(pack_tnt),
 		Fepisode:    int32(1),
 		Flevel:      int32(6),
-		Fbackground: __ccgo_ts + 7686,
-		Ftext:       __ccgo_ts + 9824,
+		Fbackground: __ccgo_ts(7686),
+		Ftext:       __ccgo_ts(9824),
 	},
 	11: {
 		Fmission:    int32(pack_tnt),
 		Fepisode:    int32(1),
 		Flevel:      int32(11),
-		Fbackground: __ccgo_ts + 8100,
-		Ftext:       __ccgo_ts + 10214,
+		Fbackground: __ccgo_ts(8100),
+		Ftext:       __ccgo_ts(10214),
 	},
 	12: {
 		Fmission:    int32(pack_tnt),
 		Fepisode:    int32(1),
 		Flevel:      int32(20),
-		Fbackground: __ccgo_ts + 8726,
-		Ftext:       __ccgo_ts + 10525,
+		Fbackground: __ccgo_ts(8726),
+		Ftext:       __ccgo_ts(10525),
 	},
 	13: {
 		Fmission:    int32(pack_tnt),
 		Fepisode:    int32(1),
 		Flevel:      int32(30),
-		Fbackground: __ccgo_ts + 9047,
-		Ftext:       __ccgo_ts + 10835,
+		Fbackground: __ccgo_ts(9047),
+		Ftext:       __ccgo_ts(10835),
 	},
 	14: {
 		Fmission:    int32(pack_tnt),
 		Fepisode:    int32(1),
 		Flevel:      int32(15),
-		Fbackground: __ccgo_ts + 9550,
-		Ftext:       __ccgo_ts + 11221,
+		Fbackground: __ccgo_ts(9550),
+		Ftext:       __ccgo_ts(11221),
 	},
 	15: {
 		Fmission:    int32(pack_tnt),
 		Fepisode:    int32(1),
 		Flevel:      int32(31),
-		Fbackground: __ccgo_ts + 9723,
-		Ftext:       __ccgo_ts + 11395,
+		Fbackground: __ccgo_ts(9723),
+		Ftext:       __ccgo_ts(11395),
 	},
 	16: {
 		Fmission:    int32(pack_plut),
 		Fepisode:    int32(1),
 		Flevel:      int32(6),
-		Fbackground: __ccgo_ts + 7686,
-		Ftext:       __ccgo_ts + 11749,
+		Fbackground: __ccgo_ts(7686),
+		Ftext:       __ccgo_ts(11749),
 	},
 	17: {
 		Fmission:    int32(pack_plut),
 		Fepisode:    int32(1),
 		Flevel:      int32(11),
-		Fbackground: __ccgo_ts + 8100,
-		Ftext:       __ccgo_ts + 12183,
+		Fbackground: __ccgo_ts(8100),
+		Ftext:       __ccgo_ts(12183),
 	},
 	18: {
 		Fmission:    int32(pack_plut),
 		Fepisode:    int32(1),
 		Flevel:      int32(20),
-		Fbackground: __ccgo_ts + 8726,
-		Ftext:       __ccgo_ts + 12377,
+		Fbackground: __ccgo_ts(8726),
+		Ftext:       __ccgo_ts(12377),
 	},
 	19: {
 		Fmission:    int32(pack_plut),
 		Fepisode:    int32(1),
 		Flevel:      int32(30),
-		Fbackground: __ccgo_ts + 9047,
-		Ftext:       __ccgo_ts + 12706,
+		Fbackground: __ccgo_ts(9047),
+		Ftext:       __ccgo_ts(12706),
 	},
 	20: {
 		Fmission:    int32(pack_plut),
 		Fepisode:    int32(1),
 		Flevel:      int32(15),
-		Fbackground: __ccgo_ts + 9550,
-		Ftext:       __ccgo_ts + 13167,
+		Fbackground: __ccgo_ts(9550),
+		Ftext:       __ccgo_ts(13167),
 	},
 	21: {
 		Fmission:    int32(pack_plut),
 		Fepisode:    int32(1),
 		Flevel:      int32(31),
-		Fbackground: __ccgo_ts + 9723,
-		Ftext:       __ccgo_ts + 13327,
+		Fbackground: __ccgo_ts(9723),
+		Ftext:       __ccgo_ts(13327),
 	},
 }
 
@@ -6730,71 +6730,71 @@ type castinfo_t = struct {
 func init() {
 	castorder = [18]castinfo_t{
 		0: {
-			Fname:  __ccgo_ts + 13434,
+			Fname:  __ccgo_ts(13434),
 			Ftype1: int32(MT_POSSESSED),
 		},
 		1: {
-			Fname:  __ccgo_ts + 13444,
+			Fname:  __ccgo_ts(13444),
 			Ftype1: int32(MT_SHOTGUY),
 		},
 		2: {
-			Fname:  __ccgo_ts + 13456,
+			Fname:  __ccgo_ts(13456),
 			Ftype1: int32(MT_CHAINGUY),
 		},
 		3: {
-			Fname:  __ccgo_ts + 13474,
+			Fname:  __ccgo_ts(13474),
 			Ftype1: int32(MT_TROOP),
 		},
 		4: {
-			Fname:  __ccgo_ts + 13478,
+			Fname:  __ccgo_ts(13478),
 			Ftype1: int32(MT_SERGEANT),
 		},
 		5: {
-			Fname:  __ccgo_ts + 13484,
+			Fname:  __ccgo_ts(13484),
 			Ftype1: int32(MT_SKULL),
 		},
 		6: {
-			Fname:  __ccgo_ts + 13494,
+			Fname:  __ccgo_ts(13494),
 			Ftype1: int32(MT_HEAD),
 		},
 		7: {
-			Fname:  __ccgo_ts + 13504,
+			Fname:  __ccgo_ts(13504),
 			Ftype1: int32(MT_KNIGHT),
 		},
 		8: {
-			Fname:  __ccgo_ts + 13516,
+			Fname:  __ccgo_ts(13516),
 			Ftype1: int32(MT_BRUISER),
 		},
 		9: {
-			Fname:  __ccgo_ts + 13530,
+			Fname:  __ccgo_ts(13530),
 			Ftype1: int32(MT_BABY),
 		},
 		10: {
-			Fname:  __ccgo_ts + 13542,
+			Fname:  __ccgo_ts(13542),
 			Ftype1: int32(MT_PAIN),
 		},
 		11: {
-			Fname:  __ccgo_ts + 13557,
+			Fname:  __ccgo_ts(13557),
 			Ftype1: int32(MT_UNDEAD),
 		},
 		12: {
-			Fname:  __ccgo_ts + 13566,
+			Fname:  __ccgo_ts(13566),
 			Ftype1: int32(MT_FATSO),
 		},
 		13: {
-			Fname:  __ccgo_ts + 13575,
+			Fname:  __ccgo_ts(13575),
 			Ftype1: int32(MT_VILE),
 		},
 		14: {
-			Fname:  __ccgo_ts + 13585,
+			Fname:  __ccgo_ts(13585),
 			Ftype1: int32(MT_SPIDER),
 		},
 		15: {
-			Fname:  __ccgo_ts + 13607,
+			Fname:  __ccgo_ts(13607),
 			Ftype1: int32(MT_CYBORG),
 		},
 		16: {
-			Fname: __ccgo_ts + 13622,
+			Fname: __ccgo_ts(13622),
 		},
 		17: {},
 	}
@@ -7025,7 +7025,7 @@ func F_CastDrawer(tls *libc.TLS) {
 	var lump int32
 	var patch, sprdef, sprframe uintptr
 	// erase the entire screen to a background
-	V_DrawPatch(tls, 0, 0, W_CacheLumpName(tls, __ccgo_ts+13631, int32(PU_CACHE)))
+	V_DrawPatch(tls, 0, 0, W_CacheLumpName(tls, __ccgo_ts(13631), int32(PU_CACHE)))
 	F_CastPrint(tls, castorder[castnum].Fname)
 	// draw the current frame in the middle of the screen
 	sprdef = sprites + uintptr((*state_t)(unsafe.Pointer(caststate)).Fsprite)*16
@@ -7079,8 +7079,8 @@ func F_BunnyScroll(tls *libc.TLS) {
 	bp := alloc(32)
 	var p1, p2 uintptr
 	var scrolled, stage, x int32
-	p1 = W_CacheLumpName(tls, __ccgo_ts+13640, int32(PU_LEVEL))
-	p2 = W_CacheLumpName(tls, __ccgo_ts+13646, int32(PU_LEVEL))
+	p1 = W_CacheLumpName(tls, __ccgo_ts(13640), int32(PU_LEVEL))
+	p2 = W_CacheLumpName(tls, __ccgo_ts(13646), int32(PU_LEVEL))
 	V_MarkRect(tls, 0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
 	scrolled = int32(320) - (libc.Int32FromUint32(finalecount)-int32(230))/int32(2)
 	if scrolled > int32(320) {
@@ -7108,7 +7108,7 @@ func F_BunnyScroll(tls *libc.TLS) {
 		return
 	}
 	if finalecount < uint32(1180) {
-		V_DrawPatch(tls, (libc.Int32FromInt32(SCREENWIDTH)-libc.Int32FromInt32(13)*libc.Int32FromInt32(8))/libc.Int32FromInt32(2), (libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(8)*libc.Int32FromInt32(8))/libc.Int32FromInt32(2), W_CacheLumpName(tls, __ccgo_ts+13652, int32(PU_CACHE)))
+		V_DrawPatch(tls, (libc.Int32FromInt32(SCREENWIDTH)-libc.Int32FromInt32(13)*libc.Int32FromInt32(8))/libc.Int32FromInt32(2), (libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(8)*libc.Int32FromInt32(8))/libc.Int32FromInt32(2), W_CacheLumpName(tls, __ccgo_ts(13652), int32(PU_CACHE)))
 		laststage = 0
 		return
 	}
@@ -7120,7 +7120,7 @@ func F_BunnyScroll(tls *libc.TLS) {
 		S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_pistol))
 		laststage = stage
 	}
-	libc.X__builtin_snprintf(tls, bp, uint64(10), __ccgo_ts+13657, libc.VaList(bp+24, stage))
+	libc.X__builtin_snprintf(tls, bp, uint64(10), __ccgo_ts(13657), libc.VaList(bp+24, stage))
 	V_DrawPatch(tls, (libc.Int32FromInt32(SCREENWIDTH)-libc.Int32FromInt32(13)*libc.Int32FromInt32(8))/libc.Int32FromInt32(2), (libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(8)*libc.Int32FromInt32(8))/libc.Int32FromInt32(2), W_CacheLumpName(tls, bp, int32(PU_CACHE)))
 }
 
@@ -7134,14 +7134,14 @@ func F_ArtScreenDrawer(tls *libc.TLS) {
 		switch gameepisode {
 		case int32(1):
 			if gamemode == int32(retail) {
-				lumpname = __ccgo_ts + 1911
+				lumpname = __ccgo_ts(1911)
 			} else {
-				lumpname = __ccgo_ts + 1924
+				lumpname = __ccgo_ts(1924)
 			}
 		case int32(2):
-			lumpname = __ccgo_ts + 13663
+			lumpname = __ccgo_ts(13663)
 		case int32(4):
-			lumpname = __ccgo_ts + 13672
+			lumpname = __ccgo_ts(13672)
 		default:
 			return
 		}
@@ -7877,17 +7877,17 @@ func G_DoLoadLevel(tls *libc.TLS) {
 	//  a flat. The data is in the WAD only because
 	//  we look for an actual index, instead of simply
 	//  setting one.
-	skyflatnum = R_FlatNumForName(tls, __ccgo_ts+13679)
+	skyflatnum = R_FlatNumForName(tls, __ccgo_ts(13679))
 	// The "Sky never changes in Doom II" bug was fixed in
 	// the id Anthology version of doom2.exe for Final Doom.
 	if gamemode == int32(commercial) && (gameversion == int32(exe_final2) || gameversion == int32(exe_chex)) {
 		if gamemap < int32(12) {
-			skytexturename = __ccgo_ts + 13686
+			skytexturename = __ccgo_ts(13686)
 		} else {
 			if gamemap < int32(21) {
-				skytexturename = __ccgo_ts + 13691
+				skytexturename = __ccgo_ts(13691)
 			} else {
-				skytexturename = __ccgo_ts + 13696
+				skytexturename = __ccgo_ts(13696)
 			}
 		}
 		skytexturename = skytexturename
@@ -7934,7 +7934,7 @@ func G_DoLoadLevel(tls *libc.TLS) {
 	libc.Xmemset(tls, uintptr(unsafe.Pointer(&mousearray)), 0, uint64(36))
 	libc.Xmemset(tls, uintptr(unsafe.Pointer(&joyarray)), 0, uint64(84))
 	if testcontrols != 0 {
-		players[consoleplayer].Fmessage = __ccgo_ts + 13701
+		players[consoleplayer].Fmessage = __ccgo_ts(13701)
 	}
 }
 
@@ -8126,8 +8126,8 @@ func G_Ticker(tls *libc.TLS) {
 		case int32(ga_worlddone):
 			G_DoWorldDone(tls)
 		case int32(ga_screenshot):
-			V_ScreenShot(tls, __ccgo_ts+13723)
-			players[consoleplayer].Fmessage = __ccgo_ts + 13735
+			V_ScreenShot(tls, __ccgo_ts(13723))
+			players[consoleplayer].Fmessage = __ccgo_ts(13735)
 			gameaction = int32(ga_nothing)
 		case int32(ga_nothing):
 			break
@@ -8160,13 +8160,13 @@ func G_Ticker(tls *libc.TLS) {
 				turbodetected[i] = uint32(true1)
 			}
 			if gametic&int32(31) == 0 && gametic>>int32(5)%int32(MAXPLAYERS) == i && turbodetected[i] != 0 {
-				M_snprintf(tls, uintptr(unsafe.Pointer(&turbomessage)), uint64(80), __ccgo_ts+13747, libc.VaList(bp+8, player_names[i]))
+				M_snprintf(tls, uintptr(unsafe.Pointer(&turbomessage)), uint64(80), __ccgo_ts(13747), libc.VaList(bp+8, player_names[i]))
 				players[consoleplayer].Fmessage = uintptr(unsafe.Pointer(&turbomessage))
 				turbodetected[i] = uint32(false1)
 			}
 			if netgame != 0 && !(netdemo != 0) && !(gametic%ticdup != 0) {
 				if gametic > int32(BACKUPTICS) && libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))) != libc.Int32FromUint8((*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy) {
-					I_Error(tls, __ccgo_ts+13760, libc.VaList(bp+8, libc.Int32FromUint8((*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy), libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))))))
+					I_Error(tls, __ccgo_ts(13760), libc.VaList(bp+8, libc.Int32FromUint8((*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy), libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))))))
 				}
 				if players[i].Fmo != 0 {
 					*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = libc.Uint8FromInt32((*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fx)
@@ -8198,7 +8198,7 @@ func G_Ticker(tls *libc.TLS) {
 					}
 				case int32(BTS_SAVEGAME):
 					if !(savedescription[0] != 0) {
-						M_StringCopy(tls, uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts+13798, uint64(32))
+						M_StringCopy(tls, uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(13798), uint64(32))
 					}
 					savegameslot = libc.Int32FromUint8(players[i].Fcmd.Fbuttons) & int32(BTS_SAVEMASK) >> int32(BTS_SAVESHIFT)
 					gameaction = int32(ga_savegame)
@@ -8376,7 +8376,7 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 		xa = *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(an)*4))
 		ya = finesine[an]
 	default:
-		I_Error(tls, __ccgo_ts+13807, libc.VaList(bp+8, an))
+		I_Error(tls, __ccgo_ts(13807), libc.VaList(bp+8, an))
 		v2 = libc.Int32FromInt32(0)
 		ya = v2
 		xa = v2
@@ -8401,7 +8401,7 @@ func G_DeathMatchSpawnPlayer(tls *libc.TLS, playernum int32) {
 	var i, j, selections int32
 	selections = int32((int64(deathmatch_p) - __predefined_ptrdiff_t(uintptr(unsafe.Pointer(&deathmatchstarts)))) / 10)
 	if selections < int32(4) {
-		I_Error(tls, __ccgo_ts+13841, libc.VaList(bp+8, selections))
+		I_Error(tls, __ccgo_ts(13841), libc.VaList(bp+8, selections))
 	}
 	j = 0
 	for {
@@ -8558,7 +8558,7 @@ func G_ExitLevel(tls *libc.TLS) {
 //	// Here's for the german edition.
 func G_SecretExitLevel(tls *libc.TLS) {
 	// IF NO WOLF3D LEVELS, NO SECRET EXIT!
-	if gamemode == int32(commercial) && W_CheckNumForName(tls, __ccgo_ts+13878) < 0 {
+	if gamemode == int32(commercial) && W_CheckNumForName(tls, __ccgo_ts(13878)) < 0 {
 		secretexit = uint32(false1)
 	} else {
 		secretexit = uint32(true1)
@@ -8779,7 +8779,7 @@ func G_LoadGame(tls *libc.TLS, name uintptr) {
 func G_DoLoadGame(tls *libc.TLS) {
 	var savedleveltime int32
 	gameaction = int32(ga_nothing)
-	save_stream = libc.Xfopen(tls, uintptr(unsafe.Pointer(&savename)), __ccgo_ts+13884)
+	save_stream = libc.Xfopen(tls, uintptr(unsafe.Pointer(&savename)), __ccgo_ts(13884))
 	if save_stream == libc.UintptrFromInt32(0) {
 		return
 	}
@@ -8798,7 +8798,7 @@ func G_DoLoadGame(tls *libc.TLS) {
 	P_UnArchiveThinkers(tls)
 	P_UnArchiveSpecials(tls)
 	if !(P_ReadSaveGameEOF(tls) != 0) {
-		I_Error(tls, __ccgo_ts+13887, 0)
+		I_Error(tls, __ccgo_ts(13887), 0)
 	}
 	libc.Xfclose(tls, save_stream)
 	if setsizeneeded != 0 {
@@ -8831,14 +8831,14 @@ func G_DoSaveGame(tls *libc.TLS) {
 	// and then rename it at the end if it was successfully written.
 	// This prevents an existing savegame from being overwritten by
 	// a corrupted one, or if a savegame buffer overrun occurs.
-	save_stream = libc.Xfopen(tls, temp_savegame_file, __ccgo_ts+13900)
+	save_stream = libc.Xfopen(tls, temp_savegame_file, __ccgo_ts(13900))
 	if save_stream == libc.UintptrFromInt32(0) {
 		// Failed to save the game, so we're going to have to abort. But
 		// to be nice, save to somewhere else before we call I_Error().
-		recovery_savegame_file = M_TempFile(tls, __ccgo_ts+13903)
-		save_stream = libc.Xfopen(tls, recovery_savegame_file, __ccgo_ts+13900)
+		recovery_savegame_file = M_TempFile(tls, __ccgo_ts(13903))
+		save_stream = libc.Xfopen(tls, recovery_savegame_file, __ccgo_ts(13900))
 		if save_stream == libc.UintptrFromInt32(0) {
-			I_Error(tls, __ccgo_ts+13916, libc.VaList(bp+8, temp_savegame_file, recovery_savegame_file))
+			I_Error(tls, __ccgo_ts(13916), libc.VaList(bp+8, temp_savegame_file, recovery_savegame_file))
 		}
 	}
 	savegame_error = uint32(false1)
@@ -8851,7 +8851,7 @@ func G_DoSaveGame(tls *libc.TLS) {
 	// Enforce the same savegame size limit as in Vanilla Doom,
 	// except if the vanilla_savegame_limit setting is turned off.
 	if vanilla_savegame_limit != 0 && libc.Xftell(tls, save_stream) > int64(SAVEGAMESIZE) {
-		I_Error(tls, __ccgo_ts+13970, 0)
+		I_Error(tls, __ccgo_ts(13970), 0)
 	}
 	// Finish up, close the savegame file.
 	libc.Xfclose(tls, save_stream)
@@ -8859,15 +8859,15 @@ func G_DoSaveGame(tls *libc.TLS) {
 		// We failed to save to the normal location, but we wrote a
 		// recovery file to the temp directory. Now we can bomb out
 		// with an error.
-		I_Error(tls, __ccgo_ts+13994, libc.VaList(bp+8, temp_savegame_file, recovery_savegame_file))
+		I_Error(tls, __ccgo_ts(13994), libc.VaList(bp+8, temp_savegame_file, recovery_savegame_file))
 	}
 	// Now rename the temporary savegame file to the actual savegame
 	// file, overwriting the old savegame if there was one there.
 	libc.Xremove(tls, savegame_file)
 	libc.Xrename(tls, temp_savegame_file, savegame_file)
 	gameaction = int32(ga_nothing)
-	M_StringCopy(tls, uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts+14092, uint64(32))
-	players[consoleplayer].Fmessage = __ccgo_ts + 14093
+	M_StringCopy(tls, uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(14092), uint64(32))
+	players[consoleplayer].Fmessage = __ccgo_ts(14093)
 	// draw the pattern into the back screen
 	R_FillBackScreen(tls)
 }
@@ -9027,12 +9027,12 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 	// source release, but this IS the way Vanilla DOS Doom behaves.
 	if gamemode == int32(commercial) {
 		if gamemap < int32(12) {
-			skytexturename = __ccgo_ts + 13686
+			skytexturename = __ccgo_ts(13686)
 		} else {
 			if gamemap < int32(21) {
-				skytexturename = __ccgo_ts + 13691
+				skytexturename = __ccgo_ts(13691)
 			} else {
-				skytexturename = __ccgo_ts + 13696
+				skytexturename = __ccgo_ts(13696)
 			}
 		}
 	} else {
@@ -9040,13 +9040,13 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 		default:
 			fallthrough
 		case int32(1):
-			skytexturename = __ccgo_ts + 13686
+			skytexturename = __ccgo_ts(13686)
 		case int32(2):
-			skytexturename = __ccgo_ts + 13691
+			skytexturename = __ccgo_ts(13691)
 		case int32(3):
-			skytexturename = __ccgo_ts + 13696
+			skytexturename = __ccgo_ts(13696)
 		case int32(4): // Special Edition sky
-			skytexturename = __ccgo_ts + 14105
+			skytexturename = __ccgo_ts(14105)
 			break
 		}
 	}
@@ -9167,7 +9167,7 @@ func G_RecordDemo(tls *libc.TLS, name uintptr) {
 	usergame = uint32(false1)
 	demoname_size = libc.Xstrlen(tls, name) + uint64(5)
 	demoname = Z_Malloc(tls, libc.Int32FromUint64(demoname_size), int32(PU_STATIC), libc.UintptrFromInt32(0))
-	M_snprintf(tls, demoname, demoname_size, __ccgo_ts+4481, libc.VaList(bp+8, name))
+	M_snprintf(tls, demoname, demoname_size, __ccgo_ts(4481), libc.VaList(bp+8, name))
 	maxsize = int32(0x20000)
 	//!
 	// @arg <size>
@@ -9176,7 +9176,7 @@ func G_RecordDemo(tls *libc.TLS, name uintptr) {
 	//
 	// Specify the demo buffer size (KiB)
 	//
-	i = M_CheckParmWithArgs(tls, __ccgo_ts+14110, int32(1))
+	i = M_CheckParmWithArgs(tls, __ccgo_ts(14110), int32(1))
 	if i != 0 {
 		maxsize = libc.Xatoi(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))) * int32(1024)
 	}
@@ -9191,7 +9191,7 @@ func G_RecordDemo(tls *libc.TLS, name uintptr) {
 func G_VanillaVersionCode(tls *libc.TLS) (r int32) {
 	switch gameversion {
 	case int32(exe_doom_1_2):
-		I_Error(tls, __ccgo_ts+14119, 0)
+		I_Error(tls, __ccgo_ts(14119), 0)
 		fallthrough
 	case int32(exe_doom_1_666):
 		return int32(106)
@@ -9215,7 +9215,7 @@ func G_BeginRecording(tls *libc.TLS) {
 	//
 	// Record a high resolution "Doom 1.91" demo.
 	//
-	longtics = libc.BoolUint32(M_CheckParm(tls, __ccgo_ts+5530) != 0)
+	longtics = libc.BoolUint32(M_CheckParm(tls, __ccgo_ts(5530)) != 0)
 	// If not recording a longtics demo, record in low res
 	lowres_turn = libc.BoolUint32(!(longtics != 0))
 	demo_p = demobuffer
@@ -9279,26 +9279,26 @@ func DemoVersionDescription(tls *libc.TLS, version int32) (r uintptr) {
 	bp := alloc(32)
 	switch version {
 	case int32(104):
-		return __ccgo_ts + 14158
+		return __ccgo_ts(14158)
 	case int32(105):
-		return __ccgo_ts + 14163
+		return __ccgo_ts(14163)
 	case int32(106):
-		return __ccgo_ts + 14168
+		return __ccgo_ts(14168)
 	case int32(107):
-		return __ccgo_ts + 14180
+		return __ccgo_ts(14180)
 	case int32(108):
-		return __ccgo_ts + 14191
+		return __ccgo_ts(14191)
 	case int32(109):
-		return __ccgo_ts + 14196
+		return __ccgo_ts(14196)
 	default:
 		break
 	}
 	// Unknown version.  Perhaps this is a pre-v1.4 IWAD?  If the version
 	// byte is in the range 0-4 then it can be a v1.0-v1.2 demo.
 	if version >= 0 && version <= int32(4) {
-		return __ccgo_ts + 14201
+		return __ccgo_ts(14201)
 	} else {
-		M_snprintf(tls, uintptr(unsafe.Pointer(&resultbuf)), uint64(16), __ccgo_ts+14216, libc.VaList(bp+8, version/int32(100), version%int32(100)))
+		M_snprintf(tls, uintptr(unsafe.Pointer(&resultbuf)), uint64(16), __ccgo_ts(14216), libc.VaList(bp+8, version/int32(100), version%int32(100)))
 		return uintptr(unsafe.Pointer(&resultbuf))
 	}
 	return r
@@ -9325,7 +9325,7 @@ func G_DoPlayDemo(tls *libc.TLS) {
 			// demo recorded with cph's modified "v1.91" doom exe
 			longtics = uint32(true1)
 		} else {
-			message = __ccgo_ts + 14232
+			message = __ccgo_ts(14232)
 			//I_Error(message, demoversion, G_VanillaVersionCode(),
 			libc.Xprintf(tls, message, libc.VaList(bp+8, demoversion, G_VanillaVersionCode(tls), DemoVersionDescription(tls, demoversion)))
 		}
@@ -9367,7 +9367,7 @@ func G_DoPlayDemo(tls *libc.TLS) {
 		;
 		i++
 	}
-	if playeringame[int32(1)] != 0 || M_CheckParm(tls, __ccgo_ts+5553) > 0 || M_CheckParm(tls, __ccgo_ts+14449) > 0 {
+	if playeringame[int32(1)] != 0 || M_CheckParm(tls, __ccgo_ts(5553)) > 0 || M_CheckParm(tls, __ccgo_ts(14449)) > 0 {
 		netgame = uint32(true1)
 		netdemo = uint32(true1)
 	}
@@ -9391,7 +9391,7 @@ func G_TimeDemo(tls *libc.TLS, name uintptr) {
 	//
 	// Disable rendering the screen entirely.
 	//
-	nodrawers = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts+14458))
+	nodrawers = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts(14458)))
 	timingdemo = uint32(true1)
 	singletics = uint32(true1)
 	defdemoname = name
@@ -9420,7 +9420,7 @@ func G_CheckDemoStatus(tls *libc.TLS) (r boolean) {
 		// Prevent recursive calls
 		timingdemo = uint32(false1)
 		demoplayback = uint32(false1)
-		I_Error(tls, __ccgo_ts+14466, libc.VaList(bp+8, gametic, realtics, float64(fps)))
+		I_Error(tls, __ccgo_ts(14466), libc.VaList(bp+8, gametic, realtics, float64(fps)))
 	}
 	if demoplayback != 0 {
 		W_ReleaseLumpName(tls, defdemoname)
@@ -9451,7 +9451,7 @@ func G_CheckDemoStatus(tls *libc.TLS) (r boolean) {
 		M_WriteFile(tls, demoname, demobuffer, int32(int64(demo_p)-int64(demobuffer)))
 		Z_Free(tls, demobuffer)
 		demorecording = uint32(false1)
-		I_Error(tls, __ccgo_ts+14508, libc.VaList(bp+8, demoname))
+		I_Error(tls, __ccgo_ts(14508), libc.VaList(bp+8, demoname))
 	}
 	return uint32(false1)
 }
@@ -9773,25 +9773,25 @@ const QUEUESIZE = 128
 
 func init() {
 	chat_macros = [10]uintptr{
-		0: __ccgo_ts + 14525,
-		1: __ccgo_ts + 14528,
-		2: __ccgo_ts + 14552,
-		3: __ccgo_ts + 14560,
-		4: __ccgo_ts + 14586,
-		5: __ccgo_ts + 14592,
-		6: __ccgo_ts + 14602,
-		7: __ccgo_ts + 14624,
-		8: __ccgo_ts + 14635,
-		9: __ccgo_ts + 14657,
+		0: __ccgo_ts(14525),
+		1: __ccgo_ts(14528),
+		2: __ccgo_ts(14552),
+		3: __ccgo_ts(14560),
+		4: __ccgo_ts(14586),
+		5: __ccgo_ts(14592),
+		6: __ccgo_ts(14602),
+		7: __ccgo_ts(14624),
+		8: __ccgo_ts(14635),
+		9: __ccgo_ts(14657),
 	}
 }
 
 func init() {
 	player_names = [4]uintptr{
-		0: __ccgo_ts + 14661,
-		1: __ccgo_ts + 14669,
-		2: __ccgo_ts + 14678,
-		3: __ccgo_ts + 14686,
+		0: __ccgo_ts(14661),
+		1: __ccgo_ts(14669),
+		2: __ccgo_ts(14678),
+		3: __ccgo_ts(14686),
 	}
 }
 
@@ -9812,152 +9812,152 @@ var headsupactive = uint32(false1)
 
 func init() {
 	mapnames = [45]uintptr{
-		0:  __ccgo_ts + 14692,
-		1:  __ccgo_ts + 14705,
-		2:  __ccgo_ts + 14725,
-		3:  __ccgo_ts + 14746,
-		4:  __ccgo_ts + 14768,
-		5:  __ccgo_ts + 14785,
-		6:  __ccgo_ts + 14810,
-		7:  __ccgo_ts + 14833,
-		8:  __ccgo_ts + 14854,
-		9:  __ccgo_ts + 14874,
-		10: __ccgo_ts + 14895,
-		11: __ccgo_ts + 14918,
-		12: __ccgo_ts + 14933,
-		13: __ccgo_ts + 14950,
-		14: __ccgo_ts + 14971,
-		15: __ccgo_ts + 14997,
-		16: __ccgo_ts + 15017,
-		17: __ccgo_ts + 15038,
-		18: __ccgo_ts + 15064,
-		19: __ccgo_ts + 15080,
-		20: __ccgo_ts + 15104,
-		21: __ccgo_ts + 15122,
-		22: __ccgo_ts + 15142,
-		23: __ccgo_ts + 15165,
-		24: __ccgo_ts + 15182,
-		25: __ccgo_ts + 15194,
-		26: __ccgo_ts + 15204,
-		27: __ccgo_ts + 15218,
-		28: __ccgo_ts + 15237,
-		29: __ccgo_ts + 15258,
-		30: __ccgo_ts + 15281,
-		31: __ccgo_ts + 15299,
-		32: __ccgo_ts + 15322,
-		33: __ccgo_ts + 15350,
-		34: __ccgo_ts + 15374,
-		35: __ccgo_ts + 15395,
-		36: __ccgo_ts + 15406,
-		37: __ccgo_ts + 15406,
-		38: __ccgo_ts + 15406,
-		39: __ccgo_ts + 15406,
-		40: __ccgo_ts + 15406,
-		41: __ccgo_ts + 15406,
-		42: __ccgo_ts + 15406,
-		43: __ccgo_ts + 15406,
-		44: __ccgo_ts + 15406,
+		0:  __ccgo_ts(14692),
+		1:  __ccgo_ts(14705),
+		2:  __ccgo_ts(14725),
+		3:  __ccgo_ts(14746),
+		4:  __ccgo_ts(14768),
+		5:  __ccgo_ts(14785),
+		6:  __ccgo_ts(14810),
+		7:  __ccgo_ts(14833),
+		8:  __ccgo_ts(14854),
+		9:  __ccgo_ts(14874),
+		10: __ccgo_ts(14895),
+		11: __ccgo_ts(14918),
+		12: __ccgo_ts(14933),
+		13: __ccgo_ts(14950),
+		14: __ccgo_ts(14971),
+		15: __ccgo_ts(14997),
+		16: __ccgo_ts(15017),
+		17: __ccgo_ts(15038),
+		18: __ccgo_ts(15064),
+		19: __ccgo_ts(15080),
+		20: __ccgo_ts(15104),
+		21: __ccgo_ts(15122),
+		22: __ccgo_ts(15142),
+		23: __ccgo_ts(15165),
+		24: __ccgo_ts(15182),
+		25: __ccgo_ts(15194),
+		26: __ccgo_ts(15204),
+		27: __ccgo_ts(15218),
+		28: __ccgo_ts(15237),
+		29: __ccgo_ts(15258),
+		30: __ccgo_ts(15281),
+		31: __ccgo_ts(15299),
+		32: __ccgo_ts(15322),
+		33: __ccgo_ts(15350),
+		34: __ccgo_ts(15374),
+		35: __ccgo_ts(15395),
+		36: __ccgo_ts(15406),
+		37: __ccgo_ts(15406),
+		38: __ccgo_ts(15406),
+		39: __ccgo_ts(15406),
+		40: __ccgo_ts(15406),
+		41: __ccgo_ts(15406),
+		42: __ccgo_ts(15406),
+		43: __ccgo_ts(15406),
+		44: __ccgo_ts(15406),
 	}
 }
 
 func init() {
 	mapnames_commercial = [96]uintptr{
-		0:  __ccgo_ts + 15415,
-		1:  __ccgo_ts + 15433,
-		2:  __ccgo_ts + 15453,
-		3:  __ccgo_ts + 15474,
-		4:  __ccgo_ts + 15493,
-		5:  __ccgo_ts + 15520,
-		6:  __ccgo_ts + 15541,
-		7:  __ccgo_ts + 15562,
-		8:  __ccgo_ts + 15588,
-		9:  __ccgo_ts + 15605,
-		10: __ccgo_ts + 15630,
-		11: __ccgo_ts + 15660,
-		12: __ccgo_ts + 15682,
-		13: __ccgo_ts + 15701,
-		14: __ccgo_ts + 15727,
-		15: __ccgo_ts + 15753,
-		16: __ccgo_ts + 15771,
-		17: __ccgo_ts + 15791,
-		18: __ccgo_ts + 15815,
-		19: __ccgo_ts + 15837,
-		20: __ccgo_ts + 15855,
-		21: __ccgo_ts + 15873,
-		22: __ccgo_ts + 15897,
-		23: __ccgo_ts + 15922,
-		24: __ccgo_ts + 15942,
-		25: __ccgo_ts + 15963,
-		26: __ccgo_ts + 15993,
-		27: __ccgo_ts + 16017,
-		28: __ccgo_ts + 16044,
-		29: __ccgo_ts + 16069,
-		30: __ccgo_ts + 16091,
-		31: __ccgo_ts + 16113,
-		32: __ccgo_ts + 16130,
-		33: __ccgo_ts + 16145,
-		34: __ccgo_ts + 16168,
-		35: __ccgo_ts + 16183,
-		36: __ccgo_ts + 16198,
-		37: __ccgo_ts + 16218,
-		38: __ccgo_ts + 16240,
-		39: __ccgo_ts + 16260,
-		40: __ccgo_ts + 16275,
-		41: __ccgo_ts + 16294,
-		42: __ccgo_ts + 16314,
-		43: __ccgo_ts + 16331,
-		44: __ccgo_ts + 16347,
-		45: __ccgo_ts + 16367,
-		46: __ccgo_ts + 16385,
-		47: __ccgo_ts + 16408,
-		48: __ccgo_ts + 16427,
-		49: __ccgo_ts + 16446,
-		50: __ccgo_ts + 16468,
-		51: __ccgo_ts + 16482,
-		52: __ccgo_ts + 16509,
-		53: __ccgo_ts + 16526,
-		54: __ccgo_ts + 16555,
-		55: __ccgo_ts + 16575,
-		56: __ccgo_ts + 16604,
-		57: __ccgo_ts + 16637,
-		58: __ccgo_ts + 16654,
-		59: __ccgo_ts + 16676,
-		60: __ccgo_ts + 16697,
-		61: __ccgo_ts + 16725,
-		62: __ccgo_ts + 16755,
-		63: __ccgo_ts + 16774,
-		64: __ccgo_ts + 16792,
-		65: __ccgo_ts + 16816,
-		66: __ccgo_ts + 16835,
-		67: __ccgo_ts + 16858,
-		68: __ccgo_ts + 16876,
-		69: __ccgo_ts + 16892,
-		70: __ccgo_ts + 16913,
-		71: __ccgo_ts + 16929,
-		72: __ccgo_ts + 16944,
-		73: __ccgo_ts + 16964,
-		74: __ccgo_ts + 16985,
-		75: __ccgo_ts + 17012,
-		76: __ccgo_ts + 17029,
-		77: __ccgo_ts + 17057,
-		78: __ccgo_ts + 17079,
-		79: __ccgo_ts + 17099,
-		80: __ccgo_ts + 17125,
-		81: __ccgo_ts + 17151,
-		82: __ccgo_ts + 17166,
-		83: __ccgo_ts + 17196,
-		84: __ccgo_ts + 17225,
-		85: __ccgo_ts + 17257,
-		86: __ccgo_ts + 17275,
-		87: __ccgo_ts + 17306,
-		88: __ccgo_ts + 17323,
-		89: __ccgo_ts + 17345,
-		90: __ccgo_ts + 17365,
-		91: __ccgo_ts + 17386,
-		92: __ccgo_ts + 17401,
-		93: __ccgo_ts + 17422,
-		94: __ccgo_ts + 17442,
-		95: __ccgo_ts + 17460,
+		0:  __ccgo_ts(15415),
+		1:  __ccgo_ts(15433),
+		2:  __ccgo_ts(15453),
+		3:  __ccgo_ts(15474),
+		4:  __ccgo_ts(15493),
+		5:  __ccgo_ts(15520),
+		6:  __ccgo_ts(15541),
+		7:  __ccgo_ts(15562),
+		8:  __ccgo_ts(15588),
+		9:  __ccgo_ts(15605),
+		10: __ccgo_ts(15630),
+		11: __ccgo_ts(15660),
+		12: __ccgo_ts(15682),
+		13: __ccgo_ts(15701),
+		14: __ccgo_ts(15727),
+		15: __ccgo_ts(15753),
+		16: __ccgo_ts(15771),
+		17: __ccgo_ts(15791),
+		18: __ccgo_ts(15815),
+		19: __ccgo_ts(15837),
+		20: __ccgo_ts(15855),
+		21: __ccgo_ts(15873),
+		22: __ccgo_ts(15897),
+		23: __ccgo_ts(15922),
+		24: __ccgo_ts(15942),
+		25: __ccgo_ts(15963),
+		26: __ccgo_ts(15993),
+		27: __ccgo_ts(16017),
+		28: __ccgo_ts(16044),
+		29: __ccgo_ts(16069),
+		30: __ccgo_ts(16091),
+		31: __ccgo_ts(16113),
+		32: __ccgo_ts(16130),
+		33: __ccgo_ts(16145),
+		34: __ccgo_ts(16168),
+		35: __ccgo_ts(16183),
+		36: __ccgo_ts(16198),
+		37: __ccgo_ts(16218),
+		38: __ccgo_ts(16240),
+		39: __ccgo_ts(16260),
+		40: __ccgo_ts(16275),
+		41: __ccgo_ts(16294),
+		42: __ccgo_ts(16314),
+		43: __ccgo_ts(16331),
+		44: __ccgo_ts(16347),
+		45: __ccgo_ts(16367),
+		46: __ccgo_ts(16385),
+		47: __ccgo_ts(16408),
+		48: __ccgo_ts(16427),
+		49: __ccgo_ts(16446),
+		50: __ccgo_ts(16468),
+		51: __ccgo_ts(16482),
+		52: __ccgo_ts(16509),
+		53: __ccgo_ts(16526),
+		54: __ccgo_ts(16555),
+		55: __ccgo_ts(16575),
+		56: __ccgo_ts(16604),
+		57: __ccgo_ts(16637),
+		58: __ccgo_ts(16654),
+		59: __ccgo_ts(16676),
+		60: __ccgo_ts(16697),
+		61: __ccgo_ts(16725),
+		62: __ccgo_ts(16755),
+		63: __ccgo_ts(16774),
+		64: __ccgo_ts(16792),
+		65: __ccgo_ts(16816),
+		66: __ccgo_ts(16835),
+		67: __ccgo_ts(16858),
+		68: __ccgo_ts(16876),
+		69: __ccgo_ts(16892),
+		70: __ccgo_ts(16913),
+		71: __ccgo_ts(16929),
+		72: __ccgo_ts(16944),
+		73: __ccgo_ts(16964),
+		74: __ccgo_ts(16985),
+		75: __ccgo_ts(17012),
+		76: __ccgo_ts(17029),
+		77: __ccgo_ts(17057),
+		78: __ccgo_ts(17079),
+		79: __ccgo_ts(17099),
+		80: __ccgo_ts(17125),
+		81: __ccgo_ts(17151),
+		82: __ccgo_ts(17166),
+		83: __ccgo_ts(17196),
+		84: __ccgo_ts(17225),
+		85: __ccgo_ts(17257),
+		86: __ccgo_ts(17275),
+		87: __ccgo_ts(17306),
+		88: __ccgo_ts(17323),
+		89: __ccgo_ts(17345),
+		90: __ccgo_ts(17365),
+		91: __ccgo_ts(17386),
+		92: __ccgo_ts(17401),
+		93: __ccgo_ts(17422),
+		94: __ccgo_ts(17442),
+		95: __ccgo_ts(17460),
 	}
 }
 
@@ -9973,7 +9973,7 @@ func HU_Init(tls *libc.TLS) {
 		}
 		v2 = j
 		j++
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+17480, libc.VaList(bp+24, v2))
+		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(17480), libc.VaList(bp+24, v2))
 		hu_font[i] = W_CacheLumpName(tls, bp, int32(PU_STATIC))
 		goto _1
 	_1:
@@ -10021,7 +10021,7 @@ func HU_Start(tls *libc.TLS) {
 	case int32(pack_tnt):
 		s = mapnames_commercial[gamemap-int32(1)+int32(64)]
 	default:
-		s = __ccgo_ts + 17490
+		s = __ccgo_ts(17490)
 		break
 	}
 	// Chex.exe always uses the episode 1 level title
@@ -10141,7 +10141,7 @@ var tail = int32(0)
 
 func HU_queueChatChar(tls *libc.TLS, c int8) {
 	if (head+int32(1))&(libc.Int32FromInt32(QUEUESIZE)-libc.Int32FromInt32(1)) == tail {
-		(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts + 17504
+		(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17504)
 	} else {
 		chatchars[head] = c
 		head = (head + int32(1)) & (libc.Int32FromInt32(QUEUESIZE) - libc.Int32FromInt32(1))
@@ -10219,18 +10219,18 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 								if i == consoleplayer {
 									num_nobrainers++
 									if num_nobrainers < int32(3) {
-										(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts + 17521
+										(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17521)
 									} else {
 										if num_nobrainers < int32(6) {
-											(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts + 17544
+											(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17544)
 										} else {
 											if num_nobrainers < int32(9) {
-												(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts + 17557
+												(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17557)
 											} else {
 												if num_nobrainers < int32(32) {
-													(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts + 17576
+													(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17576)
 												} else {
-													(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts + 17594
+													(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17594)
 												}
 											}
 										}
@@ -10302,144 +10302,144 @@ var num_nobrainers int32
 
 func init() {
 	sprnames = [139]uintptr{
-		0:   __ccgo_ts + 17612,
-		1:   __ccgo_ts + 17617,
-		2:   __ccgo_ts + 17622,
-		3:   __ccgo_ts + 17627,
-		4:   __ccgo_ts + 17632,
-		5:   __ccgo_ts + 17637,
-		6:   __ccgo_ts + 17642,
-		7:   __ccgo_ts + 17647,
-		8:   __ccgo_ts + 17652,
-		9:   __ccgo_ts + 17657,
-		10:  __ccgo_ts + 17662,
-		11:  __ccgo_ts + 17667,
-		12:  __ccgo_ts + 17672,
-		13:  __ccgo_ts + 17677,
-		14:  __ccgo_ts + 17682,
-		15:  __ccgo_ts + 17687,
-		16:  __ccgo_ts + 17692,
-		17:  __ccgo_ts + 17697,
-		18:  __ccgo_ts + 17702,
-		19:  __ccgo_ts + 17707,
-		20:  __ccgo_ts + 17712,
-		21:  __ccgo_ts + 17717,
-		22:  __ccgo_ts + 17722,
-		23:  __ccgo_ts + 17727,
-		24:  __ccgo_ts + 17732,
-		25:  __ccgo_ts + 17737,
-		26:  __ccgo_ts + 17742,
-		27:  __ccgo_ts + 17747,
-		28:  __ccgo_ts + 17752,
-		29:  __ccgo_ts + 17757,
-		30:  __ccgo_ts + 17762,
-		31:  __ccgo_ts + 17767,
-		32:  __ccgo_ts + 17772,
-		33:  __ccgo_ts + 17777,
-		34:  __ccgo_ts + 17782,
-		35:  __ccgo_ts + 17787,
-		36:  __ccgo_ts + 17792,
-		37:  __ccgo_ts + 17797,
-		38:  __ccgo_ts + 17802,
-		39:  __ccgo_ts + 17807,
-		40:  __ccgo_ts + 17812,
-		41:  __ccgo_ts + 17817,
-		42:  __ccgo_ts + 17822,
-		43:  __ccgo_ts + 17827,
-		44:  __ccgo_ts + 17832,
-		45:  __ccgo_ts + 17837,
-		46:  __ccgo_ts + 17842,
-		47:  __ccgo_ts + 17847,
-		48:  __ccgo_ts + 17852,
-		49:  __ccgo_ts + 17857,
-		50:  __ccgo_ts + 17862,
-		51:  __ccgo_ts + 17867,
-		52:  __ccgo_ts + 17872,
-		53:  __ccgo_ts + 17877,
-		54:  __ccgo_ts + 17882,
-		55:  __ccgo_ts + 17887,
-		56:  __ccgo_ts + 17892,
-		57:  __ccgo_ts + 17897,
-		58:  __ccgo_ts + 17902,
-		59:  __ccgo_ts + 17907,
-		60:  __ccgo_ts + 17912,
-		61:  __ccgo_ts + 17917,
-		62:  __ccgo_ts + 17922,
-		63:  __ccgo_ts + 17927,
-		64:  __ccgo_ts + 17932,
-		65:  __ccgo_ts + 17937,
-		66:  __ccgo_ts + 17942,
-		67:  __ccgo_ts + 17947,
-		68:  __ccgo_ts + 17952,
-		69:  __ccgo_ts + 17957,
-		70:  __ccgo_ts + 17962,
-		71:  __ccgo_ts + 17967,
-		72:  __ccgo_ts + 17972,
-		73:  __ccgo_ts + 17977,
-		74:  __ccgo_ts + 17982,
-		75:  __ccgo_ts + 17987,
-		76:  __ccgo_ts + 17992,
-		77:  __ccgo_ts + 17997,
-		78:  __ccgo_ts + 18002,
-		79:  __ccgo_ts + 18007,
-		80:  __ccgo_ts + 18012,
-		81:  __ccgo_ts + 18017,
-		82:  __ccgo_ts + 18022,
-		83:  __ccgo_ts + 18027,
-		84:  __ccgo_ts + 18032,
-		85:  __ccgo_ts + 18037,
-		86:  __ccgo_ts + 18042,
-		87:  __ccgo_ts + 18047,
-		88:  __ccgo_ts + 18052,
-		89:  __ccgo_ts + 18057,
-		90:  __ccgo_ts + 18062,
-		91:  __ccgo_ts + 18067,
-		92:  __ccgo_ts + 18072,
-		93:  __ccgo_ts + 18077,
-		94:  __ccgo_ts + 18082,
-		95:  __ccgo_ts + 18087,
-		96:  __ccgo_ts + 18092,
-		97:  __ccgo_ts + 18097,
-		98:  __ccgo_ts + 18102,
-		99:  __ccgo_ts + 18107,
-		100: __ccgo_ts + 18112,
-		101: __ccgo_ts + 18117,
-		102: __ccgo_ts + 18122,
-		103: __ccgo_ts + 18127,
-		104: __ccgo_ts + 18132,
-		105: __ccgo_ts + 18137,
-		106: __ccgo_ts + 18142,
-		107: __ccgo_ts + 18147,
-		108: __ccgo_ts + 18152,
-		109: __ccgo_ts + 18157,
-		110: __ccgo_ts + 18162,
-		111: __ccgo_ts + 18167,
-		112: __ccgo_ts + 18172,
-		113: __ccgo_ts + 18177,
-		114: __ccgo_ts + 18182,
-		115: __ccgo_ts + 18187,
-		116: __ccgo_ts + 18192,
-		117: __ccgo_ts + 18197,
-		118: __ccgo_ts + 18202,
-		119: __ccgo_ts + 18207,
-		120: __ccgo_ts + 18212,
-		121: __ccgo_ts + 18217,
-		122: __ccgo_ts + 18222,
-		123: __ccgo_ts + 18227,
-		124: __ccgo_ts + 18232,
-		125: __ccgo_ts + 18237,
-		126: __ccgo_ts + 18242,
-		127: __ccgo_ts + 18247,
-		128: __ccgo_ts + 18252,
-		129: __ccgo_ts + 18257,
-		130: __ccgo_ts + 18262,
-		131: __ccgo_ts + 18267,
-		132: __ccgo_ts + 18272,
-		133: __ccgo_ts + 18277,
-		134: __ccgo_ts + 18282,
-		135: __ccgo_ts + 18287,
-		136: __ccgo_ts + 18292,
-		137: __ccgo_ts + 18297,
+		0:   __ccgo_ts(17612),
+		1:   __ccgo_ts(17617),
+		2:   __ccgo_ts(17622),
+		3:   __ccgo_ts(17627),
+		4:   __ccgo_ts(17632),
+		5:   __ccgo_ts(17637),
+		6:   __ccgo_ts(17642),
+		7:   __ccgo_ts(17647),
+		8:   __ccgo_ts(17652),
+		9:   __ccgo_ts(17657),
+		10:  __ccgo_ts(17662),
+		11:  __ccgo_ts(17667),
+		12:  __ccgo_ts(17672),
+		13:  __ccgo_ts(17677),
+		14:  __ccgo_ts(17682),
+		15:  __ccgo_ts(17687),
+		16:  __ccgo_ts(17692),
+		17:  __ccgo_ts(17697),
+		18:  __ccgo_ts(17702),
+		19:  __ccgo_ts(17707),
+		20:  __ccgo_ts(17712),
+		21:  __ccgo_ts(17717),
+		22:  __ccgo_ts(17722),
+		23:  __ccgo_ts(17727),
+		24:  __ccgo_ts(17732),
+		25:  __ccgo_ts(17737),
+		26:  __ccgo_ts(17742),
+		27:  __ccgo_ts(17747),
+		28:  __ccgo_ts(17752),
+		29:  __ccgo_ts(17757),
+		30:  __ccgo_ts(17762),
+		31:  __ccgo_ts(17767),
+		32:  __ccgo_ts(17772),
+		33:  __ccgo_ts(17777),
+		34:  __ccgo_ts(17782),
+		35:  __ccgo_ts(17787),
+		36:  __ccgo_ts(17792),
+		37:  __ccgo_ts(17797),
+		38:  __ccgo_ts(17802),
+		39:  __ccgo_ts(17807),
+		40:  __ccgo_ts(17812),
+		41:  __ccgo_ts(17817),
+		42:  __ccgo_ts(17822),
+		43:  __ccgo_ts(17827),
+		44:  __ccgo_ts(17832),
+		45:  __ccgo_ts(17837),
+		46:  __ccgo_ts(17842),
+		47:  __ccgo_ts(17847),
+		48:  __ccgo_ts(17852),
+		49:  __ccgo_ts(17857),
+		50:  __ccgo_ts(17862),
+		51:  __ccgo_ts(17867),
+		52:  __ccgo_ts(17872),
+		53:  __ccgo_ts(17877),
+		54:  __ccgo_ts(17882),
+		55:  __ccgo_ts(17887),
+		56:  __ccgo_ts(17892),
+		57:  __ccgo_ts(17897),
+		58:  __ccgo_ts(17902),
+		59:  __ccgo_ts(17907),
+		60:  __ccgo_ts(17912),
+		61:  __ccgo_ts(17917),
+		62:  __ccgo_ts(17922),
+		63:  __ccgo_ts(17927),
+		64:  __ccgo_ts(17932),
+		65:  __ccgo_ts(17937),
+		66:  __ccgo_ts(17942),
+		67:  __ccgo_ts(17947),
+		68:  __ccgo_ts(17952),
+		69:  __ccgo_ts(17957),
+		70:  __ccgo_ts(17962),
+		71:  __ccgo_ts(17967),
+		72:  __ccgo_ts(17972),
+		73:  __ccgo_ts(17977),
+		74:  __ccgo_ts(17982),
+		75:  __ccgo_ts(17987),
+		76:  __ccgo_ts(17992),
+		77:  __ccgo_ts(17997),
+		78:  __ccgo_ts(18002),
+		79:  __ccgo_ts(18007),
+		80:  __ccgo_ts(18012),
+		81:  __ccgo_ts(18017),
+		82:  __ccgo_ts(18022),
+		83:  __ccgo_ts(18027),
+		84:  __ccgo_ts(18032),
+		85:  __ccgo_ts(18037),
+		86:  __ccgo_ts(18042),
+		87:  __ccgo_ts(18047),
+		88:  __ccgo_ts(18052),
+		89:  __ccgo_ts(18057),
+		90:  __ccgo_ts(18062),
+		91:  __ccgo_ts(18067),
+		92:  __ccgo_ts(18072),
+		93:  __ccgo_ts(18077),
+		94:  __ccgo_ts(18082),
+		95:  __ccgo_ts(18087),
+		96:  __ccgo_ts(18092),
+		97:  __ccgo_ts(18097),
+		98:  __ccgo_ts(18102),
+		99:  __ccgo_ts(18107),
+		100: __ccgo_ts(18112),
+		101: __ccgo_ts(18117),
+		102: __ccgo_ts(18122),
+		103: __ccgo_ts(18127),
+		104: __ccgo_ts(18132),
+		105: __ccgo_ts(18137),
+		106: __ccgo_ts(18142),
+		107: __ccgo_ts(18147),
+		108: __ccgo_ts(18152),
+		109: __ccgo_ts(18157),
+		110: __ccgo_ts(18162),
+		111: __ccgo_ts(18167),
+		112: __ccgo_ts(18172),
+		113: __ccgo_ts(18177),
+		114: __ccgo_ts(18182),
+		115: __ccgo_ts(18187),
+		116: __ccgo_ts(18192),
+		117: __ccgo_ts(18197),
+		118: __ccgo_ts(18202),
+		119: __ccgo_ts(18207),
+		120: __ccgo_ts(18212),
+		121: __ccgo_ts(18217),
+		122: __ccgo_ts(18222),
+		123: __ccgo_ts(18227),
+		124: __ccgo_ts(18232),
+		125: __ccgo_ts(18237),
+		126: __ccgo_ts(18242),
+		127: __ccgo_ts(18247),
+		128: __ccgo_ts(18252),
+		129: __ccgo_ts(18257),
+		130: __ccgo_ts(18262),
+		131: __ccgo_ts(18267),
+		132: __ccgo_ts(18272),
+		133: __ccgo_ts(18277),
+		134: __ccgo_ts(18282),
+		135: __ccgo_ts(18287),
+		136: __ccgo_ts(18292),
+		137: __ccgo_ts(18297),
 		138: libc.UintptrFromInt32(0),
 	}
 }
@@ -18095,20 +18095,20 @@ func I_InitJoystick(tls *libc.TLS) {
 func I_BindJoystickVariables(tls *libc.TLS) {
 	bp := alloc(48)
 	var i int32
-	M_BindVariable(tls, __ccgo_ts+18302, uintptr(unsafe.Pointer(&usejoystick)))
-	M_BindVariable(tls, __ccgo_ts+18315, uintptr(unsafe.Pointer(&joystick_index)))
-	M_BindVariable(tls, __ccgo_ts+18330, uintptr(unsafe.Pointer(&joystick_x_axis)))
-	M_BindVariable(tls, __ccgo_ts+18346, uintptr(unsafe.Pointer(&joystick_y_axis)))
-	M_BindVariable(tls, __ccgo_ts+18362, uintptr(unsafe.Pointer(&joystick_strafe_axis)))
-	M_BindVariable(tls, __ccgo_ts+18383, uintptr(unsafe.Pointer(&joystick_x_invert)))
-	M_BindVariable(tls, __ccgo_ts+18401, uintptr(unsafe.Pointer(&joystick_y_invert)))
-	M_BindVariable(tls, __ccgo_ts+18419, uintptr(unsafe.Pointer(&joystick_strafe_invert)))
+	M_BindVariable(tls, __ccgo_ts(18302), uintptr(unsafe.Pointer(&usejoystick)))
+	M_BindVariable(tls, __ccgo_ts(18315), uintptr(unsafe.Pointer(&joystick_index)))
+	M_BindVariable(tls, __ccgo_ts(18330), uintptr(unsafe.Pointer(&joystick_x_axis)))
+	M_BindVariable(tls, __ccgo_ts(18346), uintptr(unsafe.Pointer(&joystick_y_axis)))
+	M_BindVariable(tls, __ccgo_ts(18362), uintptr(unsafe.Pointer(&joystick_strafe_axis)))
+	M_BindVariable(tls, __ccgo_ts(18383), uintptr(unsafe.Pointer(&joystick_x_invert)))
+	M_BindVariable(tls, __ccgo_ts(18401), uintptr(unsafe.Pointer(&joystick_y_invert)))
+	M_BindVariable(tls, __ccgo_ts(18419), uintptr(unsafe.Pointer(&joystick_strafe_invert)))
 	i = 0
 	for {
 		if !(i < int32(NUM_VIRTUAL_BUTTONS)) {
 			break
 		}
-		M_snprintf(tls, bp, uint64(32), __ccgo_ts+18442, libc.VaList(bp+40, i))
+		M_snprintf(tls, bp, uint64(32), __ccgo_ts(18442), libc.VaList(bp+40, i))
 		M_BindVariable(tls, bp, uintptr(unsafe.Pointer(&joystick_physical_buttons))+uintptr(i)*4)
 		goto _1
 	_1:
@@ -18657,13 +18657,13 @@ func I_InitStretchTables(tls *libc.TLS, palette uintptr) {
 	// mix 60%  =  stretch_tables[1] used backwards
 	// mix 80%  =  stretch_tables[0] used backwards
 	// mix 100% =  just write line 2
-	libc.Xprintf(tls, __ccgo_ts+18469, 0)
+	libc.Xprintf(tls, __ccgo_ts(18469), 0)
 	libc.Xfflush(tls, libc.Xstdout)
 	stretch_tables[0] = GenerateStretchTable(tls, palette, int32(20))
-	libc.Xprintf(tls, __ccgo_ts+18517, 0)
+	libc.Xprintf(tls, __ccgo_ts(18517), 0)
 	libc.Xfflush(tls, libc.Xstdout)
 	stretch_tables[int32(1)] = GenerateStretchTable(tls, palette, int32(40))
-	libc.Xputs(tls, __ccgo_ts+14092)
+	libc.Xputs(tls, __ccgo_ts(14092))
 }
 
 // Create 50%/50% table for 800x600 squash mode
@@ -18672,10 +18672,10 @@ func I_InitSquashTable(tls *libc.TLS, palette uintptr) {
 	if half_stretch_table != libc.UintptrFromInt32(0) {
 		return
 	}
-	libc.Xprintf(tls, __ccgo_ts+18520, 0)
+	libc.Xprintf(tls, __ccgo_ts(18520), 0)
 	libc.Xfflush(tls, libc.Xstdout)
 	half_stretch_table = GenerateStretchTable(tls, palette, int32(50))
-	libc.Xputs(tls, __ccgo_ts+14092)
+	libc.Xputs(tls, __ccgo_ts(14092))
 }
 
 //
@@ -19250,7 +19250,7 @@ func I_Stretch5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 	}
 	// test hack for Porsche Monty... scan line simulation:
 	// See here: http://www.doomworld.com/vb/post/962612
-	if M_CheckParm(tls, __ccgo_ts+18664) > 0 {
+	if M_CheckParm(tls, __ccgo_ts(18664)) > 0 {
 		screenp = dest_buffer + uintptr(int32(2)*dest_pitch)
 		y = 0
 		for {
@@ -20106,7 +20106,7 @@ func init() {
 }
 
 func init() {
-	snd_musiccmd = __ccgo_ts + 14092
+	snd_musiccmd = __ccgo_ts(14092)
 }
 
 // Low-level sound and music modules we are using
@@ -20200,19 +20200,19 @@ func I_InitSound(tls *libc.TLS, use_sfx_prefix boolean) {
 	//
 	// Disable all sound output.
 	//
-	nosound = libc.BoolUint32(M_CheckParm(tls, __ccgo_ts+18674) > 0)
+	nosound = libc.BoolUint32(M_CheckParm(tls, __ccgo_ts(18674)) > 0)
 	//!
 	// @vanilla
 	//
 	// Disable sound effects.
 	//
-	nosfx = libc.BoolUint32(M_CheckParm(tls, __ccgo_ts+18683) > 0)
+	nosfx = libc.BoolUint32(M_CheckParm(tls, __ccgo_ts(18683)) > 0)
 	//!
 	// @vanilla
 	//
 	// Disable music.
 	//
-	nomusic = libc.BoolUint32(M_CheckParm(tls, __ccgo_ts+18690) > 0)
+	nomusic = libc.BoolUint32(M_CheckParm(tls, __ccgo_ts(18690)) > 0)
 	// Initialize the sound and music subsystems.
 	if !(nosound != 0) && !(screensaver_mode != 0) {
 		// This is kind of a hack. If native MIDI is enabled, set up
@@ -20373,16 +20373,16 @@ func I_StopSong(tls *libc.TLS) {
 }
 
 func I_BindSoundVariables(tls *libc.TLS) {
-	M_BindVariable(tls, __ccgo_ts+18699, uintptr(unsafe.Pointer(&snd_musicdevice)))
-	M_BindVariable(tls, __ccgo_ts+18715, uintptr(unsafe.Pointer(&snd_sfxdevice)))
-	M_BindVariable(tls, __ccgo_ts+18729, uintptr(unsafe.Pointer(&snd_sbport)))
-	M_BindVariable(tls, __ccgo_ts+18740, uintptr(unsafe.Pointer(&snd_sbirq)))
-	M_BindVariable(tls, __ccgo_ts+18750, uintptr(unsafe.Pointer(&snd_sbdma)))
-	M_BindVariable(tls, __ccgo_ts+18760, uintptr(unsafe.Pointer(&snd_mport)))
-	M_BindVariable(tls, __ccgo_ts+18770, uintptr(unsafe.Pointer(&snd_maxslicetime_ms)))
-	M_BindVariable(tls, __ccgo_ts+18790, uintptr(unsafe.Pointer(&snd_musiccmd)))
-	M_BindVariable(tls, __ccgo_ts+18803, uintptr(unsafe.Pointer(&snd_samplerate)))
-	M_BindVariable(tls, __ccgo_ts+18818, uintptr(unsafe.Pointer(&snd_cachesize)))
+	M_BindVariable(tls, __ccgo_ts(18699), uintptr(unsafe.Pointer(&snd_musicdevice)))
+	M_BindVariable(tls, __ccgo_ts(18715), uintptr(unsafe.Pointer(&snd_sfxdevice)))
+	M_BindVariable(tls, __ccgo_ts(18729), uintptr(unsafe.Pointer(&snd_sbport)))
+	M_BindVariable(tls, __ccgo_ts(18740), uintptr(unsafe.Pointer(&snd_sbirq)))
+	M_BindVariable(tls, __ccgo_ts(18750), uintptr(unsafe.Pointer(&snd_sbdma)))
+	M_BindVariable(tls, __ccgo_ts(18760), uintptr(unsafe.Pointer(&snd_mport)))
+	M_BindVariable(tls, __ccgo_ts(18770), uintptr(unsafe.Pointer(&snd_maxslicetime_ms)))
+	M_BindVariable(tls, __ccgo_ts(18790), uintptr(unsafe.Pointer(&snd_musiccmd)))
+	M_BindVariable(tls, __ccgo_ts(18803), uintptr(unsafe.Pointer(&snd_samplerate)))
+	M_BindVariable(tls, __ccgo_ts(18818), uintptr(unsafe.Pointer(&snd_cachesize)))
 	// Before SDL_mixer version 1.2.11, MIDI music caused the game
 	// to crash when it looped.  If this is an old SDL_mixer version,
 	// disable MIDI.
@@ -20434,7 +20434,7 @@ func AutoAllocMemory(tls *libc.TLS, size uintptr, default_ram int32, min_ram int
 	for zonemem == libc.UintptrFromInt32(0) {
 		// We need a reasonable minimum amount of RAM to start.
 		if default_ram < min_ram {
-			I_Error(tls, __ccgo_ts+18832, libc.VaList(bp+8, default_ram))
+			I_Error(tls, __ccgo_ts(18832), libc.VaList(bp+8, default_ram))
 		}
 		// Try to allocate the zone memory.
 		*(*int32)(unsafe.Pointer(size)) = default_ram * int32(1024) * int32(1024)
@@ -20457,7 +20457,7 @@ func I_ZoneBase(tls *libc.TLS, size uintptr) (r uintptr) {
 	//
 	// Specify the heap size, in MiB (default 16).
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts+18874, int32(1))
+	p = M_CheckParmWithArgs(tls, __ccgo_ts(18874), int32(1))
 	if p > 0 {
 		default_ram = libc.Xatoi(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		min_ram = default_ram
@@ -20466,7 +20466,7 @@ func I_ZoneBase(tls *libc.TLS, size uintptr) (r uintptr) {
 		min_ram = int32(MIN_RAM)
 	}
 	zonemem = AutoAllocMemory(tls, size, default_ram, min_ram)
-	libc.Xprintf(tls, __ccgo_ts+18878, libc.VaList(bp+8, zonemem, *(*int32)(unsafe.Pointer(size))))
+	libc.Xprintf(tls, __ccgo_ts(18878), libc.VaList(bp+8, zonemem, *(*int32)(unsafe.Pointer(size))))
 	return zonemem
 }
 
@@ -20507,7 +20507,7 @@ func I_PrintStartupBanner(tls *libc.TLS, gamedescription uintptr) {
 	I_PrintDivider(tls)
 	I_PrintBanner(tls, gamedescription)
 	I_PrintDivider(tls)
-	libc.Xprintf(tls, __ccgo_ts+18918, 0)
+	libc.Xprintf(tls, __ccgo_ts(18918), 0)
 	I_PrintDivider(tls)
 }
 
@@ -20556,7 +20556,7 @@ func I_Quit(tls *libc.TLS) {
 // returns non-zero if zenity is available
 
 func ZenityAvailable(tls *libc.TLS) (r int32) {
-	return libc.BoolInt32(libc.Xsystem(tls, __ccgo_ts+19197) == 0)
+	return libc.BoolInt32(libc.Xsystem(tls, __ccgo_ts(19197)) == 0)
 }
 
 // Escape special characters in the given string so that they can be
@@ -20582,7 +20582,7 @@ func EscapeShellString(tls *libc.TLS, string1 uintptr) (r1 uintptr) {
 		//   of $, `, \, and, when history expansion is enabled, !."
 		//
 		// Therefore, escape these characters by prefixing with a backslash.
-		if libc.Xstrchr(tls, __ccgo_ts+19236, int32(*(*int8)(unsafe.Pointer(s)))) != libc.UintptrFromInt32(0) {
+		if libc.Xstrchr(tls, __ccgo_ts(19236), int32(*(*int8)(unsafe.Pointer(s)))) != libc.UintptrFromInt32(0) {
 			*(*int8)(unsafe.Pointer(r)) = int8('\\')
 			r++
 		}
@@ -20610,9 +20610,9 @@ func ZenityErrorBox(tls *libc.TLS, message uintptr) (r int32) {
 		return 0
 	}
 	escaped_message = EscapeShellString(tls, message)
-	errorboxpath_size = libc.Xstrlen(tls, __ccgo_ts+19241) + libc.Xstrlen(tls, escaped_message) + uint64(19)
+	errorboxpath_size = libc.Xstrlen(tls, __ccgo_ts(19241)) + libc.Xstrlen(tls, escaped_message) + uint64(19)
 	errorboxpath = libc.Xmalloc(tls, errorboxpath_size)
-	M_snprintf(tls, errorboxpath, errorboxpath_size, __ccgo_ts+19257, libc.VaList(bp+8, __ccgo_ts+19241, escaped_message))
+	M_snprintf(tls, errorboxpath, errorboxpath_size, __ccgo_ts(19257), libc.VaList(bp+8, __ccgo_ts(19241), escaped_message))
 	result = libc.Xsystem(tls, errorboxpath)
 	libc.Xfree(tls, errorboxpath)
 	libc.Xfree(tls, escaped_message)
@@ -20633,7 +20633,7 @@ func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
 	var entry uintptr
 	var exit_gui_popup boolean
 	if already_quitting != 0 {
-		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+19278, 0)
+		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(19278), 0)
 	} else {
 		already_quitting = uint32(true1)
 	}
@@ -20641,7 +20641,7 @@ func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
 	argptr = va
 	//fprintf(stderr, "\nError: ");
 	libc.Xvfprintf(tls, libc.Xstderr, error1, argptr)
-	libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+19324, 0)
+	libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(19324), 0)
 	libc.Xfflush(tls, libc.Xstderr)
 	// Write a copy of the message into buffer.
 	argptr = va
@@ -20655,7 +20655,7 @@ func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
 		}
 		entry = (*atexit_listentry_t)(unsafe.Pointer(entry)).Fnext
 	}
-	exit_gui_popup = libc.BoolUint32(!(M_ParmExists(tls, __ccgo_ts+19327) != 0))
+	exit_gui_popup = libc.BoolUint32(!(M_ParmExists(tls, __ccgo_ts(19327)) != 0))
 	// Pop up a GUI dialog box to show the error message, if the
 	// game was not run from the console (and the user will
 	// therefore be unable to otherwise see the message).
@@ -20725,15 +20725,15 @@ func I_GetMemoryValue(tls *libc.TLS, offset uint32, value uintptr, size int32) (
 		// emulation.  Supported versions are: dos622, dos71, dosbox.
 		// The default is to emulate DOS 7.1 (Windows 98).
 		//
-		p = M_CheckParmWithArgs(tls, __ccgo_ts+19334, int32(1))
+		p = M_CheckParmWithArgs(tls, __ccgo_ts(19334), int32(1))
 		if p > 0 {
-			if !(libc.Xstrcasecmp(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts+19342) != 0) {
+			if !(libc.Xstrcasecmp(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19342)) != 0) {
 				dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dos622))
 			}
-			if !(libc.Xstrcasecmp(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts+19349) != 0) {
+			if !(libc.Xstrcasecmp(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19349)) != 0) {
 				dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_win98))
 			} else {
-				if !(libc.Xstrcasecmp(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts+19355) != 0) {
+				if !(libc.Xstrcasecmp(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19355)) != 0) {
 					dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dosbox))
 				} else {
 					i = 0
@@ -21007,278 +21007,278 @@ type default_collection_t = struct {
 
 var doom_defaults_list = [76]default_t{
 	0: {
-		Fname: __ccgo_ts + 1506,
+		Fname: __ccgo_ts(1506),
 	},
 	1: {
-		Fname: __ccgo_ts + 1524,
+		Fname: __ccgo_ts(1524),
 	},
 	2: {
-		Fname: __ccgo_ts + 1535,
+		Fname: __ccgo_ts(1535),
 	},
 	3: {
-		Fname: __ccgo_ts + 19402,
+		Fname: __ccgo_ts(19402),
 	},
 	4: {
-		Fname: __ccgo_ts + 19412,
+		Fname: __ccgo_ts(19412),
 	},
 	5: {
-		Fname: __ccgo_ts + 1548,
+		Fname: __ccgo_ts(1548),
 	},
 	6: {
-		Fname:  __ccgo_ts + 19425,
+		Fname:  __ccgo_ts(19425),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	7: {
-		Fname:  __ccgo_ts + 19435,
+		Fname:  __ccgo_ts(19435),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	8: {
-		Fname:  __ccgo_ts + 19444,
+		Fname:  __ccgo_ts(19444),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	9: {
-		Fname:  __ccgo_ts + 19451,
+		Fname:  __ccgo_ts(19451),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	10: {
-		Fname:  __ccgo_ts + 19460,
+		Fname:  __ccgo_ts(19460),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	11: {
-		Fname:  __ccgo_ts + 19475,
+		Fname:  __ccgo_ts(19475),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	12: {
-		Fname:  __ccgo_ts + 19491,
+		Fname:  __ccgo_ts(19491),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	13: {
-		Fname:  __ccgo_ts + 19505,
+		Fname:  __ccgo_ts(19505),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	14: {
-		Fname:  __ccgo_ts + 19514,
+		Fname:  __ccgo_ts(19514),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	15: {
-		Fname:  __ccgo_ts + 19524,
+		Fname:  __ccgo_ts(19524),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	16: {
-		Fname:  __ccgo_ts + 19536,
+		Fname:  __ccgo_ts(19536),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	17: {
-		Fname:  __ccgo_ts + 19550,
+		Fname:  __ccgo_ts(19550),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	18: {
-		Fname:  __ccgo_ts + 19561,
+		Fname:  __ccgo_ts(19561),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	19: {
-		Fname:  __ccgo_ts + 19574,
+		Fname:  __ccgo_ts(19574),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	20: {
-		Fname:  __ccgo_ts + 19589,
+		Fname:  __ccgo_ts(19589),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	21: {
-		Fname:  __ccgo_ts + 19602,
+		Fname:  __ccgo_ts(19602),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	22: {
-		Fname:  __ccgo_ts + 19614,
+		Fname:  __ccgo_ts(19614),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	23: {
-		Fname:  __ccgo_ts + 19625,
+		Fname:  __ccgo_ts(19625),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	24: {
-		Fname:  __ccgo_ts + 19636,
+		Fname:  __ccgo_ts(19636),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	25: {
-		Fname:  __ccgo_ts + 19648,
+		Fname:  __ccgo_ts(19648),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	26: {
-		Fname:  __ccgo_ts + 19659,
+		Fname:  __ccgo_ts(19659),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	27: {
-		Fname:  __ccgo_ts + 19671,
+		Fname:  __ccgo_ts(19671),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	28: {
-		Fname:  __ccgo_ts + 19684,
+		Fname:  __ccgo_ts(19684),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	29: {
-		Fname:  __ccgo_ts + 19696,
+		Fname:  __ccgo_ts(19696),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	30: {
-		Fname:  __ccgo_ts + 19709,
+		Fname:  __ccgo_ts(19709),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	31: {
-		Fname:  __ccgo_ts + 19725,
+		Fname:  __ccgo_ts(19725),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	32: {
-		Fname:  __ccgo_ts + 19736,
+		Fname:  __ccgo_ts(19736),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	33: {
-		Fname:  __ccgo_ts + 19748,
+		Fname:  __ccgo_ts(19748),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	34: {
-		Fname:  __ccgo_ts + 19759,
+		Fname:  __ccgo_ts(19759),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	35: {
-		Fname:  __ccgo_ts + 19772,
+		Fname:  __ccgo_ts(19772),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	36: {
-		Fname:  __ccgo_ts + 19781,
+		Fname:  __ccgo_ts(19781),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	37: {
-		Fname:  __ccgo_ts + 19789,
+		Fname:  __ccgo_ts(19789),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	38: {
-		Fname:  __ccgo_ts + 19800,
+		Fname:  __ccgo_ts(19800),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	39: {
-		Fname: __ccgo_ts + 19810,
+		Fname: __ccgo_ts(19810),
 	},
 	40: {
-		Fname: __ccgo_ts + 19820,
+		Fname: __ccgo_ts(19820),
 	},
 	41: {
-		Fname: __ccgo_ts + 19832,
+		Fname: __ccgo_ts(19832),
 	},
 	42: {
-		Fname: __ccgo_ts + 19846,
+		Fname: __ccgo_ts(19846),
 	},
 	43: {
-		Fname: __ccgo_ts + 19861,
+		Fname: __ccgo_ts(19861),
 	},
 	44: {
-		Fname: __ccgo_ts + 18302,
+		Fname: __ccgo_ts(18302),
 	},
 	45: {
-		Fname: __ccgo_ts + 19873,
+		Fname: __ccgo_ts(19873),
 	},
 	46: {
-		Fname: __ccgo_ts + 19883,
+		Fname: __ccgo_ts(19883),
 	},
 	47: {
-		Fname: __ccgo_ts + 19895,
+		Fname: __ccgo_ts(19895),
 	},
 	48: {
-		Fname: __ccgo_ts + 19904,
+		Fname: __ccgo_ts(19904),
 	},
 	49: {
-		Fname: __ccgo_ts + 19915,
+		Fname: __ccgo_ts(19915),
 	},
 	50: {
-		Fname: __ccgo_ts + 1562,
+		Fname: __ccgo_ts(1562),
 	},
 	51: {
-		Fname: __ccgo_ts + 19925,
+		Fname: __ccgo_ts(19925),
 	},
 	52: {
-		Fname: __ccgo_ts + 1575,
+		Fname: __ccgo_ts(1575),
 	},
 	53: {
-		Fname: __ccgo_ts + 1587,
+		Fname: __ccgo_ts(1587),
 	},
 	54: {
-		Fname: __ccgo_ts + 18699,
+		Fname: __ccgo_ts(18699),
 	},
 	55: {
-		Fname: __ccgo_ts + 18715,
+		Fname: __ccgo_ts(18715),
 	},
 	56: {
-		Fname: __ccgo_ts + 18729,
+		Fname: __ccgo_ts(18729),
 	},
 	57: {
-		Fname: __ccgo_ts + 18740,
+		Fname: __ccgo_ts(18740),
 	},
 	58: {
-		Fname: __ccgo_ts + 18750,
+		Fname: __ccgo_ts(18750),
 	},
 	59: {
-		Fname: __ccgo_ts + 18760,
+		Fname: __ccgo_ts(18760),
 	},
 	60: {
-		Fname: __ccgo_ts + 19936,
+		Fname: __ccgo_ts(19936),
 	},
 	61: {
-		Fname:  __ccgo_ts + 19945,
+		Fname:  __ccgo_ts(19945),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	62: {
-		Fname: __ccgo_ts + 19953,
+		Fname: __ccgo_ts(19953),
 	},
 	63: {
-		Fname:  __ccgo_ts + 19964,
+		Fname:  __ccgo_ts(19964),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	64: {
-		Fname:  __ccgo_ts + 19974,
+		Fname:  __ccgo_ts(19974),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	65: {
-		Fname:  __ccgo_ts + 19983,
+		Fname:  __ccgo_ts(19983),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	66: {
-		Fname:  __ccgo_ts + 19994,
+		Fname:  __ccgo_ts(19994),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	67: {
-		Fname:  __ccgo_ts + 20005,
+		Fname:  __ccgo_ts(20005),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	68: {
-		Fname:  __ccgo_ts + 20016,
+		Fname:  __ccgo_ts(20016),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	69: {
-		Fname:  __ccgo_ts + 20027,
+		Fname:  __ccgo_ts(20027),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	70: {
-		Fname:  __ccgo_ts + 20038,
+		Fname:  __ccgo_ts(20038),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	71: {
-		Fname:  __ccgo_ts + 20049,
+		Fname:  __ccgo_ts(20049),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	72: {
-		Fname:  __ccgo_ts + 20060,
+		Fname:  __ccgo_ts(20060),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	73: {
-		Fname:  __ccgo_ts + 20071,
+		Fname:  __ccgo_ts(20071),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	74: {
-		Fname:  __ccgo_ts + 20082,
+		Fname:  __ccgo_ts(20082),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	75: {
-		Fname: __ccgo_ts + 20093,
+		Fname: __ccgo_ts(20093),
 	},
 }
 
@@ -21291,431 +21291,431 @@ var doom_defaults = default_collection_t{
 
 var extra_defaults_list = [119]default_t{
 	0: {
-		Fname: __ccgo_ts + 20101,
+		Fname: __ccgo_ts(20101),
 	},
 	1: {
-		Fname: __ccgo_ts + 20119,
+		Fname: __ccgo_ts(20119),
 	},
 	2: {
-		Fname: __ccgo_ts + 20145,
+		Fname: __ccgo_ts(20145),
 	},
 	3: {
-		Fname: __ccgo_ts + 20156,
+		Fname: __ccgo_ts(20156),
 	},
 	4: {
-		Fname: __ccgo_ts + 20177,
+		Fname: __ccgo_ts(20177),
 	},
 	5: {
-		Fname: __ccgo_ts + 20191,
+		Fname: __ccgo_ts(20191),
 	},
 	6: {
-		Fname: __ccgo_ts + 20204,
+		Fname: __ccgo_ts(20204),
 	},
 	7: {
-		Fname: __ccgo_ts + 20218,
+		Fname: __ccgo_ts(20218),
 	},
 	8: {
-		Fname: __ccgo_ts + 20229,
+		Fname: __ccgo_ts(20229),
 	},
 	9: {
-		Fname: __ccgo_ts + 20239,
+		Fname: __ccgo_ts(20239),
 	},
 	10: {
-		Fname:  __ccgo_ts + 20246,
+		Fname:  __ccgo_ts(20246),
 		Ftype1: int32(DEFAULT_FLOAT),
 	},
 	11: {
-		Fname: __ccgo_ts + 20265,
+		Fname: __ccgo_ts(20265),
 	},
 	12: {
-		Fname: __ccgo_ts + 18803,
+		Fname: __ccgo_ts(18803),
 	},
 	13: {
-		Fname: __ccgo_ts + 18818,
+		Fname: __ccgo_ts(18818),
 	},
 	14: {
-		Fname: __ccgo_ts + 18770,
+		Fname: __ccgo_ts(18770),
 	},
 	15: {
-		Fname:  __ccgo_ts + 18790,
+		Fname:  __ccgo_ts(18790),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	16: {
-		Fname:  __ccgo_ts + 20281,
+		Fname:  __ccgo_ts(20281),
 		Ftype1: int32(DEFAULT_INT_HEX),
 	},
 	17: {
-		Fname: __ccgo_ts + 1642,
+		Fname: __ccgo_ts(1642),
 	},
 	18: {
-		Fname: __ccgo_ts + 20293,
+		Fname: __ccgo_ts(20293),
 	},
 	19: {
-		Fname: __ccgo_ts + 1600,
+		Fname: __ccgo_ts(1600),
 	},
 	20: {
-		Fname: __ccgo_ts + 1623,
+		Fname: __ccgo_ts(1623),
 	},
 	21: {
-		Fname: __ccgo_ts + 20309,
+		Fname: __ccgo_ts(20309),
 	},
 	22: {
-		Fname:  __ccgo_ts + 20334,
+		Fname:  __ccgo_ts(20334),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	23: {
-		Fname:  __ccgo_ts + 20347,
+		Fname:  __ccgo_ts(20347),
 		Ftype1: int32(DEFAULT_STRING),
 	},
 	24: {
-		Fname: __ccgo_ts + 18315,
+		Fname: __ccgo_ts(18315),
 	},
 	25: {
-		Fname: __ccgo_ts + 18330,
+		Fname: __ccgo_ts(18330),
 	},
 	26: {
-		Fname: __ccgo_ts + 18383,
+		Fname: __ccgo_ts(18383),
 	},
 	27: {
-		Fname: __ccgo_ts + 18346,
+		Fname: __ccgo_ts(18346),
 	},
 	28: {
-		Fname: __ccgo_ts + 18401,
+		Fname: __ccgo_ts(18401),
 	},
 	29: {
-		Fname: __ccgo_ts + 18362,
+		Fname: __ccgo_ts(18362),
 	},
 	30: {
-		Fname: __ccgo_ts + 18419,
+		Fname: __ccgo_ts(18419),
 	},
 	31: {
-		Fname: __ccgo_ts + 20363,
+		Fname: __ccgo_ts(20363),
 	},
 	32: {
-		Fname: __ccgo_ts + 20389,
+		Fname: __ccgo_ts(20389),
 	},
 	33: {
-		Fname: __ccgo_ts + 20415,
+		Fname: __ccgo_ts(20415),
 	},
 	34: {
-		Fname: __ccgo_ts + 20441,
+		Fname: __ccgo_ts(20441),
 	},
 	35: {
-		Fname: __ccgo_ts + 20467,
+		Fname: __ccgo_ts(20467),
 	},
 	36: {
-		Fname: __ccgo_ts + 20493,
+		Fname: __ccgo_ts(20493),
 	},
 	37: {
-		Fname: __ccgo_ts + 20519,
+		Fname: __ccgo_ts(20519),
 	},
 	38: {
-		Fname: __ccgo_ts + 20545,
+		Fname: __ccgo_ts(20545),
 	},
 	39: {
-		Fname: __ccgo_ts + 20571,
+		Fname: __ccgo_ts(20571),
 	},
 	40: {
-		Fname: __ccgo_ts + 20597,
+		Fname: __ccgo_ts(20597),
 	},
 	41: {
-		Fname: __ccgo_ts + 20623,
+		Fname: __ccgo_ts(20623),
 	},
 	42: {
-		Fname: __ccgo_ts + 20639,
+		Fname: __ccgo_ts(20639),
 	},
 	43: {
-		Fname: __ccgo_ts + 20656,
+		Fname: __ccgo_ts(20656),
 	},
 	44: {
-		Fname: __ccgo_ts + 20675,
+		Fname: __ccgo_ts(20675),
 	},
 	45: {
-		Fname: __ccgo_ts + 20691,
+		Fname: __ccgo_ts(20691),
 	},
 	46: {
-		Fname: __ccgo_ts + 20707,
+		Fname: __ccgo_ts(20707),
 	},
 	47: {
-		Fname: __ccgo_ts + 20725,
+		Fname: __ccgo_ts(20725),
 	},
 	48: {
-		Fname: __ccgo_ts + 20744,
+		Fname: __ccgo_ts(20744),
 	},
 	49: {
-		Fname: __ccgo_ts + 20755,
+		Fname: __ccgo_ts(20755),
 	},
 	50: {
-		Fname: __ccgo_ts + 20771,
+		Fname: __ccgo_ts(20771),
 	},
 	51: {
-		Fname: __ccgo_ts + 20789,
+		Fname: __ccgo_ts(20789),
 	},
 	52: {
-		Fname: __ccgo_ts + 20807,
+		Fname: __ccgo_ts(20807),
 	},
 	53: {
-		Fname:  __ccgo_ts + 20818,
+		Fname:  __ccgo_ts(20818),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	54: {
-		Fname:  __ccgo_ts + 20828,
+		Fname:  __ccgo_ts(20828),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	55: {
-		Fname:  __ccgo_ts + 20846,
+		Fname:  __ccgo_ts(20846),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	56: {
-		Fname:  __ccgo_ts + 20858,
+		Fname:  __ccgo_ts(20858),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	57: {
-		Fname:  __ccgo_ts + 20872,
+		Fname:  __ccgo_ts(20872),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	58: {
-		Fname:  __ccgo_ts + 20886,
+		Fname:  __ccgo_ts(20886),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	59: {
-		Fname:  __ccgo_ts + 20901,
+		Fname:  __ccgo_ts(20901),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	60: {
-		Fname:  __ccgo_ts + 20915,
+		Fname:  __ccgo_ts(20915),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	61: {
-		Fname:  __ccgo_ts + 20932,
+		Fname:  __ccgo_ts(20932),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	62: {
-		Fname:  __ccgo_ts + 20949,
+		Fname:  __ccgo_ts(20949),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	63: {
-		Fname:  __ccgo_ts + 20964,
+		Fname:  __ccgo_ts(20964),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	64: {
-		Fname:  __ccgo_ts + 20978,
+		Fname:  __ccgo_ts(20978),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	65: {
-		Fname:  __ccgo_ts + 20992,
+		Fname:  __ccgo_ts(20992),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	66: {
-		Fname:  __ccgo_ts + 21006,
+		Fname:  __ccgo_ts(21006),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	67: {
-		Fname:  __ccgo_ts + 21022,
+		Fname:  __ccgo_ts(21022),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	68: {
-		Fname:  __ccgo_ts + 21038,
+		Fname:  __ccgo_ts(21038),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	69: {
-		Fname:  __ccgo_ts + 21053,
+		Fname:  __ccgo_ts(21053),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	70: {
-		Fname:  __ccgo_ts + 21070,
+		Fname:  __ccgo_ts(21070),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	71: {
-		Fname:  __ccgo_ts + 21088,
+		Fname:  __ccgo_ts(21088),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	72: {
-		Fname:  __ccgo_ts + 21103,
+		Fname:  __ccgo_ts(21103),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	73: {
-		Fname:  __ccgo_ts + 21117,
+		Fname:  __ccgo_ts(21117),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	74: {
-		Fname:  __ccgo_ts + 21132,
+		Fname:  __ccgo_ts(21132),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	75: {
-		Fname:  __ccgo_ts + 21140,
+		Fname:  __ccgo_ts(21140),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	76: {
-		Fname:  __ccgo_ts + 21159,
+		Fname:  __ccgo_ts(21159),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	77: {
-		Fname:  __ccgo_ts + 21178,
+		Fname:  __ccgo_ts(21178),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	78: {
-		Fname:  __ccgo_ts + 21198,
+		Fname:  __ccgo_ts(21198),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	79: {
-		Fname:  __ccgo_ts + 21213,
+		Fname:  __ccgo_ts(21213),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	80: {
-		Fname:  __ccgo_ts + 21227,
+		Fname:  __ccgo_ts(21227),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	81: {
-		Fname:  __ccgo_ts + 21241,
+		Fname:  __ccgo_ts(21241),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	82: {
-		Fname:  __ccgo_ts + 21254,
+		Fname:  __ccgo_ts(21254),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	83: {
-		Fname:  __ccgo_ts + 21267,
+		Fname:  __ccgo_ts(21267),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	84: {
-		Fname:  __ccgo_ts + 21282,
+		Fname:  __ccgo_ts(21282),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	85: {
-		Fname:  __ccgo_ts + 21298,
+		Fname:  __ccgo_ts(21298),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	86: {
-		Fname:  __ccgo_ts + 21314,
+		Fname:  __ccgo_ts(21314),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	87: {
-		Fname:  __ccgo_ts + 21329,
+		Fname:  __ccgo_ts(21329),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	88: {
-		Fname:  __ccgo_ts + 21342,
+		Fname:  __ccgo_ts(21342),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	89: {
-		Fname:  __ccgo_ts + 21355,
+		Fname:  __ccgo_ts(21355),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	90: {
-		Fname:  __ccgo_ts + 21373,
+		Fname:  __ccgo_ts(21373),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	91: {
-		Fname:  __ccgo_ts + 21385,
+		Fname:  __ccgo_ts(21385),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	92: {
-		Fname:  __ccgo_ts + 21397,
+		Fname:  __ccgo_ts(21397),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	93: {
-		Fname:  __ccgo_ts + 21409,
+		Fname:  __ccgo_ts(21409),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	94: {
-		Fname:  __ccgo_ts + 21421,
+		Fname:  __ccgo_ts(21421),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	95: {
-		Fname:  __ccgo_ts + 21433,
+		Fname:  __ccgo_ts(21433),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	96: {
-		Fname:  __ccgo_ts + 21445,
+		Fname:  __ccgo_ts(21445),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	97: {
-		Fname:  __ccgo_ts + 21457,
+		Fname:  __ccgo_ts(21457),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	98: {
-		Fname:  __ccgo_ts + 21469,
+		Fname:  __ccgo_ts(21469),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	99: {
-		Fname:  __ccgo_ts + 21484,
+		Fname:  __ccgo_ts(21484),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	100: {
-		Fname:  __ccgo_ts + 21499,
+		Fname:  __ccgo_ts(21499),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	101: {
-		Fname:  __ccgo_ts + 21512,
+		Fname:  __ccgo_ts(21512),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	102: {
-		Fname:  __ccgo_ts + 21528,
+		Fname:  __ccgo_ts(21528),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	103: {
-		Fname:  __ccgo_ts + 21547,
+		Fname:  __ccgo_ts(21547),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	104: {
-		Fname:  __ccgo_ts + 21568,
+		Fname:  __ccgo_ts(21568),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	105: {
-		Fname:  __ccgo_ts + 21586,
+		Fname:  __ccgo_ts(21586),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	106: {
-		Fname:  __ccgo_ts + 21609,
+		Fname:  __ccgo_ts(21609),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	107: {
-		Fname:  __ccgo_ts + 21622,
+		Fname:  __ccgo_ts(21622),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	108: {
-		Fname:  __ccgo_ts + 21647,
+		Fname:  __ccgo_ts(21647),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	109: {
-		Fname:  __ccgo_ts + 21667,
+		Fname:  __ccgo_ts(21667),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	110: {
-		Fname:  __ccgo_ts + 21681,
+		Fname:  __ccgo_ts(21681),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	111: {
-		Fname:  __ccgo_ts + 21695,
+		Fname:  __ccgo_ts(21695),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	112: {
-		Fname:  __ccgo_ts + 21716,
+		Fname:  __ccgo_ts(21716),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	113: {
-		Fname:  __ccgo_ts + 21737,
+		Fname:  __ccgo_ts(21737),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	114: {
-		Fname:  __ccgo_ts + 21758,
+		Fname:  __ccgo_ts(21758),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	115: {
-		Fname:  __ccgo_ts + 21779,
+		Fname:  __ccgo_ts(21779),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	116: {
-		Fname:  __ccgo_ts + 21800,
+		Fname:  __ccgo_ts(21800),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	117: {
-		Fname:  __ccgo_ts + 21821,
+		Fname:  __ccgo_ts(21821),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 	118: {
-		Fname:  __ccgo_ts + 21842,
+		Fname:  __ccgo_ts(21842),
 		Ftype1: int32(DEFAULT_KEY),
 	},
 }
@@ -21782,24 +21782,24 @@ func M_LoadDefaults(tls *libc.TLS) {
 	// Load main configuration from the specified file, instead of the
 	// default.
 	//
-	i = M_CheckParmWithArgs(tls, __ccgo_ts+21869, int32(1))
+	i = M_CheckParmWithArgs(tls, __ccgo_ts(21869), int32(1))
 	if i != 0 {
 		doom_defaults.Ffilename = *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))
-		libc.Xprintf(tls, __ccgo_ts+21877, libc.VaList(bp+8, doom_defaults.Ffilename))
+		libc.Xprintf(tls, __ccgo_ts(21877), libc.VaList(bp+8, doom_defaults.Ffilename))
 	} else {
 		doom_defaults.Ffilename = M_StringJoin(tls, configdir, libc.VaList(bp+8, default_main_config, libc.UintptrFromInt32(0)))
 	}
-	libc.Xprintf(tls, __ccgo_ts+21896, libc.VaList(bp+8, doom_defaults.Ffilename))
+	libc.Xprintf(tls, __ccgo_ts(21896), libc.VaList(bp+8, doom_defaults.Ffilename))
 	//!
 	// @arg <file>
 	//
 	// Load additional configuration from the specified file, instead of
 	// the default.
 	//
-	i = M_CheckParmWithArgs(tls, __ccgo_ts+21917, int32(1))
+	i = M_CheckParmWithArgs(tls, __ccgo_ts(21917), int32(1))
 	if i != 0 {
 		extra_defaults.Ffilename = *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))
-		libc.Xprintf(tls, __ccgo_ts+21930, libc.VaList(bp+8, extra_defaults.Ffilename))
+		libc.Xprintf(tls, __ccgo_ts(21930), libc.VaList(bp+8, extra_defaults.Ffilename))
 	} else {
 		extra_defaults.Ffilename = M_StringJoin(tls, configdir, libc.VaList(bp+8, default_extra_config, libc.UintptrFromInt32(0)))
 	}
@@ -21819,7 +21819,7 @@ func GetDefaultForName(tls *libc.TLS, name uintptr) (r uintptr) {
 	}
 	// Not found? Internal error.
 	if result == libc.UintptrFromInt32(0) {
-		I_Error(tls, __ccgo_ts+21968, libc.VaList(bp+8, name))
+		I_Error(tls, __ccgo_ts(21968), libc.VaList(bp+8, name))
 	}
 	return result
 }
@@ -21861,8 +21861,8 @@ func M_SetConfigDir(tls *libc.TLS, dir uintptr) {
 	} else {
 		configdir = GetDefaultConfigDir(tls)
 	}
-	if libc.Xstrcmp(tls, configdir, __ccgo_ts+14092) != 0 {
-		libc.Xprintf(tls, __ccgo_ts+22005, libc.VaList(bp+8, configdir))
+	if libc.Xstrcmp(tls, configdir, __ccgo_ts(14092)) != 0 {
+		libc.Xprintf(tls, __ccgo_ts(22005), libc.VaList(bp+8, configdir))
 	}
 	// Make the directory if it doesn't already exist:
 	M_MakeDirectory(tls, configdir)
@@ -21878,12 +21878,12 @@ func M_GetSaveGameDir(tls *libc.TLS, iwadname uintptr) (r uintptr) {
 	var savegamedir uintptr
 	// If not "doing" a configuration directory (Windows), don't "do"
 	// a savegame directory, either.
-	if !(libc.Xstrcmp(tls, configdir, __ccgo_ts+14092) != 0) {
-		savegamedir = libc.Xstrdup(tls, __ccgo_ts+14092)
+	if !(libc.Xstrcmp(tls, configdir, __ccgo_ts(14092)) != 0) {
+		savegamedir = libc.Xstrdup(tls, __ccgo_ts(14092))
 	} else {
-		savegamedir = M_StringJoin(tls, configdir, libc.VaList(bp+8, __ccgo_ts+1252, __ccgo_ts+22043, libc.UintptrFromInt32(0)))
+		savegamedir = M_StringJoin(tls, configdir, libc.VaList(bp+8, __ccgo_ts(1252), __ccgo_ts(22043), libc.UintptrFromInt32(0)))
 		M_MakeDirectory(tls, savegamedir)
-		libc.Xprintf(tls, __ccgo_ts+22054, libc.VaList(bp+8, savegamedir))
+		libc.Xprintf(tls, __ccgo_ts(22054), libc.VaList(bp+8, savegamedir))
 	}
 	return savegamedir
 }
@@ -22005,106 +22005,106 @@ func init() {
 //
 
 func M_BindBaseControls(tls *libc.TLS) {
-	M_BindVariable(tls, __ccgo_ts+19425, uintptr(unsafe.Pointer(&key_right)))
-	M_BindVariable(tls, __ccgo_ts+19435, uintptr(unsafe.Pointer(&key_left)))
-	M_BindVariable(tls, __ccgo_ts+19444, uintptr(unsafe.Pointer(&key_up)))
-	M_BindVariable(tls, __ccgo_ts+19451, uintptr(unsafe.Pointer(&key_down)))
-	M_BindVariable(tls, __ccgo_ts+19460, uintptr(unsafe.Pointer(&key_strafeleft)))
-	M_BindVariable(tls, __ccgo_ts+19475, uintptr(unsafe.Pointer(&key_straferight)))
-	M_BindVariable(tls, __ccgo_ts+19772, uintptr(unsafe.Pointer(&key_fire)))
-	M_BindVariable(tls, __ccgo_ts+19781, uintptr(unsafe.Pointer(&key_use)))
-	M_BindVariable(tls, __ccgo_ts+19789, uintptr(unsafe.Pointer(&key_strafe)))
-	M_BindVariable(tls, __ccgo_ts+19800, uintptr(unsafe.Pointer(&key_speed)))
-	M_BindVariable(tls, __ccgo_ts+19820, uintptr(unsafe.Pointer(&mousebfire)))
-	M_BindVariable(tls, __ccgo_ts+19832, uintptr(unsafe.Pointer(&mousebstrafe)))
-	M_BindVariable(tls, __ccgo_ts+19846, uintptr(unsafe.Pointer(&mousebforward)))
-	M_BindVariable(tls, __ccgo_ts+19873, uintptr(unsafe.Pointer(&joybfire)))
-	M_BindVariable(tls, __ccgo_ts+19883, uintptr(unsafe.Pointer(&joybstrafe)))
-	M_BindVariable(tls, __ccgo_ts+19895, uintptr(unsafe.Pointer(&joybuse)))
-	M_BindVariable(tls, __ccgo_ts+19904, uintptr(unsafe.Pointer(&joybspeed)))
-	M_BindVariable(tls, __ccgo_ts+20656, uintptr(unsafe.Pointer(&joybmenu)))
+	M_BindVariable(tls, __ccgo_ts(19425), uintptr(unsafe.Pointer(&key_right)))
+	M_BindVariable(tls, __ccgo_ts(19435), uintptr(unsafe.Pointer(&key_left)))
+	M_BindVariable(tls, __ccgo_ts(19444), uintptr(unsafe.Pointer(&key_up)))
+	M_BindVariable(tls, __ccgo_ts(19451), uintptr(unsafe.Pointer(&key_down)))
+	M_BindVariable(tls, __ccgo_ts(19460), uintptr(unsafe.Pointer(&key_strafeleft)))
+	M_BindVariable(tls, __ccgo_ts(19475), uintptr(unsafe.Pointer(&key_straferight)))
+	M_BindVariable(tls, __ccgo_ts(19772), uintptr(unsafe.Pointer(&key_fire)))
+	M_BindVariable(tls, __ccgo_ts(19781), uintptr(unsafe.Pointer(&key_use)))
+	M_BindVariable(tls, __ccgo_ts(19789), uintptr(unsafe.Pointer(&key_strafe)))
+	M_BindVariable(tls, __ccgo_ts(19800), uintptr(unsafe.Pointer(&key_speed)))
+	M_BindVariable(tls, __ccgo_ts(19820), uintptr(unsafe.Pointer(&mousebfire)))
+	M_BindVariable(tls, __ccgo_ts(19832), uintptr(unsafe.Pointer(&mousebstrafe)))
+	M_BindVariable(tls, __ccgo_ts(19846), uintptr(unsafe.Pointer(&mousebforward)))
+	M_BindVariable(tls, __ccgo_ts(19873), uintptr(unsafe.Pointer(&joybfire)))
+	M_BindVariable(tls, __ccgo_ts(19883), uintptr(unsafe.Pointer(&joybstrafe)))
+	M_BindVariable(tls, __ccgo_ts(19895), uintptr(unsafe.Pointer(&joybuse)))
+	M_BindVariable(tls, __ccgo_ts(19904), uintptr(unsafe.Pointer(&joybspeed)))
+	M_BindVariable(tls, __ccgo_ts(20656), uintptr(unsafe.Pointer(&joybmenu)))
 	// Extra controls that are not in the Vanilla versions:
-	M_BindVariable(tls, __ccgo_ts+20623, uintptr(unsafe.Pointer(&joybstrafeleft)))
-	M_BindVariable(tls, __ccgo_ts+20639, uintptr(unsafe.Pointer(&joybstraferight)))
-	M_BindVariable(tls, __ccgo_ts+20707, uintptr(unsafe.Pointer(&mousebstrafeleft)))
-	M_BindVariable(tls, __ccgo_ts+20725, uintptr(unsafe.Pointer(&mousebstraferight)))
-	M_BindVariable(tls, __ccgo_ts+20744, uintptr(unsafe.Pointer(&mousebuse)))
-	M_BindVariable(tls, __ccgo_ts+20755, uintptr(unsafe.Pointer(&mousebbackward)))
-	M_BindVariable(tls, __ccgo_ts+20807, uintptr(unsafe.Pointer(&dclick_use)))
-	M_BindVariable(tls, __ccgo_ts+20818, uintptr(unsafe.Pointer(&key_pause)))
-	M_BindVariable(tls, __ccgo_ts+21647, uintptr(unsafe.Pointer(&key_message_refresh)))
+	M_BindVariable(tls, __ccgo_ts(20623), uintptr(unsafe.Pointer(&joybstrafeleft)))
+	M_BindVariable(tls, __ccgo_ts(20639), uintptr(unsafe.Pointer(&joybstraferight)))
+	M_BindVariable(tls, __ccgo_ts(20707), uintptr(unsafe.Pointer(&mousebstrafeleft)))
+	M_BindVariable(tls, __ccgo_ts(20725), uintptr(unsafe.Pointer(&mousebstraferight)))
+	M_BindVariable(tls, __ccgo_ts(20744), uintptr(unsafe.Pointer(&mousebuse)))
+	M_BindVariable(tls, __ccgo_ts(20755), uintptr(unsafe.Pointer(&mousebbackward)))
+	M_BindVariable(tls, __ccgo_ts(20807), uintptr(unsafe.Pointer(&dclick_use)))
+	M_BindVariable(tls, __ccgo_ts(20818), uintptr(unsafe.Pointer(&key_pause)))
+	M_BindVariable(tls, __ccgo_ts(21647), uintptr(unsafe.Pointer(&key_message_refresh)))
 }
 
 func M_BindWeaponControls(tls *libc.TLS) {
-	M_BindVariable(tls, __ccgo_ts+21373, uintptr(unsafe.Pointer(&key_weapon1)))
-	M_BindVariable(tls, __ccgo_ts+21385, uintptr(unsafe.Pointer(&key_weapon2)))
-	M_BindVariable(tls, __ccgo_ts+21397, uintptr(unsafe.Pointer(&key_weapon3)))
-	M_BindVariable(tls, __ccgo_ts+21409, uintptr(unsafe.Pointer(&key_weapon4)))
-	M_BindVariable(tls, __ccgo_ts+21421, uintptr(unsafe.Pointer(&key_weapon5)))
-	M_BindVariable(tls, __ccgo_ts+21433, uintptr(unsafe.Pointer(&key_weapon6)))
-	M_BindVariable(tls, __ccgo_ts+21445, uintptr(unsafe.Pointer(&key_weapon7)))
-	M_BindVariable(tls, __ccgo_ts+21457, uintptr(unsafe.Pointer(&key_weapon8)))
-	M_BindVariable(tls, __ccgo_ts+21469, uintptr(unsafe.Pointer(&key_prevweapon)))
-	M_BindVariable(tls, __ccgo_ts+21484, uintptr(unsafe.Pointer(&key_nextweapon)))
-	M_BindVariable(tls, __ccgo_ts+20675, uintptr(unsafe.Pointer(&joybprevweapon)))
-	M_BindVariable(tls, __ccgo_ts+20691, uintptr(unsafe.Pointer(&joybnextweapon)))
-	M_BindVariable(tls, __ccgo_ts+20771, uintptr(unsafe.Pointer(&mousebprevweapon)))
-	M_BindVariable(tls, __ccgo_ts+20789, uintptr(unsafe.Pointer(&mousebnextweapon)))
+	M_BindVariable(tls, __ccgo_ts(21373), uintptr(unsafe.Pointer(&key_weapon1)))
+	M_BindVariable(tls, __ccgo_ts(21385), uintptr(unsafe.Pointer(&key_weapon2)))
+	M_BindVariable(tls, __ccgo_ts(21397), uintptr(unsafe.Pointer(&key_weapon3)))
+	M_BindVariable(tls, __ccgo_ts(21409), uintptr(unsafe.Pointer(&key_weapon4)))
+	M_BindVariable(tls, __ccgo_ts(21421), uintptr(unsafe.Pointer(&key_weapon5)))
+	M_BindVariable(tls, __ccgo_ts(21433), uintptr(unsafe.Pointer(&key_weapon6)))
+	M_BindVariable(tls, __ccgo_ts(21445), uintptr(unsafe.Pointer(&key_weapon7)))
+	M_BindVariable(tls, __ccgo_ts(21457), uintptr(unsafe.Pointer(&key_weapon8)))
+	M_BindVariable(tls, __ccgo_ts(21469), uintptr(unsafe.Pointer(&key_prevweapon)))
+	M_BindVariable(tls, __ccgo_ts(21484), uintptr(unsafe.Pointer(&key_nextweapon)))
+	M_BindVariable(tls, __ccgo_ts(20675), uintptr(unsafe.Pointer(&joybprevweapon)))
+	M_BindVariable(tls, __ccgo_ts(20691), uintptr(unsafe.Pointer(&joybnextweapon)))
+	M_BindVariable(tls, __ccgo_ts(20771), uintptr(unsafe.Pointer(&mousebprevweapon)))
+	M_BindVariable(tls, __ccgo_ts(20789), uintptr(unsafe.Pointer(&mousebnextweapon)))
 }
 
 func M_BindMapControls(tls *libc.TLS) {
-	M_BindVariable(tls, __ccgo_ts+21213, uintptr(unsafe.Pointer(&key_map_north)))
-	M_BindVariable(tls, __ccgo_ts+21227, uintptr(unsafe.Pointer(&key_map_south)))
-	M_BindVariable(tls, __ccgo_ts+21241, uintptr(unsafe.Pointer(&key_map_east)))
-	M_BindVariable(tls, __ccgo_ts+21254, uintptr(unsafe.Pointer(&key_map_west)))
-	M_BindVariable(tls, __ccgo_ts+21267, uintptr(unsafe.Pointer(&key_map_zoomin)))
-	M_BindVariable(tls, __ccgo_ts+21282, uintptr(unsafe.Pointer(&key_map_zoomout)))
-	M_BindVariable(tls, __ccgo_ts+21198, uintptr(unsafe.Pointer(&key_map_toggle)))
-	M_BindVariable(tls, __ccgo_ts+21298, uintptr(unsafe.Pointer(&key_map_maxzoom)))
-	M_BindVariable(tls, __ccgo_ts+21314, uintptr(unsafe.Pointer(&key_map_follow)))
-	M_BindVariable(tls, __ccgo_ts+21329, uintptr(unsafe.Pointer(&key_map_grid)))
-	M_BindVariable(tls, __ccgo_ts+21342, uintptr(unsafe.Pointer(&key_map_mark)))
-	M_BindVariable(tls, __ccgo_ts+21355, uintptr(unsafe.Pointer(&key_map_clearmark)))
+	M_BindVariable(tls, __ccgo_ts(21213), uintptr(unsafe.Pointer(&key_map_north)))
+	M_BindVariable(tls, __ccgo_ts(21227), uintptr(unsafe.Pointer(&key_map_south)))
+	M_BindVariable(tls, __ccgo_ts(21241), uintptr(unsafe.Pointer(&key_map_east)))
+	M_BindVariable(tls, __ccgo_ts(21254), uintptr(unsafe.Pointer(&key_map_west)))
+	M_BindVariable(tls, __ccgo_ts(21267), uintptr(unsafe.Pointer(&key_map_zoomin)))
+	M_BindVariable(tls, __ccgo_ts(21282), uintptr(unsafe.Pointer(&key_map_zoomout)))
+	M_BindVariable(tls, __ccgo_ts(21198), uintptr(unsafe.Pointer(&key_map_toggle)))
+	M_BindVariable(tls, __ccgo_ts(21298), uintptr(unsafe.Pointer(&key_map_maxzoom)))
+	M_BindVariable(tls, __ccgo_ts(21314), uintptr(unsafe.Pointer(&key_map_follow)))
+	M_BindVariable(tls, __ccgo_ts(21329), uintptr(unsafe.Pointer(&key_map_grid)))
+	M_BindVariable(tls, __ccgo_ts(21342), uintptr(unsafe.Pointer(&key_map_mark)))
+	M_BindVariable(tls, __ccgo_ts(21355), uintptr(unsafe.Pointer(&key_map_clearmark)))
 }
 
 func M_BindMenuControls(tls *libc.TLS) {
-	M_BindVariable(tls, __ccgo_ts+20828, uintptr(unsafe.Pointer(&key_menu_activate)))
-	M_BindVariable(tls, __ccgo_ts+20846, uintptr(unsafe.Pointer(&key_menu_up)))
-	M_BindVariable(tls, __ccgo_ts+20858, uintptr(unsafe.Pointer(&key_menu_down)))
-	M_BindVariable(tls, __ccgo_ts+20872, uintptr(unsafe.Pointer(&key_menu_left)))
-	M_BindVariable(tls, __ccgo_ts+20886, uintptr(unsafe.Pointer(&key_menu_right)))
-	M_BindVariable(tls, __ccgo_ts+20901, uintptr(unsafe.Pointer(&key_menu_back)))
-	M_BindVariable(tls, __ccgo_ts+20915, uintptr(unsafe.Pointer(&key_menu_forward)))
-	M_BindVariable(tls, __ccgo_ts+20932, uintptr(unsafe.Pointer(&key_menu_confirm)))
-	M_BindVariable(tls, __ccgo_ts+20949, uintptr(unsafe.Pointer(&key_menu_abort)))
-	M_BindVariable(tls, __ccgo_ts+20964, uintptr(unsafe.Pointer(&key_menu_help)))
-	M_BindVariable(tls, __ccgo_ts+20978, uintptr(unsafe.Pointer(&key_menu_save)))
-	M_BindVariable(tls, __ccgo_ts+20992, uintptr(unsafe.Pointer(&key_menu_load)))
-	M_BindVariable(tls, __ccgo_ts+21006, uintptr(unsafe.Pointer(&key_menu_volume)))
-	M_BindVariable(tls, __ccgo_ts+21022, uintptr(unsafe.Pointer(&key_menu_detail)))
-	M_BindVariable(tls, __ccgo_ts+21038, uintptr(unsafe.Pointer(&key_menu_qsave)))
-	M_BindVariable(tls, __ccgo_ts+21053, uintptr(unsafe.Pointer(&key_menu_endgame)))
-	M_BindVariable(tls, __ccgo_ts+21070, uintptr(unsafe.Pointer(&key_menu_messages)))
-	M_BindVariable(tls, __ccgo_ts+21088, uintptr(unsafe.Pointer(&key_menu_qload)))
-	M_BindVariable(tls, __ccgo_ts+21103, uintptr(unsafe.Pointer(&key_menu_quit)))
-	M_BindVariable(tls, __ccgo_ts+21117, uintptr(unsafe.Pointer(&key_menu_gamma)))
-	M_BindVariable(tls, __ccgo_ts+21140, uintptr(unsafe.Pointer(&key_menu_incscreen)))
-	M_BindVariable(tls, __ccgo_ts+21159, uintptr(unsafe.Pointer(&key_menu_decscreen)))
-	M_BindVariable(tls, __ccgo_ts+21178, uintptr(unsafe.Pointer(&key_menu_screenshot)))
-	M_BindVariable(tls, __ccgo_ts+21667, uintptr(unsafe.Pointer(&key_demo_quit)))
-	M_BindVariable(tls, __ccgo_ts+21132, uintptr(unsafe.Pointer(&key_spy)))
+	M_BindVariable(tls, __ccgo_ts(20828), uintptr(unsafe.Pointer(&key_menu_activate)))
+	M_BindVariable(tls, __ccgo_ts(20846), uintptr(unsafe.Pointer(&key_menu_up)))
+	M_BindVariable(tls, __ccgo_ts(20858), uintptr(unsafe.Pointer(&key_menu_down)))
+	M_BindVariable(tls, __ccgo_ts(20872), uintptr(unsafe.Pointer(&key_menu_left)))
+	M_BindVariable(tls, __ccgo_ts(20886), uintptr(unsafe.Pointer(&key_menu_right)))
+	M_BindVariable(tls, __ccgo_ts(20901), uintptr(unsafe.Pointer(&key_menu_back)))
+	M_BindVariable(tls, __ccgo_ts(20915), uintptr(unsafe.Pointer(&key_menu_forward)))
+	M_BindVariable(tls, __ccgo_ts(20932), uintptr(unsafe.Pointer(&key_menu_confirm)))
+	M_BindVariable(tls, __ccgo_ts(20949), uintptr(unsafe.Pointer(&key_menu_abort)))
+	M_BindVariable(tls, __ccgo_ts(20964), uintptr(unsafe.Pointer(&key_menu_help)))
+	M_BindVariable(tls, __ccgo_ts(20978), uintptr(unsafe.Pointer(&key_menu_save)))
+	M_BindVariable(tls, __ccgo_ts(20992), uintptr(unsafe.Pointer(&key_menu_load)))
+	M_BindVariable(tls, __ccgo_ts(21006), uintptr(unsafe.Pointer(&key_menu_volume)))
+	M_BindVariable(tls, __ccgo_ts(21022), uintptr(unsafe.Pointer(&key_menu_detail)))
+	M_BindVariable(tls, __ccgo_ts(21038), uintptr(unsafe.Pointer(&key_menu_qsave)))
+	M_BindVariable(tls, __ccgo_ts(21053), uintptr(unsafe.Pointer(&key_menu_endgame)))
+	M_BindVariable(tls, __ccgo_ts(21070), uintptr(unsafe.Pointer(&key_menu_messages)))
+	M_BindVariable(tls, __ccgo_ts(21088), uintptr(unsafe.Pointer(&key_menu_qload)))
+	M_BindVariable(tls, __ccgo_ts(21103), uintptr(unsafe.Pointer(&key_menu_quit)))
+	M_BindVariable(tls, __ccgo_ts(21117), uintptr(unsafe.Pointer(&key_menu_gamma)))
+	M_BindVariable(tls, __ccgo_ts(21140), uintptr(unsafe.Pointer(&key_menu_incscreen)))
+	M_BindVariable(tls, __ccgo_ts(21159), uintptr(unsafe.Pointer(&key_menu_decscreen)))
+	M_BindVariable(tls, __ccgo_ts(21178), uintptr(unsafe.Pointer(&key_menu_screenshot)))
+	M_BindVariable(tls, __ccgo_ts(21667), uintptr(unsafe.Pointer(&key_demo_quit)))
+	M_BindVariable(tls, __ccgo_ts(21132), uintptr(unsafe.Pointer(&key_spy)))
 }
 
 func M_BindChatControls(tls *libc.TLS, num_players uint32) {
 	bp := alloc(48)
 	var i uint32
-	M_BindVariable(tls, __ccgo_ts+21681, uintptr(unsafe.Pointer(&key_multi_msg)))
+	M_BindVariable(tls, __ccgo_ts(21681), uintptr(unsafe.Pointer(&key_multi_msg)))
 	i = uint32(0)
 	for {
 		if !(i < num_players) {
 			break
 		}
-		M_snprintf(tls, bp, uint64(32), __ccgo_ts+22078, libc.VaList(bp+40, i+uint32(1)))
+		M_snprintf(tls, bp, uint64(32), __ccgo_ts(22078), libc.VaList(bp+40, i+uint32(1)))
 		M_BindVariable(tls, bp, uintptr(unsafe.Pointer(&key_multi_msgplayer))+uintptr(i)*4)
 		goto _1
 	_1:
@@ -22201,8 +22201,8 @@ type menu_t = struct {
 
 func init() {
 	skullName = [2]uintptr{
-		0: __ccgo_ts + 22100,
-		1: __ccgo_ts + 22109,
+		0: __ccgo_ts(22100),
+		1: __ccgo_ts(22109),
 	}
 }
 
@@ -22700,9 +22700,9 @@ func M_ReadSaveStrings(tls *libc.TLS) {
 			break
 		}
 		M_StringCopy(tls, bp, P_SaveGameFile(tls, i), uint64(256))
-		handle = libc.Xfopen(tls, bp, __ccgo_ts+13884)
+		handle = libc.Xfopen(tls, bp, __ccgo_ts(13884))
 		if handle == libc.UintptrFromInt32(0) {
-			M_StringCopy(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24, __ccgo_ts+22118, uint64(SAVESTRINGSIZE))
+			M_StringCopy(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24, __ccgo_ts(22118), uint64(SAVESTRINGSIZE))
 			LoadMenu[i].Fstatus = 0
 			goto _1
 		}
@@ -22723,7 +22723,7 @@ func M_ReadSaveStrings(tls *libc.TLS) {
 //	//
 func M_DrawLoad(tls *libc.TLS) {
 	var i int32
-	V_DrawPatchDirect(tls, int32(72), int32(28), W_CacheLumpName(tls, __ccgo_ts+22129, int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, int32(72), int32(28), W_CacheLumpName(tls, __ccgo_ts(22129), int32(PU_CACHE)))
 	i = 0
 	for {
 		if !(i < int32(load_end)) {
@@ -22745,20 +22745,20 @@ func M_DrawLoad(tls *libc.TLS) {
 //	//
 func M_DrawSaveLoadBorder(tls *libc.TLS, x int32, y int32) {
 	var i int32
-	V_DrawPatchDirect(tls, x-int32(8), y+int32(7), W_CacheLumpName(tls, __ccgo_ts+22137, int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, x-int32(8), y+int32(7), W_CacheLumpName(tls, __ccgo_ts(22137), int32(PU_CACHE)))
 	i = 0
 	for {
 		if !(i < int32(24)) {
 			break
 		}
-		V_DrawPatchDirect(tls, x, y+int32(7), W_CacheLumpName(tls, __ccgo_ts+22146, int32(PU_CACHE)))
+		V_DrawPatchDirect(tls, x, y+int32(7), W_CacheLumpName(tls, __ccgo_ts(22146), int32(PU_CACHE)))
 		x += int32(8)
 		goto _1
 	_1:
 		;
 		i++
 	}
-	V_DrawPatchDirect(tls, x, y+int32(7), W_CacheLumpName(tls, __ccgo_ts+22155, int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, x, y+int32(7), W_CacheLumpName(tls, __ccgo_ts(22155), int32(PU_CACHE)))
 }
 
 // C documentation
@@ -22780,7 +22780,7 @@ func M_LoadSelect(tls *libc.TLS, choice int32) {
 //	//
 func M_LoadGame(tls *libc.TLS, choice int32) {
 	if netgame != 0 {
-		M_StartMessage(tls, __ccgo_ts+22164, libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22164), libc.UintptrFromInt32(0), uint32(false1))
 		return
 	}
 	M_SetupNextMenu(tls, uintptr(unsafe.Pointer(&LoadDef)))
@@ -22794,7 +22794,7 @@ func M_LoadGame(tls *libc.TLS, choice int32) {
 //	//
 func M_DrawSave(tls *libc.TLS) {
 	var i int32
-	V_DrawPatchDirect(tls, int32(72), int32(28), W_CacheLumpName(tls, __ccgo_ts+22217, int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, int32(72), int32(28), W_CacheLumpName(tls, __ccgo_ts(22217), int32(PU_CACHE)))
 	i = 0
 	for {
 		if !(i < int32(load_end)) {
@@ -22809,7 +22809,7 @@ func M_DrawSave(tls *libc.TLS) {
 	}
 	if saveStringEnter != 0 {
 		i = M_StringWidth(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24)
-		M_WriteText(tls, int32(LoadDef.Fx)+i, int32(LoadDef.Fy)+int32(LINEHEIGHT)*saveSlot, __ccgo_ts+22225)
+		M_WriteText(tls, int32(LoadDef.Fx)+i, int32(LoadDef.Fy)+int32(LINEHEIGHT)*saveSlot, __ccgo_ts(22225))
 	}
 }
 
@@ -22837,7 +22837,7 @@ func M_SaveSelect(tls *libc.TLS, choice int32) {
 	saveStringEnter = int32(1)
 	saveSlot = choice
 	M_StringCopy(tls, uintptr(unsafe.Pointer(&saveOldString)), uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, uint64(SAVESTRINGSIZE))
-	if !(libc.Xstrcmp(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, __ccgo_ts+22118) != 0) {
+	if !(libc.Xstrcmp(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, __ccgo_ts(22118)) != 0) {
 		*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(choice)*24)) = 0
 	}
 	saveCharIndex = libc.Int32FromUint64(libc.Xstrlen(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24))
@@ -22850,7 +22850,7 @@ func M_SaveSelect(tls *libc.TLS, choice int32) {
 //	//
 func M_SaveGame(tls *libc.TLS, choice int32) {
 	if !(usergame != 0) {
-		M_StartMessage(tls, __ccgo_ts+22227, libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22227), libc.UintptrFromInt32(0), uint32(false1))
 		return
 	}
 	if gamestate != int32(GS_LEVEL) {
@@ -22883,7 +22883,7 @@ func M_QuickSave(tls *libc.TLS) {
 		quickSaveSlot = -int32(2) // means to pick a slot now
 		return
 	}
-	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&tempstring)), uint64(80), __ccgo_ts+22279, libc.VaList(bp+8, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
+	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&tempstring)), uint64(80), __ccgo_ts(22279), libc.VaList(bp+8, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
 	M_StartMessage(tls, uintptr(unsafe.Pointer(&tempstring)), __ccgo_fp(M_QuickSaveResponse), uint32(true1))
 }
 
@@ -22902,14 +22902,14 @@ func M_QuickLoadResponse(tls *libc.TLS, key int32) {
 func M_QuickLoad(tls *libc.TLS) {
 	bp := alloc(16)
 	if netgame != 0 {
-		M_StartMessage(tls, __ccgo_ts+22332, libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22332), libc.UintptrFromInt32(0), uint32(false1))
 		return
 	}
 	if quickSaveSlot < 0 {
-		M_StartMessage(tls, __ccgo_ts+22384, libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22384), libc.UintptrFromInt32(0), uint32(false1))
 		return
 	}
-	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&tempstring)), uint64(80), __ccgo_ts+22439, libc.VaList(bp+8, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
+	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&tempstring)), uint64(80), __ccgo_ts(22439), libc.VaList(bp+8, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
 	M_StartMessage(tls, uintptr(unsafe.Pointer(&tempstring)), __ccgo_fp(M_QuickLoadResponse), uint32(true1))
 }
 
@@ -22922,7 +22922,7 @@ func M_QuickLoad(tls *libc.TLS) {
 func M_DrawReadThis1(tls *libc.TLS) {
 	var lumpname uintptr
 	var skullx, skully int32
-	lumpname = __ccgo_ts + 1911
+	lumpname = __ccgo_ts(1911)
 	skullx = int32(330)
 	skully = int32(175)
 	inhelpscreens = uint32(true1)
@@ -22939,13 +22939,13 @@ func M_DrawReadThis1(tls *libc.TLS) {
 	case int32(exe_hacx):
 		if gamemode == int32(commercial) {
 			// Doom 2
-			lumpname = __ccgo_ts + 22501
+			lumpname = __ccgo_ts(22501)
 			skullx = int32(330)
 			skully = int32(165)
 		} else {
 			// Doom 1
 			// HELP2 is the first screen shown in Doom 1
-			lumpname = __ccgo_ts + 1924
+			lumpname = __ccgo_ts(1924)
 			skullx = int32(280)
 			skully = int32(185)
 		}
@@ -22955,14 +22955,14 @@ func M_DrawReadThis1(tls *libc.TLS) {
 		// Ultimate Doom always displays "HELP1".
 		// Chex Quest version also uses "HELP1", even though it is based
 		// on Final Doom.
-		lumpname = __ccgo_ts + 22506
+		lumpname = __ccgo_ts(22506)
 	case int32(exe_final):
 		fallthrough
 	case int32(exe_final2):
 		// Final Doom always displays "HELP".
-		lumpname = __ccgo_ts + 22501
+		lumpname = __ccgo_ts(22501)
 	default:
-		I_Error(tls, __ccgo_ts+22512, 0)
+		I_Error(tls, __ccgo_ts(22512), 0)
 		break
 	}
 	lumpname = lumpname
@@ -22980,7 +22980,7 @@ func M_DrawReadThis2(tls *libc.TLS) {
 	inhelpscreens = uint32(true1)
 	// We only ever draw the second page if this is
 	// gameversion == exe_doom_1_9 and gamemode == registered
-	V_DrawPatchDirect(tls, 0, 0, W_CacheLumpName(tls, __ccgo_ts+22506, int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, 0, 0, W_CacheLumpName(tls, __ccgo_ts(22506), int32(PU_CACHE)))
 }
 
 // C documentation
@@ -22989,7 +22989,7 @@ func M_DrawReadThis2(tls *libc.TLS) {
 //	// Change Sfx & Music volumes
 //	//
 func M_DrawSound(tls *libc.TLS) {
-	V_DrawPatchDirect(tls, int32(60), int32(38), W_CacheLumpName(tls, __ccgo_ts+22535, int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, int32(60), int32(38), W_CacheLumpName(tls, __ccgo_ts(22535), int32(PU_CACHE)))
 	M_DrawThermo(tls, int32(SoundDef.Fx), int32(SoundDef.Fy)+libc.Int32FromInt32(LINEHEIGHT)*(int32(sfx_vol)+libc.Int32FromInt32(1)), int32(16), sfxVolume)
 	M_DrawThermo(tls, int32(SoundDef.Fx), int32(SoundDef.Fy)+libc.Int32FromInt32(LINEHEIGHT)*(int32(music_vol)+libc.Int32FromInt32(1)), int32(16), musicVolume)
 }
@@ -23034,7 +23034,7 @@ func M_MusicVol(tls *libc.TLS, choice int32) {
 //	// M_DrawMainMenu
 //	//
 func M_DrawMainMenu(tls *libc.TLS) {
-	V_DrawPatchDirect(tls, int32(94), int32(2), W_CacheLumpName(tls, __ccgo_ts+22542, int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, int32(94), int32(2), W_CacheLumpName(tls, __ccgo_ts(22542), int32(PU_CACHE)))
 }
 
 // C documentation
@@ -23043,13 +23043,13 @@ func M_DrawMainMenu(tls *libc.TLS) {
 //	// M_NewGame
 //	//
 func M_DrawNewGame(tls *libc.TLS) {
-	V_DrawPatchDirect(tls, int32(96), int32(14), W_CacheLumpName(tls, __ccgo_ts+22549, int32(PU_CACHE)))
-	V_DrawPatchDirect(tls, int32(54), int32(38), W_CacheLumpName(tls, __ccgo_ts+22556, int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, int32(96), int32(14), W_CacheLumpName(tls, __ccgo_ts(22549), int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, int32(54), int32(38), W_CacheLumpName(tls, __ccgo_ts(22556), int32(PU_CACHE)))
 }
 
 func M_NewGame(tls *libc.TLS, choice int32) {
 	if netgame != 0 && !(demoplayback != 0) {
-		M_StartMessage(tls, __ccgo_ts+22564, libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22564), libc.UintptrFromInt32(0), uint32(false1))
 		return
 	}
 	// Chex Quest disabled the episode select screen, as did Doom II.
@@ -23061,7 +23061,7 @@ func M_NewGame(tls *libc.TLS, choice int32) {
 }
 
 func M_DrawEpisode(tls *libc.TLS) {
-	V_DrawPatchDirect(tls, int32(54), int32(38), W_CacheLumpName(tls, __ccgo_ts+22630, int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, int32(54), int32(38), W_CacheLumpName(tls, __ccgo_ts(22630), int32(PU_CACHE)))
 }
 
 func M_VerifyNightmare(tls *libc.TLS, key int32) {
@@ -23074,7 +23074,7 @@ func M_VerifyNightmare(tls *libc.TLS, key int32) {
 
 func M_ChooseSkill(tls *libc.TLS, choice int32) {
 	if choice == int32(nightmare) {
-		M_StartMessage(tls, __ccgo_ts+22639, __ccgo_fp(M_VerifyNightmare), uint32(true1))
+		M_StartMessage(tls, __ccgo_ts(22639), __ccgo_fp(M_VerifyNightmare), uint32(true1))
 		return
 	}
 	G_DeferedInitNew(tls, choice, epi+int32(1), int32(1))
@@ -23083,13 +23083,13 @@ func M_ChooseSkill(tls *libc.TLS, choice int32) {
 
 func M_Episode(tls *libc.TLS, choice int32) {
 	if gamemode == int32(shareware) && choice != 0 {
-		M_StartMessage(tls, __ccgo_ts+22711, libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22711), libc.UintptrFromInt32(0), uint32(false1))
 		M_SetupNextMenu(tls, uintptr(unsafe.Pointer(&ReadDef1)))
 		return
 	}
 	// Yet another hack...
 	if gamemode == int32(registered) && choice > int32(2) {
-		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+22803, 0)
+		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(22803), 0)
 		choice = 0
 	}
 	epi = choice
@@ -23102,16 +23102,16 @@ func M_Episode(tls *libc.TLS, choice int32) {
 //	// M_Options
 //	//
 var detailNames = [2]uintptr{
-	0: __ccgo_ts + 22849,
-	1: __ccgo_ts + 22858,
+	0: __ccgo_ts(22849),
+	1: __ccgo_ts(22858),
 }
 var msgNames = [2]uintptr{
-	0: __ccgo_ts + 22866,
-	1: __ccgo_ts + 22875,
+	0: __ccgo_ts(22866),
+	1: __ccgo_ts(22875),
 }
 
 func M_DrawOptions(tls *libc.TLS) {
-	V_DrawPatchDirect(tls, int32(108), int32(15), W_CacheLumpName(tls, __ccgo_ts+22883, int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, int32(108), int32(15), W_CacheLumpName(tls, __ccgo_ts(22883), int32(PU_CACHE)))
 	V_DrawPatchDirect(tls, int32(OptionsDef.Fx)+int32(175), int32(OptionsDef.Fy)+libc.Int32FromInt32(LINEHEIGHT)*int32(detail), W_CacheLumpName(tls, detailNames[detailLevel], int32(PU_CACHE)))
 	V_DrawPatchDirect(tls, int32(OptionsDef.Fx)+int32(120), int32(OptionsDef.Fy)+libc.Int32FromInt32(LINEHEIGHT)*int32(messages), W_CacheLumpName(tls, msgNames[showMessages], int32(PU_CACHE)))
 	M_DrawThermo(tls, int32(OptionsDef.Fx), int32(OptionsDef.Fy)+libc.Int32FromInt32(LINEHEIGHT)*(int32(mousesens)+libc.Int32FromInt32(1)), int32(10), mouseSensitivity)
@@ -23132,9 +23132,9 @@ func M_ChangeMessages(tls *libc.TLS, choice int32) {
 	choice = 0
 	showMessages = int32(1) - showMessages
 	if !(showMessages != 0) {
-		players[consoleplayer].Fmessage = __ccgo_ts + 22892
+		players[consoleplayer].Fmessage = __ccgo_ts(22892)
 	} else {
-		players[consoleplayer].Fmessage = __ccgo_ts + 22905
+		players[consoleplayer].Fmessage = __ccgo_ts(22905)
 	}
 	message_dontfuckwithme = uint32(true1)
 }
@@ -23160,10 +23160,10 @@ func M_EndGame(tls *libc.TLS, choice int32) {
 		return
 	}
 	if netgame != 0 {
-		M_StartMessage(tls, __ccgo_ts+22917, libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22917), libc.UintptrFromInt32(0), uint32(false1))
 		return
 	}
-	M_StartMessage(tls, __ccgo_ts+22956, __ccgo_fp(M_EndGameResponse), uint32(true1))
+	M_StartMessage(tls, __ccgo_ts(22956), __ccgo_fp(M_EndGameResponse), uint32(true1))
 }
 
 // C documentation
@@ -23259,7 +23259,7 @@ func M_SelectEndMessage(tls *libc.TLS) (r uintptr) {
 
 func M_QuitDOOM(tls *libc.TLS, choice int32) {
 	bp := alloc(16)
-	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&endstring)), uint64(160), __ccgo_ts+23010, libc.VaList(bp+8, M_SelectEndMessage(tls)))
+	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&endstring)), uint64(160), __ccgo_ts(23010), libc.VaList(bp+8, M_SelectEndMessage(tls)))
 	M_StartMessage(tls, uintptr(unsafe.Pointer(&endstring)), __ccgo_fp(M_QuitResponse), uint32(true1))
 }
 
@@ -23282,9 +23282,9 @@ func M_ChangeDetail(tls *libc.TLS, choice int32) {
 	detailLevel = int32(1) - detailLevel
 	R_SetViewSize(tls, screenblocks, detailLevel)
 	if !(detailLevel != 0) {
-		players[consoleplayer].Fmessage = __ccgo_ts + 23040
+		players[consoleplayer].Fmessage = __ccgo_ts(23040)
 	} else {
-		players[consoleplayer].Fmessage = __ccgo_ts + 23052
+		players[consoleplayer].Fmessage = __ccgo_ts(23052)
 	}
 }
 
@@ -23313,22 +23313,22 @@ func M_SizeDisplay(tls *libc.TLS, choice int32) {
 func M_DrawThermo(tls *libc.TLS, x int32, y int32, thermWidth int32, thermDot int32) {
 	var i, xx int32
 	xx = x
-	V_DrawPatchDirect(tls, xx, y, W_CacheLumpName(tls, __ccgo_ts+23063, int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, xx, y, W_CacheLumpName(tls, __ccgo_ts(23063), int32(PU_CACHE)))
 	xx += int32(8)
 	i = 0
 	for {
 		if !(i < thermWidth) {
 			break
 		}
-		V_DrawPatchDirect(tls, xx, y, W_CacheLumpName(tls, __ccgo_ts+23072, int32(PU_CACHE)))
+		V_DrawPatchDirect(tls, xx, y, W_CacheLumpName(tls, __ccgo_ts(23072), int32(PU_CACHE)))
 		xx += int32(8)
 		goto _1
 	_1:
 		;
 		i++
 	}
-	V_DrawPatchDirect(tls, xx, y, W_CacheLumpName(tls, __ccgo_ts+23081, int32(PU_CACHE)))
-	V_DrawPatchDirect(tls, x+int32(8)+thermDot*int32(8), y, W_CacheLumpName(tls, __ccgo_ts+23090, int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, xx, y, W_CacheLumpName(tls, __ccgo_ts(23081), int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, x+int32(8)+thermDot*int32(8), y, W_CacheLumpName(tls, __ccgo_ts(23090), int32(PU_CACHE)))
 }
 
 func M_StartMessage(tls *libc.TLS, string1 uintptr, routine uintptr, input boolean) {
@@ -23697,7 +23697,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 																usegamma = 0
 															}
 															players[consoleplayer].Fmessage = uintptr(unsafe.Pointer(&gammamsg)) + uintptr(usegamma)*26
-															I_SetPalette(tls, W_CacheLumpName(tls, __ccgo_ts+1490, int32(PU_CACHE)))
+															I_SetPalette(tls, W_CacheLumpName(tls, __ccgo_ts(1490), int32(PU_CACHE)))
 															return uint32(true1)
 														}
 													}
@@ -24051,7 +24051,7 @@ func M_MakeDirectory(tls *libc.TLS, path uintptr) {
 
 func M_FileExists(tls *libc.TLS, filename uintptr) (r boolean) {
 	var fstream uintptr
-	fstream = libc.Xfopen(tls, filename, __ccgo_ts+23115)
+	fstream = libc.Xfopen(tls, filename, __ccgo_ts(23115))
 	if fstream != libc.UintptrFromInt32(0) {
 		libc.Xfclose(tls, fstream)
 		return uint32(true1)
@@ -24086,7 +24086,7 @@ func M_FileLength(tls *libc.TLS, handle uintptr) (r int64) {
 func M_WriteFile(tls *libc.TLS, name uintptr, source uintptr, length int32) (r boolean) {
 	var count int32
 	var handle uintptr
-	handle = libc.Xfopen(tls, name, __ccgo_ts+13900)
+	handle = libc.Xfopen(tls, name, __ccgo_ts(13900))
 	if handle == libc.UintptrFromInt32(0) {
 		return uint32(false1)
 	}
@@ -24107,13 +24107,13 @@ func M_TempFile(tls *libc.TLS, s uintptr) (r uintptr) {
 	bp := alloc(32)
 	var tempdir uintptr
 	// In Unix, just use /tmp.
-	tempdir = __ccgo_ts + 23139
-	return M_StringJoin(tls, tempdir, libc.VaList(bp+8, __ccgo_ts+1252, s, libc.UintptrFromInt32(0)))
+	tempdir = __ccgo_ts(23139)
+	return M_StringJoin(tls, tempdir, libc.VaList(bp+8, __ccgo_ts(1252), s, libc.UintptrFromInt32(0)))
 }
 
 func M_StrToInt(tls *libc.TLS, str uintptr, result uintptr) (r boolean) {
 	bp := alloc(16)
-	return libc.BoolUint32(libc.Xsscanf(tls, str, __ccgo_ts+23144, libc.VaList(bp+8, result)) == int32(1) || libc.Xsscanf(tls, str, __ccgo_ts+23150, libc.VaList(bp+8, result)) == int32(1) || libc.Xsscanf(tls, str, __ccgo_ts+23156, libc.VaList(bp+8, result)) == int32(1) || libc.Xsscanf(tls, str, __ccgo_ts+23161, libc.VaList(bp+8, result)) == int32(1))
+	return libc.BoolUint32(libc.Xsscanf(tls, str, __ccgo_ts(23144), libc.VaList(bp+8, result)) == int32(1) || libc.Xsscanf(tls, str, __ccgo_ts(23150), libc.VaList(bp+8, result)) == int32(1) || libc.Xsscanf(tls, str, __ccgo_ts(23156), libc.VaList(bp+8, result)) == int32(1) || libc.Xsscanf(tls, str, __ccgo_ts(23161), libc.VaList(bp+8, result)) == int32(1))
 }
 
 func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
@@ -24134,7 +24134,7 @@ func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
 	libc.Xmemset(tls, dest, 0, uint64(8))
 	for int32(*(*int8)(unsafe.Pointer(src))) != int32('\000') && int32(*(*int8)(unsafe.Pointer(src))) != int32('.') {
 		if length >= int32(8) {
-			libc.Xprintf(tls, __ccgo_ts+23165, libc.VaList(bp+8, filename, dest))
+			libc.Xprintf(tls, __ccgo_ts(23165), libc.VaList(bp+8, filename, dest))
 			break
 		}
 		v1 = length
@@ -24198,7 +24198,7 @@ func M_StringJoin(tls *libc.TLS, s uintptr, va uintptr) (r uintptr) {
 	}
 	result = libc.Xmalloc(tls, result_len)
 	if result == libc.UintptrFromInt32(0) {
-		I_Error(tls, __ccgo_ts+23298, 0)
+		I_Error(tls, __ccgo_ts(23298), 0)
 		return libc.UintptrFromInt32(0)
 	}
 	M_StringCopy(tls, result, s, result_len)
@@ -24952,7 +24952,7 @@ func EV_DoLockedDoor(tls *libc.TLS, line uintptr, type1 vldoor_e, thing uintptr)
 			return 0
 		}
 		if !(*(*boolean)(unsafe.Pointer(p + 80 + uintptr(it_bluecard)*4)) != 0) && !(*(*boolean)(unsafe.Pointer(p + 80 + uintptr(it_blueskull)*4)) != 0) {
-			(*player_t)(unsafe.Pointer(p)).Fmessage = __ccgo_ts + 23343
+			(*player_t)(unsafe.Pointer(p)).Fmessage = __ccgo_ts(23343)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return 0
 		}
@@ -24963,7 +24963,7 @@ func EV_DoLockedDoor(tls *libc.TLS, line uintptr, type1 vldoor_e, thing uintptr)
 			return 0
 		}
 		if !(*(*boolean)(unsafe.Pointer(p + 80 + uintptr(it_redcard)*4)) != 0) && !(*(*boolean)(unsafe.Pointer(p + 80 + uintptr(it_redskull)*4)) != 0) {
-			(*player_t)(unsafe.Pointer(p)).Fmessage = __ccgo_ts + 23387
+			(*player_t)(unsafe.Pointer(p)).Fmessage = __ccgo_ts(23387)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return 0
 		}
@@ -24974,7 +24974,7 @@ func EV_DoLockedDoor(tls *libc.TLS, line uintptr, type1 vldoor_e, thing uintptr)
 			return 0
 		}
 		if !(*(*boolean)(unsafe.Pointer(p + 80 + uintptr(it_yellowcard)*4)) != 0) && !(*(*boolean)(unsafe.Pointer(p + 80 + uintptr(it_yellowskull)*4)) != 0) {
-			(*player_t)(unsafe.Pointer(p)).Fmessage = __ccgo_ts + 23430
+			(*player_t)(unsafe.Pointer(p)).Fmessage = __ccgo_ts(23430)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return 0
 		}
@@ -25069,7 +25069,7 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 			return
 		}
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_bluecard)*4)) != 0) && !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_blueskull)*4)) != 0) {
-			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23476
+			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23476)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return
 		}
@@ -25080,7 +25080,7 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 			return
 		}
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_yellowcard)*4)) != 0) && !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_yellowskull)*4)) != 0) {
-			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23514
+			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23514)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return
 		}
@@ -25091,7 +25091,7 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 			return
 		}
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_redcard)*4)) != 0) && !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_redskull)*4)) != 0) {
-			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23554
+			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23554)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return
 		}
@@ -25128,7 +25128,7 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 						(*plat_t)(unsafe.Pointer(plat)).Fwait = -int32(1)
 					} else {
 						// This isn't a door OR a plat.  Now we're in trouble.
-						libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+23591, 0)
+						libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(23591), 0)
 						// Try closing it anyway. At least it will work on 32-bit
 						// machines.
 						(*vldoor_t)(unsafe.Pointer(door)).Fdirection = -int32(1)
@@ -25469,7 +25469,7 @@ func P_Move(tls *libc.TLS, actor uintptr) (r boolean) {
 		return uint32(false1)
 	}
 	if libc.Uint32FromInt32((*mobj_t)(unsafe.Pointer(actor)).Fmovedir) >= uint32(8) {
-		I_Error(tls, __ccgo_ts+23654, 0)
+		I_Error(tls, __ccgo_ts(23654), 0)
 	}
 	tryx = (*mobj_t)(unsafe.Pointer(actor)).Fx + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*xspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
 	tryy = (*mobj_t)(unsafe.Pointer(actor)).Fy + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*yspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
@@ -25542,7 +25542,7 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 	var olddir, turnaround dirtype_t
 	var tdir int32
 	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
-		I_Error(tls, __ccgo_ts+23676, 0)
+		I_Error(tls, __ccgo_ts(23676), 0)
 	}
 	olddir = (*mobj_t)(unsafe.Pointer(actor)).Fmovedir
 	turnaround = opposite[olddir]
@@ -27373,7 +27373,7 @@ func P_GiveAmmo(tls *libc.TLS, player uintptr, ammo ammotype_t, num int32) (r bo
 		return uint32(false1)
 	}
 	if ammo > int32(NUMAMMO) {
-		I_Error(tls, __ccgo_ts+23713, libc.VaList(bp+8, ammo))
+		I_Error(tls, __ccgo_ts(23713), libc.VaList(bp+8, ammo))
 	}
 	if *(*int32)(unsafe.Pointer(player + 168 + uintptr(ammo)*4)) == *(*int32)(unsafe.Pointer(player + 184 + uintptr(ammo)*4)) {
 		return uint32(false1)
@@ -27595,12 +27595,12 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(P_GiveArmor(tls, player, int32(DEH_DEFAULT_GREEN_ARMOR_CLASS)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23737
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23737)
 	case int32(SPR_ARM2):
 		if !(P_GiveArmor(tls, player, int32(DEH_DEFAULT_BLUE_ARMOR_CLASS)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23758
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23758)
 		break
 		// bonus items
 		fallthrough
@@ -27610,7 +27610,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 			(*player_t)(unsafe.Pointer(player)).Fhealth = int32(DEH_DEFAULT_MAX_HEALTH)
 		}
 		(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fhealth = (*player_t)(unsafe.Pointer(player)).Fhealth
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23783
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23783)
 	case int32(SPR_BON2):
 		(*player_t)(unsafe.Pointer(player)).Farmorpoints++ // can go over 100%
 		if (*player_t)(unsafe.Pointer(player)).Farmorpoints > int32(DEH_DEFAULT_MAX_ARMOR) {
@@ -27621,14 +27621,14 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !((*player_t)(unsafe.Pointer(player)).Farmortype != 0) {
 			(*player_t)(unsafe.Pointer(player)).Farmortype = int32(1)
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23809
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23809)
 	case int32(SPR_SOUL):
 		*(*int32)(unsafe.Pointer(player + 44)) += int32(DEH_DEFAULT_SOULSPHERE_HEALTH)
 		if (*player_t)(unsafe.Pointer(player)).Fhealth > int32(DEH_DEFAULT_MAX_SOULSPHERE) {
 			(*player_t)(unsafe.Pointer(player)).Fhealth = int32(DEH_DEFAULT_MAX_SOULSPHERE)
 		}
 		(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fhealth = (*player_t)(unsafe.Pointer(player)).Fhealth
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23835
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23835)
 		sound = int32(sfx_getpow)
 	case int32(SPR_MEGA):
 		if gamemode != int32(commercial) {
@@ -27639,7 +27639,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		// We always give armor type 2 for the megasphere; dehacked only
 		// affects the MegaArmor.
 		P_GiveArmor(tls, player, int32(2))
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23848
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23848)
 		sound = int32(sfx_getpow)
 		break
 		// cards
@@ -27647,7 +27647,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		fallthrough
 	case int32(SPR_BKEY):
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_bluecard)*4)) != 0) {
-			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23860
+			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23860)
 		}
 		P_GiveCard(tls, player, int32(it_bluecard))
 		if !(netgame != 0) {
@@ -27656,7 +27656,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		return
 	case int32(SPR_YKEY):
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_yellowcard)*4)) != 0) {
-			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23886
+			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23886)
 		}
 		P_GiveCard(tls, player, int32(it_yellowcard))
 		if !(netgame != 0) {
@@ -27665,7 +27665,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		return
 	case int32(SPR_RKEY):
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_redcard)*4)) != 0) {
-			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23914
+			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23914)
 		}
 		P_GiveCard(tls, player, int32(it_redcard))
 		if !(netgame != 0) {
@@ -27674,7 +27674,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		return
 	case int32(SPR_BSKU):
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_blueskull)*4)) != 0) {
-			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23939
+			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23939)
 		}
 		P_GiveCard(tls, player, int32(it_blueskull))
 		if !(netgame != 0) {
@@ -27683,7 +27683,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		return
 	case int32(SPR_YSKU):
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_yellowskull)*4)) != 0) {
-			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23967
+			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23967)
 		}
 		P_GiveCard(tls, player, int32(it_yellowskull))
 		if !(netgame != 0) {
@@ -27692,7 +27692,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		return
 	case int32(SPR_RSKU):
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_redskull)*4)) != 0) {
-			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 23997
+			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23997)
 		}
 		P_GiveCard(tls, player, int32(it_redskull))
 		if !(netgame != 0) {
@@ -27705,15 +27705,15 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(P_GiveBody(tls, player, int32(10)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24024
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24024)
 	case int32(SPR_MEDI):
 		if !(P_GiveBody(tls, player, int32(25)) != 0) {
 			return
 		}
 		if (*player_t)(unsafe.Pointer(player)).Fhealth < int32(25) {
-			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24046
+			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24046)
 		} else {
-			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24088
+			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24088)
 		}
 		break
 		// power ups
@@ -27722,13 +27722,13 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(P_GivePower(tls, player, int32(pw_invulnerability)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24109
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24109)
 		sound = int32(sfx_getpow)
 	case int32(SPR_PSTR):
 		if !(P_GivePower(tls, player, int32(pw_strength)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24126
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24126)
 		if (*player_t)(unsafe.Pointer(player)).Freadyweapon != int32(wp_fist) {
 			(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_fist)
 		}
@@ -27737,25 +27737,25 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(P_GivePower(tls, player, int32(pw_invisibility)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24135
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24135)
 		sound = int32(sfx_getpow)
 	case int32(SPR_SUIT):
 		if !(P_GivePower(tls, player, int32(pw_ironfeet)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24156
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24156)
 		sound = int32(sfx_getpow)
 	case int32(SPR_PMAP):
 		if !(P_GivePower(tls, player, int32(pw_allmap)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24181
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24181)
 		sound = int32(sfx_getpow)
 	case int32(SPR_PVIS):
 		if !(P_GivePower(tls, player, int32(pw_infrared)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24199
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24199)
 		sound = int32(sfx_getpow)
 		break
 		// ammo
@@ -27770,42 +27770,42 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 				return
 			}
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24225
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24225)
 	case int32(SPR_AMMO):
 		if !(P_GiveAmmo(tls, player, int32(am_clip), int32(5)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24243
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24243)
 	case int32(SPR_ROCK):
 		if !(P_GiveAmmo(tls, player, int32(am_misl), int32(1)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24271
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24271)
 	case int32(SPR_BROK):
 		if !(P_GiveAmmo(tls, player, int32(am_misl), int32(5)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24291
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24291)
 	case int32(SPR_CELL):
 		if !(P_GiveAmmo(tls, player, int32(am_cell), int32(1)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24319
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24319)
 	case int32(SPR_CELP):
 		if !(P_GiveAmmo(tls, player, int32(am_cell), int32(5)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24345
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24345)
 	case int32(SPR_SHEL):
 		if !(P_GiveAmmo(tls, player, int32(am_shell), int32(1)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24376
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24376)
 	case int32(SPR_SBOX):
 		if !(P_GiveAmmo(tls, player, int32(am_shell), int32(5)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24404
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24404)
 	case int32(SPR_BPAK):
 		if !((*player_t)(unsafe.Pointer(player)).Fbackpack != 0) {
 			i = 0
@@ -27832,7 +27832,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 			;
 			i++
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24439
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24439)
 		break
 		// weapons
 		fallthrough
@@ -27840,46 +27840,46 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(P_GiveWeapon(tls, player, int32(wp_bfg), uint32(false1)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24474
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24474)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_MGUN):
 		if !(P_GiveWeapon(tls, player, int32(wp_chaingun), libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24505
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24505)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_CSAW):
 		if !(P_GiveWeapon(tls, player, int32(wp_chainsaw), uint32(false1)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24527
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24527)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_LAUN):
 		if !(P_GiveWeapon(tls, player, int32(wp_missile), uint32(false1)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24556
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24556)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_PLAS):
 		if !(P_GiveWeapon(tls, player, int32(wp_plasma), uint32(false1)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24585
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24585)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_SHOT):
 		if !(P_GiveWeapon(tls, player, int32(wp_shotgun), libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24609
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24609)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_SGN2):
 		if !(P_GiveWeapon(tls, player, int32(wp_supershotgun), libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
-		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts + 24630
+		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24630)
 		sound = int32(sfx_wpnup)
 	default:
-		I_Error(tls, __ccgo_ts+24657, 0)
+		I_Error(tls, __ccgo_ts(24657), 0)
 	}
 	if (*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_COUNTITEM) != 0 {
 		(*player_t)(unsafe.Pointer(player)).Fitemcount++
@@ -28912,7 +28912,7 @@ func P_HitSlideLine(tls *libc.TLS, ld uintptr) {
 func PTR_SlideTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	var li uintptr
 	if !((*intercept_t)(unsafe.Pointer(in)).Fisaline != 0) {
-		I_Error(tls, __ccgo_ts+24696, 0)
+		I_Error(tls, __ccgo_ts(24696), 0)
 	}
 	li = *(*uintptr)(unsafe.Pointer(in + 8))
 	if !(int32((*line_t)(unsafe.Pointer(li)).Fflags)&libc.Int32FromInt32(ML_TWOSIDED) != 0) {
@@ -29468,7 +29468,7 @@ func SpechitOverrun(tls *libc.TLS, ld uintptr) {
 		//
 		// Use the specified magic value when emulating spechit overruns.
 		//
-		p = M_CheckParmWithArgs(tls, __ccgo_ts+24727, int32(1))
+		p = M_CheckParmWithArgs(tls, __ccgo_ts(24727), int32(1))
 		if p > 0 {
 			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uintptr(unsafe.Pointer(&baseaddr)))
 		} else {
@@ -29491,7 +29491,7 @@ func SpechitOverrun(tls *libc.TLS, ld uintptr) {
 	case int32(14):
 		nofit = addr
 	default:
-		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+24736, libc.VaList(bp+8, numspechit))
+		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(24736), libc.VaList(bp+8, numspechit))
 		break
 	}
 }
@@ -30868,7 +30868,7 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 		i++
 	}
 	if i == int32(NUMMOBJTYPES) {
-		I_Error(tls, __ccgo_ts+24810, libc.VaList(bp+8, int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1), int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx), int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy)))
+		I_Error(tls, __ccgo_ts(24810), libc.VaList(bp+8, int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1), int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx), int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy)))
 	}
 	// don't spawn keycards and players in deathmatch
 	if deathmatch != 0 && mobjinfo[i].Fflags&int32(MF_NOTDMATCH) != 0 {
@@ -31268,7 +31268,7 @@ func P_AddActivePlat(tls *libc.TLS, plat uintptr) {
 		;
 		i++
 	}
-	I_Error(tls, __ccgo_ts+24855, 0)
+	I_Error(tls, __ccgo_ts(24855), 0)
 }
 
 func P_RemoveActivePlat(tls *libc.TLS, plat uintptr) {
@@ -31289,7 +31289,7 @@ func P_RemoveActivePlat(tls *libc.TLS, plat uintptr) {
 		;
 		i++
 	}
-	I_Error(tls, __ccgo_ts+24887, 0)
+	I_Error(tls, __ccgo_ts(24887), 0)
 }
 
 const ANG1807 = 2147483648
@@ -31977,7 +31977,7 @@ const SAVEGAME_EOF = 29
 func P_TempSaveGameFile(tls *libc.TLS) (r uintptr) {
 	bp := alloc(32)
 	if filename == libc.UintptrFromInt32(0) {
-		filename = M_StringJoin(tls, savegamedir, libc.VaList(bp+8, __ccgo_ts+24924, libc.UintptrFromInt32(0)))
+		filename = M_StringJoin(tls, savegamedir, libc.VaList(bp+8, __ccgo_ts(24924), libc.UintptrFromInt32(0)))
 	}
 	return filename
 }
@@ -31992,8 +31992,8 @@ func P_SaveGameFile(tls *libc.TLS, slot int32) (r uintptr) {
 		filename_size = libc.Xstrlen(tls, savegamedir) + uint64(32)
 		filename1 = libc.Xmalloc(tls, filename_size)
 	}
-	libc.X__builtin_snprintf(tls, bp, uint64(32), __ccgo_ts+24933, libc.VaList(bp+40, slot))
-	M_snprintf(tls, filename1, filename_size, __ccgo_ts+24947, libc.VaList(bp+40, savegamedir, bp))
+	libc.X__builtin_snprintf(tls, bp, uint64(32), __ccgo_ts(24933), libc.VaList(bp+40, slot))
+	M_snprintf(tls, filename1, filename_size, __ccgo_ts(24947), libc.VaList(bp+40, savegamedir, bp))
 	return filename1
 }
 
@@ -32007,7 +32007,7 @@ func saveg_read8(tls *libc.TLS) (r byte1) {
 	bp := alloc(16)
 	if libc.Xfread(tls, bp, uint64(1), uint64(1), save_stream) < uint64(1) {
 		if !(savegame_error != 0) {
-			libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+24952, 0)
+			libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(24952), 0)
 			savegame_error = uint32(true1)
 		}
 	}
@@ -32019,7 +32019,7 @@ func saveg_write8(tls *libc.TLS, _value byte1) {
 	*(*byte1)(unsafe.Pointer(bp)) = _value
 	if libc.Xfwrite(tls, bp, uint64(1), uint64(1), save_stream) < uint64(1) {
 		if !(savegame_error != 0) {
-			libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+25013, 0)
+			libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(25013), 0)
 			savegame_error = uint32(true1)
 		}
 	}
@@ -33047,7 +33047,7 @@ func P_WriteSaveGameHeader(tls *libc.TLS, description uintptr) {
 		i++
 	}
 	libc.Xmemset(tls, bp, 0, uint64(16))
-	M_snprintf(tls, bp, uint64(16), __ccgo_ts+25058, libc.VaList(bp+24, G_VanillaVersionCode(tls)))
+	M_snprintf(tls, bp, uint64(16), __ccgo_ts(25058), libc.VaList(bp+24, G_VanillaVersionCode(tls)))
 	i = 0
 	for {
 		if !(i < int32(VERSIONSIZE)) {
@@ -33110,7 +33110,7 @@ func P_ReadSaveGameHeader(tls *libc.TLS) (r boolean) {
 		i++
 	}
 	libc.Xmemset(tls, bp, 0, uint64(16))
-	M_snprintf(tls, bp, uint64(16), __ccgo_ts+25058, libc.VaList(bp+40, G_VanillaVersionCode(tls)))
+	M_snprintf(tls, bp, uint64(16), __ccgo_ts(25058), libc.VaList(bp+40, G_VanillaVersionCode(tls)))
 	if libc.Xstrcmp(tls, bp+16, bp) != 0 {
 		return uint32(false1)
 	} // bad version
@@ -33410,7 +33410,7 @@ func P_UnArchiveThinkers(tls *libc.TLS) {
 			*(*actionf_p1)(unsafe.Pointer(mobj + 16)) = __ccgo_fp(P_MobjThinker)
 			P_AddThinker(tls, mobj)
 		default:
-			I_Error(tls, __ccgo_ts+25069, libc.VaList(bp+8, libc.Int32FromUint8(tclass)))
+			I_Error(tls, __ccgo_ts(25069), libc.VaList(bp+8, libc.Int32FromUint8(tclass)))
 		}
 	}
 }
@@ -33586,7 +33586,7 @@ func P_UnArchiveSpecials(tls *libc.TLS) {
 			*(*actionf_p1)(unsafe.Pointer(glow + 16)) = __ccgo_fp(T_Glow)
 			P_AddThinker(tls, glow)
 		default:
-			I_Error(tls, __ccgo_ts+25099, libc.VaList(bp+8, libc.Int32FromUint8(tclass)))
+			I_Error(tls, __ccgo_ts(25099), libc.VaList(bp+8, libc.Int32FromUint8(tclass)))
 		}
 	}
 }
@@ -34222,9 +34222,9 @@ func PadRejectArray(tls *libc.TLS, array uintptr, len1 uint32) {
 	// We only have a limited pad size.  Print a warning if the
 	// REJECT lump is too small.
 	if uint64(len1) > uint64(16) {
-		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+25149, libc.VaList(bp+8, len1, libc.Int32FromInt64(16)))
+		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(25149), libc.VaList(bp+8, len1, libc.Int32FromInt64(16)))
 		// Pad remaining space with 0 (or 0xff, if specified on command line).
-		if M_CheckParm(tls, __ccgo_ts+25206) != 0 {
+		if M_CheckParm(tls, __ccgo_ts(25206)) != 0 {
 			padvalue = uint32(0xff)
 		} else {
 			padvalue = uint32(0xf00)
@@ -34292,9 +34292,9 @@ func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, sk
 	// find map name
 	if gamemode == int32(commercial) {
 		if map1 < int32(10) {
-			libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+25226, libc.VaList(bp+24, map1))
+			libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(25226), libc.VaList(bp+24, map1))
 		} else {
-			libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+25233, libc.VaList(bp+24, map1))
+			libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(25233), libc.VaList(bp+24, map1))
 		}
 	} else {
 		(*(*[9]int8)(unsafe.Pointer(bp)))[0] = int8('E')
@@ -34436,7 +34436,7 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 	var count, s1, s2 int32
 	var frac, openbottom, opentop, slope fixed_t
 	if num >= numsubsectors {
-		I_Error(tls, __ccgo_ts+25239, libc.VaList(bp+24, num, numsubsectors))
+		I_Error(tls, __ccgo_ts(25239), libc.VaList(bp+24, num, numsubsectors))
 	}
 	sub = subsectors + uintptr(num)*16
 	// check lines
@@ -34840,7 +34840,7 @@ func P_InitPicAnims(tls *libc.TLS) {
 		(*anim_t)(unsafe.Pointer(lastanim)).Fistexture = libc.Uint32FromInt32(animdefs[i].Fistexture)
 		(*anim_t)(unsafe.Pointer(lastanim)).Fnumpics = (*anim_t)(unsafe.Pointer(lastanim)).Fpicnum - (*anim_t)(unsafe.Pointer(lastanim)).Fbasepic + int32(1)
 		if (*anim_t)(unsafe.Pointer(lastanim)).Fnumpics < int32(2) {
-			I_Error(tls, __ccgo_ts+25279, libc.VaList(bp+8, startname, endname))
+			I_Error(tls, __ccgo_ts(25279), libc.VaList(bp+8, startname, endname))
 		}
 		(*anim_t)(unsafe.Pointer(lastanim)).Fspeed = animdefs[i].Fspeed
 		lastanim += 20
@@ -35004,7 +35004,7 @@ func P_FindNextHighestFloor(tls *libc.TLS, sec uintptr, currentheight int32) (r 
 			} else {
 				if h == libc.Int32FromInt32(MAX_ADJOINING_SECTORS)+libc.Int32FromInt32(2) {
 					// Fatal overflow: game crashes at 22 textures
-					I_Error(tls, __ccgo_ts+25319, 0)
+					I_Error(tls, __ccgo_ts(25319), 0)
 				}
 			}
 			v2 = h
@@ -35577,7 +35577,7 @@ func P_PlayerInSpecialSector(tls *libc.TLS, player uintptr) {
 			G_ExitLevel(tls)
 		}
 	default:
-		I_Error(tls, __ccgo_ts+25387, libc.VaList(bp+8, int32((*sector_t)(unsafe.Pointer(sector)).Fspecial)))
+		I_Error(tls, __ccgo_ts(25387), libc.VaList(bp+8, int32((*sector_t)(unsafe.Pointer(sector)).Fspecial)))
 		break
 	}
 }
@@ -35691,7 +35691,7 @@ func DonutOverrun(tls *libc.TLS, s3_floorheight uintptr, s3_floorpic uintptr, li
 		// In Vanilla Doom this can differ depending on the operating
 		// system.  The default (if this option is not specified) is to
 		// emulate the behavior when running under Windows 98.
-		p = M_CheckParmWithArgs(tls, __ccgo_ts+25431, int32(2))
+		p = M_CheckParmWithArgs(tls, __ccgo_ts(25431), int32(2))
 		if p > 0 {
 			// Dump of needed memory: (fixed_t)0000:0000 and (short)0000:0008
 			//
@@ -35709,7 +35709,7 @@ func DonutOverrun(tls *libc.TLS, s3_floorheight uintptr, s3_floorpic uintptr, li
 			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uintptr(unsafe.Pointer(&tmp_s3_floorheight)))
 			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(2))*8)), uintptr(unsafe.Pointer(&tmp_s3_floorpic)))
 			if tmp_s3_floorpic >= numflats {
-				libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+25438, libc.VaList(bp+8, numflats, int32(DONUT_FLOORPIC_DEFAULT)))
+				libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(25438), libc.VaList(bp+8, numflats, int32(DONUT_FLOORPIC_DEFAULT)))
 				tmp_s3_floorpic = int32(DONUT_FLOORPIC_DEFAULT)
 			}
 		}
@@ -35764,7 +35764,7 @@ func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
 		// isn't something that should be done, anyway.
 		// Just print a warning and return.
 		if s2 == libc.UintptrFromInt32(0) {
-			libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+25590, 0)
+			libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(25590), 0)
 			break
 		}
 		i = 0
@@ -35782,7 +35782,7 @@ func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
 				// s3->floorheight is an int at 0000:0000
 				// s3->floorpic is a short at 0000:0008
 				// Trying to emulate
-				libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+25682, 0)
+				libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(25682), 0)
 				DonutOverrun(tls, bp, bp+4, line, s1)
 			} else {
 				*(*fixed_t)(unsafe.Pointer(bp)) = (*sector_t)(unsafe.Pointer(s3)).Ffloorheight
@@ -35897,7 +35897,7 @@ func P_SpawnSpecials(tls *libc.TLS) {
 		switch int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fspecial) {
 		case int32(48):
 			if int32(numlinespecials) >= int32(MAXLINEANIMS) {
-				I_Error(tls, __ccgo_ts+25801, 0)
+				I_Error(tls, __ccgo_ts(25801), 0)
 			}
 			// EFFECT FIRSTCOL SCROLL+
 			linespeciallist[numlinespecials] = lines + uintptr(i)*88
@@ -36237,7 +36237,7 @@ func P_StartButton(tls *libc.TLS, line uintptr, w bwhere_e, texture int32, time 
 		;
 		i++
 	}
-	I_Error(tls, __ccgo_ts+25857, 0)
+	I_Error(tls, __ccgo_ts(25857), 0)
 }
 
 // C documentation
@@ -37504,7 +37504,7 @@ func R_Subsector(tls *libc.TLS, num int32) {
 	var count, v1 int32
 	var line, sub uintptr
 	if num >= numsubsectors {
-		I_Error(tls, __ccgo_ts+25894, libc.VaList(bp+8, num, numsubsectors))
+		I_Error(tls, __ccgo_ts(25894), libc.VaList(bp+8, num, numsubsectors))
 	}
 	sub = subsectors + uintptr(num)*16
 	frontsector = (*subsector_t)(unsafe.Pointer(sub)).Fsector
@@ -37746,7 +37746,7 @@ func R_GenerateComposite(tls *libc.TLS, texnum int32) {
 	}
 	// Now that the texture has been built in column cache,
 	//  it is purgable from zone memory.
-	Z_ChangeTag2(tls, block, int32(PU_CACHE), __ccgo_ts+25929, int32(286))
+	Z_ChangeTag2(tls, block, int32(PU_CACHE), __ccgo_ts(25929), int32(286))
 }
 
 // C documentation
@@ -37812,7 +37812,7 @@ func R_GenerateLookup(tls *libc.TLS, texnum int32) {
 			break
 		}
 		if !(*(*byte1)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x))) != 0) {
-			libc.Xprintf(tls, __ccgo_ts+25938, libc.VaList(bp+16, texture))
+			libc.Xprintf(tls, __ccgo_ts(25938), libc.VaList(bp+16, texture))
 			return
 		}
 		// I_Error ("R_GenerateLookup: column without a patch");
@@ -37821,7 +37821,7 @@ func R_GenerateLookup(tls *libc.TLS, texnum int32) {
 			*(*int16)(unsafe.Pointer(collump + uintptr(x)*2)) = int16(-int32(1))
 			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = libc.Uint16FromInt32(*(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)))
 			if *(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)) > int32(0x10000)-int32((*texture_t)(unsafe.Pointer(texture)).Fheight) {
-				I_Error(tls, __ccgo_ts+25985, libc.VaList(bp+16, texnum))
+				I_Error(tls, __ccgo_ts(25985), libc.VaList(bp+16, texnum))
 			}
 			*(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)) += int32((*texture_t)(unsafe.Pointer(texture)).Fheight)
 		}
@@ -37898,7 +37898,7 @@ func R_InitTextures(tls *libc.TLS) {
 	var i, j, maxoff, maxoff2, nummappatches, numtextures1, numtextures2, offset, temp1, temp2, temp3, totalwidth int32
 	// Load the patch names from pnames.lmp.
 	(*(*[9]int8)(unsafe.Pointer(bp)))[int32(8)] = 0
-	names = W_CacheLumpName(tls, __ccgo_ts+26022, int32(PU_STATIC))
+	names = W_CacheLumpName(tls, __ccgo_ts(26022), int32(PU_STATIC))
 	nummappatches = *(*int32)(unsafe.Pointer(names))
 	name_p = names + uintptr(4)
 	patchlookup = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(nummappatches)*uint64(4)), int32(PU_STATIC), libc.UintptrFromInt32(0))
@@ -37914,19 +37914,19 @@ func R_InitTextures(tls *libc.TLS) {
 		;
 		i++
 	}
-	W_ReleaseLumpName(tls, __ccgo_ts+26022)
+	W_ReleaseLumpName(tls, __ccgo_ts(26022))
 	// Load the map texture definitions from textures.lmp.
 	// The data is contained in one or two lumps,
 	//  TEXTURE1 for shareware, plus TEXTURE2 for commercial.
-	v2 = W_CacheLumpName(tls, __ccgo_ts+26029, int32(PU_STATIC))
+	v2 = W_CacheLumpName(tls, __ccgo_ts(26029), int32(PU_STATIC))
 	maptex = v2
 	numtextures1 = *(*int32)(unsafe.Pointer(maptex))
-	maxoff = W_LumpLength(tls, libc.Uint32FromInt32(W_GetNumForName(tls, __ccgo_ts+26029)))
+	maxoff = W_LumpLength(tls, libc.Uint32FromInt32(W_GetNumForName(tls, __ccgo_ts(26029))))
 	directory = maptex + uintptr(1)*4
-	if W_CheckNumForName(tls, __ccgo_ts+26038) != -int32(1) {
-		maptex2 = W_CacheLumpName(tls, __ccgo_ts+26038, int32(PU_STATIC))
+	if W_CheckNumForName(tls, __ccgo_ts(26038)) != -int32(1) {
+		maptex2 = W_CacheLumpName(tls, __ccgo_ts(26038), int32(PU_STATIC))
 		numtextures2 = *(*int32)(unsafe.Pointer(maptex2))
-		maxoff2 = W_LumpLength(tls, libc.Uint32FromInt32(W_GetNumForName(tls, __ccgo_ts+26038)))
+		maxoff2 = W_LumpLength(tls, libc.Uint32FromInt32(W_GetNumForName(tls, __ccgo_ts(26038))))
 	} else {
 		maptex2 = libc.UintptrFromInt32(0)
 		numtextures2 = 0
@@ -37942,32 +37942,32 @@ func R_InitTextures(tls *libc.TLS) {
 	textureheight = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numtextures)*uint64(4)), int32(PU_STATIC), uintptr(0))
 	totalwidth = 0
 	//	Really complex printing shit...
-	temp1 = W_GetNumForName(tls, __ccgo_ts+26047) // P_???????
-	temp2 = W_GetNumForName(tls, __ccgo_ts+26055) - int32(1)
+	temp1 = W_GetNumForName(tls, __ccgo_ts(26047)) // P_???????
+	temp2 = W_GetNumForName(tls, __ccgo_ts(26055)) - int32(1)
 	temp3 = (temp2-temp1+int32(63))/int32(64) + (numtextures+int32(63))/int32(64)
 	// If stdout is a real console, use the classic vanilla "filling
 	// up the box" effect, which uses backspace to "step back" inside
 	// the box.  If stdout is a file, don't draw the box.
 	if I_ConsoleStdout(tls) != 0 {
-		libc.Xprintf(tls, __ccgo_ts+26061, 0)
+		libc.Xprintf(tls, __ccgo_ts(26061), 0)
 		i = 0
 		for {
 			if !(i < temp3+int32(9)) {
 				break
 			}
-			libc.Xprintf(tls, __ccgo_ts+26063, 0)
+			libc.Xprintf(tls, __ccgo_ts(26063), 0)
 			goto _3
 		_3:
 			;
 			i++
 		}
-		libc.Xprintf(tls, __ccgo_ts+26065, 0)
+		libc.Xprintf(tls, __ccgo_ts(26065), 0)
 		i = 0
 		for {
 			if !(i < temp3+int32(10)) {
 				break
 			}
-			libc.Xprintf(tls, __ccgo_ts+26067, 0)
+			libc.Xprintf(tls, __ccgo_ts(26067), 0)
 			goto _4
 		_4:
 			;
@@ -37980,7 +37980,7 @@ func R_InitTextures(tls *libc.TLS) {
 			break
 		}
 		if !(i&libc.Int32FromInt32(63) != 0) {
-			libc.Xprintf(tls, __ccgo_ts+1250, 0)
+			libc.Xprintf(tls, __ccgo_ts(1250), 0)
 		}
 		if i == numtextures1 {
 			// Start looking in second texture file.
@@ -37990,7 +37990,7 @@ func R_InitTextures(tls *libc.TLS) {
 		}
 		offset = *(*int32)(unsafe.Pointer(directory))
 		if offset > maxoff {
-			I_Error(tls, __ccgo_ts+26069, 0)
+			I_Error(tls, __ccgo_ts(26069), 0)
 		}
 		mtexture = maptex + uintptr(offset)
 		v6 = Z_Malloc(tls, libc.Int32FromUint64(uint64(40)+uint64(8)*libc.Uint64FromInt32(int32((*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount)-libc.Int32FromInt32(1))), int32(PU_STATIC), uintptr(0))
@@ -38011,7 +38011,7 @@ func R_InitTextures(tls *libc.TLS) {
 			(*texpatch_t)(unsafe.Pointer(patch)).Foriginy = (*mappatch_t)(unsafe.Pointer(mpatch)).Foriginy
 			(*texpatch_t)(unsafe.Pointer(patch)).Fpatch = *(*int32)(unsafe.Pointer(patchlookup + uintptr((*mappatch_t)(unsafe.Pointer(mpatch)).Fpatch)*4))
 			if (*texpatch_t)(unsafe.Pointer(patch)).Fpatch == -int32(1) {
-				I_Error(tls, __ccgo_ts+26107, libc.VaList(bp+24, texture))
+				I_Error(tls, __ccgo_ts(26107), libc.VaList(bp+24, texture))
 			}
 			goto _7
 		_7:
@@ -38036,9 +38036,9 @@ func R_InitTextures(tls *libc.TLS) {
 		directory += 4
 	}
 	Z_Free(tls, patchlookup)
-	W_ReleaseLumpName(tls, __ccgo_ts+26029)
+	W_ReleaseLumpName(tls, __ccgo_ts(26029))
 	if maptex2 != 0 {
-		W_ReleaseLumpName(tls, __ccgo_ts+26038)
+		W_ReleaseLumpName(tls, __ccgo_ts(26038))
 	}
 	// Precalculate whatever possible.
 	i = 0
@@ -38075,8 +38075,8 @@ func R_InitTextures(tls *libc.TLS) {
 //	//
 func R_InitFlats(tls *libc.TLS) {
 	var i int32
-	firstflat = W_GetNumForName(tls, __ccgo_ts+26151) + int32(1)
-	lastflat = W_GetNumForName(tls, __ccgo_ts+26159) - int32(1)
+	firstflat = W_GetNumForName(tls, __ccgo_ts(26151)) + int32(1)
+	lastflat = W_GetNumForName(tls, __ccgo_ts(26159)) - int32(1)
 	numflats = lastflat - firstflat + int32(1)
 	// Create translation table for global animation.
 	flattranslation = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numflats+libc.Int32FromInt32(1))*uint64(4)), int32(PU_STATIC), uintptr(0))
@@ -38104,8 +38104,8 @@ func R_InitFlats(tls *libc.TLS) {
 func R_InitSpriteLumps(tls *libc.TLS) {
 	var i int32
 	var patch uintptr
-	firstspritelump = W_GetNumForName(tls, __ccgo_ts+26047) + int32(1)
-	lastspritelump = W_GetNumForName(tls, __ccgo_ts+26055) - int32(1)
+	firstspritelump = W_GetNumForName(tls, __ccgo_ts(26047)) + int32(1)
+	lastspritelump = W_GetNumForName(tls, __ccgo_ts(26055)) - int32(1)
 	numspritelumps = lastspritelump - firstspritelump + int32(1)
 	spritewidth = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
 	spriteoffset = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
@@ -38116,7 +38116,7 @@ func R_InitSpriteLumps(tls *libc.TLS) {
 			break
 		}
 		if !(i&libc.Int32FromInt32(63) != 0) {
-			libc.Xprintf(tls, __ccgo_ts+1250, 0)
+			libc.Xprintf(tls, __ccgo_ts(1250), 0)
 		}
 		patch = W_CacheLumpNum(tls, firstspritelump+i, int32(PU_CACHE))
 		*(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(i)*4)) = int32((*patch_t)(unsafe.Pointer(patch)).Fwidth) << int32(FRACBITS)
@@ -38138,7 +38138,7 @@ func R_InitColormaps(tls *libc.TLS) {
 	var lump int32
 	// Load in the light tables,
 	//  256 byte align tables.
-	lump = W_GetNumForName(tls, __ccgo_ts+26165)
+	lump = W_GetNumForName(tls, __ccgo_ts(26165))
 	colormaps = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
 }
 
@@ -38152,11 +38152,11 @@ func R_InitColormaps(tls *libc.TLS) {
 //	//
 func R_InitData(tls *libc.TLS) {
 	R_InitTextures(tls)
-	libc.Xprintf(tls, __ccgo_ts+1250, 0)
+	libc.Xprintf(tls, __ccgo_ts(1250), 0)
 	R_InitFlats(tls)
-	libc.Xprintf(tls, __ccgo_ts+1250, 0)
+	libc.Xprintf(tls, __ccgo_ts(1250), 0)
 	R_InitSpriteLumps(tls)
-	libc.Xprintf(tls, __ccgo_ts+1250, 0)
+	libc.Xprintf(tls, __ccgo_ts(1250), 0)
 	R_InitColormaps(tls)
 }
 
@@ -38173,7 +38173,7 @@ func R_FlatNumForName(tls *libc.TLS, name uintptr) (r int32) {
 	if i == -int32(1) {
 		(*(*[9]int8)(unsafe.Pointer(bp)))[int32(8)] = 0
 		libc.Xmemcpy(tls, bp, name, uint64(8))
-		I_Error(tls, __ccgo_ts+26174, libc.VaList(bp+24, bp))
+		I_Error(tls, __ccgo_ts(26174), libc.VaList(bp+24, bp))
 	}
 	return i - firstflat
 }
@@ -38215,7 +38215,7 @@ func R_TextureNumForName(tls *libc.TLS, name uintptr) (r int32) {
 	var i int32
 	i = R_CheckTextureNumForName(tls, name)
 	if i == -int32(1) {
-		I_Error(tls, __ccgo_ts+26205, libc.VaList(bp+8, name))
+		I_Error(tls, __ccgo_ts(26205), libc.VaList(bp+8, name))
 	}
 	return i
 }
@@ -38389,7 +38389,7 @@ func R_DrawColumn(tls *libc.TLS) {
 		return
 	}
 	if libc.Uint32FromInt32(dc_x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
-		I_Error(tls, __ccgo_ts+26239, libc.VaList(bp+8, dc_yl, dc_yh, dc_x))
+		I_Error(tls, __ccgo_ts(26239), libc.VaList(bp+8, dc_yl, dc_yh, dc_x))
 	}
 	// Framebuffer destination address.
 	// Use ylookup LUT to avoid multiply with ScreenWidth.
@@ -38434,7 +38434,7 @@ func R_DrawColumnLow(tls *libc.TLS) {
 		return
 	}
 	if libc.Uint32FromInt32(dc_x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
-		I_Error(tls, __ccgo_ts+26239, libc.VaList(bp+8, dc_yl, dc_yh, dc_x))
+		I_Error(tls, __ccgo_ts(26239), libc.VaList(bp+8, dc_yl, dc_yh, dc_x))
 	}
 	//	dccount++;
 	// Blocky mode, need to multiply by 2.
@@ -38546,7 +38546,7 @@ func R_DrawFuzzColumn(tls *libc.TLS) {
 		return
 	}
 	if libc.Uint32FromInt32(dc_x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
-		I_Error(tls, __ccgo_ts+26268, libc.VaList(bp+8, dc_yl, dc_yh, dc_x))
+		I_Error(tls, __ccgo_ts(26268), libc.VaList(bp+8, dc_yl, dc_yh, dc_x))
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[dc_x])
 	// Looks familiar.
@@ -38602,7 +38602,7 @@ func R_DrawFuzzColumnLow(tls *libc.TLS) {
 	// low detail mode, need to multiply by 2
 	x = dc_x << int32(1)
 	if libc.Uint32FromInt32(x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
-		I_Error(tls, __ccgo_ts+26268, libc.VaList(bp+8, dc_yl, dc_yh, dc_x))
+		I_Error(tls, __ccgo_ts(26268), libc.VaList(bp+8, dc_yl, dc_yh, dc_x))
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[x])
 	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+int32(1)])
@@ -38649,7 +38649,7 @@ func R_DrawTranslatedColumn(tls *libc.TLS) {
 		return
 	}
 	if libc.Uint32FromInt32(dc_x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
-		I_Error(tls, __ccgo_ts+26239, libc.VaList(bp+8, dc_yl, dc_yh, dc_x))
+		I_Error(tls, __ccgo_ts(26239), libc.VaList(bp+8, dc_yl, dc_yh, dc_x))
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[dc_x])
 	// Looks familiar.
@@ -38688,7 +38688,7 @@ func R_DrawTranslatedColumnLow(tls *libc.TLS) {
 	// low detail, need to scale by 2
 	x = dc_x << int32(1)
 	if libc.Uint32FromInt32(x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
-		I_Error(tls, __ccgo_ts+26239, libc.VaList(bp+8, dc_yl, dc_yh, x))
+		I_Error(tls, __ccgo_ts(26239), libc.VaList(bp+8, dc_yl, dc_yh, x))
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[x])
 	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+int32(1)])
@@ -38767,7 +38767,7 @@ func R_DrawSpan(tls *libc.TLS) {
 	var dest, v3 uintptr
 	var position, step, xtemp, ytemp uint32
 	if ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= int32(SCREENWIDTH) || libc.Uint32FromInt32(ds_y) > uint32(SCREENHEIGHT) {
-		I_Error(tls, __ccgo_ts+26301, libc.VaList(bp+8, ds_x1, ds_x2, ds_y))
+		I_Error(tls, __ccgo_ts(26301), libc.VaList(bp+8, ds_x1, ds_x2, ds_y))
 	}
 	//	dscount++;
 	// Pack position and step variables into a single 32-bit integer,
@@ -38815,7 +38815,7 @@ func R_DrawSpanLow(tls *libc.TLS) {
 	var dest, v3, v4 uintptr
 	var position, step, xtemp, ytemp uint32
 	if ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= int32(SCREENWIDTH) || libc.Uint32FromInt32(ds_y) > uint32(SCREENHEIGHT) {
-		I_Error(tls, __ccgo_ts+26301, libc.VaList(bp+8, ds_x1, ds_x2, ds_y))
+		I_Error(tls, __ccgo_ts(26301), libc.VaList(bp+8, ds_x1, ds_x2, ds_y))
 	}
 	//	dscount++;
 	position = libc.Uint32FromInt32(ds_xfrac<<libc.Int32FromInt32(10))&uint32(0xffff0000) | libc.Uint32FromInt32(ds_yfrac>>libc.Int32FromInt32(6)&libc.Int32FromInt32(0x0000ffff))
@@ -38909,9 +38909,9 @@ func R_FillBackScreen(tls *libc.TLS) {
 	var dest, name, name1, name2, patch, src uintptr
 	var x, y int32
 	// DOOM border patch.
-	name1 = __ccgo_ts + 26328
+	name1 = __ccgo_ts(26328)
 	// DOOM II border patch.
-	name2 = __ccgo_ts + 26337
+	name2 = __ccgo_ts(26337)
 	// If we are running full screen, there is no need to do any of this,
 	// and the background buffer can be freed if it was previously in use.
 	if scaledviewwidth == int32(SCREENWIDTH) {
@@ -38960,7 +38960,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 	}
 	// Draw screen and bezel; this is done to a separate screen buffer.
 	V_UseBuffer(tls, background_buffer)
-	patch = W_CacheLumpName(tls, __ccgo_ts+26345, int32(PU_CACHE))
+	patch = W_CacheLumpName(tls, __ccgo_ts(26345), int32(PU_CACHE))
 	x = 0
 	for {
 		if !(x < scaledviewwidth) {
@@ -38972,7 +38972,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 		;
 		x += int32(8)
 	}
-	patch = W_CacheLumpName(tls, __ccgo_ts+26352, int32(PU_CACHE))
+	patch = W_CacheLumpName(tls, __ccgo_ts(26352), int32(PU_CACHE))
 	x = 0
 	for {
 		if !(x < scaledviewwidth) {
@@ -38984,7 +38984,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 		;
 		x += int32(8)
 	}
-	patch = W_CacheLumpName(tls, __ccgo_ts+26359, int32(PU_CACHE))
+	patch = W_CacheLumpName(tls, __ccgo_ts(26359), int32(PU_CACHE))
 	y = 0
 	for {
 		if !(y < viewheight) {
@@ -38996,7 +38996,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 		;
 		y += int32(8)
 	}
-	patch = W_CacheLumpName(tls, __ccgo_ts+26366, int32(PU_CACHE))
+	patch = W_CacheLumpName(tls, __ccgo_ts(26366), int32(PU_CACHE))
 	y = 0
 	for {
 		if !(y < viewheight) {
@@ -39009,10 +39009,10 @@ func R_FillBackScreen(tls *libc.TLS) {
 		y += int32(8)
 	}
 	// Draw beveled edge.
-	V_DrawPatch(tls, viewwindowx-int32(8), viewwindowy-int32(8), W_CacheLumpName(tls, __ccgo_ts+26373, int32(PU_CACHE)))
-	V_DrawPatch(tls, viewwindowx+scaledviewwidth, viewwindowy-int32(8), W_CacheLumpName(tls, __ccgo_ts+26381, int32(PU_CACHE)))
-	V_DrawPatch(tls, viewwindowx-int32(8), viewwindowy+viewheight, W_CacheLumpName(tls, __ccgo_ts+26389, int32(PU_CACHE)))
-	V_DrawPatch(tls, viewwindowx+scaledviewwidth, viewwindowy+viewheight, W_CacheLumpName(tls, __ccgo_ts+26397, int32(PU_CACHE)))
+	V_DrawPatch(tls, viewwindowx-int32(8), viewwindowy-int32(8), W_CacheLumpName(tls, __ccgo_ts(26373), int32(PU_CACHE)))
+	V_DrawPatch(tls, viewwindowx+scaledviewwidth, viewwindowy-int32(8), W_CacheLumpName(tls, __ccgo_ts(26381), int32(PU_CACHE)))
+	V_DrawPatch(tls, viewwindowx-int32(8), viewwindowy+viewheight, W_CacheLumpName(tls, __ccgo_ts(26389), int32(PU_CACHE)))
+	V_DrawPatch(tls, viewwindowx+scaledviewwidth, viewwindowy+viewheight, W_CacheLumpName(tls, __ccgo_ts(26397), int32(PU_CACHE)))
 	V_RestoreBuffer(tls)
 }
 
@@ -39563,20 +39563,20 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 
 func R_Init(tls *libc.TLS) {
 	R_InitData(tls)
-	libc.Xprintf(tls, __ccgo_ts+1250, 0)
+	libc.Xprintf(tls, __ccgo_ts(1250), 0)
 	R_InitPointToAngle(tls)
-	libc.Xprintf(tls, __ccgo_ts+1250, 0)
+	libc.Xprintf(tls, __ccgo_ts(1250), 0)
 	R_InitTables(tls)
 	// viewwidth / viewheight / detailLevel are set by the defaults
-	libc.Xprintf(tls, __ccgo_ts+1250, 0)
+	libc.Xprintf(tls, __ccgo_ts(1250), 0)
 	R_SetViewSize(tls, screenblocks, detailLevel)
 	R_InitPlanes(tls)
-	libc.Xprintf(tls, __ccgo_ts+1250, 0)
+	libc.Xprintf(tls, __ccgo_ts(1250), 0)
 	R_InitLightTables(tls)
-	libc.Xprintf(tls, __ccgo_ts+1250, 0)
+	libc.Xprintf(tls, __ccgo_ts(1250), 0)
 	R_InitSkyMap(tls)
 	R_InitTranslationTables(tls)
-	libc.Xprintf(tls, __ccgo_ts+1250, 0)
+	libc.Xprintf(tls, __ccgo_ts(1250), 0)
 }
 
 // C documentation
@@ -39694,7 +39694,7 @@ func R_MapPlane(tls *libc.TLS, y int32, x1 int32, x2 int32) {
 	var distance, length, v1, v2, v3 fixed_t
 	var index uint32
 	if x2 < x1 || x1 < 0 || x2 >= viewwidth || y > viewheight {
-		I_Error(tls, __ccgo_ts+26405, libc.VaList(bp+8, x1, x2, y))
+		I_Error(tls, __ccgo_ts(26405), libc.VaList(bp+8, x1, x2, y))
 	}
 	if planeheight != cachedheight[y] {
 		cachedheight[y] = planeheight
@@ -39793,7 +39793,7 @@ func R_FindPlane(tls *libc.TLS, height fixed_t, picnum int32, lightlevel int32) 
 		return check
 	}
 	if (int64(lastvisplane)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&visplanes))))/664 == int64(MAXVISPLANES) {
-		I_Error(tls, __ccgo_ts+26430, 0)
+		I_Error(tls, __ccgo_ts(26430), 0)
 	}
 	lastvisplane += 664
 	(*visplane_t)(unsafe.Pointer(check)).Fheight = height
@@ -39870,13 +39870,13 @@ func R_DrawPlanes(tls *libc.TLS) {
 	var angle, b1, b2, light, lumpnum, stop, t1, t2, x int32
 	var pl uintptr
 	if (int64(ds_p)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&drawsegs))))/64 > int64(MAXDRAWSEGS) {
-		I_Error(tls, __ccgo_ts+26461, libc.VaList(bp+8, (int64(ds_p)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&drawsegs))))/64))
+		I_Error(tls, __ccgo_ts(26461), libc.VaList(bp+8, (int64(ds_p)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&drawsegs))))/64))
 	}
 	if (int64(lastvisplane)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&visplanes))))/664 > int64(MAXVISPLANES) {
-		I_Error(tls, __ccgo_ts+26498, libc.VaList(bp+8, (int64(lastvisplane)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&visplanes))))/664))
+		I_Error(tls, __ccgo_ts(26498), libc.VaList(bp+8, (int64(lastvisplane)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&visplanes))))/664))
 	}
 	if (int64(lastopening)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&openings))))/2 > int64(libc.Int32FromInt32(SCREENWIDTH)*libc.Int32FromInt32(64)) {
-		I_Error(tls, __ccgo_ts+26535, libc.VaList(bp+8, (int64(lastopening)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&openings))))/2))
+		I_Error(tls, __ccgo_ts(26535), libc.VaList(bp+8, (int64(lastopening)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&openings))))/2))
 	}
 	pl = uintptr(unsafe.Pointer(&visplanes))
 	for {
@@ -40231,7 +40231,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		return
 	}
 	if start >= viewwidth || start > stop {
-		I_Error(tls, __ccgo_ts+26571, libc.VaList(bp+8, start, stop))
+		I_Error(tls, __ccgo_ts(26571), libc.VaList(bp+8, start, stop))
 	}
 	sidedef = (*seg_t)(unsafe.Pointer(curline)).Fsidedef
 	linedef = (*seg_t)(unsafe.Pointer(curline)).Flinedef
@@ -40523,7 +40523,7 @@ func R_InstallSpriteLump(tls *libc.TLS, lump int32, frame uint32, rotation uint3
 	bp := alloc(32)
 	var r int32
 	if frame >= uint32(29) || rotation > uint32(8) {
-		I_Error(tls, __ccgo_ts+26603, libc.VaList(bp+8, lump))
+		I_Error(tls, __ccgo_ts(26603), libc.VaList(bp+8, lump))
 	}
 	if libc.Int32FromUint32(frame) > maxframe {
 		maxframe = libc.Int32FromUint32(frame)
@@ -40531,10 +40531,10 @@ func R_InstallSpriteLump(tls *libc.TLS, lump int32, frame uint32, rotation uint3
 	if rotation == uint32(0) {
 		// the lump should be used for all rotations
 		if sprtemp[frame].Frotate == uint32(false1) {
-			I_Error(tls, __ccgo_ts+26656, libc.VaList(bp+8, spritename, uint32('A')+frame))
+			I_Error(tls, __ccgo_ts(26656), libc.VaList(bp+8, spritename, uint32('A')+frame))
 		}
 		if sprtemp[frame].Frotate == uint32(true1) {
-			I_Error(tls, __ccgo_ts+26712, libc.VaList(bp+8, spritename, uint32('A')+frame))
+			I_Error(tls, __ccgo_ts(26712), libc.VaList(bp+8, spritename, uint32('A')+frame))
 		}
 		sprtemp[frame].Frotate = uint32(false1)
 		r = 0
@@ -40553,13 +40553,13 @@ func R_InstallSpriteLump(tls *libc.TLS, lump int32, frame uint32, rotation uint3
 	}
 	// the lump is only used for one rotation
 	if sprtemp[frame].Frotate == uint32(false1) {
-		I_Error(tls, __ccgo_ts+26712, libc.VaList(bp+8, spritename, uint32('A')+frame))
+		I_Error(tls, __ccgo_ts(26712), libc.VaList(bp+8, spritename, uint32('A')+frame))
 	}
 	sprtemp[frame].Frotate = uint32(true1)
 	// make 0 based
 	rotation--
 	if int32(*(*int16)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 4 + uintptr(rotation)*2))) != -int32(1) {
-		I_Error(tls, __ccgo_ts+26777, libc.VaList(bp+8, spritename, uint32('A')+frame, uint32('1')+rotation))
+		I_Error(tls, __ccgo_ts(26777), libc.VaList(bp+8, spritename, uint32('A')+frame, uint32('1')+rotation))
 	}
 	*(*int16)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 4 + uintptr(rotation)*2)) = int16(lump - firstspritelump)
 	*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 20 + uintptr(rotation))) = uint8(flipped)
@@ -40659,7 +40659,7 @@ func R_InitSpriteDefs(tls *libc.TLS, namelist uintptr) {
 		_4:
 			;
 			// no rotations were found for that frame at all
-			I_Error(tls, __ccgo_ts+26839, libc.VaList(bp+8, spritename, frame+int32('A')))
+			I_Error(tls, __ccgo_ts(26839), libc.VaList(bp+8, spritename, frame+int32('A')))
 			goto _7
 		_5:
 			;
@@ -40675,7 +40675,7 @@ func R_InitSpriteDefs(tls *libc.TLS, namelist uintptr) {
 				goto _8
 			}
 			if int32(*(*int16)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 4 + uintptr(rotation)*2))) == -int32(1) {
-				I_Error(tls, __ccgo_ts+26887, libc.VaList(bp+8, spritename, frame+int32('A')))
+				I_Error(tls, __ccgo_ts(26887), libc.VaList(bp+8, spritename, frame+int32('A')))
 			}
 			goto _9
 		_9:
@@ -40812,7 +40812,7 @@ func R_DrawVisSprite(tls *libc.TLS, vis uintptr, x1 int32, x2 int32) {
 		}
 		texturecolumn = frac >> int32(FRACBITS)
 		if texturecolumn < 0 || texturecolumn >= int32((*patch_t)(unsafe.Pointer(patch)).Fwidth) {
-			I_Error(tls, __ccgo_ts+26942, 0)
+			I_Error(tls, __ccgo_ts(26942), 0)
 		}
 		column = patch + uintptr(*(*int32)(unsafe.Pointer(patch + 8 + uintptr(texturecolumn)*4)))
 		R_DrawMaskedColumn(tls, column)
@@ -40860,11 +40860,11 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 	}
 	// decide which patch to use for sprite relative to player
 	if libc.Uint32FromInt32((*mobj_t)(unsafe.Pointer(thing)).Fsprite) >= libc.Uint32FromInt32(numsprites) {
-		I_Error(tls, __ccgo_ts+26979, libc.VaList(bp+8, (*mobj_t)(unsafe.Pointer(thing)).Fsprite))
+		I_Error(tls, __ccgo_ts(26979), libc.VaList(bp+8, (*mobj_t)(unsafe.Pointer(thing)).Fsprite))
 	}
 	sprdef = sprites + uintptr((*mobj_t)(unsafe.Pointer(thing)).Fsprite)*16
 	if (*mobj_t)(unsafe.Pointer(thing)).Fframe&int32(FF_FRAMEMASK3) >= (*spritedef_t)(unsafe.Pointer(sprdef)).Fnumframes {
-		I_Error(tls, __ccgo_ts+27022, libc.VaList(bp+8, (*mobj_t)(unsafe.Pointer(thing)).Fsprite, (*mobj_t)(unsafe.Pointer(thing)).Fframe))
+		I_Error(tls, __ccgo_ts(27022), libc.VaList(bp+8, (*mobj_t)(unsafe.Pointer(thing)).Fsprite, (*mobj_t)(unsafe.Pointer(thing)).Fframe))
 	}
 	sprframe = (*spritedef_t)(unsafe.Pointer(sprdef)).Fspriteframes + uintptr((*mobj_t)(unsafe.Pointer(thing)).Fframe&int32(FF_FRAMEMASK3))*28
 	if (*spriteframe_t)(unsafe.Pointer(sprframe)).Frotate != 0 {
@@ -41003,11 +41003,11 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 	var tx fixed_t
 	// decide which patch to use
 	if libc.Uint32FromInt32((*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fsprite) >= libc.Uint32FromInt32(numsprites) {
-		I_Error(tls, __ccgo_ts+26979, libc.VaList(bp+88, (*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fsprite))
+		I_Error(tls, __ccgo_ts(26979), libc.VaList(bp+88, (*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fsprite))
 	}
 	sprdef = sprites + uintptr((*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fsprite)*16
 	if (*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fframe&int32(FF_FRAMEMASK3) >= (*spritedef_t)(unsafe.Pointer(sprdef)).Fnumframes {
-		I_Error(tls, __ccgo_ts+27022, libc.VaList(bp+88, (*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fsprite, (*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fframe))
+		I_Error(tls, __ccgo_ts(27022), libc.VaList(bp+88, (*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fsprite, (*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fframe))
 	}
 	sprframe = (*spritedef_t)(unsafe.Pointer(sprdef)).Fspriteframes + uintptr((*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fframe&int32(FF_FRAMEMASK3))*28
 	lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4)))
@@ -41995,205 +41995,205 @@ func init() {
 	S_music = [68]musicinfo_t{
 		0: {},
 		1: {
-			Fname: __ccgo_ts + 27069,
+			Fname: __ccgo_ts(27069),
 		},
 		2: {
-			Fname: __ccgo_ts + 27074,
+			Fname: __ccgo_ts(27074),
 		},
 		3: {
-			Fname: __ccgo_ts + 27079,
+			Fname: __ccgo_ts(27079),
 		},
 		4: {
-			Fname: __ccgo_ts + 27084,
+			Fname: __ccgo_ts(27084),
 		},
 		5: {
-			Fname: __ccgo_ts + 27089,
+			Fname: __ccgo_ts(27089),
 		},
 		6: {
-			Fname: __ccgo_ts + 27094,
+			Fname: __ccgo_ts(27094),
 		},
 		7: {
-			Fname: __ccgo_ts + 27099,
+			Fname: __ccgo_ts(27099),
 		},
 		8: {
-			Fname: __ccgo_ts + 27104,
+			Fname: __ccgo_ts(27104),
 		},
 		9: {
-			Fname: __ccgo_ts + 27109,
+			Fname: __ccgo_ts(27109),
 		},
 		10: {
-			Fname: __ccgo_ts + 27114,
+			Fname: __ccgo_ts(27114),
 		},
 		11: {
-			Fname: __ccgo_ts + 27119,
+			Fname: __ccgo_ts(27119),
 		},
 		12: {
-			Fname: __ccgo_ts + 27124,
+			Fname: __ccgo_ts(27124),
 		},
 		13: {
-			Fname: __ccgo_ts + 27129,
+			Fname: __ccgo_ts(27129),
 		},
 		14: {
-			Fname: __ccgo_ts + 27134,
+			Fname: __ccgo_ts(27134),
 		},
 		15: {
-			Fname: __ccgo_ts + 27139,
+			Fname: __ccgo_ts(27139),
 		},
 		16: {
-			Fname: __ccgo_ts + 27144,
+			Fname: __ccgo_ts(27144),
 		},
 		17: {
-			Fname: __ccgo_ts + 27149,
+			Fname: __ccgo_ts(27149),
 		},
 		18: {
-			Fname: __ccgo_ts + 27154,
+			Fname: __ccgo_ts(27154),
 		},
 		19: {
-			Fname: __ccgo_ts + 27159,
+			Fname: __ccgo_ts(27159),
 		},
 		20: {
-			Fname: __ccgo_ts + 27164,
+			Fname: __ccgo_ts(27164),
 		},
 		21: {
-			Fname: __ccgo_ts + 27169,
+			Fname: __ccgo_ts(27169),
 		},
 		22: {
-			Fname: __ccgo_ts + 27174,
+			Fname: __ccgo_ts(27174),
 		},
 		23: {
-			Fname: __ccgo_ts + 27179,
+			Fname: __ccgo_ts(27179),
 		},
 		24: {
-			Fname: __ccgo_ts + 27184,
+			Fname: __ccgo_ts(27184),
 		},
 		25: {
-			Fname: __ccgo_ts + 27189,
+			Fname: __ccgo_ts(27189),
 		},
 		26: {
-			Fname: __ccgo_ts + 27194,
+			Fname: __ccgo_ts(27194),
 		},
 		27: {
-			Fname: __ccgo_ts + 27199,
+			Fname: __ccgo_ts(27199),
 		},
 		28: {
-			Fname: __ccgo_ts + 27204,
+			Fname: __ccgo_ts(27204),
 		},
 		29: {
-			Fname: __ccgo_ts + 27210,
+			Fname: __ccgo_ts(27210),
 		},
 		30: {
-			Fname: __ccgo_ts + 27216,
+			Fname: __ccgo_ts(27216),
 		},
 		31: {
-			Fname: __ccgo_ts + 27222,
+			Fname: __ccgo_ts(27222),
 		},
 		32: {
-			Fname: __ccgo_ts + 27229,
+			Fname: __ccgo_ts(27229),
 		},
 		33: {
-			Fname: __ccgo_ts + 27236,
+			Fname: __ccgo_ts(27236),
 		},
 		34: {
-			Fname: __ccgo_ts + 27243,
+			Fname: __ccgo_ts(27243),
 		},
 		35: {
-			Fname: __ccgo_ts + 27250,
+			Fname: __ccgo_ts(27250),
 		},
 		36: {
-			Fname: __ccgo_ts + 27257,
+			Fname: __ccgo_ts(27257),
 		},
 		37: {
-			Fname: __ccgo_ts + 5374,
+			Fname: __ccgo_ts(5374),
 		},
 		38: {
-			Fname: __ccgo_ts + 27264,
+			Fname: __ccgo_ts(27264),
 		},
 		39: {
-			Fname: __ccgo_ts + 27271,
+			Fname: __ccgo_ts(27271),
 		},
 		40: {
-			Fname: __ccgo_ts + 27277,
+			Fname: __ccgo_ts(27277),
 		},
 		41: {
-			Fname: __ccgo_ts + 27284,
+			Fname: __ccgo_ts(27284),
 		},
 		42: {
-			Fname: __ccgo_ts + 27291,
+			Fname: __ccgo_ts(27291),
 		},
 		43: {
-			Fname: __ccgo_ts + 27296,
+			Fname: __ccgo_ts(27296),
 		},
 		44: {
-			Fname: __ccgo_ts + 27303,
+			Fname: __ccgo_ts(27303),
 		},
 		45: {
-			Fname: __ccgo_ts + 2533,
+			Fname: __ccgo_ts(2533),
 		},
 		46: {
-			Fname: __ccgo_ts + 27310,
+			Fname: __ccgo_ts(27310),
 		},
 		47: {
-			Fname: __ccgo_ts + 27317,
+			Fname: __ccgo_ts(27317),
 		},
 		48: {
-			Fname: __ccgo_ts + 27324,
+			Fname: __ccgo_ts(27324),
 		},
 		49: {
-			Fname: __ccgo_ts + 27330,
+			Fname: __ccgo_ts(27330),
 		},
 		50: {
-			Fname: __ccgo_ts + 27337,
+			Fname: __ccgo_ts(27337),
 		},
 		51: {
-			Fname: __ccgo_ts + 27344,
+			Fname: __ccgo_ts(27344),
 		},
 		52: {
-			Fname: __ccgo_ts + 27351,
+			Fname: __ccgo_ts(27351),
 		},
 		53: {
-			Fname: __ccgo_ts + 27358,
+			Fname: __ccgo_ts(27358),
 		},
 		54: {
-			Fname: __ccgo_ts + 27365,
+			Fname: __ccgo_ts(27365),
 		},
 		55: {
-			Fname: __ccgo_ts + 27372,
+			Fname: __ccgo_ts(27372),
 		},
 		56: {
-			Fname: __ccgo_ts + 27378,
+			Fname: __ccgo_ts(27378),
 		},
 		57: {
-			Fname: __ccgo_ts + 27385,
+			Fname: __ccgo_ts(27385),
 		},
 		58: {
-			Fname: __ccgo_ts + 27392,
+			Fname: __ccgo_ts(27392),
 		},
 		59: {
-			Fname: __ccgo_ts + 27399,
+			Fname: __ccgo_ts(27399),
 		},
 		60: {
-			Fname: __ccgo_ts + 27406,
+			Fname: __ccgo_ts(27406),
 		},
 		61: {
-			Fname: __ccgo_ts + 27412,
+			Fname: __ccgo_ts(27412),
 		},
 		62: {
-			Fname: __ccgo_ts + 27419,
+			Fname: __ccgo_ts(27419),
 		},
 		63: {
-			Fname: __ccgo_ts + 27426,
+			Fname: __ccgo_ts(27426),
 		},
 		64: {
-			Fname: __ccgo_ts + 27431,
+			Fname: __ccgo_ts(27431),
 		},
 		65: {
-			Fname: __ccgo_ts + 27438,
+			Fname: __ccgo_ts(27438),
 		},
 		66: {
-			Fname: __ccgo_ts + 27445,
+			Fname: __ccgo_ts(27445),
 		},
 		67: {
-			Fname: __ccgo_ts + 27452,
+			Fname: __ccgo_ts(27452),
 		},
 	}
 }
@@ -42973,7 +42973,7 @@ var captured_stats [32]wbstartstruct_t
 var num_captured_stats = int32(0)
 
 func StatCopy(tls *libc.TLS, stats uintptr) {
-	if M_ParmExists(tls, __ccgo_ts+5318) != 0 && num_captured_stats < int32(MAX_CAPTURES) {
+	if M_ParmExists(tls, __ccgo_ts(5318)) != 0 && num_captured_stats < int32(MAX_CAPTURES) {
 		libc.Xmemcpy(tls, uintptr(unsafe.Pointer(&captured_stats))+uintptr(num_captured_stats)*200, stats, uint64(200))
 		num_captured_stats++
 	}
@@ -43019,7 +43019,7 @@ type st_binicon_t = struct {
 }
 
 func STlib_init(tls *libc.TLS) {
-	sttminus = W_CacheLumpName(tls, __ccgo_ts+27459, int32(PU_STATIC))
+	sttminus = W_CacheLumpName(tls, __ccgo_ts(27459), int32(PU_STATIC))
 }
 
 // C documentation
@@ -43068,7 +43068,7 @@ func STlib_drawNum(tls *libc.TLS, n uintptr, refresh boolean) {
 	// clear the area
 	x = (*st_number_t)(unsafe.Pointer(n)).Fx - numdigits*w
 	if (*st_number_t)(unsafe.Pointer(n)).Fy-(libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(ST_HEIGHT)) < 0 {
-		I_Error(tls, __ccgo_ts+27468, 0)
+		I_Error(tls, __ccgo_ts(27468), 0)
 	}
 	V_CopyRect(tls, x, (*st_number_t)(unsafe.Pointer(n)).Fy-(libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(ST_HEIGHT)), st_backing_screen, w*numdigits, h, x, (*st_number_t)(unsafe.Pointer(n)).Fy)
 	// if non-number, do not draw it
@@ -43141,7 +43141,7 @@ func STlib_updateMultIcon(tls *libc.TLS, mi uintptr, refresh boolean) {
 			w = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr((*st_multicon_t)(unsafe.Pointer(mi)).Foldinum)*8)))).Fwidth)
 			h = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr((*st_multicon_t)(unsafe.Pointer(mi)).Foldinum)*8)))).Fheight)
 			if y-(libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(ST_HEIGHT)) < 0 {
-				I_Error(tls, __ccgo_ts+27493, 0)
+				I_Error(tls, __ccgo_ts(27493), 0)
 			}
 			V_CopyRect(tls, x, y-(libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(ST_HEIGHT)), st_backing_screen, w, h, x, y)
 		}
@@ -43167,7 +43167,7 @@ func STlib_updateBinIcon(tls *libc.TLS, bi uintptr, refresh boolean) {
 		w = int32((*patch_t)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fp)).Fwidth)
 		h = int32((*patch_t)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fp)).Fheight)
 		if y-(libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(ST_HEIGHT)) < 0 {
-			I_Error(tls, __ccgo_ts+27522, 0)
+			I_Error(tls, __ccgo_ts(27522), 0)
 		}
 		if *(*boolean)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fval)) != 0 {
 			V_DrawPatch(tls, (*st_binicon_t)(unsafe.Pointer(bi)).Fx, (*st_binicon_t)(unsafe.Pointer(bi)).Fy, (*st_binicon_t)(unsafe.Pointer(bi)).Fp)
@@ -43554,9 +43554,9 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 							(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fhealth = int32(100)
 						}
 						(*player_t)(unsafe.Pointer(plyr)).Fhealth = int32(DEH_DEFAULT_GOD_MODE_HEALTH)
-						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27550
+						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27550)
 					} else {
-						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27573
+						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27573)
 					}
 				} else {
 					if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_ammonokey)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
@@ -43584,7 +43584,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 							;
 							i++
 						}
-						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27597
+						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27597)
 					} else {
 						if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_ammo)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
 							(*player_t)(unsafe.Pointer(plyr)).Farmorpoints = int32(DEH_DEFAULT_IDKFA_ARMOR)
@@ -43622,10 +43622,10 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 								;
 								i++
 							}
-							(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27618
+							(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27618)
 						} else {
 							if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_mus)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
-								(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27640
+								(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27640)
 								cht_GetParam(tls, uintptr(unsafe.Pointer(&cheat_mus)), bp)
 								// Note: The original v1.9 had a bug that tried to play back
 								// the Doom II music regardless of gamemode.  This was fixed
@@ -43634,14 +43634,14 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 								if gamemode == int32(commercial) || gameversion < int32(exe_ultimate) {
 									musnum = int32(mus_runnin) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10) + int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('0') - int32(1)
 									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('0') > int32(35) {
-										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27653
+										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27653)
 									} else {
 										S_ChangeMusic(tls, musnum, int32(1))
 									}
 								} else {
 									musnum = int32(mus_e1m1) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*int32(9) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('1'))
 									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*int32(9)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('1') > int32(31) {
-										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27653
+										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27653)
 									} else {
 										S_ChangeMusic(tls, musnum, int32(1))
 									}
@@ -43675,9 +43675,9 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 									// idclip
 									*(*int32)(unsafe.Pointer(plyr + 208)) ^= int32(CF_NOCLIP)
 									if (*player_t)(unsafe.Pointer(plyr)).Fcheats&int32(CF_NOCLIP) != 0 {
-										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27674
+										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27674)
 									} else {
-										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27694
+										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27694)
 									}
 								}
 							}
@@ -43700,7 +43700,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 								*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(i)*4)) = 0
 							}
 						}
-						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27715
+						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27715)
 					}
 					goto _11
 				_11:
@@ -43709,15 +43709,15 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 				}
 				// 'behold' power-up menu
 				if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_powerup))+6*72, int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
-					(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27732
+					(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27732)
 				} else {
 					if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_choppers)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
 						*(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(wp_chainsaw)*4)) = uint32(true1)
 						*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_invulnerability)*4)) = int32(true1)
-						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27778
+						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27778)
 					} else {
 						if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_mypos)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
-							M_snprintf(tls, uintptr(unsafe.Pointer(&buf)), uint64(52), __ccgo_ts+27800, libc.VaList(bp+16, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fangle, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy))
+							M_snprintf(tls, uintptr(unsafe.Pointer(&buf)), uint64(52), __ccgo_ts(27800), libc.VaList(bp+16, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fangle, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy))
 							(*player_t)(unsafe.Pointer(plyr)).Fmessage = uintptr(unsafe.Pointer(&buf))
 						}
 					}
@@ -43760,7 +43760,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 					return uint32(false1)
 				}
 				// So be it.
-				(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts + 27825
+				(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27825)
 				G_DeferedInitNew(tls, gameskill, epsd, map1)
 			}
 		}
@@ -44146,9 +44146,9 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 		if !(i < int32(10)) {
 			break
 		}
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+27843, libc.VaList(bp+24, i))
+		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27843), libc.VaList(bp+24, i))
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&tallnum))+uintptr(i)*8)
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+27852, libc.VaList(bp+24, i))
+		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27852), libc.VaList(bp+24, i))
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&shortnum))+uintptr(i)*8)
 		goto _1
 	_1:
@@ -44157,14 +44157,14 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 	}
 	// Load percent key.
 	//Note: why not load STMINUS here, too?
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+27862, uintptr(unsafe.Pointer(&tallpercent)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(27862), uintptr(unsafe.Pointer(&tallpercent)))
 	// key cards
 	i = 0
 	for {
 		if !(i < int32(NUMCARDS)) {
 			break
 		}
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+27871, libc.VaList(bp+24, i))
+		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27871), libc.VaList(bp+24, i))
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&keys))+uintptr(i)*8)
 		goto _2
 	_2:
@@ -44172,14 +44172,14 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 		i++
 	}
 	// arms background
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+27880, uintptr(unsafe.Pointer(&armsbg)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(27880), uintptr(unsafe.Pointer(&armsbg)))
 	// arms ownership widgets
 	i = 0
 	for {
 		if !(i < int32(6)) {
 			break
 		}
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+27887, libc.VaList(bp+24, i+int32(2)))
+		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27887), libc.VaList(bp+24, i+int32(2)))
 		// gray #
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&arms))+uintptr(i)*16)
 		// yellow #
@@ -44190,10 +44190,10 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 		i++
 	}
 	// face backgrounds for different color players
-	libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+27896, libc.VaList(bp+24, consoleplayer))
+	libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27896), libc.VaList(bp+24, consoleplayer))
 	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faceback)))
 	// status bar background bits
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+27903, uintptr(unsafe.Pointer(&sbar)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(27903), uintptr(unsafe.Pointer(&sbar)))
 	// face states
 	facenum = 0
 	i = 0
@@ -44206,7 +44206,7 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 			if !(j < int32(ST_NUMSTRAIGHTFACES)) {
 				break
 			}
-			libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+27909, libc.VaList(bp+24, i, j))
+			libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27909), libc.VaList(bp+24, i, j))
 			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 			facenum++
 			goto _5
@@ -44214,19 +44214,19 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 			;
 			j++
 		}
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+27919, libc.VaList(bp+24, i)) // turn right
+		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27919), libc.VaList(bp+24, i)) // turn right
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+27928, libc.VaList(bp+24, i)) // turn left
+		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27928), libc.VaList(bp+24, i)) // turn left
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+27937, libc.VaList(bp+24, i)) // ouch!
+		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27937), libc.VaList(bp+24, i)) // ouch!
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+27947, libc.VaList(bp+24, i)) // evil grin ;)
+		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27947), libc.VaList(bp+24, i)) // evil grin ;)
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts+27956, libc.VaList(bp+24, i)) // pissed off
+		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27956), libc.VaList(bp+24, i)) // pissed off
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
 		goto _4
@@ -44234,9 +44234,9 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 		;
 		i++
 	}
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+27966, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(27966), uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 	facenum++
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+27974, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(27974), uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 	facenum++
 }
 
@@ -44249,7 +44249,7 @@ func ST_loadGraphics(tls *libc.TLS) {
 }
 
 func ST_loadData(tls *libc.TLS) {
-	lu_palette = W_GetNumForName(tls, __ccgo_ts+1490)
+	lu_palette = W_GetNumForName(tls, __ccgo_ts(1490))
 	ST_loadGraphics(tls)
 }
 
@@ -44673,7 +44673,7 @@ func S_StartSound(tls *libc.TLS, origin_p uintptr, sfx_id int32) {
 	*(*int32)(unsafe.Pointer(bp + 4)) = snd_SfxVolume
 	// check for bogus sound #
 	if sfx_id < int32(1) || sfx_id > int32(NUMSFX) {
-		I_Error(tls, __ccgo_ts+27983, libc.VaList(bp+16, sfx_id))
+		I_Error(tls, __ccgo_ts(27983), libc.VaList(bp+16, sfx_id))
 	}
 	sfx = uintptr(unsafe.Pointer(&S_sfx)) + uintptr(sfx_id)*64
 	// Initialize sound parameters
@@ -44795,7 +44795,7 @@ func S_UpdateSounds(tls *libc.TLS, listener uintptr) {
 func S_SetMusicVolume(tls *libc.TLS, volume int32) {
 	bp := alloc(16)
 	if volume < 0 || volume > int32(127) {
-		I_Error(tls, __ccgo_ts+27997, libc.VaList(bp+8, volume))
+		I_Error(tls, __ccgo_ts(27997), libc.VaList(bp+8, volume))
 	}
 	I_SetMusicVolume(tls, volume)
 }
@@ -44803,7 +44803,7 @@ func S_SetMusicVolume(tls *libc.TLS, volume int32) {
 func S_SetSfxVolume(tls *libc.TLS, volume int32) {
 	bp := alloc(16)
 	if volume < 0 || volume > int32(127) {
-		I_Error(tls, __ccgo_ts+28031, libc.VaList(bp+8, volume))
+		I_Error(tls, __ccgo_ts(28031), libc.VaList(bp+8, volume))
 	}
 	snd_SfxVolume = volume
 }
@@ -44826,7 +44826,7 @@ func S_ChangeMusic(tls *libc.TLS, musicnum int32, looping int32) {
 		musicnum = int32(mus_introa)
 	}
 	if musicnum <= int32(mus_None) || musicnum >= int32(NUMMUSIC) {
-		I_Error(tls, __ccgo_ts+28063, libc.VaList(bp+24, musicnum))
+		I_Error(tls, __ccgo_ts(28063), libc.VaList(bp+24, musicnum))
 	} else {
 		music = uintptr(unsafe.Pointer(&S_music)) + uintptr(musicnum)*32
 	}
@@ -44837,7 +44837,7 @@ func S_ChangeMusic(tls *libc.TLS, musicnum int32, looping int32) {
 	S_StopMusic(tls)
 	// get lumpnum if neccessary
 	if !((*musicinfo_t)(unsafe.Pointer(music)).Flumpnum != 0) {
-		M_snprintf(tls, bp, uint64(9), __ccgo_ts+28083, libc.VaList(bp+24, (*musicinfo_t)(unsafe.Pointer(music)).Fname))
+		M_snprintf(tls, bp, uint64(9), __ccgo_ts(28083), libc.VaList(bp+24, (*musicinfo_t)(unsafe.Pointer(music)).Fname))
 		(*musicinfo_t)(unsafe.Pointer(music)).Flumpnum = W_GetNumForName(tls, bp)
 	}
 	(*musicinfo_t)(unsafe.Pointer(music)).Fdata = W_CacheLumpNum(tls, (*musicinfo_t)(unsafe.Pointer(music)).Flumpnum, int32(PU_STATIC))
@@ -61324,7 +61324,7 @@ func V_MarkRect(tls *libc.TLS, x int32, y int32, width int32, height int32) {
 func V_CopyRect(tls *libc.TLS, srcx int32, srcy int32, source uintptr, width int32, height int32, destx int32, desty int32) {
 	var dest, src uintptr
 	if srcx < 0 || srcx+width > int32(SCREENWIDTH) || srcy < 0 || srcy+height > int32(SCREENHEIGHT) || destx < 0 || destx+width > int32(SCREENWIDTH) || desty < 0 || desty+height > int32(SCREENHEIGHT) {
-		I_Error(tls, __ccgo_ts+28088, 0)
+		I_Error(tls, __ccgo_ts(28088), 0)
 	}
 	V_MarkRect(tls, destx, desty, width, height)
 	src = source + uintptr(int32(SCREENWIDTH)*srcy) + uintptr(srcx)
@@ -61361,7 +61361,7 @@ func V_DrawPatch(tls *libc.TLS, x int32, y int32, patch uintptr) {
 		}
 	}
 	if x < 0 || x+int32((*patch_t)(unsafe.Pointer(patch)).Fwidth) > int32(SCREENWIDTH) || y < 0 || y+int32((*patch_t)(unsafe.Pointer(patch)).Fheight) > int32(SCREENHEIGHT) {
-		I_Error(tls, __ccgo_ts+28103, libc.VaList(bp+8, x, y, int32((*patch_t)(unsafe.Pointer(patch)).Fwidth), int32((*patch_t)(unsafe.Pointer(patch)).Fheight), int32((*patch_t)(unsafe.Pointer(patch)).Ftopoffset), int32((*patch_t)(unsafe.Pointer(patch)).Fleftoffset)))
+		I_Error(tls, __ccgo_ts(28103), libc.VaList(bp+8, x, y, int32((*patch_t)(unsafe.Pointer(patch)).Fwidth), int32((*patch_t)(unsafe.Pointer(patch)).Fheight), int32((*patch_t)(unsafe.Pointer(patch)).Ftopoffset), int32((*patch_t)(unsafe.Pointer(patch)).Fleftoffset)))
 	}
 	V_MarkRect(tls, x, y, int32((*patch_t)(unsafe.Pointer(patch)).Fwidth), int32((*patch_t)(unsafe.Pointer(patch)).Fheight))
 	col = 0
@@ -61416,7 +61416,7 @@ func V_DrawPatchFlipped(tls *libc.TLS, x int32, y int32, patch uintptr) {
 		}
 	}
 	if x < 0 || x+int32((*patch_t)(unsafe.Pointer(patch)).Fwidth) > int32(SCREENWIDTH) || y < 0 || y+int32((*patch_t)(unsafe.Pointer(patch)).Fheight) > int32(SCREENHEIGHT) {
-		I_Error(tls, __ccgo_ts+28187, 0)
+		I_Error(tls, __ccgo_ts(28187), 0)
 	}
 	V_MarkRect(tls, x, y, int32((*patch_t)(unsafe.Pointer(patch)).Fwidth), int32((*patch_t)(unsafe.Pointer(patch)).Fheight))
 	col = 0
@@ -61471,7 +61471,7 @@ func V_DrawBlock(tls *libc.TLS, x int32, y int32, width int32, height int32, src
 	var dest uintptr
 	var v1 int32
 	if x < 0 || x+width > int32(SCREENWIDTH) || y < 0 || y+height > int32(SCREENHEIGHT) {
-		I_Error(tls, __ccgo_ts+28288, 0)
+		I_Error(tls, __ccgo_ts(28288), 0)
 	}
 	V_MarkRect(tls, x, y, width, height)
 	dest = dest_screen + uintptr(y*int32(SCREENWIDTH)) + uintptr(x)
@@ -61694,7 +61694,7 @@ func V_ScreenShot(tls *libc.TLS, format uintptr) {
 	var ext uintptr
 	var i int32
 	// find a file name to save it to
-	ext = __ccgo_ts + 28304
+	ext = __ccgo_ts(28304)
 	i = 0
 	for {
 		if !(i <= int32(99)) {
@@ -61710,10 +61710,10 @@ func V_ScreenShot(tls *libc.TLS, format uintptr) {
 		i++
 	}
 	if i == int32(100) {
-		I_Error(tls, __ccgo_ts+28308, 0)
+		I_Error(tls, __ccgo_ts(28308), 0)
 	}
 	// save the pcx file
-	WritePCXfile(tls, bp, I_VideoBuffer, int32(SCREENWIDTH), int32(SCREENHEIGHT), W_CacheLumpName(tls, __ccgo_ts+1490, int32(PU_CACHE)))
+	WritePCXfile(tls, bp, I_VideoBuffer, int32(SCREENWIDTH), int32(SCREENHEIGHT), W_CacheLumpName(tls, __ccgo_ts(1490), int32(PU_CACHE)))
 }
 
 func V_DrawMouseSpeedBox(tls *libc.TLS, speed int32) {
@@ -62432,7 +62432,7 @@ func WI_drawOnLnode(tls *libc.TLS, n int32, c uintptr) {
 		V_DrawPatch(tls, (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fx, (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fy, *(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))
 	} else {
 		// DEBUG
-		libc.Xprintf(tls, __ccgo_ts+28344, libc.VaList(bp+8, n+int32(1)))
+		libc.Xprintf(tls, __ccgo_ts(28344), libc.VaList(bp+8, n+int32(1)))
 	}
 }
 
@@ -63438,7 +63438,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 			if !(i < NUMCMAPS) {
 				break
 			}
-			libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts+28378, libc.VaList(bp1+24, i))
+			libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28378), libc.VaList(bp1+24, i))
 			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, lnames+uintptr(i)*8)
 			goto _1
 		_1:
@@ -63451,7 +63451,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 			if !(i < int32(NUMMAPS)) {
 				break
 			}
-			libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts+28389, libc.VaList(bp1+24, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, i))
+			libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28389), libc.VaList(bp1+24, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, i))
 			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, lnames+uintptr(i)*8)
 			goto _2
 		_2:
@@ -63459,11 +63459,11 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 			i++
 		}
 		// you are here
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28398, uintptr(unsafe.Pointer(&yah)))
+		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28398), uintptr(unsafe.Pointer(&yah)))
 		// you are here (alt.)
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28405, uintptr(unsafe.Pointer(&yah))+1*8)
+		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28405), uintptr(unsafe.Pointer(&yah))+1*8)
 		// splat
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28412, uintptr(unsafe.Pointer(&splat)))
+		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28412), uintptr(unsafe.Pointer(&splat)))
 		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd < int32(3) {
 			j = 0
 			for {
@@ -63479,7 +63479,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 					// MONDO HACK!
 					if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd != int32(1) || j != int32(8) {
 						// animations
-						libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts+28420, libc.VaList(bp1+24, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, j, i))
+						libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28420), libc.VaList(bp1+24, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, j, i))
 						(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, a+32+uintptr(i)*8)
 					} else {
 						// HACK ALERT!
@@ -63498,14 +63498,14 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 		}
 	}
 	// More hacks on minus sign.
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28434, uintptr(unsafe.Pointer(&wiminus)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28434), uintptr(unsafe.Pointer(&wiminus)))
 	i = 0
 	for {
 		if !(i < int32(10)) {
 			break
 		}
 		// numbers 0-9
-		libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts+28442, libc.VaList(bp1+24, i))
+		libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28442), libc.VaList(bp1+24, i))
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, uintptr(unsafe.Pointer(&num))+uintptr(i)*8)
 		goto _5
 	_5:
@@ -63513,54 +63513,54 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 		i++
 	}
 	// percent sign
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28450, uintptr(unsafe.Pointer(&percent)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28450), uintptr(unsafe.Pointer(&percent)))
 	// "finished"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28457, uintptr(unsafe.Pointer(&finished)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28457), uintptr(unsafe.Pointer(&finished)))
 	// "entering"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28461, uintptr(unsafe.Pointer(&entering)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28461), uintptr(unsafe.Pointer(&entering)))
 	// "kills"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28469, uintptr(unsafe.Pointer(&kills)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28469), uintptr(unsafe.Pointer(&kills)))
 	// "scrt"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28476, uintptr(unsafe.Pointer(&secret)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28476), uintptr(unsafe.Pointer(&secret)))
 	// "secret"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28483, uintptr(unsafe.Pointer(&sp_secret)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28483), uintptr(unsafe.Pointer(&sp_secret)))
 	// french wad uses WIOBJ (?)
-	if W_CheckNumForName(tls, __ccgo_ts+28491) >= 0 {
+	if W_CheckNumForName(tls, __ccgo_ts(28491)) >= 0 {
 		// "items"
 		if netgame != 0 && !(deathmatch != 0) {
-			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28491, uintptr(unsafe.Pointer(&items)))
+			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28491), uintptr(unsafe.Pointer(&items)))
 		} else {
-			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28497, uintptr(unsafe.Pointer(&items)))
+			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28497), uintptr(unsafe.Pointer(&items)))
 		}
 	} else {
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28497, uintptr(unsafe.Pointer(&items)))
+		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28497), uintptr(unsafe.Pointer(&items)))
 	}
 	// "frgs"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28504, uintptr(unsafe.Pointer(&frags)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28504), uintptr(unsafe.Pointer(&frags)))
 	// ":"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28511, uintptr(unsafe.Pointer(&colon)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28511), uintptr(unsafe.Pointer(&colon)))
 	// "time"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28519, uintptr(unsafe.Pointer(&timepatch)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28519), uintptr(unsafe.Pointer(&timepatch)))
 	// "sucks"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28526, uintptr(unsafe.Pointer(&sucks)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28526), uintptr(unsafe.Pointer(&sucks)))
 	// "par"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28534, uintptr(unsafe.Pointer(&par)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28534), uintptr(unsafe.Pointer(&par)))
 	// "killers" (vertical)
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28540, uintptr(unsafe.Pointer(&killers)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28540), uintptr(unsafe.Pointer(&killers)))
 	// "victims" (horiz)
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28548, uintptr(unsafe.Pointer(&victims)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28548), uintptr(unsafe.Pointer(&victims)))
 	// "total"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts+28556, uintptr(unsafe.Pointer(&total)))
+	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28556), uintptr(unsafe.Pointer(&total)))
 	i = 0
 	for {
 		if !(i < int32(MAXPLAYERS)) {
 			break
 		}
 		// "1,2,3,4"
-		libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts+28563, libc.VaList(bp1+24, i))
+		libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28563), libc.VaList(bp1+24, i))
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, uintptr(unsafe.Pointer(&p))+uintptr(i)*8)
 		// "1,2,3,4"
-		libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts+28570, libc.VaList(bp1+24, i+int32(1)))
+		libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28570), libc.VaList(bp1+24, i+int32(1)))
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, uintptr(unsafe.Pointer(&bp))+uintptr(i)*8)
 		goto _6
 	_6:
@@ -63569,12 +63569,12 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 	}
 	// Background image
 	if gamemode == int32(commercial) {
-		M_StringCopy(tls, bp1, __ccgo_ts+1951, uint64(9))
+		M_StringCopy(tls, bp1, __ccgo_ts(1951), uint64(9))
 	} else {
 		if gamemode == int32(retail) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd == int32(3) {
-			M_StringCopy(tls, bp1, __ccgo_ts+1951, uint64(9))
+			M_StringCopy(tls, bp1, __ccgo_ts(1951), uint64(9))
 		} else {
-			libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts+28577, libc.VaList(bp1+24, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd))
+			libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28577), libc.VaList(bp1+24, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd))
 		}
 	}
 	// Draw backdrop and save to a temporary buffer
@@ -63596,9 +63596,9 @@ func WI_loadData(tls *libc.TLS) {
 	// These two graphics are special cased because we're sharing
 	// them with the status bar code
 	// your face
-	star = W_CacheLumpName(tls, __ccgo_ts+28585, int32(PU_STATIC))
+	star = W_CacheLumpName(tls, __ccgo_ts(28585), int32(PU_STATIC))
 	// dead face
-	bstar = W_CacheLumpName(tls, __ccgo_ts+27974, int32(PU_STATIC))
+	bstar = W_CacheLumpName(tls, __ccgo_ts(27974), int32(PU_STATIC))
 }
 
 func WI_unloadCallback(tls *libc.TLS, name uintptr, variable uintptr) {
@@ -63747,7 +63747,7 @@ func W_OpenFile(tls *libc.TLS, path uintptr) (r uintptr) {
 	// Use the OS's virtual memory subsystem to map WAD files
 	// directly into memory.
 	//
-	if !(M_CheckParm(tls, __ccgo_ts+28593) != 0) {
+	if !(M_CheckParm(tls, __ccgo_ts(28593)) != 0) {
 		return (*(*func(*libc.TLS, uintptr) uintptr)(unsafe.Pointer(&struct{ uintptr }{stdc_wad_file.FOpenFile})))(tls, path)
 	}
 	// Try all classes in order until we find one that works
@@ -63793,7 +63793,7 @@ func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
 	//
 	// Load the specified PWAD files.
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts+28599, int32(1))
+	p = M_CheckParmWithArgs(tls, __ccgo_ts(28599), int32(1))
 	if p != 0 {
 		// the parms after p are wadfile/lump names,
 		// until end of parms or another - preceded parm
@@ -63805,7 +63805,7 @@ func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
 				break
 			}
 			filename = D_TryFindWADByName(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8)))
-			libc.Xprintf(tls, __ccgo_ts+2817, libc.VaList(bp+8, filename))
+			libc.Xprintf(tls, __ccgo_ts(2817), libc.VaList(bp+8, filename))
 			W_AddFile(tls, filename)
 		}
 	}
@@ -63859,7 +63859,7 @@ func ExtendLumpInfo(tls *libc.TLS, newnumlumps int32) {
 	var nextlumpnum int32
 	newlumpinfo = libc.Xcalloc(tls, libc.Uint64FromInt32(newnumlumps), uint64(40))
 	if newlumpinfo == libc.UintptrFromInt32(0) {
-		I_Error(tls, __ccgo_ts+28605, 0)
+		I_Error(tls, __ccgo_ts(28605), 0)
 	}
 	// Copy over lumpinfo_t structures from the old array. If any of
 	// these lumps have been cached, we need to update the user
@@ -63911,11 +63911,11 @@ func W_AddFile(tls *libc.TLS, filename uintptr) (r uintptr) {
 	// open the file and add to directory
 	wad_file = W_OpenFile(tls, filename)
 	if wad_file == libc.UintptrFromInt32(0) {
-		libc.Xprintf(tls, __ccgo_ts+28631, libc.VaList(bp+24, filename))
+		libc.Xprintf(tls, __ccgo_ts(28631), libc.VaList(bp+24, filename))
 		return libc.UintptrFromInt32(0)
 	}
 	newnumlumps = libc.Int32FromUint32(numlumps)
-	if libc.Xstrcasecmp(tls, filename+uintptr(libc.Xstrlen(tls, filename))-uintptr(3), __ccgo_ts+28650) != 0 {
+	if libc.Xstrcasecmp(tls, filename+uintptr(libc.Xstrlen(tls, filename))-uintptr(3), __ccgo_ts(28650)) != 0 {
 		// single lump file
 		// fraggle: Swap the filepos and size here.  The WAD directory
 		// parsing code expects a little-endian directory, so will swap
@@ -63931,10 +63931,10 @@ func W_AddFile(tls *libc.TLS, filename uintptr) (r uintptr) {
 	} else {
 		// WAD file
 		W_Read(tls, wad_file, uint32(0), bp, uint64(12))
-		if libc.Xstrncmp(tls, bp, __ccgo_ts+28654, uint64(4)) != 0 {
+		if libc.Xstrncmp(tls, bp, __ccgo_ts(28654), uint64(4)) != 0 {
 			// Homebrew levels?
-			if libc.Xstrncmp(tls, bp, __ccgo_ts+28659, uint64(4)) != 0 {
-				I_Error(tls, __ccgo_ts+28664, libc.VaList(bp+24, filename))
+			if libc.Xstrncmp(tls, bp, __ccgo_ts(28659), uint64(4)) != 0 {
+				I_Error(tls, __ccgo_ts(28664), libc.VaList(bp+24, filename))
 			}
 			// ???modifiedgame = true;
 		}
@@ -64033,7 +64033,7 @@ func W_GetNumForName(tls *libc.TLS, name uintptr) (r int32) {
 	var i int32
 	i = W_CheckNumForName(tls, name)
 	if i < 0 {
-		I_Error(tls, __ccgo_ts+28706, libc.VaList(bp+8, name))
+		I_Error(tls, __ccgo_ts(28706), libc.VaList(bp+8, name))
 	}
 	return i
 }
@@ -64047,7 +64047,7 @@ func W_GetNumForName(tls *libc.TLS, name uintptr) (r int32) {
 func W_LumpLength(tls *libc.TLS, lump uint32) (r int32) {
 	bp := alloc(16)
 	if lump >= numlumps {
-		I_Error(tls, __ccgo_ts+28737, libc.VaList(bp+8, lump))
+		I_Error(tls, __ccgo_ts(28737), libc.VaList(bp+8, lump))
 	}
 	return (*(*lumpinfo_t)(unsafe.Pointer(lumpinfo + uintptr(lump)*40))).Fsize
 }
@@ -64064,13 +64064,13 @@ func W_ReadLump(tls *libc.TLS, lump uint32, dest uintptr) {
 	var c int32
 	var l uintptr
 	if lump >= numlumps {
-		I_Error(tls, __ccgo_ts+28766, libc.VaList(bp+8, lump))
+		I_Error(tls, __ccgo_ts(28766), libc.VaList(bp+8, lump))
 	}
 	l = lumpinfo + uintptr(lump)*40
 	I_BeginRead(tls)
 	c = libc.Int32FromUint64(W_Read(tls, (*lumpinfo_t)(unsafe.Pointer(l)).Fwad_file, libc.Uint32FromInt32((*lumpinfo_t)(unsafe.Pointer(l)).Fposition), dest, libc.Uint64FromInt32((*lumpinfo_t)(unsafe.Pointer(l)).Fsize)))
 	if c < (*lumpinfo_t)(unsafe.Pointer(l)).Fsize {
-		I_Error(tls, __ccgo_ts+28793, libc.VaList(bp+8, c, (*lumpinfo_t)(unsafe.Pointer(l)).Fsize, lump))
+		I_Error(tls, __ccgo_ts(28793), libc.VaList(bp+8, c, (*lumpinfo_t)(unsafe.Pointer(l)).Fsize, lump))
 	}
 	I_EndRead(tls)
 }
@@ -64091,7 +64091,7 @@ func W_CacheLumpNum(tls *libc.TLS, lumpnum int32, tag int32) (r uintptr) {
 	bp := alloc(16)
 	var lump, result uintptr
 	if libc.Uint32FromInt32(lumpnum) >= numlumps {
-		I_Error(tls, __ccgo_ts+28835, libc.VaList(bp+8, lumpnum))
+		I_Error(tls, __ccgo_ts(28835), libc.VaList(bp+8, lumpnum))
 	}
 	lump = lumpinfo + uintptr(lumpnum)*40
 	// Get the pointer to return.  If the lump is in a memory-mapped
@@ -64105,7 +64105,7 @@ func W_CacheLumpNum(tls *libc.TLS, lumpnum int32, tag int32) (r uintptr) {
 		if (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache != libc.UintptrFromInt32(0) {
 			// Already cached, so just switch the zone tag.
 			result = (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache
-			Z_ChangeTag2(tls, (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache, tag, __ccgo_ts+28866, int32(410))
+			Z_ChangeTag2(tls, (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache, tag, __ccgo_ts(28866), int32(410))
 		} else {
 			// Not yet loaded, so load it now
 			(*lumpinfo_t)(unsafe.Pointer(lump)).Fcache = Z_Malloc(tls, W_LumpLength(tls, libc.Uint32FromInt32(lumpnum)), tag, lump+24)
@@ -64139,13 +64139,13 @@ func W_ReleaseLumpNum(tls *libc.TLS, lumpnum int32) {
 	bp := alloc(16)
 	var lump uintptr
 	if libc.Uint32FromInt32(lumpnum) >= numlumps {
-		I_Error(tls, __ccgo_ts+28874, libc.VaList(bp+8, lumpnum))
+		I_Error(tls, __ccgo_ts(28874), libc.VaList(bp+8, lumpnum))
 	}
 	lump = lumpinfo + uintptr(lumpnum)*40
 	if (*wad_file_t)(unsafe.Pointer((*lumpinfo_t)(unsafe.Pointer(lump)).Fwad_file)).Fmapped != libc.UintptrFromInt32(0) {
 		// Memory-mapped file, so nothing needs to be done here.
 	} else {
-		Z_ChangeTag2(tls, (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache, int32(PU_CACHE), __ccgo_ts+28866, int32(461))
+		Z_ChangeTag2(tls, (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache, int32(PU_CACHE), __ccgo_ts(28866), int32(461))
 	}
 }
 
@@ -64193,19 +64193,19 @@ var unique_lumps = [4]struct {
 	Flumpname uintptr
 }{
 	0: {
-		Flumpname: __ccgo_ts + 28907,
+		Flumpname: __ccgo_ts(28907),
 	},
 	1: {
 		Fmission:  int32(heretic),
-		Flumpname: __ccgo_ts + 28914,
+		Flumpname: __ccgo_ts(28914),
 	},
 	2: {
 		Fmission:  int32(hexen),
-		Flumpname: __ccgo_ts + 28921,
+		Flumpname: __ccgo_ts(28921),
 	},
 	3: {
 		Fmission:  int32(strife),
-		Flumpname: __ccgo_ts + 28928,
+		Flumpname: __ccgo_ts(28928),
 	},
 }
 
@@ -64220,7 +64220,7 @@ func W_CheckCorrectIWAD(tls *libc.TLS, mission GameMission_t) {
 		if mission != unique_lumps[i].Fmission {
 			lumpnum = W_CheckNumForName(tls, unique_lumps[i].Flumpname)
 			if lumpnum >= 0 {
-				I_Error(tls, __ccgo_ts+28935, libc.VaList(bp+8, D_SuggestGameName(tls, unique_lumps[i].Fmission, int32(indetermined)), __ccgo_ts+29063, D_GameMissionString(tls, mission), __ccgo_ts+29063, D_GameMissionString(tls, unique_lumps[i].Fmission)))
+				I_Error(tls, __ccgo_ts(28935), libc.VaList(bp+8, D_SuggestGameName(tls, unique_lumps[i].Fmission, int32(indetermined)), __ccgo_ts(29063), D_GameMissionString(tls, mission), __ccgo_ts(29063), D_GameMissionString(tls, unique_lumps[i].Fmission)))
 			}
 		}
 		goto _1
@@ -64346,7 +64346,7 @@ func Z_Free(tls *libc.TLS, ptr uintptr) {
 	var block, other uintptr
 	block = ptr - libc.UintptrFromInt64(40)
 	if (*memblock_t)(unsafe.Pointer(block)).Fid != int32(ZONEID) {
-		I_Error(tls, __ccgo_ts+29075, 0)
+		I_Error(tls, __ccgo_ts(29075), 0)
 	}
 	if (*memblock_t)(unsafe.Pointer(block)).Ftag != int32(PU_FREE) && (*memblock_t)(unsafe.Pointer(block)).Fuser != libc.UintptrFromInt32(0) {
 		// clear the user's mark
@@ -64406,7 +64406,7 @@ func Z_Malloc(tls *libc.TLS, size int32, tag int32, user uintptr) (r uintptr) {
 	for cond := true; cond; cond = (*memblock_t)(unsafe.Pointer(base)).Ftag != int32(PU_FREE) || (*memblock_t)(unsafe.Pointer(base)).Fsize < size {
 		if rover == start {
 			// scanned all the way around the list
-			I_Error(tls, __ccgo_ts+29114, libc.VaList(bp+8, size))
+			I_Error(tls, __ccgo_ts(29114), libc.VaList(bp+8, size))
 		}
 		if (*memblock_t)(unsafe.Pointer(rover)).Ftag != int32(PU_FREE) {
 			if (*memblock_t)(unsafe.Pointer(rover)).Ftag < int32(PU_PURGELEVEL) {
@@ -64442,7 +64442,7 @@ func Z_Malloc(tls *libc.TLS, size int32, tag int32, user uintptr) (r uintptr) {
 		(*memblock_t)(unsafe.Pointer(base)).Fsize = size
 	}
 	if user == libc.UintptrFromInt32(0) && tag >= int32(PU_PURGELEVEL) {
-		I_Error(tls, __ccgo_ts+29157, 0)
+		I_Error(tls, __ccgo_ts(29157), 0)
 	}
 	(*memblock_t)(unsafe.Pointer(base)).Fuser = user
 	(*memblock_t)(unsafe.Pointer(base)).Ftag = tag
@@ -64498,13 +64498,13 @@ func Z_CheckHeap(tls *libc.TLS) {
 			break
 		}
 		if block+uintptr((*memblock_t)(unsafe.Pointer(block)).Fsize) != (*memblock_t)(unsafe.Pointer(block)).Fnext {
-			I_Error(tls, __ccgo_ts+29436, 0)
+			I_Error(tls, __ccgo_ts(29436), 0)
 		}
 		if (*memblock_s)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(block)).Fnext)).Fprev != block {
-			I_Error(tls, __ccgo_ts+29491, 0)
+			I_Error(tls, __ccgo_ts(29491), 0)
 		}
 		if (*memblock_t)(unsafe.Pointer(block)).Ftag == int32(PU_FREE) && (*memblock_s)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(block)).Fnext)).Ftag == int32(PU_FREE) {
-			I_Error(tls, __ccgo_ts+29546, 0)
+			I_Error(tls, __ccgo_ts(29546), 0)
 		}
 		goto _1
 	_1:
@@ -64523,10 +64523,10 @@ func Z_ChangeTag2(tls *libc.TLS, ptr uintptr, tag int32, file uintptr, line int3
 	var block uintptr
 	block = ptr - libc.UintptrFromInt64(40)
 	if (*memblock_t)(unsafe.Pointer(block)).Fid != int32(ZONEID) {
-		I_Error(tls, __ccgo_ts+29588, libc.VaList(bp+8, file, line))
+		I_Error(tls, __ccgo_ts(29588), libc.VaList(bp+8, file, line))
 	}
 	if tag >= int32(PU_PURGELEVEL) && (*memblock_t)(unsafe.Pointer(block)).Fuser == libc.UintptrFromInt32(0) {
-		I_Error(tls, __ccgo_ts+29632, libc.VaList(bp+8, file, line))
+		I_Error(tls, __ccgo_ts(29632), libc.VaList(bp+8, file, line))
 	}
 	(*memblock_t)(unsafe.Pointer(block)).Ftag = tag
 }
@@ -64535,7 +64535,7 @@ func Z_ChangeUser(tls *libc.TLS, ptr uintptr, user uintptr) {
 	var block uintptr
 	block = ptr - libc.UintptrFromInt64(40)
 	if (*memblock_t)(unsafe.Pointer(block)).Fid != int32(ZONEID) {
-		I_Error(tls, __ccgo_ts+29693, 0)
+		I_Error(tls, __ccgo_ts(29693), 0)
 	}
 	(*memblock_t)(unsafe.Pointer(block)).Fuser = user
 	*(*uintptr)(unsafe.Pointer(user)) = ptr
@@ -64553,7 +64553,7 @@ type stdc_wad_file_t = struct {
 
 func W_StdC_OpenFile(tls *libc.TLS, path uintptr) (r uintptr) {
 	var fstream, result uintptr
-	fstream = libc.Xfopen(tls, path, __ccgo_ts+13884)
+	fstream = libc.Xfopen(tls, path, __ccgo_ts(13884))
 	if fstream == libc.UintptrFromInt32(0) {
 		return libc.UintptrFromInt32(0)
 	}
@@ -64892,7 +64892,7 @@ func I_SetPalette(tls *libc.TLS, palette uintptr) {
 
 func I_GetPaletteIndex(tls *libc.TLS, r int32, g int32, b int32) (r1 int32) {
 	var best, best_diff, diff int32
-	libc.Xprintf(tls, __ccgo_ts+30076, 0)
+	libc.Xprintf(tls, __ccgo_ts(30076), 0)
 	best = 0
 	best_diff = int32(INT_MAX19)
 	for i := int32(0); i < 256; i++ {
@@ -67222,6 +67222,1199 @@ var yspeed [8]fixed_t
 
 var zlight [16][128]uintptr
 
-var __ccgo_ts = uintptr(unsafe.Pointer(&__ccgo_ts1[0]))
+func __ccgo_ts(index int) uintptr {
+	val, ok := __ccgo_ts_map[index]
+	if !ok {
+		panic("index not found in __ccgo_ts_map")
+	}
+	return uintptr(unsafe.Pointer(&val[0]))
+}
 
-var __ccgo_ts1 = []byte("AMMNUM%d\x00Follow Mode ON\x00Follow Mode OFF\x00Grid ON\x00Grid OFF\x00%s %d\x00Marked Spot\x00All Marks Cleared\x00fuck %d \r\x00are you sure you want to\nquit this great game?\x00please don't leave, there's more\ndemons to toast!\x00let's beat it -- this is turning\ninto a bloodbath!\x00i wouldn't leave if i were you.\ndos is much worse.\x00you're trying to say you like dos\nbetter than me, right?\x00don't leave yet -- there's a\ndemon around that corner!\x00ya know, next time you come in here\ni'm gonna toast ya.\x00go ahead and leave. see if i care.\x00you want to quit?\nthen, thou hast lost an eighth!\x00don't go now, there's a \ndimensional shambler waiting\nat the dos prompt!\x00get outta here and go back\nto your boring programs.\x00if i were your boss, i'd \n deathmatch ya in a minute!\x00look, bud. you leave now\nand you forfeit your body count!\x00just leave. when you come\nback, i'll be waiting with a bat.\x00you're lucky i don't smack\nyou for thinking about leaving.\x00doom2.wad\x00Doom II\x00plutonia.wad\x00Final Doom: Plutonia Experiment\x00tnt.wad\x00Final Doom: TNT: Evilution\x00doom.wad\x00Doom\x00doom1.wad\x00Doom Shareware\x00chex.wad\x00Chex Quest\x00hacx.wad\x00Hacx\x00freedm.wad\x00FreeDM\x00freedoom2.wad\x00Freedoom: Phase 2\x00freedoom1.wad\x00Freedoom: Phase 1\x00heretic.wad\x00Heretic\x00heretic1.wad\x00Heretic Shareware\x00hexen.wad\x00Hexen\x00strife1.wad\x00Strife\x00.\x00/\x00Trying IWAD file:%s\n\x00-iwad\x00IWAD file '%s' not found!\x00-iwad not specified, trying a few iwad names\n\x00unknown.wad\x00Unknown game?\x00Disconnected from server in drone mode.\x00Disconnected from server.\n\x00TryRunTics: lowtic < gametic\x00gametic>lowtic\x00PLAYPAL\x00M_PAUSE\x00mouse_sensitivity\x00sfx_volume\x00music_volume\x00show_messages\x00screenblocks\x00detaillevel\x00snd_channels\x00vanilla_savegame_limit\x00vanilla_demo_limit\x00show_endoom\x00chatmacro%i\x00 WARNING: You are playing using one of the Doom Classic\n IWAD files shipped with the Doom 3: BFG Edition. These are\n known to be incompatible with the regular IWAD files and\n may cause demos and network games to get out of sync.\n\x00TITLEPIC\x00demo1\x00CREDIT\x00demo2\x00HELP2\x00demo3\x00demo4\x00titlepic\x00INTERPIC\x00                         DOOM 2: Hell on Earth v%i.%i                           \x00                            DOOM Shareware Startup v%i.%i                           \x00                            DOOM Registered Startup v%i.%i                           \x00                          DOOM System Startup v%i.%i                          \x00                         The Ultimate DOOM Startup v%i.%i                        \x00                     DOOM 2: TNT - Evilution v%i.%i                           \x00                   DOOM 2: Plutonia Experiment v%i.%i                           \x00doom2\x00tnt\x00plutonia\x00Valid mission packs are:\n\x00\t%s\n\x00Unknown mission pack name: %s\x00MAP01\x00E1M1\x00Unknown or invalid IWAD file.\x00E4M1\x00E3M1\x00-pack\x00FREEDOOM\x00FREEDM\x00Unknown\x00The Ultimate DOOM\x00DOOM Registered\x00DOOM Shareware\x00DOOM 2: Hell on Earth\x00DOOM 2: Plutonia Experiment\x00DOOM 2: TNT - Evilution\x00 adding %s\n\x00===========================================================================\nATTENTION:  This version of DOOM has been modified.  If you would like to\nget a copy of the original game, call 1-800-IDGAMES or see the readme file.\n        You will not receive technical support for modified games.\n                      press enter to continue\n===========================================================================\n\x00===========================================================================\n                 Commercial product - do not distribute!\n         Please report software piracy to the SPA: 1-800-388-PIR8\n===========================================================================\n\x00===========================================================================\n                                Shareware!\n===========================================================================\n\x00%s\x00\n\x00Doom 1.666\x001.666\x00Doom 1.7/1.7a\x001.7\x00Doom 1.8\x001.8\x00Doom 1.9\x001.9\x00hacx\x00Ultimate Doom\x00ultimate\x00Final Doom\x00final\x00Final Doom (alt)\x00final2\x00chex\x00-gameversion\x00Supported game versions:\n\x00\t%s (%s)\n\x00Unknown game version '%s'\x00Emulating the behavior of the '%s' executable.\n\x00-testcontrols\x00ENDOOM\x00Doom Generic 0.1\x00Z_Init: Init zone memory allocation daemon. \n\x00-nomonsters\x00-respawn\x00-fast\x00-devparm\x00-deathmatch\x00-altdeath\x00Development mode ON.\n\x00-turbo\x00turbo scale: %i%%\n\x00V_Init: allocate screens.\n\x00M_LoadDefaults: Load system defaults.\n\x00default.cfg\x00doomgenericdoom.cfg\x00Game mode indeterminate.  No IWAD file was found.  Try\nspecifying one with the '-iwad' command line parameter.\n\x00W_Init: Init WADfiles.\n\x00dmenupic\x00BFG Edition: Using workarounds as needed.\n\x00-playdemo\x00-timedemo\x00.lmp\x00%s.lmp\x00Playing demo %s.\n\x00\nYou cannot -file with the shareware version. Register!\x00\nThis is not the registered version.\x00SS_START\x00FF_END\x00 WARNING: The loaded WAD file contains modified sprites or\n floor textures.  You may want to use the '-merge' command\n line option instead of '-file'.\n\x00 WARNING: You are playing using one of the Freedoom IWAD\n files, which might not work in this port. See this page\n for more information on how to play using Freedoom:\n   http://www.chocolate-doom.org/wiki/index.php/Freedoom\n\x00I_Init: Setting up machine state.\n\x00-skill\x00-episode\x00-timer\x00-avg\x00-warp\x00-loadgame\x00M_Init: Init miscellaneous info.\n\x00R_Init: Init DOOM refresh daemon - \x00\nP_Init: Init Playloop state.\n\x00S_Init: Setting up sound.\n\x00D_CheckNetGame: Checking network game status.\n\x00HU_Init: Setting up heads up display.\n\x00ST_Init: Init status bar.\n\x00map01\x00-statdump\x00External statistics registered.\n\x00-record\x00none\x00doom\x00heretic\x00hexen\x00strife\x00Player 1 left the game\x00NOTE: Turning resolution is reduced; this is probably because there is a client recording a Vanilla demo.\n\x00-longtics\x00-left\x00-right\x00-solo-net\x00startskill %i  deathmatch: %i  startmap: %i  startepisode: %i\n\x00player %i of %i (%i nodes)\n\x00Austin Virtual Gaming: Levels will end after 20 minutes\n\x00Levels will end after %d minute\x00s\x00.\n\x00FLOOR4_8\x00Once you beat the big badasses and\nclean out the moon base you're supposed\nto win, aren't you? Aren't you? Where's\nyour fat reward and ticket home? What\nthe hell is this? It's not supposed to\nend this way!\n\nIt stinks like rotten meat, but looks\nlike the lost Deimos base.  Looks like\nyou're stuck on The Shores of Hell.\nThe only way out is through.\n\nTo continue the DOOM experience, play\nThe Shores of Hell and its amazing\nsequel, Inferno!\n\x00SFLR6_1\x00You've done it! The hideous cyber-\ndemon lord that ruled the lost Deimos\nmoon base has been slain and you\nare triumphant! But ... where are\nyou? You clamber to the edge of the\nmoon and look down to see the awful\ntruth.\n\nDeimos floats above Hell itself!\nYou've never heard of anyone escaping\nfrom Hell, but you'll make the bastards\nsorry they ever heard of you! Quickly,\nyou rappel down to  the surface of\nHell.\n\nNow, it's on to the final chapter of\nDOOM! -- Inferno.\x00MFLR8_4\x00The loathsome spiderdemon that\nmasterminded the invasion of the moon\nbases and caused so much death has had\nits ass kicked for all time.\n\nA hidden doorway opens and you enter.\nYou've proven too tough for Hell to\ncontain, and now Hell at last plays\nfair -- for you emerge from the door\nto see the green fields of Earth!\nHome at last.\n\nYou wonder what's been happening on\nEarth while you were battling evil\nunleashed. It's good that no Hell-\nspawn could have come through that\ndoor with you ...\x00MFLR8_3\x00the spider mastermind must have sent forth\nits legions of hellspawn before your\nfinal confrontation with that terrible\nbeast from hell.  but you stepped forward\nand brought forth eternal damnation and\nsuffering upon the horde as a true hero\nwould in the face of something so evil.\n\nbesides, someone was gonna pay for what\nhappened to daisy, your pet rabbit.\n\nbut now, you see spread before you more\npotential pain and gibbitude as a nation\nof demons run amok among our cities.\n\nnext stop, hell on earth!\x00SLIME16\x00YOU HAVE ENTERED DEEPLY INTO THE INFESTED\nSTARPORT. BUT SOMETHING IS WRONG. THE\nMONSTERS HAVE BROUGHT THEIR OWN REALITY\nWITH THEM, AND THE STARPORT'S TECHNOLOGY\nIS BEING SUBVERTED BY THEIR PRESENCE.\n\nAHEAD, YOU SEE AN OUTPOST OF HELL, A\nFORTIFIED ZONE. IF YOU CAN GET PAST IT,\nYOU CAN PENETRATE INTO THE HAUNTED HEART\nOF THE STARBASE AND FIND THE CONTROLLING\nSWITCH WHICH HOLDS EARTH'S POPULATION\nHOSTAGE.\x00RROCK14\x00YOU HAVE WON! YOUR VICTORY HAS ENABLED\nHUMANKIND TO EVACUATE EARTH AND ESCAPE\nTHE NIGHTMARE.  NOW YOU ARE THE ONLY\nHUMAN LEFT ON THE FACE OF THE PLANET.\nCANNIBAL MUTATIONS, CARNIVOROUS ALIENS,\nAND EVIL SPIRITS ARE YOUR ONLY NEIGHBORS.\nYOU SIT BACK AND WAIT FOR DEATH, CONTENT\nTHAT YOU HAVE SAVED YOUR SPECIES.\n\nBUT THEN, EARTH CONTROL BEAMS DOWN A\nMESSAGE FROM SPACE: \"SENSORS HAVE LOCATED\nTHE SOURCE OF THE ALIEN INVASION. IF YOU\nGO THERE, YOU MAY BE ABLE TO BLOCK THEIR\nENTRY.  THE ALIEN BASE IS IN THE HEART OF\nYOUR OWN HOME CITY, NOT FAR FROM THE\nSTARPORT.\" SLOWLY AND PAINFULLY YOU GET\nUP AND RETURN TO THE FRAY.\x00RROCK07\x00YOU ARE AT THE CORRUPT HEART OF THE CITY,\nSURROUNDED BY THE CORPSES OF YOUR ENEMIES.\nYOU SEE NO WAY TO DESTROY THE CREATURES'\nENTRYWAY ON THIS SIDE, SO YOU CLENCH YOUR\nTEETH AND PLUNGE THROUGH IT.\n\nTHERE MUST BE A WAY TO CLOSE IT ON THE\nOTHER SIDE. WHAT DO YOU CARE IF YOU'VE\nGOT TO GO THROUGH HELL TO GET TO IT?\x00RROCK17\x00THE HORRENDOUS VISAGE OF THE BIGGEST\nDEMON YOU'VE EVER SEEN CRUMBLES BEFORE\nYOU, AFTER YOU PUMP YOUR ROCKETS INTO\nHIS EXPOSED BRAIN. THE MONSTER SHRIVELS\nUP AND DIES, ITS THRASHING LIMBS\nDEVASTATING UNTOLD MILES OF HELL'S\nSURFACE.\n\nYOU'VE DONE IT. THE INVASION IS OVER.\nEARTH IS SAVED. HELL IS A WRECK. YOU\nWONDER WHERE BAD FOLKS WILL GO WHEN THEY\nDIE, NOW. WIPING THE SWEAT FROM YOUR\nFOREHEAD YOU BEGIN THE LONG TREK BACK\nHOME. REBUILDING EARTH OUGHT TO BE A\nLOT MORE FUN THAN RUINING IT WAS.\n\x00RROCK13\x00CONGRATULATIONS, YOU'VE FOUND THE SECRET\nLEVEL! LOOKS LIKE IT'S BEEN BUILT BY\nHUMANS, RATHER THAN DEMONS. YOU WONDER\nWHO THE INMATES OF THIS CORNER OF HELL\nWILL BE.\x00RROCK19\x00CONGRATULATIONS, YOU'VE FOUND THE\nSUPER SECRET LEVEL!  YOU'D BETTER\nBLAZE THROUGH THIS ONE!\n\x00You've fought your way out of the infested\nexperimental labs.   It seems that UAC has\nonce again gulped it down.  With their\nhigh turnover, it must be hard for poor\nold UAC to buy corporate health insurance\nnowadays..\n\nAhead lies the military complex, now\nswarming with diseased horrors hot to get\ntheir teeth into you. With luck, the\ncomplex still has some warlike ordnance\nlaying around.\x00You hear the grinding of heavy machinery\nahead.  You sure hope they're not stamping\nout new hellspawn, but you're ready to\nream out a whole herd if you have to.\nThey might be planning a blood feast, but\nyou feel about as mean as two thousand\nmaniacs packed into one mad killer.\n\nYou don't plan to go down easy.\x00The vista opening ahead looks real damn\nfamiliar. Smells familiar, too -- like\nfried excrement. You didn't like this\nplace before, and you sure as hell ain't\nplanning to like it now. The more you\nbrood on it, the madder you get.\nHefting your gun, an evil grin trickles\nonto your face. Time to take some names.\x00Suddenly, all is silent, from one horizon\nto the other. The agonizing echo of Hell\nfades away, the nightmare sky turns to\nblue, the heaps of monster corpses start \nto evaporate along with the evil stench \nthat filled the air. Jeeze, maybe you've\ndone it. Have you really won?\n\nSomething rumbles in the distance.\nA blue light begins to glow inside the\nruined skull of the demon-spitter.\x00What now? Looks totally different. Kind\nof like King Tut's condo. Well,\nwhatever's here can't be any worse\nthan usual. Can it?  Or maybe it's best\nto let sleeping gods lie..\x00Time for a vacation. You've burst the\nbowels of hell and by golly you're ready\nfor a break. You mutter to yourself,\nMaybe someone else can kick Hell's ass\nnext time around. Ahead lies a quiet town,\nwith peaceful flowing water, quaint\nbuildings, and presumably no Hellspawn.\n\nAs you step off the transport, you hear\nthe stomp of a cyberdemon's iron shoe.\x00You gloat over the steaming carcass of the\nGuardian.  With its death, you've wrested\nthe Accelerator from the stinking claws\nof Hell.  You relax and glance around the\nroom.  Damn!  There was supposed to be at\nleast one working prototype, but you can't\nsee it. The demons must have taken it.\n\nYou must find the prototype, or all your\nstruggles will have been wasted. Keep\nmoving, keep fighting, keep killing.\nOh yes, keep living, too.\x00Even the deadly Arch-Vile labyrinth could\nnot stop you, and you've gotten to the\nprototype Accelerator which is soon\nefficiently and permanently deactivated.\n\nYou're good at that kind of thing.\x00You've bashed and battered your way into\nthe heart of the devil-hive.  Time for a\nSearch-and-Destroy mission, aimed at the\nGatekeeper, whose foul offspring is\ncascading to Earth.  Yeah, he's bad. But\nyou know who's worse!\n\nGrinning evilly, you check your gear, and\nget ready to give the bastard a little Hell\nof your own making!\x00The Gatekeeper's evil face is splattered\nall over the place.  As its tattered corpse\ncollapses, an inverted Gate forms and\nsucks down the shards of the last\nprototype Accelerator, not to mention the\nfew remaining demons.  You're done. Hell\nhas gone back to pounding bad dead folks \ninstead of good live ones.  Remember to\ntell your grandkids to put a rocket\nlauncher in your coffin. If you go to Hell\nwhen you die, you'll need it for some\nfinal cleaning-up ...\x00You've found the second-hardest level we\ngot. Hope you have a saved game a level or\ntwo previous.  If not, be prepared to die\naplenty. For master marines only.\x00Betcha wondered just what WAS the hardest\nlevel we had ready for ya?  Now you know.\nNo one gets out alive.\x00ZOMBIEMAN\x00SHOTGUN GUY\x00HEAVY WEAPON DUDE\x00IMP\x00DEMON\x00LOST SOUL\x00CACODEMON\x00HELL KNIGHT\x00BARON OF HELL\x00ARACHNOTRON\x00PAIN ELEMENTAL\x00REVENANT\x00MANCUBUS\x00ARCH-VILE\x00THE SPIDER MASTERMIND\x00THE CYBERDEMON\x00OUR HERO\x00BOSSBACK\x00PFUB2\x00PFUB1\x00END0\x00END%i\x00VICTORY2\x00ENDPIC\x00F_SKY1\x00SKY1\x00SKY2\x00SKY3\x00Press escape to quit.\x00DOOM%02i.%s\x00screen shot\x00%s is turbo!\x00consistency failure (%i should be %i)\x00NET GAME\x00G_CheckSpot: unexpected angle %d\n\x00Only %i deathmatch spots, 4 required\x00map31\x00rb\x00Bad savegame\x00wb\x00recovery.dsg\x00Failed to open either '%s' or '%s' to write savegame.\x00Savegame buffer overrun\x00Failed to open savegame file '%s' for writing.\nBut your game has been saved to '%s' for recovery.\x00\x00game saved.\x00SKY4\x00-maxdemo\x00Doom 1.2 does not have a version code!\x00v1.4\x00v1.5\x00v1.6/v1.666\x00v1.7/v1.7a\x00v1.8\x00v1.9\x00v1.0/v1.1/v1.2\x00%i.%i (unknown)\x00Demo is from a different game version!\n(read %i, should be %i)\n\n*** You may need to upgrade your version of Doom to v1.9. ***\n    See: https://www.doomworld.com/classicdoom/info/patches.php\n    This appears to be %s.\x00-netdemo\x00-nodraw\x00timed %i gametics in %i realtics (%f fps)\x00Demo %s recorded\x00No\x00I'm ready to kick butt!\x00I'm OK.\x00I'm not looking too good!\x00Help!\x00You suck!\x00Next time, scumbag...\x00Come here!\x00I'll take care of it.\x00Yes\x00Green: \x00Indigo: \x00Brown: \x00Red: \x00E1M1: Hangar\x00E1M2: Nuclear Plant\x00E1M3: Toxin Refinery\x00E1M4: Command Control\x00E1M5: Phobos Lab\x00E1M6: Central Processing\x00E1M7: Computer Station\x00E1M8: Phobos Anomaly\x00E1M9: Military Base\x00E2M1: Deimos Anomaly\x00E2M2: Containment Area\x00E2M3: Refinery\x00E2M4: Deimos Lab\x00E2M5: Command Center\x00E2M6: Halls of the Damned\x00E2M7: Spawning Vats\x00E2M8: Tower of Babel\x00E2M9: Fortress of Mystery\x00E3M1: Hell Keep\x00E3M2: Slough of Despair\x00E3M3: Pandemonium\x00E3M4: House of Pain\x00E3M5: Unholy Cathedral\x00E3M6: Mt. Erebus\x00E3M7: Limbo\x00E3M8: Dis\x00E3M9: Warrens\x00E4M1: Hell Beneath\x00E4M2: Perfect Hatred\x00E4M3: Sever The Wicked\x00E4M4: Unruly Evil\x00E4M5: They Will Repent\x00E4M6: Against Thee Wickedly\x00E4M7: And Hell Followed\x00E4M8: Unto The Cruel\x00E4M9: Fear\x00NEWLEVEL\x00level 1: entryway\x00level 2: underhalls\x00level 3: the gantlet\x00level 4: the focus\x00level 5: the waste tunnels\x00level 6: the crusher\x00level 7: dead simple\x00level 8: tricks and traps\x00level 9: the pit\x00level 10: refueling base\x00level 11: 'o' of destruction!\x00level 12: the factory\x00level 13: downtown\x00level 14: the inmost dens\x00level 15: industrial zone\x00level 16: suburbs\x00level 17: tenements\x00level 18: the courtyard\x00level 19: the citadel\x00level 20: gotcha!\x00level 21: nirvana\x00level 22: the catacombs\x00level 23: barrels o' fun\x00level 24: the chasm\x00level 25: bloodfalls\x00level 26: the abandoned mines\x00level 27: monster condo\x00level 28: the spirit world\x00level 29: the living end\x00level 30: icon of sin\x00level 31: wolfenstein\x00level 32: grosse\x00level 1: congo\x00level 2: well of souls\x00level 3: aztec\x00level 4: caged\x00level 5: ghost town\x00level 6: baron's lair\x00level 7: caughtyard\x00level 8: realm\x00level 9: abattoire\x00level 10: onslaught\x00level 11: hunted\x00level 12: speed\x00level 13: the crypt\x00level 14: genesis\x00level 15: the twilight\x00level 16: the omen\x00level 17: compound\x00level 18: neurosphere\x00level 19: nme\x00level 20: the death domain\x00level 21: slayer\x00level 22: impossible mission\x00level 23: tombstone\x00level 24: the final frontier\x00level 25: the temple of darkness\x00level 26: bunker\x00level 27: anti-christ\x00level 28: the sewers\x00level 29: odyssey of noises\x00level 30: the gateway of hell\x00level 31: cyberden\x00level 32: go 2 it\x00level 1: system control\x00level 2: human bbq\x00level 3: power control\x00level 4: wormhole\x00level 5: hanger\x00level 6: open season\x00level 7: prison\x00level 8: metal\x00level 9: stronghold\x00level 10: redemption\x00level 11: storage facility\x00level 12: crater\x00level 13: nukage processing\x00level 14: steel works\x00level 15: dead zone\x00level 16: deepest reaches\x00level 17: processing area\x00level 18: mill\x00level 19: shipping/respawning\x00level 20: central processing\x00level 21: administration center\x00level 22: habitat\x00level 23: lunar mining project\x00level 24: quarry\x00level 25: baron's den\x00level 26: ballistyx\x00level 27: mount pain\x00level 28: heck\x00level 29: river styx\x00level 30: last call\x00level 31: pharaoh\x00level 32: caribbean\x00STCFN%.3d\x00Unknown level\x00[Message unsent]\x00You mumble to yourself\x00Who's there?\x00You scare yourself\x00You start to rave\x00You've lost it...\x00TROO\x00SHTG\x00PUNG\x00PISG\x00PISF\x00SHTF\x00SHT2\x00CHGG\x00CHGF\x00MISG\x00MISF\x00SAWG\x00PLSG\x00PLSF\x00BFGG\x00BFGF\x00BLUD\x00PUFF\x00BAL1\x00BAL2\x00PLSS\x00PLSE\x00MISL\x00BFS1\x00BFE1\x00BFE2\x00TFOG\x00IFOG\x00PLAY\x00POSS\x00SPOS\x00VILE\x00FIRE\x00FATB\x00FBXP\x00SKEL\x00MANF\x00FATT\x00CPOS\x00SARG\x00HEAD\x00BAL7\x00BOSS\x00BOS2\x00SKUL\x00SPID\x00BSPI\x00APLS\x00APBX\x00CYBR\x00PAIN\x00SSWV\x00KEEN\x00BBRN\x00BOSF\x00ARM1\x00ARM2\x00BAR1\x00BEXP\x00FCAN\x00BON1\x00BON2\x00BKEY\x00RKEY\x00YKEY\x00BSKU\x00RSKU\x00YSKU\x00STIM\x00MEDI\x00SOUL\x00PINV\x00PSTR\x00PINS\x00MEGA\x00SUIT\x00PMAP\x00PVIS\x00CLIP\x00AMMO\x00ROCK\x00BROK\x00CELL\x00CELP\x00SHEL\x00SBOX\x00BPAK\x00BFUG\x00MGUN\x00CSAW\x00LAUN\x00PLAS\x00SHOT\x00SGN2\x00COLU\x00SMT2\x00GOR1\x00POL2\x00POL5\x00POL4\x00POL3\x00POL1\x00POL6\x00GOR2\x00GOR3\x00GOR4\x00GOR5\x00SMIT\x00COL1\x00COL2\x00COL3\x00COL4\x00CAND\x00CBRA\x00COL6\x00TRE1\x00TRE2\x00ELEC\x00CEYE\x00FSKU\x00COL5\x00TBLU\x00TGRN\x00TRED\x00SMBT\x00SMGT\x00SMRT\x00HDB1\x00HDB2\x00HDB3\x00HDB4\x00HDB5\x00HDB6\x00POB1\x00POB2\x00BRS1\x00TLMP\x00TLP2\x00use_joystick\x00joystick_index\x00joystick_x_axis\x00joystick_y_axis\x00joystick_strafe_axis\x00joystick_x_invert\x00joystick_y_invert\x00joystick_strafe_invert\x00joystick_physical_button%i\x00I_InitStretchTables: Generating lookup tables..\x00..\x00I_InitSquashTable: Generating lookup table..\x00I_ResetScaleTables: Regenerating lookup tables..\n\x00I_ResetScaleTables: Regenerating lookup table..\n\x00-scanline\x00-nosound\x00-nosfx\x00-nomusic\x00snd_musicdevice\x00snd_sfxdevice\x00snd_sbport\x00snd_sbirq\x00snd_sbdma\x00snd_mport\x00snd_maxslicetime_ms\x00snd_musiccmd\x00snd_samplerate\x00snd_cachesize\x00Unable to allocate %i MiB of RAM for zone\x00-mb\x00zone memory: %p, %x allocated for zone\n\x00 Doom Generic is free software, covered by the GNU General Public\n License.  There is NO warranty; not even for MERCHANTABILITY or FITNESS\n FOR A PARTICULAR PURPOSE. You are welcome to change and distribute\n copies under certain conditions. See the source for more information.\n\x00/usr/bin/zenity --help >/dev/null 2>&1\x00$`\\!\x00/usr/bin/zenity\x00%s --error --text=%s\x00Warning: recursive call to I_Error detected.\n\x00\n\n\x00-nogui\x00-setmem\x00dos622\x00dos71\x00dosbox\x00not a read stream\n\x00Error seeking to %i\n\x00show_talk\x00voice_volume\x00key_right\x00key_left\x00key_up\x00key_down\x00key_strafeleft\x00key_straferight\x00key_useHealth\x00key_jump\x00key_flyup\x00key_flydown\x00key_flycenter\x00key_lookup\x00key_lookdown\x00key_lookcenter\x00key_invquery\x00key_mission\x00key_invPop\x00key_invKey\x00key_invHome\x00key_invEnd\x00key_invleft\x00key_invright\x00key_invLeft\x00key_invRight\x00key_useartifact\x00key_invUse\x00key_invDrop\x00key_lookUp\x00key_lookDown\x00key_fire\x00key_use\x00key_strafe\x00key_speed\x00use_mouse\x00mouseb_fire\x00mouseb_strafe\x00mouseb_forward\x00mouseb_jump\x00joyb_fire\x00joyb_strafe\x00joyb_use\x00joyb_speed\x00joyb_jump\x00screensize\x00usegamma\x00savedir\x00messageson\x00back_flat\x00nickname\x00chatmacro0\x00chatmacro1\x00chatmacro2\x00chatmacro3\x00chatmacro4\x00chatmacro5\x00chatmacro6\x00chatmacro7\x00chatmacro8\x00chatmacro9\x00comport\x00graphical_startup\x00autoadjust_video_settings\x00fullscreen\x00aspect_ratio_correct\x00startup_delay\x00screen_width\x00screen_height\x00screen_bpp\x00grabmouse\x00novert\x00mouse_acceleration\x00mouse_threshold\x00opl_io_port\x00png_screenshots\x00vanilla_keyboard_mapping\x00video_driver\x00window_position\x00joystick_physical_button0\x00joystick_physical_button1\x00joystick_physical_button2\x00joystick_physical_button3\x00joystick_physical_button4\x00joystick_physical_button5\x00joystick_physical_button6\x00joystick_physical_button7\x00joystick_physical_button8\x00joystick_physical_button9\x00joyb_strafeleft\x00joyb_straferight\x00joyb_menu_activate\x00joyb_prevweapon\x00joyb_nextweapon\x00mouseb_strafeleft\x00mouseb_straferight\x00mouseb_use\x00mouseb_backward\x00mouseb_prevweapon\x00mouseb_nextweapon\x00dclick_use\x00key_pause\x00key_menu_activate\x00key_menu_up\x00key_menu_down\x00key_menu_left\x00key_menu_right\x00key_menu_back\x00key_menu_forward\x00key_menu_confirm\x00key_menu_abort\x00key_menu_help\x00key_menu_save\x00key_menu_load\x00key_menu_volume\x00key_menu_detail\x00key_menu_qsave\x00key_menu_endgame\x00key_menu_messages\x00key_menu_qload\x00key_menu_quit\x00key_menu_gamma\x00key_spy\x00key_menu_incscreen\x00key_menu_decscreen\x00key_menu_screenshot\x00key_map_toggle\x00key_map_north\x00key_map_south\x00key_map_east\x00key_map_west\x00key_map_zoomin\x00key_map_zoomout\x00key_map_maxzoom\x00key_map_follow\x00key_map_grid\x00key_map_mark\x00key_map_clearmark\x00key_weapon1\x00key_weapon2\x00key_weapon3\x00key_weapon4\x00key_weapon5\x00key_weapon6\x00key_weapon7\x00key_weapon8\x00key_prevweapon\x00key_nextweapon\x00key_arti_all\x00key_arti_health\x00key_arti_poisonbag\x00key_arti_blastradius\x00key_arti_teleport\x00key_arti_teleportother\x00key_arti_egg\x00key_arti_invulnerability\x00key_message_refresh\x00key_demo_quit\x00key_multi_msg\x00key_multi_msgplayer1\x00key_multi_msgplayer2\x00key_multi_msgplayer3\x00key_multi_msgplayer4\x00key_multi_msgplayer5\x00key_multi_msgplayer6\x00key_multi_msgplayer7\x00key_multi_msgplayer8\x00%x\x00%i\x00-config\x00\tdefault file: %s\n\x00saving config in %s\n\x00-extraconfig\x00        extra configuration file: %s\n\x00Unknown configuration variable: '%s'\x00Using %s for configuration and saves\n\x00.savegame/\x00Using %s for savegames\n\x00key_multi_msgplayer%i\x00M_SKULL1\x00M_SKULL2\x00empty slot\x00M_LOADG\x00M_LSLEFT\x00M_LSCNTR\x00M_LSRGHT\x00you can't do load while in a net game!\n\npress a key.\x00M_SAVEG\x00_\x00you can't save if you aren't playing!\n\npress a key.\x00quicksave over your game named\n\n'%s'?\n\npress y or n.\x00you can't quickload during a netgame!\n\npress a key.\x00you haven't picked a quicksave slot yet!\n\npress a key.\x00do you want to quickload the game named\n\n'%s'?\n\npress y or n.\x00HELP\x00HELP1\x00Unhandled game version\x00M_SVOL\x00M_DOOM\x00M_NEWG\x00M_SKILL\x00you can't start a new game\nwhile in a network game.\n\npress a key.\x00M_EPISOD\x00are you sure? this skill level\nisn't even remotely fair.\n\npress y or n.\x00this is the shareware version of doom.\n\nyou need to order the entire trilogy.\n\npress a key.\x00M_Episode: 4th episode requires UltimateDOOM\n\x00M_GDHIGH\x00M_GDLOW\x00M_MSGOFF\x00M_MSGON\x00M_OPTTTL\x00Messages OFF\x00Messages ON\x00you can't end a netgame!\n\npress a key.\x00are you sure you want to end the game?\n\npress y or n.\x00%s\n\n(press y to quit to dos.)\x00High detail\x00Low detail\x00M_THERML\x00M_THERMM\x00M_THERMR\x00M_THERMO\x00M_CELL1\x00M_CELL2\x00r\x00Couldn't read file %s\x00/tmp\x00 0x%x\x00 0X%x\x00 0%o\x00 %d\x00Warning: Truncated '%s' lump name to '%.8s'.\n\x00Failed to duplicate string (length %i)\n\x00M_StringReplace: Failed to allocate new string\x00M_StringJoin: Failed to allocate new string.\x00You need a blue key to activate this object\x00You need a red key to activate this object\x00You need a yellow key to activate this object\x00You need a blue key to open this door\x00You need a yellow key to open this door\x00You need a red key to open this door\x00EV_VerticalDoor: Tried to close something that wasn't a door.\n\x00Weird actor->movedir!\x00P_NewChaseDir: called with no target\x00P_GiveAmmo: bad type %i\x00Picked up the armor.\x00Picked up the MegaArmor!\x00Picked up a health bonus.\x00Picked up an armor bonus.\x00Supercharge!\x00MegaSphere!\x00Picked up a blue keycard.\x00Picked up a yellow keycard.\x00Picked up a red keycard.\x00Picked up a blue skull key.\x00Picked up a yellow skull key.\x00Picked up a red skull key.\x00Picked up a stimpack.\x00Picked up a medikit that you REALLY need!\x00Picked up a medikit.\x00Invulnerability!\x00Berserk!\x00Partial Invisibility\x00Radiation Shielding Suit\x00Computer Area Map\x00Light Amplification Visor\x00Picked up a clip.\x00Picked up a box of bullets.\x00Picked up a rocket.\x00Picked up a box of rockets.\x00Picked up an energy cell.\x00Picked up an energy cell pack.\x00Picked up 4 shotgun shells.\x00Picked up a box of shotgun shells.\x00Picked up a backpack full of ammo!\x00You got the BFG9000!  Oh, yes.\x00You got the chaingun!\x00A chainsaw!  Find some meat!\x00You got the rocket launcher!\x00You got the plasma gun!\x00You got the shotgun!\x00You got the super shotgun!\x00P_SpecialThing: Unknown gettable thing\x00PTR_SlideTraverse: not a line?\x00-spechit\x00SpechitOverrun: Warning: unable to emulatean overrun where numspechit=%i\n\x00P_SpawnMapThing: Unknown type %i at (%i, %i)\x00P_AddActivePlat: no more plats!\x00P_RemoveActivePlat: can't find plat!\x00temp.dsg\x00doomsav%d.dsg\x00%s%s\x00saveg_read8: Unexpected end of file while reading save game\n\x00saveg_write8: Error while writing save game\n\x00version %i\x00Unknown tclass %i in savegame\x00P_UnarchiveSpecials:Unknown tclass %i in savegame\x00PadRejectArray: REJECT lump too short to pad! (%i > %i)\n\x00-reject_pad_with_ff\x00map0%i\x00map%i\x00P_CrossSubsector: ss %i with numss = %i\x00P_InitPicAnims: bad cycle from %s to %s\x00Sector with more than 22 adjoining sectors. Vanilla will crash here\x00P_PlayerInSpecialSector: unknown special %i\x00-donut\x00DonutOverrun: The second parameter for \"-donut\" switch should be greater than 0 and less than number of flats (%d). Using default value (%d) instead. \n\x00EV_DoDonut: linedef had no second sidedef! Unexpected behavior may occur in Vanilla Doom. \n\x00EV_DoDonut: WARNING: emulating buffer overrun due to NULL back sector. Unexpected behavior may occur in Vanilla Doom.\n\x00Too many scrolling wall linedefs! (Vanilla limit is 64)\x00P_StartButton: no button slots left!\x00R_Subsector: ss %i with numss = %i\x00r_data.c\x00R_GenerateLookup: column without a patch (%s)\n\x00R_GenerateLookup: texture %i is >64k\x00PNAMES\x00TEXTURE1\x00TEXTURE2\x00S_START\x00S_END\x00[\x00 \x00]\x00\b\x00R_InitTextures: bad texture directory\x00R_InitTextures: Missing patch in texture %s\x00F_START\x00F_END\x00COLORMAP\x00R_FlatNumForName: %s not found\x00R_TextureNumForName: %s not found\x00R_DrawColumn: %i to %i at %i\x00R_DrawFuzzColumn: %i to %i at %i\x00R_DrawSpan: %i to %i at %i\x00FLOOR7_2\x00GRNROCK\x00brdr_t\x00brdr_b\x00brdr_l\x00brdr_r\x00brdr_tl\x00brdr_tr\x00brdr_bl\x00brdr_br\x00R_MapPlane: %i, %i at %i\x00R_FindPlane: no more visplanes\x00R_DrawPlanes: drawsegs overflow (%i)\x00R_DrawPlanes: visplane overflow (%i)\x00R_DrawPlanes: opening overflow (%i)\x00Bad R_RenderWallRange: %i to %i\x00R_InstallSpriteLump: Bad frame characters in lump %i\x00R_InitSprites: Sprite %s frame %c has multip rot=0 lump\x00R_InitSprites: Sprite %s frame %c has rotations and a rot=0 lump\x00R_InitSprites: Sprite %s : %c : %c has two lumps mapped to it\x00R_InitSprites: No patches found for %s frame %c\x00R_InitSprites: Sprite %s frame %c is missing rotations\x00R_DrawSpriteRange: bad texturecolumn\x00R_ProjectSprite: invalid sprite number %i \x00R_ProjectSprite: invalid sprite frame %i : %i \x00e1m1\x00e1m2\x00e1m3\x00e1m4\x00e1m5\x00e1m6\x00e1m7\x00e1m8\x00e1m9\x00e2m1\x00e2m2\x00e2m3\x00e2m4\x00e2m5\x00e2m6\x00e2m7\x00e2m8\x00e2m9\x00e3m1\x00e3m2\x00e3m3\x00e3m4\x00e3m5\x00e3m6\x00e3m7\x00e3m8\x00e3m9\x00inter\x00intro\x00bunny\x00victor\x00introa\x00runnin\x00stalks\x00countd\x00betwee\x00the_da\x00shawn\x00ddtblu\x00in_cit\x00dead\x00stlks2\x00theda2\x00ddtbl2\x00runni2\x00dead2\x00stlks3\x00romero\x00shawn2\x00messag\x00count2\x00ddtbl3\x00ampie\x00theda3\x00adrian\x00messg2\x00romer2\x00tense\x00shawn3\x00openin\x00evil\x00ultima\x00read_m\x00dm2ttl\x00dm2int\x00STTMINUS\x00drawNum: n->y - ST_Y < 0\x00updateMultIcon: y - ST_Y < 0\x00updateBinIcon: y - ST_Y < 0\x00Degreelessness Mode On\x00Degreelessness Mode Off\x00Ammo (no keys) Added\x00Very Happy Ammo Added\x00Music Change\x00IMPOSSIBLE SELECTION\x00No Clipping Mode ON\x00No Clipping Mode OFF\x00Power-up Toggled\x00inVuln, Str, Inviso, Rad, Allmap, or Lite-amp\x00... doesn't suck - GM\x00ang=0x%x;x,y=(0x%x,0x%x)\x00Changing Level...\x00STTNUM%d\x00STYSNUM%d\x00STTPRCNT\x00STKEYS%d\x00STARMS\x00STGNUM%d\x00STFB%d\x00STBAR\x00STFST%d%d\x00STFTR%d0\x00STFTL%d0\x00STFOUCH%d\x00STFEVL%d\x00STFKILL%d\x00STFGOD0\x00STFDEAD0\x00Bad sfx #: %d\x00Attempt to set music volume at %d\x00Attempt to set sfx volume at %d\x00Bad music number %d\x00d_%s\x00Bad V_CopyRect\x00Bad V_DrawPatch x=%i y=%i patch.width=%i patch.height=%i topoffset=%i leftoffset=%i\x00Bad V_DrawPatchFlipped\x00Bad V_DrawTLPatch\x00Bad V_DrawAltTLPatch\x00Bad V_DrawShadowedPatch\x00TINTTAB\x00XLATAB\x00Bad V_DrawBlock\x00pcx\x00V_ScreenShot: Couldn't create a PCX\x00Could not place patch on level %d\x00CWILV%2.2d\x00WILV%d%d\x00WIURH0\x00WIURH1\x00WISPLAT\x00WIA%d%.2d%.2d\x00WIMINUS\x00WINUM%d\x00WIPCNT\x00WIF\x00WIENTER\x00WIOSTK\x00WIOSTS\x00WISCRT2\x00WIOBJ\x00WIOSTI\x00WIFRGS\x00WICOLON\x00WITIME\x00WISUCKS\x00WIPAR\x00WIKILRS\x00WIVCTMS\x00WIMSTT\x00STPB%d\x00WIBP%d\x00WIMAP%d\x00STFST01\x00-mmap\x00-file\x00Couldn't realloc lumpinfo\x00 couldn't open %s\n\x00wad\x00IWAD\x00PWAD\x00Wad file %s doesn't have IWAD or PWAD id\n\x00W_GetNumForName: %s not found!\x00W_LumpLength: %i >= numlumps\x00W_ReadLump: %i >= numlumps\x00W_ReadLump: only read %i of %i on lump %i\x00W_CacheLumpNum: %i >= numlumps\x00w_wad.c\x00W_ReleaseLumpNum: %i >= numlumps\x00POSSA1\x00IMPXA1\x00ETTNA1\x00AGRDA1\x00\nYou are trying to use a %s IWAD file with the %s%s binary.\nThis isn't going to work.\nYou probably want to use the %s%s binary.\x00doomgeneric\x00Z_Free: freed a pointer without ZONEID\x00Z_Malloc: failed on allocation of %i bytes\x00Z_Malloc: an owner is required for purgable blocks\x00zone size: %i  location: %p\n\x00tag range: %i to %i\n\x00block:%p    size:%7i    user:%p    tag:%3i\n\x00ERROR: block size does not touch the next block\n\x00ERROR: next block doesn't have proper back link\n\x00ERROR: two consecutive free blocks\n\x00Z_CheckHeap: block size does not touch the next block\n\x00Z_CheckHeap: next block doesn't have proper back link\n\x00Z_CheckHeap: two consecutive free blocks\n\x00%s:%i: Z_ChangeTag: block without a ZONEID!\x00%s:%i: Z_ChangeTag: an owner is required for purgable blocks\x00Z_ChangeUser: Tried to change user for invalid block!\x00I_InitGraphics: framebuffer: x_res: %d, y_res: %d, x_virtual: %d, y_virtual: %d, bpp: %d\n\x00I_InitGraphics: framebuffer: RGBA: %d%d%d%d, red_off: %d, green_off: %d, blue_off: %d, transp_off: %d\n\x00I_InitGraphics: DOOM screen size: w x h: %d x %d\n\x00-scaling\x00I_InitGraphics: Scaling factor: %d\n\x00I_InitGraphics: Auto-scaling factor: %d\n\x00I_GetPaletteIndex\n\x00")
+var __ccgo_ts_map = map[int][]byte{
+	0:     []byte("AMMNUM%d\x00"),
+	9:     []byte("Follow Mode ON\x00"),
+	24:    []byte("Follow Mode OFF\x00"),
+	40:    []byte("Grid ON\x00"),
+	48:    []byte("Grid OFF\x00"),
+	57:    []byte("%s %d\x00"),
+	63:    []byte("Marked Spot\x00"),
+	75:    []byte("All Marks Cleared\x00"),
+	93:    []byte("fuck %d\n\x00"),
+	103:   []byte("are you sure you want to\nquit this great game?\x00"),
+	150:   []byte("please don't leave, there's more\ndemons to toast!\x00"),
+	200:   []byte("let's beat it -- this is turning\ninto a bloodbath!\x00"),
+	251:   []byte("i wouldn't leave if i were you.\ndos is much worse.\x00"),
+	302:   []byte("you're trying to say you like dos\nbetter than me, right?\x00"),
+	359:   []byte("don't leave yet -- there's a\ndemon around that corner!\x00"),
+	414:   []byte("ya know, next time you come in here\ni'm gonna toast ya.\x00"),
+	470:   []byte("go ahead and leave. see if i care.\x00"),
+	505:   []byte("you want to quit?\nthen, thou hast lost an eighth!\x00"),
+	555:   []byte("don't go now, there's a \ndimensional shambler waiting\nat the dos prompt!\x00"),
+	628:   []byte("get outta here and go back\nto your boring programs.\x00"),
+	680:   []byte("if i were your boss, i'd \n deathmatch ya in a minute!\x00"),
+	734:   []byte("look, bud. you leave now\nand you forfeit your body count!\x00"),
+	792:   []byte("just leave. when you come\nback, i'll be waiting with a bat.\x00"),
+	852:   []byte("you're lucky i don't smack\nyou for thinking about leaving.\x00"),
+	911:   []byte("doom2.wad\x00"),
+	921:   []byte("Doom II\x00"),
+	929:   []byte("plutonia.wad\x00"),
+	942:   []byte("Final Doom: Plutonia Experiment\x00"),
+	974:   []byte("tnt.wad\x00"),
+	982:   []byte("Final Doom: TNT: Evilution\x00"),
+	1009:  []byte("doom.wad\x00"),
+	1018:  []byte("Doom\x00"),
+	1023:  []byte("doom1.wad\x00"),
+	1033:  []byte("Doom Shareware\x00"),
+	1048:  []byte("chex.wad\x00"),
+	1057:  []byte("Chex Quest\x00"),
+	1068:  []byte("hacx.wad\x00"),
+	1077:  []byte("Hacx\x00"),
+	1082:  []byte("freedm.wad\x00"),
+	1093:  []byte("FreeDM\x00"),
+	1100:  []byte("freedoom2.wad\x00"),
+	1114:  []byte("Freedoom: Phase 2\x00"),
+	1132:  []byte("freedoom1.wad\x00"),
+	1146:  []byte("Freedoom: Phase 1\x00"),
+	1164:  []byte("heretic.wad\x00"),
+	1176:  []byte("Heretic\x00"),
+	1184:  []byte("heretic1.wad\x00"),
+	1197:  []byte("Heretic Shareware\x00"),
+	1215:  []byte("hexen.wad\x00"),
+	1225:  []byte("Hexen\x00"),
+	1231:  []byte("strife1.wad\x00"),
+	1243:  []byte("Strife\x00"),
+	1250:  []byte(".\x00"),
+	1252:  []byte("/\x00"),
+	1254:  []byte("Trying IWAD file:%s\n\x00"),
+	1275:  []byte("-iwad\x00"),
+	1281:  []byte("IWAD file '%s' not found!\x00"),
+	1307:  []byte("-iwad not specified, trying a few iwad names\n\x00"),
+	1353:  []byte("unknown.wad\x00"),
+	1365:  []byte("Unknown game?\x00"),
+	1379:  []byte("Disconnected from server in drone mode.\x00"),
+	1419:  []byte("Disconnected from server.\n\x00"),
+	1446:  []byte("TryRunTics: lowtic < gametic\x00"),
+	1475:  []byte("gametic>lowtic\x00"),
+	1490:  []byte("PLAYPAL\x00"),
+	1498:  []byte("M_PAUSE\x00"),
+	1506:  []byte("mouse_sensitivity\x00"),
+	1524:  []byte("sfx_volume\x00"),
+	1535:  []byte("music_volume\x00"),
+	1548:  []byte("show_messages\x00"),
+	1562:  []byte("screenblocks\x00"),
+	1575:  []byte("detaillevel\x00"),
+	1587:  []byte("snd_channels\x00"),
+	1600:  []byte("vanilla_savegame_limit\x00"),
+	1623:  []byte("vanilla_demo_limit\x00"),
+	1642:  []byte("show_endoom\x00"),
+	1654:  []byte("chatmacro%i\x00"),
+	1666:  []byte(" WARNING: You are playing using one of the Doom Classic\n IWAD files shipped with the Doom 3: BFG Edition. These are\n known to be incompatible with the regular IWAD files and\n may cause demos and network games to get out of sync.\n\x00"),
+	1896:  []byte("TITLEPIC\x00"),
+	1905:  []byte("demo1\x00"),
+	1911:  []byte("CREDIT\x00"),
+	1918:  []byte("demo2\x00"),
+	1924:  []byte("HELP2\x00"),
+	1930:  []byte("demo3\x00"),
+	1936:  []byte("demo4\x00"),
+	1942:  []byte("titlepic\x00"),
+	1951:  []byte("INTERPIC\x00"),
+	1960:  []byte("                         DOOM 2: Hell on Earth v%i.%i                           \x00"),
+	2041:  []byte("                            DOOM Shareware Startup v%i.%i                           \x00"),
+	2126:  []byte("                            DOOM Registered Startup v%i.%i                           \x00"),
+	2212:  []byte("                          DOOM System Startup v%i.%i                          \x00"),
+	2291:  []byte("                         The Ultimate DOOM Startup v%i.%i                        \x00"),
+	2373:  []byte("                     DOOM 2: TNT - Evilution v%i.%i                           \x00"),
+	2452:  []byte("                   DOOM 2: Plutonia Experiment v%i.%i                           \x00"),
+	2533:  []byte("doom2\x00"),
+	2539:  []byte("tnt\x00"),
+	2543:  []byte("plutonia\x00"),
+	2552:  []byte("Valid mission packs are:\n\x00"),
+	2578:  []byte("	%s\n\x00"),
+	2583:  []byte("Unknown mission pack name: %s\x00"),
+	2613:  []byte("MAP01\x00"),
+	2619:  []byte("E1M1\x00"),
+	2624:  []byte("Unknown or invalid IWAD file.\x00"),
+	2654:  []byte("E4M1\x00"),
+	2659:  []byte("E3M1\x00"),
+	2664:  []byte("-pack\x00"),
+	2670:  []byte("FREEDOOM\x00"),
+	2679:  []byte("FREEDM\x00"),
+	2686:  []byte("Unknown\x00"),
+	2694:  []byte("The Ultimate DOOM\x00"),
+	2712:  []byte("DOOM Registered\x00"),
+	2728:  []byte("DOOM Shareware\x00"),
+	2743:  []byte("DOOM 2: Hell on Earth\x00"),
+	2765:  []byte("DOOM 2: Plutonia Experiment\x00"),
+	2793:  []byte("DOOM 2: TNT - Evilution\x00"),
+	2817:  []byte(" adding %s\n\x00"),
+	2829:  []byte("===========================================================================\nATTENTION:  This version of DOOM has been modified.  If you would like to\nget a copy of the original game, call 1-800-IDGAMES or see the readme file.\n        You will not receive technical support for modified games.\n                      press enter to continue\n===========================================================================\n\x00"),
+	3245:  []byte("===========================================================================\n                 Commercial product - do not distribute!\n         Please report software piracy to the SPA: 1-800-388-PIR8\n===========================================================================\n\x00"),
+	3521:  []byte("===========================================================================\n                                Shareware!\n===========================================================================\n\x00"),
+	3717:  []byte("%s\x00"),
+	3720:  []byte("\n\x00"),
+	3722:  []byte("Doom 1.666\x00"),
+	3733:  []byte("1.666\x00"),
+	3739:  []byte("Doom 1.7/1.7a\x00"),
+	3753:  []byte("1.7\x00"),
+	3757:  []byte("Doom 1.8\x00"),
+	3766:  []byte("1.8\x00"),
+	3770:  []byte("Doom 1.9\x00"),
+	3779:  []byte("1.9\x00"),
+	3783:  []byte("hacx\x00"),
+	3788:  []byte("Ultimate Doom\x00"),
+	3802:  []byte("ultimate\x00"),
+	3811:  []byte("Final Doom\x00"),
+	3822:  []byte("final\x00"),
+	3828:  []byte("Final Doom (alt)\x00"),
+	3845:  []byte("final2\x00"),
+	3852:  []byte("chex\x00"),
+	3857:  []byte("-gameversion\x00"),
+	3870:  []byte("Supported game versions:\n\x00"),
+	3896:  []byte("	%s (%s)\n\x00"),
+	3906:  []byte("Unknown game version '%s'\x00"),
+	3932:  []byte("Emulating the behavior of the '%s' executable.\n\x00"),
+	3980:  []byte("-testcontrols\x00"),
+	3994:  []byte("ENDOOM\x00"),
+	4001:  []byte("Doom Generic 0.1\x00"),
+	4018:  []byte("Z_Init: Init zone memory allocation daemon. \n\x00"),
+	4064:  []byte("-nomonsters\x00"),
+	4076:  []byte("-respawn\x00"),
+	4085:  []byte("-fast\x00"),
+	4091:  []byte("-devparm\x00"),
+	4100:  []byte("-deathmatch\x00"),
+	4112:  []byte("-altdeath\x00"),
+	4122:  []byte("Development mode ON.\n\x00"),
+	4144:  []byte("-turbo\x00"),
+	4151:  []byte("turbo scale: %i%%\n\x00"),
+	4170:  []byte("V_Init: allocate screens.\n\x00"),
+	4197:  []byte("M_LoadDefaults: Load system defaults.\n\x00"),
+	4236:  []byte("default.cfg\x00"),
+	4248:  []byte("doomgenericdoom.cfg\x00"),
+	4268:  []byte("Game mode indeterminate.  No IWAD file was found.  Try\nspecifying one with the '-iwad' command line parameter.\n\x00"),
+	4380:  []byte("W_Init: Init WADfiles.\n\x00"),
+	4404:  []byte("dmenupic\x00"),
+	4413:  []byte("BFG Edition: Using workarounds as needed.\n\x00"),
+	4456:  []byte("-playdemo\x00"),
+	4466:  []byte("-timedemo\x00"),
+	4476:  []byte(".lmp\x00"),
+	4481:  []byte("%s.lmp\x00"),
+	4488:  []byte("Playing demo %s.\n\x00"),
+	4506:  []byte("\nYou cannot -file with the shareware version. Register!\x00"),
+	4562:  []byte("\nThis is not the registered version.\x00"),
+	4599:  []byte("SS_START\x00"),
+	4608:  []byte("FF_END\x00"),
+	4615:  []byte(" WARNING: The loaded WAD file contains modified sprites or\n floor textures.  You may want to use the '-merge' command\n line option instead of '-file'.\n\x00"),
+	4767:  []byte(" WARNING: You are playing using one of the Freedoom IWAD\n files, which might not work in this port. See this page\n for more information on how to play using Freedoom:\n   http://www.chocolate-doom.org/wiki/index.php/Freedoom\n\x00"),
+	4992:  []byte("I_Init: Setting up machine state.\n\x00"),
+	5027:  []byte("-skill\x00"),
+	5034:  []byte("-episode\x00"),
+	5043:  []byte("-timer\x00"),
+	5050:  []byte("-avg\x00"),
+	5055:  []byte("-warp\x00"),
+	5061:  []byte("-loadgame\x00"),
+	5071:  []byte("M_Init: Init miscellaneous info.\n\x00"),
+	5105:  []byte("R_Init: Init DOOM refresh daemon - \x00"),
+	5141:  []byte("\nP_Init: Init Playloop state.\n\x00"),
+	5172:  []byte("S_Init: Setting up sound.\n\x00"),
+	5199:  []byte("D_CheckNetGame: Checking network game status.\n\x00"),
+	5246:  []byte("HU_Init: Setting up heads up display.\n\x00"),
+	5285:  []byte("ST_Init: Init status bar.\n\x00"),
+	5312:  []byte("map01\x00"),
+	5318:  []byte("-statdump\x00"),
+	5328:  []byte("External statistics registered.\n\x00"),
+	5361:  []byte("-record\x00"),
+	5369:  []byte("none\x00"),
+	5374:  []byte("doom\x00"),
+	5379:  []byte("heretic\x00"),
+	5387:  []byte("hexen\x00"),
+	5393:  []byte("strife\x00"),
+	5400:  []byte("Player 1 left the game\x00"),
+	5423:  []byte("NOTE: Turning resolution is reduced; this is probably because there is a client recording a Vanilla demo.\n\x00"),
+	5530:  []byte("-longtics\x00"),
+	5540:  []byte("-left\x00"),
+	5546:  []byte("-right\x00"),
+	5553:  []byte("-solo-net\x00"),
+	5563:  []byte("startskill %i  deathmatch: %i  startmap: %i  startepisode: %i\n\x00"),
+	5626:  []byte("player %i of %i (%i nodes)\n\x00"),
+	5654:  []byte("Austin Virtual Gaming: Levels will end after 20 minutes\n\x00"),
+	5711:  []byte("Levels will end after %d minute\x00"),
+	5743:  []byte("s\x00"),
+	5745:  []byte(".\n\x00"),
+	5748:  []byte("FLOOR4_8\x00"),
+	5757:  []byte("Once you beat the big badasses and\nclean out the moon base you're supposed\nto win, aren't you? Aren't you? Where's\nyour fat reward and ticket home? What\nthe hell is this? It's not supposed to\nend this way!\n\nIt stinks like rotten meat, but looks\nlike the lost Deimos base.  Looks like\nyou're stuck on The Shores of Hell.\nThe only way out is through.\n\nTo continue the DOOM experience, play\nThe Shores of Hell and its amazing\nsequel, Inferno!\n\x00"),
+	6198:  []byte("SFLR6_1\x00"),
+	6206:  []byte("You've done it! The hideous cyber-\ndemon lord that ruled the lost Deimos\nmoon base has been slain and you\nare triumphant! But ... where are\nyou? You clamber to the edge of the\nmoon and look down to see the awful\ntruth.\n\nDeimos floats above Hell itself!\nYou've never heard of anyone escaping\nfrom Hell, but you'll make the bastards\nsorry they ever heard of you! Quickly,\nyou rappel down to  the surface of\nHell.\n\nNow, it's on to the final chapter of\nDOOM! -- Inferno.\x00"),
+	6673:  []byte("MFLR8_4\x00"),
+	6681:  []byte("The loathsome spiderdemon that\nmasterminded the invasion of the moon\nbases and caused so much death has had\nits ass kicked for all time.\n\nA hidden doorway opens and you enter.\nYou've proven too tough for Hell to\ncontain, and now Hell at last plays\nfair -- for you emerge from the door\nto see the green fields of Earth!\nHome at last.\n\nYou wonder what's been happening on\nEarth while you were battling evil\nunleashed. It's good that no Hell-\nspawn could have come through that\ndoor with you ...\x00"),
+	7174:  []byte("MFLR8_3\x00"),
+	7182:  []byte("the spider mastermind must have sent forth\nits legions of hellspawn before your\nfinal confrontation with that terrible\nbeast from hell.  but you stepped forward\nand brought forth eternal damnation and\nsuffering upon the horde as a true hero\nwould in the face of something so evil.\n\nbesides, someone was gonna pay for what\nhappened to daisy, your pet rabbit.\n\nbut now, you see spread before you more\npotential pain and gibbitude as a nation\nof demons run amok among our cities.\n\nnext stop, hell on earth!\x00"),
+	7686:  []byte("SLIME16\x00"),
+	7694:  []byte("YOU HAVE ENTERED DEEPLY INTO THE INFESTED\nSTARPORT. BUT SOMETHING IS WRONG. THE\nMONSTERS HAVE BROUGHT THEIR OWN REALITY\nWITH THEM, AND THE STARPORT'S TECHNOLOGY\nIS BEING SUBVERTED BY THEIR PRESENCE.\n\nAHEAD, YOU SEE AN OUTPOST OF HELL, A\nFORTIFIED ZONE. IF YOU CAN GET PAST IT,\nYOU CAN PENETRATE INTO THE HAUNTED HEART\nOF THE STARBASE AND FIND THE CONTROLLING\nSWITCH WHICH HOLDS EARTH'S POPULATION\nHOSTAGE.\x00"),
+	8100:  []byte("RROCK14\x00"),
+	8108:  []byte("YOU HAVE WON! YOUR VICTORY HAS ENABLED\nHUMANKIND TO EVACUATE EARTH AND ESCAPE\nTHE NIGHTMARE.  NOW YOU ARE THE ONLY\nHUMAN LEFT ON THE FACE OF THE PLANET.\nCANNIBAL MUTATIONS, CARNIVOROUS ALIENS,\nAND EVIL SPIRITS ARE YOUR ONLY NEIGHBORS.\nYOU SIT BACK AND WAIT FOR DEATH, CONTENT\nTHAT YOU HAVE SAVED YOUR SPECIES.\n\nBUT THEN, EARTH CONTROL BEAMS DOWN A\nMESSAGE FROM SPACE: \"SENSORS HAVE LOCATED\nTHE SOURCE OF THE ALIEN INVASION. IF YOU\nGO THERE, YOU MAY BE ABLE TO BLOCK THEIR\nENTRY.  THE ALIEN BASE IS IN THE HEART OF\nYOUR OWN HOME CITY, NOT FAR FROM THE\nSTARPORT.\" SLOWLY AND PAINFULLY YOU GET\nUP AND RETURN TO THE FRAY.\x00"),
+	8726:  []byte("RROCK07\x00"),
+	8734:  []byte("YOU ARE AT THE CORRUPT HEART OF THE CITY,\nSURROUNDED BY THE CORPSES OF YOUR ENEMIES.\nYOU SEE NO WAY TO DESTROY THE CREATURES'\nENTRYWAY ON THIS SIDE, SO YOU CLENCH YOUR\nTEETH AND PLUNGE THROUGH IT.\n\nTHERE MUST BE A WAY TO CLOSE IT ON THE\nOTHER SIDE. WHAT DO YOU CARE IF YOU'VE\nGOT TO GO THROUGH HELL TO GET TO IT?\x00"),
+	9047:  []byte("RROCK17\x00"),
+	9055:  []byte("THE HORRENDOUS VISAGE OF THE BIGGEST\nDEMON YOU'VE EVER SEEN CRUMBLES BEFORE\nYOU, AFTER YOU PUMP YOUR ROCKETS INTO\nHIS EXPOSED BRAIN. THE MONSTER SHRIVELS\nUP AND DIES, ITS THRASHING LIMBS\nDEVASTATING UNTOLD MILES OF HELL'S\nSURFACE.\n\nYOU'VE DONE IT. THE INVASION IS OVER.\nEARTH IS SAVED. HELL IS A WRECK. YOU\nWONDER WHERE BAD FOLKS WILL GO WHEN THEY\nDIE, NOW. WIPING THE SWEAT FROM YOUR\nFOREHEAD YOU BEGIN THE LONG TREK BACK\nHOME. REBUILDING EARTH OUGHT TO BE A\nLOT MORE FUN THAN RUINING IT WAS.\n\x00"),
+	9550:  []byte("RROCK13\x00"),
+	9558:  []byte("CONGRATULATIONS, YOU'VE FOUND THE SECRET\nLEVEL! LOOKS LIKE IT'S BEEN BUILT BY\nHUMANS, RATHER THAN DEMONS. YOU WONDER\nWHO THE INMATES OF THIS CORNER OF HELL\nWILL BE.\x00"),
+	9723:  []byte("RROCK19\x00"),
+	9731:  []byte("CONGRATULATIONS, YOU'VE FOUND THE\nSUPER SECRET LEVEL!  YOU'D BETTER\nBLAZE THROUGH THIS ONE!\n\x00"),
+	9824:  []byte("You've fought your way out of the infested\nexperimental labs.   It seems that UAC has\nonce again gulped it down.  With their\nhigh turnover, it must be hard for poor\nold UAC to buy corporate health insurance\nnowadays..\n\nAhead lies the military complex, now\nswarming with diseased horrors hot to get\ntheir teeth into you. With luck, the\ncomplex still has some warlike ordnance\nlaying around.\x00"),
+	10214: []byte("You hear the grinding of heavy machinery\nahead.  You sure hope they're not stamping\nout new hellspawn, but you're ready to\nream out a whole herd if you have to.\nThey might be planning a blood feast, but\nyou feel about as mean as two thousand\nmaniacs packed into one mad killer.\n\nYou don't plan to go down easy.\x00"),
+	10525: []byte("The vista opening ahead looks real damn\nfamiliar. Smells familiar, too -- like\nfried excrement. You didn't like this\nplace before, and you sure as hell ain't\nplanning to like it now. The more you\nbrood on it, the madder you get.\nHefting your gun, an evil grin trickles\nonto your face. Time to take some names.\x00"),
+	10835: []byte("Suddenly, all is silent, from one horizon\nto the other. The agonizing echo of Hell\nfades away, the nightmare sky turns to\nblue, the heaps of monster corpses start \nto evaporate along with the evil stench \nthat filled the air. Jeeze, maybe you've\ndone it. Have you really won?\n\nSomething rumbles in the distance.\nA blue light begins to glow inside the\nruined skull of the demon-spitter.\x00"),
+	11221: []byte("What now? Looks totally different. Kind\nof like King Tut's condo. Well,\nwhatever's here can't be any worse\nthan usual. Can it?  Or maybe it's best\nto let sleeping gods lie..\x00"),
+	11395: []byte("Time for a vacation. You've burst the\nbowels of hell and by golly you're ready\nfor a break. You mutter to yourself,\nMaybe someone else can kick Hell's ass\nnext time around. Ahead lies a quiet town,\nwith peaceful flowing water, quaint\nbuildings, and presumably no Hellspawn.\n\nAs you step off the transport, you hear\nthe stomp of a cyberdemon's iron shoe.\x00"),
+	11749: []byte("You gloat over the steaming carcass of the\nGuardian.  With its death, you've wrested\nthe Accelerator from the stinking claws\nof Hell.  You relax and glance around the\nroom.  Damn!  There was supposed to be at\nleast one working prototype, but you can't\nsee it. The demons must have taken it.\n\nYou must find the prototype, or all your\nstruggles will have been wasted. Keep\nmoving, keep fighting, keep killing.\nOh yes, keep living, too.\x00"),
+	12183: []byte("Even the deadly Arch-Vile labyrinth could\nnot stop you, and you've gotten to the\nprototype Accelerator which is soon\nefficiently and permanently deactivated.\n\nYou're good at that kind of thing.\x00"),
+	12377: []byte("You've bashed and battered your way into\nthe heart of the devil-hive.  Time for a\nSearch-and-Destroy mission, aimed at the\nGatekeeper, whose foul offspring is\ncascading to Earth.  Yeah, he's bad. But\nyou know who's worse!\n\nGrinning evilly, you check your gear, and\nget ready to give the bastard a little Hell\nof your own making!\x00"),
+	12706: []byte("The Gatekeeper's evil face is splattered\nall over the place.  As its tattered corpse\ncollapses, an inverted Gate forms and\nsucks down the shards of the last\nprototype Accelerator, not to mention the\nfew remaining demons.  You're done. Hell\nhas gone back to pounding bad dead folks \ninstead of good live ones.  Remember to\ntell your grandkids to put a rocket\nlauncher in your coffin. If you go to Hell\nwhen you die, you'll need it for some\nfinal cleaning-up ...\x00"),
+	13167: []byte("You've found the second-hardest level we\ngot. Hope you have a saved game a level or\ntwo previous.  If not, be prepared to die\naplenty. For master marines only.\x00"),
+	13327: []byte("Betcha wondered just what WAS the hardest\nlevel we had ready for ya?  Now you know.\nNo one gets out alive.\x00"),
+	13434: []byte("ZOMBIEMAN\x00"),
+	13444: []byte("SHOTGUN GUY\x00"),
+	13456: []byte("HEAVY WEAPON DUDE\x00"),
+	13474: []byte("IMP\x00"),
+	13478: []byte("DEMON\x00"),
+	13484: []byte("LOST SOUL\x00"),
+	13494: []byte("CACODEMON\x00"),
+	13504: []byte("HELL KNIGHT\x00"),
+	13516: []byte("BARON OF HELL\x00"),
+	13530: []byte("ARACHNOTRON\x00"),
+	13542: []byte("PAIN ELEMENTAL\x00"),
+	13557: []byte("REVENANT\x00"),
+	13566: []byte("MANCUBUS\x00"),
+	13575: []byte("ARCH-VILE\x00"),
+	13585: []byte("THE SPIDER MASTERMIND\x00"),
+	13607: []byte("THE CYBERDEMON\x00"),
+	13622: []byte("OUR HERO\x00"),
+	13631: []byte("BOSSBACK\x00"),
+	13640: []byte("PFUB2\x00"),
+	13646: []byte("PFUB1\x00"),
+	13652: []byte("END0\x00"),
+	13657: []byte("END%i\x00"),
+	13663: []byte("VICTORY2\x00"),
+	13672: []byte("ENDPIC\x00"),
+	13679: []byte("F_SKY1\x00"),
+	13686: []byte("SKY1\x00"),
+	13691: []byte("SKY2\x00"),
+	13696: []byte("SKY3\x00"),
+	13701: []byte("Press escape to quit.\x00"),
+	13723: []byte("DOOM%02i.%s\x00"),
+	13735: []byte("screen shot\x00"),
+	13747: []byte("%s is turbo!\x00"),
+	13760: []byte("consistency failure (%i should be %i)\x00"),
+	13798: []byte("NET GAME\x00"),
+	13807: []byte("G_CheckSpot: unexpected angle %d\n\x00"),
+	13841: []byte("Only %i deathmatch spots, 4 required\x00"),
+	13878: []byte("map31\x00"),
+	13884: []byte("rb\x00"),
+	13887: []byte("Bad savegame\x00"),
+	13900: []byte("wb\x00"),
+	13903: []byte("recovery.dsg\x00"),
+	13916: []byte("Failed to open either '%s' or '%s' to write savegame.\x00"),
+	13970: []byte("Savegame buffer overrun\x00"),
+	13994: []byte("Failed to open savegame file '%s' for writing.\nBut your game has been saved to '%s' for recovery.\x00"),
+	14092: []byte("\x00"),
+	14093: []byte("game saved.\x00"),
+	14105: []byte("SKY4\x00"),
+	14110: []byte("-maxdemo\x00"),
+	14119: []byte("Doom 1.2 does not have a version code!\x00"),
+	14158: []byte("v1.4\x00"),
+	14163: []byte("v1.5\x00"),
+	14168: []byte("v1.6/v1.666\x00"),
+	14180: []byte("v1.7/v1.7a\x00"),
+	14191: []byte("v1.8\x00"),
+	14196: []byte("v1.9\x00"),
+	14201: []byte("v1.0/v1.1/v1.2\x00"),
+	14216: []byte("%i.%i (unknown)\x00"),
+	14232: []byte("Demo is from a different game version!\n(read %i, should be %i)\n\n*** You may need to upgrade your version of Doom to v1.9. ***\n    See: https://www.doomworld.com/classicdoom/info/patches.php\n    This appears to be %s.\x00"),
+	14449: []byte("-netdemo\x00"),
+	14458: []byte("-nodraw\x00"),
+	14466: []byte("timed %i gametics in %i realtics (%f fps)\x00"),
+	14508: []byte("Demo %s recorded\x00"),
+	14525: []byte("No\x00"),
+	14528: []byte("I'm ready to kick butt!\x00"),
+	14552: []byte("I'm OK.\x00"),
+	14560: []byte("I'm not looking too good!\x00"),
+	14586: []byte("Help!\x00"),
+	14592: []byte("You suck!\x00"),
+	14602: []byte("Next time, scumbag...\x00"),
+	14624: []byte("Come here!\x00"),
+	14635: []byte("I'll take care of it.\x00"),
+	14657: []byte("Yes\x00"),
+	14661: []byte("Green: \x00"),
+	14669: []byte("Indigo: \x00"),
+	14678: []byte("Brown: \x00"),
+	14686: []byte("Red: \x00"),
+	14692: []byte("E1M1: Hangar\x00"),
+	14705: []byte("E1M2: Nuclear Plant\x00"),
+	14725: []byte("E1M3: Toxin Refinery\x00"),
+	14746: []byte("E1M4: Command Control\x00"),
+	14768: []byte("E1M5: Phobos Lab\x00"),
+	14785: []byte("E1M6: Central Processing\x00"),
+	14810: []byte("E1M7: Computer Station\x00"),
+	14833: []byte("E1M8: Phobos Anomaly\x00"),
+	14854: []byte("E1M9: Military Base\x00"),
+	14874: []byte("E2M1: Deimos Anomaly\x00"),
+	14895: []byte("E2M2: Containment Area\x00"),
+	14918: []byte("E2M3: Refinery\x00"),
+	14933: []byte("E2M4: Deimos Lab\x00"),
+	14950: []byte("E2M5: Command Center\x00"),
+	14971: []byte("E2M6: Halls of the Damned\x00"),
+	14997: []byte("E2M7: Spawning Vats\x00"),
+	15017: []byte("E2M8: Tower of Babel\x00"),
+	15038: []byte("E2M9: Fortress of Mystery\x00"),
+	15064: []byte("E3M1: Hell Keep\x00"),
+	15080: []byte("E3M2: Slough of Despair\x00"),
+	15104: []byte("E3M3: Pandemonium\x00"),
+	15122: []byte("E3M4: House of Pain\x00"),
+	15142: []byte("E3M5: Unholy Cathedral\x00"),
+	15165: []byte("E3M6: Mt. Erebus\x00"),
+	15182: []byte("E3M7: Limbo\x00"),
+	15194: []byte("E3M8: Dis\x00"),
+	15204: []byte("E3M9: Warrens\x00"),
+	15218: []byte("E4M1: Hell Beneath\x00"),
+	15237: []byte("E4M2: Perfect Hatred\x00"),
+	15258: []byte("E4M3: Sever The Wicked\x00"),
+	15281: []byte("E4M4: Unruly Evil\x00"),
+	15299: []byte("E4M5: They Will Repent\x00"),
+	15322: []byte("E4M6: Against Thee Wickedly\x00"),
+	15350: []byte("E4M7: And Hell Followed\x00"),
+	15374: []byte("E4M8: Unto The Cruel\x00"),
+	15395: []byte("E4M9: Fear\x00"),
+	15406: []byte("NEWLEVEL\x00"),
+	15415: []byte("level 1: entryway\x00"),
+	15433: []byte("level 2: underhalls\x00"),
+	15453: []byte("level 3: the gantlet\x00"),
+	15474: []byte("level 4: the focus\x00"),
+	15493: []byte("level 5: the waste tunnels\x00"),
+	15520: []byte("level 6: the crusher\x00"),
+	15541: []byte("level 7: dead simple\x00"),
+	15562: []byte("level 8: tricks and traps\x00"),
+	15588: []byte("level 9: the pit\x00"),
+	15605: []byte("level 10: refueling base\x00"),
+	15630: []byte("level 11: 'o' of destruction!\x00"),
+	15660: []byte("level 12: the factory\x00"),
+	15682: []byte("level 13: downtown\x00"),
+	15701: []byte("level 14: the inmost dens\x00"),
+	15727: []byte("level 15: industrial zone\x00"),
+	15753: []byte("level 16: suburbs\x00"),
+	15771: []byte("level 17: tenements\x00"),
+	15791: []byte("level 18: the courtyard\x00"),
+	15815: []byte("level 19: the citadel\x00"),
+	15837: []byte("level 20: gotcha!\x00"),
+	15855: []byte("level 21: nirvana\x00"),
+	15873: []byte("level 22: the catacombs\x00"),
+	15897: []byte("level 23: barrels o' fun\x00"),
+	15922: []byte("level 24: the chasm\x00"),
+	15942: []byte("level 25: bloodfalls\x00"),
+	15963: []byte("level 26: the abandoned mines\x00"),
+	15993: []byte("level 27: monster condo\x00"),
+	16017: []byte("level 28: the spirit world\x00"),
+	16044: []byte("level 29: the living end\x00"),
+	16069: []byte("level 30: icon of sin\x00"),
+	16091: []byte("level 31: wolfenstein\x00"),
+	16113: []byte("level 32: grosse\x00"),
+	16130: []byte("level 1: congo\x00"),
+	16145: []byte("level 2: well of souls\x00"),
+	16168: []byte("level 3: aztec\x00"),
+	16183: []byte("level 4: caged\x00"),
+	16198: []byte("level 5: ghost town\x00"),
+	16218: []byte("level 6: baron's lair\x00"),
+	16240: []byte("level 7: caughtyard\x00"),
+	16260: []byte("level 8: realm\x00"),
+	16275: []byte("level 9: abattoire\x00"),
+	16294: []byte("level 10: onslaught\x00"),
+	16314: []byte("level 11: hunted\x00"),
+	16331: []byte("level 12: speed\x00"),
+	16347: []byte("level 13: the crypt\x00"),
+	16367: []byte("level 14: genesis\x00"),
+	16385: []byte("level 15: the twilight\x00"),
+	16408: []byte("level 16: the omen\x00"),
+	16427: []byte("level 17: compound\x00"),
+	16446: []byte("level 18: neurosphere\x00"),
+	16468: []byte("level 19: nme\x00"),
+	16482: []byte("level 20: the death domain\x00"),
+	16509: []byte("level 21: slayer\x00"),
+	16526: []byte("level 22: impossible mission\x00"),
+	16555: []byte("level 23: tombstone\x00"),
+	16575: []byte("level 24: the final frontier\x00"),
+	16604: []byte("level 25: the temple of darkness\x00"),
+	16637: []byte("level 26: bunker\x00"),
+	16654: []byte("level 27: anti-christ\x00"),
+	16676: []byte("level 28: the sewers\x00"),
+	16697: []byte("level 29: odyssey of noises\x00"),
+	16725: []byte("level 30: the gateway of hell\x00"),
+	16755: []byte("level 31: cyberden\x00"),
+	16774: []byte("level 32: go 2 it\x00"),
+	16792: []byte("level 1: system control\x00"),
+	16816: []byte("level 2: human bbq\x00"),
+	16835: []byte("level 3: power control\x00"),
+	16858: []byte("level 4: wormhole\x00"),
+	16876: []byte("level 5: hanger\x00"),
+	16892: []byte("level 6: open season\x00"),
+	16913: []byte("level 7: prison\x00"),
+	16929: []byte("level 8: metal\x00"),
+	16944: []byte("level 9: stronghold\x00"),
+	16964: []byte("level 10: redemption\x00"),
+	16985: []byte("level 11: storage facility\x00"),
+	17012: []byte("level 12: crater\x00"),
+	17029: []byte("level 13: nukage processing\x00"),
+	17057: []byte("level 14: steel works\x00"),
+	17079: []byte("level 15: dead zone\x00"),
+	17099: []byte("level 16: deepest reaches\x00"),
+	17125: []byte("level 17: processing area\x00"),
+	17151: []byte("level 18: mill\x00"),
+	17166: []byte("level 19: shipping/respawning\x00"),
+	17196: []byte("level 20: central processing\x00"),
+	17225: []byte("level 21: administration center\x00"),
+	17257: []byte("level 22: habitat\x00"),
+	17275: []byte("level 23: lunar mining project\x00"),
+	17306: []byte("level 24: quarry\x00"),
+	17323: []byte("level 25: baron's den\x00"),
+	17345: []byte("level 26: ballistyx\x00"),
+	17365: []byte("level 27: mount pain\x00"),
+	17386: []byte("level 28: heck\x00"),
+	17401: []byte("level 29: river styx\x00"),
+	17422: []byte("level 30: last call\x00"),
+	17442: []byte("level 31: pharaoh\x00"),
+	17460: []byte("level 32: caribbean\x00"),
+	17480: []byte("STCFN%.3d\x00"),
+	17490: []byte("Unknown level\x00"),
+	17504: []byte("[Message unsent]\x00"),
+	17521: []byte("You mumble to yourself\x00"),
+	17544: []byte("Who's there?\x00"),
+	17557: []byte("You scare yourself\x00"),
+	17576: []byte("You start to rave\x00"),
+	17594: []byte("You've lost it...\x00"),
+	17612: []byte("TROO\x00"),
+	17617: []byte("SHTG\x00"),
+	17622: []byte("PUNG\x00"),
+	17627: []byte("PISG\x00"),
+	17632: []byte("PISF\x00"),
+	17637: []byte("SHTF\x00"),
+	17642: []byte("SHT2\x00"),
+	17647: []byte("CHGG\x00"),
+	17652: []byte("CHGF\x00"),
+	17657: []byte("MISG\x00"),
+	17662: []byte("MISF\x00"),
+	17667: []byte("SAWG\x00"),
+	17672: []byte("PLSG\x00"),
+	17677: []byte("PLSF\x00"),
+	17682: []byte("BFGG\x00"),
+	17687: []byte("BFGF\x00"),
+	17692: []byte("BLUD\x00"),
+	17697: []byte("PUFF\x00"),
+	17702: []byte("BAL1\x00"),
+	17707: []byte("BAL2\x00"),
+	17712: []byte("PLSS\x00"),
+	17717: []byte("PLSE\x00"),
+	17722: []byte("MISL\x00"),
+	17727: []byte("BFS1\x00"),
+	17732: []byte("BFE1\x00"),
+	17737: []byte("BFE2\x00"),
+	17742: []byte("TFOG\x00"),
+	17747: []byte("IFOG\x00"),
+	17752: []byte("PLAY\x00"),
+	17757: []byte("POSS\x00"),
+	17762: []byte("SPOS\x00"),
+	17767: []byte("VILE\x00"),
+	17772: []byte("FIRE\x00"),
+	17777: []byte("FATB\x00"),
+	17782: []byte("FBXP\x00"),
+	17787: []byte("SKEL\x00"),
+	17792: []byte("MANF\x00"),
+	17797: []byte("FATT\x00"),
+	17802: []byte("CPOS\x00"),
+	17807: []byte("SARG\x00"),
+	17812: []byte("HEAD\x00"),
+	17817: []byte("BAL7\x00"),
+	17822: []byte("BOSS\x00"),
+	17827: []byte("BOS2\x00"),
+	17832: []byte("SKUL\x00"),
+	17837: []byte("SPID\x00"),
+	17842: []byte("BSPI\x00"),
+	17847: []byte("APLS\x00"),
+	17852: []byte("APBX\x00"),
+	17857: []byte("CYBR\x00"),
+	17862: []byte("PAIN\x00"),
+	17867: []byte("SSWV\x00"),
+	17872: []byte("KEEN\x00"),
+	17877: []byte("BBRN\x00"),
+	17882: []byte("BOSF\x00"),
+	17887: []byte("ARM1\x00"),
+	17892: []byte("ARM2\x00"),
+	17897: []byte("BAR1\x00"),
+	17902: []byte("BEXP\x00"),
+	17907: []byte("FCAN\x00"),
+	17912: []byte("BON1\x00"),
+	17917: []byte("BON2\x00"),
+	17922: []byte("BKEY\x00"),
+	17927: []byte("RKEY\x00"),
+	17932: []byte("YKEY\x00"),
+	17937: []byte("BSKU\x00"),
+	17942: []byte("RSKU\x00"),
+	17947: []byte("YSKU\x00"),
+	17952: []byte("STIM\x00"),
+	17957: []byte("MEDI\x00"),
+	17962: []byte("SOUL\x00"),
+	17967: []byte("PINV\x00"),
+	17972: []byte("PSTR\x00"),
+	17977: []byte("PINS\x00"),
+	17982: []byte("MEGA\x00"),
+	17987: []byte("SUIT\x00"),
+	17992: []byte("PMAP\x00"),
+	17997: []byte("PVIS\x00"),
+	18002: []byte("CLIP\x00"),
+	18007: []byte("AMMO\x00"),
+	18012: []byte("ROCK\x00"),
+	18017: []byte("BROK\x00"),
+	18022: []byte("CELL\x00"),
+	18027: []byte("CELP\x00"),
+	18032: []byte("SHEL\x00"),
+	18037: []byte("SBOX\x00"),
+	18042: []byte("BPAK\x00"),
+	18047: []byte("BFUG\x00"),
+	18052: []byte("MGUN\x00"),
+	18057: []byte("CSAW\x00"),
+	18062: []byte("LAUN\x00"),
+	18067: []byte("PLAS\x00"),
+	18072: []byte("SHOT\x00"),
+	18077: []byte("SGN2\x00"),
+	18082: []byte("COLU\x00"),
+	18087: []byte("SMT2\x00"),
+	18092: []byte("GOR1\x00"),
+	18097: []byte("POL2\x00"),
+	18102: []byte("POL5\x00"),
+	18107: []byte("POL4\x00"),
+	18112: []byte("POL3\x00"),
+	18117: []byte("POL1\x00"),
+	18122: []byte("POL6\x00"),
+	18127: []byte("GOR2\x00"),
+	18132: []byte("GOR3\x00"),
+	18137: []byte("GOR4\x00"),
+	18142: []byte("GOR5\x00"),
+	18147: []byte("SMIT\x00"),
+	18152: []byte("COL1\x00"),
+	18157: []byte("COL2\x00"),
+	18162: []byte("COL3\x00"),
+	18167: []byte("COL4\x00"),
+	18172: []byte("CAND\x00"),
+	18177: []byte("CBRA\x00"),
+	18182: []byte("COL6\x00"),
+	18187: []byte("TRE1\x00"),
+	18192: []byte("TRE2\x00"),
+	18197: []byte("ELEC\x00"),
+	18202: []byte("CEYE\x00"),
+	18207: []byte("FSKU\x00"),
+	18212: []byte("COL5\x00"),
+	18217: []byte("TBLU\x00"),
+	18222: []byte("TGRN\x00"),
+	18227: []byte("TRED\x00"),
+	18232: []byte("SMBT\x00"),
+	18237: []byte("SMGT\x00"),
+	18242: []byte("SMRT\x00"),
+	18247: []byte("HDB1\x00"),
+	18252: []byte("HDB2\x00"),
+	18257: []byte("HDB3\x00"),
+	18262: []byte("HDB4\x00"),
+	18267: []byte("HDB5\x00"),
+	18272: []byte("HDB6\x00"),
+	18277: []byte("POB1\x00"),
+	18282: []byte("POB2\x00"),
+	18287: []byte("BRS1\x00"),
+	18292: []byte("TLMP\x00"),
+	18297: []byte("TLP2\x00"),
+	18302: []byte("use_joystick\x00"),
+	18315: []byte("joystick_index\x00"),
+	18330: []byte("joystick_x_axis\x00"),
+	18346: []byte("joystick_y_axis\x00"),
+	18362: []byte("joystick_strafe_axis\x00"),
+	18383: []byte("joystick_x_invert\x00"),
+	18401: []byte("joystick_y_invert\x00"),
+	18419: []byte("joystick_strafe_invert\x00"),
+	18442: []byte("joystick_physical_button%i\x00"),
+	18469: []byte("I_InitStretchTables: Generating lookup tables..\x00"),
+	18517: []byte("..\x00"),
+	18520: []byte("I_InitSquashTable: Generating lookup table..\x00"),
+	18565: []byte("I_ResetScaleTables: Regenerating lookup tables..\n\x00"),
+	18615: []byte("I_ResetScaleTables: Regenerating lookup table..\n\x00"),
+	18664: []byte("-scanline\x00"),
+	18674: []byte("-nosound\x00"),
+	18683: []byte("-nosfx\x00"),
+	18690: []byte("-nomusic\x00"),
+	18699: []byte("snd_musicdevice\x00"),
+	18715: []byte("snd_sfxdevice\x00"),
+	18729: []byte("snd_sbport\x00"),
+	18740: []byte("snd_sbirq\x00"),
+	18750: []byte("snd_sbdma\x00"),
+	18760: []byte("snd_mport\x00"),
+	18770: []byte("snd_maxslicetime_ms\x00"),
+	18790: []byte("snd_musiccmd\x00"),
+	18803: []byte("snd_samplerate\x00"),
+	18818: []byte("snd_cachesize\x00"),
+	18832: []byte("Unable to allocate %i MiB of RAM for zone\x00"),
+	18874: []byte("-mb\x00"),
+	18878: []byte("zone memory: %p, %x allocated for zone\n\x00"),
+	18918: []byte(" Doom Generic is free software, covered by the GNU General Public\n License.  There is NO warranty; not even for MERCHANTABILITY or FITNESS\n FOR A PARTICULAR PURPOSE. You are welcome to change and distribute\n copies under certain conditions. See the source for more information.\n\x00"),
+	19197: []byte("/usr/bin/zenity --help >/dev/null 2>&1\x00"),
+	19236: []byte("$`\\!\x00"),
+	19241: []byte("/usr/bin/zenity\x00"),
+	19257: []byte("%s --error --text=%s\x00"),
+	19278: []byte("Warning: recursive call to I_Error detected.\n\x00"),
+	19324: []byte("\n\n\x00"),
+	19327: []byte("-nogui\x00"),
+	19334: []byte("-setmem\x00"),
+	19342: []byte("dos622\x00"),
+	19349: []byte("dos71\x00"),
+	19355: []byte("dosbox\x00"),
+	19362: []byte("not a read stream\n\x00"),
+	19381: []byte("Error seeking to %i\n\x00"),
+	19402: []byte("show_talk\x00"),
+	19412: []byte("voice_volume\x00"),
+	19425: []byte("key_right\x00"),
+	19435: []byte("key_left\x00"),
+	19444: []byte("key_up\x00"),
+	19451: []byte("key_down\x00"),
+	19460: []byte("key_strafeleft\x00"),
+	19475: []byte("key_straferight\x00"),
+	19491: []byte("key_useHealth\x00"),
+	19505: []byte("key_jump\x00"),
+	19514: []byte("key_flyup\x00"),
+	19524: []byte("key_flydown\x00"),
+	19536: []byte("key_flycenter\x00"),
+	19550: []byte("key_lookup\x00"),
+	19561: []byte("key_lookdown\x00"),
+	19574: []byte("key_lookcenter\x00"),
+	19589: []byte("key_invquery\x00"),
+	19602: []byte("key_mission\x00"),
+	19614: []byte("key_invPop\x00"),
+	19625: []byte("key_invKey\x00"),
+	19636: []byte("key_invHome\x00"),
+	19648: []byte("key_invEnd\x00"),
+	19659: []byte("key_invleft\x00"),
+	19671: []byte("key_invright\x00"),
+	19684: []byte("key_invLeft\x00"),
+	19696: []byte("key_invRight\x00"),
+	19709: []byte("key_useartifact\x00"),
+	19725: []byte("key_invUse\x00"),
+	19736: []byte("key_invDrop\x00"),
+	19748: []byte("key_lookUp\x00"),
+	19759: []byte("key_lookDown\x00"),
+	19772: []byte("key_fire\x00"),
+	19781: []byte("key_use\x00"),
+	19789: []byte("key_strafe\x00"),
+	19800: []byte("key_speed\x00"),
+	19810: []byte("use_mouse\x00"),
+	19820: []byte("mouseb_fire\x00"),
+	19832: []byte("mouseb_strafe\x00"),
+	19846: []byte("mouseb_forward\x00"),
+	19861: []byte("mouseb_jump\x00"),
+	19873: []byte("joyb_fire\x00"),
+	19883: []byte("joyb_strafe\x00"),
+	19895: []byte("joyb_use\x00"),
+	19904: []byte("joyb_speed\x00"),
+	19915: []byte("joyb_jump\x00"),
+	19925: []byte("screensize\x00"),
+	19936: []byte("usegamma\x00"),
+	19945: []byte("savedir\x00"),
+	19953: []byte("messageson\x00"),
+	19964: []byte("back_flat\x00"),
+	19974: []byte("nickname\x00"),
+	19983: []byte("chatmacro0\x00"),
+	19994: []byte("chatmacro1\x00"),
+	20005: []byte("chatmacro2\x00"),
+	20016: []byte("chatmacro3\x00"),
+	20027: []byte("chatmacro4\x00"),
+	20038: []byte("chatmacro5\x00"),
+	20049: []byte("chatmacro6\x00"),
+	20060: []byte("chatmacro7\x00"),
+	20071: []byte("chatmacro8\x00"),
+	20082: []byte("chatmacro9\x00"),
+	20093: []byte("comport\x00"),
+	20101: []byte("graphical_startup\x00"),
+	20119: []byte("autoadjust_video_settings\x00"),
+	20145: []byte("fullscreen\x00"),
+	20156: []byte("aspect_ratio_correct\x00"),
+	20177: []byte("startup_delay\x00"),
+	20191: []byte("screen_width\x00"),
+	20204: []byte("screen_height\x00"),
+	20218: []byte("screen_bpp\x00"),
+	20229: []byte("grabmouse\x00"),
+	20239: []byte("novert\x00"),
+	20246: []byte("mouse_acceleration\x00"),
+	20265: []byte("mouse_threshold\x00"),
+	20281: []byte("opl_io_port\x00"),
+	20293: []byte("png_screenshots\x00"),
+	20309: []byte("vanilla_keyboard_mapping\x00"),
+	20334: []byte("video_driver\x00"),
+	20347: []byte("window_position\x00"),
+	20363: []byte("joystick_physical_button0\x00"),
+	20389: []byte("joystick_physical_button1\x00"),
+	20415: []byte("joystick_physical_button2\x00"),
+	20441: []byte("joystick_physical_button3\x00"),
+	20467: []byte("joystick_physical_button4\x00"),
+	20493: []byte("joystick_physical_button5\x00"),
+	20519: []byte("joystick_physical_button6\x00"),
+	20545: []byte("joystick_physical_button7\x00"),
+	20571: []byte("joystick_physical_button8\x00"),
+	20597: []byte("joystick_physical_button9\x00"),
+	20623: []byte("joyb_strafeleft\x00"),
+	20639: []byte("joyb_straferight\x00"),
+	20656: []byte("joyb_menu_activate\x00"),
+	20675: []byte("joyb_prevweapon\x00"),
+	20691: []byte("joyb_nextweapon\x00"),
+	20707: []byte("mouseb_strafeleft\x00"),
+	20725: []byte("mouseb_straferight\x00"),
+	20744: []byte("mouseb_use\x00"),
+	20755: []byte("mouseb_backward\x00"),
+	20771: []byte("mouseb_prevweapon\x00"),
+	20789: []byte("mouseb_nextweapon\x00"),
+	20807: []byte("dclick_use\x00"),
+	20818: []byte("key_pause\x00"),
+	20828: []byte("key_menu_activate\x00"),
+	20846: []byte("key_menu_up\x00"),
+	20858: []byte("key_menu_down\x00"),
+	20872: []byte("key_menu_left\x00"),
+	20886: []byte("key_menu_right\x00"),
+	20901: []byte("key_menu_back\x00"),
+	20915: []byte("key_menu_forward\x00"),
+	20932: []byte("key_menu_confirm\x00"),
+	20949: []byte("key_menu_abort\x00"),
+	20964: []byte("key_menu_help\x00"),
+	20978: []byte("key_menu_save\x00"),
+	20992: []byte("key_menu_load\x00"),
+	21006: []byte("key_menu_volume\x00"),
+	21022: []byte("key_menu_detail\x00"),
+	21038: []byte("key_menu_qsave\x00"),
+	21053: []byte("key_menu_endgame\x00"),
+	21070: []byte("key_menu_messages\x00"),
+	21088: []byte("key_menu_qload\x00"),
+	21103: []byte("key_menu_quit\x00"),
+	21117: []byte("key_menu_gamma\x00"),
+	21132: []byte("key_spy\x00"),
+	21140: []byte("key_menu_incscreen\x00"),
+	21159: []byte("key_menu_decscreen\x00"),
+	21178: []byte("key_menu_screenshot\x00"),
+	21198: []byte("key_map_toggle\x00"),
+	21213: []byte("key_map_north\x00"),
+	21227: []byte("key_map_south\x00"),
+	21241: []byte("key_map_east\x00"),
+	21254: []byte("key_map_west\x00"),
+	21267: []byte("key_map_zoomin\x00"),
+	21282: []byte("key_map_zoomout\x00"),
+	21298: []byte("key_map_maxzoom\x00"),
+	21314: []byte("key_map_follow\x00"),
+	21329: []byte("key_map_grid\x00"),
+	21342: []byte("key_map_mark\x00"),
+	21355: []byte("key_map_clearmark\x00"),
+	21373: []byte("key_weapon1\x00"),
+	21385: []byte("key_weapon2\x00"),
+	21397: []byte("key_weapon3\x00"),
+	21409: []byte("key_weapon4\x00"),
+	21421: []byte("key_weapon5\x00"),
+	21433: []byte("key_weapon6\x00"),
+	21445: []byte("key_weapon7\x00"),
+	21457: []byte("key_weapon8\x00"),
+	21469: []byte("key_prevweapon\x00"),
+	21484: []byte("key_nextweapon\x00"),
+	21499: []byte("key_arti_all\x00"),
+	21512: []byte("key_arti_health\x00"),
+	21528: []byte("key_arti_poisonbag\x00"),
+	21547: []byte("key_arti_blastradius\x00"),
+	21568: []byte("key_arti_teleport\x00"),
+	21586: []byte("key_arti_teleportother\x00"),
+	21609: []byte("key_arti_egg\x00"),
+	21622: []byte("key_arti_invulnerability\x00"),
+	21647: []byte("key_message_refresh\x00"),
+	21667: []byte("key_demo_quit\x00"),
+	21681: []byte("key_multi_msg\x00"),
+	21695: []byte("key_multi_msgplayer1\x00"),
+	21716: []byte("key_multi_msgplayer2\x00"),
+	21737: []byte("key_multi_msgplayer3\x00"),
+	21758: []byte("key_multi_msgplayer4\x00"),
+	21779: []byte("key_multi_msgplayer5\x00"),
+	21800: []byte("key_multi_msgplayer6\x00"),
+	21821: []byte("key_multi_msgplayer7\x00"),
+	21842: []byte("key_multi_msgplayer8\x00"),
+	21863: []byte("%x\x00"),
+	21866: []byte("%i\x00"),
+	21869: []byte("-config\x00"),
+	21877: []byte("	default file: %s\n\x00"),
+	21896: []byte("saving config in %s\n\x00"),
+	21917: []byte("-extraconfig\x00"),
+	21930: []byte("        extra configuration file: %s\n\x00"),
+	21968: []byte("Unknown configuration variable: '%s'\x00"),
+	22005: []byte("Using %s for configuration and saves\n\x00"),
+	22043: []byte(".savegame/\x00"),
+	22054: []byte("Using %s for savegames\n\x00"),
+	22078: []byte("key_multi_msgplayer%i\x00"),
+	22100: []byte("M_SKULL1\x00"),
+	22109: []byte("M_SKULL2\x00"),
+	22118: []byte("empty slot\x00"),
+	22129: []byte("M_LOADG\x00"),
+	22137: []byte("M_LSLEFT\x00"),
+	22146: []byte("M_LSCNTR\x00"),
+	22155: []byte("M_LSRGHT\x00"),
+	22164: []byte("you can't do load while in a net game!\n\npress a key.\x00"),
+	22217: []byte("M_SAVEG\x00"),
+	22225: []byte("_\x00"),
+	22227: []byte("you can't save if you aren't playing!\n\npress a key.\x00"),
+	22279: []byte("quicksave over your game named\n\n'%s'?\n\npress y or n.\x00"),
+	22332: []byte("you can't quickload during a netgame!\n\npress a key.\x00"),
+	22384: []byte("you haven't picked a quicksave slot yet!\n\npress a key.\x00"),
+	22439: []byte("do you want to quickload the game named\n\n'%s'?\n\npress y or n.\x00"),
+	22501: []byte("HELP\x00"),
+	22506: []byte("HELP1\x00"),
+	22512: []byte("Unhandled game version\x00"),
+	22535: []byte("M_SVOL\x00"),
+	22542: []byte("M_DOOM\x00"),
+	22549: []byte("M_NEWG\x00"),
+	22556: []byte("M_SKILL\x00"),
+	22564: []byte("you can't start a new game\nwhile in a network game.\n\npress a key.\x00"),
+	22630: []byte("M_EPISOD\x00"),
+	22639: []byte("are you sure? this skill level\nisn't even remotely fair.\n\npress y or n.\x00"),
+	22711: []byte("this is the shareware version of doom.\n\nyou need to order the entire trilogy.\n\npress a key.\x00"),
+	22803: []byte("M_Episode: 4th episode requires UltimateDOOM\n\x00"),
+	22849: []byte("M_GDHIGH\x00"),
+	22858: []byte("M_GDLOW\x00"),
+	22866: []byte("M_MSGOFF\x00"),
+	22875: []byte("M_MSGON\x00"),
+	22883: []byte("M_OPTTTL\x00"),
+	22892: []byte("Messages OFF\x00"),
+	22905: []byte("Messages ON\x00"),
+	22917: []byte("you can't end a netgame!\n\npress a key.\x00"),
+	22956: []byte("are you sure you want to end the game?\n\npress y or n.\x00"),
+	23010: []byte("%s\n\n(press y to quit to dos.)\x00"),
+	23040: []byte("High detail\x00"),
+	23052: []byte("Low detail\x00"),
+	23063: []byte("M_THERML\x00"),
+	23072: []byte("M_THERMM\x00"),
+	23081: []byte("M_THERMR\x00"),
+	23090: []byte("M_THERMO\x00"),
+	23099: []byte("M_CELL1\x00"),
+	23107: []byte("M_CELL2\x00"),
+	23115: []byte("r\x00"),
+	23117: []byte("Couldn't read file %s\x00"),
+	23139: []byte("/tmp\x00"),
+	23144: []byte(" 0x%x\x00"),
+	23150: []byte(" 0X%x\x00"),
+	23156: []byte(" 0%o\x00"),
+	23161: []byte(" %d\x00"),
+	23165: []byte("Warning: Truncated '%s' lump name to '%.8s'.\n\x00"),
+	23211: []byte("Failed to duplicate string (length %i)\n\x00"),
+	23251: []byte("M_StringReplace: Failed to allocate new string\x00"),
+	23298: []byte("M_StringJoin: Failed to allocate new string.\x00"),
+	23343: []byte("You need a blue key to activate this object\x00"),
+	23387: []byte("You need a red key to activate this object\x00"),
+	23430: []byte("You need a yellow key to activate this object\x00"),
+	23476: []byte("You need a blue key to open this door\x00"),
+	23514: []byte("You need a yellow key to open this door\x00"),
+	23554: []byte("You need a red key to open this door\x00"),
+	23591: []byte("EV_VerticalDoor: Tried to close something that wasn't a door.\n\x00"),
+	23654: []byte("Weird actor->movedir!\x00"),
+	23676: []byte("P_NewChaseDir: called with no target\x00"),
+	23713: []byte("P_GiveAmmo: bad type %i\x00"),
+	23737: []byte("Picked up the armor.\x00"),
+	23758: []byte("Picked up the MegaArmor!\x00"),
+	23783: []byte("Picked up a health bonus.\x00"),
+	23809: []byte("Picked up an armor bonus.\x00"),
+	23835: []byte("Supercharge!\x00"),
+	23848: []byte("MegaSphere!\x00"),
+	23860: []byte("Picked up a blue keycard.\x00"),
+	23886: []byte("Picked up a yellow keycard.\x00"),
+	23914: []byte("Picked up a red keycard.\x00"),
+	23939: []byte("Picked up a blue skull key.\x00"),
+	23967: []byte("Picked up a yellow skull key.\x00"),
+	23997: []byte("Picked up a red skull key.\x00"),
+	24024: []byte("Picked up a stimpack.\x00"),
+	24046: []byte("Picked up a medikit that you REALLY need!\x00"),
+	24088: []byte("Picked up a medikit.\x00"),
+	24109: []byte("Invulnerability!\x00"),
+	24126: []byte("Berserk!\x00"),
+	24135: []byte("Partial Invisibility\x00"),
+	24156: []byte("Radiation Shielding Suit\x00"),
+	24181: []byte("Computer Area Map\x00"),
+	24199: []byte("Light Amplification Visor\x00"),
+	24225: []byte("Picked up a clip.\x00"),
+	24243: []byte("Picked up a box of bullets.\x00"),
+	24271: []byte("Picked up a rocket.\x00"),
+	24291: []byte("Picked up a box of rockets.\x00"),
+	24319: []byte("Picked up an energy cell.\x00"),
+	24345: []byte("Picked up an energy cell pack.\x00"),
+	24376: []byte("Picked up 4 shotgun shells.\x00"),
+	24404: []byte("Picked up a box of shotgun shells.\x00"),
+	24439: []byte("Picked up a backpack full of ammo!\x00"),
+	24474: []byte("You got the BFG9000!  Oh, yes.\x00"),
+	24505: []byte("You got the chaingun!\x00"),
+	24527: []byte("A chainsaw!  Find some meat!\x00"),
+	24556: []byte("You got the rocket launcher!\x00"),
+	24585: []byte("You got the plasma gun!\x00"),
+	24609: []byte("You got the shotgun!\x00"),
+	24630: []byte("You got the super shotgun!\x00"),
+	24657: []byte("P_SpecialThing: Unknown gettable thing\x00"),
+	24696: []byte("PTR_SlideTraverse: not a line?\x00"),
+	24727: []byte("-spechit\x00"),
+	24736: []byte("SpechitOverrun: Warning: unable to emulatean overrun where numspechit=%i\n\x00"),
+	24810: []byte("P_SpawnMapThing: Unknown type %i at (%i, %i)\x00"),
+	24855: []byte("P_AddActivePlat: no more plats!\x00"),
+	24887: []byte("P_RemoveActivePlat: can't find plat!\x00"),
+	24924: []byte("temp.dsg\x00"),
+	24933: []byte("doomsav%d.dsg\x00"),
+	24947: []byte("%s%s\x00"),
+	24952: []byte("saveg_read8: Unexpected end of file while reading save game\n\x00"),
+	25013: []byte("saveg_write8: Error while writing save game\n\x00"),
+	25058: []byte("version %i\x00"),
+	25069: []byte("Unknown tclass %i in savegame\x00"),
+	25099: []byte("P_UnarchiveSpecials:Unknown tclass %i in savegame\x00"),
+	25149: []byte("PadRejectArray: REJECT lump too short to pad! (%i > %i)\n\x00"),
+	25206: []byte("-reject_pad_with_ff\x00"),
+	25226: []byte("map0%i\x00"),
+	25233: []byte("map%i\x00"),
+	25239: []byte("P_CrossSubsector: ss %i with numss = %i\x00"),
+	25279: []byte("P_InitPicAnims: bad cycle from %s to %s\x00"),
+	25319: []byte("Sector with more than 22 adjoining sectors. Vanilla will crash here\x00"),
+	25387: []byte("P_PlayerInSpecialSector: unknown special %i\x00"),
+	25431: []byte("-donut\x00"),
+	25438: []byte("DonutOverrun: The second parameter for \"-donut\" switch should be greater than 0 and less than number of flats (%d). Using default value (%d) instead. \n\x00"),
+	25590: []byte("EV_DoDonut: linedef had no second sidedef! Unexpected behavior may occur in Vanilla Doom. \n\x00"),
+	25682: []byte("EV_DoDonut: WARNING: emulating buffer overrun due to NULL back sector. Unexpected behavior may occur in Vanilla Doom.\n\x00"),
+	25801: []byte("Too many scrolling wall linedefs! (Vanilla limit is 64)\x00"),
+	25857: []byte("P_StartButton: no button slots left!\x00"),
+	25894: []byte("R_Subsector: ss %i with numss = %i\x00"),
+	25929: []byte("r_data.c\x00"),
+	25938: []byte("R_GenerateLookup: column without a patch (%s)\n\x00"),
+	25985: []byte("R_GenerateLookup: texture %i is >64k\x00"),
+	26022: []byte("PNAMES\x00"),
+	26029: []byte("TEXTURE1\x00"),
+	26038: []byte("TEXTURE2\x00"),
+	26047: []byte("S_START\x00"),
+	26055: []byte("S_END\x00"),
+	26061: []byte("[\x00"),
+	26063: []byte(" \x00"),
+	26065: []byte("]\x00"),
+	26067: []byte("\x00"),
+	26069: []byte("R_InitTextures: bad texture directory\x00"),
+	26107: []byte("R_InitTextures: Missing patch in texture %s\x00"),
+	26151: []byte("F_START\x00"),
+	26159: []byte("F_END\x00"),
+	26165: []byte("COLORMAP\x00"),
+	26174: []byte("R_FlatNumForName: %s not found\x00"),
+	26205: []byte("R_TextureNumForName: %s not found\x00"),
+	26239: []byte("R_DrawColumn: %i to %i at %i\x00"),
+	26268: []byte("R_DrawFuzzColumn: %i to %i at %i\x00"),
+	26301: []byte("R_DrawSpan: %i to %i at %i\x00"),
+	26328: []byte("FLOOR7_2\x00"),
+	26337: []byte("GRNROCK\x00"),
+	26345: []byte("brdr_t\x00"),
+	26352: []byte("brdr_b\x00"),
+	26359: []byte("brdr_l\x00"),
+	26366: []byte("brdr_r\x00"),
+	26373: []byte("brdr_tl\x00"),
+	26381: []byte("brdr_tr\x00"),
+	26389: []byte("brdr_bl\x00"),
+	26397: []byte("brdr_br\x00"),
+	26405: []byte("R_MapPlane: %i, %i at %i\x00"),
+	26430: []byte("R_FindPlane: no more visplanes\x00"),
+	26461: []byte("R_DrawPlanes: drawsegs overflow (%i)\x00"),
+	26498: []byte("R_DrawPlanes: visplane overflow (%i)\x00"),
+	26535: []byte("R_DrawPlanes: opening overflow (%i)\x00"),
+	26571: []byte("Bad R_RenderWallRange: %i to %i\x00"),
+	26603: []byte("R_InstallSpriteLump: Bad frame characters in lump %i\x00"),
+	26656: []byte("R_InitSprites: Sprite %s frame %c has multip rot=0 lump\x00"),
+	26712: []byte("R_InitSprites: Sprite %s frame %c has rotations and a rot=0 lump\x00"),
+	26777: []byte("R_InitSprites: Sprite %s : %c : %c has two lumps mapped to it\x00"),
+	26839: []byte("R_InitSprites: No patches found for %s frame %c\x00"),
+	26887: []byte("R_InitSprites: Sprite %s frame %c is missing rotations\x00"),
+	26942: []byte("R_DrawSpriteRange: bad texturecolumn\x00"),
+	26979: []byte("R_ProjectSprite: invalid sprite number %i \x00"),
+	27022: []byte("R_ProjectSprite: invalid sprite frame %i : %i \x00"),
+	27069: []byte("e1m1\x00"),
+	27074: []byte("e1m2\x00"),
+	27079: []byte("e1m3\x00"),
+	27084: []byte("e1m4\x00"),
+	27089: []byte("e1m5\x00"),
+	27094: []byte("e1m6\x00"),
+	27099: []byte("e1m7\x00"),
+	27104: []byte("e1m8\x00"),
+	27109: []byte("e1m9\x00"),
+	27114: []byte("e2m1\x00"),
+	27119: []byte("e2m2\x00"),
+	27124: []byte("e2m3\x00"),
+	27129: []byte("e2m4\x00"),
+	27134: []byte("e2m5\x00"),
+	27139: []byte("e2m6\x00"),
+	27144: []byte("e2m7\x00"),
+	27149: []byte("e2m8\x00"),
+	27154: []byte("e2m9\x00"),
+	27159: []byte("e3m1\x00"),
+	27164: []byte("e3m2\x00"),
+	27169: []byte("e3m3\x00"),
+	27174: []byte("e3m4\x00"),
+	27179: []byte("e3m5\x00"),
+	27184: []byte("e3m6\x00"),
+	27189: []byte("e3m7\x00"),
+	27194: []byte("e3m8\x00"),
+	27199: []byte("e3m9\x00"),
+	27204: []byte("inter\x00"),
+	27210: []byte("intro\x00"),
+	27216: []byte("bunny\x00"),
+	27222: []byte("victor\x00"),
+	27229: []byte("introa\x00"),
+	27236: []byte("runnin\x00"),
+	27243: []byte("stalks\x00"),
+	27250: []byte("countd\x00"),
+	27257: []byte("betwee\x00"),
+	27264: []byte("the_da\x00"),
+	27271: []byte("shawn\x00"),
+	27277: []byte("ddtblu\x00"),
+	27284: []byte("in_cit\x00"),
+	27291: []byte("dead\x00"),
+	27296: []byte("stlks2\x00"),
+	27303: []byte("theda2\x00"),
+	27310: []byte("ddtbl2\x00"),
+	27317: []byte("runni2\x00"),
+	27324: []byte("dead2\x00"),
+	27330: []byte("stlks3\x00"),
+	27337: []byte("romero\x00"),
+	27344: []byte("shawn2\x00"),
+	27351: []byte("messag\x00"),
+	27358: []byte("count2\x00"),
+	27365: []byte("ddtbl3\x00"),
+	27372: []byte("ampie\x00"),
+	27378: []byte("theda3\x00"),
+	27385: []byte("adrian\x00"),
+	27392: []byte("messg2\x00"),
+	27399: []byte("romer2\x00"),
+	27406: []byte("tense\x00"),
+	27412: []byte("shawn3\x00"),
+	27419: []byte("openin\x00"),
+	27426: []byte("evil\x00"),
+	27431: []byte("ultima\x00"),
+	27438: []byte("read_m\x00"),
+	27445: []byte("dm2ttl\x00"),
+	27452: []byte("dm2int\x00"),
+	27459: []byte("STTMINUS\x00"),
+	27468: []byte("drawNum: n->y - ST_Y < 0\x00"),
+	27493: []byte("updateMultIcon: y - ST_Y < 0\x00"),
+	27522: []byte("updateBinIcon: y - ST_Y < 0\x00"),
+	27550: []byte("Degreelessness Mode On\x00"),
+	27573: []byte("Degreelessness Mode Off\x00"),
+	27597: []byte("Ammo (no keys) Added\x00"),
+	27618: []byte("Very Happy Ammo Added\x00"),
+	27640: []byte("Music Change\x00"),
+	27653: []byte("IMPOSSIBLE SELECTION\x00"),
+	27674: []byte("No Clipping Mode ON\x00"),
+	27694: []byte("No Clipping Mode OFF\x00"),
+	27715: []byte("Power-up Toggled\x00"),
+	27732: []byte("inVuln, Str, Inviso, Rad, Allmap, or Lite-amp\x00"),
+	27778: []byte("... doesn't suck - GM\x00"),
+	27800: []byte("ang=0x%x;x,y=(0x%x,0x%x)\x00"),
+	27825: []byte("Changing Level...\x00"),
+	27843: []byte("STTNUM%d\x00"),
+	27852: []byte("STYSNUM%d\x00"),
+	27862: []byte("STTPRCNT\x00"),
+	27871: []byte("STKEYS%d\x00"),
+	27880: []byte("STARMS\x00"),
+	27887: []byte("STGNUM%d\x00"),
+	27896: []byte("STFB%d\x00"),
+	27903: []byte("STBAR\x00"),
+	27909: []byte("STFST%d%d\x00"),
+	27919: []byte("STFTR%d0\x00"),
+	27928: []byte("STFTL%d0\x00"),
+	27937: []byte("STFOUCH%d\x00"),
+	27947: []byte("STFEVL%d\x00"),
+	27956: []byte("STFKILL%d\x00"),
+	27966: []byte("STFGOD0\x00"),
+	27974: []byte("STFDEAD0\x00"),
+	27983: []byte("Bad sfx #: %d\x00"),
+	27997: []byte("Attempt to set music volume at %d\x00"),
+	28031: []byte("Attempt to set sfx volume at %d\x00"),
+	28063: []byte("Bad music number %d\x00"),
+	28083: []byte("d_%s\x00"),
+	28088: []byte("Bad V_CopyRect\x00"),
+	28103: []byte("Bad V_DrawPatch x=%i y=%i patch.width=%i patch.height=%i topoffset=%i leftoffset=%i\x00"),
+	28187: []byte("Bad V_DrawPatchFlipped\x00"),
+	28210: []byte("Bad V_DrawTLPatch\x00"),
+	28228: []byte("Bad V_DrawAltTLPatch\x00"),
+	28249: []byte("Bad V_DrawShadowedPatch\x00"),
+	28273: []byte("TINTTAB\x00"),
+	28281: []byte("XLATAB\x00"),
+	28288: []byte("Bad V_DrawBlock\x00"),
+	28304: []byte("pcx\x00"),
+	28308: []byte("V_ScreenShot: Couldn't create a PCX\x00"),
+	28344: []byte("Could not place patch on level %d\x00"),
+	28378: []byte("CWILV%2.2d\x00"),
+	28389: []byte("WILV%d%d\x00"),
+	28398: []byte("WIURH0\x00"),
+	28405: []byte("WIURH1\x00"),
+	28412: []byte("WISPLAT\x00"),
+	28420: []byte("WIA%d%.2d%.2d\x00"),
+	28434: []byte("WIMINUS\x00"),
+	28442: []byte("WINUM%d\x00"),
+	28450: []byte("WIPCNT\x00"),
+	28457: []byte("WIF\x00"),
+	28461: []byte("WIENTER\x00"),
+	28469: []byte("WIOSTK\x00"),
+	28476: []byte("WIOSTS\x00"),
+	28483: []byte("WISCRT2\x00"),
+	28491: []byte("WIOBJ\x00"),
+	28497: []byte("WIOSTI\x00"),
+	28504: []byte("WIFRGS\x00"),
+	28511: []byte("WICOLON\x00"),
+	28519: []byte("WITIME\x00"),
+	28526: []byte("WISUCKS\x00"),
+	28534: []byte("WIPAR\x00"),
+	28540: []byte("WIKILRS\x00"),
+	28548: []byte("WIVCTMS\x00"),
+	28556: []byte("WIMSTT\x00"),
+	28563: []byte("STPB%d\x00"),
+	28570: []byte("WIBP%d\x00"),
+	28577: []byte("WIMAP%d\x00"),
+	28585: []byte("STFST01\x00"),
+	28593: []byte("-mmap\x00"),
+	28599: []byte("-file\x00"),
+	28605: []byte("Couldn't realloc lumpinfo\x00"),
+	28631: []byte(" couldn't open %s\n\x00"),
+	28650: []byte("wad\x00"),
+	28654: []byte("IWAD\x00"),
+	28659: []byte("PWAD\x00"),
+	28664: []byte("Wad file %s doesn't have IWAD or PWAD id\n\x00"),
+	28706: []byte("W_GetNumForName: %s not found!\x00"),
+	28737: []byte("W_LumpLength: %i >= numlumps\x00"),
+	28766: []byte("W_ReadLump: %i >= numlumps\x00"),
+	28793: []byte("W_ReadLump: only read %i of %i on lump %i\x00"),
+	28835: []byte("W_CacheLumpNum: %i >= numlumps\x00"),
+	28866: []byte("w_wad.c\x00"),
+	28874: []byte("W_ReleaseLumpNum: %i >= numlumps\x00"),
+	28907: []byte("POSSA1\x00"),
+	28914: []byte("IMPXA1\x00"),
+	28921: []byte("ETTNA1\x00"),
+	28928: []byte("AGRDA1\x00"),
+	28935: []byte("\nYou are trying to use a %s IWAD file with the %s%s binary.\nThis isn't going to work.\nYou probably want to use the %s%s binary.\x00"),
+	29063: []byte("doomgeneric\x00"),
+	29075: []byte("Z_Free: freed a pointer without ZONEID\x00"),
+	29114: []byte("Z_Malloc: failed on allocation of %i bytes\x00"),
+	29157: []byte("Z_Malloc: an owner is required for purgable blocks\x00"),
+	29208: []byte("zone size: %i  location: %p\n\x00"),
+	29237: []byte("tag range: %i to %i\n\x00"),
+	29258: []byte("block:%p    size:%7i    user:%p    tag:%3i\n\x00"),
+	29302: []byte("ERROR: block size does not touch the next block\n\x00"),
+	29351: []byte("ERROR: next block doesn't have proper back link\n\x00"),
+	29400: []byte("ERROR: two consecutive free blocks\n\x00"),
+	29436: []byte("Z_CheckHeap: block size does not touch the next block\n\x00"),
+	29491: []byte("Z_CheckHeap: next block doesn't have proper back link\n\x00"),
+	29546: []byte("Z_CheckHeap: two consecutive free blocks\n\x00"),
+	29588: []byte("%s:%i: Z_ChangeTag: block without a ZONEID!\x00"),
+	29632: []byte("%s:%i: Z_ChangeTag: an owner is required for purgable blocks\x00"),
+	29693: []byte("Z_ChangeUser: Tried to change user for invalid block!\x00"),
+	29747: []byte("I_InitGraphics: framebuffer: x_res: %d, y_res: %d, x_virtual: %d, y_virtual: %d, bpp: %d\n\x00"),
+	29837: []byte("I_InitGraphics: framebuffer: RGBA: %d%d%d%d, red_off: %d, green_off: %d, blue_off: %d, transp_off: %d\n\x00"),
+	29940: []byte("I_InitGraphics: DOOM screen size: w x h: %d x %d\n\x00"),
+	29990: []byte("-scaling\x00"),
+	29999: []byte("I_InitGraphics: Scaling factor: %d\n\x00"),
+	30035: []byte("I_InitGraphics: Auto-scaling factor: %d\n\x00"),
+	30076: []byte("I_GetPaletteIndex\n\x00"),
+}
