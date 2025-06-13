@@ -20,19 +20,10 @@ type uint32_t = uint32
 
 type boolean = uint32
 
-const false1 = 0
-const true1 = 1
-
 func alloc(size int) uintptr {
 	data := make([]byte, size)
 	return (uintptr)(unsafe.Pointer(&data[0]))
 }
-
-func free(ptr uintptr) {
-	// Do nothing - Go garbage collector will handle memory management
-}
-
-type byte1 = uint8
 
 const AM_NUMMARKPOINTS = 10
 const ANGLETOFINESHIFT = 19
@@ -112,11 +103,11 @@ type sha1_context_t = struct {
 	Fh3      uint32_t
 	Fh4      uint32_t
 	Fnblocks uint32_t
-	Fbuf     [64]byte1
+	Fbuf     [64]uint8
 	Fcount   int32
 }
 
-type sha1_digest_t = [20]byte1
+type sha1_digest_t = [20]uint8
 
 const PU_STATIC = 1
 const PU_FREE = 4
@@ -1653,8 +1644,8 @@ type patch_t = struct {
 }
 
 type column_t = struct {
-	Ftopdelta byte1
-	Flength   byte1
+	Ftopdelta uint8
+	Flength   uint8
 }
 
 type vertex_t = struct {
@@ -1806,7 +1797,7 @@ type vissprite_s = vissprite_t
 type spriteframe_t = struct {
 	Frotate boolean
 	Flump   [8]int16
-	Fflip   [8]byte1
+	Fflip   [8]uint8
 }
 
 type spritedef_t = struct {
@@ -1820,12 +1811,12 @@ type visplane_t = struct {
 	Flightlevel int32
 	Fminx       int32
 	Fmaxx       int32
-	Fpad1       byte1
-	Ftop        [320]byte1
-	Fpad2       byte1
-	Fpad3       byte1
-	Fbottom     [320]byte1
-	Fpad4       byte1
+	Fpad1       uint8
+	Ftop        [320]uint8
+	Fpad2       uint8
+	Fpad3       uint8
+	Fbottom     [320]uint8
+	Fpad4       uint8
 }
 
 type weaponinfo_t = struct {
@@ -1852,13 +1843,13 @@ type ticcmd_t = struct {
 	Fforwardmove int8
 	Fsidemove    int8
 	Fangleturn   int16
-	Fchatchar    byte1
-	Fbuttons     byte1
-	Fconsistancy byte1
-	Fbuttons2    byte1
+	Fchatchar    uint8
+	Fbuttons     uint8
+	Fconsistancy uint8
+	Fbuttons2    uint8
 	Finventory   int32
-	Flookfly     byte1
-	Farti        byte1
+	Flookfly     uint8
+	Farti        uint8
 }
 
 type net_connect_data_t = struct {
@@ -2572,7 +2563,7 @@ func init() {
 	}
 }
 
-var stopped = uint32(true1)
+var stopped = 1
 
 // C documentation
 //
@@ -2725,7 +2716,7 @@ func AM_changeWindowLoc(tls *libc.TLS) {
 func AM_initVariables(tls *libc.TLS) {
 	var pnum int32
 	var v1 fixed_t
-	automapactive = uint32(true1)
+	automapactive = 1
 	fb = I_VideoBuffer
 	f_oldloc.Fx = int32(INT_MAX1)
 	lightlev = 0
@@ -2855,9 +2846,9 @@ func AM_LevelInit(tls *libc.TLS) {
 //	//
 func AM_Stop(tls *libc.TLS) {
 	AM_unloadPics(tls)
-	automapactive = uint32(false1)
+	automapactive = 0
 	ST_Responder(tls, uintptr(unsafe.Pointer(&st_notify1)))
-	stopped = uint32(true1)
+	stopped = 1
 }
 
 var st_notify1 = event_t{
@@ -2874,7 +2865,7 @@ func AM_Start(tls *libc.TLS) {
 	if !(stopped != 0) {
 		AM_Stop(tls)
 	}
-	stopped = uint32(false1)
+	stopped = 0
 	if lastlevel != gamemap || lastepisode != gameepisode {
 		AM_LevelInit(tls)
 		lastlevel = gamemap
@@ -2918,43 +2909,43 @@ func AM_maxOutWindowScale(tls *libc.TLS) {
 func AM_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	bp := alloc(32)
 	var key, rc int32
-	rc = int32(false1)
+	rc = 0
 	if !(automapactive != 0) {
 		if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) && (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_map_toggle {
 			AM_Start(tls)
-			viewactive = uint32(false1)
-			rc = int32(true1)
+			viewactive = 0
+			rc = 1
 		}
 	} else {
 		if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) {
-			rc = int32(true1)
+			rc = 1
 			key = (*event_t)(unsafe.Pointer(ev)).Fdata1
 			if key == key_map_east { // pan right
 				if !(followplayer != 0) {
 					m_paninc.Fx = FixedMul(tls, libc.Int32FromInt32(F_PANINC)<<libc.Int32FromInt32(16), scale_ftom)
 				} else {
-					rc = int32(false1)
+					rc = 0
 				}
 			} else {
 				if key == key_map_west { // pan left
 					if !(followplayer != 0) {
 						m_paninc.Fx = -FixedMul(tls, libc.Int32FromInt32(F_PANINC)<<libc.Int32FromInt32(16), scale_ftom)
 					} else {
-						rc = int32(false1)
+						rc = 0
 					}
 				} else {
 					if key == key_map_north { // pan up
 						if !(followplayer != 0) {
 							m_paninc.Fy = FixedMul(tls, libc.Int32FromInt32(F_PANINC)<<libc.Int32FromInt32(16), scale_ftom)
 						} else {
-							rc = int32(false1)
+							rc = 0
 						}
 					} else {
 						if key == key_map_south { // pan down
 							if !(followplayer != 0) {
 								m_paninc.Fy = -FixedMul(tls, libc.Int32FromInt32(F_PANINC)<<libc.Int32FromInt32(16), scale_ftom)
 							} else {
-								rc = int32(false1)
+								rc = 0
 							}
 						} else {
 							if key == key_map_zoomout { // zoom out
@@ -2967,7 +2958,7 @@ func AM_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 								} else {
 									if key == key_map_toggle {
 										bigstate = 0
-										viewactive = uint32(true1)
+										viewactive = 1
 										AM_Stop(tls)
 									} else {
 										if key == key_map_maxzoom {
@@ -3005,7 +2996,7 @@ func AM_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 															AM_clearMarks(tls)
 															(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts(75)
 														} else {
-															rc = int32(false1)
+															rc = 0
 														}
 													}
 												}
@@ -3019,12 +3010,12 @@ func AM_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 				}
 			}
 			if !(deathmatch != 0) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_amap)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
-				rc = int32(false1)
+				rc = 0
 				cheating = (cheating + int32(1)) % int32(3)
 			}
 		} else {
 			if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keyup) {
-				rc = int32(false1)
+				rc = 0
 				key = (*event_t)(unsafe.Pointer(ev)).Fdata1
 				if key == key_map_east {
 					if !(followplayer != 0) {
@@ -3167,7 +3158,7 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 		}
 	}
 	if outcode1&outcode2 != 0 {
-		return uint32(false1)
+		return 0
 	} // trivially outside
 	if (*mline_t)(unsafe.Pointer(ml)).Fa.Fx < m_x {
 		outcode1 |= 1
@@ -3184,7 +3175,7 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 		}
 	}
 	if outcode1&outcode2 != 0 {
-		return uint32(false1)
+		return 0
 	} // trivially outside
 	// transform to frame-buffer coordinates.
 	(*fline_t)(unsafe.Pointer(fl)).Fa.Fx = f_x + FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fa.Fx-m_x, scale_mtof)>>libc.Int32FromInt32(16)
@@ -3222,7 +3213,7 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 		}
 	}
 	if outcode1&outcode2 != 0 {
-		return uint32(false1)
+		return 0
 	}
 	for outcode1|outcode2 != 0 {
 		// may be partially inside box
@@ -3299,10 +3290,10 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 			}
 		}
 		if outcode1&outcode2 != 0 {
-			return uint32(false1)
+			return 0
 		} // trivially outside
 	}
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -3351,7 +3342,7 @@ func AM_drawFline(tls *libc.TLS, fl uintptr, color int32) {
 	if ax > ay {
 		d = ay - ax/int32(2)
 		for int32(1) != 0 {
-			*(*byte1)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = libc.Uint8FromInt32(color)
+			*(*uint8)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = libc.Uint8FromInt32(color)
 			if x == (*fline_t)(unsafe.Pointer(fl)).Fb.Fx {
 				return
 			}
@@ -3365,7 +3356,7 @@ func AM_drawFline(tls *libc.TLS, fl uintptr, color int32) {
 	} else {
 		d = ax - ay/int32(2)
 		for int32(1) != 0 {
-			*(*byte1)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = libc.Uint8FromInt32(color)
+			*(*uint8)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = libc.Uint8FromInt32(color)
 			if y == (*fline_t)(unsafe.Pointer(fl)).Fb.Fy {
 				return
 			}
@@ -3655,7 +3646,7 @@ func AM_drawMarks(tls *libc.TLS) {
 }
 
 func AM_drawCrosshair(tls *libc.TLS, color int32) {
-	*(*byte1)(unsafe.Pointer(fb + uintptr(f_w*(f_h+int32(1))/int32(2)))) = libc.Uint8FromInt32(color) // single point for now
+	*(*uint8)(unsafe.Pointer(fb + uintptr(f_w*(f_h+int32(1))/int32(2)))) = libc.Uint8FromInt32(color) // single point for now
 }
 
 func AM_Drawer(tls *libc.TLS) {
@@ -3913,7 +3904,7 @@ var iwads = [14]iwad_t{
 //
 // "128 IWAD search directories should be enough for anybody".
 
-var iwad_dirs_built = uint32(false1)
+var iwad_dirs_built = 0
 var iwad_dirs [128]uintptr
 var num_iwad_dirs = int32(0)
 
@@ -4035,7 +4026,7 @@ func IdentifyIWADByName(tls *libc.TLS, name uintptr, mask int32) (r GameMission_
 func BuildIWADDirList(tls *libc.TLS) {
 	AddIWADDir(tls, __ccgo_ts(1250))
 	// Don't run this function again.
-	iwad_dirs_built = uint32(true1)
+	iwad_dirs_built = 1
 }
 
 //
@@ -4225,7 +4216,7 @@ var skiptics = int32(0)
 
 // Use new client syncronisation code
 
-var new_sync = uint32(true1)
+var new_sync = uint32(1)
 
 // Callback functions for loop code.
 
@@ -4266,30 +4257,30 @@ func BuildNewTic(tls *libc.TLS) (r boolean) {
 	(*(*func(*libc.TLS))(unsafe.Pointer(&struct{ uintptr }{(*loop_interface_t)(unsafe.Pointer(loop_interface)).FRunMenu})))(tls)
 	if drone != 0 {
 		// In drone mode, do not generate any ticcmds.
-		return uint32(false1)
+		return 0
 	}
 	if new_sync != 0 {
 		// If playing single player, do not allow tics to buffer
 		// up very far
 		if !(net_client_connected != 0) && maketic-gameticdiv > int32(2) {
-			return uint32(false1)
+			return 0
 		}
 		// Never go more than ~200ms ahead
 		if maketic-gameticdiv > int32(8) {
-			return uint32(false1)
+			return 0
 		}
 	} else {
 		if maketic-gameticdiv >= int32(5) {
-			return uint32(false1)
+			return 0
 		}
 	}
 	//printf ("mk:%i ",maketic);
 	libc.Xmemset(tls, bp, 0, uint64(16))
 	(*(*func(*libc.TLS, uintptr, int32))(unsafe.Pointer(&struct{ uintptr }{(*loop_interface_t)(unsafe.Pointer(loop_interface)).FBuildTiccmd})))(tls, bp, maketic)
 	*(*ticcmd_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&ticdata)) + uintptr(maketic%int32(BACKUPTICS))*160 + uintptr(localplayer)*16)) = *(*ticcmd_t)(unsafe.Pointer(bp))
-	*(*boolean)(unsafe.Pointer(uintptr(unsafe.Pointer(&ticdata)) + uintptr(maketic%int32(BACKUPTICS))*160 + 128 + uintptr(localplayer)*4)) = uint32(true1)
+	*(*boolean)(unsafe.Pointer(uintptr(unsafe.Pointer(&ticdata)) + uintptr(maketic%int32(BACKUPTICS))*160 + 128 + uintptr(localplayer)*4)) = 1
 	maketic++
-	return uint32(true1)
+	return 1
 }
 
 func NetUpdate(tls *libc.TLS) {
@@ -4349,9 +4340,9 @@ func D_StartNetGame(tls *libc.TLS, settings uintptr, callback netgame_startup_ca
 
 func D_InitNetGame(tls *libc.TLS, connect_data uintptr) (r boolean) {
 	var result boolean
-	result = uint32(false1)
+	result = 0
 	// Call D_QuitNetGame on exit:
-	I_AtExit(tls, __ccgo_fp(D_QuitNetGame), uint32(true1))
+	I_AtExit(tls, __ccgo_fp(D_QuitNetGame), 1)
 	player_class = (*net_connect_data_t)(unsafe.Pointer(connect_data)).Fplayer_class
 	return result
 }
@@ -4422,7 +4413,7 @@ func OldNetSync(tls *libc.TLS) {
 func PlayersInGame(tls *libc.TLS) (r boolean) {
 	var i uint32
 	var result boolean
-	result = uint32(false1)
+	result = 0
 	// If we are connected to a server, check if there are any players
 	// in the game.
 	if net_client_connected != 0 {
@@ -4441,7 +4432,7 @@ func PlayersInGame(tls *libc.TLS) (r boolean) {
 	// Whether single or multi-player, unless we are running as a drone,
 	// we are in the game.
 	if !(drone != 0) {
-		result = uint32(true1)
+		result = 1
 	}
 	return result
 }
@@ -4480,7 +4471,7 @@ func SinglePlayerClear(tls *libc.TLS, set uintptr) {
 			break
 		}
 		if i != libc.Uint32FromInt32(localplayer) {
-			*(*boolean)(unsafe.Pointer(set + 128 + uintptr(i)*4)) = uint32(false1)
+			*(*boolean)(unsafe.Pointer(set + 128 + uintptr(i)*4)) = 0
 		}
 		goto _1
 	_1:
@@ -4830,7 +4821,7 @@ func D_Display(tls *libc.TLS) {
 	if nodrawers != 0 {
 		return
 	} // for comparative timing / profiling
-	redrawsbar = uint32(false1)
+	redrawsbar = 0
 	// change the view size if needed
 	if setsizeneeded != 0 {
 		R_ExecuteSetViewSize(tls)
@@ -4839,10 +4830,10 @@ func D_Display(tls *libc.TLS) {
 	}
 	// save the current screen if about to wipe
 	if gamestate != wipegamestate {
-		wipe = uint32(true1)
+		wipe = 1
 		wipe_StartScreen(tls, 0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
 	} else {
-		wipe = uint32(false1)
+		wipe = 0
 	}
 	if gamestate == int32(GS_LEVEL) && gametic != 0 {
 		HU_Erase(tls)
@@ -4857,10 +4848,10 @@ func D_Display(tls *libc.TLS) {
 			AM_Drawer(tls)
 		}
 		if wipe != 0 || viewheight != int32(200) && fullscreen != 0 {
-			redrawsbar = uint32(true1)
+			redrawsbar = 1
 		}
 		if inhelpscreensstate != 0 && !(inhelpscreens != 0) {
-			redrawsbar = uint32(true1)
+			redrawsbar = 1
 		} // just put away the help screen
 		ST_Drawer(tls, libc.BoolUint32(viewheight == int32(200)), redrawsbar)
 		fullscreen = libc.BoolUint32(viewheight == int32(200))
@@ -4887,8 +4878,8 @@ func D_Display(tls *libc.TLS) {
 	}
 	// see if the border needs to be initially drawn
 	if gamestate == int32(GS_LEVEL) && oldgamestate1 != int32(GS_LEVEL) {
-		viewactivestate = uint32(false1) // view was not active
-		R_FillBackScreen(tls)            // draw the pattern into the back screen
+		viewactivestate = 0   // view was not active
+		R_FillBackScreen(tls) // draw the pattern into the back screen
 	}
 	// see if the border needs to be updated to the screen
 	if gamestate == int32(GS_LEVEL) && !(automapactive != 0) && scaledviewwidth != int32(320) {
@@ -5010,11 +5001,11 @@ func D_BindVariables(tls *libc.TLS) {
 func D_GrabMouseCallback(tls *libc.TLS) (r boolean) {
 	// Drone players don't need mouse focus
 	if drone != 0 {
-		return uint32(false1)
+		return 0
 	}
 	// when menu is active or game is paused, release the mouse
 	if menuactive != 0 || paused != 0 {
-		return uint32(false1)
+		return 0
 	}
 	// only grab mouse when playing levels (but not demos)
 	return libc.BoolUint32(gamestate == int32(GS_LEVEL) && !(demoplayback != 0) && !(advancedemo != 0))
@@ -5041,7 +5032,7 @@ func D_DoomLoop(tls *libc.TLS) {
 	if demorecording != 0 {
 		G_BeginRecording(tls)
 	}
-	main_loop_started = uint32(true1)
+	main_loop_started = 1
 	TryRunTics(tls)
 	I_SetWindowTitle(gamedescription)
 	I_GraphicsCheckCommandLine(tls)
@@ -5088,7 +5079,7 @@ func D_PageDrawer(tls *libc.TLS) {
 //	// Called after each demo or intro demosequence finishes
 //	//
 func D_AdvanceDemo(tls *libc.TLS) {
-	advancedemo = uint32(true1)
+	advancedemo = 1
 }
 
 // C documentation
@@ -5099,9 +5090,9 @@ func D_AdvanceDemo(tls *libc.TLS) {
 //	//
 func D_DoAdvanceDemo(tls *libc.TLS) {
 	players[consoleplayer].Fplayerstate = int32(PST_LIVE) // not reborn
-	advancedemo = uint32(false1)
-	usergame = uint32(false1) // no save / end game here
-	paused = uint32(false1)
+	advancedemo = 0
+	usergame = 0 // no save / end game here
+	paused = 0
 	gameaction = int32(ga_nothing)
 	// The Ultimate Doom executable changed the demo sequence to add
 	// a DEMO4 demo.  Final Doom was based on Ultimate, so also
@@ -5701,7 +5692,7 @@ func D_Endoom(tls *libc.TLS) {
 func D_DoomMain(tls *libc.TLS) {
 	bp := alloc(480)
 	var i, p, scale, v1 int32
-	I_AtExit(tls, __ccgo_fp(D_Endoom), uint32(false1))
+	I_AtExit(tls, __ccgo_fp(D_Endoom), 0)
 	// print banner
 	I_PrintBanner(tls, __ccgo_ts(4001))
 	libc.Xprintf(tls, __ccgo_ts(4018), 0)
@@ -5792,14 +5783,14 @@ func D_DoomMain(tls *libc.TLS) {
 	D_BindVariables(tls)
 	M_LoadDefaults(tls)
 	// Save configuration at exit.
-	I_AtExit(tls, __ccgo_fp(M_SaveDefaults), uint32(false1))
+	I_AtExit(tls, __ccgo_fp(M_SaveDefaults), 0)
 	// Find main IWAD file and load it.
 	iwadfile = D_FindIWAD(tls, libc.Int32FromInt32(1)<<int32(doom)|libc.Int32FromInt32(1)<<int32(doom2)|libc.Int32FromInt32(1)<<int32(pack_tnt)|libc.Int32FromInt32(1)<<int32(pack_plut)|libc.Int32FromInt32(1)<<int32(pack_chex)|libc.Int32FromInt32(1)<<int32(pack_hacx), uintptr(unsafe.Pointer(&gamemission)))
 	// None found?
 	if iwadfile == libc.UintptrFromInt32(0) {
 		I_Error(tls, __ccgo_ts(4268), 0)
 	}
-	modifiedgame = uint32(false1)
+	modifiedgame = 0
 	libc.Xprintf(tls, __ccgo_ts(4380), 0)
 	D_AddFile(tls, iwadfile)
 	W_CheckCorrectIWAD(tls, int32(doom))
@@ -5816,7 +5807,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// loaded which could probably include a lump of that name.
 	if W_CheckNumForName(tls, __ccgo_ts(4404)) >= 0 {
 		libc.Xprintf(tls, __ccgo_ts(4413), 0)
-		bfgedition = uint32(true1)
+		bfgedition = 1
 		// BFG Edition changes the names of the secret levels to
 		// censor the Wolfenstein references. It also has an extra
 		// secret level (MAP33). In Vanilla Doom (meaning the DOS
@@ -5873,7 +5864,7 @@ func D_DoomMain(tls *libc.TLS) {
 		}
 		libc.Xprintf(tls, __ccgo_ts(4488), libc.VaList(bp+464, bp))
 	}
-	I_AtExit(tls, __ccgo_fp(G_CheckDemoStatus), uint32(true1))
+	I_AtExit(tls, __ccgo_fp(G_CheckDemoStatus), 1)
 	// Generate the WAD hash table.  Speed things up a bit.
 	W_GenerateHashTable(tls)
 	// Load DEHACKED lumps from WAD files - but only if we give the right
@@ -5949,7 +5940,7 @@ func D_DoomMain(tls *libc.TLS) {
 	I_CheckIsScreensaver(tls)
 	I_InitTimer(tls)
 	I_InitJoystick(tls)
-	I_InitSound(tls, uint32(true1))
+	I_InitSound(tls, 1)
 	I_InitMusic(tls)
 	// Initial netgame startup. Connect to server etc.
 	D_ConnectNetGame(tls)
@@ -5957,7 +5948,7 @@ func D_DoomMain(tls *libc.TLS) {
 	startskill = int32(sk_medium)
 	startepisode = int32(1)
 	startmap = int32(1)
-	autostart = uint32(false1)
+	autostart = 0
 	//!
 	// @arg <skill>
 	// @vanilla
@@ -5968,7 +5959,7 @@ func D_DoomMain(tls *libc.TLS) {
 	p = M_CheckParmWithArgs(tls, __ccgo_ts(5027), int32(1))
 	if p != 0 {
 		startskill = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('1')
-		autostart = uint32(true1)
+		autostart = 1
 	}
 	//!
 	// @arg <n>
@@ -5980,7 +5971,7 @@ func D_DoomMain(tls *libc.TLS) {
 	if p != 0 {
 		startepisode = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('0')
 		startmap = int32(1)
-		autostart = uint32(true1)
+		autostart = 1
 	}
 	timelimit = 0
 	//!
@@ -6023,7 +6014,7 @@ func D_DoomMain(tls *libc.TLS) {
 				startmap = int32(1)
 			}
 		}
-		autostart = uint32(true1)
+		autostart = 1
 	}
 	// Undocumented:
 	// Invoked by setup to test the controls.
@@ -6031,8 +6022,8 @@ func D_DoomMain(tls *libc.TLS) {
 	if p > 0 {
 		startepisode = int32(1)
 		startmap = int32(1)
-		autostart = uint32(true1)
-		testcontrols = uint32(true1)
+		autostart = 1
+		testcontrols = 1
 	}
 	// Check for load game parameter
 	// We do this here and save the slot number, so that the network code
@@ -6069,10 +6060,10 @@ func D_DoomMain(tls *libc.TLS) {
 	// Moved this here so that MAP01 isn't constantly looked up
 	// in the main loop.
 	if gamemode == int32(commercial) && W_CheckNumForName(tls, __ccgo_ts(5312)) < 0 {
-		storedemo = uint32(true1)
+		storedemo = 1
 	}
 	if M_CheckParmWithArgs(tls, __ccgo_ts(5318), int32(1)) != 0 {
-		I_AtExit(tls, __ccgo_fp(StatDump), uint32(true1))
+		I_AtExit(tls, __ccgo_fp(StatDump), 1)
 		libc.Xprintf(tls, __ccgo_ts(5328), 0)
 	}
 	//!
@@ -6085,11 +6076,11 @@ func D_DoomMain(tls *libc.TLS) {
 	p = M_CheckParmWithArgs(tls, __ccgo_ts(5361), int32(1))
 	if p != 0 {
 		G_RecordDemo(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
-		autostart = uint32(true1)
+		autostart = 1
 	}
 	p = M_CheckParmWithArgs(tls, __ccgo_ts(4456), int32(1))
 	if p != 0 {
-		singledemo = uint32(true1) // quit after one demo
+		singledemo = 1 // quit after one demo
 		G_DeferedPlayDemo(tls, bp+256)
 		D_DoomLoop(tls)
 		return
@@ -6156,7 +6147,7 @@ func PlayerQuitGame(tls *libc.TLS, player uintptr) {
 	M_StringCopy(tls, uintptr(unsafe.Pointer(&exitmsg)), __ccgo_ts(5400), uint64(80))
 	p1 = uintptr(unsafe.Pointer(&exitmsg)) + 7
 	*(*int8)(unsafe.Pointer(p1)) = int8(uint32(*(*int8)(unsafe.Pointer(p1))) + player_num)
-	playeringame[player_num] = uint32(false1)
+	playeringame[player_num] = 0
 	players[consoleplayer].Fmessage = uintptr(unsafe.Pointer(&exitmsg))
 	// TODO: check if it is sensible to do this:
 	if demorecording != 0 {
@@ -6254,7 +6245,7 @@ func SaveGameSettings(tls *libc.TLS, settings uintptr) {
 
 func InitConnectData(tls *libc.TLS, connect_data uintptr) {
 	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fmax_players = int32(MAXPLAYERS)
-	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fdrone = int32(false1)
+	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fdrone = 0
 	//!
 	// @category net
 	//
@@ -6262,7 +6253,7 @@ func InitConnectData(tls *libc.TLS, connect_data uintptr) {
 	//
 	if M_CheckParm(tls, __ccgo_ts(5540)) > 0 {
 		viewangleoffset = int32(ANG901)
-		(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fdrone = int32(true1)
+		(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fdrone = 1
 	}
 	//!
 	// @category net
@@ -6271,7 +6262,7 @@ func InitConnectData(tls *libc.TLS, connect_data uintptr) {
 	//
 	if M_CheckParm(tls, __ccgo_ts(5546)) > 0 {
 		viewangleoffset = libc.Int32FromUint32(ANG2701)
-		(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fdrone = int32(true1)
+		(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fdrone = 1
 	}
 	//
 	// Connect data
@@ -6299,7 +6290,7 @@ func D_ConnectNetGame(tls *libc.TLS) {
 	// demos.
 	//
 	if M_CheckParm(tls, __ccgo_ts(5553)) > 0 {
-		netgame = uint32(true1)
+		netgame = 1
 	}
 }
 
@@ -6312,7 +6303,7 @@ func D_ConnectNetGame(tls *libc.TLS) {
 func D_CheckNetGame(tls *libc.TLS) {
 	bp := alloc(144)
 	if netgame != 0 {
-		autostart = uint32(true1)
+		autostart = 1
 	}
 	D_RegisterLoopCallbacks(tls, uintptr(unsafe.Pointer(&doom_loop_interface)))
 	SaveGameSettings(tls, bp)
@@ -6518,8 +6509,8 @@ func F_StartFinale(tls *libc.TLS) {
 	var v8 bool
 	gameaction = int32(ga_nothing)
 	gamestate = int32(GS_FINALE)
-	viewactive = uint32(false1)
-	automapactive = uint32(false1)
+	viewactive = 0
+	automapactive = 0
 	if gamemission == int32(pack_chex) {
 		v1 = int32(doom)
 	} else {
@@ -6531,9 +6522,9 @@ func F_StartFinale(tls *libc.TLS) {
 		v1 = v2
 	}
 	if v1 == int32(doom) {
-		S_ChangeMusic(tls, int32(mus_victor), int32(true1))
+		S_ChangeMusic(tls, int32(mus_victor), 1)
 	} else {
-		S_ChangeMusic(tls, int32(mus_read_m), int32(true1))
+		S_ChangeMusic(tls, int32(mus_read_m), 1)
 	}
 	// Find the right screen and set the text and background
 	i = uint64(0)
@@ -6588,7 +6579,7 @@ func F_Responder(tls *libc.TLS, event uintptr) (r boolean) {
 	if finalestage == int32(F_STAGE_CAST) {
 		return F_CastResponder(tls, event)
 	}
-	return uint32(false1)
+	return 0
 }
 
 // C documentation
@@ -6810,12 +6801,12 @@ func F_StartCast(tls *libc.TLS) {
 	castnum = 0
 	caststate = uintptr(unsafe.Pointer(&states)) + uintptr(mobjinfo[castorder[castnum].Ftype1].Fseestate)*40
 	casttics = (*state_t)(unsafe.Pointer(caststate)).Ftics
-	castdeath = uint32(false1)
+	castdeath = 0
 	finalestage = int32(F_STAGE_CAST)
 	castframes = 0
 	castonmelee = 0
-	castattacking = uint32(false1)
-	S_ChangeMusic(tls, int32(mus_evil), int32(true1))
+	castattacking = 0
+	S_ChangeMusic(tls, int32(mus_evil), 1)
 }
 
 // C documentation
@@ -6833,7 +6824,7 @@ func F_CastTicker(tls *libc.TLS) {
 	if (*state_t)(unsafe.Pointer(caststate)).Ftics == -int32(1) || (*state_t)(unsafe.Pointer(caststate)).Fnextstate == int32(S_NULL) {
 		// switch from deathstate to next monster
 		castnum++
-		castdeath = uint32(false1)
+		castdeath = 0
 		if castorder[castnum].Fname == libc.UintptrFromInt32(0) {
 			castnum = 0
 		}
@@ -6914,7 +6905,7 @@ func F_CastTicker(tls *libc.TLS) {
 	}
 	if castframes == int32(12) {
 		// go into attack frame
-		castattacking = uint32(true1)
+		castattacking = 1
 		if castonmelee != 0 {
 			caststate = uintptr(unsafe.Pointer(&states)) + uintptr(mobjinfo[castorder[castnum].Ftype1].Fmeleestate)*40
 		} else {
@@ -6938,7 +6929,7 @@ func F_CastTicker(tls *libc.TLS) {
 	goto stopattack
 stopattack:
 	;
-	castattacking = uint32(false1)
+	castattacking = 0
 	castframes = 0
 	caststate = uintptr(unsafe.Pointer(&states)) + uintptr(mobjinfo[castorder[castnum].Ftype1].Fseestate)*40
 _3:
@@ -6957,21 +6948,21 @@ _2:
 
 func F_CastResponder(tls *libc.TLS, ev uintptr) (r boolean) {
 	if (*event_t)(unsafe.Pointer(ev)).Ftype1 != int32(ev_keydown) {
-		return uint32(false1)
+		return 0
 	}
 	if castdeath != 0 {
-		return uint32(true1)
+		return 1
 	} // already in dying frames
 	// go into death frame
-	castdeath = uint32(true1)
+	castdeath = 1
 	caststate = uintptr(unsafe.Pointer(&states)) + uintptr(mobjinfo[castorder[castnum].Ftype1].Fdeathstate)*40
 	casttics = (*state_t)(unsafe.Pointer(caststate)).Ftics
 	castframes = 0
-	castattacking = uint32(false1)
+	castattacking = 0
 	if mobjinfo[castorder[castnum].Ftype1].Fdeathsound != 0 {
 		S_StartSound(tls, libc.UintptrFromInt32(0), mobjinfo[castorder[castnum].Ftype1].Fdeathsound)
 	}
-	return uint32(true1)
+	return 1
 }
 
 func F_CastPrint(tls *libc.TLS, text uintptr) {
@@ -7031,7 +7022,7 @@ func F_CastDrawer(tls *libc.TLS) {
 	sprdef = sprites + uintptr((*state_t)(unsafe.Pointer(caststate)).Fsprite)*16
 	sprframe = (*spritedef_t)(unsafe.Pointer(sprdef)).Fspriteframes + uintptr((*state_t)(unsafe.Pointer(caststate)).Fframe&int32(FF_FRAMEMASK1))*28
 	lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4)))
-	flip = uint32(*(*byte1)(unsafe.Pointer(sprframe + 20)))
+	flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20)))
 	patch = W_CacheLumpNum(tls, lump+firstspritelump, int32(PU_CACHE))
 	if flip != 0 {
 		V_DrawPatchFlipped(tls, int32(160), int32(170), patch)
@@ -7063,7 +7054,7 @@ func F_DrawPatchCol(tls *libc.TLS, x int32, patch uintptr, col int32) {
 			}
 			v2 = source
 			source++
-			*(*byte1)(unsafe.Pointer(dest)) = *(*byte1)(unsafe.Pointer(v2))
+			*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(v2))
 			dest += uintptr(SCREENWIDTH)
 		}
 		column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + libc.UintptrFromInt32(4)
@@ -7218,28 +7209,28 @@ func wipe_doColorXForm(tls *libc.TLS, width int32, height int32, ticks int32) (r
 	var changed boolean
 	var e, w uintptr
 	var newval int32
-	changed = uint32(false1)
+	changed = 0
 	w = wipe_scr
 	e = wipe_scr_end
 	for w != wipe_scr+uintptr(width*height) {
-		if libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(w))) != libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(e))) {
-			if libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(w))) > libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(e))) {
-				newval = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(w))) - ticks
-				if newval < libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(e))) {
-					*(*byte1)(unsafe.Pointer(w)) = *(*byte1)(unsafe.Pointer(e))
+		if libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(w))) != libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(e))) {
+			if libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(w))) > libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(e))) {
+				newval = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(w))) - ticks
+				if newval < libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(e))) {
+					*(*uint8)(unsafe.Pointer(w)) = *(*uint8)(unsafe.Pointer(e))
 				} else {
-					*(*byte1)(unsafe.Pointer(w)) = libc.Uint8FromInt32(newval)
+					*(*uint8)(unsafe.Pointer(w)) = libc.Uint8FromInt32(newval)
 				}
-				changed = uint32(true1)
+				changed = 1
 			} else {
-				if libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(w))) < libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(e))) {
-					newval = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(w))) + ticks
-					if newval > libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(e))) {
-						*(*byte1)(unsafe.Pointer(w)) = *(*byte1)(unsafe.Pointer(e))
+				if libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(w))) < libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(e))) {
+					newval = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(w))) + ticks
+					if newval > libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(e))) {
+						*(*uint8)(unsafe.Pointer(w)) = *(*uint8)(unsafe.Pointer(e))
 					} else {
-						*(*byte1)(unsafe.Pointer(w)) = libc.Uint8FromInt32(newval)
+						*(*uint8)(unsafe.Pointer(w)) = libc.Uint8FromInt32(newval)
 					}
-					changed = uint32(true1)
+					changed = 1
 				}
 			}
 		}
@@ -7293,7 +7284,7 @@ func wipe_doMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r int32
 	var d, s, v5, v7 uintptr
 	var done boolean
 	var dy, i, idx, j, v1, v3 int32
-	done = uint32(true1)
+	done = 1
 	width /= int32(2)
 	for {
 		v1 = ticks
@@ -7308,7 +7299,7 @@ func wipe_doMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r int32
 			}
 			if *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) < 0 {
 				*(*int32)(unsafe.Pointer(y + uintptr(i)*4))++
-				done = uint32(false1)
+				done = 0
 			} else {
 				if *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) < height {
 					if *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) < int32(16) {
@@ -7355,7 +7346,7 @@ func wipe_doMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r int32
 						;
 						j--
 					}
-					done = uint32(false1)
+					done = 0
 				}
 			}
 			goto _2
@@ -7448,7 +7439,7 @@ const TURBOTHRESHOLD = 50
 const VERSIONSIZE = 16
 
 func init() {
-	precache = uint32(true1)
+	precache = 1
 }
 
 func init() {
@@ -7578,22 +7569,22 @@ func WeaponSelectable(tls *libc.TLS, weapon weapontype_t) (r boolean) {
 		}
 	}
 	if v3 && v1 == int32(doom) {
-		return uint32(false1)
+		return 0
 	}
 	// These weapons aren't available in shareware.
 	if (weapon == int32(wp_plasma) || weapon == int32(wp_bfg)) && gamemission == int32(doom) && gamemode == int32(shareware) {
-		return uint32(false1)
+		return 0
 	}
 	// Can't select a weapon if we don't own it.
 	if !(*(*boolean)(unsafe.Pointer(uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328 + 132 + uintptr(weapon)*4)) != 0) {
-		return uint32(false1)
+		return 0
 	}
 	// Can't select the fist if we have the chainsaw, unless
 	// we also have the berserk pack.
 	if weapon == int32(wp_fist) && *(*boolean)(unsafe.Pointer(uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328 + 132 + uintptr(wp_chainsaw)*4)) != 0 && !(*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328 + 56 + uintptr(pw_strength)*4)) != 0) {
-		return uint32(false1)
+		return 0
 	}
-	return uint32(true1)
+	return 1
 }
 
 func G_NextWeapon(tls *libc.TLS, direction int32) (r int32) {
@@ -7641,7 +7632,7 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 	var forward, i, key, side, speed, tspeed, v1, v16 int32
 	var p11, p12, p13, p14, p15, p17, p18, p2, p3, p4, p5, p6, p7, p8, p9 uintptr
 	libc.Xmemset(tls, cmd, 0, uint64(16))
-	(*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy = *(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(consoleplayer)*128 + uintptr(maketic%int32(BACKUPTICS))))
+	(*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy = *(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(consoleplayer)*128 + uintptr(maketic%int32(BACKUPTICS))))
 	strafe = libc.BoolUint32(gamekeydown[key_strafe] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
 	// fraggle: support the old "joyb_speed = 31" hack which
 	// allowed an autorun effect
@@ -7719,11 +7710,11 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 	(*ticcmd_t)(unsafe.Pointer(cmd)).Fchatchar = libc.Uint8FromInt8(HU_dequeueChatChar(tls))
 	if gamekeydown[key_fire] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebfire)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybfire)*4)) != 0 {
 		p6 = cmd + 5
-		*(*byte1)(unsafe.Pointer(p6)) = byte1(int32(*(*byte1)(unsafe.Pointer(p6))) | int32(BT_ATTACK))
+		*(*uint8)(unsafe.Pointer(p6)) = uint8(int32(*(*uint8)(unsafe.Pointer(p6))) | int32(BT_ATTACK))
 	}
 	if gamekeydown[key_use] != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybuse)*4)) != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebuse)*4)) != 0 {
 		p7 = cmd + 5
-		*(*byte1)(unsafe.Pointer(p7)) = byte1(int32(*(*byte1)(unsafe.Pointer(p7))) | int32(BT_USE))
+		*(*uint8)(unsafe.Pointer(p7)) = uint8(int32(*(*uint8)(unsafe.Pointer(p7))) | int32(BT_USE))
 		// clear double clicks if hit use button
 		dclicks = 0
 	}
@@ -7733,9 +7724,9 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 	if gamestate == int32(GS_LEVEL) && next_weapon != 0 {
 		i = G_NextWeapon(tls, next_weapon)
 		p8 = cmd + 5
-		*(*byte1)(unsafe.Pointer(p8)) = byte1(int32(*(*byte1)(unsafe.Pointer(p8))) | int32(BT_CHANGE))
+		*(*uint8)(unsafe.Pointer(p8)) = uint8(int32(*(*uint8)(unsafe.Pointer(p8))) | int32(BT_CHANGE))
 		p9 = cmd + 5
-		*(*byte1)(unsafe.Pointer(p9)) = byte1(int32(*(*byte1)(unsafe.Pointer(p9))) | i<<int32(BT_WEAPONSHIFT))
+		*(*uint8)(unsafe.Pointer(p9)) = uint8(int32(*(*uint8)(unsafe.Pointer(p9))) | i<<int32(BT_WEAPONSHIFT))
 	} else {
 		// Check weapon keys.
 		i = 0
@@ -7746,9 +7737,9 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 			key = *(*int32)(unsafe.Pointer(weapon_keys[i]))
 			if gamekeydown[key] != 0 {
 				p11 = cmd + 5
-				*(*byte1)(unsafe.Pointer(p11)) = byte1(int32(*(*byte1)(unsafe.Pointer(p11))) | int32(BT_CHANGE))
+				*(*uint8)(unsafe.Pointer(p11)) = uint8(int32(*(*uint8)(unsafe.Pointer(p11))) | int32(BT_CHANGE))
 				p12 = cmd + 5
-				*(*byte1)(unsafe.Pointer(p12)) = byte1(int32(*(*byte1)(unsafe.Pointer(p12))) | i<<int32(BT_WEAPONSHIFT))
+				*(*uint8)(unsafe.Pointer(p12)) = uint8(int32(*(*uint8)(unsafe.Pointer(p12))) | i<<int32(BT_WEAPONSHIFT))
 				break
 			}
 			goto _10
@@ -7774,7 +7765,7 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 			}
 			if dclicks == int32(2) {
 				p13 = cmd + 5
-				*(*byte1)(unsafe.Pointer(p13)) = byte1(int32(*(*byte1)(unsafe.Pointer(p13))) | int32(BT_USE))
+				*(*uint8)(unsafe.Pointer(p13)) = uint8(int32(*(*uint8)(unsafe.Pointer(p13))) | int32(BT_USE))
 				dclicks = 0
 			} else {
 				dclicktime = 0
@@ -7795,7 +7786,7 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 			}
 			if dclicks2 == int32(2) {
 				p14 = cmd + 5
-				*(*byte1)(unsafe.Pointer(p14)) = byte1(int32(*(*byte1)(unsafe.Pointer(p14))) | int32(BT_USE))
+				*(*uint8)(unsafe.Pointer(p14)) = uint8(int32(*(*uint8)(unsafe.Pointer(p14))) | int32(BT_USE))
 				dclicks2 = 0
 			} else {
 				dclicktime2 = 0
@@ -7842,11 +7833,11 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 	*(*int8)(unsafe.Pointer(p18)) = int8(int32(*(*int8)(unsafe.Pointer(p18))) + side)
 	// special buttons
 	if sendpause != 0 {
-		sendpause = uint32(false1)
+		sendpause = 0
 		(*ticcmd_t)(unsafe.Pointer(cmd)).Fbuttons = libc.Uint8FromInt32(int32(BT_SPECIAL) | int32(BTS_PAUSE))
 	}
 	if sendsave != 0 {
-		sendsave = uint32(false1)
+		sendsave = 0
 		(*ticcmd_t)(unsafe.Pointer(cmd)).Fbuttons = libc.Uint8FromInt32(int32(BT_SPECIAL) | int32(BTS_SAVEGAME) | savegameslot<<int32(BTS_SAVESHIFT))
 	}
 	// low-res turning
@@ -7902,7 +7893,7 @@ func G_DoLoadLevel(tls *libc.TLS) {
 		if !(i < int32(MAXPLAYERS)) {
 			break
 		}
-		turbodetected[i] = uint32(false1)
+		turbodetected[i] = 0
 		if playeringame[i] != 0 && players[i].Fplayerstate == int32(PST_DEAD) {
 			players[i].Fplayerstate = int32(PST_REBORN)
 		}
@@ -7926,7 +7917,7 @@ func G_DoLoadLevel(tls *libc.TLS) {
 	v4 = libc.Int32FromInt32(0)
 	mousey = v4
 	mousex = v4
-	v6 = uint32(false1)
+	v6 = 0
 	paused = v6
 	v5 = v6
 	sendsave = v5
@@ -8008,30 +7999,30 @@ func G_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 				displayplayer = 0
 			}
 		}
-		return uint32(true1)
+		return 1
 	}
 	// any other key pops up menu if in demos
 	if gameaction == int32(ga_nothing) && !(singledemo != 0) && (demoplayback != 0 || gamestate == int32(GS_DEMOSCREEN)) {
 		if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) || (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_mouse) && (*event_t)(unsafe.Pointer(ev)).Fdata1 != 0 || (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_joystick) && (*event_t)(unsafe.Pointer(ev)).Fdata1 != 0 {
 			M_StartControlPanel(tls)
-			return uint32(true1)
+			return 1
 		}
-		return uint32(false1)
+		return 0
 	}
 	if gamestate == int32(GS_LEVEL) {
 		if HU_Responder(tls, ev) != 0 {
-			return uint32(true1)
+			return 1
 		} // chat ate the event
 		if ST_Responder(tls, ev) != 0 {
-			return uint32(true1)
+			return 1
 		} // status window ate it
 		if AM_Responder(tls, ev) != 0 {
-			return uint32(true1)
+			return 1
 		} // automap ate it
 	}
 	if gamestate == int32(GS_FINALE) {
 		if F_Responder(tls, ev) != 0 {
-			return uint32(true1)
+			return 1
 		} // finale ate the event
 	}
 	if testcontrols != 0 && (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_mouse) {
@@ -8053,33 +8044,33 @@ func G_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	switch (*event_t)(unsafe.Pointer(ev)).Ftype1 {
 	case int32(ev_keydown):
 		if (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_pause {
-			sendpause = uint32(true1)
+			sendpause = 1
 		} else {
 			if (*event_t)(unsafe.Pointer(ev)).Fdata1 < int32(NUMKEYS) {
-				gamekeydown[(*event_t)(unsafe.Pointer(ev)).Fdata1] = uint32(true1)
+				gamekeydown[(*event_t)(unsafe.Pointer(ev)).Fdata1] = 1
 			}
 		}
-		return uint32(true1) // eat key down events
+		return 1 // eat key down events
 	case int32(ev_keyup):
 		if (*event_t)(unsafe.Pointer(ev)).Fdata1 < int32(NUMKEYS) {
-			gamekeydown[(*event_t)(unsafe.Pointer(ev)).Fdata1] = uint32(false1)
+			gamekeydown[(*event_t)(unsafe.Pointer(ev)).Fdata1] = 0
 		}
-		return uint32(false1) // always let key up events filter down
+		return 0 // always let key up events filter down
 	case int32(ev_mouse):
 		SetMouseButtons(tls, libc.Uint32FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata1))
 		mousex = (*event_t)(unsafe.Pointer(ev)).Fdata2 * (mouseSensitivity + int32(5)) / int32(10)
 		mousey = (*event_t)(unsafe.Pointer(ev)).Fdata3 * (mouseSensitivity + int32(5)) / int32(10)
-		return uint32(true1) // eat events
+		return 1 // eat events
 	case int32(ev_joystick):
 		SetJoyButtons(tls, libc.Uint32FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata1))
 		joyxmove = (*event_t)(unsafe.Pointer(ev)).Fdata2
 		joyymove = (*event_t)(unsafe.Pointer(ev)).Fdata3
 		joystrafemove = (*event_t)(unsafe.Pointer(ev)).Fdata4
-		return uint32(true1) // eat events
+		return 1 // eat events
 	default:
 		break
 	}
-	return uint32(false1)
+	return 0
 }
 
 // C documentation
@@ -8157,21 +8148,21 @@ func G_Ticker(tls *libc.TLS) {
 			// for each player so messages are not displayed at the
 			// same time.
 			if int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fforwardmove) > int32(TURBOTHRESHOLD) {
-				turbodetected[i] = uint32(true1)
+				turbodetected[i] = 1
 			}
 			if gametic&int32(31) == 0 && gametic>>int32(5)%int32(MAXPLAYERS) == i && turbodetected[i] != 0 {
 				M_snprintf(tls, uintptr(unsafe.Pointer(&turbomessage)), uint64(80), __ccgo_ts(13747), libc.VaList(bp+8, player_names[i]))
 				players[consoleplayer].Fmessage = uintptr(unsafe.Pointer(&turbomessage))
-				turbodetected[i] = uint32(false1)
+				turbodetected[i] = 0
 			}
 			if netgame != 0 && !(netdemo != 0) && !(gametic%ticdup != 0) {
-				if gametic > int32(BACKUPTICS) && libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))) != libc.Int32FromUint8((*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy) {
-					I_Error(tls, __ccgo_ts(13760), libc.VaList(bp+8, libc.Int32FromUint8((*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy), libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))))))
+				if gametic > int32(BACKUPTICS) && libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))) != libc.Int32FromUint8((*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy) {
+					I_Error(tls, __ccgo_ts(13760), libc.VaList(bp+8, libc.Int32FromUint8((*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy), libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))))))
 				}
 				if players[i].Fmo != 0 {
-					*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = libc.Uint8FromInt32((*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fx)
+					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = libc.Uint8FromInt32((*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fx)
 				} else {
-					*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = libc.Uint8FromInt32(rndindex)
+					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = libc.Uint8FromInt32(rndindex)
 				}
 			}
 		}
@@ -8275,7 +8266,7 @@ func G_PlayerReborn(tls *libc.TLS, player int32) {
 	players[player].Fkillcount = killcount
 	players[player].Fitemcount = itemcount
 	players[player].Fsecretcount = secretcount
-	v1 = int32(true1)
+	v1 = 1
 	(*player_t)(unsafe.Pointer(p)).Fattackdown = v1
 	(*player_t)(unsafe.Pointer(p)).Fusedown = v1 // don't do anything immediately
 	(*player_t)(unsafe.Pointer(p)).Fplayerstate = int32(PST_LIVE)
@@ -8283,8 +8274,8 @@ func G_PlayerReborn(tls *libc.TLS, player int32) {
 	v2 = int32(wp_pistol)
 	(*player_t)(unsafe.Pointer(p)).Fpendingweapon = v2
 	(*player_t)(unsafe.Pointer(p)).Freadyweapon = v2
-	*(*boolean)(unsafe.Pointer(p + 132 + uintptr(wp_fist)*4)) = uint32(true1)
-	*(*boolean)(unsafe.Pointer(p + 132 + uintptr(wp_pistol)*4)) = uint32(true1)
+	*(*boolean)(unsafe.Pointer(p + 132 + uintptr(wp_fist)*4)) = 1
+	*(*boolean)(unsafe.Pointer(p + 132 + uintptr(wp_pistol)*4)) = 1
 	*(*int32)(unsafe.Pointer(p + 168 + uintptr(am_clip)*4)) = int32(DEH_DEFAULT_INITIAL_BULLETS)
 	i = 0
 	for {
@@ -8312,19 +8303,19 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 				break
 			}
 			if (*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fx == int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx)<<int32(FRACBITS) && (*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fy == int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy)<<int32(FRACBITS) {
-				return uint32(false1)
+				return 0
 			}
 			goto _1
 		_1:
 			;
 			i++
 		}
-		return uint32(true1)
+		return 1
 	}
 	x = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx) << int32(FRACBITS)
 	y = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy) << int32(FRACBITS)
 	if !(P_CheckPosition(tls, players[playernum].Fmo, x, y) != 0) {
-		return uint32(false1)
+		return 0
 	}
 	// flush an old corpse if needed
 	if bodyqueslot >= int32(BODYQUESIZE) {
@@ -8386,7 +8377,7 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 	if players[consoleplayer].Fviewz != int32(1) {
 		S_StartSound(tls, mo, int32(sfx_telept))
 	} // don't start sound on first frame
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -8549,7 +8540,7 @@ func init() {
 }
 
 func G_ExitLevel(tls *libc.TLS) {
-	secretexit = uint32(false1)
+	secretexit = 0
 	gameaction = int32(ga_completed)
 }
 
@@ -8559,9 +8550,9 @@ func G_ExitLevel(tls *libc.TLS) {
 func G_SecretExitLevel(tls *libc.TLS) {
 	// IF NO WOLF3D LEVELS, NO SECRET EXIT!
 	if gamemode == int32(commercial) && W_CheckNumForName(tls, __ccgo_ts(13878)) < 0 {
-		secretexit = uint32(false1)
+		secretexit = 0
 	} else {
-		secretexit = uint32(true1)
+		secretexit = 1
 	}
 	gameaction = int32(ga_completed)
 }
@@ -8612,7 +8603,7 @@ func G_DoCompleted(tls *libc.TLS) {
 			if !(i < int32(MAXPLAYERS)) {
 				goto _5
 			}
-			players[i].Fdidsecret = uint32(true1)
+			players[i].Fdidsecret = 1
 			goto _6
 		_6:
 			;
@@ -8638,7 +8629,7 @@ func G_DoCompleted(tls *libc.TLS) {
 			if !(i < int32(MAXPLAYERS)) {
 				break
 			}
-			players[i].Fdidsecret = uint32(true1)
+			players[i].Fdidsecret = 1
 			goto _8
 		_8:
 			;
@@ -8725,8 +8716,8 @@ func G_DoCompleted(tls *libc.TLS) {
 		i++
 	}
 	gamestate = int32(GS_INTERMISSION)
-	viewactive = uint32(false1)
-	automapactive = uint32(false1)
+	viewactive = 0
+	automapactive = 0
 	StatCopy(tls, uintptr(unsafe.Pointer(&wminfo)))
 	WI_Start(tls, uintptr(unsafe.Pointer(&wminfo)))
 }
@@ -8739,7 +8730,7 @@ func G_DoCompleted(tls *libc.TLS) {
 func G_WorldDone(tls *libc.TLS) {
 	gameaction = int32(ga_worlddone)
 	if secretexit != 0 {
-		players[consoleplayer].Fdidsecret = uint32(true1)
+		players[consoleplayer].Fdidsecret = 1
 	}
 	if gamemode == int32(commercial) {
 		switch gamemap {
@@ -8768,7 +8759,7 @@ func G_DoWorldDone(tls *libc.TLS) {
 	gamemap = wminfo.Fnext + int32(1)
 	G_DoLoadLevel(tls)
 	gameaction = int32(ga_nothing)
-	viewactive = uint32(true1)
+	viewactive = 1
 }
 
 func G_LoadGame(tls *libc.TLS, name uintptr) {
@@ -8783,7 +8774,7 @@ func G_DoLoadGame(tls *libc.TLS) {
 	if save_stream == libc.UintptrFromInt32(0) {
 		return
 	}
-	savegame_error = uint32(false1)
+	savegame_error = 0
 	if !(P_ReadSaveGameHeader(tls) != 0) {
 		libc.Xfclose(tls, save_stream)
 		return
@@ -8818,7 +8809,7 @@ func G_DoLoadGame(tls *libc.TLS) {
 func G_SaveGame(tls *libc.TLS, slot int32, description uintptr) {
 	savegameslot = slot
 	M_StringCopy(tls, uintptr(unsafe.Pointer(&savedescription)), description, uint64(32))
-	sendsave = uint32(true1)
+	sendsave = 1
 }
 
 func G_DoSaveGame(tls *libc.TLS) {
@@ -8841,7 +8832,7 @@ func G_DoSaveGame(tls *libc.TLS) {
 			I_Error(tls, __ccgo_ts(13916), libc.VaList(bp+8, temp_savegame_file, recovery_savegame_file))
 		}
 	}
-	savegame_error = uint32(false1)
+	savegame_error = 0
 	P_WriteSaveGameHeader(tls, uintptr(unsafe.Pointer(&savedescription)))
 	P_ArchivePlayers(tls)
 	P_ArchiveWorld(tls)
@@ -8881,18 +8872,18 @@ func G_DeferedInitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 
 func G_DoNewGame(tls *libc.TLS) {
 	var v1, v2 boolean
-	demoplayback = uint32(false1)
-	netdemo = uint32(false1)
-	netgame = uint32(false1)
-	deathmatch = int32(false1)
+	demoplayback = 0
+	netdemo = 0
+	netgame = 0
+	deathmatch = 0
 	v2 = libc.Uint32FromInt32(0)
 	playeringame[int32(3)] = v2
 	v1 = v2
 	playeringame[int32(2)] = v1
 	playeringame[int32(1)] = v1
-	respawnparm = uint32(false1)
-	fastparm = uint32(false1)
-	nomonsters = uint32(false1)
+	respawnparm = 0
+	fastparm = 0
+	nomonsters = 0
 	consoleplayer = 0
 	G_InitNew(tls, d_skill, d_episode, d_map)
 	gameaction = int32(ga_nothing)
@@ -8902,7 +8893,7 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 	var i int32
 	var skytexturename uintptr
 	if paused != 0 {
-		paused = uint32(false1)
+		paused = 0
 		S_ResumeSound(tls)
 	}
 	/*
@@ -8958,9 +8949,9 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 	}
 	M_ClearRandom(tls)
 	if skill == int32(sk_nightmare) || respawnparm != 0 {
-		respawnmonsters = uint32(true1)
+		respawnmonsters = 1
 	} else {
-		respawnmonsters = uint32(false1)
+		respawnmonsters = 0
 	}
 	if fastparm != 0 || skill == int32(sk_nightmare) && gameskill != int32(sk_nightmare) {
 		i = int32(S_SARG_RUN1)
@@ -9007,15 +8998,15 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 		;
 		i++
 	}
-	usergame = uint32(true1) // will be set false if a demo
-	paused = uint32(false1)
-	demoplayback = uint32(false1)
-	automapactive = uint32(false1)
-	viewactive = uint32(true1)
+	usergame = 1 // will be set false if a demo
+	paused = 0
+	demoplayback = 0
+	automapactive = 0
+	viewactive = 1
 	gameepisode = episode
 	gamemap = map1
 	gameskill = skill
-	viewactive = uint32(true1)
+	viewactive = 1
 	// Set the sky to use.
 	//
 	// Note: This IS broken, but it is how Vanilla Doom behaves.
@@ -9061,34 +9052,34 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 
 func G_ReadDemoTiccmd(tls *libc.TLS, cmd uintptr) {
 	var v1, v2, v3, v5, v6, v7, p4 uintptr
-	if libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(demo_p))) == int32(DEMOMARKER) {
+	if libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(demo_p))) == int32(DEMOMARKER) {
 		// end of demo data stream
 		G_CheckDemoStatus(tls)
 		return
 	}
 	v1 = demo_p
 	demo_p++
-	(*ticcmd_t)(unsafe.Pointer(cmd)).Fforwardmove = libc.Int8FromUint8(*(*byte1)(unsafe.Pointer(v1)))
+	(*ticcmd_t)(unsafe.Pointer(cmd)).Fforwardmove = libc.Int8FromUint8(*(*uint8)(unsafe.Pointer(v1)))
 	v2 = demo_p
 	demo_p++
-	(*ticcmd_t)(unsafe.Pointer(cmd)).Fsidemove = libc.Int8FromUint8(*(*byte1)(unsafe.Pointer(v2)))
+	(*ticcmd_t)(unsafe.Pointer(cmd)).Fsidemove = libc.Int8FromUint8(*(*uint8)(unsafe.Pointer(v2)))
 	// If this is a longtics demo, read back in higher resolution
 	if longtics != 0 {
 		v3 = demo_p
 		demo_p++
-		(*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn = libc.Int16FromUint8(*(*byte1)(unsafe.Pointer(v3)))
+		(*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn = libc.Int16FromUint8(*(*uint8)(unsafe.Pointer(v3)))
 		p4 = cmd + 2
 		v5 = demo_p
 		demo_p++
-		*(*int16)(unsafe.Pointer(p4)) = int16(int32(*(*int16)(unsafe.Pointer(p4))) | libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(v5)))<<libc.Int32FromInt32(8))
+		*(*int16)(unsafe.Pointer(p4)) = int16(int32(*(*int16)(unsafe.Pointer(p4))) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v5)))<<libc.Int32FromInt32(8))
 	} else {
 		v6 = demo_p
 		demo_p++
-		(*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn = int16(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(v6))) << int32(8))
+		(*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn = int16(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v6))) << int32(8))
 	}
 	v7 = demo_p
 	demo_p++
-	(*ticcmd_t)(unsafe.Pointer(cmd)).Fbuttons = *(*byte1)(unsafe.Pointer(v7))
+	(*ticcmd_t)(unsafe.Pointer(cmd)).Fbuttons = *(*uint8)(unsafe.Pointer(v7))
 }
 
 // Increase the size of the demo buffer to allow unlimited demos
@@ -9119,26 +9110,26 @@ func G_WriteDemoTiccmd(tls *libc.TLS, cmd uintptr) {
 	demo_start = demo_p
 	v1 = demo_p
 	demo_p++
-	*(*byte1)(unsafe.Pointer(v1)) = libc.Uint8FromInt8((*ticcmd_t)(unsafe.Pointer(cmd)).Fforwardmove)
+	*(*uint8)(unsafe.Pointer(v1)) = libc.Uint8FromInt8((*ticcmd_t)(unsafe.Pointer(cmd)).Fforwardmove)
 	v2 = demo_p
 	demo_p++
-	*(*byte1)(unsafe.Pointer(v2)) = libc.Uint8FromInt8((*ticcmd_t)(unsafe.Pointer(cmd)).Fsidemove)
+	*(*uint8)(unsafe.Pointer(v2)) = libc.Uint8FromInt8((*ticcmd_t)(unsafe.Pointer(cmd)).Fsidemove)
 	// If this is a longtics demo, record in higher resolution
 	if longtics != 0 {
 		v3 = demo_p
 		demo_p++
-		*(*byte1)(unsafe.Pointer(v3)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) & libc.Int32FromInt32(0xff))
+		*(*uint8)(unsafe.Pointer(v3)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) & libc.Int32FromInt32(0xff))
 		v4 = demo_p
 		demo_p++
-		*(*byte1)(unsafe.Pointer(v4)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) >> int32(8) & int32(0xff))
+		*(*uint8)(unsafe.Pointer(v4)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) >> int32(8) & int32(0xff))
 	} else {
 		v5 = demo_p
 		demo_p++
-		*(*byte1)(unsafe.Pointer(v5)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) >> int32(8))
+		*(*uint8)(unsafe.Pointer(v5)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) >> int32(8))
 	}
 	v6 = demo_p
 	demo_p++
-	*(*byte1)(unsafe.Pointer(v6)) = (*ticcmd_t)(unsafe.Pointer(cmd)).Fbuttons
+	*(*uint8)(unsafe.Pointer(v6)) = (*ticcmd_t)(unsafe.Pointer(cmd)).Fbuttons
 	// reset demo pointer back
 	demo_p = demo_start
 	if demo_p > demoend-uintptr(16) {
@@ -9164,7 +9155,7 @@ func G_RecordDemo(tls *libc.TLS, name uintptr) {
 	bp := alloc(16)
 	var demoname_size size_t
 	var i, maxsize int32
-	usergame = uint32(false1)
+	usergame = 0
 	demoname_size = libc.Xstrlen(tls, name) + uint64(5)
 	demoname = Z_Malloc(tls, libc.Int32FromUint64(demoname_size), int32(PU_STATIC), libc.UintptrFromInt32(0))
 	M_snprintf(tls, demoname, demoname_size, __ccgo_ts(4481), libc.VaList(bp+8, name))
@@ -9182,7 +9173,7 @@ func G_RecordDemo(tls *libc.TLS, name uintptr) {
 	}
 	demobuffer = Z_Malloc(tls, maxsize, int32(PU_STATIC), libc.UintptrFromInt32(0))
 	demoend = demobuffer + uintptr(maxsize)
-	demorecording = uint32(true1)
+	demorecording = 1
 }
 
 // C documentation
@@ -9223,36 +9214,36 @@ func G_BeginRecording(tls *libc.TLS) {
 	if longtics != 0 {
 		v1 = demo_p
 		demo_p++
-		*(*byte1)(unsafe.Pointer(v1)) = uint8(DOOM_191_VERSION)
+		*(*uint8)(unsafe.Pointer(v1)) = uint8(DOOM_191_VERSION)
 	} else {
 		v2 = demo_p
 		demo_p++
-		*(*byte1)(unsafe.Pointer(v2)) = libc.Uint8FromInt32(G_VanillaVersionCode(tls))
+		*(*uint8)(unsafe.Pointer(v2)) = libc.Uint8FromInt32(G_VanillaVersionCode(tls))
 	}
 	v3 = demo_p
 	demo_p++
-	*(*byte1)(unsafe.Pointer(v3)) = libc.Uint8FromInt32(gameskill)
+	*(*uint8)(unsafe.Pointer(v3)) = libc.Uint8FromInt32(gameskill)
 	v4 = demo_p
 	demo_p++
-	*(*byte1)(unsafe.Pointer(v4)) = libc.Uint8FromInt32(gameepisode)
+	*(*uint8)(unsafe.Pointer(v4)) = libc.Uint8FromInt32(gameepisode)
 	v5 = demo_p
 	demo_p++
-	*(*byte1)(unsafe.Pointer(v5)) = libc.Uint8FromInt32(gamemap)
+	*(*uint8)(unsafe.Pointer(v5)) = libc.Uint8FromInt32(gamemap)
 	v6 = demo_p
 	demo_p++
-	*(*byte1)(unsafe.Pointer(v6)) = libc.Uint8FromInt32(deathmatch)
+	*(*uint8)(unsafe.Pointer(v6)) = libc.Uint8FromInt32(deathmatch)
 	v7 = demo_p
 	demo_p++
-	*(*byte1)(unsafe.Pointer(v7)) = uint8(respawnparm)
+	*(*uint8)(unsafe.Pointer(v7)) = uint8(respawnparm)
 	v8 = demo_p
 	demo_p++
-	*(*byte1)(unsafe.Pointer(v8)) = uint8(fastparm)
+	*(*uint8)(unsafe.Pointer(v8)) = uint8(fastparm)
 	v9 = demo_p
 	demo_p++
-	*(*byte1)(unsafe.Pointer(v9)) = uint8(nomonsters)
+	*(*uint8)(unsafe.Pointer(v9)) = uint8(nomonsters)
 	v10 = demo_p
 	demo_p++
-	*(*byte1)(unsafe.Pointer(v10)) = libc.Uint8FromInt32(consoleplayer)
+	*(*uint8)(unsafe.Pointer(v10)) = libc.Uint8FromInt32(consoleplayer)
 	i = 0
 	for {
 		if !(i < int32(MAXPLAYERS)) {
@@ -9260,7 +9251,7 @@ func G_BeginRecording(tls *libc.TLS) {
 		}
 		v12 = demo_p
 		demo_p++
-		*(*byte1)(unsafe.Pointer(v12)) = uint8(playeringame[i])
+		*(*uint8)(unsafe.Pointer(v12)) = uint8(playeringame[i])
 		goto _11
 	_11:
 		;
@@ -9317,13 +9308,13 @@ func G_DoPlayDemo(tls *libc.TLS) {
 	demobuffer = v1
 	v2 = demo_p
 	demo_p++
-	demoversion = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(v2)))
+	demoversion = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v2)))
 	if demoversion == G_VanillaVersionCode(tls) {
-		longtics = uint32(false1)
+		longtics = 0
 	} else {
 		if demoversion == int32(DOOM_191_VERSION) {
 			// demo recorded with cph's modified "v1.91" doom exe
-			longtics = uint32(true1)
+			longtics = 1
 		} else {
 			message = __ccgo_ts(14232)
 			//I_Error(message, demoversion, G_VanillaVersionCode(),
@@ -9332,28 +9323,28 @@ func G_DoPlayDemo(tls *libc.TLS) {
 	}
 	v3 = demo_p
 	demo_p++
-	skill = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(v3)))
+	skill = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v3)))
 	v4 = demo_p
 	demo_p++
-	episode = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(v4)))
+	episode = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v4)))
 	v5 = demo_p
 	demo_p++
-	map1 = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(v5)))
+	map1 = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v5)))
 	v6 = demo_p
 	demo_p++
-	deathmatch = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(v6)))
+	deathmatch = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v6)))
 	v7 = demo_p
 	demo_p++
-	respawnparm = uint32(*(*byte1)(unsafe.Pointer(v7)))
+	respawnparm = uint32(*(*uint8)(unsafe.Pointer(v7)))
 	v8 = demo_p
 	demo_p++
-	fastparm = uint32(*(*byte1)(unsafe.Pointer(v8)))
+	fastparm = uint32(*(*uint8)(unsafe.Pointer(v8)))
 	v9 = demo_p
 	demo_p++
-	nomonsters = uint32(*(*byte1)(unsafe.Pointer(v9)))
+	nomonsters = uint32(*(*uint8)(unsafe.Pointer(v9)))
 	v10 = demo_p
 	demo_p++
-	consoleplayer = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(v10)))
+	consoleplayer = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v10)))
 	i = 0
 	for {
 		if !(i < int32(MAXPLAYERS)) {
@@ -9361,23 +9352,23 @@ func G_DoPlayDemo(tls *libc.TLS) {
 		}
 		v12 = demo_p
 		demo_p++
-		playeringame[i] = uint32(*(*byte1)(unsafe.Pointer(v12)))
+		playeringame[i] = uint32(*(*uint8)(unsafe.Pointer(v12)))
 		goto _11
 	_11:
 		;
 		i++
 	}
 	if playeringame[int32(1)] != 0 || M_CheckParm(tls, __ccgo_ts(5553)) > 0 || M_CheckParm(tls, __ccgo_ts(14449)) > 0 {
-		netgame = uint32(true1)
-		netdemo = uint32(true1)
+		netgame = 1
+		netdemo = 1
 	}
 	// don't spend a lot of time in loadlevel
-	precache = uint32(false1)
+	precache = 0
 	G_InitNew(tls, skill, episode, map1)
-	precache = uint32(true1)
+	precache = 1
 	starttime = I_GetTime(tls)
-	usergame = uint32(false1)
-	demoplayback = uint32(true1)
+	usergame = 0
+	demoplayback = 1
 }
 
 // C documentation
@@ -9392,8 +9383,8 @@ func G_TimeDemo(tls *libc.TLS, name uintptr) {
 	// Disable rendering the screen entirely.
 	//
 	nodrawers = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts(14458)))
-	timingdemo = uint32(true1)
-	singletics = uint32(true1)
+	timingdemo = 1
+	singletics = 1
 	defdemoname = name
 	gameaction = int32(ga_playdemo)
 }
@@ -9418,42 +9409,42 @@ func G_CheckDemoStatus(tls *libc.TLS) (r boolean) {
 		realtics = endtime - starttime
 		fps = float32(gametic) * libc.Float32FromInt32(TICRATE) / float32(realtics)
 		// Prevent recursive calls
-		timingdemo = uint32(false1)
-		demoplayback = uint32(false1)
+		timingdemo = 0
+		demoplayback = 0
 		I_Error(tls, __ccgo_ts(14466), libc.VaList(bp+8, gametic, realtics, float64(fps)))
 	}
 	if demoplayback != 0 {
 		W_ReleaseLumpName(tls, defdemoname)
-		demoplayback = uint32(false1)
-		netdemo = uint32(false1)
-		netgame = uint32(false1)
-		deathmatch = int32(false1)
+		demoplayback = 0
+		netdemo = 0
+		netgame = 0
+		deathmatch = 0
 		v2 = libc.Uint32FromInt32(0)
 		playeringame[int32(3)] = v2
 		v1 = v2
 		playeringame[int32(2)] = v1
 		playeringame[int32(1)] = v1
-		respawnparm = uint32(false1)
-		fastparm = uint32(false1)
-		nomonsters = uint32(false1)
+		respawnparm = 0
+		fastparm = 0
+		nomonsters = 0
 		consoleplayer = 0
 		if singledemo != 0 {
 			I_Quit(tls)
 		} else {
 			D_AdvanceDemo(tls)
 		}
-		return uint32(true1)
+		return 1
 	}
 	if demorecording != 0 {
 		v3 = demo_p
 		demo_p++
-		*(*byte1)(unsafe.Pointer(v3)) = uint8(DEMOMARKER)
+		*(*uint8)(unsafe.Pointer(v3)) = uint8(DEMOMARKER)
 		M_WriteFile(tls, demoname, demobuffer, int32(int64(demo_p)-int64(demobuffer)))
 		Z_Free(tls, demobuffer)
-		demorecording = uint32(false1)
+		demorecording = 0
 		I_Error(tls, __ccgo_ts(14508), libc.VaList(bp+8, demoname))
 	}
-	return uint32(false1)
+	return 0
 }
 
 const HU_MAXLINELENGTH = 80
@@ -9487,7 +9478,7 @@ type hu_itext_t = struct {
 func HUlib_clearTextLine(tls *libc.TLS, t uintptr) {
 	(*hu_textline_t)(unsafe.Pointer(t)).Flen1 = 0
 	*(*int8)(unsafe.Pointer(t + 20)) = 0
-	(*hu_textline_t)(unsafe.Pointer(t)).Fneedsupdate = int32(true1)
+	(*hu_textline_t)(unsafe.Pointer(t)).Fneedsupdate = 1
 }
 
 func HUlib_initTextLine(tls *libc.TLS, t uintptr, x int32, y int32, f uintptr, sc int32) {
@@ -9502,7 +9493,7 @@ func HUlib_addCharToTextLine(tls *libc.TLS, t uintptr, ch int8) (r boolean) {
 	var v1 int32
 	var v2 uintptr
 	if (*hu_textline_t)(unsafe.Pointer(t)).Flen1 == int32(HU_MAXLINELENGTH) {
-		return uint32(false1)
+		return 0
 	} else {
 		v2 = t + 104
 		v1 = *(*int32)(unsafe.Pointer(v2))
@@ -9510,7 +9501,7 @@ func HUlib_addCharToTextLine(tls *libc.TLS, t uintptr, ch int8) (r boolean) {
 		*(*int8)(unsafe.Pointer(t + 20 + uintptr(v1))) = ch
 		*(*int8)(unsafe.Pointer(t + 20 + uintptr((*hu_textline_t)(unsafe.Pointer(t)).Flen1))) = 0
 		(*hu_textline_t)(unsafe.Pointer(t)).Fneedsupdate = int32(4)
-		return uint32(true1)
+		return 1
 	}
 	return r
 }
@@ -9519,14 +9510,14 @@ func HUlib_delCharFromTextLine(tls *libc.TLS, t uintptr) (r boolean) {
 	var v1 int32
 	var v2 uintptr
 	if !((*hu_textline_t)(unsafe.Pointer(t)).Flen1 != 0) {
-		return uint32(false1)
+		return 0
 	} else {
 		v2 = t + 104
 		*(*int32)(unsafe.Pointer(v2))--
 		v1 = *(*int32)(unsafe.Pointer(v2))
 		*(*int8)(unsafe.Pointer(t + 20 + uintptr(v1))) = 0
 		(*hu_textline_t)(unsafe.Pointer(t)).Fneedsupdate = int32(4)
-		return uint32(true1)
+		return 1
 	}
 	return r
 }
@@ -9605,7 +9596,7 @@ func HUlib_initSText(tls *libc.TLS, s uintptr, x int32, y int32, h int32, font u
 	var i int32
 	(*hu_stext_t)(unsafe.Pointer(s)).Fh = h
 	(*hu_stext_t)(unsafe.Pointer(s)).Fon = on
-	(*hu_stext_t)(unsafe.Pointer(s)).Flaston = uint32(true1)
+	(*hu_stext_t)(unsafe.Pointer(s)).Flaston = 1
 	(*hu_stext_t)(unsafe.Pointer(s)).Fcl = 0
 	i = 0
 	for {
@@ -9680,7 +9671,7 @@ func HUlib_drawSText(tls *libc.TLS, s uintptr) {
 		} // handle queue of lines
 		l = s + uintptr(idx)*112
 		// need a decision made here on whether to skip the draw
-		HUlib_drawTextLine(tls, l, uint32(false1)) // no cursor, please
+		HUlib_drawTextLine(tls, l, 0) // no cursor, please
 		goto _1
 	_1:
 		;
@@ -9710,7 +9701,7 @@ func HUlib_eraseSText(tls *libc.TLS, s uintptr) {
 func HUlib_initIText(tls *libc.TLS, it uintptr, x int32, y int32, font uintptr, startchar int32, on uintptr) {
 	(*hu_itext_t)(unsafe.Pointer(it)).Flm = 0 // default left margin is start of text
 	(*hu_itext_t)(unsafe.Pointer(it)).Fon = on
-	(*hu_itext_t)(unsafe.Pointer(it)).Flaston = uint32(true1)
+	(*hu_itext_t)(unsafe.Pointer(it)).Flaston = 1
 	HUlib_initTextLine(tls, it, x, y, font, startchar)
 }
 
@@ -9744,11 +9735,11 @@ func HUlib_keyInIText(tls *libc.TLS, it uintptr, ch uint8) (r boolean) {
 			HUlib_delCharFromIText(tls, it)
 		} else {
 			if libc.Int32FromUint8(ch) != int32(KEY_ENTER) {
-				return uint32(false1)
+				return 0
 			}
 		}
 	} // did not eat key
-	return uint32(true1) // ate the key
+	return 1 // ate the key
 }
 
 func HUlib_drawIText(tls *libc.TLS, it uintptr) {
@@ -9757,7 +9748,7 @@ func HUlib_drawIText(tls *libc.TLS, it uintptr) {
 	if !(*(*boolean)(unsafe.Pointer((*hu_itext_t)(unsafe.Pointer(it)).Fon)) != 0) {
 		return
 	}
-	HUlib_drawTextLine(tls, l, uint32(true1)) // draw the line w/ cursor
+	HUlib_drawTextLine(tls, l, 1) // draw the line w/ cursor
 }
 
 func HUlib_eraseIText(tls *libc.TLS, it uintptr) {
@@ -9798,7 +9789,7 @@ func init() {
 var plr1 uintptr
 var w_title hu_textline_t
 var w_chat hu_itext_t
-var always_off = uint32(false1)
+var always_off = 0
 var chat_dest [4]int8
 var w_inputbuffer [4]hu_itext_t
 
@@ -9808,7 +9799,7 @@ var message_nottobefuckedwith boolean
 var w_message hu_stext_t
 var message_counter int32
 
-var headsupactive = uint32(false1)
+var headsupactive = 0
 
 func init() {
 	mapnames = [45]uintptr{
@@ -9983,7 +9974,7 @@ func HU_Init(tls *libc.TLS) {
 }
 
 func HU_Stop(tls *libc.TLS) {
-	headsupactive = uint32(false1)
+	headsupactive = 0
 }
 
 func HU_Start(tls *libc.TLS) {
@@ -9993,10 +9984,10 @@ func HU_Start(tls *libc.TLS) {
 		HU_Stop(tls)
 	}
 	plr1 = uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328
-	message_on = uint32(false1)
-	message_dontfuckwithme = uint32(false1)
-	message_nottobefuckedwith = uint32(false1)
-	chat_on = uint32(false1)
+	message_on = 0
+	message_dontfuckwithme = 0
+	message_nottobefuckedwith = 0
+	chat_on = 0
 	// create the message widget
 	HUlib_initSText(tls, uintptr(unsafe.Pointer(&w_message)), HU_MSGX, HU_MSGY, int32(HU_MSGHEIGHT), uintptr(unsafe.Pointer(&hu_font)), int32('!'), uintptr(unsafe.Pointer(&message_on)))
 	// create the map title widget
@@ -10050,14 +10041,14 @@ func HU_Start(tls *libc.TLS) {
 		;
 		i++
 	}
-	headsupactive = uint32(true1)
+	headsupactive = 1
 }
 
 func HU_Drawer(tls *libc.TLS) {
 	HUlib_drawSText(tls, uintptr(unsafe.Pointer(&w_message)))
 	HUlib_drawIText(tls, uintptr(unsafe.Pointer(&w_chat)))
 	if automapactive != 0 {
-		HUlib_drawTextLine(tls, uintptr(unsafe.Pointer(&w_title)), uint32(false1))
+		HUlib_drawTextLine(tls, uintptr(unsafe.Pointer(&w_title)), 0)
 	}
 }
 
@@ -10077,15 +10068,15 @@ func HU_Ticker(tls *libc.TLS) {
 		v1 = message_counter
 	}
 	if v2 && !(v1 != 0) {
-		message_on = uint32(false1)
-		message_nottobefuckedwith = uint32(false1)
+		message_on = 0
+		message_nottobefuckedwith = 0
 	}
 	if showMessages != 0 || message_dontfuckwithme != 0 {
 		// display message if necessary
 		if (*player_t)(unsafe.Pointer(plr1)).Fmessage != 0 && !(message_nottobefuckedwith != 0) || (*player_t)(unsafe.Pointer(plr1)).Fmessage != 0 && message_dontfuckwithme != 0 {
 			HUlib_addMessageToSText(tls, uintptr(unsafe.Pointer(&w_message)), uintptr(0), (*player_t)(unsafe.Pointer(plr1)).Fmessage)
 			(*player_t)(unsafe.Pointer(plr1)).Fmessage = uintptr(0)
-			message_on = uint32(true1)
+			message_on = 1
 			message_counter = libc.Int32FromInt32(4) * libc.Int32FromInt32(TICRATE)
 			message_nottobefuckedwith = message_dontfuckwithme
 			message_dontfuckwithme = uint32(0)
@@ -10113,8 +10104,8 @@ func HU_Ticker(tls *libc.TLS) {
 					if rc != 0 && int32(c) == int32(KEY_ENTER) {
 						if w_inputbuffer[i].Fl.Flen1 != 0 && (int32(chat_dest[i]) == consoleplayer+int32(1) || int32(chat_dest[i]) == int32(HU_BROADCAST)) {
 							HUlib_addMessageToSText(tls, uintptr(unsafe.Pointer(&w_message)), player_names[i], uintptr(unsafe.Pointer(&w_inputbuffer))+uintptr(i)*136+20)
-							message_nottobefuckedwith = uint32(true1)
-							message_on = uint32(true1)
+							message_nottobefuckedwith = 1
+							message_on = 1
 							message_counter = libc.Int32FromInt32(4) * libc.Int32FromInt32(TICRATE)
 							if gamemode == int32(commercial) {
 								S_StartSound(tls, uintptr(0), int32(sfx_radio))
@@ -10164,7 +10155,7 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	var eatkey, v2, v4 boolean
 	var i, numplayers int32
 	var macromessage, v5 uintptr
-	eatkey = uint32(false1)
+	eatkey = 0
 	numplayers = 0
 	i = 0
 	for {
@@ -10178,24 +10169,24 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 		i++
 	}
 	if (*event_t)(unsafe.Pointer(ev)).Fdata1 == libc.Int32FromInt32(0x80)+libc.Int32FromInt32(0x36) {
-		return uint32(false1)
+		return 0
 	} else {
 		if (*event_t)(unsafe.Pointer(ev)).Fdata1 == libc.Int32FromInt32(0x80)+libc.Int32FromInt32(0x38) {
 			altdown = libc.BoolUint32((*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown))
-			return uint32(false1)
+			return 0
 		}
 	}
 	if (*event_t)(unsafe.Pointer(ev)).Ftype1 != int32(ev_keydown) {
-		return uint32(false1)
+		return 0
 	}
 	if !(chat_on != 0) {
 		if (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_message_refresh {
-			message_on = uint32(true1)
+			message_on = 1
 			message_counter = libc.Int32FromInt32(4) * libc.Int32FromInt32(TICRATE)
-			eatkey = uint32(true1)
+			eatkey = 1
 		} else {
 			if netgame != 0 && (*event_t)(unsafe.Pointer(ev)).Fdata2 == key_multi_msg {
-				v2 = uint32(true1)
+				v2 = 1
 				chat_on = v2
 				eatkey = v2
 				HUlib_resetIText(tls, uintptr(unsafe.Pointer(&w_chat)))
@@ -10209,7 +10200,7 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 						}
 						if (*event_t)(unsafe.Pointer(ev)).Fdata2 == key_multi_msgplayer[i] {
 							if playeringame[i] != 0 && i != consoleplayer {
-								v4 = uint32(true1)
+								v4 = 1
 								chat_on = v4
 								eatkey = v4
 								HUlib_resetIText(tls, uintptr(unsafe.Pointer(&w_chat)))
@@ -10251,7 +10242,7 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 		if altdown != 0 {
 			c = libc.Uint8FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata1 - int32('0'))
 			if libc.Int32FromUint8(c) > int32(9) {
-				return uint32(false1)
+				return 0
 			}
 			// fprintf(stderr, "got here\n");
 			macromessage = chat_macros[c]
@@ -10265,10 +10256,10 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 			}
 			HU_queueChatChar(tls, int8(KEY_ENTER))
 			// leave chat mode and notify that it was sent
-			chat_on = uint32(false1)
+			chat_on = 0
 			M_StringCopy(tls, uintptr(unsafe.Pointer(&lastmessage)), chat_macros[c], uint64(81))
 			(*player_t)(unsafe.Pointer(plr1)).Fmessage = uintptr(unsafe.Pointer(&lastmessage))
-			eatkey = uint32(true1)
+			eatkey = 1
 		} else {
 			c = libc.Uint8FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata2)
 			eatkey = HUlib_keyInIText(tls, uintptr(unsafe.Pointer(&w_chat)), c)
@@ -10279,14 +10270,14 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 				//        plr->message = buf;
 			}
 			if libc.Int32FromUint8(c) == int32(KEY_ENTER) {
-				chat_on = uint32(false1)
+				chat_on = 0
 				if w_chat.Fl.Flen1 != 0 {
 					M_StringCopy(tls, uintptr(unsafe.Pointer(&lastmessage)), uintptr(unsafe.Pointer(&w_chat))+20, uint64(81))
 					(*player_t)(unsafe.Pointer(plr1)).Fmessage = uintptr(unsafe.Pointer(&lastmessage))
 				}
 			} else {
 				if libc.Int32FromUint8(c) == int32(KEY_ESCAPE) {
-					chat_on = uint32(false1)
+					chat_on = 0
 				}
 			}
 		}
@@ -18174,7 +18165,7 @@ func I_Scale1x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 		;
 		y++
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -18213,16 +18204,16 @@ func I_Scale2x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 			}
 			v3 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v3)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v3)) = *(*uint8)(unsafe.Pointer(bp))
 			v4 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v4)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v4)) = *(*uint8)(unsafe.Pointer(bp))
 			v5 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v5)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v5)) = *(*uint8)(unsafe.Pointer(bp))
 			v6 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v6)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v6)) = *(*uint8)(unsafe.Pointer(bp))
 			bp++
 			goto _2
 		_2:
@@ -18237,7 +18228,7 @@ func I_Scale2x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 		;
 		y++
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -18278,31 +18269,31 @@ func I_Scale3x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 			}
 			v3 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v3)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v3)) = *(*uint8)(unsafe.Pointer(bp))
 			v4 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v4)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v4)) = *(*uint8)(unsafe.Pointer(bp))
 			v5 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v5)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v5)) = *(*uint8)(unsafe.Pointer(bp))
 			v6 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v6)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v6)) = *(*uint8)(unsafe.Pointer(bp))
 			v7 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v7)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v7)) = *(*uint8)(unsafe.Pointer(bp))
 			v8 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v8)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v8)) = *(*uint8)(unsafe.Pointer(bp))
 			v9 = sp3
 			sp3++
-			*(*byte1)(unsafe.Pointer(v9)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v9)) = *(*uint8)(unsafe.Pointer(bp))
 			v10 = sp3
 			sp3++
-			*(*byte1)(unsafe.Pointer(v10)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v10)) = *(*uint8)(unsafe.Pointer(bp))
 			v11 = sp3
 			sp3++
-			*(*byte1)(unsafe.Pointer(v11)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v11)) = *(*uint8)(unsafe.Pointer(bp))
 			bp++
 			goto _2
 		_2:
@@ -18318,7 +18309,7 @@ func I_Scale3x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 		;
 		y++
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -18361,52 +18352,52 @@ func I_Scale4x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 			}
 			v3 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v3)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v3)) = *(*uint8)(unsafe.Pointer(bp))
 			v4 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v4)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v4)) = *(*uint8)(unsafe.Pointer(bp))
 			v5 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v5)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v5)) = *(*uint8)(unsafe.Pointer(bp))
 			v6 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v6)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v6)) = *(*uint8)(unsafe.Pointer(bp))
 			v7 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v7)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v7)) = *(*uint8)(unsafe.Pointer(bp))
 			v8 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v8)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v8)) = *(*uint8)(unsafe.Pointer(bp))
 			v9 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v9)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v9)) = *(*uint8)(unsafe.Pointer(bp))
 			v10 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v10)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v10)) = *(*uint8)(unsafe.Pointer(bp))
 			v11 = sp3
 			sp3++
-			*(*byte1)(unsafe.Pointer(v11)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v11)) = *(*uint8)(unsafe.Pointer(bp))
 			v12 = sp3
 			sp3++
-			*(*byte1)(unsafe.Pointer(v12)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v12)) = *(*uint8)(unsafe.Pointer(bp))
 			v13 = sp3
 			sp3++
-			*(*byte1)(unsafe.Pointer(v13)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v13)) = *(*uint8)(unsafe.Pointer(bp))
 			v14 = sp3
 			sp3++
-			*(*byte1)(unsafe.Pointer(v14)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v14)) = *(*uint8)(unsafe.Pointer(bp))
 			v15 = sp4
 			sp4++
-			*(*byte1)(unsafe.Pointer(v15)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v15)) = *(*uint8)(unsafe.Pointer(bp))
 			v16 = sp4
 			sp4++
-			*(*byte1)(unsafe.Pointer(v16)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v16)) = *(*uint8)(unsafe.Pointer(bp))
 			v17 = sp4
 			sp4++
-			*(*byte1)(unsafe.Pointer(v17)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v17)) = *(*uint8)(unsafe.Pointer(bp))
 			v18 = sp4
 			sp4++
-			*(*byte1)(unsafe.Pointer(v18)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v18)) = *(*uint8)(unsafe.Pointer(bp))
 			bp++
 			goto _2
 		_2:
@@ -18423,7 +18414,7 @@ func I_Scale4x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 		;
 		y++
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -18468,79 +18459,79 @@ func I_Scale5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 			}
 			v3 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v3)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v3)) = *(*uint8)(unsafe.Pointer(bp))
 			v4 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v4)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v4)) = *(*uint8)(unsafe.Pointer(bp))
 			v5 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v5)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v5)) = *(*uint8)(unsafe.Pointer(bp))
 			v6 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v6)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v6)) = *(*uint8)(unsafe.Pointer(bp))
 			v7 = sp
 			sp++
-			*(*byte1)(unsafe.Pointer(v7)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v7)) = *(*uint8)(unsafe.Pointer(bp))
 			v8 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v8)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v8)) = *(*uint8)(unsafe.Pointer(bp))
 			v9 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v9)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v9)) = *(*uint8)(unsafe.Pointer(bp))
 			v10 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v10)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v10)) = *(*uint8)(unsafe.Pointer(bp))
 			v11 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v11)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v11)) = *(*uint8)(unsafe.Pointer(bp))
 			v12 = sp2
 			sp2++
-			*(*byte1)(unsafe.Pointer(v12)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v12)) = *(*uint8)(unsafe.Pointer(bp))
 			v13 = sp3
 			sp3++
-			*(*byte1)(unsafe.Pointer(v13)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v13)) = *(*uint8)(unsafe.Pointer(bp))
 			v14 = sp3
 			sp3++
-			*(*byte1)(unsafe.Pointer(v14)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v14)) = *(*uint8)(unsafe.Pointer(bp))
 			v15 = sp3
 			sp3++
-			*(*byte1)(unsafe.Pointer(v15)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v15)) = *(*uint8)(unsafe.Pointer(bp))
 			v16 = sp3
 			sp3++
-			*(*byte1)(unsafe.Pointer(v16)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v16)) = *(*uint8)(unsafe.Pointer(bp))
 			v17 = sp3
 			sp3++
-			*(*byte1)(unsafe.Pointer(v17)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v17)) = *(*uint8)(unsafe.Pointer(bp))
 			v18 = sp4
 			sp4++
-			*(*byte1)(unsafe.Pointer(v18)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v18)) = *(*uint8)(unsafe.Pointer(bp))
 			v19 = sp4
 			sp4++
-			*(*byte1)(unsafe.Pointer(v19)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v19)) = *(*uint8)(unsafe.Pointer(bp))
 			v20 = sp4
 			sp4++
-			*(*byte1)(unsafe.Pointer(v20)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v20)) = *(*uint8)(unsafe.Pointer(bp))
 			v21 = sp4
 			sp4++
-			*(*byte1)(unsafe.Pointer(v21)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v21)) = *(*uint8)(unsafe.Pointer(bp))
 			v22 = sp4
 			sp4++
-			*(*byte1)(unsafe.Pointer(v22)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v22)) = *(*uint8)(unsafe.Pointer(bp))
 			v23 = sp5
 			sp5++
-			*(*byte1)(unsafe.Pointer(v23)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v23)) = *(*uint8)(unsafe.Pointer(bp))
 			v24 = sp5
 			sp5++
-			*(*byte1)(unsafe.Pointer(v24)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v24)) = *(*uint8)(unsafe.Pointer(bp))
 			v25 = sp5
 			sp5++
-			*(*byte1)(unsafe.Pointer(v25)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v25)) = *(*uint8)(unsafe.Pointer(bp))
 			v26 = sp5
 			sp5++
-			*(*byte1)(unsafe.Pointer(v26)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v26)) = *(*uint8)(unsafe.Pointer(bp))
 			v27 = sp5
 			sp5++
-			*(*byte1)(unsafe.Pointer(v27)) = *(*byte1)(unsafe.Pointer(bp))
+			*(*uint8)(unsafe.Pointer(v27)) = *(*uint8)(unsafe.Pointer(bp))
 			bp++
 			goto _2
 		_2:
@@ -18558,7 +18549,7 @@ func I_Scale5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 		;
 		y++
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -18587,7 +18578,7 @@ func FindNearestColor(tls *libc.TLS, palette uintptr, r int32, g int32, b int32)
 			break
 		}
 		col = palette + uintptr(i*int32(3))
-		diff = (r-libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(col))))*(r-libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(col)))) + (g-libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(col + 1))))*(g-libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(col + 1)))) + (b-libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(col + 2))))*(b-libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(col + 2))))
+		diff = (r-libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(col))))*(r-libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(col)))) + (g-libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(col + 1))))*(g-libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(col + 1)))) + (b-libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(col + 2))))*(b-libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(col + 2))))
 		if diff == 0 {
 			return i
 		} else {
@@ -18625,10 +18616,10 @@ func GenerateStretchTable(tls *libc.TLS, palette uintptr, pct int32) (r1 uintptr
 			}
 			col1 = palette + uintptr(x*int32(3))
 			col2 = palette + uintptr(y*int32(3))
-			r = (libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(col1)))*pct + libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(col2)))*(int32(100)-pct)) / int32(100)
-			g = (libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(col1 + 1)))*pct + libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(col2 + 1)))*(int32(100)-pct)) / int32(100)
-			b = (libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(col1 + 2)))*pct + libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(col2 + 2)))*(int32(100)-pct)) / int32(100)
-			*(*byte1)(unsafe.Pointer(result + uintptr(x*int32(256)+y))) = libc.Uint8FromInt32(FindNearestColor(tls, palette, r, g, b))
+			r = (libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(col1)))*pct + libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(col2)))*(int32(100)-pct)) / int32(100)
+			g = (libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(col1 + 1)))*pct + libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(col2 + 1)))*(int32(100)-pct)) / int32(100)
+			b = (libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(col1 + 2)))*pct + libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(col2 + 2)))*(int32(100)-pct)) / int32(100)
+			*(*uint8)(unsafe.Pointer(result + uintptr(x*int32(256)+y))) = libc.Uint8FromInt32(FindNearestColor(tls, palette, r, g, b))
 			goto _2
 		_2:
 			;
@@ -18692,7 +18683,7 @@ func WriteBlendedLine1x(tls *libc.TLS, dest uintptr, src1 uintptr, src2 uintptr,
 		if !(x < int32(SCREENWIDTH)) {
 			break
 		}
-		*(*byte1)(unsafe.Pointer(dest)) = *(*byte1)(unsafe.Pointer(stretch_table + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src1)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src2))))))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(stretch_table + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src1)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src2))))))
 		dest++
 		src1++
 		src2++
@@ -18710,7 +18701,7 @@ func I_Stretch1x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 	var y int32
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
-		return uint32(false1)
+		return 0
 	}
 	// Need to byte-copy from buffer into the screen buffer
 	bufp = src_buffer + uintptr(y1*int32(SCREENWIDTH)) + uintptr(x1)
@@ -18750,14 +18741,14 @@ func I_Stretch1x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 		;
 		y += int32(5)
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
 	mode_stretch_1x = screen_mode_t{
 		Fwidth:        int32(SCREENWIDTH),
 		Fheight:       int32(SCREENHEIGHT_4_3),
-		Fpoor_quality: uint32(true1),
+		Fpoor_quality: 1,
 	}
 }
 
@@ -18774,8 +18765,8 @@ func WriteLine2x(tls *libc.TLS, dest uintptr, src uintptr) {
 		if !(x < int32(SCREENWIDTH)) {
 			break
 		}
-		*(*byte1)(unsafe.Pointer(dest)) = *(*byte1)(unsafe.Pointer(src))
-		*(*byte1)(unsafe.Pointer(dest + 1)) = *(*byte1)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest + 1)) = *(*uint8)(unsafe.Pointer(src))
 		dest += uintptr(2)
 		src++
 		goto _1
@@ -18792,9 +18783,9 @@ func WriteBlendedLine2x(tls *libc.TLS, dest uintptr, src1 uintptr, src2 uintptr,
 		if !(x < int32(SCREENWIDTH)) {
 			break
 		}
-		val = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(stretch_table + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src1)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src2)))))))
-		*(*byte1)(unsafe.Pointer(dest)) = libc.Uint8FromInt32(val)
-		*(*byte1)(unsafe.Pointer(dest + 1)) = libc.Uint8FromInt32(val)
+		val = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(stretch_table + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src1)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src2)))))))
+		*(*uint8)(unsafe.Pointer(dest)) = libc.Uint8FromInt32(val)
+		*(*uint8)(unsafe.Pointer(dest + 1)) = libc.Uint8FromInt32(val)
 		dest += uintptr(2)
 		src1++
 		src2++
@@ -18812,7 +18803,7 @@ func I_Stretch2x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 	var y int32
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
-		return uint32(false1)
+		return 0
 	}
 	// Need to byte-copy from buffer into the screen buffer
 	bufp = src_buffer + uintptr(y1*int32(SCREENWIDTH)) + uintptr(x1)
@@ -18870,7 +18861,7 @@ func I_Stretch2x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 		;
 		y += int32(5)
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -18893,9 +18884,9 @@ func WriteLine3x(tls *libc.TLS, dest uintptr, src uintptr) {
 		if !(x < int32(SCREENWIDTH)) {
 			break
 		}
-		*(*byte1)(unsafe.Pointer(dest)) = *(*byte1)(unsafe.Pointer(src))
-		*(*byte1)(unsafe.Pointer(dest + 1)) = *(*byte1)(unsafe.Pointer(src))
-		*(*byte1)(unsafe.Pointer(dest + 2)) = *(*byte1)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest + 1)) = *(*uint8)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest + 2)) = *(*uint8)(unsafe.Pointer(src))
 		dest += uintptr(3)
 		src++
 		goto _1
@@ -18912,10 +18903,10 @@ func WriteBlendedLine3x(tls *libc.TLS, dest uintptr, src1 uintptr, src2 uintptr,
 		if !(x < int32(SCREENWIDTH)) {
 			break
 		}
-		val = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(stretch_table + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src1)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src2)))))))
-		*(*byte1)(unsafe.Pointer(dest)) = libc.Uint8FromInt32(val)
-		*(*byte1)(unsafe.Pointer(dest + 1)) = libc.Uint8FromInt32(val)
-		*(*byte1)(unsafe.Pointer(dest + 2)) = libc.Uint8FromInt32(val)
+		val = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(stretch_table + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src1)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src2)))))))
+		*(*uint8)(unsafe.Pointer(dest)) = libc.Uint8FromInt32(val)
+		*(*uint8)(unsafe.Pointer(dest + 1)) = libc.Uint8FromInt32(val)
+		*(*uint8)(unsafe.Pointer(dest + 2)) = libc.Uint8FromInt32(val)
 		dest += uintptr(3)
 		src1++
 		src2++
@@ -18933,7 +18924,7 @@ func I_Stretch3x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 	var y int32
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
-		return uint32(false1)
+		return 0
 	}
 	// Need to byte-copy from buffer into the screen buffer
 	bufp = src_buffer + uintptr(y1*int32(SCREENWIDTH)) + uintptr(x1)
@@ -19009,7 +19000,7 @@ func I_Stretch3x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 		;
 		y += int32(5)
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -19032,10 +19023,10 @@ func WriteLine4x(tls *libc.TLS, dest uintptr, src uintptr) {
 		if !(x < int32(SCREENWIDTH)) {
 			break
 		}
-		*(*byte1)(unsafe.Pointer(dest)) = *(*byte1)(unsafe.Pointer(src))
-		*(*byte1)(unsafe.Pointer(dest + 1)) = *(*byte1)(unsafe.Pointer(src))
-		*(*byte1)(unsafe.Pointer(dest + 2)) = *(*byte1)(unsafe.Pointer(src))
-		*(*byte1)(unsafe.Pointer(dest + 3)) = *(*byte1)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest + 1)) = *(*uint8)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest + 2)) = *(*uint8)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest + 3)) = *(*uint8)(unsafe.Pointer(src))
 		dest += uintptr(4)
 		src++
 		goto _1
@@ -19052,11 +19043,11 @@ func WriteBlendedLine4x(tls *libc.TLS, dest uintptr, src1 uintptr, src2 uintptr,
 		if !(x < int32(SCREENWIDTH)) {
 			break
 		}
-		val = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(stretch_table + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src1)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src2)))))))
-		*(*byte1)(unsafe.Pointer(dest)) = libc.Uint8FromInt32(val)
-		*(*byte1)(unsafe.Pointer(dest + 1)) = libc.Uint8FromInt32(val)
-		*(*byte1)(unsafe.Pointer(dest + 2)) = libc.Uint8FromInt32(val)
-		*(*byte1)(unsafe.Pointer(dest + 3)) = libc.Uint8FromInt32(val)
+		val = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(stretch_table + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src1)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src2)))))))
+		*(*uint8)(unsafe.Pointer(dest)) = libc.Uint8FromInt32(val)
+		*(*uint8)(unsafe.Pointer(dest + 1)) = libc.Uint8FromInt32(val)
+		*(*uint8)(unsafe.Pointer(dest + 2)) = libc.Uint8FromInt32(val)
+		*(*uint8)(unsafe.Pointer(dest + 3)) = libc.Uint8FromInt32(val)
 		dest += uintptr(4)
 		src1++
 		src2++
@@ -19074,7 +19065,7 @@ func I_Stretch4x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 	var y int32
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
-		return uint32(false1)
+		return 0
 	}
 	// Need to byte-copy from buffer into the screen buffer
 	bufp = src_buffer + uintptr(y1*int32(SCREENWIDTH)) + uintptr(x1)
@@ -19168,7 +19159,7 @@ func I_Stretch4x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 		;
 		y += int32(5)
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -19191,11 +19182,11 @@ func WriteLine5x(tls *libc.TLS, dest uintptr, src uintptr) {
 		if !(x < int32(SCREENWIDTH)) {
 			break
 		}
-		*(*byte1)(unsafe.Pointer(dest)) = *(*byte1)(unsafe.Pointer(src))
-		*(*byte1)(unsafe.Pointer(dest + 1)) = *(*byte1)(unsafe.Pointer(src))
-		*(*byte1)(unsafe.Pointer(dest + 2)) = *(*byte1)(unsafe.Pointer(src))
-		*(*byte1)(unsafe.Pointer(dest + 3)) = *(*byte1)(unsafe.Pointer(src))
-		*(*byte1)(unsafe.Pointer(dest + 4)) = *(*byte1)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest + 1)) = *(*uint8)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest + 2)) = *(*uint8)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest + 3)) = *(*uint8)(unsafe.Pointer(src))
+		*(*uint8)(unsafe.Pointer(dest + 4)) = *(*uint8)(unsafe.Pointer(src))
 		dest += uintptr(5)
 		src++
 		goto _1
@@ -19212,7 +19203,7 @@ func I_Stretch5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 	var y int32
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
-		return uint32(false1)
+		return 0
 	}
 	// Need to byte-copy from buffer into the screen buffer
 	bufp = src_buffer + uintptr(y1*int32(SCREENWIDTH)) + uintptr(x1)
@@ -19265,7 +19256,7 @@ func I_Stretch5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 			y += int32(3)
 		}
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -19309,19 +19300,19 @@ func WriteSquashedLine1x(tls *libc.TLS, dest uintptr, src uintptr) {
 		// 80% pixel 0,   20% pixel 1
 		v2 = dest
 		dest++
-		*(*byte1)(unsafe.Pointer(v2)) = *(*byte1)(unsafe.Pointer(stretch_tables[0] + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 1)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src))))))
+		*(*uint8)(unsafe.Pointer(v2)) = *(*uint8)(unsafe.Pointer(stretch_tables[0] + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 1)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src))))))
 		// 60% pixel 1,   40% pixel 2
 		v3 = dest
 		dest++
-		*(*byte1)(unsafe.Pointer(v3)) = *(*byte1)(unsafe.Pointer(stretch_tables[int32(1)] + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 2)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 1))))))
+		*(*uint8)(unsafe.Pointer(v3)) = *(*uint8)(unsafe.Pointer(stretch_tables[int32(1)] + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 2)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 1))))))
 		// 40% pixel 2,   60% pixel 3
 		v4 = dest
 		dest++
-		*(*byte1)(unsafe.Pointer(v4)) = *(*byte1)(unsafe.Pointer(stretch_tables[int32(1)] + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 2)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 3))))))
+		*(*uint8)(unsafe.Pointer(v4)) = *(*uint8)(unsafe.Pointer(stretch_tables[int32(1)] + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 2)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 3))))))
 		// 20% pixel 3,   80% pixel 4
 		v5 = dest
 		dest++
-		*(*byte1)(unsafe.Pointer(v5)) = *(*byte1)(unsafe.Pointer(stretch_tables[0] + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 3)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 4))))))
+		*(*uint8)(unsafe.Pointer(v5)) = *(*uint8)(unsafe.Pointer(stretch_tables[0] + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 3)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 4))))))
 		x += int32(5)
 		src += uintptr(5)
 		goto _1
@@ -19336,7 +19327,7 @@ func I_Squash1x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 	var y int32
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
-		return uint32(false1)
+		return 0
 	}
 	bufp = src_buffer
 	screenp = dest_buffer
@@ -19353,14 +19344,14 @@ func I_Squash1x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 		;
 		y++
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
 	mode_squash_1x = screen_mode_t{
 		Fwidth:        int32(SCREENWIDTH_4_3),
 		Fheight:       int32(SCREENHEIGHT),
-		Fpoor_quality: uint32(true1),
+		Fpoor_quality: 1,
 	}
 }
 
@@ -19377,7 +19368,7 @@ func init() {
 func WriteSquashedLine2x(tls *libc.TLS, dest uintptr, src uintptr) {
 	var c, x int32
 	var dest2, v10, v11, v13, v14, v16, v17, v19, v2, v20, v22, v23, v25, v4, v5, v7, v8 uintptr
-	var v12, v15, v18, v21, v24, v3, v6, v9 byte1
+	var v12, v15, v18, v21, v24, v3, v6, v9 uint8
 	dest2 = dest + uintptr(dest_pitch)
 	x = 0
 	for {
@@ -19386,77 +19377,77 @@ func WriteSquashedLine2x(tls *libc.TLS, dest uintptr, src uintptr) {
 		}
 		// Draw in blocks of 5
 		// 100% pixel 0
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src)))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src)))
 		v2 = dest
 		dest++
 		v3 = libc.Uint8FromInt32(c)
 		v4 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v4)) = v3
-		*(*byte1)(unsafe.Pointer(v2)) = v3
+		*(*uint8)(unsafe.Pointer(v4)) = v3
+		*(*uint8)(unsafe.Pointer(v2)) = v3
 		// 60% pixel 0, 40% pixel 1
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(stretch_tables[int32(1)] + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 1)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src)))))))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(stretch_tables[int32(1)] + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 1)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src)))))))
 		v5 = dest
 		dest++
 		v6 = libc.Uint8FromInt32(c)
 		v7 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v7)) = v6
-		*(*byte1)(unsafe.Pointer(v5)) = v6
+		*(*uint8)(unsafe.Pointer(v7)) = v6
+		*(*uint8)(unsafe.Pointer(v5)) = v6
 		// 100% pixel 1
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 1)))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 1)))
 		v8 = dest
 		dest++
 		v9 = libc.Uint8FromInt32(c)
 		v10 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v10)) = v9
-		*(*byte1)(unsafe.Pointer(v8)) = v9
+		*(*uint8)(unsafe.Pointer(v10)) = v9
+		*(*uint8)(unsafe.Pointer(v8)) = v9
 		// 20% pixel 1, 80% pixel 2
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(stretch_tables[0] + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 1)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 2)))))))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(stretch_tables[0] + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 1)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 2)))))))
 		v11 = dest
 		dest++
 		v12 = libc.Uint8FromInt32(c)
 		v13 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v13)) = v12
-		*(*byte1)(unsafe.Pointer(v11)) = v12
+		*(*uint8)(unsafe.Pointer(v13)) = v12
+		*(*uint8)(unsafe.Pointer(v11)) = v12
 		// 80% pixel 2, 20% pixel 3
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(stretch_tables[0] + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 3)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 2)))))))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(stretch_tables[0] + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 3)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 2)))))))
 		v14 = dest
 		dest++
 		v15 = libc.Uint8FromInt32(c)
 		v16 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v16)) = v15
-		*(*byte1)(unsafe.Pointer(v14)) = v15
+		*(*uint8)(unsafe.Pointer(v16)) = v15
+		*(*uint8)(unsafe.Pointer(v14)) = v15
 		// 100% pixel 3
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 3)))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 3)))
 		v17 = dest
 		dest++
 		v18 = libc.Uint8FromInt32(c)
 		v19 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v19)) = v18
-		*(*byte1)(unsafe.Pointer(v17)) = v18
+		*(*uint8)(unsafe.Pointer(v19)) = v18
+		*(*uint8)(unsafe.Pointer(v17)) = v18
 		// 40% pixel 3, 60% pixel 4
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(stretch_tables[int32(1)] + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 3)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 4)))))))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(stretch_tables[int32(1)] + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 3)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 4)))))))
 		v20 = dest
 		dest++
 		v21 = libc.Uint8FromInt32(c)
 		v22 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v22)) = v21
-		*(*byte1)(unsafe.Pointer(v20)) = v21
+		*(*uint8)(unsafe.Pointer(v22)) = v21
+		*(*uint8)(unsafe.Pointer(v20)) = v21
 		// 100% pixel 4
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 4)))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 4)))
 		v23 = dest
 		dest++
 		v24 = libc.Uint8FromInt32(c)
 		v25 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v25)) = v24
-		*(*byte1)(unsafe.Pointer(v23)) = v24
+		*(*uint8)(unsafe.Pointer(v25)) = v24
+		*(*uint8)(unsafe.Pointer(v23)) = v24
 		x += int32(5)
 		src += uintptr(5)
 		goto _1
@@ -19471,7 +19462,7 @@ func I_Squash2x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 	var y int32
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
-		return uint32(false1)
+		return 0
 	}
 	bufp = src_buffer
 	screenp = dest_buffer
@@ -19488,7 +19479,7 @@ func I_Squash2x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 		;
 		y++
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -19507,7 +19498,7 @@ func init() {
 func WriteSquashedLine3x(tls *libc.TLS, dest uintptr, src uintptr) {
 	var c, x int32
 	var dest2, dest3, v10, v11, v12, v15, v16, v17, v2, v20, v21, v22, v25, v26, v5, v6, v7 uintptr
-	var v13, v14, v18, v19, v23, v24, v3, v4, v8, v9 byte1
+	var v13, v14, v18, v19, v23, v24, v3, v4, v8, v9 uint8
 	dest2 = dest + uintptr(dest_pitch)
 	dest3 = dest + uintptr(dest_pitch*int32(2))
 	x = 0
@@ -19517,66 +19508,66 @@ func WriteSquashedLine3x(tls *libc.TLS, dest uintptr, src uintptr) {
 		}
 		// Every 2 pixels is expanded to 5 pixels
 		// 100% pixel 0 x2
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src)))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src)))
 		v2 = dest
 		dest++
 		v4 = libc.Uint8FromInt32(c)
 		v5 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v5)) = v4
+		*(*uint8)(unsafe.Pointer(v5)) = v4
 		v3 = v4
 		v6 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v6)) = v3
-		*(*byte1)(unsafe.Pointer(v2)) = v3
+		*(*uint8)(unsafe.Pointer(v6)) = v3
+		*(*uint8)(unsafe.Pointer(v2)) = v3
 		v7 = dest
 		dest++
 		v9 = libc.Uint8FromInt32(c)
 		v10 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v10)) = v9
+		*(*uint8)(unsafe.Pointer(v10)) = v9
 		v8 = v9
 		v11 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v11)) = v8
-		*(*byte1)(unsafe.Pointer(v7)) = v8
+		*(*uint8)(unsafe.Pointer(v11)) = v8
+		*(*uint8)(unsafe.Pointer(v7)) = v8
 		// 50% pixel 0, 50% pixel 1
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(half_stretch_table + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 1)))))))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(half_stretch_table + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 1)))))))
 		v12 = dest
 		dest++
 		v14 = libc.Uint8FromInt32(c)
 		v15 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v15)) = v14
+		*(*uint8)(unsafe.Pointer(v15)) = v14
 		v13 = v14
 		v16 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v16)) = v13
-		*(*byte1)(unsafe.Pointer(v12)) = v13
+		*(*uint8)(unsafe.Pointer(v16)) = v13
+		*(*uint8)(unsafe.Pointer(v12)) = v13
 		// 100% pixel 1
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 1)))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 1)))
 		v17 = dest
 		dest++
 		v19 = libc.Uint8FromInt32(c)
 		v20 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v20)) = v19
+		*(*uint8)(unsafe.Pointer(v20)) = v19
 		v18 = v19
 		v21 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v21)) = v18
-		*(*byte1)(unsafe.Pointer(v17)) = v18
+		*(*uint8)(unsafe.Pointer(v21)) = v18
+		*(*uint8)(unsafe.Pointer(v17)) = v18
 		v22 = dest
 		dest++
 		v24 = libc.Uint8FromInt32(c)
 		v25 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v25)) = v24
+		*(*uint8)(unsafe.Pointer(v25)) = v24
 		v23 = v24
 		v26 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v26)) = v23
-		*(*byte1)(unsafe.Pointer(v22)) = v23
+		*(*uint8)(unsafe.Pointer(v26)) = v23
+		*(*uint8)(unsafe.Pointer(v22)) = v23
 		x += int32(2)
 		src += uintptr(2)
 		goto _1
@@ -19597,7 +19588,7 @@ func I_Squash3x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 	var y int32
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
-		return uint32(false1)
+		return 0
 	}
 	bufp = src_buffer
 	screenp = dest_buffer
@@ -19614,7 +19605,7 @@ func I_Squash3x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 		;
 		y++
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -19633,7 +19624,7 @@ func init() {
 func WriteSquashedLine4x(tls *libc.TLS, dest uintptr, src uintptr) {
 	var c, x int32
 	var dest2, dest3, dest4, v100, v104, v105, v106, v107, v111, v112, v113, v13, v14, v15, v16, v2, v20, v21, v22, v23, v27, v28, v29, v30, v34, v35, v36, v37, v41, v42, v43, v44, v48, v49, v50, v51, v55, v56, v57, v58, v6, v62, v63, v64, v65, v69, v7, v70, v71, v72, v76, v77, v78, v79, v8, v83, v84, v85, v86, v9, v90, v91, v92, v93, v97, v98, v99 uintptr
-	var v10, v101, v102, v103, v108, v109, v11, v110, v12, v17, v18, v19, v24, v25, v26, v3, v31, v32, v33, v38, v39, v4, v40, v45, v46, v47, v5, v52, v53, v54, v59, v60, v61, v66, v67, v68, v73, v74, v75, v80, v81, v82, v87, v88, v89, v94, v95, v96 byte1
+	var v10, v101, v102, v103, v108, v109, v11, v110, v12, v17, v18, v19, v24, v25, v26, v3, v31, v32, v33, v38, v39, v4, v40, v45, v46, v47, v5, v52, v53, v54, v59, v60, v61, v66, v67, v68, v73, v74, v75, v80, v81, v82, v87, v88, v89, v94, v95, v96 uint8
 	dest2 = dest + uintptr(dest_pitch)
 	dest3 = dest + uintptr(dest_pitch*int32(2))
 	dest4 = dest + uintptr(dest_pitch*int32(3))
@@ -19644,263 +19635,263 @@ func WriteSquashedLine4x(tls *libc.TLS, dest uintptr, src uintptr) {
 		}
 		// Draw in blocks of 5
 		// 100% pixel 0  x3
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src)))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src)))
 		v2 = dest
 		dest++
 		v5 = libc.Uint8FromInt32(c)
 		v6 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v6)) = v5
+		*(*uint8)(unsafe.Pointer(v6)) = v5
 		v4 = v5
 		v7 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v7)) = v4
+		*(*uint8)(unsafe.Pointer(v7)) = v4
 		v3 = v4
 		v8 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v8)) = v3
-		*(*byte1)(unsafe.Pointer(v2)) = v3
+		*(*uint8)(unsafe.Pointer(v8)) = v3
+		*(*uint8)(unsafe.Pointer(v2)) = v3
 		v9 = dest
 		dest++
 		v12 = libc.Uint8FromInt32(c)
 		v13 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v13)) = v12
+		*(*uint8)(unsafe.Pointer(v13)) = v12
 		v11 = v12
 		v14 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v14)) = v11
+		*(*uint8)(unsafe.Pointer(v14)) = v11
 		v10 = v11
 		v15 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v15)) = v10
-		*(*byte1)(unsafe.Pointer(v9)) = v10
+		*(*uint8)(unsafe.Pointer(v15)) = v10
+		*(*uint8)(unsafe.Pointer(v9)) = v10
 		v16 = dest
 		dest++
 		v19 = libc.Uint8FromInt32(c)
 		v20 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v20)) = v19
+		*(*uint8)(unsafe.Pointer(v20)) = v19
 		v18 = v19
 		v21 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v21)) = v18
+		*(*uint8)(unsafe.Pointer(v21)) = v18
 		v17 = v18
 		v22 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v22)) = v17
-		*(*byte1)(unsafe.Pointer(v16)) = v17
+		*(*uint8)(unsafe.Pointer(v22)) = v17
+		*(*uint8)(unsafe.Pointer(v16)) = v17
 		// 20% pixel 0,  80% pixel 1
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(stretch_tables[0] + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 1)))))))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(stretch_tables[0] + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 1)))))))
 		v23 = dest
 		dest++
 		v26 = libc.Uint8FromInt32(c)
 		v27 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v27)) = v26
+		*(*uint8)(unsafe.Pointer(v27)) = v26
 		v25 = v26
 		v28 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v28)) = v25
+		*(*uint8)(unsafe.Pointer(v28)) = v25
 		v24 = v25
 		v29 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v29)) = v24
-		*(*byte1)(unsafe.Pointer(v23)) = v24
+		*(*uint8)(unsafe.Pointer(v29)) = v24
+		*(*uint8)(unsafe.Pointer(v23)) = v24
 		// 100% pixel 1 x2
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 1)))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 1)))
 		v30 = dest
 		dest++
 		v33 = libc.Uint8FromInt32(c)
 		v34 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v34)) = v33
+		*(*uint8)(unsafe.Pointer(v34)) = v33
 		v32 = v33
 		v35 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v35)) = v32
+		*(*uint8)(unsafe.Pointer(v35)) = v32
 		v31 = v32
 		v36 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v36)) = v31
-		*(*byte1)(unsafe.Pointer(v30)) = v31
+		*(*uint8)(unsafe.Pointer(v36)) = v31
+		*(*uint8)(unsafe.Pointer(v30)) = v31
 		v37 = dest
 		dest++
 		v40 = libc.Uint8FromInt32(c)
 		v41 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v41)) = v40
+		*(*uint8)(unsafe.Pointer(v41)) = v40
 		v39 = v40
 		v42 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v42)) = v39
+		*(*uint8)(unsafe.Pointer(v42)) = v39
 		v38 = v39
 		v43 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v43)) = v38
-		*(*byte1)(unsafe.Pointer(v37)) = v38
+		*(*uint8)(unsafe.Pointer(v43)) = v38
+		*(*uint8)(unsafe.Pointer(v37)) = v38
 		// 40% pixel 1, 60% pixel 2
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(stretch_tables[int32(1)] + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 1)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 2)))))))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(stretch_tables[int32(1)] + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 1)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 2)))))))
 		v44 = dest
 		dest++
 		v47 = libc.Uint8FromInt32(c)
 		v48 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v48)) = v47
+		*(*uint8)(unsafe.Pointer(v48)) = v47
 		v46 = v47
 		v49 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v49)) = v46
+		*(*uint8)(unsafe.Pointer(v49)) = v46
 		v45 = v46
 		v50 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v50)) = v45
-		*(*byte1)(unsafe.Pointer(v44)) = v45
+		*(*uint8)(unsafe.Pointer(v50)) = v45
+		*(*uint8)(unsafe.Pointer(v44)) = v45
 		// 100% pixel 2 x2
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 2)))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 2)))
 		v51 = dest
 		dest++
 		v54 = libc.Uint8FromInt32(c)
 		v55 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v55)) = v54
+		*(*uint8)(unsafe.Pointer(v55)) = v54
 		v53 = v54
 		v56 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v56)) = v53
+		*(*uint8)(unsafe.Pointer(v56)) = v53
 		v52 = v53
 		v57 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v57)) = v52
-		*(*byte1)(unsafe.Pointer(v51)) = v52
+		*(*uint8)(unsafe.Pointer(v57)) = v52
+		*(*uint8)(unsafe.Pointer(v51)) = v52
 		v58 = dest
 		dest++
 		v61 = libc.Uint8FromInt32(c)
 		v62 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v62)) = v61
+		*(*uint8)(unsafe.Pointer(v62)) = v61
 		v60 = v61
 		v63 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v63)) = v60
+		*(*uint8)(unsafe.Pointer(v63)) = v60
 		v59 = v60
 		v64 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v64)) = v59
-		*(*byte1)(unsafe.Pointer(v58)) = v59
+		*(*uint8)(unsafe.Pointer(v64)) = v59
+		*(*uint8)(unsafe.Pointer(v58)) = v59
 		// 60% pixel 2, 40% pixel 3
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(stretch_tables[int32(1)] + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 3)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 2)))))))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(stretch_tables[int32(1)] + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 3)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 2)))))))
 		v65 = dest
 		dest++
 		v68 = libc.Uint8FromInt32(c)
 		v69 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v69)) = v68
+		*(*uint8)(unsafe.Pointer(v69)) = v68
 		v67 = v68
 		v70 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v70)) = v67
+		*(*uint8)(unsafe.Pointer(v70)) = v67
 		v66 = v67
 		v71 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v71)) = v66
-		*(*byte1)(unsafe.Pointer(v65)) = v66
+		*(*uint8)(unsafe.Pointer(v71)) = v66
+		*(*uint8)(unsafe.Pointer(v65)) = v66
 		// 100% pixel 3 x2
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 3)))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 3)))
 		v72 = dest
 		dest++
 		v75 = libc.Uint8FromInt32(c)
 		v76 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v76)) = v75
+		*(*uint8)(unsafe.Pointer(v76)) = v75
 		v74 = v75
 		v77 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v77)) = v74
+		*(*uint8)(unsafe.Pointer(v77)) = v74
 		v73 = v74
 		v78 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v78)) = v73
-		*(*byte1)(unsafe.Pointer(v72)) = v73
+		*(*uint8)(unsafe.Pointer(v78)) = v73
+		*(*uint8)(unsafe.Pointer(v72)) = v73
 		v79 = dest
 		dest++
 		v82 = libc.Uint8FromInt32(c)
 		v83 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v83)) = v82
+		*(*uint8)(unsafe.Pointer(v83)) = v82
 		v81 = v82
 		v84 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v84)) = v81
+		*(*uint8)(unsafe.Pointer(v84)) = v81
 		v80 = v81
 		v85 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v85)) = v80
-		*(*byte1)(unsafe.Pointer(v79)) = v80
+		*(*uint8)(unsafe.Pointer(v85)) = v80
+		*(*uint8)(unsafe.Pointer(v79)) = v80
 		// 80% pixel 3, 20% pixel 4
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(stretch_tables[0] + uintptr(libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 4)))*int32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 3)))))))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(stretch_tables[0] + uintptr(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 4)))*int32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 3)))))))
 		v86 = dest
 		dest++
 		v89 = libc.Uint8FromInt32(c)
 		v90 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v90)) = v89
+		*(*uint8)(unsafe.Pointer(v90)) = v89
 		v88 = v89
 		v91 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v91)) = v88
+		*(*uint8)(unsafe.Pointer(v91)) = v88
 		v87 = v88
 		v92 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v92)) = v87
-		*(*byte1)(unsafe.Pointer(v86)) = v87
+		*(*uint8)(unsafe.Pointer(v92)) = v87
+		*(*uint8)(unsafe.Pointer(v86)) = v87
 		// 100% pixel 4
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(src + 4)))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(src + 4)))
 		v93 = dest
 		dest++
 		v96 = libc.Uint8FromInt32(c)
 		v97 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v97)) = v96
+		*(*uint8)(unsafe.Pointer(v97)) = v96
 		v95 = v96
 		v98 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v98)) = v95
+		*(*uint8)(unsafe.Pointer(v98)) = v95
 		v94 = v95
 		v99 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v99)) = v94
-		*(*byte1)(unsafe.Pointer(v93)) = v94
+		*(*uint8)(unsafe.Pointer(v99)) = v94
+		*(*uint8)(unsafe.Pointer(v93)) = v94
 		v100 = dest
 		dest++
 		v103 = libc.Uint8FromInt32(c)
 		v104 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v104)) = v103
+		*(*uint8)(unsafe.Pointer(v104)) = v103
 		v102 = v103
 		v105 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v105)) = v102
+		*(*uint8)(unsafe.Pointer(v105)) = v102
 		v101 = v102
 		v106 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v106)) = v101
-		*(*byte1)(unsafe.Pointer(v100)) = v101
+		*(*uint8)(unsafe.Pointer(v106)) = v101
+		*(*uint8)(unsafe.Pointer(v100)) = v101
 		v107 = dest
 		dest++
 		v110 = libc.Uint8FromInt32(c)
 		v111 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v111)) = v110
+		*(*uint8)(unsafe.Pointer(v111)) = v110
 		v109 = v110
 		v112 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v112)) = v109
+		*(*uint8)(unsafe.Pointer(v112)) = v109
 		v108 = v109
 		v113 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v113)) = v108
-		*(*byte1)(unsafe.Pointer(v107)) = v108
+		*(*uint8)(unsafe.Pointer(v113)) = v108
+		*(*uint8)(unsafe.Pointer(v107)) = v108
 		x += int32(5)
 		src += uintptr(5)
 		goto _1
@@ -19917,7 +19908,7 @@ func I_Squash4x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 	var y int32
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
-		return uint32(false1)
+		return 0
 	}
 	bufp = src_buffer
 	screenp = dest_buffer
@@ -19934,7 +19925,7 @@ func I_Squash4x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 		;
 		y++
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -19953,7 +19944,7 @@ func init() {
 func WriteSquashedLine5x(tls *libc.TLS, dest uintptr, src uintptr) {
 	var c, x int32
 	var dest2, dest3, dest4, dest5, v10, v11, v12, v17, v18, v19, v2, v20, v21, v26, v27, v28, v29, v3, v30, v35, v36, v37, v38, v8, v9 uintptr
-	var v13, v14, v15, v16, v22, v23, v24, v25, v31, v32, v33, v34, v4, v5, v6, v7 byte1
+	var v13, v14, v15, v16, v22, v23, v24, v25, v31, v32, v33, v34, v4, v5, v6, v7 uint8
 	dest2 = dest + uintptr(dest_pitch)
 	dest3 = dest + uintptr(dest_pitch*int32(2))
 	dest4 = dest + uintptr(dest_pitch*int32(3))
@@ -19967,83 +19958,83 @@ func WriteSquashedLine5x(tls *libc.TLS, dest uintptr, src uintptr) {
 		// 100% pixel 0  x4
 		v2 = src
 		src++
-		c = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(v2)))
+		c = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v2)))
 		v3 = dest
 		dest++
 		v7 = libc.Uint8FromInt32(c)
 		v8 = dest5
 		dest5++
-		*(*byte1)(unsafe.Pointer(v8)) = v7
+		*(*uint8)(unsafe.Pointer(v8)) = v7
 		v6 = v7
 		v9 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v9)) = v6
+		*(*uint8)(unsafe.Pointer(v9)) = v6
 		v5 = v6
 		v10 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v10)) = v5
+		*(*uint8)(unsafe.Pointer(v10)) = v5
 		v4 = v5
 		v11 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v11)) = v4
-		*(*byte1)(unsafe.Pointer(v3)) = v4
+		*(*uint8)(unsafe.Pointer(v11)) = v4
+		*(*uint8)(unsafe.Pointer(v3)) = v4
 		v12 = dest
 		dest++
 		v16 = libc.Uint8FromInt32(c)
 		v17 = dest5
 		dest5++
-		*(*byte1)(unsafe.Pointer(v17)) = v16
+		*(*uint8)(unsafe.Pointer(v17)) = v16
 		v15 = v16
 		v18 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v18)) = v15
+		*(*uint8)(unsafe.Pointer(v18)) = v15
 		v14 = v15
 		v19 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v19)) = v14
+		*(*uint8)(unsafe.Pointer(v19)) = v14
 		v13 = v14
 		v20 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v20)) = v13
-		*(*byte1)(unsafe.Pointer(v12)) = v13
+		*(*uint8)(unsafe.Pointer(v20)) = v13
+		*(*uint8)(unsafe.Pointer(v12)) = v13
 		v21 = dest
 		dest++
 		v25 = libc.Uint8FromInt32(c)
 		v26 = dest5
 		dest5++
-		*(*byte1)(unsafe.Pointer(v26)) = v25
+		*(*uint8)(unsafe.Pointer(v26)) = v25
 		v24 = v25
 		v27 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v27)) = v24
+		*(*uint8)(unsafe.Pointer(v27)) = v24
 		v23 = v24
 		v28 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v28)) = v23
+		*(*uint8)(unsafe.Pointer(v28)) = v23
 		v22 = v23
 		v29 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v29)) = v22
-		*(*byte1)(unsafe.Pointer(v21)) = v22
+		*(*uint8)(unsafe.Pointer(v29)) = v22
+		*(*uint8)(unsafe.Pointer(v21)) = v22
 		v30 = dest
 		dest++
 		v34 = libc.Uint8FromInt32(c)
 		v35 = dest5
 		dest5++
-		*(*byte1)(unsafe.Pointer(v35)) = v34
+		*(*uint8)(unsafe.Pointer(v35)) = v34
 		v33 = v34
 		v36 = dest4
 		dest4++
-		*(*byte1)(unsafe.Pointer(v36)) = v33
+		*(*uint8)(unsafe.Pointer(v36)) = v33
 		v32 = v33
 		v37 = dest3
 		dest3++
-		*(*byte1)(unsafe.Pointer(v37)) = v32
+		*(*uint8)(unsafe.Pointer(v37)) = v32
 		v31 = v32
 		v38 = dest2
 		dest2++
-		*(*byte1)(unsafe.Pointer(v38)) = v31
-		*(*byte1)(unsafe.Pointer(v30)) = v31
+		*(*uint8)(unsafe.Pointer(v38)) = v31
+		*(*uint8)(unsafe.Pointer(v30)) = v31
 		goto _1
 	_1:
 		;
@@ -20060,7 +20051,7 @@ func I_Squash5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 	var y int32
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
-		return uint32(false1)
+		return 0
 	}
 	bufp = src_buffer
 	screenp = dest_buffer
@@ -20077,7 +20068,7 @@ func I_Squash5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 		;
 		y++
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -20145,14 +20136,14 @@ func SndDeviceInList(tls *libc.TLS, device snddevice_t, list uintptr, len1 int32
 			break
 		}
 		if device == *(*snddevice_t)(unsafe.Pointer(list + uintptr(i)*4)) {
-			return uint32(true1)
+			return 1
 		}
 		goto _1
 	_1:
 		;
 		i++
 	}
-	return uint32(false1)
+	return 0
 }
 
 // Find and initialize a sound_module_t appropriate for the setting
@@ -20307,7 +20298,7 @@ func I_SoundIsPlaying(tls *libc.TLS, channel int32) (r boolean) {
 	if sound_module != libc.UintptrFromInt32(0) {
 		return (*(*func(*libc.TLS, int32) boolean)(unsafe.Pointer(&struct{ uintptr }{(*sound_module_t)(unsafe.Pointer(sound_module)).FSoundIsPlaying})))(tls, channel)
 	} else {
-		return uint32(false1)
+		return 0
 	}
 	return r
 }
@@ -20625,7 +20616,7 @@ var errorboxpath_size size_t
 // I_Error
 //
 
-var already_quitting = uint32(false1)
+var already_quitting = 0
 
 func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
 	bp := alloc(512)
@@ -20635,7 +20626,7 @@ func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
 	if already_quitting != 0 {
 		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(19278), 0)
 	} else {
-		already_quitting = uint32(true1)
+		already_quitting = 1
 	}
 	// Message first.
 	argptr = va
@@ -20663,7 +20654,7 @@ func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
 		ZenityErrorBox(tls, bp)
 	}
 	// abort();
-	for uint32(true1) != 0 {
+	for 1 != 0 {
 	}
 }
 
@@ -20715,7 +20706,7 @@ func I_GetMemoryValue(tls *libc.TLS, offset uint32, value uintptr, size int32) (
 	bp := alloc(16)
 	var i, p, v2 int32
 	if firsttime != 0 {
-		firsttime = uint32(false1)
+		firsttime = 0
 		i = 0
 		//!
 		// @category compat
@@ -20762,18 +20753,18 @@ func I_GetMemoryValue(tls *libc.TLS, offset uint32, value uintptr, size int32) (
 	switch size {
 	case int32(1):
 		*(*uint8)(unsafe.Pointer(value)) = *(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))
-		return uint32(true1)
+		return 1
 	case int32(2):
 		*(*uint16)(unsafe.Pointer(value)) = libc.Uint16FromInt32(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8))
-		return uint32(true1)
+		return 1
 	case int32(4):
 		*(*uint32)(unsafe.Pointer(value)) = libc.Uint32FromInt32(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(2)))))<<int32(16) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(3)))))<<int32(24))
-		return uint32(true1)
+		return 1
 	}
-	return uint32(false1)
+	return 0
 }
 
-var firsttime = uint32(true1)
+var firsttime = 1
 
 var basetime = uint32(0)
 
@@ -20933,7 +20924,7 @@ func cht_CheckCheat(tls *libc.TLS, cht uintptr, key int8) (r int32) {
 	// if we make a short sequence on a cheat with parameters, this
 	// will not work in vanilla doom.  behave the same.
 	if (*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars > 0 && libc.Xstrlen(tls, cht) < (*cheatseq_t)(unsafe.Pointer(cht)).Fsequence_len {
-		return int32(false1)
+		return 0
 	}
 	if (*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read < libc.Xstrlen(tls, cht) {
 		// still reading characters from the cheat code
@@ -20957,10 +20948,10 @@ func cht_CheckCheat(tls *libc.TLS, cht uintptr, key int8) (r int32) {
 		v1 = libc.Int32FromInt32(0)
 		(*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read = v1
 		(*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read = libc.Uint64FromInt32(v1)
-		return int32(true1)
+		return 1
 	}
 	// cheat not matched yet
-	return int32(false1)
+	return 0
 }
 
 func cht_GetParam(tls *libc.TLS, cht uintptr, buffer uintptr) {
@@ -21832,7 +21823,7 @@ func M_BindVariable(tls *libc.TLS, name uintptr, location uintptr) {
 	var variable uintptr
 	variable = GetDefaultForName(tls, name)
 	(*default_t)(unsafe.Pointer(variable)).Flocation = location
-	(*default_t)(unsafe.Pointer(variable)).Fbound = uint32(true1)
+	(*default_t)(unsafe.Pointer(variable)).Fbound = 1
 }
 
 // Get the path to the default configuration dir to use, if NULL
@@ -22780,7 +22771,7 @@ func M_LoadSelect(tls *libc.TLS, choice int32) {
 //	//
 func M_LoadGame(tls *libc.TLS, choice int32) {
 	if netgame != 0 {
-		M_StartMessage(tls, __ccgo_ts(22164), libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22164), libc.UintptrFromInt32(0), 0)
 		return
 	}
 	M_SetupNextMenu(tls, uintptr(unsafe.Pointer(&LoadDef)))
@@ -22850,7 +22841,7 @@ func M_SaveSelect(tls *libc.TLS, choice int32) {
 //	//
 func M_SaveGame(tls *libc.TLS, choice int32) {
 	if !(usergame != 0) {
-		M_StartMessage(tls, __ccgo_ts(22227), libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22227), libc.UintptrFromInt32(0), 0)
 		return
 	}
 	if gamestate != int32(GS_LEVEL) {
@@ -22884,7 +22875,7 @@ func M_QuickSave(tls *libc.TLS) {
 		return
 	}
 	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&tempstring)), uint64(80), __ccgo_ts(22279), libc.VaList(bp+8, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
-	M_StartMessage(tls, uintptr(unsafe.Pointer(&tempstring)), __ccgo_fp(M_QuickSaveResponse), uint32(true1))
+	M_StartMessage(tls, uintptr(unsafe.Pointer(&tempstring)), __ccgo_fp(M_QuickSaveResponse), 1)
 }
 
 // C documentation
@@ -22902,15 +22893,15 @@ func M_QuickLoadResponse(tls *libc.TLS, key int32) {
 func M_QuickLoad(tls *libc.TLS) {
 	bp := alloc(16)
 	if netgame != 0 {
-		M_StartMessage(tls, __ccgo_ts(22332), libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22332), libc.UintptrFromInt32(0), 0)
 		return
 	}
 	if quickSaveSlot < 0 {
-		M_StartMessage(tls, __ccgo_ts(22384), libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22384), libc.UintptrFromInt32(0), 0)
 		return
 	}
 	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&tempstring)), uint64(80), __ccgo_ts(22439), libc.VaList(bp+8, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
-	M_StartMessage(tls, uintptr(unsafe.Pointer(&tempstring)), __ccgo_fp(M_QuickLoadResponse), uint32(true1))
+	M_StartMessage(tls, uintptr(unsafe.Pointer(&tempstring)), __ccgo_fp(M_QuickLoadResponse), 1)
 }
 
 // C documentation
@@ -22925,7 +22916,7 @@ func M_DrawReadThis1(tls *libc.TLS) {
 	lumpname = __ccgo_ts(1911)
 	skullx = int32(330)
 	skully = int32(175)
-	inhelpscreens = uint32(true1)
+	inhelpscreens = 1
 	// Different versions of Doom 1.9 work differently
 	switch gameversion {
 	case int32(exe_doom_1_666):
@@ -22977,7 +22968,7 @@ func M_DrawReadThis1(tls *libc.TLS) {
 //	// Read This Menus - optional second page.
 //	//
 func M_DrawReadThis2(tls *libc.TLS) {
-	inhelpscreens = uint32(true1)
+	inhelpscreens = 1
 	// We only ever draw the second page if this is
 	// gameversion == exe_doom_1_9 and gamemode == registered
 	V_DrawPatchDirect(tls, 0, 0, W_CacheLumpName(tls, __ccgo_ts(22506), int32(PU_CACHE)))
@@ -23049,7 +23040,7 @@ func M_DrawNewGame(tls *libc.TLS) {
 
 func M_NewGame(tls *libc.TLS, choice int32) {
 	if netgame != 0 && !(demoplayback != 0) {
-		M_StartMessage(tls, __ccgo_ts(22564), libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22564), libc.UintptrFromInt32(0), 0)
 		return
 	}
 	// Chex Quest disabled the episode select screen, as did Doom II.
@@ -23074,7 +23065,7 @@ func M_VerifyNightmare(tls *libc.TLS, key int32) {
 
 func M_ChooseSkill(tls *libc.TLS, choice int32) {
 	if choice == int32(nightmare) {
-		M_StartMessage(tls, __ccgo_ts(22639), __ccgo_fp(M_VerifyNightmare), uint32(true1))
+		M_StartMessage(tls, __ccgo_ts(22639), __ccgo_fp(M_VerifyNightmare), 1)
 		return
 	}
 	G_DeferedInitNew(tls, choice, epi+int32(1), int32(1))
@@ -23083,7 +23074,7 @@ func M_ChooseSkill(tls *libc.TLS, choice int32) {
 
 func M_Episode(tls *libc.TLS, choice int32) {
 	if gamemode == int32(shareware) && choice != 0 {
-		M_StartMessage(tls, __ccgo_ts(22711), libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22711), libc.UintptrFromInt32(0), 0)
 		M_SetupNextMenu(tls, uintptr(unsafe.Pointer(&ReadDef1)))
 		return
 	}
@@ -23136,7 +23127,7 @@ func M_ChangeMessages(tls *libc.TLS, choice int32) {
 	} else {
 		players[consoleplayer].Fmessage = __ccgo_ts(22905)
 	}
-	message_dontfuckwithme = uint32(true1)
+	message_dontfuckwithme = 1
 }
 
 // C documentation
@@ -23160,10 +23151,10 @@ func M_EndGame(tls *libc.TLS, choice int32) {
 		return
 	}
 	if netgame != 0 {
-		M_StartMessage(tls, __ccgo_ts(22917), libc.UintptrFromInt32(0), uint32(false1))
+		M_StartMessage(tls, __ccgo_ts(22917), libc.UintptrFromInt32(0), 0)
 		return
 	}
-	M_StartMessage(tls, __ccgo_ts(22956), __ccgo_fp(M_EndGameResponse), uint32(true1))
+	M_StartMessage(tls, __ccgo_ts(22956), __ccgo_fp(M_EndGameResponse), 1)
 }
 
 // C documentation
@@ -23260,7 +23251,7 @@ func M_SelectEndMessage(tls *libc.TLS) (r uintptr) {
 func M_QuitDOOM(tls *libc.TLS, choice int32) {
 	bp := alloc(16)
 	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&endstring)), uint64(160), __ccgo_ts(23010), libc.VaList(bp+8, M_SelectEndMessage(tls)))
-	M_StartMessage(tls, uintptr(unsafe.Pointer(&endstring)), __ccgo_fp(M_QuitResponse), uint32(true1))
+	M_StartMessage(tls, uintptr(unsafe.Pointer(&endstring)), __ccgo_fp(M_QuitResponse), 1)
 }
 
 func M_ChangeSensitivity(tls *libc.TLS, choice int32) {
@@ -23337,7 +23328,7 @@ func M_StartMessage(tls *libc.TLS, string1 uintptr, routine uintptr, input boole
 	messageString = string1
 	messageRoutine = routine
 	messageNeedsInput = input
-	menuactive = uint32(true1)
+	menuactive = 1
 	return
 }
 
@@ -23455,9 +23446,9 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	if testcontrols != 0 {
 		if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_quit) || (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) && ((*event_t)(unsafe.Pointer(ev)).Fdata1 == key_menu_activate || (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_menu_quit) {
 			I_Quit(tls)
-			return uint32(true1)
+			return 1
 		}
-		return uint32(false1)
+		return 0
 	}
 	// "close" button pressed on window?
 	if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_quit) {
@@ -23469,7 +23460,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
 			M_QuitDOOM(tls, 0)
 		}
-		return uint32(true1)
+		return 1
 	}
 	// key is the key pressed, ch is the actual character typed
 	ch = 0
@@ -23551,7 +23542,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 		}
 	}
 	if key == -int32(1) {
-		return uint32(false1)
+		return 0
 	}
 	// Save Game string input
 	if saveStringEnter != 0 {
@@ -23591,13 +23582,13 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 			}
 			break
 		}
-		return uint32(true1)
+		return 1
 	}
 	// Take care of any messages that need input
 	if messageToPrint != 0 {
 		if messageNeedsInput != 0 {
 			if key != int32(' ') && key != int32(KEY_ESCAPE) && key != key_menu_confirm && key != key_menu_abort {
-				return uint32(false1)
+				return 0
 			}
 		}
 		menuactive = libc.Uint32FromInt32(messageLastMenuActive)
@@ -23605,31 +23596,31 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 		if messageRoutine != 0 {
 			(*(*func(*libc.TLS, int32))(unsafe.Pointer(&struct{ uintptr }{messageRoutine})))(tls, key)
 		}
-		menuactive = uint32(false1)
+		menuactive = 0
 		S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchx))
-		return uint32(true1)
+		return 1
 	}
 	if devparm != 0 && key == key_menu_help || key != 0 && key == key_menu_screenshot {
 		G_ScreenShot(tls)
-		return uint32(true1)
+		return 1
 	}
 	// F-Keys
 	if !(menuactive != 0) {
 		if key == key_menu_decscreen { // Screen size down
 			if automapactive != 0 || chat_on != 0 {
-				return uint32(false1)
+				return 0
 			}
 			M_SizeDisplay(tls, 0)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_stnmov))
-			return uint32(true1)
+			return 1
 		} else {
 			if key == key_menu_incscreen { // Screen size up
 				if automapactive != 0 || chat_on != 0 {
-					return uint32(false1)
+					return 0
 				}
 				M_SizeDisplay(tls, int32(1))
 				S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_stnmov))
-				return uint32(true1)
+				return 1
 			} else {
 				if key == key_menu_help { // Help key
 					M_StartControlPanel(tls)
@@ -23640,56 +23631,56 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 					}
 					itemOn = 0
 					S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
-					return uint32(true1)
+					return 1
 				} else {
 					if key == key_menu_save { // Save
 						M_StartControlPanel(tls)
 						S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
 						M_SaveGame(tls, 0)
-						return uint32(true1)
+						return 1
 					} else {
 						if key == key_menu_load { // Load
 							M_StartControlPanel(tls)
 							S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
 							M_LoadGame(tls, 0)
-							return uint32(true1)
+							return 1
 						} else {
 							if key == key_menu_volume { // Sound Volume
 								M_StartControlPanel(tls)
 								currentMenu = uintptr(unsafe.Pointer(&SoundDef))
 								itemOn = int16(sfx_vol)
 								S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
-								return uint32(true1)
+								return 1
 							} else {
 								if key == key_menu_detail { // Detail toggle
 									M_ChangeDetail(tls, 0)
 									S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
-									return uint32(true1)
+									return 1
 								} else {
 									if key == key_menu_qsave { // Quicksave
 										S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
 										M_QuickSave(tls)
-										return uint32(true1)
+										return 1
 									} else {
 										if key == key_menu_endgame { // End game
 											S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
 											M_EndGame(tls, 0)
-											return uint32(true1)
+											return 1
 										} else {
 											if key == key_menu_messages { // Toggle messages
 												M_ChangeMessages(tls, 0)
 												S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
-												return uint32(true1)
+												return 1
 											} else {
 												if key == key_menu_qload { // Quickload
 													S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
 													M_QuickLoad(tls)
-													return uint32(true1)
+													return 1
 												} else {
 													if key == key_menu_quit { // Quit DOOM
 														S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
 														M_QuitDOOM(tls, 0)
-														return uint32(true1)
+														return 1
 													} else {
 														if key == key_menu_gamma { // gamma toggle
 															usegamma++
@@ -23698,7 +23689,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 															}
 															players[consoleplayer].Fmessage = uintptr(unsafe.Pointer(&gammamsg)) + uintptr(usegamma)*26
 															I_SetPalette(tls, W_CacheLumpName(tls, __ccgo_ts(1490), int32(PU_CACHE)))
-															return uint32(true1)
+															return 1
 														}
 													}
 												}
@@ -23718,9 +23709,9 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 		if key == key_menu_activate {
 			M_StartControlPanel(tls)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
-			return uint32(true1)
+			return 1
 		}
-		return uint32(false1)
+		return 0
 	}
 	// Keys usable within menu
 	if key == key_menu_down {
@@ -23733,7 +23724,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 			}
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_pstop))
 		}
-		return uint32(true1)
+		return 1
 	} else {
 		if key == key_menu_up {
 			// Move back up to previous item
@@ -23745,7 +23736,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 				}
 				S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_pstop))
 			}
-			return uint32(true1)
+			return 1
 		} else {
 			if key == key_menu_left {
 				// Slide slider left
@@ -23753,7 +23744,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 					S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_stnmov))
 					(*(*func(*libc.TLS, int32))(unsafe.Pointer(&struct{ uintptr }{(*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine})))(tls, 0)
 				}
-				return uint32(true1)
+				return 1
 			} else {
 				if key == key_menu_right {
 					// Slide slider right
@@ -23761,7 +23752,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 						S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_stnmov))
 						(*(*func(*libc.TLS, int32))(unsafe.Pointer(&struct{ uintptr }{(*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine})))(tls, int32(1))
 					}
-					return uint32(true1)
+					return 1
 				} else {
 					if key == key_menu_forward {
 						// Activate menu item
@@ -23775,14 +23766,14 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 								S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_pistol))
 							}
 						}
-						return uint32(true1)
+						return 1
 					} else {
 						if key == key_menu_activate {
 							// Deactivate menu
 							(*menu_t)(unsafe.Pointer(currentMenu)).FlastOn = itemOn
 							M_ClearMenus(tls)
 							S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchx))
-							return uint32(true1)
+							return 1
 						} else {
 							if key == key_menu_back {
 								// Go back to previous menu
@@ -23792,7 +23783,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 									itemOn = (*menu_t)(unsafe.Pointer(currentMenu)).FlastOn
 									S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_swtchn))
 								}
-								return uint32(true1)
+								return 1
 							} else {
 								if ch != 0 || IsNullKey(tls, key) != 0 {
 									i = int32(itemOn) + int32(1)
@@ -23803,7 +23794,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 										if int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(i)*32))).FalphaKey) == ch {
 											itemOn = int16(i)
 											S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_pstop))
-											return uint32(true1)
+											return 1
 										}
 										goto _2
 									_2:
@@ -23818,7 +23809,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 										if int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(i)*32))).FalphaKey) == ch {
 											itemOn = int16(i)
 											S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_pstop))
-											return uint32(true1)
+											return 1
 										}
 										goto _3
 									_3:
@@ -23833,7 +23824,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 			}
 		}
 	}
-	return uint32(false1)
+	return 0
 }
 
 var joywait int32
@@ -23877,7 +23868,7 @@ func M_Drawer(tls *libc.TLS) {
 	var foundnewline, start int32
 	var i, max uint32
 	var name uintptr
-	inhelpscreens = uint32(false1)
+	inhelpscreens = 0
 	// Horiz. & Vertically center string and print it.
 	if messageToPrint != 0 {
 		start = 0
@@ -24054,7 +24045,7 @@ func M_FileExists(tls *libc.TLS, filename uintptr) (r boolean) {
 	fstream = libc.Xfopen(tls, filename, __ccgo_ts(23115))
 	if fstream != libc.UintptrFromInt32(0) {
 		libc.Xfclose(tls, fstream)
-		return uint32(true1)
+		return 1
 	} else {
 		// If we can't open because the file is a directory, the
 		// "file" exists at least!
@@ -24088,14 +24079,14 @@ func M_WriteFile(tls *libc.TLS, name uintptr, source uintptr, length int32) (r b
 	var handle uintptr
 	handle = libc.Xfopen(tls, name, __ccgo_ts(13900))
 	if handle == libc.UintptrFromInt32(0) {
-		return uint32(false1)
+		return 0
 	}
 	count = libc.Int32FromUint64(libc.Xfwrite(tls, source, uint64(1), libc.Uint64FromInt32(length), handle))
 	libc.Xfclose(tls, handle)
 	if count < length {
-		return uint32(false1)
+		return 0
 	}
-	return uint32(true1)
+	return 1
 }
 
 // Returns the path to a temporary file of the given name, stored
@@ -24154,7 +24145,7 @@ func M_StringCopy(tls *libc.TLS, dest uintptr, src uintptr, dest_size size_t) (r
 		*(*int8)(unsafe.Pointer(dest + uintptr(dest_size-uint64(1)))) = int8('\000')
 		libc.Xstrncpy(tls, dest, src, dest_size-uint64(1))
 	} else {
-		return uint32(false1)
+		return 0
 	}
 	len1 = libc.Xstrlen(tls, dest)
 	return libc.BoolUint32(int32(*(*int8)(unsafe.Pointer(src + uintptr(len1)))) == int32('\000'))
@@ -24560,7 +24551,7 @@ func T_MoveCeiling(tls *libc.TLS, ceiling uintptr) {
 		// IN STASIS
 	case int32(1):
 		// UP
-		res = T_MovePlane(tls, (*ceiling_t)(unsafe.Pointer(ceiling)).Fsector, (*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed, (*ceiling_t)(unsafe.Pointer(ceiling)).Ftopheight, uint32(false1), int32(1), (*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection)
+		res = T_MovePlane(tls, (*ceiling_t)(unsafe.Pointer(ceiling)).Fsector, (*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed, (*ceiling_t)(unsafe.Pointer(ceiling)).Ftopheight, 0, int32(1), (*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection)
 		if !(leveltime&libc.Int32FromInt32(7) != 0) {
 			switch (*ceiling_t)(unsafe.Pointer(ceiling)).Ftype1 {
 			case int32(silentCrushAndRaise):
@@ -24670,10 +24661,10 @@ func EV_DoCeiling(tls *libc.TLS, line uintptr, type1 ceiling_e) (r int32) {
 		(*sector_t)(unsafe.Pointer(sec)).Fspecialdata = ceiling
 		*(*actionf_p1)(unsafe.Pointer(ceiling + 16)) = __ccgo_fp(T_MoveCeiling)
 		(*ceiling_t)(unsafe.Pointer(ceiling)).Fsector = sec
-		(*ceiling_t)(unsafe.Pointer(ceiling)).Fcrush = uint32(false1)
+		(*ceiling_t)(unsafe.Pointer(ceiling)).Fcrush = 0
 		switch type1 {
 		case int32(fastCrushAndRaise):
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fcrush = uint32(true1)
+			(*ceiling_t)(unsafe.Pointer(ceiling)).Fcrush = 1
 			(*ceiling_t)(unsafe.Pointer(ceiling)).Ftopheight = (*sector_t)(unsafe.Pointer(sec)).Fceilingheight
 			(*ceiling_t)(unsafe.Pointer(ceiling)).Fbottomheight = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight + libc.Int32FromInt32(8)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
 			(*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection = -int32(1)
@@ -24681,7 +24672,7 @@ func EV_DoCeiling(tls *libc.TLS, line uintptr, type1 ceiling_e) (r int32) {
 		case int32(silentCrushAndRaise):
 			fallthrough
 		case int32(crushAndRaise):
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fcrush = uint32(true1)
+			(*ceiling_t)(unsafe.Pointer(ceiling)).Fcrush = 1
 			(*ceiling_t)(unsafe.Pointer(ceiling)).Ftopheight = (*sector_t)(unsafe.Pointer(sec)).Fceilingheight
 			fallthrough
 		case int32(lowerAndCrush):
@@ -24875,7 +24866,7 @@ func T_VerticalDoor(tls *libc.TLS, door uintptr) {
 		}
 	case -int32(1):
 		// DOWN
-		res = T_MovePlane(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector, (*vldoor_t)(unsafe.Pointer(door)).Fspeed, (*sector_t)(unsafe.Pointer((*vldoor_t)(unsafe.Pointer(door)).Fsector)).Ffloorheight, uint32(false1), int32(1), (*vldoor_t)(unsafe.Pointer(door)).Fdirection)
+		res = T_MovePlane(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector, (*vldoor_t)(unsafe.Pointer(door)).Fspeed, (*sector_t)(unsafe.Pointer((*vldoor_t)(unsafe.Pointer(door)).Fsector)).Ffloorheight, 0, int32(1), (*vldoor_t)(unsafe.Pointer(door)).Fdirection)
 		if res == int32(pastdest) {
 			switch (*vldoor_t)(unsafe.Pointer(door)).Ftype1 {
 			case int32(vld_blazeRaise):
@@ -24910,7 +24901,7 @@ func T_VerticalDoor(tls *libc.TLS, door uintptr) {
 		}
 	case int32(1):
 		// UP
-		res = T_MovePlane(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector, (*vldoor_t)(unsafe.Pointer(door)).Fspeed, (*vldoor_t)(unsafe.Pointer(door)).Ftopheight, uint32(false1), int32(1), (*vldoor_t)(unsafe.Pointer(door)).Fdirection)
+		res = T_MovePlane(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector, (*vldoor_t)(unsafe.Pointer(door)).Fspeed, (*vldoor_t)(unsafe.Pointer(door)).Ftopheight, 0, int32(1), (*vldoor_t)(unsafe.Pointer(door)).Fdirection)
 		if res == int32(pastdest) {
 			switch (*vldoor_t)(unsafe.Pointer(door)).Ftype1 {
 			case int32(vld_blazeRaise):
@@ -25374,17 +25365,17 @@ func P_CheckMeleeRange(tls *libc.TLS, actor uintptr) (r boolean) {
 	var dist fixed_t
 	var pl uintptr
 	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
-		return uint32(false1)
+		return 0
 	}
 	pl = (*mobj_t)(unsafe.Pointer(actor)).Ftarget
 	dist = P_AproxDistance(tls, (*mobj_t)(unsafe.Pointer(pl)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(pl)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fy)
 	if dist >= libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))-libc.Int32FromInt32(20)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))+(*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(pl)).Finfo)).Fradius {
-		return uint32(false1)
+		return 0
 	}
 	if !(P_CheckSight(tls, actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
-		return uint32(false1)
+		return 0
 	}
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -25395,16 +25386,16 @@ func P_CheckMeleeRange(tls *libc.TLS, actor uintptr) (r boolean) {
 func P_CheckMissileRange(tls *libc.TLS, actor uintptr) (r boolean) {
 	var dist fixed_t
 	if !(P_CheckSight(tls, actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
-		return uint32(false1)
+		return 0
 	}
 	if (*mobj_t)(unsafe.Pointer(actor)).Fflags&int32(MF_JUSTHIT) != 0 {
 		// the target just hit the enemy,
 		// so fight back!
 		*(*int32)(unsafe.Pointer(actor + 160)) &= ^int32(MF_JUSTHIT)
-		return uint32(true1)
+		return 1
 	}
 	if (*mobj_t)(unsafe.Pointer(actor)).Freactiontime != 0 {
-		return uint32(false1)
+		return 0
 	} // do not attack yet
 	// OPTIMIZE: get this from a global checksight
 	dist = P_AproxDistance(tls, (*mobj_t)(unsafe.Pointer(actor)).Fx-(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy-(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy) - libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
@@ -25414,12 +25405,12 @@ func P_CheckMissileRange(tls *libc.TLS, actor uintptr) (r boolean) {
 	dist >>= int32(16)
 	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_VILE) {
 		if dist > libc.Int32FromInt32(14)*libc.Int32FromInt32(64) {
-			return uint32(false1)
+			return 0
 		} // too far away
 	}
 	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_UNDEAD) {
 		if dist < int32(196) {
-			return uint32(false1)
+			return 0
 		} // close for fist attack
 		dist >>= int32(1)
 	}
@@ -25433,9 +25424,9 @@ func P_CheckMissileRange(tls *libc.TLS, actor uintptr) (r boolean) {
 		dist = int32(160)
 	}
 	if P_Random(tls) < dist {
-		return uint32(false1)
+		return 0
 	}
-	return uint32(true1)
+	return 1
 }
 
 func init() {
@@ -25466,7 +25457,7 @@ func P_Move(tls *libc.TLS, actor uintptr) (r boolean) {
 	var tryx, tryy fixed_t
 	var v1 int32
 	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir == int32(DI_NODIR) {
-		return uint32(false1)
+		return 0
 	}
 	if libc.Uint32FromInt32((*mobj_t)(unsafe.Pointer(actor)).Fmovedir) >= uint32(8) {
 		I_Error(tls, __ccgo_ts(23654), 0)
@@ -25484,13 +25475,13 @@ func P_Move(tls *libc.TLS, actor uintptr) (r boolean) {
 				*(*fixed_t)(unsafe.Pointer(actor + 32)) -= libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(4)
 			}
 			*(*int32)(unsafe.Pointer(actor + 160)) |= int32(MF_INFLOAT)
-			return uint32(true1)
+			return 1
 		}
 		if !(numspechit != 0) {
-			return uint32(false1)
+			return 0
 		}
 		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = int32(DI_NODIR)
-		good = uint32(false1)
+		good = 0
 		for {
 			v1 = numspechit
 			numspechit--
@@ -25502,7 +25493,7 @@ func P_Move(tls *libc.TLS, actor uintptr) (r boolean) {
 			// that can be opened,
 			// return false
 			if P_UseSpecialLine(tls, actor, ld, 0) != 0 {
-				good = uint32(true1)
+				good = 1
 			}
 		}
 		return good
@@ -25512,7 +25503,7 @@ func P_Move(tls *libc.TLS, actor uintptr) (r boolean) {
 	if !((*mobj_t)(unsafe.Pointer(actor)).Fflags&int32(MF_FLOAT) != 0) {
 		(*mobj_t)(unsafe.Pointer(actor)).Fz = (*mobj_t)(unsafe.Pointer(actor)).Ffloorz
 	}
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -25530,10 +25521,10 @@ func P_Move(tls *libc.TLS, actor uintptr) (r boolean) {
 //	//
 func P_TryWalk(tls *libc.TLS, actor uintptr) (r boolean) {
 	if !(P_Move(tls, actor) != 0) {
-		return uint32(false1)
+		return 0
 	}
 	(*mobj_t)(unsafe.Pointer(actor)).Fmovecount = P_Random(tls) & int32(15)
-	return uint32(true1)
+	return 1
 }
 
 func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
@@ -25673,7 +25664,7 @@ func P_LookForPlayers(tls *libc.TLS, actor uintptr, allaround boolean) (r boolea
 		c++
 		if v2 == int32(2) || (*mobj_t)(unsafe.Pointer(actor)).Flastlook == stop {
 			// done looking
-			return uint32(false1)
+			return 0
 		}
 		player = uintptr(unsafe.Pointer(&players)) + uintptr((*mobj_t)(unsafe.Pointer(actor)).Flastlook)*328
 		if (*player_t)(unsafe.Pointer(player)).Fhealth <= 0 {
@@ -25693,13 +25684,13 @@ func P_LookForPlayers(tls *libc.TLS, actor uintptr, allaround boolean) (r boolea
 			}
 		}
 		(*mobj_t)(unsafe.Pointer(actor)).Ftarget = (*player_t)(unsafe.Pointer(player)).Fmo
-		return uint32(true1)
+		return 1
 		goto _1
 	_1:
 		;
 		(*mobj_t)(unsafe.Pointer(actor)).Flastlook = ((*mobj_t)(unsafe.Pointer(actor)).Flastlook + int32(1)) & int32(3)
 	}
-	return uint32(false1)
+	return 0
 }
 
 // C documentation
@@ -25762,7 +25753,7 @@ func A_Look(tls *libc.TLS, actor uintptr) {
 			goto seeyou
 		}
 	}
-	if !(P_LookForPlayers(tls, actor, uint32(false1)) != 0) {
+	if !(P_LookForPlayers(tls, actor, 0) != 0) {
 		return
 	}
 	// go into chase state
@@ -25830,7 +25821,7 @@ func A_Chase(tls *libc.TLS, actor uintptr) {
 	}
 	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || !((*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fflags&int32(MF_SHOOTABLE) != 0) {
 		// look for a new target
-		if P_LookForPlayers(tls, actor, uint32(true1)) != 0 {
+		if P_LookForPlayers(tls, actor, 1) != 0 {
 			return
 		} // got a new target
 		P_SetMobjState(tls, actor, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspawnstate)
@@ -25870,7 +25861,7 @@ nomissile:
 	;
 	// possibly choose another target
 	if netgame != 0 && !((*mobj_t)(unsafe.Pointer(actor)).Fthreshold != 0) && !(P_CheckSight(tls, actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
-		if P_LookForPlayers(tls, actor, uint32(true1)) != 0 {
+		if P_LookForPlayers(tls, actor, 1) != 0 {
 			return
 		} // got a new target
 	}
@@ -26163,17 +26154,17 @@ func PIT_VileCheck(tls *libc.TLS, thing uintptr) (r boolean) {
 	var maxdist int32
 	var v1 fixed_t
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_CORPSE) != 0) {
-		return uint32(true1)
+		return 1
 	} // not a monster
 	if (*mobj_t)(unsafe.Pointer(thing)).Ftics != -int32(1) {
-		return uint32(true1)
+		return 1
 	} // not lying still yet
 	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Finfo)).Fraisestate == int32(S_NULL) {
-		return uint32(true1)
+		return 1
 	} // monster doesn't have a raise state
 	maxdist = (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Finfo)).Fradius + mobjinfo[int32(MT_VILE)].Fradius
 	if libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx-viletryx) > maxdist || libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fy-viletryy) > maxdist {
-		return uint32(true1)
+		return 1
 	} // not actually touching
 	corpsehit = thing
 	v1 = libc.Int32FromInt32(0)
@@ -26183,9 +26174,9 @@ func PIT_VileCheck(tls *libc.TLS, thing uintptr) (r boolean) {
 	check = P_CheckPosition(tls, corpsehit, (*mobj_t)(unsafe.Pointer(corpsehit)).Fx, (*mobj_t)(unsafe.Pointer(corpsehit)).Fy)
 	*(*fixed_t)(unsafe.Pointer(corpsehit + 108)) >>= int32(2)
 	if !(check != 0) {
-		return uint32(true1)
+		return 1
 	} // doesn't fit here
-	return uint32(false1) // got one, so stop checking
+	return 0 // got one, so stop checking
 }
 
 // C documentation
@@ -26548,13 +26539,13 @@ func A_Explode(tls *libc.TLS, thingy uintptr) {
 func CheckBossEnd(tls *libc.TLS, motype mobjtype_t) (r boolean) {
 	if gameversion < int32(exe_ultimate) {
 		if gamemap != int32(8) {
-			return uint32(false1)
+			return 0
 		}
 		// Baron death on later episodes is nothing special.
 		if motype == int32(MT_BRUISER) && gameepisode != int32(1) {
-			return uint32(false1)
+			return 0
 		}
-		return uint32(true1)
+		return 1
 	} else {
 		// New logic that appeared in Ultimate Doom.
 		// Looks like the logic was overhauled while adding in the
@@ -26862,7 +26853,7 @@ func A_SpawnFly(tls *libc.TLS, mo uintptr) {
 		}
 	}
 	newmobj = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(targ)).Fx, (*mobj_t)(unsafe.Pointer(targ)).Fy, (*mobj_t)(unsafe.Pointer(targ)).Fz, type1)
-	if P_LookForPlayers(tls, newmobj, uint32(true1)) != 0 {
+	if P_LookForPlayers(tls, newmobj, 1) != 0 {
 		P_SetMobjState(tls, newmobj, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(newmobj)).Finfo)).Fseestate)
 	}
 	// telefrag anything in this spot
@@ -26945,7 +26936,7 @@ func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, cru
 				lastpos = (*sector_t)(unsafe.Pointer(sector)).Ffloorheight
 				(*sector_t)(unsafe.Pointer(sector)).Ffloorheight = dest
 				flag = P_ChangeSector(tls, sector, crush)
-				if flag == uint32(true1) {
+				if flag == 1 {
 					(*sector_t)(unsafe.Pointer(sector)).Ffloorheight = lastpos
 					P_ChangeSector(tls, sector, crush)
 					//return crushed;
@@ -26955,7 +26946,7 @@ func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, cru
 				lastpos = (*sector_t)(unsafe.Pointer(sector)).Ffloorheight
 				*(*fixed_t)(unsafe.Pointer(sector)) -= speed
 				flag = P_ChangeSector(tls, sector, crush)
-				if flag == uint32(true1) {
+				if flag == 1 {
 					(*sector_t)(unsafe.Pointer(sector)).Ffloorheight = lastpos
 					P_ChangeSector(tls, sector, crush)
 					return int32(crushed)
@@ -26967,7 +26958,7 @@ func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, cru
 				lastpos = (*sector_t)(unsafe.Pointer(sector)).Ffloorheight
 				(*sector_t)(unsafe.Pointer(sector)).Ffloorheight = dest
 				flag = P_ChangeSector(tls, sector, crush)
-				if flag == uint32(true1) {
+				if flag == 1 {
 					(*sector_t)(unsafe.Pointer(sector)).Ffloorheight = lastpos
 					P_ChangeSector(tls, sector, crush)
 					//return crushed;
@@ -26978,8 +26969,8 @@ func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, cru
 				lastpos = (*sector_t)(unsafe.Pointer(sector)).Ffloorheight
 				*(*fixed_t)(unsafe.Pointer(sector)) += speed
 				flag = P_ChangeSector(tls, sector, crush)
-				if flag == uint32(true1) {
-					if crush == uint32(true1) {
+				if flag == 1 {
+					if crush == 1 {
 						return int32(crushed)
 					}
 					(*sector_t)(unsafe.Pointer(sector)).Ffloorheight = lastpos
@@ -26998,7 +26989,7 @@ func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, cru
 				lastpos = (*sector_t)(unsafe.Pointer(sector)).Fceilingheight
 				(*sector_t)(unsafe.Pointer(sector)).Fceilingheight = dest
 				flag = P_ChangeSector(tls, sector, crush)
-				if flag == uint32(true1) {
+				if flag == 1 {
 					(*sector_t)(unsafe.Pointer(sector)).Fceilingheight = lastpos
 					P_ChangeSector(tls, sector, crush)
 					//return crushed;
@@ -27009,8 +27000,8 @@ func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, cru
 				lastpos = (*sector_t)(unsafe.Pointer(sector)).Fceilingheight
 				*(*fixed_t)(unsafe.Pointer(sector + 4)) -= speed
 				flag = P_ChangeSector(tls, sector, crush)
-				if flag == uint32(true1) {
-					if crush == uint32(true1) {
+				if flag == 1 {
+					if crush == 1 {
 						return int32(crushed)
 					}
 					(*sector_t)(unsafe.Pointer(sector)).Fceilingheight = lastpos
@@ -27024,7 +27015,7 @@ func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, cru
 				lastpos = (*sector_t)(unsafe.Pointer(sector)).Fceilingheight
 				(*sector_t)(unsafe.Pointer(sector)).Fceilingheight = dest
 				flag = P_ChangeSector(tls, sector, crush)
-				if flag == uint32(true1) {
+				if flag == 1 {
 					(*sector_t)(unsafe.Pointer(sector)).Fceilingheight = lastpos
 					P_ChangeSector(tls, sector, crush)
 					//return crushed;
@@ -27110,7 +27101,7 @@ func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 		(*sector_t)(unsafe.Pointer(sec)).Fspecialdata = floor
 		*(*actionf_p1)(unsafe.Pointer(floor + 16)) = __ccgo_fp(T_MoveFloor)
 		(*floormove_t)(unsafe.Pointer(floor)).Ftype1 = floortype
-		(*floormove_t)(unsafe.Pointer(floor)).Fcrush = uint32(false1)
+		(*floormove_t)(unsafe.Pointer(floor)).Fcrush = 0
 		switch floortype {
 		case int32(lowerFloor):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = -int32(1)
@@ -27131,7 +27122,7 @@ func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 				*(*fixed_t)(unsafe.Pointer(floor + 52)) += libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
 			}
 		case int32(raiseFloorCrush):
-			(*floormove_t)(unsafe.Pointer(floor)).Fcrush = uint32(true1)
+			(*floormove_t)(unsafe.Pointer(floor)).Fcrush = 1
 			fallthrough
 		case int32(raiseFloor):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
@@ -27370,13 +27361,13 @@ func P_GiveAmmo(tls *libc.TLS, player uintptr, ammo ammotype_t, num int32) (r bo
 	bp := alloc(16)
 	var oldammo int32
 	if ammo == int32(am_noammo) {
-		return uint32(false1)
+		return 0
 	}
 	if ammo > int32(NUMAMMO) {
 		I_Error(tls, __ccgo_ts(23713), libc.VaList(bp+8, ammo))
 	}
 	if *(*int32)(unsafe.Pointer(player + 168 + uintptr(ammo)*4)) == *(*int32)(unsafe.Pointer(player + 184 + uintptr(ammo)*4)) {
-		return uint32(false1)
+		return 0
 	}
 	if num != 0 {
 		num *= clipammo[ammo]
@@ -27397,7 +27388,7 @@ func P_GiveAmmo(tls *libc.TLS, player uintptr, ammo ammotype_t, num int32) (r bo
 	// don't change up weapons,
 	// player was lower on purpose.
 	if oldammo != 0 {
-		return uint32(true1)
+		return 1
 	}
 	// We were down to zero,
 	// so select a new weapon.
@@ -27433,7 +27424,7 @@ func P_GiveAmmo(tls *libc.TLS, player uintptr, ammo ammotype_t, num int32) (r bo
 	default:
 		break
 	}
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -27447,10 +27438,10 @@ func P_GiveWeapon(tls *libc.TLS, player uintptr, weapon weapontype_t, dropped bo
 	if netgame != 0 && deathmatch != int32(2) && !(dropped != 0) {
 		// leave placed weapons forever on net games
 		if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(weapon)*4)) != 0 {
-			return uint32(false1)
+			return 0
 		}
 		*(*int32)(unsafe.Pointer(player + 244)) += int32(BONUSADD)
-		*(*boolean)(unsafe.Pointer(player + 132 + uintptr(weapon)*4)) = uint32(true1)
+		*(*boolean)(unsafe.Pointer(player + 132 + uintptr(weapon)*4)) = 1
 		if deathmatch != 0 {
 			P_GiveAmmo(tls, player, weaponinfo[weapon].Fammo, int32(5))
 		} else {
@@ -27460,7 +27451,7 @@ func P_GiveWeapon(tls *libc.TLS, player uintptr, weapon weapontype_t, dropped bo
 		if player == uintptr(unsafe.Pointer(&players))+uintptr(consoleplayer)*328 {
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_wpnup))
 		}
-		return uint32(false1)
+		return 0
 	}
 	if weaponinfo[weapon].Fammo != int32(am_noammo) {
 		// give one clip with a dropped weapon,
@@ -27471,13 +27462,13 @@ func P_GiveWeapon(tls *libc.TLS, player uintptr, weapon weapontype_t, dropped bo
 			gaveammo = P_GiveAmmo(tls, player, weaponinfo[weapon].Fammo, int32(2))
 		}
 	} else {
-		gaveammo = uint32(false1)
+		gaveammo = 0
 	}
 	if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(weapon)*4)) != 0 {
-		gaveweapon = uint32(false1)
+		gaveweapon = 0
 	} else {
-		gaveweapon = uint32(true1)
-		*(*boolean)(unsafe.Pointer(player + 132 + uintptr(weapon)*4)) = uint32(true1)
+		gaveweapon = 1
+		*(*boolean)(unsafe.Pointer(player + 132 + uintptr(weapon)*4)) = 1
 		(*player_t)(unsafe.Pointer(player)).Fpendingweapon = weapon
 	}
 	return libc.BoolUint32(gaveweapon != 0 || gaveammo != 0)
@@ -27491,14 +27482,14 @@ func P_GiveWeapon(tls *libc.TLS, player uintptr, weapon weapontype_t, dropped bo
 //	//
 func P_GiveBody(tls *libc.TLS, player uintptr, num int32) (r boolean) {
 	if (*player_t)(unsafe.Pointer(player)).Fhealth >= int32(MAXHEALTH) {
-		return uint32(false1)
+		return 0
 	}
 	*(*int32)(unsafe.Pointer(player + 44)) += num
 	if (*player_t)(unsafe.Pointer(player)).Fhealth > int32(MAXHEALTH) {
 		(*player_t)(unsafe.Pointer(player)).Fhealth = int32(MAXHEALTH)
 	}
 	(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fhealth = (*player_t)(unsafe.Pointer(player)).Fhealth
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -27512,11 +27503,11 @@ func P_GiveArmor(tls *libc.TLS, player uintptr, armortype int32) (r boolean) {
 	var hits int32
 	hits = armortype * int32(100)
 	if (*player_t)(unsafe.Pointer(player)).Farmorpoints >= hits {
-		return uint32(false1)
+		return 0
 	} // don't pick up
 	(*player_t)(unsafe.Pointer(player)).Farmortype = armortype
 	(*player_t)(unsafe.Pointer(player)).Farmorpoints = hits
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -27540,31 +27531,31 @@ func P_GiveCard(tls *libc.TLS, player uintptr, card card_t) {
 func P_GivePower(tls *libc.TLS, player uintptr, power int32) (r boolean) {
 	if power == int32(pw_invulnerability) {
 		*(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) = int32(INVULNTICS)
-		return uint32(true1)
+		return 1
 	}
 	if power == int32(pw_invisibility) {
 		*(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) = int32(INVISTICS)
 		*(*int32)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 160)) |= int32(MF_SHADOW)
-		return uint32(true1)
+		return 1
 	}
 	if power == int32(pw_infrared) {
 		*(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) = int32(INFRATICS)
-		return uint32(true1)
+		return 1
 	}
 	if power == int32(pw_ironfeet) {
 		*(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) = int32(IRONTICS)
-		return uint32(true1)
+		return 1
 	}
 	if power == int32(pw_strength) {
 		P_GiveBody(tls, player, int32(100))
 		*(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) = int32(1)
-		return uint32(true1)
+		return 1
 	}
 	if *(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) != 0 {
-		return uint32(false1)
+		return 0
 	} // already got it
 	*(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) = int32(1)
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -27819,7 +27810,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 				;
 				i++
 			}
-			(*player_t)(unsafe.Pointer(player)).Fbackpack = uint32(true1)
+			(*player_t)(unsafe.Pointer(player)).Fbackpack = 1
 		}
 		i = 0
 		for {
@@ -27837,7 +27828,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		// weapons
 		fallthrough
 	case int32(SPR_BFUG):
-		if !(P_GiveWeapon(tls, player, int32(wp_bfg), uint32(false1)) != 0) {
+		if !(P_GiveWeapon(tls, player, int32(wp_bfg), 0) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24474)
@@ -27849,19 +27840,19 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24505)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_CSAW):
-		if !(P_GiveWeapon(tls, player, int32(wp_chainsaw), uint32(false1)) != 0) {
+		if !(P_GiveWeapon(tls, player, int32(wp_chainsaw), 0) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24527)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_LAUN):
-		if !(P_GiveWeapon(tls, player, int32(wp_missile), uint32(false1)) != 0) {
+		if !(P_GiveWeapon(tls, player, int32(wp_missile), 0) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24556)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_PLAS):
-		if !(P_GiveWeapon(tls, player, int32(wp_plasma), uint32(false1)) != 0) {
+		if !(P_GiveWeapon(tls, player, int32(wp_plasma), 0) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24585)
@@ -28425,23 +28416,23 @@ const DEFAULT_SPECHIT_MAGIC = 29400216
 func PIT_StompThing(tls *libc.TLS, thing uintptr) (r boolean) {
 	var blockdist fixed_t
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SHOOTABLE) != 0) {
-		return uint32(true1)
+		return 1
 	}
 	blockdist = (*mobj_t)(unsafe.Pointer(thing)).Fradius + (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
 	if libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx-tmx) >= blockdist || libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fy-tmy) >= blockdist {
 		// didn't hit it
-		return uint32(true1)
+		return 1
 	}
 	// don't clip against self
 	if thing == tmthing {
-		return uint32(true1)
+		return 1
 	}
 	// monsters don't stomp things except on boss level
 	if !((*mobj_t)(unsafe.Pointer(tmthing)).Fplayer != 0) && gamemap != int32(30) {
-		return uint32(false1)
+		return 0
 	}
 	P_DamageMobj(tls, thing, tmthing, tmthing, int32(10000))
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -28490,7 +28481,7 @@ func P_TeleportMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boole
 				break
 			}
 			if !(P_BlockThingsIterator(tls, bx, by, __ccgo_fp(PIT_StompThing)) != 0) {
-				return uint32(false1)
+				return 0
 			}
 			goto _3
 		_3:
@@ -28510,7 +28501,7 @@ func P_TeleportMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boole
 	(*mobj_t)(unsafe.Pointer(thing)).Fx = x
 	(*mobj_t)(unsafe.Pointer(thing)).Fy = y
 	P_SetThingPosition(tls, thing)
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -28521,10 +28512,10 @@ func P_TeleportMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boole
 //	//
 func PIT_CheckLine(tls *libc.TLS, ld uintptr) (r boolean) {
 	if tmbbox[int32(BOXRIGHT)] <= *(*fixed_t)(unsafe.Pointer(ld + 36 + uintptr(BOXLEFT)*4)) || tmbbox[int32(BOXLEFT)] >= *(*fixed_t)(unsafe.Pointer(ld + 36 + uintptr(BOXRIGHT)*4)) || tmbbox[int32(BOXTOP)] <= *(*fixed_t)(unsafe.Pointer(ld + 36 + uintptr(BOXBOTTOM)*4)) || tmbbox[int32(BOXBOTTOM)] >= *(*fixed_t)(unsafe.Pointer(ld + 36 + uintptr(BOXTOP)*4)) {
-		return uint32(true1)
+		return 1
 	}
 	if P_BoxOnLineSide(tls, uintptr(unsafe.Pointer(&tmbbox)), ld) != -int32(1) {
-		return uint32(true1)
+		return 1
 	}
 	// A line has been hit
 	// The moving thing's destination position will cross
@@ -28536,14 +28527,14 @@ func PIT_CheckLine(tls *libc.TLS, ld uintptr) (r boolean) {
 	// so two special lines that are only 8 pixels apart
 	// could be crossed in either order.
 	if !((*line_t)(unsafe.Pointer(ld)).Fbacksector != 0) {
-		return uint32(false1)
+		return 0
 	} // one sided line
 	if !((*mobj_t)(unsafe.Pointer(tmthing)).Fflags&int32(MF_MISSILE) != 0) {
 		if int32((*line_t)(unsafe.Pointer(ld)).Fflags)&int32(ML_BLOCKING) != 0 {
-			return uint32(false1)
+			return 0
 		} // explicitly blocking everything
 		if !((*mobj_t)(unsafe.Pointer(tmthing)).Fplayer != 0) && int32((*line_t)(unsafe.Pointer(ld)).Fflags)&int32(ML_BLOCKMONSTERS) != 0 {
-			return uint32(false1)
+			return 0
 		} // block monsters only
 	}
 	// set openrange, opentop, openbottom
@@ -28568,7 +28559,7 @@ func PIT_CheckLine(tls *libc.TLS, ld uintptr) (r boolean) {
 			SpechitOverrun(tls, ld)
 		}
 	}
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -28581,16 +28572,16 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 	var damage int32
 	var solid boolean
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&(int32(MF_SOLID)|int32(MF_SPECIAL)|int32(MF_SHOOTABLE)) != 0) {
-		return uint32(true1)
+		return 1
 	}
 	blockdist = (*mobj_t)(unsafe.Pointer(thing)).Fradius + (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
 	if libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx-tmx) >= blockdist || libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fy-tmy) >= blockdist {
 		// didn't hit it
-		return uint32(true1)
+		return 1
 	}
 	// don't clip against self
 	if thing == tmthing {
-		return uint32(true1)
+		return 1
 	}
 	// check for skulls slamming into things
 	if (*mobj_t)(unsafe.Pointer(tmthing)).Fflags&int32(MF_SKULLFLY) != 0 {
@@ -28603,21 +28594,21 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 		(*mobj_t)(unsafe.Pointer(tmthing)).Fmomy = v1
 		(*mobj_t)(unsafe.Pointer(tmthing)).Fmomx = v1
 		P_SetMobjState(tls, tmthing, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Finfo)).Fspawnstate)
-		return uint32(false1) // stop moving
+		return 0 // stop moving
 	}
 	// missiles can hit other things
 	if (*mobj_t)(unsafe.Pointer(tmthing)).Fflags&int32(MF_MISSILE) != 0 {
 		// see if it went over / under
 		if (*mobj_t)(unsafe.Pointer(tmthing)).Fz > (*mobj_t)(unsafe.Pointer(thing)).Fz+(*mobj_t)(unsafe.Pointer(thing)).Fheight {
-			return uint32(true1)
+			return 1
 		} // overhead
 		if (*mobj_t)(unsafe.Pointer(tmthing)).Fz+(*mobj_t)(unsafe.Pointer(tmthing)).Fheight < (*mobj_t)(unsafe.Pointer(thing)).Fz {
-			return uint32(true1)
+			return 1
 		} // underneath
 		if (*mobj_t)(unsafe.Pointer(tmthing)).Ftarget != 0 && ((*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Ftarget)).Ftype1 == (*mobj_t)(unsafe.Pointer(thing)).Ftype1 || (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Ftarget)).Ftype1 == int32(MT_KNIGHT) && (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_BRUISER) || (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Ftarget)).Ftype1 == int32(MT_BRUISER) && (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_KNIGHT)) {
 			// Don't hit same species as originator.
 			if thing == (*mobj_t)(unsafe.Pointer(tmthing)).Ftarget {
-				return uint32(true1)
+				return 1
 			}
 			// sdh: Add deh_species_infighting here.  We can override the
 			// "monsters of the same species cant hurt each other" behavior
@@ -28625,7 +28616,7 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 			if (*mobj_t)(unsafe.Pointer(thing)).Ftype1 != int32(MT_PLAYER) && libc.Bool(!(libc.Int32FromInt32(DEH_DEFAULT_SPECIES_INFIGHTING) != 0)) {
 				// Explode, but do no damage.
 				// Let players missile other players.
-				return uint32(false1)
+				return 0
 			}
 		}
 		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SHOOTABLE) != 0) {
@@ -28636,7 +28627,7 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 		damage = (P_Random(tls)%int32(8) + int32(1)) * (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Finfo)).Fdamage
 		P_DamageMobj(tls, thing, tmthing, (*mobj_t)(unsafe.Pointer(tmthing)).Ftarget, damage)
 		// don't traverse any more
-		return uint32(false1)
+		return 0
 	}
 	// check for special pickup
 	if (*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SPECIAL) != 0 {
@@ -28705,7 +28696,7 @@ func P_CheckPosition(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r bool
 	validcount++
 	numspechit = 0
 	if tmflags&int32(MF_NOCLIP) != 0 {
-		return uint32(true1)
+		return 1
 	}
 	// Check things first, possibly picking things up.
 	// The bounding box is extended by MAXRADIUS
@@ -28727,7 +28718,7 @@ func P_CheckPosition(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r bool
 				break
 			}
 			if !(P_BlockThingsIterator(tls, bx, by, __ccgo_fp(PIT_CheckThing)) != 0) {
-				return uint32(false1)
+				return 0
 			}
 			goto _3
 		_3:
@@ -28755,7 +28746,7 @@ func P_CheckPosition(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r bool
 				break
 			}
 			if !(P_BlockLinesIterator(tls, bx, by, __ccgo_fp(PIT_CheckLine)) != 0) {
-				return uint32(false1)
+				return 0
 			}
 			goto _5
 		_5:
@@ -28767,7 +28758,7 @@ func P_CheckPosition(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r bool
 		;
 		bx++
 	}
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -28781,23 +28772,23 @@ func P_TryMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 	var ld uintptr
 	var oldside, side, v1 int32
 	var oldx, oldy fixed_t
-	floatok = uint32(false1)
+	floatok = 0
 	if !(P_CheckPosition(tls, thing, x, y) != 0) {
-		return uint32(false1)
+		return 0
 	} // solid wall or thing
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_NOCLIP) != 0) {
 		if tmceilingz-tmfloorz < (*mobj_t)(unsafe.Pointer(thing)).Fheight {
-			return uint32(false1)
+			return 0
 		} // doesn't fit
-		floatok = uint32(true1)
+		floatok = 1
 		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_TELEPORT) != 0) && tmceilingz-(*mobj_t)(unsafe.Pointer(thing)).Fz < (*mobj_t)(unsafe.Pointer(thing)).Fheight {
-			return uint32(false1)
+			return 0
 		} // mobj must lower itself to fit
 		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_TELEPORT) != 0) && tmfloorz-(*mobj_t)(unsafe.Pointer(thing)).Fz > libc.Int32FromInt32(24)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
-			return uint32(false1)
+			return 0
 		} // too big a step up
 		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&(int32(MF_DROPOFF)|int32(MF_FLOAT)) != 0) && tmfloorz-tmdropoffz > libc.Int32FromInt32(24)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
-			return uint32(false1)
+			return 0
 		} // don't stand over a dropoff
 	}
 	// the move is ok,
@@ -28829,7 +28820,7 @@ func P_TryMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 			}
 		}
 	}
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -28861,9 +28852,9 @@ func P_ThingHeightClip(tls *libc.TLS, thing uintptr) (r boolean) {
 		}
 	}
 	if (*mobj_t)(unsafe.Pointer(thing)).Fceilingz-(*mobj_t)(unsafe.Pointer(thing)).Ffloorz < (*mobj_t)(unsafe.Pointer(thing)).Fheight {
-		return uint32(false1)
+		return 0
 	}
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -28918,7 +28909,7 @@ func PTR_SlideTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	if !(int32((*line_t)(unsafe.Pointer(li)).Fflags)&libc.Int32FromInt32(ML_TWOSIDED) != 0) {
 		if P_PointOnLineSide(tls, (*mobj_t)(unsafe.Pointer(slidemo)).Fx, (*mobj_t)(unsafe.Pointer(slidemo)).Fy, li) != 0 {
 			// don't hit the back side
-			return uint32(true1)
+			return 1
 		}
 		goto isblocking
 	}
@@ -28934,7 +28925,7 @@ func PTR_SlideTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 		goto isblocking
 	} // too big a step up
 	// this line doesn't block movement
-	return uint32(true1)
+	return 1
 	// the line does block movement,
 	// see if it is closer than best so far
 	goto isblocking
@@ -28944,7 +28935,7 @@ isblocking:
 		bestslidefrac = (*intercept_t)(unsafe.Pointer(in)).Ffrac
 		bestslideline = li
 	}
-	return uint32(false1) // stop
+	return 0 // stop
 }
 
 // C documentation
@@ -29044,14 +29035,14 @@ func PTR_AimTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	if (*intercept_t)(unsafe.Pointer(in)).Fisaline != 0 {
 		li = *(*uintptr)(unsafe.Pointer(in + 8))
 		if !(int32((*line_t)(unsafe.Pointer(li)).Fflags)&libc.Int32FromInt32(ML_TWOSIDED) != 0) {
-			return uint32(false1)
+			return 0
 		} // stop
 		// Crosses a two sided line.
 		// A two sided line will restrict
 		// the possible target ranges.
 		P_LineOpening(tls, li)
 		if openbottom >= opentop {
-			return uint32(false1)
+			return 0
 		} // stop
 		dist = FixedMul(tls, attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
 		if (*line_t)(unsafe.Pointer(li)).Fbacksector == libc.UintptrFromInt32(0) || (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Ffrontsector)).Ffloorheight != (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fbacksector)).Ffloorheight {
@@ -29067,27 +29058,27 @@ func PTR_AimTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 			}
 		}
 		if topslope <= bottomslope {
-			return uint32(false1)
+			return 0
 		} // stop
-		return uint32(true1) // shot continues
+		return 1 // shot continues
 	}
 	// shoot a thing
 	th = *(*uintptr)(unsafe.Pointer(in + 8))
 	if th == shootthing {
-		return uint32(true1)
+		return 1
 	} // can't shoot self
 	if !((*mobj_t)(unsafe.Pointer(th)).Fflags&int32(MF_SHOOTABLE) != 0) {
-		return uint32(true1)
+		return 1
 	} // corpse or something
 	// check angles to see if the thing can be aimed at
 	dist = FixedMul(tls, attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
 	thingtopslope = FixedDiv(tls, (*mobj_t)(unsafe.Pointer(th)).Fz+(*mobj_t)(unsafe.Pointer(th)).Fheight-shootz, dist)
 	if thingtopslope < bottomslope {
-		return uint32(true1)
+		return 1
 	} // shot over the thing
 	thingbottomslope = FixedDiv(tls, (*mobj_t)(unsafe.Pointer(th)).Fz-shootz, dist)
 	if thingbottomslope > topslope {
-		return uint32(true1)
+		return 1
 	} // shot under the thing
 	// this thing can be hit!
 	if thingtopslope > topslope {
@@ -29098,7 +29089,7 @@ func PTR_AimTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	}
 	aimslope = (thingtopslope + thingbottomslope) / int32(2)
 	linetarget = th
-	return uint32(false1) // don't go any farther
+	return 0 // don't go any farther
 }
 
 // C documentation
@@ -29146,7 +29137,7 @@ func PTR_ShootTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 			}
 		}
 		// shot continues
-		return uint32(true1)
+		return 1
 		// hit line
 		goto hitline
 	hitline:
@@ -29159,35 +29150,35 @@ func PTR_ShootTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 		if int32((*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Ffrontsector)).Fceilingpic) == skyflatnum {
 			// don't shoot the sky!
 			if z > (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Ffrontsector)).Fceilingheight {
-				return uint32(false1)
+				return 0
 			}
 			// it's a sky hack wall
 			if (*line_t)(unsafe.Pointer(li)).Fbacksector != 0 && int32((*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fbacksector)).Fceilingpic) == skyflatnum {
-				return uint32(false1)
+				return 0
 			}
 		}
 		// Spawn bullet puffs.
 		P_SpawnPuff(tls, x, y, z)
 		// don't go any farther
-		return uint32(false1)
+		return 0
 	}
 	// shoot a thing
 	th = *(*uintptr)(unsafe.Pointer(in + 8))
 	if th == shootthing {
-		return uint32(true1)
+		return 1
 	} // can't shoot self
 	if !((*mobj_t)(unsafe.Pointer(th)).Fflags&int32(MF_SHOOTABLE) != 0) {
-		return uint32(true1)
+		return 1
 	} // corpse or something
 	// check angles to see if the thing can be aimed at
 	dist = FixedMul(tls, attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
 	thingtopslope = FixedDiv(tls, (*mobj_t)(unsafe.Pointer(th)).Fz+(*mobj_t)(unsafe.Pointer(th)).Fheight-shootz, dist)
 	if thingtopslope < aimslope {
-		return uint32(true1)
+		return 1
 	} // shot over the thing
 	thingbottomslope = FixedDiv(tls, (*mobj_t)(unsafe.Pointer(th)).Fz-shootz, dist)
 	if thingbottomslope > aimslope {
-		return uint32(true1)
+		return 1
 	} // shot under the thing
 	// hit thing
 	// position a bit closer
@@ -29206,7 +29197,7 @@ func PTR_ShootTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 		P_DamageMobj(tls, th, shootthing, shootthing, la_damage)
 	}
 	// don't go any farther
-	return uint32(false1)
+	return 0
 }
 
 // C documentation
@@ -29261,10 +29252,10 @@ func PTR_UseTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 		if openrange <= 0 {
 			S_StartSound(tls, usething, int32(sfx_noway))
 			// can't use through a wall
-			return uint32(false1)
+			return 0
 		}
 		// not a special line, but keep checking
-		return uint32(true1)
+		return 1
 	}
 	side = 0
 	if P_PointOnLineSide(tls, (*mobj_t)(unsafe.Pointer(usething)).Fx, (*mobj_t)(unsafe.Pointer(usething)).Fy, *(*uintptr)(unsafe.Pointer(in + 8))) == int32(1) {
@@ -29273,7 +29264,7 @@ func PTR_UseTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	//	return false;		// don't use back side
 	P_UseSpecialLine(tls, usething, *(*uintptr)(unsafe.Pointer(in + 8)), side)
 	// can't use for than one special line in a row
-	return uint32(false1)
+	return 0
 }
 
 // C documentation
@@ -29305,12 +29296,12 @@ func PIT_RadiusAttack(tls *libc.TLS, thing uintptr) (r boolean) {
 	var dist, dx, dy fixed_t
 	var v1 int32
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SHOOTABLE) != 0) {
-		return uint32(true1)
+		return 1
 	}
 	// Boss spider and cyborg
 	// take no damage from concussion.
 	if (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_CYBORG) || (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_SPIDER) {
-		return uint32(true1)
+		return 1
 	}
 	dx = libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx-(*mobj_t)(unsafe.Pointer(bombspot)).Fx)
 	dy = libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fy-(*mobj_t)(unsafe.Pointer(bombspot)).Fy)
@@ -29325,13 +29316,13 @@ func PIT_RadiusAttack(tls *libc.TLS, thing uintptr) (r boolean) {
 		dist = 0
 	}
 	if dist >= bombdamage {
-		return uint32(true1)
+		return 1
 	} // out of range
 	if P_CheckSight(tls, thing, bombspot) != 0 {
 		// must be in direct path
 		P_DamageMobj(tls, thing, bombspot, bombsource, bombdamage-dist)
 	}
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -29383,7 +29374,7 @@ func PIT_ChangeSector(tls *libc.TLS, thing uintptr) (r boolean) {
 	var mo uintptr
 	if P_ThingHeightClip(tls, thing) != 0 {
 		// keep checking
-		return uint32(true1)
+		return 1
 	}
 	// crunch bodies to giblets
 	if (*mobj_t)(unsafe.Pointer(thing)).Fhealth <= 0 {
@@ -29392,19 +29383,19 @@ func PIT_ChangeSector(tls *libc.TLS, thing uintptr) (r boolean) {
 		(*mobj_t)(unsafe.Pointer(thing)).Fheight = 0
 		(*mobj_t)(unsafe.Pointer(thing)).Fradius = 0
 		// keep checking
-		return uint32(true1)
+		return 1
 	}
 	// crunch dropped items
 	if (*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_DROPPED) != 0 {
 		P_RemoveMobj(tls, thing)
 		// keep checking
-		return uint32(true1)
+		return 1
 	}
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SHOOTABLE) != 0) {
 		// assume it is bloody gibs or something
-		return uint32(true1)
+		return 1
 	}
-	nofit = uint32(true1)
+	nofit = 1
 	if crushchange != 0 && !(leveltime&libc.Int32FromInt32(3) != 0) {
 		P_DamageMobj(tls, thing, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), int32(10))
 		// spray blood in a random direction
@@ -29413,7 +29404,7 @@ func PIT_ChangeSector(tls *libc.TLS, thing uintptr) (r boolean) {
 		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = (P_Random(tls) - P_Random(tls)) << int32(12)
 	}
 	// keep checking (crush other things)
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -29423,7 +29414,7 @@ func PIT_ChangeSector(tls *libc.TLS, thing uintptr) (r boolean) {
 //	//
 func P_ChangeSector(tls *libc.TLS, sector uintptr, crunch boolean) (r boolean) {
 	var x, y int32
-	nofit = uint32(false1)
+	nofit = 0
 	crushchange = crunch
 	// re-check heights for all things near the moving sector
 	x = *(*int32)(unsafe.Pointer(sector + 32 + uintptr(BOXLEFT)*4))
@@ -29810,7 +29801,7 @@ func P_BlockLinesIterator(tls *libc.TLS, x int32, y int32, func1 uintptr) (r boo
 	var ld, list uintptr
 	var offset int32
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
-		return uint32(true1)
+		return 1
 	}
 	offset = y*bmapwidth + x
 	offset = int32(*(*int16)(unsafe.Pointer(blockmap + uintptr(offset)*2)))
@@ -29825,14 +29816,14 @@ func P_BlockLinesIterator(tls *libc.TLS, x int32, y int32, func1 uintptr) (r boo
 		} // line has already been checked
 		(*line_t)(unsafe.Pointer(ld)).Fvalidcount = validcount
 		if !((*(*func(*libc.TLS, uintptr) boolean)(unsafe.Pointer(&struct{ uintptr }{func1})))(tls, ld) != 0) {
-			return uint32(false1)
+			return 0
 		}
 		goto _1
 	_1:
 		;
 		list += 2
 	}
-	return uint32(true1) // everything was checked
+	return 1 // everything was checked
 }
 
 // C documentation
@@ -29843,7 +29834,7 @@ func P_BlockLinesIterator(tls *libc.TLS, x int32, y int32, func1 uintptr) (r boo
 func P_BlockThingsIterator(tls *libc.TLS, x int32, y int32, func1 uintptr) (r boolean) {
 	var mobj uintptr
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
-		return uint32(true1)
+		return 1
 	}
 	mobj = *(*uintptr)(unsafe.Pointer(blocklinks + uintptr(y*bmapwidth+x)*8))
 	for {
@@ -29851,14 +29842,14 @@ func P_BlockThingsIterator(tls *libc.TLS, x int32, y int32, func1 uintptr) (r bo
 			break
 		}
 		if !((*(*func(*libc.TLS, uintptr) boolean)(unsafe.Pointer(&struct{ uintptr }{func1})))(tls, mobj) != 0) {
-			return uint32(false1)
+			return 0
 		}
 		goto _1
 	_1:
 		;
 		mobj = (*mobj_t)(unsafe.Pointer(mobj)).Fbnext
 	}
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -29886,24 +29877,24 @@ func PIT_AddLineIntercepts(tls *libc.TLS, ld uintptr) (r boolean) {
 		s2 = P_PointOnLineSide(tls, trace.Fx+trace.Fdx, trace.Fy+trace.Fdy, ld)
 	}
 	if s1 == s2 {
-		return uint32(true1)
+		return 1
 	} // line isn't crossed
 	// hit the line
 	P_MakeDivline(tls, ld, bp)
 	frac = P_InterceptVector(tls, uintptr(unsafe.Pointer(&trace)), bp)
 	if frac < 0 {
-		return uint32(true1)
+		return 1
 	} // behind source
 	// try to early out the check
 	if earlyout != 0 && frac < libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) && !((*line_t)(unsafe.Pointer(ld)).Fbacksector != 0) {
-		return uint32(false1) // stop checking
+		return 0 // stop checking
 	}
 	(*intercept_t)(unsafe.Pointer(intercept_p)).Ffrac = frac
-	(*intercept_t)(unsafe.Pointer(intercept_p)).Fisaline = uint32(true1)
+	(*intercept_t)(unsafe.Pointer(intercept_p)).Fisaline = 1
 	*(*uintptr)(unsafe.Pointer(intercept_p + 8)) = ld
 	InterceptsOverrun(tls, int32((int64(intercept_p)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&intercepts))))/16), intercept_p)
 	intercept_p += 16
-	return uint32(true1) // continue
+	return 1 // continue
 }
 
 // C documentation
@@ -29932,7 +29923,7 @@ func PIT_AddThingIntercepts(tls *libc.TLS, thing uintptr) (r boolean) {
 	s1 = P_PointOnDivlineSide(tls, x1, y1, uintptr(unsafe.Pointer(&trace)))
 	s2 = P_PointOnDivlineSide(tls, x2, y2, uintptr(unsafe.Pointer(&trace)))
 	if s1 == s2 {
-		return uint32(true1)
+		return 1
 	} // line isn't crossed
 	(*(*divline_t)(unsafe.Pointer(bp))).Fx = x1
 	(*(*divline_t)(unsafe.Pointer(bp))).Fy = y1
@@ -29940,14 +29931,14 @@ func PIT_AddThingIntercepts(tls *libc.TLS, thing uintptr) (r boolean) {
 	(*(*divline_t)(unsafe.Pointer(bp))).Fdy = y2 - y1
 	frac = P_InterceptVector(tls, uintptr(unsafe.Pointer(&trace)), bp)
 	if frac < 0 {
-		return uint32(true1)
+		return 1
 	} // behind source
 	(*intercept_t)(unsafe.Pointer(intercept_p)).Ffrac = frac
-	(*intercept_t)(unsafe.Pointer(intercept_p)).Fisaline = uint32(false1)
+	(*intercept_t)(unsafe.Pointer(intercept_p)).Fisaline = 0
 	*(*uintptr)(unsafe.Pointer(intercept_p + 8)) = thing
 	InterceptsOverrun(tls, int32((int64(intercept_p)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&intercepts))))/16), intercept_p)
 	intercept_p += 16
-	return uint32(true1) // keep going
+	return 1 // keep going
 }
 
 // C documentation
@@ -29985,14 +29976,14 @@ func P_TraverseIntercepts(tls *libc.TLS, func1 traverser_t, maxfrac fixed_t) (r 
 			scan += 16
 		}
 		if dist > maxfrac {
-			return uint32(true1)
+			return 1
 		} // checked everything in range
 		if !((*(*func(*libc.TLS, uintptr) boolean)(unsafe.Pointer(&struct{ uintptr }{func1})))(tls, in) != 0) {
-			return uint32(false1)
+			return 0
 		} // don't bother going farther
 		(*intercept_t)(unsafe.Pointer(in)).Ffrac = int32(INT_MAX11)
 	}
-	return uint32(true1) // everything was traversed
+	return 1 // everything was traversed
 }
 
 // Intercepts Overrun emulation, from PrBoom-plus.
@@ -30065,7 +30056,7 @@ var intercepts_overrun = [23]intercepts_overrun_t{
 	14: {
 		Flen1:        int32(40),
 		Faddr:        uintptr(unsafe.Pointer(&playerstarts)),
-		Fint16_array: uint32(true1),
+		Fint16_array: 1,
 	},
 	15: {
 		Flen1: int32(4),
@@ -30222,12 +30213,12 @@ func P_PathTraverse(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_
 		}
 		if flags&int32(PT_ADDLINES) != 0 {
 			if !(P_BlockLinesIterator(tls, mapx, mapy, __ccgo_fp(PIT_AddLineIntercepts)) != 0) {
-				return uint32(false1)
+				return 0
 			} // early out
 		}
 		if flags&int32(PT_ADDTHINGS) != 0 {
 			if !(P_BlockThingsIterator(tls, mapx, mapy, __ccgo_fp(PIT_AddThingIntercepts)) != 0) {
-				return uint32(false1)
+				return 0
 			} // early out
 		}
 		if mapx == xt2 && mapy == yt2 {
@@ -30261,7 +30252,7 @@ func P_SetMobjState(tls *libc.TLS, mobj uintptr, state statenum_t) (r boolean) {
 		if state == int32(S_NULL) {
 			(*mobj_t)(unsafe.Pointer(mobj)).Fstate = uintptr(S_NULL)
 			P_RemoveMobj(tls, mobj)
-			return uint32(false1)
+			return 0
 		}
 		st = uintptr(unsafe.Pointer(&states)) + uintptr(state)*40
 		(*mobj_t)(unsafe.Pointer(mobj)).Fstate = st
@@ -30275,7 +30266,7 @@ func P_SetMobjState(tls *libc.TLS, mobj uintptr, state statenum_t) (r boolean) {
 		}
 		state = (*state_t)(unsafe.Pointer(st)).Fnextstate
 	}
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -30788,7 +30779,7 @@ func P_SpawnPlayer(tls *libc.TLS, mthing uintptr) {
 			if !(i < int32(NUMCARDS)) {
 				break
 			}
-			*(*boolean)(unsafe.Pointer(p + 80 + uintptr(i)*4)) = uint32(true1)
+			*(*boolean)(unsafe.Pointer(p + 80 + uintptr(i)*4)) = 1
 			goto _1
 		_1:
 			;
@@ -31096,7 +31087,7 @@ func T_PlatRaise(tls *libc.TLS, plat uintptr) {
 			}
 		}
 	case int32(down):
-		res = T_MovePlane(tls, (*plat_t)(unsafe.Pointer(plat)).Fsector, (*plat_t)(unsafe.Pointer(plat)).Fspeed, (*plat_t)(unsafe.Pointer(plat)).Flow, uint32(false1), 0, -int32(1))
+		res = T_MovePlane(tls, (*plat_t)(unsafe.Pointer(plat)).Fsector, (*plat_t)(unsafe.Pointer(plat)).Fspeed, (*plat_t)(unsafe.Pointer(plat)).Flow, 0, 0, -int32(1))
 		if res == int32(pastdest) {
 			(*plat_t)(unsafe.Pointer(plat)).Fcount = (*plat_t)(unsafe.Pointer(plat)).Fwait
 			(*plat_t)(unsafe.Pointer(plat)).Fstatus = int32(waiting)
@@ -31156,7 +31147,7 @@ func EV_DoPlat(tls *libc.TLS, line uintptr, type1 plattype_e, amount int32) (r i
 		(*plat_t)(unsafe.Pointer(plat)).Fsector = sec
 		(*sector_t)(unsafe.Pointer((*plat_t)(unsafe.Pointer(plat)).Fsector)).Fspecialdata = plat
 		*(*actionf_p1)(unsafe.Pointer(plat + 16)) = __ccgo_fp(T_PlatRaise)
-		(*plat_t)(unsafe.Pointer(plat)).Fcrush = uint32(false1)
+		(*plat_t)(unsafe.Pointer(plat)).Fcrush = 0
 		(*plat_t)(unsafe.Pointer(plat)).Ftag = int32((*line_t)(unsafe.Pointer(line)).Ftag)
 		switch type1 {
 		case int32(raiseToNearestAndChange):
@@ -31414,7 +31405,7 @@ func P_CheckAmmo(tls *libc.TLS, player uintptr) (r boolean) {
 	// Some do not need ammunition anyway.
 	// Return if current ammunition sufficient.
 	if ammo == int32(am_noammo) || *(*int32)(unsafe.Pointer(player + 168 + uintptr(ammo)*4)) >= count {
-		return uint32(true1)
+		return 1
 	}
 	// Out of ammo, pick a weapon to change to.
 	// Preferences are set here.
@@ -31456,7 +31447,7 @@ func P_CheckAmmo(tls *libc.TLS, player uintptr) (r boolean) {
 	}
 	// Now set appropriate weapon overlay.
 	P_SetPsprite(tls, player, int32(ps_weapon), weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fdownstate)
-	return uint32(false1)
+	return 0
 }
 
 // C documentation
@@ -31517,12 +31508,12 @@ func A_WeaponReady(tls *libc.TLS, player uintptr, psp uintptr) {
 	//  the missile launcher and bfg do not auto fire
 	if libc.Int32FromUint8((*player_t)(unsafe.Pointer(player)).Fcmd.Fbuttons)&int32(BT_ATTACK) != 0 {
 		if !((*player_t)(unsafe.Pointer(player)).Fattackdown != 0) || (*player_t)(unsafe.Pointer(player)).Freadyweapon != int32(wp_missile) && (*player_t)(unsafe.Pointer(player)).Freadyweapon != int32(wp_bfg) {
-			(*player_t)(unsafe.Pointer(player)).Fattackdown = int32(true1)
+			(*player_t)(unsafe.Pointer(player)).Fattackdown = 1
 			P_FireWeapon(tls, player)
 			return
 		}
 	} else {
-		(*player_t)(unsafe.Pointer(player)).Fattackdown = int32(false1)
+		(*player_t)(unsafe.Pointer(player)).Fattackdown = 0
 	}
 	// bob the weapon based on movement speed
 	angle = int32(128) * leveltime & (libc.Int32FromInt32(FINEANGLES) - libc.Int32FromInt32(1))
@@ -31783,7 +31774,7 @@ func A_FireShotgun(tls *libc.TLS, player uintptr, psp uintptr) {
 		if !(i < int32(7)) {
 			break
 		}
-		P_GunShot(tls, (*player_t)(unsafe.Pointer(player)).Fmo, uint32(false1))
+		P_GunShot(tls, (*player_t)(unsafe.Pointer(player)).Fmo, 0)
 		goto _1
 	_1:
 		;
@@ -32003,24 +31994,24 @@ var filename_size size_t
 
 // Endian-safe integer read/write functions
 
-func saveg_read8(tls *libc.TLS) (r byte1) {
+func saveg_read8(tls *libc.TLS) (r uint8) {
 	bp := alloc(16)
 	if libc.Xfread(tls, bp, uint64(1), uint64(1), save_stream) < uint64(1) {
 		if !(savegame_error != 0) {
 			libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(24952), 0)
-			savegame_error = uint32(true1)
+			savegame_error = 1
 		}
 	}
-	return *(*byte1)(unsafe.Pointer(bp))
+	return *(*uint8)(unsafe.Pointer(bp))
 }
 
-func saveg_write8(tls *libc.TLS, _value byte1) {
+func saveg_write8(tls *libc.TLS, _value uint8) {
 	bp := alloc(16)
-	*(*byte1)(unsafe.Pointer(bp)) = _value
+	*(*uint8)(unsafe.Pointer(bp)) = _value
 	if libc.Xfwrite(tls, bp, uint64(1), uint64(1), save_stream) < uint64(1) {
 		if !(savegame_error != 0) {
 			libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(25013), 0)
-			savegame_error = uint32(true1)
+			savegame_error = 1
 		}
 	}
 }
@@ -33084,7 +33075,7 @@ func P_WriteSaveGameHeader(tls *libc.TLS, description uintptr) {
 
 func P_ReadSaveGameHeader(tls *libc.TLS) (r boolean) {
 	bp := alloc(48)
-	var a, b, c byte1
+	var a, b, c uint8
 	var i int32
 	// skip the description field
 	i = 0
@@ -33112,7 +33103,7 @@ func P_ReadSaveGameHeader(tls *libc.TLS) (r boolean) {
 	libc.Xmemset(tls, bp, 0, uint64(16))
 	M_snprintf(tls, bp, uint64(16), __ccgo_ts(25058), libc.VaList(bp+40, G_VanillaVersionCode(tls)))
 	if libc.Xstrcmp(tls, bp+16, bp) != 0 {
-		return uint32(false1)
+		return 0
 	} // bad version
 	gameskill = libc.Int32FromUint8(saveg_read8(tls))
 	gameepisode = libc.Int32FromUint8(saveg_read8(tls))
@@ -33133,7 +33124,7 @@ func P_ReadSaveGameHeader(tls *libc.TLS) (r boolean) {
 	b = saveg_read8(tls)
 	c = saveg_read8(tls)
 	leveltime = libc.Int32FromUint8(a)<<int32(16) + libc.Int32FromUint8(b)<<int32(8) + libc.Int32FromUint8(c)
-	return uint32(true1)
+	return 1
 }
 
 //
@@ -33378,7 +33369,7 @@ func P_ArchiveThinkers(tls *libc.TLS) {
 func P_UnArchiveThinkers(tls *libc.TLS) {
 	bp := alloc(16)
 	var currentthinker, mobj, next uintptr
-	var tclass byte1
+	var tclass uint8
 	// remove all the current thinkers
 	currentthinker = thinkercap.Fnext
 	for currentthinker != uintptr(unsafe.Pointer(&thinkercap)) {
@@ -33526,7 +33517,7 @@ func P_ArchiveSpecials(tls *libc.TLS) {
 func P_UnArchiveSpecials(tls *libc.TLS) {
 	bp := alloc(16)
 	var ceiling, door, flash, floor, glow, plat, strobe uintptr
-	var tclass byte1
+	var tclass uint8
 	// read in saved thinkers
 	for int32(1) != 0 {
 		tclass = saveg_read8(tls)
@@ -33640,7 +33631,7 @@ func GetSectorAtNullAddress(tls *libc.TLS) (r uintptr) {
 		libc.Xmemset(tls, uintptr(unsafe.Pointer(&null_sector)), 0, uint64(128))
 		I_GetMemoryValue(tls, uint32(0), uintptr(unsafe.Pointer(&null_sector)), int32(4))
 		I_GetMemoryValue(tls, uint32(4), uintptr(unsafe.Pointer(&null_sector))+4, int32(4))
-		null_sector_is_initialized = uint32(true1)
+		null_sector_is_initialized = 1
 	}
 	return uintptr(unsafe.Pointer(&null_sector))
 }
@@ -33843,7 +33834,7 @@ func P_LoadThings(tls *libc.TLS, lump int32) {
 		if !(i < numthings) {
 			break
 		}
-		spawn = uint32(true1)
+		spawn = 1
 		// Do not spawn cool, new monsters if !commercial
 		if gamemode != int32(commercial) {
 			switch int32((*mapthing_t)(unsafe.Pointer(mt)).Ftype1) {
@@ -33866,11 +33857,11 @@ func P_LoadThings(tls *libc.TLS, lump int32) {
 			case int32(66): // Revenant
 				fallthrough
 			case int32(84): // Wolf SS
-				spawn = uint32(false1)
+				spawn = 0
 				break
 			}
 		}
-		if spawn == uint32(false1) {
+		if spawn == 0 {
 			break
 		}
 		// Do spawn all other stuff.
@@ -34212,7 +34203,7 @@ func PadRejectArray(tls *libc.TLS, array uintptr, len1 uint32) {
 			break
 		}
 		byte_num = i % uint32(4)
-		*(*byte1)(unsafe.Pointer(dest)) = uint8(rejectpad[i/uint32(4)] >> (byte_num * uint32(8)) & uint32(0xff))
+		*(*uint8)(unsafe.Pointer(dest)) = uint8(rejectpad[i/uint32(4)] >> (byte_num * uint32(8)) & uint32(0xff))
 		dest++
 		goto _1
 	_1:
@@ -34473,12 +34464,12 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 		// Backsector may be NULL if this is an "impassible
 		// glass" hack line.
 		if (*line_t)(unsafe.Pointer(line)).Fbacksector == libc.UintptrFromInt32(0) {
-			return uint32(false1)
+			return 0
 		}
 		// stop because it is not two sided anyway
 		// might do this after updating validcount?
 		if !(int32((*line_t)(unsafe.Pointer(line)).Fflags)&libc.Int32FromInt32(ML_TWOSIDED) != 0) {
-			return uint32(false1)
+			return 0
 		}
 		// crosses a two sided line
 		front = (*seg_t)(unsafe.Pointer(seg)).Ffrontsector
@@ -34502,7 +34493,7 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 		}
 		// quick test for totally closed doors
 		if openbottom >= opentop {
-			return uint32(false1)
+			return 0
 		} // stop
 		frac = P_InterceptVector2(tls, uintptr(unsafe.Pointer(&strace)), bp)
 		if (*sector_t)(unsafe.Pointer(front)).Ffloorheight != (*sector_t)(unsafe.Pointer(back)).Ffloorheight {
@@ -34518,7 +34509,7 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 			}
 		}
 		if topslope <= bottomslope {
-			return uint32(false1)
+			return 0
 		} // stop
 		goto _1
 	_1:
@@ -34527,7 +34518,7 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 		count--
 	}
 	// passed the subsector ok
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -34555,12 +34546,12 @@ func P_CrossBSPNode(tls *libc.TLS, bspnum int32) (r boolean) {
 	} // an "on" should cross both sides
 	// cross the starting side
 	if !(P_CrossBSPNode(tls, libc.Int32FromUint16(*(*uint16)(unsafe.Pointer(bsp + 48 + uintptr(side)*2)))) != 0) {
-		return uint32(false1)
+		return 0
 	}
 	// the partition plane is crossed here
 	if side == P_DivlineSide(tls, t2x, t2y, bsp) {
 		// the line doesn't touch the other side
-		return uint32(true1)
+		return 1
 	}
 	// cross the ending side
 	return P_CrossBSPNode(tls, libc.Int32FromUint16(*(*uint16)(unsafe.Pointer(bsp + 48 + uintptr(side^int32(1))*2))))
@@ -34584,10 +34575,10 @@ func P_CheckSight(tls *libc.TLS, t1 uintptr, t2 uintptr) (r boolean) {
 	bytenum = pnum >> int32(3)
 	bitnum = int32(1) << (pnum & int32(7))
 	// Check in REJECT table.
-	if libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(rejectmatrix + uintptr(bytenum))))&bitnum != 0 {
+	if libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(rejectmatrix + uintptr(bytenum))))&bitnum != 0 {
 		sightcounts[0]++
 		// can't possibly be connected
-		return uint32(false1)
+		return 0
 	}
 	// An unobstructed LOS is possible.
 	// Now look from eyes of t1 to any part of t2.
@@ -34725,79 +34716,79 @@ func init() {
 			Fspeed:     int32(8),
 		},
 		9: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'B', 'L', 'O', 'D', 'G', 'R', '4'},
 			Fstartname: [9]int8{'B', 'L', 'O', 'D', 'G', 'R', '1'},
 			Fspeed:     int32(8),
 		},
 		10: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'S', 'L', 'A', 'D', 'R', 'I', 'P', '3'},
 			Fstartname: [9]int8{'S', 'L', 'A', 'D', 'R', 'I', 'P', '1'},
 			Fspeed:     int32(8),
 		},
 		11: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'B', 'L', 'O', 'D', 'R', 'I', 'P', '4'},
 			Fstartname: [9]int8{'B', 'L', 'O', 'D', 'R', 'I', 'P', '1'},
 			Fspeed:     int32(8),
 		},
 		12: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'F', 'I', 'R', 'E', 'W', 'A', 'L', 'L'},
 			Fstartname: [9]int8{'F', 'I', 'R', 'E', 'W', 'A', 'L', 'A'},
 			Fspeed:     int32(8),
 		},
 		13: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'G', 'S', 'T', 'F', 'O', 'N', 'T', '3'},
 			Fstartname: [9]int8{'G', 'S', 'T', 'F', 'O', 'N', 'T', '1'},
 			Fspeed:     int32(8),
 		},
 		14: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'F', 'I', 'R', 'E', 'L', 'A', 'V', 'A'},
 			Fstartname: [9]int8{'F', 'I', 'R', 'E', 'L', 'A', 'V', '3'},
 			Fspeed:     int32(8),
 		},
 		15: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'F', 'I', 'R', 'E', 'M', 'A', 'G', '3'},
 			Fstartname: [9]int8{'F', 'I', 'R', 'E', 'M', 'A', 'G', '1'},
 			Fspeed:     int32(8),
 		},
 		16: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'F', 'I', 'R', 'E', 'B', 'L', 'U', '2'},
 			Fstartname: [9]int8{'F', 'I', 'R', 'E', 'B', 'L', 'U', '1'},
 			Fspeed:     int32(8),
 		},
 		17: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'R', 'O', 'C', 'K', 'R', 'E', 'D', '3'},
 			Fstartname: [9]int8{'R', 'O', 'C', 'K', 'R', 'E', 'D', '1'},
 			Fspeed:     int32(8),
 		},
 		18: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'B', 'F', 'A', 'L', 'L', '4'},
 			Fstartname: [9]int8{'B', 'F', 'A', 'L', 'L', '1'},
 			Fspeed:     int32(8),
 		},
 		19: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'S', 'F', 'A', 'L', 'L', '4'},
 			Fstartname: [9]int8{'S', 'F', 'A', 'L', 'L', '1'},
 			Fspeed:     int32(8),
 		},
 		20: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'W', 'F', 'A', 'L', 'L', '4'},
 			Fstartname: [9]int8{'W', 'F', 'A', 'L', 'L', '1'},
 			Fspeed:     int32(8),
 		},
 		21: {
-			Fistexture: int32(true1),
+			Fistexture: 1,
 			Fendname:   [9]int8{'D', 'B', 'R', 'A', 'I', 'N', '4'},
 			Fstartname: [9]int8{'D', 'B', 'R', 'A', 'I', 'N', '1'},
 			Fspeed:     int32(8),
@@ -35586,7 +35577,7 @@ func P_UpdateSpecials(tls *libc.TLS) {
 	var anim, line uintptr
 	var i, pic int32
 	//	LEVEL TIMER
-	if levelTimer == uint32(true1) {
+	if levelTimer == 1 {
 		levelTimeCount--
 		if !(levelTimeCount != 0) {
 			G_ExitLevel(tls)
@@ -35794,7 +35785,7 @@ func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
 			(*sector_t)(unsafe.Pointer(s2)).Fspecialdata = floor
 			*(*actionf_p1)(unsafe.Pointer(floor + 16)) = __ccgo_fp(T_MoveFloor)
 			(*floormove_t)(unsafe.Pointer(floor)).Ftype1 = int32(donutRaise)
-			(*floormove_t)(unsafe.Pointer(floor)).Fcrush = uint32(false1)
+			(*floormove_t)(unsafe.Pointer(floor)).Fcrush = 0
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = s2
 			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) / libc.Int32FromInt32(2)
@@ -35807,7 +35798,7 @@ func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
 			(*sector_t)(unsafe.Pointer(s1)).Fspecialdata = floor
 			*(*actionf_p1)(unsafe.Pointer(floor + 16)) = __ccgo_fp(T_MoveFloor)
 			(*floormove_t)(unsafe.Pointer(floor)).Ftype1 = int32(lowerFloor)
-			(*floormove_t)(unsafe.Pointer(floor)).Fcrush = uint32(false1)
+			(*floormove_t)(unsafe.Pointer(floor)).Fcrush = 0
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = -int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = s1
 			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) / libc.Int32FromInt32(2)
@@ -35830,10 +35821,10 @@ func P_SpawnSpecials(tls *libc.TLS) {
 	var sector uintptr
 	// See if -TIMER was specified.
 	if timelimit > 0 && deathmatch != 0 {
-		levelTimer = uint32(true1)
+		levelTimer = 1
 		levelTimeCount = timelimit * int32(60) * int32(TICRATE)
 	} else {
-		levelTimer = uint32(false1)
+		levelTimer = 0
 	}
 	//	Init special SECTORs.
 	sector = sectors
@@ -36313,7 +36304,7 @@ func P_UseSpecialLine(tls *libc.TLS, thing uintptr, line uintptr, side int32) (r
 			// Sliding door open&close
 			// UNUSED?
 		default:
-			return uint32(false1)
+			return 0
 			break
 		}
 	}
@@ -36321,7 +36312,7 @@ func P_UseSpecialLine(tls *libc.TLS, thing uintptr, line uintptr, side int32) (r
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != 0) {
 		// never open secret doors
 		if int32((*line_t)(unsafe.Pointer(line)).Fflags)&int32(ML_SECRET) != 0 {
-			return uint32(false1)
+			return 0
 		}
 		switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
 		case int32(1): // MANUAL DOOR RAISE
@@ -36332,7 +36323,7 @@ func P_UseSpecialLine(tls *libc.TLS, thing uintptr, line uintptr, side int32) (r
 			fallthrough
 		case int32(34): // MANUAL YELLOW
 		default:
-			return uint32(false1)
+			return 0
 			break
 		}
 	}
@@ -36624,7 +36615,7 @@ func P_UseSpecialLine(tls *libc.TLS, thing uintptr, line uintptr, side int32) (r
 		P_ChangeSwitchTexture(tls, line, int32(1))
 		break
 	}
-	return uint32(true1)
+	return 1
 }
 
 // Data.
@@ -37063,10 +37054,10 @@ func P_PlayerThink(tls *libc.TLS, player uintptr) {
 	if libc.Int32FromUint8((*ticcmd_t)(unsafe.Pointer(cmd)).Fbuttons)&int32(BT_USE) != 0 {
 		if !((*player_t)(unsafe.Pointer(player)).Fusedown != 0) {
 			P_UseLines(tls, player)
-			(*player_t)(unsafe.Pointer(player)).Fusedown = int32(true1)
+			(*player_t)(unsafe.Pointer(player)).Fusedown = 1
 		}
 	} else {
-		(*player_t)(unsafe.Pointer(player)).Fusedown = int32(false1)
+		(*player_t)(unsafe.Pointer(player)).Fusedown = 0
 	}
 	// cycle psprites
 	P_MovePsprites(tls, player)
@@ -37436,7 +37427,7 @@ func R_CheckBBox(tls *libc.TLS, bspcoord uintptr) (r boolean) {
 	}
 	boxpos = boxy<<int32(2) + boxx
 	if boxpos == int32(5) {
-		return uint32(true1)
+		return 1
 	}
 	x1 = *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&checkcoord)) + uintptr(boxpos)*16)))*4))
 	y1 = *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&checkcoord)) + uintptr(boxpos)*16 + 1*4)))*4))
@@ -37448,14 +37439,14 @@ func R_CheckBBox(tls *libc.TLS, bspcoord uintptr) (r boolean) {
 	span = angle1 - angle2
 	// Sitting on a line?
 	if span >= uint32(ANG1809) {
-		return uint32(true1)
+		return 1
 	}
 	tspan = angle1 + clipangle
 	if tspan > uint32(2)*clipangle {
 		tspan -= uint32(2) * clipangle
 		// Totally off the left edge?
 		if tspan >= span {
-			return uint32(false1)
+			return 0
 		}
 		angle1 = clipangle
 	}
@@ -37464,7 +37455,7 @@ func R_CheckBBox(tls *libc.TLS, bspcoord uintptr) (r boolean) {
 		tspan -= uint32(2) * clipangle
 		// Totally off the left edge?
 		if tspan >= span {
-			return uint32(false1)
+			return 0
 		}
 		angle2 = -clipangle
 	}
@@ -37477,7 +37468,7 @@ func R_CheckBBox(tls *libc.TLS, bspcoord uintptr) (r boolean) {
 	sx2 = viewangletox[angle2]
 	// Does not cross a pixel.
 	if sx1 == sx2 {
-		return uint32(false1)
+		return 0
 	}
 	sx2--
 	start = uintptr(unsafe.Pointer(&solidsegs))
@@ -37486,9 +37477,9 @@ func R_CheckBBox(tls *libc.TLS, bspcoord uintptr) (r boolean) {
 	}
 	if sx1 >= (*cliprange_t)(unsafe.Pointer(start)).Ffirst && sx2 <= (*cliprange_t)(unsafe.Pointer(start)).Flast {
 		// The clippost contains the new span.
-		return uint32(false1)
+		return 0
 	}
-	return uint32(true1)
+	return 1
 }
 
 // C documentation
@@ -37792,7 +37783,7 @@ func R_GenerateLookup(tls *libc.TLS, texnum int32) {
 			if !(x < x2) {
 				break
 			}
-			*(*byte1)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))++
+			*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))++
 			*(*int16)(unsafe.Pointer(collump + uintptr(x)*2)) = int16((*texpatch_t)(unsafe.Pointer(patch)).Fpatch)
 			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = libc.Uint16FromInt32(*(*int32)(unsafe.Pointer(realpatch + 8 + uintptr(x-x1)*4)) + int32(3))
 			goto _2
@@ -37811,12 +37802,12 @@ func R_GenerateLookup(tls *libc.TLS, texnum int32) {
 		if !(x < int32((*texture_t)(unsafe.Pointer(texture)).Fwidth)) {
 			break
 		}
-		if !(*(*byte1)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x))) != 0) {
+		if !(*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x))) != 0) {
 			libc.Xprintf(tls, __ccgo_ts(25938), libc.VaList(bp+16, texture))
 			return
 		}
 		// I_Error ("R_GenerateLookup: column without a patch");
-		if libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))) > int32(1) {
+		if libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))) > int32(1) {
 			// Use the cached block.
 			*(*int16)(unsafe.Pointer(collump + uintptr(x)*2)) = int16(-int32(1))
 			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = libc.Uint16FromInt32(*(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)))
@@ -38405,7 +38396,7 @@ func R_DrawColumn(tls *libc.TLS) {
 	for {
 		// Re-map color indices from wall texture column
 		//  using a lighting/special effects LUT.
-		*(*byte1)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*byte1)(unsafe.Pointer(dc_source + uintptr(frac>>libc.Int32FromInt32(FRACBITS)&int32(127)))))))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>libc.Int32FromInt32(FRACBITS)&int32(127)))))))
 		dest += uintptr(SCREENWIDTH)
 		frac += fracstep
 		goto _2
@@ -38427,7 +38418,7 @@ func R_DrawColumnLow(tls *libc.TLS) {
 	var count, x, v1 int32
 	var dest, dest2 uintptr
 	var frac, fracstep fixed_t
-	var v3 byte1
+	var v3 uint8
 	count = dc_yh - dc_yl
 	// Zero length.
 	if count < 0 {
@@ -38445,9 +38436,9 @@ func R_DrawColumnLow(tls *libc.TLS) {
 	frac = dc_texturemid + (dc_yl-centery)*fracstep
 	for {
 		// Hack. Does not work corretly.
-		v3 = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*byte1)(unsafe.Pointer(dc_source + uintptr(frac>>libc.Int32FromInt32(FRACBITS)&int32(127)))))))
-		*(*byte1)(unsafe.Pointer(dest)) = v3
-		*(*byte1)(unsafe.Pointer(dest2)) = v3
+		v3 = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>libc.Int32FromInt32(FRACBITS)&int32(127)))))))
+		*(*uint8)(unsafe.Pointer(dest)) = v3
+		*(*uint8)(unsafe.Pointer(dest2)) = v3
 		dest += uintptr(SCREENWIDTH)
 		dest2 += uintptr(SCREENWIDTH)
 		frac += fracstep
@@ -38560,7 +38551,7 @@ func R_DrawFuzzColumn(tls *libc.TLS) {
 		//  a pixel that is either one column
 		//  left or right of the current one.
 		// Add index from colormap to index.
-		*(*byte1)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr(libc.Int32FromInt32(6)*libc.Int32FromInt32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos])))))))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr(libc.Int32FromInt32(6)*libc.Int32FromInt32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos])))))))
 		// Clamp table lookup index.
 		fuzzpos++
 		v3 = fuzzpos
@@ -38617,8 +38608,8 @@ func R_DrawFuzzColumnLow(tls *libc.TLS) {
 		//  a pixel that is either one column
 		//  left or right of the current one.
 		// Add index from colormap to index.
-		*(*byte1)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr(libc.Int32FromInt32(6)*libc.Int32FromInt32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos])))))))
-		*(*byte1)(unsafe.Pointer(dest2)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr(libc.Int32FromInt32(6)*libc.Int32FromInt32(256)+libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(dest2 + uintptr(fuzzoffset[fuzzpos])))))))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr(libc.Int32FromInt32(6)*libc.Int32FromInt32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos])))))))
+		*(*uint8)(unsafe.Pointer(dest2)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr(libc.Int32FromInt32(6)*libc.Int32FromInt32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dest2 + uintptr(fuzzoffset[fuzzpos])))))))
 		// Clamp table lookup index.
 		fuzzpos++
 		v3 = fuzzpos
@@ -38662,7 +38653,7 @@ func R_DrawTranslatedColumn(tls *libc.TLS) {
 		//  used with PLAY sprites.
 		// Thus the "green" ramp of the player 0 sprite
 		//  is mapped to gray, red, black/indigo.
-		*(*byte1)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*byte1)(unsafe.Pointer(dc_translation + uintptr(*(*byte1)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))))))))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))))))))
 		dest += uintptr(SCREENWIDTH)
 		frac += fracstep
 		goto _2
@@ -38702,8 +38693,8 @@ func R_DrawTranslatedColumnLow(tls *libc.TLS) {
 		//  used with PLAY sprites.
 		// Thus the "green" ramp of the player 0 sprite
 		//  is mapped to gray, red, black/indigo.
-		*(*byte1)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*byte1)(unsafe.Pointer(dc_translation + uintptr(*(*byte1)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))))))))
-		*(*byte1)(unsafe.Pointer(dest2)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*byte1)(unsafe.Pointer(dc_translation + uintptr(*(*byte1)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))))))))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))))))))
+		*(*uint8)(unsafe.Pointer(dest2)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))))))))
 		dest += uintptr(SCREENWIDTH)
 		dest2 += uintptr(SCREENWIDTH)
 		frac += fracstep
@@ -38729,7 +38720,7 @@ func R_DrawTranslatedColumnLow(tls *libc.TLS) {
 //	//
 func R_InitTranslationTables(tls *libc.TLS) {
 	var i int32
-	var v2, v3 byte1
+	var v2, v3 uint8
 	translationtables = Z_Malloc(tls, libc.Int32FromInt32(256)*libc.Int32FromInt32(3), int32(PU_STATIC), uintptr(0))
 	// translate just the 16 green colors
 	i = 0
@@ -38739,16 +38730,16 @@ func R_InitTranslationTables(tls *libc.TLS) {
 		}
 		if i >= int32(0x70) && i <= int32(0x7f) {
 			// map green ramp to gray, brown, red
-			*(*byte1)(unsafe.Pointer(translationtables + uintptr(i))) = libc.Uint8FromInt32(int32(0x60) + i&int32(0xf))
-			*(*byte1)(unsafe.Pointer(translationtables + uintptr(i+int32(256)))) = libc.Uint8FromInt32(int32(0x40) + i&int32(0xf))
-			*(*byte1)(unsafe.Pointer(translationtables + uintptr(i+int32(512)))) = libc.Uint8FromInt32(int32(0x20) + i&int32(0xf))
+			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i))) = libc.Uint8FromInt32(int32(0x60) + i&int32(0xf))
+			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(256)))) = libc.Uint8FromInt32(int32(0x40) + i&int32(0xf))
+			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(512)))) = libc.Uint8FromInt32(int32(0x20) + i&int32(0xf))
 		} else {
 			// Keep all other colors as is.
 			v3 = libc.Uint8FromInt32(i)
-			*(*byte1)(unsafe.Pointer(translationtables + uintptr(i+int32(512)))) = v3
+			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(512)))) = v3
 			v2 = v3
-			*(*byte1)(unsafe.Pointer(translationtables + uintptr(i+int32(256)))) = v2
-			*(*byte1)(unsafe.Pointer(translationtables + uintptr(i))) = v2
+			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(256)))) = v2
+			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i))) = v2
 		}
 		goto _1
 	_1:
@@ -38788,7 +38779,7 @@ func R_DrawSpan(tls *libc.TLS) {
 		//  re-index using light/colormap.
 		v3 = dest
 		dest++
-		*(*byte1)(unsafe.Pointer(v3)) = *(*lighttable_t)(unsafe.Pointer(ds_colormap + uintptr(*(*byte1)(unsafe.Pointer(ds_source + uintptr(spot))))))
+		*(*uint8)(unsafe.Pointer(v3)) = *(*lighttable_t)(unsafe.Pointer(ds_colormap + uintptr(*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot))))))
 		position += step
 		goto _2
 	_2:
@@ -38834,10 +38825,10 @@ func R_DrawSpanLow(tls *libc.TLS) {
 		//  while scale is adjusted appropriately.
 		v3 = dest
 		dest++
-		*(*byte1)(unsafe.Pointer(v3)) = *(*lighttable_t)(unsafe.Pointer(ds_colormap + uintptr(*(*byte1)(unsafe.Pointer(ds_source + uintptr(spot))))))
+		*(*uint8)(unsafe.Pointer(v3)) = *(*lighttable_t)(unsafe.Pointer(ds_colormap + uintptr(*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot))))))
 		v4 = dest
 		dest++
-		*(*byte1)(unsafe.Pointer(v4)) = *(*lighttable_t)(unsafe.Pointer(ds_colormap + uintptr(*(*byte1)(unsafe.Pointer(ds_source + uintptr(spot))))))
+		*(*uint8)(unsafe.Pointer(v4)) = *(*lighttable_t)(unsafe.Pointer(ds_colormap + uintptr(*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot))))))
 		position += step
 		goto _2
 	_2:
@@ -39437,7 +39428,7 @@ func R_InitLightTables(tls *libc.TLS) {
 }
 
 func R_SetViewSize(tls *libc.TLS, blocks int32, detail int32) {
-	setsizeneeded = uint32(true1)
+	setsizeneeded = 1
 	setblocks = blocks
 	setdetail = detail
 }
@@ -39451,7 +39442,7 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 	var cosadj, dy fixed_t
 	var i, j, level, startmap int32
 	var v1, v2 uintptr
-	setsizeneeded = uint32(false1)
+	setsizeneeded = 0
 	if setblocks == int32(11) {
 		scaledviewwidth = int32(SCREENWIDTH)
 		viewheight = int32(SCREENHEIGHT)
@@ -39832,7 +39823,7 @@ func R_CheckPlane(tls *libc.TLS, pl uintptr, start int32, stop int32) (r uintptr
 		if !(x <= intrh) {
 			break
 		}
-		if libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(pl + 21 + uintptr(x)))) != int32(0xff) {
+		if libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 21 + uintptr(x)))) != int32(0xff) {
 			break
 		}
 		goto _1
@@ -39900,8 +39891,8 @@ func R_DrawPlanes(tls *libc.TLS) {
 				if !(x <= (*visplane_t)(unsafe.Pointer(pl)).Fmaxx) {
 					break
 				}
-				dc_yl = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(pl + 21 + uintptr(x))))
-				dc_yh = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(pl + 343 + uintptr(x))))
+				dc_yl = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 21 + uintptr(x))))
+				dc_yh = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 343 + uintptr(x))))
 				if dc_yl <= dc_yh {
 					angle = libc.Int32FromUint32((viewangle + xtoviewangle[x]) >> int32(ANGLETOSKYSHIFT))
 					dc_x = x
@@ -39927,18 +39918,18 @@ func R_DrawPlanes(tls *libc.TLS) {
 			light = 0
 		}
 		planezlight = uintptr(unsafe.Pointer(&zlight)) + uintptr(light)*1024
-		*(*byte1)(unsafe.Pointer(pl + 21 + uintptr((*visplane_t)(unsafe.Pointer(pl)).Fmaxx+int32(1)))) = uint8(0xff)
-		*(*byte1)(unsafe.Pointer(pl + 21 + uintptr((*visplane_t)(unsafe.Pointer(pl)).Fminx-int32(1)))) = uint8(0xff)
+		*(*uint8)(unsafe.Pointer(pl + 21 + uintptr((*visplane_t)(unsafe.Pointer(pl)).Fmaxx+int32(1)))) = uint8(0xff)
+		*(*uint8)(unsafe.Pointer(pl + 21 + uintptr((*visplane_t)(unsafe.Pointer(pl)).Fminx-int32(1)))) = uint8(0xff)
 		stop = (*visplane_t)(unsafe.Pointer(pl)).Fmaxx + int32(1)
 		x = (*visplane_t)(unsafe.Pointer(pl)).Fminx
 		for {
 			if !(x <= stop) {
 				break
 			}
-			t1 = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(pl + 21 + uintptr(x-int32(1)))))
-			b1 = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(pl + 343 + uintptr(x-int32(1)))))
-			t2 = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(pl + 21 + uintptr(x))))
-			b2 = libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(pl + 343 + uintptr(x))))
+			t1 = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 21 + uintptr(x-int32(1)))))
+			b1 = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 343 + uintptr(x-int32(1)))))
+			t2 = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 21 + uintptr(x))))
+			b2 = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 343 + uintptr(x))))
 			for t1 < t2 && t1 <= b1 {
 				R_MapPlane(tls, t1, spanstart[t1], x-int32(1))
 				t1++
@@ -40098,8 +40089,8 @@ func R_RenderSegLoop(tls *libc.TLS) {
 				bottom = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - int32(1)
 			}
 			if top <= bottom {
-				*(*byte1)(unsafe.Pointer(ceilingplane + 21 + uintptr(rw_x))) = libc.Uint8FromInt32(top)
-				*(*byte1)(unsafe.Pointer(ceilingplane + 343 + uintptr(rw_x))) = libc.Uint8FromInt32(bottom)
+				*(*uint8)(unsafe.Pointer(ceilingplane + 21 + uintptr(rw_x))) = libc.Uint8FromInt32(top)
+				*(*uint8)(unsafe.Pointer(ceilingplane + 343 + uintptr(rw_x))) = libc.Uint8FromInt32(bottom)
 			}
 		}
 		yh = bottomfrac >> int32(HEIGHTBITS)
@@ -40113,8 +40104,8 @@ func R_RenderSegLoop(tls *libc.TLS) {
 				top = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + int32(1)
 			}
 			if top <= bottom {
-				*(*byte1)(unsafe.Pointer(floorplane + 21 + uintptr(rw_x))) = libc.Uint8FromInt32(top)
-				*(*byte1)(unsafe.Pointer(floorplane + 343 + uintptr(rw_x))) = libc.Uint8FromInt32(bottom)
+				*(*uint8)(unsafe.Pointer(floorplane + 21 + uintptr(rw_x))) = libc.Uint8FromInt32(top)
+				*(*uint8)(unsafe.Pointer(floorplane + 343 + uintptr(rw_x))) = libc.Uint8FromInt32(bottom)
 			}
 		}
 		// texturecolumn and lighting are independent of wall tiers
@@ -40283,7 +40274,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		// single sided line
 		midtexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr((*side_t)(unsafe.Pointer(sidedef)).Fmidtexture)*4))
 		// a single sided line is terminal, so it must mark ends
-		v8 = uint32(true1)
+		v8 = 1
 		markceiling = v8
 		markfloor = v8
 		if int32((*line_t)(unsafe.Pointer(linedef)).Fflags)&int32(ML_DONTPEGBOTTOM) != 0 {
@@ -40343,20 +40334,20 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 			worldtop = worldhigh
 		}
 		if worldlow != worldbottom || int32((*sector_t)(unsafe.Pointer(backsector)).Ffloorpic) != int32((*sector_t)(unsafe.Pointer(frontsector)).Ffloorpic) || int32((*sector_t)(unsafe.Pointer(backsector)).Flightlevel) != int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel) {
-			markfloor = uint32(true1)
+			markfloor = 1
 		} else {
 			// same plane on both sides
-			markfloor = uint32(false1)
+			markfloor = 0
 		}
 		if worldhigh != worldtop || int32((*sector_t)(unsafe.Pointer(backsector)).Fceilingpic) != int32((*sector_t)(unsafe.Pointer(frontsector)).Fceilingpic) || int32((*sector_t)(unsafe.Pointer(backsector)).Flightlevel) != int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel) {
-			markceiling = uint32(true1)
+			markceiling = 1
 		} else {
 			// same plane on both sides
-			markceiling = uint32(false1)
+			markceiling = 0
 		}
 		if (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight <= (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight || (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight >= (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight {
 			// closed door
-			v10 = uint32(true1)
+			v10 = 1
 			markfloor = v10
 			markceiling = v10
 		}
@@ -40388,7 +40379,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		// allocate space for masked texture tables
 		if (*side_t)(unsafe.Pointer(sidedef)).Fmidtexture != 0 {
 			// masked midtexture
-			maskedtexture = uint32(true1)
+			maskedtexture = 1
 			v11 = lastopening - uintptr(rw_x)*2
 			maskedtexturecol = v11
 			(*drawseg_t)(unsafe.Pointer(ds_p)).Fmaskedtexturecol = v11
@@ -40441,11 +40432,11 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	//  and doesn't need to be marked.
 	if (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight >= viewz {
 		// above view plane
-		markfloor = uint32(false1)
+		markfloor = 0
 	}
 	if (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight <= viewz && int32((*sector_t)(unsafe.Pointer(frontsector)).Fceilingpic) != skyflatnum {
 		// below view plane
-		markceiling = uint32(false1)
+		markceiling = 0
 	}
 	// calculate incremental stepping values for texture edges
 	worldtop >>= int32(4)
@@ -40530,20 +40521,20 @@ func R_InstallSpriteLump(tls *libc.TLS, lump int32, frame uint32, rotation uint3
 	}
 	if rotation == uint32(0) {
 		// the lump should be used for all rotations
-		if sprtemp[frame].Frotate == uint32(false1) {
+		if sprtemp[frame].Frotate == 0 {
 			I_Error(tls, __ccgo_ts(26656), libc.VaList(bp+8, spritename, uint32('A')+frame))
 		}
-		if sprtemp[frame].Frotate == uint32(true1) {
+		if sprtemp[frame].Frotate == 1 {
 			I_Error(tls, __ccgo_ts(26712), libc.VaList(bp+8, spritename, uint32('A')+frame))
 		}
-		sprtemp[frame].Frotate = uint32(false1)
+		sprtemp[frame].Frotate = 0
 		r = 0
 		for {
 			if !(r < int32(8)) {
 				break
 			}
 			*(*int16)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 4 + uintptr(r)*2)) = int16(lump - firstspritelump)
-			*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 20 + uintptr(r))) = uint8(flipped)
+			*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 20 + uintptr(r))) = uint8(flipped)
 			goto _1
 		_1:
 			;
@@ -40552,17 +40543,17 @@ func R_InstallSpriteLump(tls *libc.TLS, lump int32, frame uint32, rotation uint3
 		return
 	}
 	// the lump is only used for one rotation
-	if sprtemp[frame].Frotate == uint32(false1) {
+	if sprtemp[frame].Frotate == 0 {
 		I_Error(tls, __ccgo_ts(26712), libc.VaList(bp+8, spritename, uint32('A')+frame))
 	}
-	sprtemp[frame].Frotate = uint32(true1)
+	sprtemp[frame].Frotate = 1
 	// make 0 based
 	rotation--
 	if int32(*(*int16)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 4 + uintptr(rotation)*2))) != -int32(1) {
 		I_Error(tls, __ccgo_ts(26777), libc.VaList(bp+8, spritename, uint32('A')+frame, uint32('1')+rotation))
 	}
 	*(*int16)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 4 + uintptr(rotation)*2)) = int16(lump - firstspritelump)
-	*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 20 + uintptr(rotation))) = uint8(flipped)
+	*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 20 + uintptr(rotation))) = uint8(flipped)
 }
 
 // C documentation
@@ -40624,11 +40615,11 @@ func R_InitSpriteDefs(tls *libc.TLS, namelist uintptr) {
 				} else {
 					patched = l
 				}
-				R_InstallSpriteLump(tls, patched, libc.Uint32FromInt32(frame), libc.Uint32FromInt32(rotation), uint32(false1))
+				R_InstallSpriteLump(tls, patched, libc.Uint32FromInt32(frame), libc.Uint32FromInt32(rotation), 0)
 				if *(*int8)(unsafe.Pointer(lumpinfo + uintptr(l)*40 + 6)) != 0 {
 					frame = int32(*(*int8)(unsafe.Pointer(lumpinfo + uintptr(l)*40 + 6))) - int32('A')
 					rotation = int32(*(*int8)(unsafe.Pointer(lumpinfo + uintptr(l)*40 + 7))) - int32('0')
-					R_InstallSpriteLump(tls, l, libc.Uint32FromInt32(frame), libc.Uint32FromInt32(rotation), uint32(true1))
+					R_InstallSpriteLump(tls, l, libc.Uint32FromInt32(frame), libc.Uint32FromInt32(rotation), 1)
 				}
 			}
 			goto _2
@@ -40872,11 +40863,11 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 		ang = R_PointToAngle(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy)
 		rot = (ang - (*mobj_t)(unsafe.Pointer(thing)).Fangle + libc.Uint32FromInt32(libc.Int32FromInt32(ANG455)/libc.Int32FromInt32(2))*libc.Uint32FromInt32(9)) >> int32(29)
 		lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4 + uintptr(rot)*2)))
-		flip = uint32(*(*byte1)(unsafe.Pointer(sprframe + 20 + uintptr(rot))))
+		flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20 + uintptr(rot))))
 	} else {
 		// use single rotation for all views
 		lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4)))
-		flip = uint32(*(*byte1)(unsafe.Pointer(sprframe + 20)))
+		flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20)))
 	}
 	// calculate edges of the shape
 	tx -= *(*fixed_t)(unsafe.Pointer(spriteoffset + uintptr(lump)*4))
@@ -41011,7 +41002,7 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 	}
 	sprframe = (*spritedef_t)(unsafe.Pointer(sprdef)).Fspriteframes + uintptr((*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fframe&int32(FF_FRAMEMASK3))*28
 	lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4)))
-	flip = uint32(*(*byte1)(unsafe.Pointer(sprframe + 20)))
+	flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20)))
 	// calculate edges of the shape
 	tx = (*pspdef_t)(unsafe.Pointer(psp)).Fsx - libc.Int32FromInt32(160)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
 	tx -= *(*fixed_t)(unsafe.Pointer(spriteoffset + uintptr(lump)*4))
@@ -41412,16 +41403,16 @@ func Transform(tls *libc.TLS, hd uintptr, data uintptr) {
 		}
 		v2 = data
 		data++
-		*(*byte1)(unsafe.Pointer(p2 + 3)) = *(*byte1)(unsafe.Pointer(v2))
+		*(*uint8)(unsafe.Pointer(p2 + 3)) = *(*uint8)(unsafe.Pointer(v2))
 		v3 = data
 		data++
-		*(*byte1)(unsafe.Pointer(p2 + 2)) = *(*byte1)(unsafe.Pointer(v3))
+		*(*uint8)(unsafe.Pointer(p2 + 2)) = *(*uint8)(unsafe.Pointer(v3))
 		v4 = data
 		data++
-		*(*byte1)(unsafe.Pointer(p2 + 1)) = *(*byte1)(unsafe.Pointer(v4))
+		*(*uint8)(unsafe.Pointer(p2 + 1)) = *(*uint8)(unsafe.Pointer(v4))
 		v5 = data
 		data++
-		*(*byte1)(unsafe.Pointer(p2)) = *(*byte1)(unsafe.Pointer(v5))
+		*(*uint8)(unsafe.Pointer(p2)) = *(*uint8)(unsafe.Pointer(v5))
 		goto _1
 	_1:
 		;
@@ -41815,7 +41806,7 @@ func SHA1_Update(tls *libc.TLS, hd uintptr, inbuf uintptr, inlen size_t) {
 			*(*int32)(unsafe.Pointer(v3))++
 			v4 = inbuf
 			inbuf++
-			*(*byte1)(unsafe.Pointer(hd + 24 + uintptr(v2))) = *(*byte1)(unsafe.Pointer(v4))
+			*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v2))) = *(*uint8)(unsafe.Pointer(v4))
 			goto _1
 		_1:
 			;
@@ -41842,7 +41833,7 @@ func SHA1_Update(tls *libc.TLS, hd uintptr, inbuf uintptr, inlen size_t) {
 		*(*int32)(unsafe.Pointer(v7))++
 		v8 = inbuf
 		inbuf++
-		*(*byte1)(unsafe.Pointer(hd + 24 + uintptr(v6))) = *(*byte1)(unsafe.Pointer(v8))
+		*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v6))) = *(*uint8)(unsafe.Pointer(v8))
 		goto _5
 	_5:
 		;
@@ -41882,108 +41873,108 @@ func SHA1_Final(tls *libc.TLS, digest uintptr, hd uintptr) {
 		v2 = hd + 88
 		v1 = *(*int32)(unsafe.Pointer(v2))
 		*(*int32)(unsafe.Pointer(v2))++
-		*(*byte1)(unsafe.Pointer(hd + 24 + uintptr(v1))) = uint8(0x80) /* pad */
+		*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v1))) = uint8(0x80) /* pad */
 		for (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < int32(56) {
 			v4 = hd + 88
 			v3 = *(*int32)(unsafe.Pointer(v4))
 			*(*int32)(unsafe.Pointer(v4))++
-			*(*byte1)(unsafe.Pointer(hd + 24 + uintptr(v3))) = uint8(0)
+			*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v3))) = uint8(0)
 		} /* pad */
 	} else {
 		/* need one extra block */
 		v6 = hd + 88
 		v5 = *(*int32)(unsafe.Pointer(v6))
 		*(*int32)(unsafe.Pointer(v6))++
-		*(*byte1)(unsafe.Pointer(hd + 24 + uintptr(v5))) = uint8(0x80) /* pad character */
+		*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v5))) = uint8(0x80) /* pad character */
 		for (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < int32(64) {
 			v8 = hd + 88
 			v7 = *(*int32)(unsafe.Pointer(v8))
 			*(*int32)(unsafe.Pointer(v8))++
-			*(*byte1)(unsafe.Pointer(hd + 24 + uintptr(v7))) = uint8(0)
+			*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v7))) = uint8(0)
 		}
 		SHA1_Update(tls, hd, libc.UintptrFromInt32(0), uint64(0)) /* flush */
 		libc.Xmemset(tls, hd+24, 0, uint64(56))                   /* fill next block with zeroes */
 	}
 	/* append the 64 bit count */
-	*(*byte1)(unsafe.Pointer(hd + 24 + 56)) = uint8(msb >> int32(24))
-	*(*byte1)(unsafe.Pointer(hd + 24 + 57)) = uint8(msb >> int32(16))
-	*(*byte1)(unsafe.Pointer(hd + 24 + 58)) = uint8(msb >> int32(8))
-	*(*byte1)(unsafe.Pointer(hd + 24 + 59)) = uint8(msb)
-	*(*byte1)(unsafe.Pointer(hd + 24 + 60)) = uint8(lsb >> int32(24))
-	*(*byte1)(unsafe.Pointer(hd + 24 + 61)) = uint8(lsb >> int32(16))
-	*(*byte1)(unsafe.Pointer(hd + 24 + 62)) = uint8(lsb >> int32(8))
-	*(*byte1)(unsafe.Pointer(hd + 24 + 63)) = uint8(lsb)
+	*(*uint8)(unsafe.Pointer(hd + 24 + 56)) = uint8(msb >> int32(24))
+	*(*uint8)(unsafe.Pointer(hd + 24 + 57)) = uint8(msb >> int32(16))
+	*(*uint8)(unsafe.Pointer(hd + 24 + 58)) = uint8(msb >> int32(8))
+	*(*uint8)(unsafe.Pointer(hd + 24 + 59)) = uint8(msb)
+	*(*uint8)(unsafe.Pointer(hd + 24 + 60)) = uint8(lsb >> int32(24))
+	*(*uint8)(unsafe.Pointer(hd + 24 + 61)) = uint8(lsb >> int32(16))
+	*(*uint8)(unsafe.Pointer(hd + 24 + 62)) = uint8(lsb >> int32(8))
+	*(*uint8)(unsafe.Pointer(hd + 24 + 63)) = uint8(lsb)
 	Transform(tls, hd, hd+24)
 	p = hd + 24
 	v9 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v9)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> int32(24))
+	*(*uint8)(unsafe.Pointer(v9)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> int32(24))
 	v10 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v10)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> int32(16))
+	*(*uint8)(unsafe.Pointer(v10)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> int32(16))
 	v11 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v11)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> int32(8))
+	*(*uint8)(unsafe.Pointer(v11)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> int32(8))
 	v12 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v12)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0)
+	*(*uint8)(unsafe.Pointer(v12)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0)
 	v13 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v13)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> int32(24))
+	*(*uint8)(unsafe.Pointer(v13)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> int32(24))
 	v14 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v14)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> int32(16))
+	*(*uint8)(unsafe.Pointer(v14)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> int32(16))
 	v15 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v15)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> int32(8))
+	*(*uint8)(unsafe.Pointer(v15)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> int32(8))
 	v16 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v16)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1)
+	*(*uint8)(unsafe.Pointer(v16)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1)
 	v17 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v17)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> int32(24))
+	*(*uint8)(unsafe.Pointer(v17)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> int32(24))
 	v18 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v18)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> int32(16))
+	*(*uint8)(unsafe.Pointer(v18)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> int32(16))
 	v19 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v19)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> int32(8))
+	*(*uint8)(unsafe.Pointer(v19)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> int32(8))
 	v20 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v20)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2)
+	*(*uint8)(unsafe.Pointer(v20)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2)
 	v21 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v21)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> int32(24))
+	*(*uint8)(unsafe.Pointer(v21)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> int32(24))
 	v22 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v22)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> int32(16))
+	*(*uint8)(unsafe.Pointer(v22)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> int32(16))
 	v23 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v23)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> int32(8))
+	*(*uint8)(unsafe.Pointer(v23)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> int32(8))
 	v24 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v24)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3)
+	*(*uint8)(unsafe.Pointer(v24)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3)
 	v25 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v25)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> int32(24))
+	*(*uint8)(unsafe.Pointer(v25)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> int32(24))
 	v26 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v26)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> int32(16))
+	*(*uint8)(unsafe.Pointer(v26)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> int32(16))
 	v27 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v27)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> int32(8))
+	*(*uint8)(unsafe.Pointer(v27)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> int32(8))
 	v28 = p
 	p++
-	*(*byte1)(unsafe.Pointer(v28)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4)
+	*(*uint8)(unsafe.Pointer(v28)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4)
 	libc.Xmemcpy(tls, digest, hd+24, uint64(20))
 }
 
 func SHA1_UpdateInt32(tls *libc.TLS, context uintptr, val uint32) {
 	bp := alloc(16)
-	(*(*[4]byte1)(unsafe.Pointer(bp)))[0] = uint8(val >> int32(24) & uint32(0xff))
-	(*(*[4]byte1)(unsafe.Pointer(bp)))[int32(1)] = uint8(val >> int32(16) & uint32(0xff))
-	(*(*[4]byte1)(unsafe.Pointer(bp)))[int32(2)] = uint8(val >> int32(8) & uint32(0xff))
-	(*(*[4]byte1)(unsafe.Pointer(bp)))[int32(3)] = uint8(val & uint32(0xff))
+	(*(*[4]uint8)(unsafe.Pointer(bp)))[0] = uint8(val >> int32(24) & uint32(0xff))
+	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(1)] = uint8(val >> int32(16) & uint32(0xff))
+	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(2)] = uint8(val >> int32(8) & uint32(0xff))
+	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(3)] = uint8(val & uint32(0xff))
 	SHA1_Update(tls, context, bp, uint64(4))
 }
 
@@ -43153,7 +43144,7 @@ func STlib_updateMultIcon(tls *libc.TLS, mi uintptr, refresh boolean) {
 func STlib_initBinIcon(tls *libc.TLS, b uintptr, x int32, y int32, i uintptr, val uintptr, on uintptr) {
 	(*st_binicon_t)(unsafe.Pointer(b)).Fx = x
 	(*st_binicon_t)(unsafe.Pointer(b)).Fy = y
-	(*st_binicon_t)(unsafe.Pointer(b)).Foldval = uint32(false1)
+	(*st_binicon_t)(unsafe.Pointer(b)).Foldval = 0
 	(*st_binicon_t)(unsafe.Pointer(b)).Fval = val
 	(*st_binicon_t)(unsafe.Pointer(b)).Fon = on
 	(*st_binicon_t)(unsafe.Pointer(b)).Fp = i
@@ -43538,7 +43529,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keyup) && libc.Uint32FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata1)&uint32(0xffff0000) == libc.Uint32FromInt32(libc.Int32FromUint8('a')<<libc.Int32FromInt32(24)+libc.Int32FromUint8('m')<<libc.Int32FromInt32(16)) {
 		switch (*event_t)(unsafe.Pointer(ev)).Fdata1 {
 		case libc.Int32FromUint8('a')<<libc.Int32FromInt32(24) + libc.Int32FromUint8('m')<<libc.Int32FromInt32(16) | libc.Int32FromUint8('e')<<libc.Int32FromInt32(8):
-			st_firsttime = uint32(true1)
+			st_firsttime = 1
 		case libc.Int32FromUint8('a')<<libc.Int32FromInt32(24) + libc.Int32FromUint8('m')<<libc.Int32FromInt32(16) | libc.Int32FromUint8('x')<<libc.Int32FromInt32(8):
 			//	fprintf(stderr, "AM exited\n");
 			break
@@ -43567,7 +43558,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 							if !(i < int32(NUMWEAPONS)) {
 								break
 							}
-							*(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(i)*4)) = uint32(true1)
+							*(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(i)*4)) = 1
 							goto _1
 						_1:
 							;
@@ -43594,7 +43585,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 								if !(i < int32(NUMWEAPONS)) {
 									break
 								}
-								*(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(i)*4)) = uint32(true1)
+								*(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(i)*4)) = 1
 								goto _3
 							_3:
 								;
@@ -43616,7 +43607,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 								if !(i < int32(NUMCARDS)) {
 									break
 								}
-								*(*boolean)(unsafe.Pointer(plyr + 80 + uintptr(i)*4)) = uint32(true1)
+								*(*boolean)(unsafe.Pointer(plyr + 80 + uintptr(i)*4)) = 1
 								goto _5
 							_5:
 								;
@@ -43712,8 +43703,8 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 					(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27732)
 				} else {
 					if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_choppers)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
-						*(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(wp_chainsaw)*4)) = uint32(true1)
-						*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_invulnerability)*4)) = int32(true1)
+						*(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(wp_chainsaw)*4)) = 1
+						*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_invulnerability)*4)) = 1
 						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27778)
 					} else {
 						if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_mypos)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
@@ -43739,25 +43730,25 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 				}
 				// Catch invalid maps.
 				if epsd < int32(1) {
-					return uint32(false1)
+					return 0
 				}
 				if map1 < int32(1) {
-					return uint32(false1)
+					return 0
 				}
 				// Ohmygod - this is not going to work.
 				if gamemode == int32(retail) && (epsd > int32(4) || map1 > int32(9)) {
-					return uint32(false1)
+					return 0
 				}
 				if gamemode == int32(registered) && (epsd > int32(3) || map1 > int32(9)) {
-					return uint32(false1)
+					return 0
 				}
 				if gamemode == int32(shareware) && (epsd > int32(1) || map1 > int32(9)) {
-					return uint32(false1)
+					return 0
 				}
 				// The source release has this check as map > 34. However, Vanilla
 				// Doom allows IDCLEV up to MAP40 even though it normally crashes.
 				if gamemode == int32(commercial) && (epsd > int32(1) || map1 > int32(40)) {
-					return uint32(false1)
+					return 0
 				}
 				// So be it.
 				(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27825)
@@ -43765,7 +43756,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 			}
 		}
 	}
-	return uint32(false1)
+	return 0
 }
 
 var buf [52]int8
@@ -43812,14 +43803,14 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 	if priority < int32(9) {
 		if (*player_t)(unsafe.Pointer(plyr)).Fbonuscount != 0 {
 			// picking up bonus
-			doevilgrin = uint32(false1)
+			doevilgrin = 0
 			i = 0
 			for {
 				if !(i < int32(NUMWEAPONS)) {
 					break
 				}
 				if oldweaponsowned[i] != *(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(i)*4)) {
-					doevilgrin = uint32(true1)
+					doevilgrin = 1
 					oldweaponsowned[i] = *(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(i)*4))
 				}
 				goto _1
@@ -44107,16 +44098,16 @@ func ST_drawWidgets(tls *libc.TLS, refresh boolean) {
 }
 
 func ST_doRefresh(tls *libc.TLS) {
-	st_firsttime = uint32(false1)
+	st_firsttime = 0
 	// draw status bar background to off-screen buff
 	ST_refreshBackground(tls)
 	// and refresh all widgets
-	ST_drawWidgets(tls, uint32(true1))
+	ST_drawWidgets(tls, 1)
 }
 
 func ST_diffDraw(tls *libc.TLS) {
 	// update all widgets
-	ST_drawWidgets(tls, uint32(false1))
+	ST_drawWidgets(tls, 0)
 }
 
 func ST_Drawer(tls *libc.TLS, fullscreen boolean, refresh boolean) {
@@ -44255,9 +44246,9 @@ func ST_loadData(tls *libc.TLS) {
 
 func ST_initData(tls *libc.TLS) {
 	var i int32
-	st_firsttime = uint32(true1)
+	st_firsttime = 1
 	plyr = uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328
-	st_statusbaron = uint32(true1)
+	st_statusbaron = 1
 	st_faceindex = 0
 	st_palette = -int32(1)
 	st_oldhealth = -int32(1)
@@ -44330,7 +44321,7 @@ func ST_createWidgets(tls *libc.TLS) {
 	STlib_initNum(tls, uintptr(unsafe.Pointer(&w_maxammo))+3*48, int32(ST_MAXAMMO3X), int32(ST_MAXAMMO3Y), uintptr(unsafe.Pointer(&shortnum)), plyr+184+3*4, uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
 }
 
-var st_stopped = uint32(true1)
+var st_stopped = 1
 
 func ST_Start(tls *libc.TLS) {
 	if !(st_stopped != 0) {
@@ -44338,7 +44329,7 @@ func ST_Start(tls *libc.TLS) {
 	}
 	ST_initData(tls)
 	ST_createWidgets(tls)
-	st_stopped = uint32(false1)
+	st_stopped = 0
 }
 
 func ST_Stop(tls *libc.TLS) {
@@ -44346,7 +44337,7 @@ func ST_Stop(tls *libc.TLS) {
 		return
 	}
 	I_SetPalette(tls, W_CacheLumpNum(tls, lu_palette, int32(PU_CACHE)))
-	st_stopped = uint32(true1)
+	st_stopped = 1
 }
 
 func ST_Init(tls *libc.TLS) {
@@ -44451,7 +44442,7 @@ func S_Init(tls *libc.TLS, sfxVolume int32, musicVolume int32) {
 		;
 		i++
 	}
-	I_AtExit(tls, __ccgo_fp(S_Shutdown), uint32(true1))
+	I_AtExit(tls, __ccgo_fp(S_Shutdown), 1)
 }
 
 func S_Shutdown(tls *libc.TLS) {
@@ -44534,7 +44525,7 @@ func S_Start(tls *libc.TLS) {
 			mnum = spmus[gamemap-int32(1)]
 		}
 	}
-	S_ChangeMusic(tls, mnum, int32(true1))
+	S_ChangeMusic(tls, mnum, 1)
 }
 
 func S_StopSound(tls *libc.TLS, origin uintptr) {
@@ -44726,14 +44717,14 @@ func S_StartSound(tls *libc.TLS, origin_p uintptr, sfx_id int32) {
 func S_PauseSound(tls *libc.TLS) {
 	if mus_playing != 0 && !(mus_paused != 0) {
 		I_PauseSong(tls)
-		mus_paused = uint32(true1)
+		mus_paused = 1
 	}
 }
 
 func S_ResumeSound(tls *libc.TLS) {
 	if mus_playing != 0 && mus_paused != 0 {
 		I_ResumeSong(tls)
-		mus_paused = uint32(false1)
+		mus_paused = 0
 	}
 }
 
@@ -44813,7 +44804,7 @@ func S_SetSfxVolume(tls *libc.TLS, volume int32) {
 //
 
 func S_StartMusic(tls *libc.TLS, m_id int32) {
-	S_ChangeMusic(tls, m_id, int32(false1))
+	S_ChangeMusic(tls, m_id, 0)
 }
 
 func S_ChangeMusic(tls *libc.TLS, musicnum int32, looping int32) {
@@ -61385,7 +61376,7 @@ func V_DrawPatch(tls *libc.TLS, x int32, y int32, patch uintptr) {
 				}
 				v3 = source
 				source++
-				*(*byte1)(unsafe.Pointer(dest)) = *(*byte1)(unsafe.Pointer(v3))
+				*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(v3))
 				dest += uintptr(SCREENWIDTH)
 			}
 			column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + libc.UintptrFromInt32(4)
@@ -61440,7 +61431,7 @@ func V_DrawPatchFlipped(tls *libc.TLS, x int32, y int32, patch uintptr) {
 				}
 				v3 = source
 				source++
-				*(*byte1)(unsafe.Pointer(dest)) = *(*byte1)(unsafe.Pointer(v3))
+				*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(v3))
 				dest += uintptr(SCREENWIDTH)
 			}
 			column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + libc.UintptrFromInt32(4)
@@ -61639,21 +61630,21 @@ func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, he
 		if !(i < width*height) {
 			break
 		}
-		if libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(data)))&int32(0xc0) != int32(0xc0) {
+		if libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(data)))&int32(0xc0) != int32(0xc0) {
 			v2 = pack
 			pack++
 			v3 = data
 			data++
-			*(*byte1)(unsafe.Pointer(v2)) = *(*byte1)(unsafe.Pointer(v3))
+			*(*uint8)(unsafe.Pointer(v2)) = *(*uint8)(unsafe.Pointer(v3))
 		} else {
 			v4 = pack
 			pack++
-			*(*byte1)(unsafe.Pointer(v4)) = uint8(0xc1)
+			*(*uint8)(unsafe.Pointer(v4)) = uint8(0xc1)
 			v5 = pack
 			pack++
 			v6 = data
 			data++
-			*(*byte1)(unsafe.Pointer(v5)) = *(*byte1)(unsafe.Pointer(v6))
+			*(*uint8)(unsafe.Pointer(v5)) = *(*uint8)(unsafe.Pointer(v6))
 		}
 		goto _1
 	_1:
@@ -61663,7 +61654,7 @@ func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, he
 	// write the palette
 	v7 = pack
 	pack++
-	*(*byte1)(unsafe.Pointer(v7)) = uint8(0x0c) // palette ID byte
+	*(*uint8)(unsafe.Pointer(v7)) = uint8(0x0c) // palette ID byte
 	i = 0
 	for {
 		if !(i < int32(768)) {
@@ -61673,7 +61664,7 @@ func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, he
 		pack++
 		v10 = palette
 		palette++
-		*(*byte1)(unsafe.Pointer(v9)) = *(*byte1)(unsafe.Pointer(v10))
+		*(*uint8)(unsafe.Pointer(v9)) = *(*uint8)(unsafe.Pointer(v10))
 		goto _8
 	_8:
 		;
@@ -62415,7 +62406,7 @@ func WI_drawOnLnode(tls *libc.TLS, n int32, c uintptr) {
 	bp := alloc(16)
 	var bottom, i, left, right, top int32
 	var fits boolean
-	fits = uint32(false1)
+	fits = 0
 	i = 0
 	for cond := true; cond; cond = !(fits != 0) && i != int32(2) && *(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)) != libc.UintptrFromInt32(0) {
 		left = (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fx - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Fleftoffset)
@@ -62423,7 +62414,7 @@ func WI_drawOnLnode(tls *libc.TLS, n int32, c uintptr) {
 		right = left + int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Fwidth)
 		bottom = top + int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Fheight)
 		if left >= 0 && right < int32(SCREENWIDTH) && top >= 0 && bottom < int32(SCREENHEIGHT) {
-			fits = uint32(true1)
+			fits = 1
 		} else {
 			i++
 		}
@@ -62661,7 +62652,7 @@ func WI_updateNoState(tls *libc.TLS) {
 	}
 }
 
-var snl_pointeron = uint32(false1)
+var snl_pointeron = uint32(0)
 
 func WI_initShowNextLoc(tls *libc.TLS) {
 	state = int32(ShowNextLoc)
@@ -62678,7 +62669,7 @@ func WI_updateShowNextLoc(tls *libc.TLS) {
 	if !(v1 != 0) || acceleratestage != 0 {
 		WI_initNoState(tls)
 	} else {
-		snl_pointeron = libc.BoolUint32(cnt&int32(31) < int32(20))
+		snl_pointeron = libc.BoolUint32(cnt&31 < 20)
 	}
 }
 
@@ -62726,7 +62717,7 @@ func WI_drawShowNextLoc(tls *libc.TLS) {
 }
 
 func WI_drawNoState(tls *libc.TLS) {
-	snl_pointeron = uint32(true1)
+	snl_pointeron = 1
 	WI_drawShowNextLoc(tls)
 }
 
@@ -62831,7 +62822,7 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 		if !(bcnt&libc.Int32FromInt32(3) != 0) {
 			S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 		}
-		stillticking = uint32(false1)
+		stillticking = 0
 		i = 0
 		for {
 			if !(i < int32(MAXPLAYERS)) {
@@ -62855,7 +62846,7 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 						if *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) < -int32(99) {
 							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = -int32(99)
 						}
-						stillticking = uint32(true1)
+						stillticking = 1
 					}
 					goto _4
 				_4:
@@ -63041,7 +63032,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 		if !(bcnt&libc.Int32FromInt32(3) != 0) {
 			S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 		}
-		stillticking = uint32(false1)
+		stillticking = 0
 		i = 0
 		for {
 			if !(i < int32(MAXPLAYERS)) {
@@ -63054,7 +63045,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 			if cnt_kills[i] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fskills*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills {
 				cnt_kills[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fskills * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
 			} else {
-				stillticking = uint32(true1)
+				stillticking = 1
 			}
 			goto _2
 		_2:
@@ -63070,7 +63061,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 			if !(bcnt&libc.Int32FromInt32(3) != 0) {
 				S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 			}
-			stillticking = uint32(false1)
+			stillticking = 0
 			i = 0
 			for {
 				if !(i < int32(MAXPLAYERS)) {
@@ -63083,7 +63074,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 				if cnt_items[i] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fsitems*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems {
 					cnt_items[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fsitems * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
 				} else {
-					stillticking = uint32(true1)
+					stillticking = 1
 				}
 				goto _3
 			_3:
@@ -63099,7 +63090,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 				if !(bcnt&libc.Int32FromInt32(3) != 0) {
 					S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 				}
-				stillticking = uint32(false1)
+				stillticking = 0
 				i = 0
 				for {
 					if !(i < int32(MAXPLAYERS)) {
@@ -63112,7 +63103,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 					if cnt_secret[i] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fssecret*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret {
 						cnt_secret[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fssecret * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
 					} else {
-						stillticking = uint32(true1)
+						stillticking = 1
 					}
 					goto _4
 				_4:
@@ -63128,7 +63119,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 					if !(bcnt&libc.Int32FromInt32(3) != 0) {
 						S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 					}
-					stillticking = uint32(false1)
+					stillticking = 0
 					i = 0
 					for {
 						if !(i < int32(MAXPLAYERS)) {
@@ -63143,7 +63134,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 						if cnt_frags[i] >= v6 {
 							cnt_frags[i] = fsum
 						} else {
-							stillticking = uint32(true1)
+							stillticking = 1
 						}
 						goto _5
 					_5:
@@ -63370,17 +63361,17 @@ func WI_checkForAccelerate(tls *libc.TLS) {
 				if !((*player_t)(unsafe.Pointer(player)).Fattackdown != 0) {
 					acceleratestage = int32(1)
 				}
-				(*player_t)(unsafe.Pointer(player)).Fattackdown = int32(true1)
+				(*player_t)(unsafe.Pointer(player)).Fattackdown = 1
 			} else {
-				(*player_t)(unsafe.Pointer(player)).Fattackdown = int32(false1)
+				(*player_t)(unsafe.Pointer(player)).Fattackdown = 0
 			}
 			if libc.Int32FromUint8((*player_t)(unsafe.Pointer(player)).Fcmd.Fbuttons)&int32(BT_USE) != 0 {
 				if !((*player_t)(unsafe.Pointer(player)).Fusedown != 0) {
 					acceleratestage = int32(1)
 				}
-				(*player_t)(unsafe.Pointer(player)).Fusedown = int32(true1)
+				(*player_t)(unsafe.Pointer(player)).Fusedown = 1
 			} else {
-				(*player_t)(unsafe.Pointer(player)).Fusedown = int32(false1)
+				(*player_t)(unsafe.Pointer(player)).Fusedown = 0
 			}
 		}
 		goto _1
@@ -63400,9 +63391,9 @@ func WI_Ticker(tls *libc.TLS) {
 	if bcnt == int32(1) {
 		// intermission music
 		if gamemode == int32(commercial) {
-			S_ChangeMusic(tls, int32(mus_dm2int), int32(true1))
+			S_ChangeMusic(tls, int32(mus_dm2int), 1)
 		} else {
-			S_ChangeMusic(tls, int32(mus_inter), int32(true1))
+			S_ChangeMusic(tls, int32(mus_inter), 1)
 		}
 	}
 	WI_checkForAccelerate(tls)
@@ -63786,7 +63777,7 @@ func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
 	var filename uintptr
 	var modifiedgame boolean
 	var p, v1 int32
-	modifiedgame = uint32(false1)
+	modifiedgame = 0
 	//!
 	// @arg <files>
 	// @vanilla
@@ -63797,7 +63788,7 @@ func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
 	if p != 0 {
 		// the parms after p are wadfile/lump names,
 		// until end of parms or another - preceded parm
-		modifiedgame = uint32(true1) // homebrew levels
+		modifiedgame = 1 // homebrew levels
 		for {
 			p++
 			v1 = p
@@ -65392,7 +65383,7 @@ var columnofs [1120]int32
 
 var configdir uintptr
 
-var consistancy [4][128]byte1
+var consistancy [4][128]uint8
 
 var consoleplayer int32
 
