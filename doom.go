@@ -20,8 +20,6 @@ type int64_t = int64
 
 type uint8_t = uint8
 
-type uint16_t = uint16
-
 type uint32_t = uint32
 
 type boolean = uint32
@@ -2688,7 +2686,6 @@ func AM_addMark(tls *libc.TLS) {
 func AM_findMinMaxBoundaries(tls *libc.TLS) {
 	var a, b, v1, v2 fixed_t
 	var i, v4 int32
-	_, _, _, _, _, _ = a, b, i, v1, v2, v4
 	v1 = libc.Int32FromInt32(INT_MAX1)
 	min_y = v1
 	min_x = v1
@@ -2772,7 +2769,6 @@ func AM_changeWindowLoc(tls *libc.TLS) {
 func AM_initVariables(tls *libc.TLS) {
 	var pnum int32
 	var v1 fixed_t
-	_, _ = pnum, v1
 	automapactive = uint32(true1)
 	fb = I_VideoBuffer
 	f_oldloc.Fx = int32(INT_MAX1)
@@ -2979,7 +2975,6 @@ func AM_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	bp := tls.Alloc(32)
 	defer tls.Free(32)
 	var key, rc int32
-	_, _ = key, rc
 	rc = int32(false1)
 	if !(automapactive != 0) {
 		if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) && (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_map_toggle {
@@ -3212,7 +3207,6 @@ func AM_clearFB(tls *libc.TLS, color int32) {
 func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 	var dx, dy, outcode1, outcode2, outside int32
 	var tmp fpoint_t
-	_, _, _, _, _, _ = dx, dy, outcode1, outcode2, outside, tmp
 	outcode1 = 0
 	outcode2 = 0
 	// do trivial rejects and outcodes
@@ -3378,7 +3372,6 @@ func AM_drawFline(tls *libc.TLS, fl uintptr, color int32) {
 	bp := tls.Alloc(16)
 	defer tls.Free(16)
 	var ax, ay, d, dx, dy, sx, sy, x, y, v1, v2, v3, v4, v5 int32
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _ = ax, ay, d, dx, dy, sx, sy, x, y, v1, v2, v3, v4, v5
 	// For debugging only
 	if (*fline_t)(unsafe.Pointer(fl)).Fa.Fx < 0 || (*fline_t)(unsafe.Pointer(fl)).Fa.Fx >= f_w || (*fline_t)(unsafe.Pointer(fl)).Fa.Fy < 0 || (*fline_t)(unsafe.Pointer(fl)).Fa.Fy >= f_h || (*fline_t)(unsafe.Pointer(fl)).Fb.Fx < 0 || (*fline_t)(unsafe.Pointer(fl)).Fb.Fx >= f_w || (*fline_t)(unsafe.Pointer(fl)).Fb.Fy < 0 || (*fline_t)(unsafe.Pointer(fl)).Fb.Fy >= f_h {
 		v1 = fuck
@@ -3470,7 +3463,6 @@ func AM_drawGrid(tls *libc.TLS, color int32) {
 	defer tls.Free(16)
 	var end, start, x, y fixed_t
 	var _ /* ml at bp+0 */ mline_t
-	_, _, _, _ = end, start, x, y
 	// Figure out start of vertical gridlines
 	start = m_x
 	if (start-bmaporgx)%(libc.Int32FromInt32(MAPBLOCKUNITS)<<libc.Int32FromInt32(FRACBITS)) != 0 {
@@ -3641,7 +3633,6 @@ func AM_drawLineCharacter(tls *libc.TLS, lineguy uintptr, lineguylines int32, sc
 func AM_drawPlayers(tls *libc.TLS) {
 	var color, i, their_color int32
 	var p uintptr
-	_, _, _, _ = color, i, p, their_color
 	their_color = -int32(1)
 	if !(netgame != 0) {
 		if cheating != 0 {
@@ -3687,7 +3678,6 @@ var their_colors = [4]int32{
 func AM_drawThings(tls *libc.TLS, colors int32, colorrange int32) {
 	var i int32
 	var t uintptr
-	_, _ = i, t
 	i = 0
 	for {
 		if !(i < numsectors) {
@@ -3707,7 +3697,6 @@ func AM_drawThings(tls *libc.TLS, colors int32, colorrange int32) {
 
 func AM_drawMarks(tls *libc.TLS) {
 	var fx, fy, h, i, w int32
-	_, _, _, _, _ = fx, fy, h, i, w
 	i = 0
 	for {
 		if !(i < int32(AM_NUMMARKPOINTS)) {
@@ -4012,7 +4001,6 @@ func AddIWADDir(tls *libc.TLS, dir uintptr) {
 
 func DirIsFile(tls *libc.TLS, path uintptr, filename uintptr) (r boolean) {
 	var filename_len, path_len size_t
-	_, _ = filename_len, path_len
 	path_len = libc.Xstrlen(tls, path)
 	filename_len = libc.Xstrlen(tls, filename)
 	return libc.BoolUint32(path_len >= filename_len+uint64(1) && int32(*(*int8)(unsafe.Pointer(path + uintptr(path_len-filename_len-uint64(1))))) == int32('/') && !(libc.Xstrcasecmp(tls, path+uintptr(path_len-filename_len), filename) != 0))
@@ -4053,7 +4041,6 @@ func CheckDirectoryHasIWAD(tls *libc.TLS, dir uintptr, iwadname uintptr) (r uint
 func SearchDirectoryForIWAD(tls *libc.TLS, dir uintptr, mask int32, mission uintptr) (r uintptr) {
 	var filename uintptr
 	var i size_t
-	_, _ = filename, i
 	i = uint64(0)
 	for {
 		if !(i < libc.Uint64FromInt64(336)/libc.Uint64FromInt64(24)) {
@@ -4082,7 +4069,6 @@ func IdentifyIWADByName(tls *libc.TLS, name uintptr, mask int32) (r GameMission_
 	var i size_t
 	var mission GameMission_t
 	var p uintptr
-	_, _, _ = i, mission, p
 	p = libc.Xstrrchr(tls, name, int32('/'))
 	if p != libc.UintptrFromInt32(0) {
 		name = p + uintptr(1)
@@ -4130,7 +4116,6 @@ func D_FindWADByName(tls *libc.TLS, name uintptr) (r uintptr) {
 	defer tls.Free(32)
 	var i int32
 	var path uintptr
-	_, _ = i, path
 	// Absolute path?
 	if M_FileExists(tls, name) != 0 {
 		return name
@@ -4194,7 +4179,6 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
 	defer tls.Free(16)
 	var i, iwadparm int32
 	var iwadfile, result uintptr
-	_, _, _, _ = i, iwadfile, iwadparm, result
 	// Check for the -iwad parameter
 	//!
 	// Specify an IWAD file to use.
@@ -4388,7 +4372,6 @@ func BuildNewTic(tls *libc.TLS) (r boolean) {
 
 func NetUpdate(tls *libc.TLS) {
 	var i, newtics, nowtime int32
-	_, _, _ = i, newtics, nowtime
 	// If we are running with singletics (timing a demo), this
 	// is all done separately.
 	if singletics != 0 {
@@ -4476,7 +4459,6 @@ var oldnettics int32
 func OldNetSync(tls *libc.TLS) {
 	var i uint32
 	var keyplayer int32
-	_, _ = i, keyplayer
 	keyplayer = -int32(1)
 	frameon++
 	// ideally maketic should be 1 - 3 tics above lowtic
@@ -4520,7 +4502,6 @@ func OldNetSync(tls *libc.TLS) {
 func PlayersInGame(tls *libc.TLS) (r boolean) {
 	var i uint32
 	var result boolean
-	_, _ = i, result
 	result = uint32(false1)
 	// If we are connected to a server, check if there are any players
 	// in the game.
@@ -4551,7 +4532,6 @@ func PlayersInGame(tls *libc.TLS) (r boolean) {
 func TicdupSquash(tls *libc.TLS, set uintptr) {
 	var cmd uintptr
 	var i uint32
-	_, _ = cmd, i
 	i = uint32(0)
 	for {
 		if !(i < uint32(NET_MAXPLAYERS)) {
@@ -4597,7 +4577,6 @@ func SinglePlayerClear(tls *libc.TLS, set uintptr) {
 func TryRunTics(tls *libc.TLS) {
 	var availabletics, counts, entertic, i, lowtic, realtics, v1 int32
 	var set uintptr
-	_, _, _, _, _, _, _, _ = availabletics, counts, entertic, i, lowtic, realtics, set, v1
 	// get real tics
 	entertic = I_GetTime(tls) / ticdup
 	realtics = entertic - oldentertics
@@ -4904,7 +4883,6 @@ func init() {
 //	//
 func D_ProcessEvents(tls *libc.TLS) {
 	var ev, v1 uintptr
-	_, _ = ev, v1
 	// IF STORE DEMO, DO NOT ACCEPT INPUT
 	if storedemo != 0 {
 		return
@@ -4930,7 +4908,6 @@ func D_Display(tls *libc.TLS) {
 	var done, redrawsbar, wipe boolean
 	var nowtime, tics, wipestart, y int32
 	var v1 gamestate_t
-	_, _, _, _, _, _, _, _ = done, nowtime, redrawsbar, tics, wipe, wipestart, y, v1
 	if nodrawers != 0 {
 		return
 	} // for comparative timing / profiling
@@ -5313,7 +5290,6 @@ func GetGameName(tls *libc.TLS, gamename uintptr) (r uintptr) {
 	var gamename_size, i size_t
 	var version, v2, v3, v6, v7 int32
 	var v5, v9 bool
-	_, _, _, _, _, _, _, _, _, _ = deh_sub, gamename_size, i, version, v2, v3, v5, v6, v7, v9
 	i = uint64(0)
 	for {
 		if !(i < libc.Uint64FromInt64(56)/libc.Uint64FromInt64(8)) {
@@ -5422,7 +5398,6 @@ var packs = [3]struct {
 func D_IdentifyVersion(tls *libc.TLS) {
 	var i uint32
 	var p, v2, v3 int32
-	_, _, _, _ = i, p, v2, v3
 	// gamemission is set up by the D_FindIWAD function.  But if
 	// we specify '-iwad', we have to identify using
 	// IdentifyIWADByName.  However, if the iwad does not match
@@ -5501,7 +5476,6 @@ func D_IdentifyVersion(tls *libc.TLS) {
 func D_SetGameDescription(tls *libc.TLS) {
 	var is_freedm, is_freedoom boolean
 	var v1, v2, v3, v4, v5, v6, v7, v8 int32
-	_, _, _, _, _, _, _, _, _, _ = is_freedm, is_freedoom, v1, v2, v3, v4, v5, v6, v7, v8
 	is_freedoom = libc.BoolUint32(W_CheckNumForName(tls, __ccgo_ts+2670) >= 0)
 	is_freedm = libc.BoolUint32(W_CheckNumForName(tls, __ccgo_ts+2679) >= 0)
 	gamedescription = __ccgo_ts + 2686
@@ -5614,7 +5588,6 @@ func PrintDehackedBanners(tls *libc.TLS) {
 	defer tls.Free(16)
 	var deh_s uintptr
 	var i size_t
-	_, _ = deh_s, i
 	i = uint64(0)
 	for {
 		if !(i < libc.Uint64FromInt64(24)/libc.Uint64FromInt64(8)) {
@@ -5695,7 +5668,6 @@ func InitGameVersion(tls *libc.TLS) {
 	bp := tls.Alloc(32)
 	defer tls.Free(32)
 	var i, p int32
-	_, _ = i, p
 	//!
 	// @arg <version>
 	// @category compat
@@ -5828,7 +5800,6 @@ func D_DoomMain(tls *libc.TLS) {
 	var _ /* demolumpname at bp+256 */ [9]int8
 	var _ /* file at bp+0 */ [256]int8
 	var _ /* name at bp+265 */ [23][8]int8
-	_, _, _, _ = i, p, scale, v1
 	I_AtExit(tls, __ccgo_fp(D_Endoom), uint32(false1))
 	// print banner
 	I_PrintBanner(tls, __ccgo_ts+4001)
@@ -6278,7 +6249,6 @@ const ANG901 = 1073741824
 func PlayerQuitGame(tls *libc.TLS, player uintptr) {
 	var player_num uint32
 	var p1 uintptr
-	_, _ = player_num, p1
 	player_num = libc.Uint32FromInt64((int64(player) - __predefined_ptrdiff_t(uintptr(unsafe.Pointer(&players)))) / 328)
 	// Do this the same way as Vanilla Doom does, to allow dehacked
 	// replacements of this message
@@ -6651,7 +6621,6 @@ func F_StartFinale(tls *libc.TLS) {
 	var screen uintptr
 	var v1, v2, v4, v5, v6, v7 int32
 	var v8 bool
-	_, _, _, _, _, _, _, _, _ = i, screen, v1, v2, v4, v5, v6, v7, v8
 	gameaction = int32(ga_nothing)
 	gamestate = int32(GS_FINALE)
 	viewactive = uint32(false1)
@@ -6781,7 +6750,6 @@ func F_Ticker(tls *libc.TLS) {
 func F_TextWrite(tls *libc.TLS) {
 	var c, count, cx, cy, w, x, y int32
 	var ch, dest, src, v4 uintptr
-	_, _, _, _, _, _, _, _, _, _, _ = c, ch, count, cx, cy, dest, src, w, x, y, v4
 	// erase the entire screen to a tiled background
 	src = W_CacheLumpName(tls, finaleflat, int32(PU_CACHE))
 	dest = I_VideoBuffer
@@ -6963,7 +6931,6 @@ func F_StartCast(tls *libc.TLS) {
 //	//
 func F_CastTicker(tls *libc.TLS) {
 	var sfx, st, v1 int32
-	_, _, _ = sfx, st, v1
 	casttics--
 	v1 = casttics
 	if v1 > 0 {
@@ -7116,7 +7083,6 @@ func F_CastResponder(tls *libc.TLS, ev uintptr) (r boolean) {
 func F_CastPrint(tls *libc.TLS, text uintptr) {
 	var c, cx, w, width int32
 	var ch, v1, v2 uintptr
-	_, _, _, _, _, _, _ = c, ch, cx, w, width, v1, v2
 	// find width
 	ch = text
 	width = 0
@@ -7164,7 +7130,6 @@ func F_CastDrawer(tls *libc.TLS) {
 	var flip boolean
 	var lump int32
 	var patch, sprdef, sprframe uintptr
-	_, _, _, _, _ = flip, lump, patch, sprdef, sprframe
 	// erase the entire screen to a background
 	V_DrawPatch(tls, 0, 0, W_CacheLumpName(tls, __ccgo_ts+13631, int32(PU_CACHE)))
 	F_CastPrint(tls, castorder[castnum].Fname)
@@ -7189,7 +7154,6 @@ func F_CastDrawer(tls *libc.TLS) {
 func F_DrawPatchCol(tls *libc.TLS, x int32, patch uintptr, col int32) {
 	var column, dest, desttop, source, v2 uintptr
 	var count, v1 int32
-	_, _, _, _, _, _, _ = column, count, dest, desttop, source, v1, v2
 	column = patch + uintptr(*(*int32)(unsafe.Pointer(patch + 8 + uintptr(col)*4)))
 	desttop = I_VideoBuffer + uintptr(x)
 	// step through the posts in a column
@@ -7223,7 +7187,6 @@ func F_BunnyScroll(tls *libc.TLS) {
 	var p1, p2 uintptr
 	var scrolled, stage, x int32
 	var _ /* name at bp+0 */ [10]int8
-	_, _, _, _, _ = p1, p2, scrolled, stage, x
 	p1 = W_CacheLumpName(tls, __ccgo_ts+13640, int32(PU_LEVEL))
 	p2 = W_CacheLumpName(tls, __ccgo_ts+13646, int32(PU_LEVEL))
 	V_MarkRect(tls, 0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
@@ -7329,7 +7292,6 @@ var wipe_scr uintptr
 func wipe_shittyColMajorXform(tls *libc.TLS, array uintptr, width int32, height int32) {
 	var dest uintptr
 	var x, y int32
-	_, _, _ = dest, x, y
 	dest = Z_Malloc(tls, width*height*int32(2), int32(PU_STATIC), uintptr(0))
 	y = 0
 	for {
@@ -7365,7 +7327,6 @@ func wipe_doColorXForm(tls *libc.TLS, width int32, height int32, ticks int32) (r
 	var changed boolean
 	var e, w uintptr
 	var newval int32
-	_, _, _, _ = changed, e, newval, w
 	changed = uint32(false1)
 	w = wipe_scr
 	e = wipe_scr_end
@@ -7405,7 +7366,6 @@ var y uintptr
 
 func wipe_initMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r1 int32) {
 	var i, r int32
-	_, _ = i, r
 	// copy start screen to main screen
 	libc.Xmemcpy(tls, wipe_scr, wipe_scr_start, libc.Uint64FromInt32(width*height))
 	// makes this wipe faster (in theory)
@@ -7442,7 +7402,6 @@ func wipe_doMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r int32
 	var d, s, v5, v7 uintptr
 	var done boolean
 	var dy, i, idx, j, v1, v3 int32
-	_, _, _, _, _, _, _, _, _, _, _ = d, done, dy, i, idx, j, s, v1, v3, v5, v7
 	done = uint32(true1)
 	width /= int32(2)
 	for {
@@ -7715,7 +7674,6 @@ func init() {
 func WeaponSelectable(tls *libc.TLS, weapon weapontype_t) (r boolean) {
 	var v1, v2 int32
 	var v3 bool
-	_, _, _ = v1, v2, v3
 	// Can't select the super shotgun in Doom 1.
 	if v3 = weapon == int32(wp_supershotgun); v3 {
 		if gamemission == int32(pack_chex) {
@@ -7751,7 +7709,6 @@ func WeaponSelectable(tls *libc.TLS, weapon weapontype_t) (r boolean) {
 func G_NextWeapon(tls *libc.TLS, direction int32) (r int32) {
 	var i, start_i int32
 	var weapon weapontype_t
-	_, _, _ = i, start_i, weapon
 	// Find index in the table.
 	if players[consoleplayer].Fpendingweapon == int32(wp_nochange) {
 		weapon = players[consoleplayer].Freadyweapon
@@ -7793,7 +7750,6 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 	var desired_angleturn int16
 	var forward, i, key, side, speed, tspeed, v1, v16 int32
 	var p11, p12, p13, p14, p15, p17, p18, p2, p3, p4, p5, p6, p7, p8, p9 uintptr
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = bstrafe, desired_angleturn, forward, i, key, side, speed, strafe, tspeed, v1, v16, p11, p12, p13, p14, p15, p17, p18, p2, p3, p4, p5, p6, p7, p8, p9
 	libc.Xmemset(tls, cmd, 0, uint64(16))
 	(*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy = *(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(consoleplayer)*128 + uintptr(maketic%int32(BACKUPTICS))))
 	strafe = libc.BoolUint32(gamekeydown[key_strafe] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
@@ -8026,7 +7982,6 @@ func G_DoLoadLevel(tls *libc.TLS) {
 	var i, v2, v3, v4 int32
 	var skytexturename uintptr
 	var v5, v6 boolean
-	_, _, _, _, _, _, _ = i, skytexturename, v2, v3, v4, v5, v6
 	// Set the sky map.
 	// First thing, we have a dummy sky texture name,
 	//  a flat. The data is in the WAD only because
@@ -8096,7 +8051,6 @@ func G_DoLoadLevel(tls *libc.TLS) {
 
 func SetJoyButtons(tls *libc.TLS, buttons_mask uint32) {
 	var button_on, i int32
-	_, _ = button_on, i
 	i = 0
 	for {
 		if !(i < int32(MAX_JOY_BUTTONS)) {
@@ -8125,7 +8079,6 @@ func SetJoyButtons(tls *libc.TLS, buttons_mask uint32) {
 func SetMouseButtons(tls *libc.TLS, buttons_mask uint32) {
 	var button_on uint32
 	var i int32
-	_, _ = button_on, i
 	i = 0
 	for {
 		if !(i < int32(MAX_MOUSE_BUTTONS)) {
@@ -8251,7 +8204,6 @@ func G_Ticker(tls *libc.TLS) {
 	defer tls.Free(32)
 	var buf, i int32
 	var cmd uintptr
-	_, _, _ = buf, cmd, i
 	// do player reborns if needed
 	i = 0
 	for {
@@ -8428,7 +8380,6 @@ func G_PlayerReborn(tls *libc.TLS, player int32) {
 	var p uintptr
 	var v2 weapontype_t
 	var _ /* frags at bp+0 */ [4]int32
-	_, _, _, _, _, _, _ = i, itemcount, killcount, p, secretcount, v1, v2
 	libc.Xmemcpy(tls, bp, uintptr(unsafe.Pointer(&players))+uintptr(player)*328+108, uint64(16))
 	killcount = players[player].Fkillcount
 	itemcount = players[player].Fitemcount
@@ -8469,7 +8420,6 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 	var an, i int32
 	var mo, ss uintptr
 	var x, xa, y, ya, v2 fixed_t
-	_, _, _, _, _, _, _, _, _ = an, i, mo, ss, x, xa, y, ya, v2
 	if !(players[playernum].Fmo != 0) {
 		// first spawn of level, before corpses
 		i = 0
@@ -8566,7 +8516,6 @@ func G_DeathMatchSpawnPlayer(tls *libc.TLS, playernum int32) {
 	bp := tls.Alloc(16)
 	defer tls.Free(16)
 	var i, j, selections int32
-	_, _, _ = i, j, selections
 	selections = int32((int64(deathmatch_p) - __predefined_ptrdiff_t(uintptr(unsafe.Pointer(&deathmatchstarts)))) / 10)
 	if selections < int32(4) {
 		I_Error(tls, __ccgo_ts+13841, libc.VaList(bp+8, selections))
@@ -8996,7 +8945,6 @@ func G_DoSaveGame(tls *libc.TLS) {
 	bp := tls.Alloc(32)
 	defer tls.Free(32)
 	var recovery_savegame_file, savegame_file, temp_savegame_file uintptr
-	_, _, _ = recovery_savegame_file, savegame_file, temp_savegame_file
 	recovery_savegame_file = libc.UintptrFromInt32(0)
 	temp_savegame_file = P_TempSaveGameFile(tls)
 	savegame_file = P_SaveGameFile(tls, savegameslot)
@@ -9054,7 +9002,6 @@ func G_DeferedInitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 
 func G_DoNewGame(tls *libc.TLS) {
 	var v1, v2 boolean
-	_, _ = v1, v2
 	demoplayback = uint32(false1)
 	netdemo = uint32(false1)
 	netgame = uint32(false1)
@@ -9075,7 +9022,6 @@ func G_DoNewGame(tls *libc.TLS) {
 func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 	var i int32
 	var skytexturename uintptr
-	_, _ = i, skytexturename
 	if paused != 0 {
 		paused = uint32(false1)
 		S_ResumeSound(tls)
@@ -9236,7 +9182,6 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 
 func G_ReadDemoTiccmd(tls *libc.TLS, cmd uintptr) {
 	var v1, v2, v3, v5, v6, v7, p4 uintptr
-	_, _, _, _, _, _, _ = v1, v2, v3, v5, v6, v7, p4
 	if libc.Int32FromUint8(*(*byte1)(unsafe.Pointer(demo_p))) == int32(DEMOMARKER) {
 		// end of demo data stream
 		G_CheckDemoStatus(tls)
@@ -9272,7 +9217,6 @@ func G_ReadDemoTiccmd(tls *libc.TLS, cmd uintptr) {
 func IncreaseDemoBuffer(tls *libc.TLS) {
 	var current_length, new_length int32
 	var new_demobuffer, new_demop uintptr
-	_, _, _, _ = current_length, new_demobuffer, new_demop, new_length
 	// Find the current size
 	current_length = int32(int64(demoend) - int64(demobuffer))
 	// Generate a new buffer twice the size
@@ -9290,7 +9234,6 @@ func IncreaseDemoBuffer(tls *libc.TLS) {
 
 func G_WriteDemoTiccmd(tls *libc.TLS, cmd uintptr) {
 	var demo_start, v1, v2, v3, v4, v5, v6 uintptr
-	_, _, _, _, _, _, _ = demo_start, v1, v2, v3, v4, v5, v6
 	if gamekeydown[key_demo_quit] != 0 { // press q to end demo recording
 		G_CheckDemoStatus(tls)
 	}
@@ -9343,7 +9286,6 @@ func G_RecordDemo(tls *libc.TLS, name uintptr) {
 	defer tls.Free(16)
 	var demoname_size size_t
 	var i, maxsize int32
-	_, _, _ = demoname_size, i, maxsize
 	usergame = uint32(false1)
 	demoname_size = libc.Xstrlen(tls, name) + uint64(5)
 	demoname = Z_Malloc(tls, libc.Int32FromUint64(demoname_size), int32(PU_STATIC), libc.UintptrFromInt32(0))
@@ -9390,7 +9332,6 @@ func G_VanillaVersionCode(tls *libc.TLS) (r int32) {
 func G_BeginRecording(tls *libc.TLS) {
 	var i int32
 	var v1, v10, v12, v2, v3, v4, v5, v6, v7, v8, v9 uintptr
-	_, _, _, _, _, _, _, _, _, _, _, _ = i, v1, v10, v12, v2, v3, v4, v5, v6, v7, v8, v9
 	//!
 	// @category demo
 	//
@@ -9494,7 +9435,6 @@ func G_DoPlayDemo(tls *libc.TLS) {
 	var demoversion, episode, i, map1 int32
 	var message, v1, v10, v12, v2, v3, v4, v5, v6, v7, v8, v9 uintptr
 	var skill skill_t
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = demoversion, episode, i, map1, message, skill, v1, v10, v12, v2, v3, v4, v5, v6, v7, v8, v9
 	gameaction = int32(ga_nothing)
 	v1 = W_CacheLumpName(tls, defdemoname, int32(PU_STATIC))
 	demo_p = v1
@@ -9598,7 +9538,6 @@ func G_CheckDemoStatus(tls *libc.TLS) (r boolean) {
 	var fps float32
 	var v1, v2 boolean
 	var v3 uintptr
-	_, _, _, _, _, _ = endtime, fps, realtics, v1, v2, v3
 	if timingdemo != 0 {
 		endtime = I_GetTime(tls)
 		realtics = endtime - starttime
@@ -9687,7 +9626,6 @@ func HUlib_initTextLine(tls *libc.TLS, t uintptr, x int32, y int32, f uintptr, s
 func HUlib_addCharToTextLine(tls *libc.TLS, t uintptr, ch int8) (r boolean) {
 	var v1 int32
 	var v2 uintptr
-	_, _ = v1, v2
 	if (*hu_textline_t)(unsafe.Pointer(t)).Flen1 == int32(HU_MAXLINELENGTH) {
 		return uint32(false1)
 	} else {
@@ -9705,7 +9643,6 @@ func HUlib_addCharToTextLine(tls *libc.TLS, t uintptr, ch int8) (r boolean) {
 func HUlib_delCharFromTextLine(tls *libc.TLS, t uintptr) (r boolean) {
 	var v1 int32
 	var v2 uintptr
-	_, _ = v1, v2
 	if !((*hu_textline_t)(unsafe.Pointer(t)).Flen1 != 0) {
 		return uint32(false1)
 	} else {
@@ -9722,7 +9659,6 @@ func HUlib_delCharFromTextLine(tls *libc.TLS, t uintptr) (r boolean) {
 func HUlib_drawTextLine(tls *libc.TLS, l uintptr, drawcursor boolean) {
 	var c uint8
 	var i, w, x int32
-	_, _, _, _ = c, i, w, x
 	// draw the new stuff
 	x = (*hu_textline_t)(unsafe.Pointer(l)).Fx
 	i = 0
@@ -9760,7 +9696,6 @@ func HUlib_drawTextLine(tls *libc.TLS, l uintptr, drawcursor boolean) {
 //	// sorta called by HU_Erase and just better darn get things straight
 func HUlib_eraseTextLine(tls *libc.TLS, l uintptr) {
 	var lh, y, yoffset int32
-	_, _, _ = lh, y, yoffset
 	// Only erases when NOT in automap and the screen is reduced,
 	// and the text must either need updating or refreshing
 	// (because of a recent change back from the automap)
@@ -9814,7 +9749,6 @@ func HUlib_initSText(tls *libc.TLS, s uintptr, x int32, y int32, h int32, font u
 func HUlib_addLineToSText(tls *libc.TLS, s uintptr) {
 	var i, v1 int32
 	var v2 uintptr
-	_, _, _ = i, v1, v2
 	// add a clear line
 	v2 = s + 452
 	*(*int32)(unsafe.Pointer(v2))++
@@ -9839,7 +9773,6 @@ func HUlib_addLineToSText(tls *libc.TLS, s uintptr) {
 
 func HUlib_addMessageToSText(tls *libc.TLS, s uintptr, prefix uintptr, msg uintptr) {
 	var v1, v2 uintptr
-	_, _ = v1, v2
 	HUlib_addLineToSText(tls, s)
 	if prefix != 0 {
 		for *(*int8)(unsafe.Pointer(prefix)) != 0 {
@@ -9858,7 +9791,6 @@ func HUlib_addMessageToSText(tls *libc.TLS, s uintptr, prefix uintptr, msg uintp
 func HUlib_drawSText(tls *libc.TLS, s uintptr) {
 	var i, idx int32
 	var l uintptr
-	_, _, _ = i, idx, l
 	if !(*(*boolean)(unsafe.Pointer((*hu_stext_t)(unsafe.Pointer(s)).Fon)) != 0) {
 		return
 	} // if not on, don't draw
@@ -10162,7 +10094,6 @@ func HU_Init(tls *libc.TLS) {
 	defer tls.Free(32)
 	var i, j, v2 int32
 	var _ /* buffer at bp+0 */ [9]int8
-	_, _, _ = i, j, v2
 	// load the heads-up font
 	j = int32('!')
 	i = 0
@@ -10188,7 +10119,6 @@ func HU_Stop(tls *libc.TLS) {
 func HU_Start(tls *libc.TLS) {
 	var i, v1, v2 int32
 	var s, v3 uintptr
-	_, _, _, _, _ = i, s, v1, v2, v3
 	if headsupactive != 0 {
 		HU_Stop(tls)
 	}
@@ -10271,7 +10201,6 @@ func HU_Ticker(tls *libc.TLS) {
 	var c, v4 int8
 	var i, rc, v1 int32
 	var v2, v5 bool
-	_, _, _, _, _, _, _ = c, i, rc, v1, v2, v4, v5
 	// tick down message counter if message is up
 	if v2 = message_counter != 0; v2 {
 		message_counter--
@@ -10366,7 +10295,6 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	var eatkey, v2, v4 boolean
 	var i, numplayers int32
 	var macromessage, v5 uintptr
-	_, _, _, _, _, _, _, _ = c, eatkey, i, macromessage, numplayers, v2, v4, v5
 	eatkey = uint32(false1)
 	numplayers = 0
 	i = 0
@@ -18363,7 +18291,6 @@ var half_stretch_table = libc.UintptrFromInt32(0)
 func I_Scale1x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bufp, screenp uintptr
 	var w, y int32
-	_, _, _, _ = bufp, screenp, w, y
 	w = x2 - x1
 	// Need to byte-copy from buffer into the screen buffer
 	bufp = src_buffer + uintptr(y1*int32(SCREENWIDTH)) + uintptr(x1)
@@ -18401,7 +18328,6 @@ func init() {
 func I_Scale2x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bp, bufp, screenp, screenp2, sp, sp2, v3, v4, v5, v6 uintptr
 	var multi_pitch, x, y int32
-	_, _, _, _, _, _, _, _, _, _, _, _, _ = bp, bufp, multi_pitch, screenp, screenp2, sp, sp2, x, y, v3, v4, v5, v6
 	multi_pitch = dest_pitch * int32(2)
 	bufp = src_buffer + uintptr(y1*int32(SCREENWIDTH)) + uintptr(x1)
 	screenp = dest_buffer + uintptr((y1*dest_pitch+x1)*int32(2))
@@ -18465,7 +18391,6 @@ func init() {
 func I_Scale3x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bp, bufp, screenp, screenp2, screenp3, sp, sp2, sp3, v10, v11, v3, v4, v5, v6, v7, v8, v9 uintptr
 	var multi_pitch, x, y int32
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = bp, bufp, multi_pitch, screenp, screenp2, screenp3, sp, sp2, sp3, x, y, v10, v11, v3, v4, v5, v6, v7, v8, v9
 	multi_pitch = dest_pitch * int32(3)
 	bufp = src_buffer + uintptr(y1*int32(SCREENWIDTH)) + uintptr(x1)
 	screenp = dest_buffer + uintptr((y1*dest_pitch+x1)*int32(3))
@@ -18547,7 +18472,6 @@ func init() {
 func I_Scale4x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bp, bufp, screenp, screenp2, screenp3, screenp4, sp, sp2, sp3, sp4, v10, v11, v12, v13, v14, v15, v16, v17, v18, v3, v4, v5, v6, v7, v8, v9 uintptr
 	var multi_pitch, x, y int32
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = bp, bufp, multi_pitch, screenp, screenp2, screenp3, screenp4, sp, sp2, sp3, sp4, x, y, v10, v11, v12, v13, v14, v15, v16, v17, v18, v3, v4, v5, v6, v7, v8, v9
 	multi_pitch = dest_pitch * int32(4)
 	bufp = src_buffer + uintptr(y1*int32(SCREENWIDTH)) + uintptr(x1)
 	screenp = dest_buffer + uintptr((y1*dest_pitch+x1)*int32(4))
@@ -18653,7 +18577,6 @@ func init() {
 func I_Scale5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bp, bufp, screenp, screenp2, screenp3, screenp4, screenp5, sp, sp2, sp3, sp4, sp5, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v3, v4, v5, v6, v7, v8, v9 uintptr
 	var multi_pitch, x, y int32
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = bp, bufp, multi_pitch, screenp, screenp2, screenp3, screenp4, screenp5, sp, sp2, sp3, sp4, sp5, x, y, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v3, v4, v5, v6, v7, v8, v9
 	multi_pitch = dest_pitch * int32(5)
 	bufp = src_buffer + uintptr(y1*int32(SCREENWIDTH)) + uintptr(x1)
 	screenp = dest_buffer + uintptr((y1*dest_pitch+x1)*int32(5))
@@ -18790,7 +18713,6 @@ func init() {
 func FindNearestColor(tls *libc.TLS, palette uintptr, r int32, g int32, b int32) (r1 int32) {
 	var best, best_diff, diff, i int32
 	var col uintptr
-	_, _, _, _, _ = best, best_diff, col, diff, i
 	best = 0
 	best_diff = int32(INT_MAX3)
 	i = 0
@@ -18824,7 +18746,6 @@ func FindNearestColor(tls *libc.TLS, palette uintptr, r int32, g int32, b int32)
 func GenerateStretchTable(tls *libc.TLS, palette uintptr, pct int32) (r1 uintptr) {
 	var b, g, r, x, y int32
 	var col1, col2, result uintptr
-	_, _, _, _, _, _, _, _ = b, col1, col2, g, r, result, x, y
 	result = Z_Malloc(tls, libc.Int32FromInt32(256)*libc.Int32FromInt32(256), int32(PU_STATIC), libc.UintptrFromInt32(0))
 	x = 0
 	for {
@@ -18922,7 +18843,6 @@ func WriteBlendedLine1x(tls *libc.TLS, dest uintptr, src1 uintptr, src2 uintptr,
 func I_Stretch1x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bufp, screenp uintptr
 	var y int32
-	_, _, _ = bufp, screenp, y
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
 		return uint32(false1)
@@ -19003,7 +18923,6 @@ func WriteLine2x(tls *libc.TLS, dest uintptr, src uintptr) {
 
 func WriteBlendedLine2x(tls *libc.TLS, dest uintptr, src1 uintptr, src2 uintptr, stretch_table uintptr) {
 	var val, x int32
-	_, _ = val, x
 	x = 0
 	for {
 		if !(x < int32(SCREENWIDTH)) {
@@ -19027,7 +18946,6 @@ func WriteBlendedLine2x(tls *libc.TLS, dest uintptr, src1 uintptr, src2 uintptr,
 func I_Stretch2x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bufp, screenp uintptr
 	var y int32
-	_, _, _ = bufp, screenp, y
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
 		return uint32(false1)
@@ -19126,7 +19044,6 @@ func WriteLine3x(tls *libc.TLS, dest uintptr, src uintptr) {
 
 func WriteBlendedLine3x(tls *libc.TLS, dest uintptr, src1 uintptr, src2 uintptr, stretch_table uintptr) {
 	var val, x int32
-	_, _ = val, x
 	x = 0
 	for {
 		if !(x < int32(SCREENWIDTH)) {
@@ -19151,7 +19068,6 @@ func WriteBlendedLine3x(tls *libc.TLS, dest uintptr, src1 uintptr, src2 uintptr,
 func I_Stretch3x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bufp, screenp uintptr
 	var y int32
-	_, _, _ = bufp, screenp, y
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
 		return uint32(false1)
@@ -19269,7 +19185,6 @@ func WriteLine4x(tls *libc.TLS, dest uintptr, src uintptr) {
 
 func WriteBlendedLine4x(tls *libc.TLS, dest uintptr, src1 uintptr, src2 uintptr, stretch_table uintptr) {
 	var val, x int32
-	_, _ = val, x
 	x = 0
 	for {
 		if !(x < int32(SCREENWIDTH)) {
@@ -19295,7 +19210,6 @@ func WriteBlendedLine4x(tls *libc.TLS, dest uintptr, src1 uintptr, src2 uintptr,
 func I_Stretch4x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bufp, screenp uintptr
 	var y int32
-	_, _, _ = bufp, screenp, y
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
 		return uint32(false1)
@@ -19435,7 +19349,6 @@ func WriteLine5x(tls *libc.TLS, dest uintptr, src uintptr) {
 func I_Stretch5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bufp, screenp uintptr
 	var y int32
-	_, _, _ = bufp, screenp, y
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
 		return uint32(false1)
@@ -19526,7 +19439,6 @@ func init() {
 func WriteSquashedLine1x(tls *libc.TLS, dest uintptr, src uintptr) {
 	var x int32
 	var v2, v3, v4, v5 uintptr
-	_, _, _, _, _ = x, v2, v3, v4, v5
 	x = 0
 	for {
 		if !(x < int32(SCREENWIDTH)) {
@@ -19561,7 +19473,6 @@ func WriteSquashedLine1x(tls *libc.TLS, dest uintptr, src uintptr) {
 func I_Squash1x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bufp, screenp uintptr
 	var y int32
-	_, _, _ = bufp, screenp, y
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
 		return uint32(false1)
@@ -19606,7 +19517,6 @@ func WriteSquashedLine2x(tls *libc.TLS, dest uintptr, src uintptr) {
 	var c, x int32
 	var dest2, v10, v11, v13, v14, v16, v17, v19, v2, v20, v22, v23, v25, v4, v5, v7, v8 uintptr
 	var v12, v15, v18, v21, v24, v3, v6, v9 byte1
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = c, dest2, x, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v2, v20, v21, v22, v23, v24, v25, v3, v4, v5, v6, v7, v8, v9
 	dest2 = dest + uintptr(dest_pitch)
 	x = 0
 	for {
@@ -19698,7 +19608,6 @@ func WriteSquashedLine2x(tls *libc.TLS, dest uintptr, src uintptr) {
 func I_Squash2x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bufp, screenp uintptr
 	var y int32
-	_, _, _ = bufp, screenp, y
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
 		return uint32(false1)
@@ -19738,7 +19647,6 @@ func WriteSquashedLine3x(tls *libc.TLS, dest uintptr, src uintptr) {
 	var c, x int32
 	var dest2, dest3, v10, v11, v12, v15, v16, v17, v2, v20, v21, v22, v25, v26, v5, v6, v7 uintptr
 	var v13, v14, v18, v19, v23, v24, v3, v4, v8, v9 byte1
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = c, dest2, dest3, x, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v2, v20, v21, v22, v23, v24, v25, v26, v3, v4, v5, v6, v7, v8, v9
 	dest2 = dest + uintptr(dest_pitch)
 	dest3 = dest + uintptr(dest_pitch*int32(2))
 	x = 0
@@ -19826,7 +19734,6 @@ func WriteSquashedLine3x(tls *libc.TLS, dest uintptr, src uintptr) {
 func I_Squash3x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bufp, screenp uintptr
 	var y int32
-	_, _, _ = bufp, screenp, y
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
 		return uint32(false1)
@@ -19866,7 +19773,6 @@ func WriteSquashedLine4x(tls *libc.TLS, dest uintptr, src uintptr) {
 	var c, x int32
 	var dest2, dest3, dest4, v100, v104, v105, v106, v107, v111, v112, v113, v13, v14, v15, v16, v2, v20, v21, v22, v23, v27, v28, v29, v30, v34, v35, v36, v37, v41, v42, v43, v44, v48, v49, v50, v51, v55, v56, v57, v58, v6, v62, v63, v64, v65, v69, v7, v70, v71, v72, v76, v77, v78, v79, v8, v83, v84, v85, v86, v9, v90, v91, v92, v93, v97, v98, v99 uintptr
 	var v10, v101, v102, v103, v108, v109, v11, v110, v12, v17, v18, v19, v24, v25, v26, v3, v31, v32, v33, v38, v39, v4, v40, v45, v46, v47, v5, v52, v53, v54, v59, v60, v61, v66, v67, v68, v73, v74, v75, v80, v81, v82, v87, v88, v89, v94, v95, v96 byte1
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = c, dest2, dest3, dest4, x, v10, v100, v101, v102, v103, v104, v105, v106, v107, v108, v109, v11, v110, v111, v112, v113, v12, v13, v14, v15, v16, v17, v18, v19, v2, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v3, v30, v31, v32, v33, v34, v35, v36, v37, v38, v39, v4, v40, v41, v42, v43, v44, v45, v46, v47, v48, v49, v5, v50, v51, v52, v53, v54, v55, v56, v57, v58, v59, v6, v60, v61, v62, v63, v64, v65, v66, v67, v68, v69, v7, v70, v71, v72, v73, v74, v75, v76, v77, v78, v79, v8, v80, v81, v82, v83, v84, v85, v86, v87, v88, v89, v9, v90, v91, v92, v93, v94, v95, v96, v97, v98, v99
 	dest2 = dest + uintptr(dest_pitch)
 	dest3 = dest + uintptr(dest_pitch*int32(2))
 	dest4 = dest + uintptr(dest_pitch*int32(3))
@@ -20148,7 +20054,6 @@ func WriteSquashedLine4x(tls *libc.TLS, dest uintptr, src uintptr) {
 func I_Squash4x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bufp, screenp uintptr
 	var y int32
-	_, _, _ = bufp, screenp, y
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
 		return uint32(false1)
@@ -20188,7 +20093,6 @@ func WriteSquashedLine5x(tls *libc.TLS, dest uintptr, src uintptr) {
 	var c, x int32
 	var dest2, dest3, dest4, dest5, v10, v11, v12, v17, v18, v19, v2, v20, v21, v26, v27, v28, v29, v3, v30, v35, v36, v37, v38, v8, v9 uintptr
 	var v13, v14, v15, v16, v22, v23, v24, v25, v31, v32, v33, v34, v4, v5, v6, v7 byte1
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = c, dest2, dest3, dest4, dest5, x, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v2, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v3, v30, v31, v32, v33, v34, v35, v36, v37, v38, v4, v5, v6, v7, v8, v9
 	dest2 = dest + uintptr(dest_pitch)
 	dest3 = dest + uintptr(dest_pitch*int32(2))
 	dest4 = dest + uintptr(dest_pitch*int32(3))
@@ -20293,7 +20197,6 @@ func WriteSquashedLine5x(tls *libc.TLS, dest uintptr, src uintptr) {
 func I_Squash5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean) {
 	var bufp, screenp uintptr
 	var y int32
-	_, _, _ = bufp, screenp, y
 	// Only works with full screen update
 	if x1 != 0 || y1 != 0 || x2 != int32(SCREENWIDTH) || y2 != int32(SCREENHEIGHT) {
 		return uint32(false1)
@@ -20433,7 +20336,6 @@ func InitMusicModule(tls *libc.TLS) {
 
 func I_InitSound(tls *libc.TLS, use_sfx_prefix boolean) {
 	var nomusic, nosfx, nosound boolean
-	_, _, _ = nomusic, nosfx, nosound
 	//!
 	// @vanilla
 	//
@@ -20697,7 +20599,6 @@ func I_ZoneBase(tls *libc.TLS, size uintptr) (r uintptr) {
 	defer tls.Free(32)
 	var default_ram, min_ram, p int32
 	var zonemem uintptr
-	_, _, _, _ = default_ram, min_ram, p, zonemem
 	//!
 	// @arg <mb>
 	//
@@ -20718,7 +20619,6 @@ func I_ZoneBase(tls *libc.TLS, size uintptr) (r uintptr) {
 
 func I_PrintBanner(tls *libc.TLS, msg uintptr) {
 	var i, spaces int32
-	_, _ = i, spaces
 	spaces = libc.Int32FromUint64(uint64(35) - libc.Xstrlen(tls, msg)/uint64(2))
 	i = 0
 	for {
@@ -20813,7 +20713,6 @@ func ZenityAvailable(tls *libc.TLS) (r int32) {
 
 func EscapeShellString(tls *libc.TLS, string1 uintptr) (r1 uintptr) {
 	var r, result, s uintptr
-	_, _, _ = r, result, s
 	// In the worst case, every character might be escaped.
 	result = libc.Xmalloc(tls, libc.Xstrlen(tls, string1)*uint64(2)+uint64(3))
 	r = result
@@ -20857,7 +20756,6 @@ func ZenityErrorBox(tls *libc.TLS, message uintptr) (r int32) {
 	defer tls.Free(32)
 	var errorboxpath, escaped_message uintptr
 	var result int32
-	_, _, _ = errorboxpath, escaped_message, result
 	if !(ZenityAvailable(tls) != 0) {
 		return 0
 	}
@@ -20886,7 +20784,6 @@ func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
 	var entry uintptr
 	var exit_gui_popup boolean
 	var _ /* msgbuf at bp+0 */ [512]int8
-	_, _, _ = argptr, entry, exit_gui_popup
 	if already_quitting != 0 {
 		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+19278, 0)
 	} else {
@@ -20973,7 +20870,6 @@ func I_GetMemoryValue(tls *libc.TLS, offset uint32, value uintptr, size int32) (
 	defer tls.Free(16)
 	var i, p, v2 int32
 	var _ /* val at bp+0 */ int32
-	_, _, _ = i, p, v2
 	if firsttime != 0 {
 		firsttime = uint32(false1)
 		i = 0
@@ -21159,7 +21055,6 @@ const BOXRIGHT = 3
 
 func M_ClearBox(tls *libc.TLS, box uintptr) {
 	var v1, v2 fixed_t
-	_, _ = v1, v2
 	v1 = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
 	*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXRIGHT)*4)) = v1
 	*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXTOP)*4)) = v1
@@ -22724,7 +22619,6 @@ func FixedMul(tls *libc.TLS, a fixed_t, b fixed_t) (r fixed_t) {
 func FixedDiv(tls *libc.TLS, a fixed_t, b fixed_t) (r fixed_t) {
 	var result int64_t
 	var v1 int32
-	_, _ = result, v1
 	if libc.Xabs(tls, a)>>int32(14) >= libc.Xabs(tls, b) {
 		if a^b < 0 {
 			v1 = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
@@ -23284,7 +23178,6 @@ func M_ReadSaveStrings(tls *libc.TLS) {
 	var handle uintptr
 	var i int32
 	var _ /* name at bp+0 */ [256]int8
-	_, _ = handle, i
 	i = 0
 	for {
 		if !(i < int32(load_end)) {
@@ -23520,7 +23413,6 @@ func M_QuickLoad(tls *libc.TLS) {
 func M_DrawReadThis1(tls *libc.TLS) {
 	var lumpname uintptr
 	var skullx, skully int32
-	_, _, _ = lumpname, skullx, skully
 	lumpname = __ccgo_ts + 1911
 	skullx = int32(330)
 	skully = int32(175)
@@ -23836,7 +23728,6 @@ func M_QuitResponse(tls *libc.TLS, key int32) {
 func M_SelectEndMessage(tls *libc.TLS) (r uintptr) {
 	var endmsg uintptr
 	var v1, v2 int32
-	_, _, _ = endmsg, v1, v2
 	if gamemission == int32(pack_chex) {
 		v1 = int32(doom)
 	} else {
@@ -23913,7 +23804,6 @@ func M_SizeDisplay(tls *libc.TLS, choice int32) {
 //	//
 func M_DrawThermo(tls *libc.TLS, x int32, y int32, thermWidth int32, thermDot int32) {
 	var i, xx int32
-	_, _ = i, xx
 	xx = x
 	V_DrawPatchDirect(tls, xx, y, W_CacheLumpName(tls, __ccgo_ts+23063, int32(PU_CACHE)))
 	xx += int32(8)
@@ -23951,7 +23841,6 @@ func M_StartMessage(tls *libc.TLS, string1 uintptr, routine uintptr, input boole
 func M_StringWidth(tls *libc.TLS, string1 uintptr) (r int32) {
 	var c, w int32
 	var i size_t
-	_, _, _ = c, i, w
 	w = 0
 	i = uint64(0)
 	for {
@@ -23980,7 +23869,6 @@ func M_StringWidth(tls *libc.TLS, string1 uintptr) (r int32) {
 func M_StringHeight(tls *libc.TLS, string1 uintptr) (r int32) {
 	var h, height int32
 	var i size_t
-	_, _, _ = h, height, i
 	height = int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight)
 	h = height
 	i = uint64(0)
@@ -24007,7 +23895,6 @@ func M_StringHeight(tls *libc.TLS, string1 uintptr) (r int32) {
 func M_WriteText(tls *libc.TLS, x int32, y int32, string1 uintptr) {
 	var c, cx, cy, w int32
 	var ch, v1 uintptr
-	_, _, _, _, _, _ = c, ch, cx, cy, w, v1
 	ch = string1
 	cx = x
 	cy = y
@@ -24055,7 +23942,6 @@ func IsNullKey(tls *libc.TLS, key int32) (r boolean) {
 //	//
 func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	var ch, i, key, v1 int32
-	_, _, _, _ = ch, i, key, v1
 	// In testcontrols mode, none of the function keys should do anything
 	// - the only key is escape to quit.
 	if testcontrols != 0 {
@@ -24485,7 +24371,6 @@ func M_Drawer(tls *libc.TLS) {
 	var i, max uint32
 	var name uintptr
 	var _ /* string at bp+0 */ [80]int8
-	_, _, _, _, _ = foundnewline, i, max, name, start
 	inhelpscreens = uint32(false1)
 	// Horiz. & Vertically center string and print it.
 	if messageToPrint != 0 {
@@ -24690,7 +24575,6 @@ func M_FileExists(tls *libc.TLS, filename uintptr) (r boolean) {
 
 func M_FileLength(tls *libc.TLS, handle uintptr) (r int64) {
 	var length, savedpos int64
-	_, _ = length, savedpos
 	// save the current position in the file
 	savedpos = libc.Xftell(tls, handle)
 	// jump to the end and find the length
@@ -24708,7 +24592,6 @@ func M_FileLength(tls *libc.TLS, handle uintptr) (r int64) {
 func M_WriteFile(tls *libc.TLS, name uintptr, source uintptr, length int32) (r boolean) {
 	var count int32
 	var handle uintptr
-	_, _ = count, handle
 	handle = libc.Xfopen(tls, name, __ccgo_ts+13900)
 	if handle == libc.UintptrFromInt32(0) {
 		return uint32(false1)
@@ -24747,7 +24630,6 @@ func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
 	defer tls.Free(32)
 	var filename, src, v2 uintptr
 	var length, v1 int32
-	_, _, _, _, _ = filename, length, src, v1, v2
 	src = path + uintptr(libc.Xstrlen(tls, path)) - uintptr(1)
 	// back up until a \ or the start
 	for src != path && int32(*(*int8)(unsafe.Pointer(src - libc.UintptrFromInt32(1)))) != int32('/') {
@@ -24815,7 +24697,6 @@ func M_StringJoin(tls *libc.TLS, s uintptr, va uintptr) (r uintptr) {
 	var args va_list
 	var result, v uintptr
 	var result_len size_t
-	_, _, _, _ = args, result, result_len, v
 	result_len = libc.Xstrlen(tls, s) + uint64(1)
 	args = va
 	for {
@@ -24878,7 +24759,6 @@ func M_vsnprintf(tls *libc.TLS, buf uintptr, buf_len size_t, s uintptr, args va_
 func M_snprintf(tls *libc.TLS, buf uintptr, buf_len size_t, s uintptr, va uintptr) (r int32) {
 	var args va_list
 	var result int32
-	_, _ = args, result
 	args = va
 	result = M_vsnprintf(tls, buf, buf_len, s, args)
 	_ = args
@@ -25277,7 +25157,6 @@ func T_MoveCeiling(tls *libc.TLS, ceiling uintptr) {
 func EV_DoCeiling(tls *libc.TLS, line uintptr, type1 ceiling_e) (r int32) {
 	var ceiling, sec uintptr
 	var rtn, secnum, v1 int32
-	_, _, _, _, _ = ceiling, rtn, sec, secnum, v1
 	secnum = -int32(1)
 	rtn = 0
 	//	Reactivate in-stasis ceilings...for certain types.
@@ -25427,7 +25306,6 @@ func P_ActivateInStasisCeiling(tls *libc.TLS, line uintptr) {
 //	//
 func EV_CeilingCrushStop(tls *libc.TLS, line uintptr) (r int32) {
 	var i, rtn int32
-	_, _ = i, rtn
 	rtn = 0
 	i = 0
 	for {
@@ -25480,7 +25358,6 @@ func T_VerticalDoor(tls *libc.TLS, door uintptr) {
 	var res result_e
 	var v1, v3 int32
 	var v2, v4 uintptr
-	_, _, _, _, _ = res, v1, v2, v3, v4
 	switch (*vldoor_t)(unsafe.Pointer(door)).Fdirection {
 	case 0:
 		// WAITING
@@ -25631,7 +25508,6 @@ func EV_DoLockedDoor(tls *libc.TLS, line uintptr, type1 vldoor_e, thing uintptr)
 func EV_DoDoor(tls *libc.TLS, line uintptr, type1 vldoor_e) (r int32) {
 	var door, sec uintptr
 	var rtn, secnum, v1 int32
-	_, _, _, _, _ = door, rtn, sec, secnum, v1
 	secnum = -int32(1)
 	rtn = 0
 	for {
@@ -25704,7 +25580,6 @@ func EV_DoDoor(tls *libc.TLS, line uintptr, type1 vldoor_e) (r int32) {
 func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 	var door, plat, player, sec uintptr
 	var side int32
-	_, _, _, _, _ = door, plat, player, sec, side
 	side = 0 // only front sides can be used
 	//	Check for locks
 	player = (*mobj_t)(unsafe.Pointer(thing)).Fplayer
@@ -25962,7 +25837,6 @@ func init() {
 func P_RecursiveSound(tls *libc.TLS, sec uintptr, soundblocks int32) {
 	var check, other uintptr
 	var i int32
-	_, _, _ = check, i, other
 	// wake up all monsters in this sector
 	if (*sector_t)(unsafe.Pointer(sec)).Fvalidcount == validcount && (*sector_t)(unsafe.Pointer(sec)).Fsoundtraversed <= soundblocks+int32(1) {
 		return // already flooded
@@ -26023,7 +25897,6 @@ func P_NoiseAlert(tls *libc.TLS, target uintptr, emmiter uintptr) {
 func P_CheckMeleeRange(tls *libc.TLS, actor uintptr) (r boolean) {
 	var dist fixed_t
 	var pl uintptr
-	_, _ = dist, pl
 	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
 		return uint32(false1)
 	}
@@ -26117,7 +25990,6 @@ func P_Move(tls *libc.TLS, actor uintptr) (r boolean) {
 	var ld uintptr
 	var tryx, tryy fixed_t
 	var v1 int32
-	_, _, _, _, _, _ = good, ld, try_ok, tryx, tryy, v1
 	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir == int32(DI_NODIR) {
 		return uint32(false1)
 	}
@@ -26194,7 +26066,6 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 	var deltax, deltay fixed_t
 	var olddir, turnaround dirtype_t
 	var tdir int32
-	_, _, _, _, _, _ = d, deltax, deltay, olddir, tdir, turnaround
 	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
 		I_Error(tls, __ccgo_ts+23676, 0)
 	}
@@ -26317,7 +26188,6 @@ func P_LookForPlayers(tls *libc.TLS, actor uintptr, allaround boolean) (r boolea
 	var c, stop, v2 int32
 	var dist fixed_t
 	var player uintptr
-	_, _, _, _, _, _ = an, c, dist, player, stop, v2
 	c = 0
 	stop = ((*mobj_t)(unsafe.Pointer(actor)).Flastlook - int32(1)) & int32(3)
 	for {
@@ -26369,7 +26239,6 @@ func A_KeenDie(tls *libc.TLS, mo uintptr) {
 	defer tls.Free(96)
 	var mo2, th uintptr
 	var _ /* junk at bp+0 */ line_t
-	_, _ = mo2, th
 	A_Fall(tls, mo)
 	// scan the remaining thinkers
 	// to see if all Keens are dead
@@ -26408,7 +26277,6 @@ func A_KeenDie(tls *libc.TLS, mo uintptr) {
 func A_Look(tls *libc.TLS, actor uintptr) {
 	var sound int32
 	var targ uintptr
-	_, _ = sound, targ
 	(*mobj_t)(unsafe.Pointer(actor)).Fthreshold = 0 // any shot will wake up
 	targ = (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Fsubsector)).Fsector)).Fsoundtarget
 	if targ != 0 && (*mobj_t)(unsafe.Pointer(targ)).Fflags&int32(MF_SHOOTABLE) != 0 {
@@ -26464,7 +26332,6 @@ seeyou:
 func A_Chase(tls *libc.TLS, actor uintptr) {
 	var delta, v1 int32
 	var v2 uintptr
-	_, _, _ = delta, v1, v2
 	if (*mobj_t)(unsafe.Pointer(actor)).Freactiontime != 0 {
 		(*mobj_t)(unsafe.Pointer(actor)).Freactiontime--
 	}
@@ -26570,7 +26437,6 @@ func A_FaceTarget(tls *libc.TLS, actor uintptr) {
 //	//
 func A_PosAttack(tls *libc.TLS, actor uintptr) {
 	var angle, damage, slope int32
-	_, _, _ = angle, damage, slope
 	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
 		return
 	}
@@ -26585,7 +26451,6 @@ func A_PosAttack(tls *libc.TLS, actor uintptr) {
 
 func A_SPosAttack(tls *libc.TLS, actor uintptr) {
 	var angle, bangle, damage, i, slope int32
-	_, _, _, _, _ = angle, bangle, damage, i, slope
 	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
 		return
 	}
@@ -26610,7 +26475,6 @@ func A_SPosAttack(tls *libc.TLS, actor uintptr) {
 
 func A_CPosAttack(tls *libc.TLS, actor uintptr) {
 	var angle, bangle, damage, slope int32
-	_, _, _, _ = angle, bangle, damage, slope
 	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
 		return
 	}
@@ -26757,7 +26621,6 @@ func A_Tracer(tls *libc.TLS, actor uintptr) {
 	var dest, th uintptr
 	var dist, slope fixed_t
 	var exact angle_t
-	_, _, _, _, _ = dest, dist, exact, slope, th
 	if gametic&int32(3) != 0 {
 		return
 	}
@@ -26832,7 +26695,6 @@ func PIT_VileCheck(tls *libc.TLS, thing uintptr) (r boolean) {
 	var check boolean
 	var maxdist int32
 	var v1 fixed_t
-	_, _, _ = check, maxdist, v1
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_CORPSE) != 0) {
 		return uint32(true1)
 	} // not a monster
@@ -26868,7 +26730,6 @@ func PIT_VileCheck(tls *libc.TLS, thing uintptr) (r boolean) {
 func A_VileChase(tls *libc.TLS, actor uintptr) {
 	var bx, by, xh, xl, yh, yl int32
 	var info, temp uintptr
-	_, _, _, _, _, _, _, _ = bx, by, info, temp, xh, xl, yh, yl
 	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir != int32(DI_NODIR) {
 		// check for corpses to raise
 		viletryx = (*mobj_t)(unsafe.Pointer(actor)).Fx + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*xspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
@@ -26944,7 +26805,6 @@ func A_FireCrackle(tls *libc.TLS, actor uintptr) {
 func A_Fire(tls *libc.TLS, actor uintptr) {
 	var an uint32
 	var dest, target uintptr
-	_, _, _ = an, dest, target
 	dest = (*mobj_t)(unsafe.Pointer(actor)).Ftracer
 	if !(dest != 0) {
 		return
@@ -26990,7 +26850,6 @@ func A_VileTarget(tls *libc.TLS, actor uintptr) {
 func A_VileAttack(tls *libc.TLS, actor uintptr) {
 	var an int32
 	var fire uintptr
-	_, _ = an, fire
 	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
 		return
 	}
@@ -27027,7 +26886,6 @@ func A_FatRaise(tls *libc.TLS, actor uintptr) {
 func A_FatAttack1(tls *libc.TLS, actor uintptr) {
 	var an int32
 	var mo, target uintptr
-	_, _, _ = an, mo, target
 	A_FaceTarget(tls, actor)
 	// Change direction  to ...
 	*(*angle_t)(unsafe.Pointer(actor + 56)) += libc.Uint32FromInt32(libc.Int32FromInt32(ANG903) / libc.Int32FromInt32(8))
@@ -27043,7 +26901,6 @@ func A_FatAttack1(tls *libc.TLS, actor uintptr) {
 func A_FatAttack2(tls *libc.TLS, actor uintptr) {
 	var an int32
 	var mo, target uintptr
-	_, _, _ = an, mo, target
 	A_FaceTarget(tls, actor)
 	// Now here choose opposite deviation.
 	*(*angle_t)(unsafe.Pointer(actor + 56)) -= libc.Uint32FromInt32(libc.Int32FromInt32(ANG903) / libc.Int32FromInt32(8))
@@ -27059,7 +26916,6 @@ func A_FatAttack2(tls *libc.TLS, actor uintptr) {
 func A_FatAttack3(tls *libc.TLS, actor uintptr) {
 	var an int32
 	var mo, target uintptr
-	_, _, _ = an, mo, target
 	A_FaceTarget(tls, actor)
 	target = P_SubstNullMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget)
 	mo = P_SpawnMissile(tls, actor, target, int32(MT_FATSHOT))
@@ -27083,7 +26939,6 @@ func A_SkullAttack(tls *libc.TLS, actor uintptr) {
 	var an angle_t
 	var dest uintptr
 	var dist int32
-	_, _, _ = an, dest, dist
 	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
 		return
 	}
@@ -27113,7 +26968,6 @@ func A_PainShootSkull(tls *libc.TLS, actor uintptr, angle angle_t) {
 	var count, prestep int32
 	var currentthinker, newmobj uintptr
 	var x, y, z fixed_t
-	_, _, _, _, _, _, _, _ = an, count, currentthinker, newmobj, prestep, x, y, z
 	// count total number of skull currently on the level
 	count = 0
 	currentthinker = thinkercap.Fnext
@@ -27271,7 +27125,6 @@ func A_BossDeath(tls *libc.TLS, mo uintptr) {
 	var i int32
 	var mo2, th uintptr
 	var _ /* junk at bp+0 */ line_t
-	_, _, _ = i, mo2, th
 	if gamemode == int32(commercial) {
 		if gamemap != int32(7) {
 			return
@@ -27388,7 +27241,6 @@ func A_CloseShotgun2(tls *libc.TLS, player uintptr, psp uintptr) {
 
 func A_BrainAwake(tls *libc.TLS, mo uintptr) {
 	var m, thinker uintptr
-	_, _ = m, thinker
 	// find all the target spots
 	numbraintargets = 0
 	braintargeton = 0
@@ -27421,7 +27273,6 @@ func A_BrainPain(tls *libc.TLS, mo uintptr) {
 func A_BrainScream(tls *libc.TLS, mo uintptr) {
 	var th uintptr
 	var x, y, z int32
-	_, _, _, _ = th, x, y, z
 	x = (*mobj_t)(unsafe.Pointer(mo)).Fx - libc.Int32FromInt32(196)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
 	for {
 		if !(x < (*mobj_t)(unsafe.Pointer(mo)).Fx+libc.Int32FromInt32(320)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) {
@@ -27447,7 +27298,6 @@ func A_BrainScream(tls *libc.TLS, mo uintptr) {
 func A_BrainExplode(tls *libc.TLS, mo uintptr) {
 	var th uintptr
 	var x, y, z int32
-	_, _, _, _ = th, x, y, z
 	x = (*mobj_t)(unsafe.Pointer(mo)).Fx + (P_Random(tls)-P_Random(tls))*int32(2048)
 	y = (*mobj_t)(unsafe.Pointer(mo)).Fy
 	z = int32(128) + P_Random(tls)*int32(2)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
@@ -27466,7 +27316,6 @@ func A_BrainDie(tls *libc.TLS, mo uintptr) {
 
 func A_BrainSpit(tls *libc.TLS, mo uintptr) {
 	var newmobj, targ uintptr
-	_, _ = newmobj, targ
 	easy ^= int32(1)
 	if gameskill <= int32(sk_easy) && !(easy != 0) {
 		return
@@ -27495,7 +27344,6 @@ func A_SpawnFly(tls *libc.TLS, mo uintptr) {
 	var fog, newmobj, targ, v2 uintptr
 	var r, v1 int32
 	var type1 mobjtype_t
-	_, _, _, _, _, _, _ = fog, newmobj, r, targ, type1, v1, v2
 	v2 = mo + 184
 	*(*int32)(unsafe.Pointer(v2))--
 	v1 = *(*int32)(unsafe.Pointer(v2))
@@ -27626,7 +27474,6 @@ const INT_MAX9 = 2147483647
 func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, crush boolean, floorOrCeiling int32, direction int32) (r result_e) {
 	var flag boolean
 	var lastpos fixed_t
-	_, _ = flag, lastpos
 	switch floorOrCeiling {
 	case 0:
 		// FLOOR
@@ -27783,7 +27630,6 @@ func T_MoveFloor(tls *libc.TLS, floor uintptr) {
 func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 	var floor, sec, side uintptr
 	var i, minsize, rtn, secnum, v1 int32
-	_, _, _, _, _, _, _, _ = floor, i, minsize, rtn, sec, secnum, side, v1
 	secnum = -int32(1)
 	rtn = 0
 	for {
@@ -27943,7 +27789,6 @@ func EV_BuildStairs(tls *libc.TLS, line uintptr, type1 stair_e) (r int32) {
 	var floor, sec, tsec uintptr
 	var height, i, newsecnum, ok, rtn, secnum, texture, v1 int32
 	var speed, stairsize fixed_t
-	_, _, _, _, _, _, _, _, _, _, _, _, _ = floor, height, i, newsecnum, ok, rtn, sec, secnum, speed, stairsize, texture, tsec, v1
 	stairsize = 0
 	speed = 0
 	secnum = -int32(1)
@@ -28141,7 +27986,6 @@ func P_GiveAmmo(tls *libc.TLS, player uintptr, ammo ammotype_t, num int32) (r bo
 //	//
 func P_GiveWeapon(tls *libc.TLS, player uintptr, weapon weapontype_t, dropped boolean) (r boolean) {
 	var gaveammo, gaveweapon boolean
-	_, _ = gaveammo, gaveweapon
 	if netgame != 0 && deathmatch != int32(2) && !(dropped != 0) {
 		// leave placed weapons forever on net games
 		if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(weapon)*4)) != 0 {
@@ -28275,7 +28119,6 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 	var delta fixed_t
 	var i, sound int32
 	var player uintptr
-	_, _, _, _ = delta, i, player, sound
 	delta = (*mobj_t)(unsafe.Pointer(special)).Fz - (*mobj_t)(unsafe.Pointer(toucher)).Fz
 	if delta > (*mobj_t)(unsafe.Pointer(toucher)).Fheight || delta < -libc.Int32FromInt32(8)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
 		// out of reach
@@ -28599,7 +28442,6 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 func P_KillMobj(tls *libc.TLS, source uintptr, target uintptr) {
 	var item mobjtype_t
 	var mo uintptr
-	_, _ = item, mo
 	*(*int32)(unsafe.Pointer(target + 160)) &= ^(int32(MF_SHOOTABLE) | int32(MF_FLOAT) | int32(MF_SKULLFLY))
 	if (*mobj_t)(unsafe.Pointer(target)).Ftype1 != int32(MT_SKULL) {
 		*(*int32)(unsafe.Pointer(target + 160)) &= ^int32(MF_NOGRAVITY)
@@ -28686,7 +28528,6 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 	var player uintptr
 	var saved, temp, v3 int32
 	var thrust, v1, v2 fixed_t
-	_, _, _, _, _, _, _, _ = ang, player, saved, temp, thrust, v1, v2, v3
 	if !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_SHOOTABLE) != 0) {
 		return
 	} // shouldn't happen...
@@ -28816,7 +28657,6 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 func T_FireFlicker(tls *libc.TLS, flick uintptr) {
 	var amount, v1 int32
 	var v2 uintptr
-	_, _, _ = amount, v1, v2
 	v2 = flick + 32
 	*(*int32)(unsafe.Pointer(v2))--
 	v1 = *(*int32)(unsafe.Pointer(v2))
@@ -28865,7 +28705,6 @@ func P_SpawnFireFlicker(tls *libc.TLS, sector uintptr) {
 func T_LightFlash(tls *libc.TLS, flash uintptr) {
 	var v1 int32
 	var v2 uintptr
-	_, _ = v1, v2
 	v2 = flash + 32
 	*(*int32)(unsafe.Pointer(v2))--
 	v1 = *(*int32)(unsafe.Pointer(v2))
@@ -28916,7 +28755,6 @@ func P_SpawnLightFlash(tls *libc.TLS, sector uintptr) {
 func T_StrobeFlash(tls *libc.TLS, flash uintptr) {
 	var v1 int32
 	var v2 uintptr
-	_, _ = v1, v2
 	v2 = flash + 32
 	*(*int32)(unsafe.Pointer(v2))--
 	v1 = *(*int32)(unsafe.Pointer(v2))
@@ -28970,7 +28808,6 @@ func P_SpawnStrobeFlash(tls *libc.TLS, sector uintptr, fastOrSlow int32, inSync 
 func EV_StartLightStrobing(tls *libc.TLS, line uintptr) {
 	var sec uintptr
 	var secnum, v1 int32
-	_, _, _ = sec, secnum, v1
 	secnum = -int32(1)
 	for {
 		v1 = P_FindSectorFromLineTag(tls, line, secnum)
@@ -28994,7 +28831,6 @@ func EV_StartLightStrobing(tls *libc.TLS, line uintptr) {
 func EV_TurnTagLightsOff(tls *libc.TLS, line uintptr) {
 	var i, j, min int32
 	var sector, templine, tsec uintptr
-	_, _, _, _, _, _ = i, j, min, sector, templine, tsec
 	sector = sectors
 	j = 0
 	for {
@@ -29039,7 +28875,6 @@ func EV_TurnTagLightsOff(tls *libc.TLS, line uintptr) {
 func EV_LightTurnOn(tls *libc.TLS, line uintptr, bright int32) {
 	var i, j int32
 	var sector, temp, templine uintptr
-	_, _, _, _, _ = i, j, sector, temp, templine
 	sector = sectors
 	i = 0
 	for {
@@ -29086,7 +28921,6 @@ func EV_LightTurnOn(tls *libc.TLS, line uintptr, bright int32) {
 
 func T_Glow(tls *libc.TLS, g uintptr) {
 	var p1, p2, p3, p4 uintptr
-	_, _, _, _ = p1, p2, p3, p4
 	switch (*glow_t)(unsafe.Pointer(g)).Fdirection {
 	case -int32(1):
 		// DOWN
@@ -29167,7 +29001,6 @@ func P_TeleportMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boole
 	var bx, by, xh, xl, yh, yl int32
 	var newsubsec uintptr
 	var v1 fixed_t
-	_, _, _, _, _, _, _, _ = bx, by, newsubsec, xh, xl, yh, yl, v1
 	// kill anything occupying the position
 	tmthing = thing
 	tmflags = (*mobj_t)(unsafe.Pointer(thing)).Fflags
@@ -29295,7 +29128,6 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 	var blockdist, v1, v2 fixed_t
 	var damage int32
 	var solid boolean
-	_, _, _, _, _ = blockdist, damage, solid, v1, v2
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&(int32(MF_SOLID)|int32(MF_SPECIAL)|int32(MF_SHOOTABLE)) != 0) {
 		return uint32(true1)
 	}
@@ -29400,7 +29232,6 @@ func P_CheckPosition(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r bool
 	var bx, by, xh, xl, yh, yl int32
 	var newsubsec uintptr
 	var v1 fixed_t
-	_, _, _, _, _, _, _, _ = bx, by, newsubsec, xh, xl, yh, yl, v1
 	tmthing = thing
 	tmflags = (*mobj_t)(unsafe.Pointer(thing)).Fflags
 	tmx = x
@@ -29498,7 +29329,6 @@ func P_TryMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 	var ld uintptr
 	var oldside, side, v1 int32
 	var oldx, oldy fixed_t
-	_, _, _, _, _, _ = ld, oldside, oldx, oldy, side, v1
 	floatok = uint32(false1)
 	if !(P_CheckPosition(tls, thing, x, y) != 0) {
 		return uint32(false1)
@@ -29596,7 +29426,6 @@ func P_HitSlideLine(tls *libc.TLS, ld uintptr) {
 	var deltaangle, lineangle, moveangle angle_t
 	var movelen, newlen fixed_t
 	var side int32
-	_, _, _, _, _, _ = deltaangle, lineangle, moveangle, movelen, newlen, side
 	if (*line_t)(unsafe.Pointer(ld)).Fslopetype == int32(ST_HORIZONTAL) {
 		tmymove = 0
 		return
@@ -29684,7 +29513,6 @@ isblocking:
 func P_SlideMove(tls *libc.TLS, mo uintptr) {
 	var hitcount, v1 int32
 	var leadx, leady, newx, newy, trailx, traily fixed_t
-	_, _, _, _, _, _, _, _ = hitcount, leadx, leady, newx, newy, trailx, traily, v1
 	slidemo = mo
 	hitcount = 0
 	goto retry
@@ -29765,7 +29593,6 @@ _2:
 func PTR_AimTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	var dist, slope, thingbottomslope, thingtopslope fixed_t
 	var li, th uintptr
-	_, _, _, _, _, _ = dist, li, slope, th, thingbottomslope, thingtopslope
 	if (*intercept_t)(unsafe.Pointer(in)).Fisaline != 0 {
 		li = *(*uintptr)(unsafe.Pointer(in + 8))
 		if !(int32((*line_t)(unsafe.Pointer(li)).Fflags)&libc.Int32FromInt32(ML_TWOSIDED) != 0) {
@@ -29834,7 +29661,6 @@ func PTR_AimTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 func PTR_ShootTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	var dist, frac, slope, thingbottomslope, thingtopslope, x, y, z fixed_t
 	var li, th uintptr
-	_, _, _, _, _, _, _, _, _, _ = dist, frac, li, slope, th, thingbottomslope, thingtopslope, x, y, z
 	if (*intercept_t)(unsafe.Pointer(in)).Fisaline != 0 {
 		li = *(*uintptr)(unsafe.Pointer(in + 8))
 		if (*line_t)(unsafe.Pointer(li)).Fspecial != 0 {
@@ -29942,7 +29768,6 @@ func PTR_ShootTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 //	//
 func P_AimLineAttack(tls *libc.TLS, t1 uintptr, angle angle_t, distance fixed_t) (r fixed_t) {
 	var x2, y2 fixed_t
-	_, _ = x2, y2
 	t1 = P_SubstNullMobj(tls, t1)
 	angle >>= uint32(ANGLETOFINESHIFT)
 	shootthing = t1
@@ -29970,7 +29795,6 @@ func P_AimLineAttack(tls *libc.TLS, t1 uintptr, angle angle_t, distance fixed_t)
 //	//
 func P_LineAttack(tls *libc.TLS, t1 uintptr, angle angle_t, distance fixed_t, slope fixed_t, damage int32) {
 	var x2, y2 fixed_t
-	_, _ = x2, y2
 	angle >>= uint32(ANGLETOFINESHIFT)
 	shootthing = t1
 	la_damage = damage
@@ -30014,7 +29838,6 @@ func PTR_UseTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 func P_UseLines(tls *libc.TLS, player uintptr) {
 	var angle int32
 	var x1, x2, y1, y2 fixed_t
-	_, _, _, _, _ = angle, x1, x2, y1, y2
 	usething = (*player_t)(unsafe.Pointer(player)).Fmo
 	angle = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle >> int32(ANGLETOFINESHIFT))
 	x1 = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fx
@@ -30034,7 +29857,6 @@ func P_UseLines(tls *libc.TLS, player uintptr) {
 func PIT_RadiusAttack(tls *libc.TLS, thing uintptr) (r boolean) {
 	var dist, dx, dy fixed_t
 	var v1 int32
-	_, _, _, _ = dist, dx, dy, v1
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SHOOTABLE) != 0) {
 		return uint32(true1)
 	}
@@ -30074,7 +29896,6 @@ func PIT_RadiusAttack(tls *libc.TLS, thing uintptr) (r boolean) {
 func P_RadiusAttack(tls *libc.TLS, spot uintptr, source uintptr, damage int32) {
 	var dist fixed_t
 	var x, xh, xl, y, yh, yl int32
-	_, _, _, _, _, _, _ = dist, x, xh, xl, y, yh, yl
 	dist = (damage + libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) << int32(FRACBITS)
 	yh = ((*mobj_t)(unsafe.Pointer(spot)).Fy + dist - bmaporgy) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
 	yl = ((*mobj_t)(unsafe.Pointer(spot)).Fy - dist - bmaporgy) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
@@ -30156,7 +29977,6 @@ func PIT_ChangeSector(tls *libc.TLS, thing uintptr) (r boolean) {
 //	//
 func P_ChangeSector(tls *libc.TLS, sector uintptr, crunch boolean) (r boolean) {
 	var x, y int32
-	_, _ = x, y
 	nofit = uint32(false1)
 	crushchange = crunch
 	// re-check heights for all things near the moving sector
@@ -30193,7 +30013,6 @@ func SpechitOverrun(tls *libc.TLS, ld uintptr) {
 	defer tls.Free(16)
 	var addr uint32
 	var p int32
-	_, _ = addr, p
 	if baseaddr == uint32(0) {
 		// This is the first time we have had an overrun.  Work out
 		// what base address we are going to use.
@@ -30277,7 +30096,6 @@ func P_AproxDistance(tls *libc.TLS, dx fixed_t, dy fixed_t) (r fixed_t) {
 //	//
 func P_PointOnLineSide(tls *libc.TLS, x fixed_t, y fixed_t, line uintptr) (r int32) {
 	var dx, dy, left, right fixed_t
-	_, _, _, _ = dx, dy, left, right
 	if !((*line_t)(unsafe.Pointer(line)).Fdx != 0) {
 		if x <= (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(line)).Fv1)).Fx {
 			return libc.BoolInt32((*line_t)(unsafe.Pointer(line)).Fdy > 0)
@@ -30309,7 +30127,6 @@ func P_PointOnLineSide(tls *libc.TLS, x fixed_t, y fixed_t, line uintptr) (r int
 //	//
 func P_BoxOnLineSide(tls *libc.TLS, tmbox uintptr, ld uintptr) (r int32) {
 	var p1, p2 int32
-	_, _ = p1, p2
 	p1 = 0
 	p2 = 0
 	switch (*line_t)(unsafe.Pointer(ld)).Fslopetype {
@@ -30349,7 +30166,6 @@ func P_BoxOnLineSide(tls *libc.TLS, tmbox uintptr, ld uintptr) (r int32) {
 //	//
 func P_PointOnDivlineSide(tls *libc.TLS, x fixed_t, y fixed_t, line uintptr) (r int32) {
 	var dx, dy, left, right fixed_t
-	_, _, _, _ = dx, dy, left, right
 	if !((*divline_t)(unsafe.Pointer(line)).Fdx != 0) {
 		if x <= (*divline_t)(unsafe.Pointer(line)).Fx {
 			return libc.BoolInt32((*divline_t)(unsafe.Pointer(line)).Fdy > 0)
@@ -30402,7 +30218,6 @@ func P_MakeDivline(tls *libc.TLS, li uintptr, dl uintptr) {
 //	//
 func P_InterceptVector(tls *libc.TLS, v2 uintptr, v1 uintptr) (r fixed_t) {
 	var den, frac, num fixed_t
-	_, _, _ = den, frac, num
 	den = FixedMul(tls, (*divline_t)(unsafe.Pointer(v1)).Fdy>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdx) - FixedMul(tls, (*divline_t)(unsafe.Pointer(v1)).Fdx>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdy)
 	if den == 0 {
 		return 0
@@ -30415,7 +30230,6 @@ func P_InterceptVector(tls *libc.TLS, v2 uintptr, v1 uintptr) (r fixed_t) {
 
 func P_LineOpening(tls *libc.TLS, linedef uintptr) {
 	var back, front uintptr
-	_, _ = back, front
 	if int32(*(*int16)(unsafe.Pointer(linedef + 30 + 1*2))) == -int32(1) {
 		// single sided line
 		openrange = 0
@@ -30453,7 +30267,6 @@ func P_LineOpening(tls *libc.TLS, linedef uintptr) {
 //	//
 func P_UnsetThingPosition(tls *libc.TLS, thing uintptr) {
 	var blockx, blocky int32
-	_, _ = blockx, blocky
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_NOSECTOR) != 0) {
 		// inert things don't need to be in blockmap?
 		// unlink from subsector
@@ -30495,7 +30308,6 @@ func P_UnsetThingPosition(tls *libc.TLS, thing uintptr) {
 func P_SetThingPosition(tls *libc.TLS, thing uintptr) {
 	var blockx, blocky int32
 	var link, sec, ss, v1 uintptr
-	_, _, _, _, _, _ = blockx, blocky, link, sec, ss, v1
 	// link into subsector
 	ss = R_PointInSubsector(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy)
 	(*mobj_t)(unsafe.Pointer(thing)).Fsubsector = ss
@@ -30552,7 +30364,6 @@ func P_SetThingPosition(tls *libc.TLS, thing uintptr) {
 func P_BlockLinesIterator(tls *libc.TLS, x int32, y int32, func1 uintptr) (r boolean) {
 	var ld, list uintptr
 	var offset int32
-	_, _, _ = ld, list, offset
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
 		return uint32(true1)
 	}
@@ -30624,7 +30435,6 @@ func PIT_AddLineIntercepts(tls *libc.TLS, ld uintptr) (r boolean) {
 	var frac fixed_t
 	var s1, s2 int32
 	var _ /* dl at bp+0 */ divline_t
-	_, _, _ = frac, s1, s2
 	// avoid precision problems with two routines
 	if trace.Fdx > libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)*libc.Int32FromInt32(16) || trace.Fdy > libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)*libc.Int32FromInt32(16) || trace.Fdx < -(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(16) || trace.Fdy < -(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(16) {
 		s1 = P_PointOnDivlineSide(tls, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv1)).Fx, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv1)).Fy, uintptr(unsafe.Pointer(&trace)))
@@ -30666,7 +30476,6 @@ func PIT_AddThingIntercepts(tls *libc.TLS, thing uintptr) (r boolean) {
 	var s1, s2 int32
 	var tracepositive boolean
 	var _ /* dl at bp+0 */ divline_t
-	_, _, _, _, _, _, _, _ = frac, s1, s2, tracepositive, x1, x2, y1, y2
 	tracepositive = libc.BoolUint32(trace.Fdx^trace.Fdy > 0)
 	// check a corner to corner crossection for hit
 	if tracepositive != 0 {
@@ -30712,7 +30521,6 @@ func P_TraverseIntercepts(tls *libc.TLS, func1 traverser_t, maxfrac fixed_t) (r 
 	var count, v1 int32
 	var dist fixed_t
 	var in, scan uintptr
-	_, _, _, _, _ = count, dist, in, scan, v1
 	count = int32((int64(intercept_p) - __predefined_ptrdiff_t(uintptr(unsafe.Pointer(&intercepts)))) / 16)
 	in = uintptr(0) // shut up compiler warning
 	for {
@@ -30852,7 +30660,6 @@ var intercepts_overrun = [23]intercepts_overrun_t{
 func InterceptsMemoryOverrun(tls *libc.TLS, location int32, value int32) {
 	var addr uintptr
 	var i, index, offset int32
-	_, _, _, _ = addr, i, index, offset
 	i = 0
 	offset = 0
 	// Search down the array until we find the right entry
@@ -30911,7 +30718,6 @@ func InterceptsOverrun(tls *libc.TLS, num_intercepts int32, intercept uintptr) {
 func P_PathTraverse(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32, trav uintptr) (r boolean) {
 	var count, mapx, mapxstep, mapy, mapystep int32
 	var partial, xintercept, xstep, xt1, xt2, yintercept, ystep, yt1, yt2 fixed_t
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _ = count, mapx, mapxstep, mapy, mapystep, partial, xintercept, xstep, xt1, xt2, yintercept, ystep, yt1, yt2
 	earlyout = libc.Uint32FromInt32(flags & int32(PT_EARLYOUT))
 	validcount++
 	intercept_p = uintptr(unsafe.Pointer(&intercepts))
@@ -31041,7 +30847,6 @@ func P_SetMobjState(tls *libc.TLS, mobj uintptr, state statenum_t) (r boolean) {
 //	//
 func P_ExplodeMissile(tls *libc.TLS, mo uintptr) {
 	var v1, v2 fixed_t
-	_, _ = v1, v2
 	v2 = libc.Int32FromInt32(0)
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomz = v2
 	v1 = v2
@@ -31065,7 +30870,6 @@ func P_ExplodeMissile(tls *libc.TLS, mo uintptr) {
 func P_XYMovement(tls *libc.TLS, mo uintptr) {
 	var player uintptr
 	var ptryx, ptryy, xmove, ymove, v1, v2, v3, v4, v5 fixed_t
-	_, _, _, _, _, _, _, _, _, _ = player, ptryx, ptryy, xmove, ymove, v1, v2, v3, v4, v5
 	if !((*mobj_t)(unsafe.Pointer(mo)).Fmomx != 0) && !((*mobj_t)(unsafe.Pointer(mo)).Fmomy != 0) {
 		if (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_SKULLFLY) != 0 {
 			// the skull slammed into something
@@ -31177,7 +30981,6 @@ func P_XYMovement(tls *libc.TLS, mo uintptr) {
 func P_ZMovement(tls *libc.TLS, mo uintptr) {
 	var correct_lost_soul_bounce int32
 	var delta, dist fixed_t
-	_, _, _ = correct_lost_soul_bounce, delta, dist
 	// check for smooth step up
 	if (*mobj_t)(unsafe.Pointer(mo)).Fplayer != 0 && (*mobj_t)(unsafe.Pointer(mo)).Fz < (*mobj_t)(unsafe.Pointer(mo)).Ffloorz {
 		*(*fixed_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer + 32)) -= (*mobj_t)(unsafe.Pointer(mo)).Ffloorz - (*mobj_t)(unsafe.Pointer(mo)).Fz
@@ -31287,7 +31090,6 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 func P_NightmareRespawn(tls *libc.TLS, mobj uintptr) {
 	var mo, mthing, ss uintptr
 	var x, y, z fixed_t
-	_, _, _, _, _, _ = mo, mthing, ss, x, y, z
 	x = int32((*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint.Fx) << int32(FRACBITS)
 	y = int32((*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint.Fy) << int32(FRACBITS)
 	// somthing is occupying it's position?
@@ -31383,7 +31185,6 @@ func P_MobjThinker(tls *libc.TLS, mobj uintptr) {
 //	//
 func P_SpawnMobj(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r uintptr) {
 	var info, mobj, st uintptr
-	_, _, _ = info, mobj, st
 	mobj = Z_Malloc(tls, int32(224), int32(PU_LEVEL), libc.UintptrFromInt32(0))
 	libc.Xmemset(tls, mobj, 0, uint64(224))
 	info = uintptr(unsafe.Pointer(&mobjinfo)) + uintptr(type1)*92
@@ -31451,7 +31252,6 @@ func P_RespawnSpecials(tls *libc.TLS) {
 	var i int32
 	var mo, mthing, ss uintptr
 	var x, y, z fixed_t
-	_, _, _, _, _, _, _ = i, mo, mthing, ss, x, y, z
 	// only respawn items in deathmatch
 	if deathmatch != int32(2) {
 		return
@@ -31510,7 +31310,6 @@ func P_SpawnPlayer(tls *libc.TLS, mthing uintptr) {
 	var i int32
 	var mobj, p uintptr
 	var x, y, z fixed_t
-	_, _, _, _, _, _ = i, mobj, p, x, y, z
 	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) == 0 {
 		return
 	}
@@ -31579,7 +31378,6 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 	var bit, i int32
 	var mobj uintptr
 	var x, y, z fixed_t
-	_, _, _, _, _, _ = bit, i, mobj, x, y, z
 	// count deathmatch start positions
 	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) == int32(11) {
 		if deathmatch_p < uintptr(unsafe.Pointer(&deathmatchstarts))+10*10 {
@@ -31758,7 +31556,6 @@ func P_SpawnMissile(tls *libc.TLS, source uintptr, dest uintptr, type1 mobjtype_
 	var an angle_t
 	var dist int32
 	var th uintptr
-	_, _, _ = an, dist, th
 	th = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(source)).Fy, (*mobj_t)(unsafe.Pointer(source)).Fz+libc.Int32FromInt32(4)*libc.Int32FromInt32(8)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), type1)
 	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fseesound != 0 {
 		S_StartSound(tls, th, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fseesound)
@@ -31793,7 +31590,6 @@ func P_SpawnPlayerMissile(tls *libc.TLS, source uintptr, type1 mobjtype_t) {
 	var an angle_t
 	var slope, x, y, z fixed_t
 	var th uintptr
-	_, _, _, _, _, _ = an, slope, th, x, y, z
 	// see which target is to be aimed at
 	an = (*mobj_t)(unsafe.Pointer(source)).Fangle
 	slope = P_AimLineAttack(tls, source, an, libc.Int32FromInt32(16)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
@@ -31833,7 +31629,6 @@ func T_PlatRaise(tls *libc.TLS, plat uintptr) {
 	var res result_e
 	var v1 int32
 	var v2 uintptr
-	_, _, _ = res, v1, v2
 	switch (*plat_t)(unsafe.Pointer(plat)).Fstatus {
 	case int32(up):
 		res = T_MovePlane(tls, (*plat_t)(unsafe.Pointer(plat)).Fsector, (*plat_t)(unsafe.Pointer(plat)).Fspeed, (*plat_t)(unsafe.Pointer(plat)).Fhigh, (*plat_t)(unsafe.Pointer(plat)).Fcrush, 0, int32(1))
@@ -31899,7 +31694,6 @@ func T_PlatRaise(tls *libc.TLS, plat uintptr) {
 func EV_DoPlat(tls *libc.TLS, line uintptr, type1 plattype_e, amount int32) (r int32) {
 	var plat, sec uintptr
 	var rtn, secnum, v1 int32
-	_, _, _, _, _ = plat, rtn, sec, secnum, v1
 	secnum = -int32(1)
 	rtn = 0
 	//	Activate all <type> plats that are in_stasis
@@ -32115,7 +31909,6 @@ const ANG905 = 1073741824
 //	//
 func P_SetPsprite(tls *libc.TLS, player uintptr, position int32, stnum statenum_t) {
 	var psp, state uintptr
-	_, _ = psp, state
 	psp = player + 272 + uintptr(position)*24
 	for cond := true; cond; cond = !((*pspdef_t)(unsafe.Pointer(psp)).Ftics != 0) {
 		if !(stnum != 0) {
@@ -32177,7 +31970,6 @@ func P_BringUpWeapon(tls *libc.TLS, player uintptr) {
 func P_CheckAmmo(tls *libc.TLS, player uintptr) (r boolean) {
 	var ammo ammotype_t
 	var count int32
-	_, _ = ammo, count
 	ammo = weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo
 	// Minimal amount for one shot varies.
 	if (*player_t)(unsafe.Pointer(player)).Freadyweapon == int32(wp_bfg) {
@@ -32276,7 +32068,6 @@ func P_DropWeapon(tls *libc.TLS, player uintptr) {
 func A_WeaponReady(tls *libc.TLS, player uintptr, psp uintptr) {
 	var angle int32
 	var newstate statenum_t
-	_, _ = angle, newstate
 	// get out of attack state
 	if (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fstate == uintptr(unsafe.Pointer(&states))+uintptr(S_PLAY_ATK1)*40 || (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fstate == uintptr(unsafe.Pointer(&states))+uintptr(S_PLAY_ATK2)*40 {
 		P_SetMobjState(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(S_PLAY))
@@ -32405,7 +32196,6 @@ func A_GunFlash(tls *libc.TLS, player uintptr, psp uintptr) {
 func A_Punch(tls *libc.TLS, player uintptr, psp uintptr) {
 	var angle angle_t
 	var damage, slope int32
-	_, _, _ = angle, damage, slope
 	damage = (P_Random(tls)%int32(10) + int32(1)) << int32(1)
 	if *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_strength)*4)) != 0 {
 		damage *= int32(10)
@@ -32429,7 +32219,6 @@ func A_Punch(tls *libc.TLS, player uintptr, psp uintptr) {
 func A_Saw(tls *libc.TLS, player uintptr, psp uintptr) {
 	var angle angle_t
 	var damage, slope int32
-	_, _, _ = angle, damage, slope
 	damage = int32(2) * (P_Random(tls)%int32(10) + int32(1))
 	angle = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle
 	angle += libc.Uint32FromInt32((P_Random(tls) - P_Random(tls)) << int32(18))
@@ -32528,7 +32317,6 @@ func P_BulletSlope(tls *libc.TLS, mo uintptr) {
 func P_GunShot(tls *libc.TLS, mo uintptr, accurate boolean) {
 	var angle angle_t
 	var damage int32
-	_, _ = angle, damage
 	damage = int32(5) * (P_Random(tls)%int32(3) + int32(1))
 	angle = (*mobj_t)(unsafe.Pointer(mo)).Fangle
 	if !(accurate != 0) {
@@ -32585,7 +32373,6 @@ func A_FireShotgun(tls *libc.TLS, player uintptr, psp uintptr) {
 func A_FireShotgun2(tls *libc.TLS, player uintptr, psp uintptr) {
 	var angle angle_t
 	var damage, i int32
-	_, _, _ = angle, damage, i
 	S_StartSound(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(sfx_dshtgn))
 	P_SetMobjState(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(S_PLAY_ATK2))
 	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, int32(2))
@@ -32650,7 +32437,6 @@ func A_Light2(tls *libc.TLS, player uintptr, psp uintptr) {
 func A_BFGSpray(tls *libc.TLS, mo uintptr) {
 	var an angle_t
 	var damage, i, j int32
-	_, _, _, _ = an, damage, i, j
 	// offset angles from its attack angle
 	i = 0
 	for {
@@ -32728,8 +32514,7 @@ func P_SetupPsprites(tls *libc.TLS, player uintptr) {
 //	//
 func P_MovePsprites(tls *libc.TLS, player uintptr) {
 	var i int32
-	var psp, state, v2 uintptr
-	_, _, _, _ = i, psp, state, v2
+	var psp, v2 uintptr
 	psp = player + 272
 	i = 0
 	for {
@@ -32738,7 +32523,6 @@ func P_MovePsprites(tls *libc.TLS, player uintptr) {
 		}
 		// a null state means not active
 		v2 = (*pspdef_t)(unsafe.Pointer(psp)).Fstate
-		state = v2
 		if v2 != 0 {
 			// drop tic count and possibly change state
 			// a -1 tic count never changes
@@ -32857,7 +32641,6 @@ func saveg_write32(tls *libc.TLS, value int32) {
 func saveg_read_pad(tls *libc.TLS) {
 	var i, padding int32
 	var pos uint64
-	_, _, _ = i, padding, pos
 	pos = libc.Uint64FromInt64(libc.Xftell(tls, save_stream))
 	padding = libc.Int32FromUint64((uint64(4) - pos&uint64(3)) & uint64(3))
 	i = 0
@@ -32876,7 +32659,6 @@ func saveg_read_pad(tls *libc.TLS) {
 func saveg_write_pad(tls *libc.TLS) {
 	var i, padding int32
 	var pos uint64
-	_, _, _ = i, padding, pos
 	pos = libc.Uint64FromInt64(libc.Xftell(tls, save_stream))
 	padding = libc.Int32FromUint64((uint64(4) - pos&uint64(3)) & uint64(3))
 	i = 0
@@ -33904,7 +33686,6 @@ func P_ReadSaveGameHeader(tls *libc.TLS) (r boolean) {
 	var i int32
 	var _ /* read_vcheck at bp+16 */ [16]int8
 	var _ /* vcheck at bp+0 */ [16]int8
-	_, _, _, _ = a, b, c, i
 	// skip the description field
 	i = 0
 	for {
@@ -34036,7 +33817,6 @@ func P_UnArchivePlayers(tls *libc.TLS) {
 func P_ArchiveWorld(tls *libc.TLS) {
 	var i, j int32
 	var li, sec, si uintptr
-	_, _, _, _, _ = i, j, li, sec, si
 	// do sectors
 	i = 0
 	sec = sectors
@@ -34102,7 +33882,6 @@ func P_ArchiveWorld(tls *libc.TLS) {
 func P_UnArchiveWorld(tls *libc.TLS) {
 	var i, j int32
 	var li, sec, si uintptr
-	_, _, _, _, _ = i, j, li, sec, si
 	// do sectors
 	i = 0
 	sec = sectors
@@ -34205,7 +33984,6 @@ func P_UnArchiveThinkers(tls *libc.TLS) {
 	defer tls.Free(16)
 	var currentthinker, mobj, next uintptr
 	var tclass byte1
-	_, _, _, _ = currentthinker, mobj, next, tclass
 	// remove all the current thinkers
 	currentthinker = thinkercap.Fnext
 	for currentthinker != uintptr(unsafe.Pointer(&thinkercap)) {
@@ -34267,7 +34045,6 @@ const tc_endspecials = 7
 func P_ArchiveSpecials(tls *libc.TLS) {
 	var i int32
 	var th uintptr
-	_, _ = i, th
 	// save off the current thinkers
 	th = thinkercap.Fnext
 	for {
@@ -34356,7 +34133,6 @@ func P_UnArchiveSpecials(tls *libc.TLS) {
 	defer tls.Free(16)
 	var ceiling, door, flash, floor, glow, plat, strobe uintptr
 	var tclass byte1
-	_, _, _, _, _, _, _, _ = ceiling, door, flash, floor, glow, plat, strobe, tclass
 	// read in saved thinkers
 	for int32(1) != 0 {
 		tclass = saveg_read8(tls)
@@ -34431,7 +34207,6 @@ var totallines int32
 func P_LoadVertexes(tls *libc.TLS, lump int32) {
 	var data, li, ml uintptr
 	var i int32
-	_, _, _, _ = data, i, li, ml
 	// Determine number of lumps:
 	//  total lump length / vertex record length.
 	numvertexes = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(4))
@@ -34488,7 +34263,6 @@ var null_sector sector_t
 func P_LoadSegs(tls *libc.TLS, lump int32) {
 	var data, ldef, li, ml uintptr
 	var i, linedef, side, sidenum int32
-	_, _, _, _, _, _, _, _ = data, i, ldef, li, linedef, ml, side, sidenum
 	numsegs = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(12))
 	segs = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numsegs)*uint64(56)), int32(PU_LEVEL), uintptr(0))
 	libc.Xmemset(tls, segs, 0, libc.Uint64FromInt32(numsegs)*uint64(56))
@@ -34543,7 +34317,6 @@ func P_LoadSegs(tls *libc.TLS, lump int32) {
 func P_LoadSubsectors(tls *libc.TLS, lump int32) {
 	var data, ms, ss uintptr
 	var i int32
-	_, _, _, _ = data, i, ms, ss
 	numsubsectors = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(4))
 	subsectors = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numsubsectors)*uint64(16)), int32(PU_LEVEL), uintptr(0))
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
@@ -34575,7 +34348,6 @@ func P_LoadSubsectors(tls *libc.TLS, lump int32) {
 func P_LoadSectors(tls *libc.TLS, lump int32) {
 	var data, ms, ss uintptr
 	var i int32
-	_, _, _, _ = data, i, ms, ss
 	numsectors = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(26))
 	sectors = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numsectors)*uint64(128)), int32(PU_LEVEL), uintptr(0))
 	libc.Xmemset(tls, sectors, 0, libc.Uint64FromInt32(numsectors)*uint64(128))
@@ -34613,7 +34385,6 @@ func P_LoadSectors(tls *libc.TLS, lump int32) {
 func P_LoadNodes(tls *libc.TLS, lump int32) {
 	var data, mn, no uintptr
 	var i, j, k int32
-	_, _, _, _, _, _ = data, i, j, k, mn, no
 	numnodes = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(28))
 	nodes = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numnodes)*uint64(52)), int32(PU_LEVEL), uintptr(0))
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
@@ -34672,7 +34443,6 @@ func P_LoadThings(tls *libc.TLS, lump int32) {
 	var i, numthings int32
 	var spawn boolean
 	var _ /* spawnthing at bp+0 */ mapthing_t
-	_, _, _, _, _ = data, i, mt, numthings, spawn
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
 	numthings = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(10))
 	mt = data
@@ -34736,7 +34506,6 @@ func P_LoadThings(tls *libc.TLS, lump int32) {
 func P_LoadLineDefs(tls *libc.TLS, lump int32) {
 	var data, ld, mld, v1, v2, v21, v3 uintptr
 	var i int32
-	_, _, _, _, _, _, _, _ = data, i, ld, mld, v1, v2, v21, v3
 	numlines = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(14))
 	lines = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numlines)*uint64(88)), int32(PU_LEVEL), uintptr(0))
 	libc.Xmemset(tls, lines, 0, libc.Uint64FromInt32(numlines)*uint64(88))
@@ -34816,7 +34585,6 @@ func P_LoadLineDefs(tls *libc.TLS, lump int32) {
 func P_LoadSideDefs(tls *libc.TLS, lump int32) {
 	var data, msd, sd uintptr
 	var i int32
-	_, _, _, _ = data, i, msd, sd
 	numsides = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(30))
 	sides = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numsides)*uint64(24)), int32(PU_LEVEL), uintptr(0))
 	libc.Xmemset(tls, sides, 0, libc.Uint64FromInt32(numsides)*uint64(24))
@@ -34851,7 +34619,6 @@ func P_LoadSideDefs(tls *libc.TLS, lump int32) {
 //	//
 func P_LoadBlockMap(tls *libc.TLS, lump int32) {
 	var count, i, lumplen int32
-	_, _, _ = count, i, lumplen
 	lumplen = W_LumpLength(tls, libc.Uint32FromInt32(lump))
 	count = lumplen / int32(2)
 	blockmaplump = Z_Malloc(tls, lumplen, int32(PU_LEVEL), libc.UintptrFromInt32(0))
@@ -34893,7 +34660,6 @@ func P_GroupLines(tls *libc.TLS) {
 	var block, i, j, v10, v7, v8, v9 int32
 	var li, linebuffer, sector, seg, ss uintptr
 	var _ /* bbox at bp+0 */ [4]fixed_t
-	_, _, _, _, _, _, _, _, _, _, _, _ = block, i, j, li, linebuffer, sector, seg, ss, v10, v7, v8, v9
 	// look up sector number for each subsector
 	ss = subsectors
 	i = 0
@@ -35043,7 +34809,6 @@ func PadRejectArray(tls *libc.TLS, array uintptr, len1 uint32) {
 	var byte_num, i, padvalue uint32
 	var dest uintptr
 	var rejectpad [4]uint32
-	_, _, _, _, _ = byte_num, dest, i, padvalue, rejectpad
 	// Values to pad the REJECT array with:
 	rejectpad = [4]uint32{
 		0: libc.Uint32FromInt32((totallines*int32(4)+int32(3)) & ^libc.Int32FromInt32(3) + int32(24)),
@@ -35081,7 +34846,6 @@ func PadRejectArray(tls *libc.TLS, array uintptr, len1 uint32) {
 
 func P_LoadReject(tls *libc.TLS, lumpnum int32) {
 	var lumplen, minlength int32
-	_, _ = lumplen, minlength
 	// Calculate the size that the REJECT lump *should* be.
 	minlength = (numsectors*numsectors + int32(7)) / int32(8)
 	// If the lump meets the minimum length, it can be loaded directly.
@@ -35107,7 +34871,6 @@ func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, sk
 	defer tls.Free(32)
 	var i, lumpnum, v1, v2, v3, v5, v6, v8 int32
 	var _ /* lumpname at bp+0 */ [9]int8
-	_, _, _, _, _, _, _, _ = i, lumpnum, v1, v2, v3, v5, v6, v8
 	v3 = libc.Int32FromInt32(0)
 	wminfo.Fmaxfrags = v3
 	v2 = v3
@@ -35222,7 +34985,6 @@ const NF_SUBSECTOR1 = 32768
 //	//
 func P_DivlineSide(tls *libc.TLS, x fixed_t, y fixed_t, node uintptr) (r int32) {
 	var dx, dy, left, right fixed_t
-	_, _, _, _ = dx, dy, left, right
 	if !((*divline_t)(unsafe.Pointer(node)).Fdx != 0) {
 		if x == (*divline_t)(unsafe.Pointer(node)).Fx {
 			return int32(2)
@@ -35264,7 +35026,6 @@ func P_DivlineSide(tls *libc.TLS, x fixed_t, y fixed_t, node uintptr) (r int32) 
 //	//
 func P_InterceptVector2(tls *libc.TLS, v2 uintptr, v1 uintptr) (r fixed_t) {
 	var den, frac, num fixed_t
-	_, _, _ = den, frac, num
 	den = FixedMul(tls, (*divline_t)(unsafe.Pointer(v1)).Fdy>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdx) - FixedMul(tls, (*divline_t)(unsafe.Pointer(v1)).Fdx>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdy)
 	if den == 0 {
 		return 0
@@ -35289,7 +35050,6 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 	var count, s1, s2 int32
 	var frac, openbottom, opentop, slope fixed_t
 	var _ /* divl at bp+0 */ divline_t
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _ = back, count, frac, front, line, openbottom, opentop, s1, s2, seg, slope, sub, v1, v2
 	if num >= numsubsectors {
 		I_Error(tls, __ccgo_ts+25239, libc.VaList(bp+24, num, numsubsectors))
 	}
@@ -35395,7 +35155,6 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 func P_CrossBSPNode(tls *libc.TLS, bspnum int32) (r boolean) {
 	var bsp uintptr
 	var side int32
-	_, _ = bsp, side
 	if bspnum&int32(NF_SUBSECTOR1) != 0 {
 		if bspnum == -int32(1) {
 			return P_CrossSubsector(tls, 0)
@@ -35432,7 +35191,6 @@ func P_CrossBSPNode(tls *libc.TLS, bspnum int32) (r boolean) {
 //	//
 func P_CheckSight(tls *libc.TLS, t1 uintptr, t2 uintptr) (r boolean) {
 	var bitnum, bytenum, pnum, s1, s2 int32
-	_, _, _, _, _ = bitnum, bytenum, pnum, s1, s2
 	// First check for trivial rejection.
 	// Determine subsector entries in REJECT table.
 	s1 = int32((int64((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(t1)).Fsubsector)).Fsector) - int64(sectors)) / 128)
@@ -35672,7 +35430,6 @@ func P_InitPicAnims(tls *libc.TLS) {
 	defer tls.Free(32)
 	var endname, startname uintptr
 	var i int32
-	_, _, _ = endname, i, startname
 	//	Init animation
 	lastanim = uintptr(unsafe.Pointer(&anims))
 	i = 0
@@ -35776,7 +35533,6 @@ func P_FindLowestFloorSurrounding(tls *libc.TLS, sec uintptr) (r fixed_t) {
 	var check, other uintptr
 	var floor fixed_t
 	var i int32
-	_, _, _, _ = check, floor, i, other
 	floor = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight
 	i = 0
 	for {
@@ -35809,7 +35565,6 @@ func P_FindHighestFloorSurrounding(tls *libc.TLS, sec uintptr) (r fixed_t) {
 	var check, other uintptr
 	var floor fixed_t
 	var i int32
-	_, _, _, _ = check, floor, i, other
 	floor = -libc.Int32FromInt32(500) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
 	i = 0
 	for {
@@ -35846,7 +35601,6 @@ func P_FindNextHighestFloor(tls *libc.TLS, sec uintptr, currentheight int32) (r 
 	var h, i, min, v2 int32
 	var height fixed_t
 	var heightlist [22]fixed_t
-	_, _, _, _, _, _, _, _ = check, h, height, heightlist, i, min, other, v2
 	height = currentheight
 	i = 0
 	h = libc.Int32FromInt32(0)
@@ -35909,7 +35663,6 @@ func P_FindLowestCeilingSurrounding(tls *libc.TLS, sec uintptr) (r fixed_t) {
 	var check, other uintptr
 	var height fixed_t
 	var i int32
-	_, _, _, _ = check, height, i, other
 	height = int32(INT_MAX13)
 	i = 0
 	for {
@@ -35941,7 +35694,6 @@ func P_FindHighestCeilingSurrounding(tls *libc.TLS, sec uintptr) (r fixed_t) {
 	var check, other uintptr
 	var height fixed_t
 	var i int32
-	_, _, _, _ = check, height, i, other
 	height = 0
 	i = 0
 	for {
@@ -35996,7 +35748,6 @@ func P_FindSectorFromLineTag(tls *libc.TLS, line uintptr, start int32) (r int32)
 func P_FindMinSurroundingLight(tls *libc.TLS, sector uintptr, max int32) (r int32) {
 	var check, line uintptr
 	var i, min int32
-	_, _, _, _ = check, i, line, min
 	min = max
 	i = 0
 	for {
@@ -36035,7 +35786,6 @@ func P_FindMinSurroundingLight(tls *libc.TLS, sector uintptr, max int32) (r int3
 func P_CrossSpecialLine(tls *libc.TLS, linenum int32, side int32, thing uintptr) {
 	var line uintptr
 	var ok int32
-	_, _ = line, ok
 	line = lines + uintptr(linenum)*88
 	//	Triggers that other things can activate
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != 0) {
@@ -36455,7 +36205,6 @@ func P_PlayerInSpecialSector(tls *libc.TLS, player uintptr) {
 func P_UpdateSpecials(tls *libc.TLS) {
 	var anim, line uintptr
 	var i, pic int32
-	_, _, _, _ = anim, i, line, pic
 	//	LEVEL TIMER
 	if levelTimer == uint32(true1) {
 		levelTimeCount--
@@ -36616,7 +36365,6 @@ func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
 	var i, rtn, secnum, v1 int32
 	var _ /* s3_floorheight at bp+0 */ fixed_t
 	var _ /* s3_floorpic at bp+4 */ int16
-	_, _, _, _, _, _, _, _ = floor, i, rtn, s1, s2, s3, secnum, v1
 	secnum = -int32(1)
 	rtn = 0
 	for {
@@ -36705,7 +36453,6 @@ func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
 func P_SpawnSpecials(tls *libc.TLS) {
 	var i int32
 	var sector uintptr
-	_, _ = i, sector
 	// See if -TIMER was specified.
 	if timelimit > 0 && deathmatch != 0 {
 		levelTimer = uint32(true1)
@@ -37042,7 +36789,6 @@ func init() {
 //	//
 func P_InitSwitchList(tls *libc.TLS) {
 	var episode, i, index, v2, v3 int32
-	_, _, _, _, _ = episode, i, index, v2, v3
 	episode = int32(1)
 	if gamemode == int32(registered) || gamemode == int32(retail) {
 		episode = int32(2)
@@ -37128,7 +36874,6 @@ func P_StartButton(tls *libc.TLS, line uintptr, w bwhere_e, texture int32, time 
 //	//
 func P_ChangeSwitchTexture(tls *libc.TLS, line uintptr, useAgain int32) {
 	var i, sound, texBot, texMid, texTop int32
-	_, _, _, _, _ = i, sound, texBot, texMid, texTop
 	if !(useAgain != 0) {
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
 	}
@@ -37557,7 +37302,6 @@ func EV_Teleport(tls *libc.TLS, line uintptr, side int32, thing uintptr) (r int3
 	var fog, m, sector, thinker uintptr
 	var i, tag int32
 	var oldx, oldy, oldz, v3, v4 fixed_t
-	_, _, _, _, _, _, _, _, _, _, _, _ = an, fog, i, m, oldx, oldy, oldz, sector, tag, thinker, v3, v4
 	// don't teleport missiles
 	if (*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_MISSILE) != 0 {
 		return 0
@@ -37765,7 +37509,6 @@ func P_Thrust(tls *libc.TLS, player uintptr, angle angle_t, move fixed_t) {
 func P_CalcHeight(tls *libc.TLS, player uintptr) {
 	var angle int32
 	var bob fixed_t
-	_, _ = angle, bob
 	// Regular movement bobbing
 	// (needs to be calculated for gun swing
 	// even if not on ground)
@@ -37845,7 +37588,6 @@ func P_MovePlayer(tls *libc.TLS, player uintptr) {
 
 func P_DeathThink(tls *libc.TLS, player uintptr) {
 	var angle, delta angle_t
-	_, _ = angle, delta
 	P_MovePsprites(tls, player)
 	// fall to the ground
 	if (*player_t)(unsafe.Pointer(player)).Fviewheight > libc.Int32FromInt32(6)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
@@ -37893,7 +37635,6 @@ func P_PlayerThink(tls *libc.TLS, player uintptr) {
 	var cmd, v2 uintptr
 	var newweapon weapontype_t
 	var v1 int32
-	_, _, _, _ = cmd, newweapon, v1, v2
 	// fixme: do this in the cheat code
 	if (*player_t)(unsafe.Pointer(player)).Fcheats&int32(CF_NOCLIP) != 0 {
 		*(*int32)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 160)) |= int32(MF_NOCLIP)
@@ -38041,7 +37782,6 @@ type cliprange_t = struct {
 //	//
 func R_ClipSolidWallSegment(tls *libc.TLS, first int32, last int32) {
 	var next, start, v1, v2 uintptr
-	_, _, _, _ = next, start, v1, v2
 	// Find the first range that touches the range
 	//  (adjacent pixels are touching).
 	start = uintptr(unsafe.Pointer(&solidsegs))
@@ -38177,7 +37917,6 @@ func R_ClearClipSegs(tls *libc.TLS) {
 func R_AddLine(tls *libc.TLS, line uintptr) {
 	var angle1, angle2, span, tspan angle_t
 	var x1, x2 int32
-	_, _, _, _, _, _ = angle1, angle2, span, tspan, x1, x2
 	curline = line
 	// OPTIMIZE: quickly reject orthogonal back sides.
 	angle1 = R_PointToAngle(tls, (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv1)).Fx, (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv1)).Fy)
@@ -38306,7 +38045,6 @@ func R_CheckBBox(tls *libc.TLS, bspcoord uintptr) (r boolean) {
 	var boxpos, boxx, boxy, sx1, sx2 int32
 	var start uintptr
 	var x1, x2, y1, y2 fixed_t
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _ = angle1, angle2, boxpos, boxx, boxy, span, start, sx1, sx2, tspan, x1, x2, y1, y2
 	// Find the corners of the box
 	// that define the edges from current viewpoint.
 	if viewx <= *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(BOXLEFT)*4)) {
@@ -38397,7 +38135,6 @@ func R_Subsector(tls *libc.TLS, num int32) {
 	defer tls.Free(32)
 	var count, v1 int32
 	var line, sub uintptr
-	_, _, _, _ = count, line, sub, v1
 	if num >= numsubsectors {
 		I_Error(tls, __ccgo_ts+25894, libc.VaList(bp+8, num, numsubsectors))
 	}
@@ -38438,7 +38175,6 @@ func R_Subsector(tls *libc.TLS, num int32) {
 func R_RenderBSPNode(tls *libc.TLS, bspnum int32) {
 	var bsp uintptr
 	var side int32
-	_, _ = bsp, side
 	// Found a subsector?
 	if bspnum&int32(NF_SUBSECTOR3) != 0 {
 		if bspnum == -int32(1) {
@@ -38568,7 +38304,6 @@ type texture_t = struct {
 func R_DrawColumnInCache(tls *libc.TLS, patch uintptr, cache uintptr, originy int32, cacheheight int32) {
 	var count, position int32
 	var source uintptr
-	_, _, _ = count, position, source
 	for libc.Int32FromUint8((*column_t)(unsafe.Pointer(patch)).Ftopdelta) != int32(0xff) {
 		source = patch + uintptr(3)
 		count = libc.Int32FromUint8((*column_t)(unsafe.Pointer(patch)).Flength)
@@ -38598,7 +38333,6 @@ func R_DrawColumnInCache(tls *libc.TLS, patch uintptr, cache uintptr, originy in
 func R_GenerateComposite(tls *libc.TLS, texnum int32) {
 	var block, collump, colofs, patch, patchcol, realpatch, texture uintptr
 	var i, x, x1, x2 int32
-	_, _, _, _, _, _, _, _, _, _, _ = block, collump, colofs, i, patch, patchcol, realpatch, texture, x, x1, x2
 	texture = *(*uintptr)(unsafe.Pointer(textures + uintptr(texnum)*8))
 	block = Z_Malloc(tls, *(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)), int32(PU_STATIC), texturecomposite+uintptr(texnum)*8)
 	collump = *(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(texnum)*8))
@@ -38659,7 +38393,6 @@ func R_GenerateLookup(tls *libc.TLS, texnum int32) {
 	var collump, colofs, patch, realpatch, texture uintptr
 	var i, x, x1, x2 int32
 	var _ /* patchcount at bp+0 */ uintptr
-	_, _, _, _, _, _, _, _, _ = collump, colofs, i, patch, realpatch, texture, x, x1, x2
 	texture = *(*uintptr)(unsafe.Pointer(textures + uintptr(texnum)*8))
 	// Composited texture not created yet.
 	*(*uintptr)(unsafe.Pointer(texturecomposite + uintptr(texnum)*8)) = uintptr(0)
@@ -38742,7 +38475,6 @@ func R_GenerateLookup(tls *libc.TLS, texnum int32) {
 //	//
 func R_GetColumn(tls *libc.TLS, tex int32, col int32) (r uintptr) {
 	var lump, ofs int32
-	_, _ = lump, ofs
 	col &= *(*int32)(unsafe.Pointer(texturewidthmask + uintptr(tex)*4))
 	lump = int32(*(*int16)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(tex)*8)) + uintptr(col)*2)))
 	ofs = libc.Int32FromUint16(*(*uint16)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(tex)*8)) + uintptr(col)*2)))
@@ -38758,7 +38490,6 @@ func R_GetColumn(tls *libc.TLS, tex int32, col int32) (r uintptr) {
 func GenerateTextureHashTable(tls *libc.TLS) {
 	var i, key int32
 	var rover uintptr
-	_, _, _ = i, key, rover
 	textures_hashtable = Z_Malloc(tls, libc.Int32FromUint64(uint64(8)*libc.Uint64FromInt32(numtextures)), int32(PU_STATIC), uintptr(0))
 	libc.Xmemset(tls, textures_hashtable, 0, uint64(8)*libc.Uint64FromInt32(numtextures))
 	// Add all textures to hash table
@@ -38799,10 +38530,9 @@ func GenerateTextureHashTable(tls *libc.TLS) {
 func R_InitTextures(tls *libc.TLS) {
 	bp := tls.Alloc(32)
 	defer tls.Free(32)
-	var directory, maptex, maptex1, maptex2, mpatch, mtexture, name_p, names, patch, patchlookup, texture, v2, v6 uintptr
+	var directory, maptex, maptex2, mpatch, mtexture, name_p, names, patch, patchlookup, texture, v2, v6 uintptr
 	var i, j, maxoff, maxoff2, nummappatches, numtextures1, numtextures2, offset, temp1, temp2, temp3, totalwidth int32
 	var _ /* name at bp+0 */ [9]int8
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = directory, i, j, maptex, maptex1, maptex2, maxoff, maxoff2, mpatch, mtexture, name_p, names, nummappatches, numtextures1, numtextures2, offset, patch, patchlookup, temp1, temp2, temp3, texture, totalwidth, v2, v6
 	// Load the patch names from pnames.lmp.
 	(*(*[9]int8)(unsafe.Pointer(bp)))[int32(8)] = 0
 	names = W_CacheLumpName(tls, __ccgo_ts+26022, int32(PU_STATIC))
@@ -38826,7 +38556,6 @@ func R_InitTextures(tls *libc.TLS) {
 	// The data is contained in one or two lumps,
 	//  TEXTURE1 for shareware, plus TEXTURE2 for commercial.
 	v2 = W_CacheLumpName(tls, __ccgo_ts+26029, int32(PU_STATIC))
-	maptex1 = v2
 	maptex = v2
 	numtextures1 = *(*int32)(unsafe.Pointer(maptex))
 	maxoff = W_LumpLength(tls, libc.Uint32FromInt32(W_GetNumForName(tls, __ccgo_ts+26029)))
@@ -39013,7 +38742,6 @@ func R_InitFlats(tls *libc.TLS) {
 func R_InitSpriteLumps(tls *libc.TLS) {
 	var i int32
 	var patch uintptr
-	_, _ = i, patch
 	firstspritelump = W_GetNumForName(tls, __ccgo_ts+26047) + int32(1)
 	lastspritelump = W_GetNumForName(tls, __ccgo_ts+26055) - int32(1)
 	numspritelumps = lastspritelump - firstspritelump + int32(1)
@@ -39102,7 +38830,6 @@ func R_FlatNumForName(tls *libc.TLS, name uintptr) (r int32) {
 func R_CheckTextureNumForName(tls *libc.TLS, name uintptr) (r int32) {
 	var key int32
 	var texture uintptr
-	_, _ = key, texture
 	// "NoTexture" marker.
 	if int32(*(*int8)(unsafe.Pointer(name))) == int32('-') {
 		return 0
@@ -39140,7 +38867,6 @@ func R_TextureNumForName(tls *libc.TLS, name uintptr) (r int32) {
 func R_PrecacheLevel(tls *libc.TLS) {
 	var flatpresent, sf, spritepresent, texture, texturepresent, th uintptr
 	var i, j, k, lump int32
-	_, _, _, _, _, _, _, _, _, _ = flatpresent, i, j, k, lump, sf, spritepresent, texture, texturepresent, th
 	if demoplayback != 0 {
 		return
 	}
@@ -39308,7 +39034,6 @@ func R_DrawColumn(tls *libc.TLS) {
 	var count, v1 int32
 	var dest uintptr
 	var frac, fracstep fixed_t
-	_, _, _, _, _ = count, dest, frac, fracstep, v1
 	count = dc_yh - dc_yl
 	// Zero length, column does not exceed a pixel.
 	if count < 0 {
@@ -39355,7 +39080,6 @@ func R_DrawColumnLow(tls *libc.TLS) {
 	var dest, dest2 uintptr
 	var frac, fracstep fixed_t
 	var v3 byte1
-	_, _, _, _, _, _, _, _ = count, dest, dest2, frac, fracstep, x, v1, v3
 	count = dc_yh - dc_yl
 	// Zero length.
 	if count < 0 {
@@ -39461,7 +39185,6 @@ func R_DrawFuzzColumn(tls *libc.TLS) {
 	var count, v1, v3 int32
 	var dest uintptr
 	var frac, fracstep fixed_t
-	_, _, _, _, _, _ = count, dest, frac, fracstep, v1, v3
 	// Adjust borders. Low...
 	if !(dc_yl != 0) {
 		dc_yl = int32(1)
@@ -39517,7 +39240,6 @@ func R_DrawFuzzColumnLow(tls *libc.TLS) {
 	var count, x, v1, v3 int32
 	var dest, dest2 uintptr
 	var frac, fracstep fixed_t
-	_, _, _, _, _, _, _, _ = count, dest, dest2, frac, fracstep, x, v1, v3
 	// Adjust borders. Low...
 	if !(dc_yl != 0) {
 		dc_yl = int32(1)
@@ -39577,7 +39299,6 @@ func R_DrawTranslatedColumn(tls *libc.TLS) {
 	var count, v1 int32
 	var dest uintptr
 	var frac, fracstep fixed_t
-	_, _, _, _, _ = count, dest, frac, fracstep, v1
 	count = dc_yh - dc_yl
 	if count < 0 {
 		return
@@ -39616,7 +39337,6 @@ func R_DrawTranslatedColumnLow(tls *libc.TLS) {
 	var count, x, v1 int32
 	var dest, dest2 uintptr
 	var frac, fracstep fixed_t
-	_, _, _, _, _, _, _ = count, dest, dest2, frac, fracstep, x, v1
 	count = dc_yh - dc_yl
 	if count < 0 {
 		return
@@ -39666,7 +39386,6 @@ func R_DrawTranslatedColumnLow(tls *libc.TLS) {
 func R_InitTranslationTables(tls *libc.TLS) {
 	var i int32
 	var v2, v3 byte1
-	_, _, _ = i, v2, v3
 	translationtables = Z_Malloc(tls, libc.Int32FromInt32(256)*libc.Int32FromInt32(3), int32(PU_STATIC), uintptr(0))
 	// translate just the 16 green colors
 	i = 0
@@ -39704,7 +39423,6 @@ func R_DrawSpan(tls *libc.TLS) {
 	var count, spot, v1 int32
 	var dest, v3 uintptr
 	var position, step, xtemp, ytemp uint32
-	_, _, _, _, _, _, _, _, _ = count, dest, position, spot, step, xtemp, ytemp, v1, v3
 	if ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= int32(SCREENWIDTH) || libc.Uint32FromInt32(ds_y) > uint32(SCREENHEIGHT) {
 		I_Error(tls, __ccgo_ts+26301, libc.VaList(bp+8, ds_x1, ds_x2, ds_y))
 	}
@@ -39754,7 +39472,6 @@ func R_DrawSpanLow(tls *libc.TLS) {
 	var count, spot, v1 int32
 	var dest, v3, v4 uintptr
 	var position, step, xtemp, ytemp uint32
-	_, _, _, _, _, _, _, _, _, _ = count, dest, position, spot, step, xtemp, ytemp, v1, v3, v4
 	if ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= int32(SCREENWIDTH) || libc.Uint32FromInt32(ds_y) > uint32(SCREENHEIGHT) {
 		I_Error(tls, __ccgo_ts+26301, libc.VaList(bp+8, ds_x1, ds_x2, ds_y))
 	}
@@ -39850,7 +39567,6 @@ func R_InitBuffer(tls *libc.TLS, width int32, height int32) {
 func R_FillBackScreen(tls *libc.TLS) {
 	var dest, name, name1, name2, patch, src uintptr
 	var x, y int32
-	_, _, _, _, _, _, _, _ = dest, name, name1, name2, patch, src, x, y
 	// DOOM border patch.
 	name1 = __ccgo_ts + 26328
 	// DOOM II border patch.
@@ -39984,7 +39700,6 @@ func R_VideoErase(tls *libc.TLS, ofs uint32, count int32) {
 //	//
 func R_DrawViewBorder(tls *libc.TLS) {
 	var i, ofs, side, top int32
-	_, _, _, _ = i, ofs, side, top
 	if scaledviewwidth == int32(SCREENWIDTH) {
 		return
 	}
@@ -40035,7 +39750,6 @@ func init() {
 //	//
 func R_PointOnSide(tls *libc.TLS, x fixed_t, y fixed_t, node uintptr) (r int32) {
 	var dx, dy, left, right fixed_t
-	_, _, _, _ = dx, dy, left, right
 	if !((*node_t)(unsafe.Pointer(node)).Fdx != 0) {
 		if x <= (*node_t)(unsafe.Pointer(node)).Fx {
 			return libc.BoolInt32((*node_t)(unsafe.Pointer(node)).Fdy > 0)
@@ -40070,7 +39784,6 @@ func R_PointOnSide(tls *libc.TLS, x fixed_t, y fixed_t, node uintptr) (r int32) 
 
 func R_PointOnSegSide(tls *libc.TLS, x fixed_t, y fixed_t, line uintptr) (r int32) {
 	var dx, dy, ldx, ldy, left, lx, ly, right fixed_t
-	_, _, _, _, _, _, _, _ = dx, dy, ldx, ldy, left, lx, ly, right
 	lx = (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv1)).Fx
 	ly = (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv1)).Fy
 	ldx = (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv2)).Fx - lx
@@ -40182,7 +39895,6 @@ func R_PointToAngle2(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed
 func R_PointToDist(tls *libc.TLS, x fixed_t, y fixed_t) (r fixed_t) {
 	var angle int32
 	var dist, dx, dy, frac, temp fixed_t
-	_, _, _, _, _, _ = angle, dist, dx, dy, frac, temp
 	dx = libc.Xabs(tls, x-viewx)
 	dy = libc.Xabs(tls, y-viewy)
 	if dy > dx {
@@ -40224,7 +39936,6 @@ func R_ScaleFromGlobalAngle(tls *libc.TLS, visangle angle_t) (r fixed_t) {
 	var anglea, angleb angle_t
 	var den, sinea, sineb int32
 	var num, scale fixed_t
-	_, _, _, _, _, _, _ = anglea, angleb, den, num, scale, sinea, sineb
 	// UNUSED
 	anglea = uint32(ANG909) + (visangle - viewangle)
 	angleb = uint32(ANG909) + (visangle - rw_normalangle)
@@ -40265,7 +39976,6 @@ func R_InitTables(tls *libc.TLS) {
 func R_InitTextureMapping(tls *libc.TLS) {
 	var focallength fixed_t
 	var i, t, x int32
-	_, _, _, _ = focallength, i, t, x
 	// Use tangent table to generate viewangletox:
 	//  viewangletox will give the next greatest x
 	//  after the view angle.
@@ -40350,7 +40060,6 @@ func R_InitTextureMapping(tls *libc.TLS) {
 
 func R_InitLightTables(tls *libc.TLS) {
 	var i, j, level, scale, startmap int32
-	_, _, _, _, _ = i, j, level, scale, startmap
 	// Calculate the light levels to use
 	//  for each level / distance combination.
 	i = 0
@@ -40401,7 +40110,6 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 	var cosadj, dy fixed_t
 	var i, j, level, startmap int32
 	var v1, v2 uintptr
-	_, _, _, _, _, _, _, _ = cosadj, dy, i, j, level, startmap, v1, v2
 	setsizeneeded = uint32(false1)
 	if setblocks == int32(11) {
 		scaledviewwidth = int32(SCREENWIDTH)
@@ -40539,7 +40247,6 @@ func R_Init(tls *libc.TLS) {
 func R_PointInSubsector(tls *libc.TLS, x fixed_t, y fixed_t) (r uintptr) {
 	var node uintptr
 	var nodenum, side int32
-	_, _, _ = node, nodenum, side
 	// single subsector is a special case
 	if !(numnodes != 0) {
 		return subsectors
@@ -40650,7 +40357,6 @@ func R_MapPlane(tls *libc.TLS, y int32, x1 int32, x2 int32) {
 	var angle angle_t
 	var distance, length, v1, v2, v3 fixed_t
 	var index uint32
-	_, _, _, _, _, _, _ = angle, distance, index, length, v1, v2, v3
 	if x2 < x1 || x1 < 0 || x2 >= viewwidth || y > viewheight {
 		I_Error(tls, __ccgo_ts+26405, libc.VaList(bp+8, x1, x2, y))
 	}
@@ -40699,7 +40405,6 @@ func R_MapPlane(tls *libc.TLS, y int32, x1 int32, x2 int32) {
 func R_ClearPlanes(tls *libc.TLS) {
 	var angle angle_t
 	var i int32
-	_, _ = angle, i
 	// opening / clipping determination
 	i = 0
 	for {
@@ -40773,7 +40478,6 @@ func R_FindPlane(tls *libc.TLS, height fixed_t, picnum int32, lightlevel int32) 
 func R_CheckPlane(tls *libc.TLS, pl uintptr, start int32, stop int32) (r uintptr) {
 	var intrh, intrl, unionh, unionl, x int32
 	var v2 uintptr
-	_, _, _, _, _, _ = intrh, intrl, unionh, unionl, x, v2
 	if start < (*visplane_t)(unsafe.Pointer(pl)).Fminx {
 		intrl = (*visplane_t)(unsafe.Pointer(pl)).Fminx
 		unionl = start
@@ -40831,7 +40535,6 @@ func R_DrawPlanes(tls *libc.TLS) {
 	defer tls.Free(16)
 	var angle, b1, b2, light, lumpnum, stop, t1, t2, x int32
 	var pl uintptr
-	_, _, _, _, _, _, _, _, _, _ = angle, b1, b2, light, lumpnum, pl, stop, t1, t2, x
 	if (int64(ds_p)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&drawsegs))))/64 > int64(MAXDRAWSEGS) {
 		I_Error(tls, __ccgo_ts+26461, libc.VaList(bp+8, (int64(ds_p)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&drawsegs))))/64))
 	}
@@ -40945,7 +40648,6 @@ func R_RenderMaskedSegRange(tls *libc.TLS, ds uintptr, x1 int32, x2 int32) {
 	var col uintptr
 	var index uint32
 	var lightnum, texnum, v1, v2 int32
-	_, _, _, _, _, _ = col, index, lightnum, texnum, v1, v2
 	// Calculate light table.
 	// Use different light tables
 	//   for horizontal / vertical / diagonal. Diagonal?
@@ -41043,7 +40745,6 @@ func R_RenderSegLoop(tls *libc.TLS) {
 	var ceilingclip_temp, floorclip_temp uintptr
 	var index uint32
 	var texturecolumn fixed_t
-	_, _, _, _, _, _, _, _, _, _ = angle, bottom, ceilingclip_temp, floorclip_temp, index, mid, texturecolumn, top, yh, yl
 	ceilingclip_temp = uintptr(unsafe.Pointer(&ceilingclip)) + uintptr(rw_x)*2
 	floorclip_temp = uintptr(unsafe.Pointer(&floorclip)) + uintptr(rw_x)*2
 	for {
@@ -41192,7 +40893,6 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	var lightnum, v2, v5, v6 int32
 	var v10, v7, v8 boolean
 	var v11, v9, p1 uintptr
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = distangle, hyp, lightnum, offsetangle, sineval, vtop, v10, v11, v2, v3, v4, v5, v6, v7, v8, v9, p1
 	// don't overflow and crash
 	if ds_p == uintptr(unsafe.Pointer(&drawsegs))+256*64 {
 		return
@@ -41556,7 +41256,6 @@ func R_InitSpriteDefs(tls *libc.TLS, namelist uintptr) {
 	defer tls.Free(32)
 	var check uintptr
 	var end, frame, i, l, patched, rotation, start int32
-	_, _, _, _, _, _, _, _ = check, end, frame, i, l, patched, rotation, start
 	// count the number of sprite names
 	check = namelist
 	for *(*uintptr)(unsafe.Pointer(check)) != libc.UintptrFromInt32(0) {
@@ -41719,7 +41418,6 @@ func R_NewVisSprite(tls *libc.TLS) (r uintptr) {
 func R_DrawMaskedColumn(tls *libc.TLS, column uintptr) {
 	var basetexturemid fixed_t
 	var bottomscreen, topscreen int32
-	_, _, _ = basetexturemid, bottomscreen, topscreen
 	basetexturemid = dc_texturemid
 	for {
 		if !(libc.Int32FromUint8((*column_t)(unsafe.Pointer(column)).Ftopdelta) != int32(0xff)) {
@@ -41762,7 +41460,6 @@ func R_DrawVisSprite(tls *libc.TLS, vis uintptr, x1 int32, x2 int32) {
 	var column, patch uintptr
 	var frac fixed_t
 	var texturecolumn int32
-	_, _, _, _ = column, frac, patch, texturecolumn
 	patch = W_CacheLumpNum(tls, (*vissprite_t)(unsafe.Pointer(vis)).Fpatch+firstspritelump, int32(PU_CACHE))
 	dc_colormap = (*vissprite_t)(unsafe.Pointer(vis)).Fcolormap
 	if !(dc_colormap != 0) {
@@ -41815,7 +41512,6 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 	var index, lump, x1, x2, v1, v2 int32
 	var rot uint32
 	var sprdef, sprframe, vis uintptr
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = ang, flip, gxt, gyt, index, iscale, lump, rot, sprdef, sprframe, tr_x, tr_y, tx, tz, vis, x1, x2, xscale, v1, v2
 	// transform the origin point
 	tr_x = (*mobj_t)(unsafe.Pointer(thing)).Fx - viewx
 	tr_y = (*mobj_t)(unsafe.Pointer(thing)).Fy - viewy
@@ -41933,7 +41629,6 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 func R_AddSprites(tls *libc.TLS, sec uintptr) {
 	var lightnum int32
 	var thing uintptr
-	_, _ = lightnum, thing
 	// BSP is traversed by subsector.
 	// A sector might have been split into several
 	//  subsectors during BSP building.
@@ -41980,7 +41675,6 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 	var sprdef, sprframe, vis uintptr
 	var tx fixed_t
 	var _ /* avis at bp+0 */ vissprite_t
-	_, _, _, _, _, _, _, _, _, _ = flip, lump, sprdef, sprframe, tx, vis, x1, x2, v1, v2
 	// decide which patch to use
 	if libc.Uint32FromInt32((*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fsprite) >= libc.Uint32FromInt32(numsprites) {
 		I_Error(tls, __ccgo_ts+26979, libc.VaList(bp+88, (*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fsprite))
@@ -42062,7 +41756,6 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 func R_DrawPlayerSprites(tls *libc.TLS) {
 	var i, lightnum int32
 	var psp uintptr
-	_, _, _ = i, lightnum, psp
 	// get light level
 	lightnum = int32((*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(viewplayer)).Fmo)).Fsubsector)).Fsector)).Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
 	if lightnum < 0 {
@@ -42102,7 +41795,6 @@ func R_SortVisSprites(tls *libc.TLS) {
 	var bestscale fixed_t
 	var count, i int32
 	var _ /* unsorted at bp+0 */ vissprite_t
-	_, _, _, _, _, _, _ = best, bestscale, count, ds, i, v1, v3
 	count = int32((int64(vissprite_p) - __predefined_ptrdiff_t(uintptr(unsafe.Pointer(&vissprites)))) / 80)
 	v1 = bp
 	(*(*vissprite_t)(unsafe.Pointer(bp))).Fprev = v1
@@ -42177,7 +41869,6 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 	var lowscale, scale fixed_t
 	var r1, r2, silhouette, x, v4, v5 int32
 	var v2 int16
-	_, _, _, _, _, _, _, _, _, _ = ds, lowscale, r1, r2, scale, silhouette, x, v2, v4, v5
 	x = (*vissprite_t)(unsafe.Pointer(spr)).Fx1
 	for {
 		if !(x <= (*vissprite_t)(unsafe.Pointer(spr)).Fx2) {
@@ -42327,7 +42018,6 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 //	//
 func R_DrawMasked(tls *libc.TLS) {
 	var ds, spr uintptr
-	_, _ = ds, spr
 	R_SortVisSprites(tls)
 	if vissprite_p > uintptr(unsafe.Pointer(&vissprites)) {
 		// draw all vissprites back to front
@@ -42386,7 +42076,6 @@ func Transform(tls *libc.TLS, hd uintptr, data uintptr) {
 	var i int32
 	var p2, v2, v3, v4, v5 uintptr
 	var _ /* x at bp+0 */ [16]uint32_t
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = a, b, c, d, e, i, p2, tm, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v2, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v3, v30, v31, v32, v33, v34, v35, v36, v37, v38, v39, v4, v40, v41, v42, v43, v44, v45, v46, v47, v48, v49, v5, v50, v51, v52, v53, v54, v55, v56, v57, v58, v59, v6, v60, v61, v62, v63, v64, v65, v66, v67, v68, v69, v7, v8, v9
 	/* get values from the chaining vars */
 	a = (*sha1_context_t)(unsafe.Pointer(hd)).Fh0
 	b = (*sha1_context_t)(unsafe.Pointer(hd)).Fh1
@@ -42785,7 +42474,6 @@ func Transform(tls *libc.TLS, hd uintptr, data uintptr) {
 func SHA1_Update(tls *libc.TLS, hd uintptr, inbuf uintptr, inlen size_t) {
 	var v2, v6 int32
 	var v3, v4, v7, v8 uintptr
-	_, _, _, _, _, _ = v2, v3, v4, v6, v7, v8
 	if (*sha1_context_t)(unsafe.Pointer(hd)).Fcount == int32(64) {
 		/* flush the buffer */
 		Transform(tls, hd, hd+24)
@@ -42851,7 +42539,6 @@ func SHA1_Final(tls *libc.TLS, digest uintptr, hd uintptr) {
 	var lsb, msb, t uint32_t
 	var p, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v2, v20, v21, v22, v23, v24, v25, v26, v27, v28, v4, v6, v8, v9 uintptr
 	var v1, v3, v5, v7 int32
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = lsb, msb, p, t, v1, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v2, v20, v21, v22, v23, v24, v25, v26, v27, v28, v3, v4, v5, v6, v7, v8, v9
 	SHA1_Update(tls, hd, libc.UintptrFromInt32(0), uint64(0)) /* flush */
 	t = (*sha1_context_t)(unsafe.Pointer(hd)).Fnblocks
 	/* multiply by 64 to make a byte count */
@@ -44038,7 +43725,6 @@ func STlib_initNum(tls *libc.TLS, n uintptr, x int32, y int32, pl uintptr, num u
 func STlib_drawNum(tls *libc.TLS, n uintptr, refresh boolean) {
 	var h, neg, num, numdigits, w, x, v1 int32
 	var v2 bool
-	_, _, _, _, _, _, _, _ = h, neg, num, numdigits, w, x, v1, v2
 	numdigits = (*st_number_t)(unsafe.Pointer(n)).Fwidth
 	num = *(*int32)(unsafe.Pointer((*st_number_t)(unsafe.Pointer(n)).Fnum))
 	w = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_number_t)(unsafe.Pointer(n)).Fp)))).Fwidth)
@@ -44128,7 +43814,6 @@ func STlib_initMultIcon(tls *libc.TLS, i uintptr, x int32, y int32, il uintptr, 
 
 func STlib_updateMultIcon(tls *libc.TLS, mi uintptr, refresh boolean) {
 	var h, w, x, y int32
-	_, _, _, _ = h, w, x, y
 	if *(*boolean)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fon)) != 0 && ((*st_multicon_t)(unsafe.Pointer(mi)).Foldinum != *(*int32)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Finum)) || refresh != 0) && *(*int32)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Finum)) != -int32(1) {
 		if (*st_multicon_t)(unsafe.Pointer(mi)).Foldinum != -int32(1) {
 			x = (*st_multicon_t)(unsafe.Pointer(mi)).Fx - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr((*st_multicon_t)(unsafe.Pointer(mi)).Foldinum)*8)))).Fleftoffset)
@@ -44156,7 +43841,6 @@ func STlib_initBinIcon(tls *libc.TLS, b uintptr, x int32, y int32, i uintptr, va
 
 func STlib_updateBinIcon(tls *libc.TLS, bi uintptr, refresh boolean) {
 	var h, w, x, y int32
-	_, _, _, _ = h, w, x, y
 	if *(*boolean)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fon)) != 0 && ((*st_binicon_t)(unsafe.Pointer(bi)).Foldval != *(*boolean)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fval)) || refresh != 0) {
 		x = (*st_binicon_t)(unsafe.Pointer(bi)).Fx - int32((*patch_t)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fp)).Fleftoffset)
 		y = (*st_binicon_t)(unsafe.Pointer(bi)).Fy - int32((*patch_t)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fp)).Ftopoffset)
@@ -44568,7 +44252,6 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	var v10 bool
 	var _ /* buf at bp+0 */ [3]int8
 	var _ /* buf at bp+3 */ [3]int8
-	_, _, _, _, _, _, _, _, _ = epsd, i, map1, musnum, v10, v6, v7, v8, v9
 	// Filter automap on/off.
 	if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keyup) && libc.Uint32FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata1)&uint32(0xffff0000) == libc.Uint32FromInt32(libc.Int32FromUint8('a')<<libc.Int32FromInt32(24)+libc.Int32FromUint8('m')<<libc.Int32FromInt32(16)) {
 		switch (*event_t)(unsafe.Pointer(ev)).Fdata1 {
@@ -44809,7 +44492,6 @@ var buf [52]int8
 
 func ST_calcPainOffset(tls *libc.TLS) (r int32) {
 	var health, v1 int32
-	_, _ = health, v1
 	if (*player_t)(unsafe.Pointer(plyr)).Fhealth > int32(100) {
 		v1 = int32(100)
 	} else {
@@ -44839,7 +44521,6 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 	var badguyangle, diffang angle_t
 	var doevilgrin boolean
 	var i, v2 int32
-	_, _, _, _, _ = badguyangle, diffang, doevilgrin, i, v2
 	if priority < int32(10) {
 		// dead
 		if !((*player_t)(unsafe.Pointer(plyr)).Fhealth != 0) {
@@ -44965,7 +44646,6 @@ var priority int32
 
 func ST_updateWidgets(tls *libc.TLS) {
 	var i, v2, v4 int32
-	_, _, _ = i, v2, v4
 	// must redirect the pointer if the ready weapon has changed.
 	//  if (w_ready.data != plyr->readyweapon)
 	//  {
@@ -45054,7 +44734,6 @@ var st_palette = int32(0)
 func ST_doPaletteStuff(tls *libc.TLS) {
 	var bzc, cnt, palette int32
 	var pal uintptr
-	_, _, _, _ = bzc, cnt, pal, palette
 	cnt = (*player_t)(unsafe.Pointer(plyr)).Fdamagecount
 	if *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_strength)*4)) != 0 {
 		// slowly fade the berzerk out
@@ -45191,7 +44870,6 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 	defer tls.Free(48)
 	var facenum, i, j int32
 	var _ /* namebuf at bp+0 */ [9]int8
-	_, _, _ = facenum, i, j
 	// Load the numbers, tall and short
 	i = 0
 	for {
@@ -45308,7 +44986,6 @@ func ST_loadData(tls *libc.TLS) {
 func ST_initData(tls *libc.TLS) {
 	var i int32
 	var v1 boolean
-	_, _ = i, v1
 	st_firsttime = uint32(true1)
 	plyr = uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328
 	st_clock = uint32(0)
@@ -45478,7 +45155,6 @@ func init() {
 
 func S_Init(tls *libc.TLS, sfxVolume int32, musicVolume int32) {
 	var i, v3 int32
-	_, _ = i, v3
 	I_PrecacheSounds(tls, uintptr(unsafe.Pointer(&S_sfx)), int32(NUMSFX))
 	S_SetSfxVolume(tls, sfxVolume)
 	S_SetMusicVolume(tls, musicVolume)
@@ -45525,7 +45201,6 @@ func S_Shutdown(tls *libc.TLS) {
 func S_StopChannel(tls *libc.TLS, cnum int32) {
 	var c uintptr
 	var i int32
-	_, _ = c, i
 	c = channels + uintptr(cnum)*24
 	if (*channel_t)(unsafe.Pointer(c)).Fsfxinfo != 0 {
 		// stop the sound playing
@@ -45561,7 +45236,6 @@ func S_StopChannel(tls *libc.TLS, cnum int32) {
 func S_Start(tls *libc.TLS) {
 	var cnum, mnum int32
 	var spmus [9]int32
-	_, _, _ = cnum, mnum, spmus
 	// kill all playing sounds at start of level
 	//  (trust me - a good idea)
 	cnum = 0
@@ -45629,7 +45303,6 @@ func S_StopSound(tls *libc.TLS, origin uintptr) {
 func S_GetChannel(tls *libc.TLS, origin uintptr, sfxinfo uintptr) (r int32) {
 	var c uintptr
 	var cnum int32
-	_, _ = c, cnum
 	// Find an open channel
 	cnum = 0
 	for {
@@ -45691,7 +45364,6 @@ func S_AdjustSoundParams(tls *libc.TLS, listener uintptr, source uintptr, vol ui
 	var adx, ady, approx_dist fixed_t
 	var angle angle_t
 	var v1 int32
-	_, _, _, _, _ = adx, ady, angle, approx_dist, v1
 	// calculate the distance to sound origin
 	//  and clip it if necessary
 	adx = libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(listener)).Fx-(*mobj_t)(unsafe.Pointer(source)).Fx)
@@ -45740,7 +45412,6 @@ func S_StartSound(tls *libc.TLS, origin_p uintptr, sfx_id int32) {
 	var origin, sfx, v2 uintptr
 	var _ /* sep at bp+0 */ int32
 	var _ /* volume at bp+4 */ int32
-	_, _, _, _, _, _ = cnum, origin, rc, sfx, v1, v2
 	origin = origin_p
 	*(*int32)(unsafe.Pointer(bp + 4)) = snd_SfxVolume
 	// check for bogus sound #
@@ -45820,7 +45491,6 @@ func S_UpdateSounds(tls *libc.TLS, listener uintptr) {
 	var c, sfx uintptr
 	var _ /* sep at bp+4 */ int32
 	var _ /* volume at bp+0 */ int32
-	_, _, _, _ = audible, c, cnum, sfx
 	I_UpdateSound(tls)
 	cnum = 0
 	for {
@@ -45899,7 +45569,6 @@ func S_ChangeMusic(tls *libc.TLS, musicnum int32, looping int32) {
 	defer tls.Free(32)
 	var handle, music uintptr
 	var _ /* namebuf at bp+0 */ [9]int8
-	_, _ = handle, music
 	music = libc.UintptrFromInt32(0)
 	// The Doom IWAD file has two versions of the intro music: d_intro
 	// and d_introa.  The latter is used for OPL playback.
@@ -63700,7 +63369,6 @@ func V_MarkRect(tls *libc.TLS, x int32, y int32, width int32, height int32) {
 //	//
 func V_CopyRect(tls *libc.TLS, srcx int32, srcy int32, source uintptr, width int32, height int32, destx int32, desty int32) {
 	var dest, src uintptr
-	_, _ = dest, src
 	if srcx < 0 || srcx+width > int32(SCREENWIDTH) || srcy < 0 || srcy+height > int32(SCREENHEIGHT) || destx < 0 || destx+width > int32(SCREENWIDTH) || desty < 0 || desty+height > int32(SCREENHEIGHT) {
 		I_Error(tls, __ccgo_ts+28088, 0)
 	}
@@ -63731,7 +63399,6 @@ func V_DrawPatch(tls *libc.TLS, x int32, y int32, patch uintptr) {
 	defer tls.Free(64)
 	var col, count, w, v2 int32
 	var column, dest, desttop, source, v3 uintptr
-	_, _, _, _, _, _, _, _, _ = col, column, count, dest, desttop, source, w, v2, v3
 	y -= int32((*patch_t)(unsafe.Pointer(patch)).Ftopoffset)
 	x -= int32((*patch_t)(unsafe.Pointer(patch)).Fleftoffset)
 	// haleyjd 08/28/10: Strife needs silent error checking here.
@@ -63787,7 +63454,6 @@ func V_DrawPatch(tls *libc.TLS, x int32, y int32, patch uintptr) {
 func V_DrawPatchFlipped(tls *libc.TLS, x int32, y int32, patch uintptr) {
 	var col, count, w, v2 int32
 	var column, dest, desttop, source, v3 uintptr
-	_, _, _, _, _, _, _, _, _ = col, column, count, dest, desttop, source, w, v2, v3
 	y -= int32((*patch_t)(unsafe.Pointer(patch)).Ftopoffset)
 	x -= int32((*patch_t)(unsafe.Pointer(patch)).Fleftoffset)
 	// haleyjd 08/28/10: Strife needs silent error checking here.
@@ -63851,7 +63517,6 @@ func V_DrawPatchDirect(tls *libc.TLS, x int32, y int32, patch uintptr) {
 func V_DrawBlock(tls *libc.TLS, x int32, y int32, width int32, height int32, src uintptr) {
 	var dest uintptr
 	var v1 int32
-	_, _ = dest, v1
 	if x < 0 || x+width > int32(SCREENWIDTH) || y < 0 || y+height > int32(SCREENHEIGHT) {
 		I_Error(tls, __ccgo_ts+28288, 0)
 	}
@@ -63872,7 +63537,6 @@ func V_DrawBlock(tls *libc.TLS, x int32, y int32, width int32, height int32, src
 func V_DrawFilledBox(tls *libc.TLS, x int32, y int32, w int32, h int32, c int32) {
 	var buf, buf1, v3 uintptr
 	var x1, y1 int32
-	_, _, _, _, _ = buf, buf1, x1, y1, v3
 	buf = I_VideoBuffer + uintptr(int32(SCREENWIDTH)*y) + uintptr(x)
 	y1 = 0
 	for {
@@ -63904,7 +63568,6 @@ func V_DrawFilledBox(tls *libc.TLS, x int32, y int32, w int32, h int32, c int32)
 func V_DrawHorizLine(tls *libc.TLS, x int32, y int32, w int32, c int32) {
 	var buf, v2 uintptr
 	var x1 int32
-	_, _, _ = buf, x1, v2
 	buf = I_VideoBuffer + uintptr(int32(SCREENWIDTH)*y) + uintptr(x)
 	x1 = 0
 	for {
@@ -63924,7 +63587,6 @@ func V_DrawHorizLine(tls *libc.TLS, x int32, y int32, w int32, c int32) {
 func V_DrawVertLine(tls *libc.TLS, x int32, y int32, h int32, c int32) {
 	var buf uintptr
 	var y1 int32
-	_, _ = buf, y1
 	buf = I_VideoBuffer + uintptr(int32(SCREENWIDTH)*y) + uintptr(x)
 	y1 = 0
 	for {
@@ -64001,7 +63663,6 @@ type pcx_t = struct {
 func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, height int32, palette uintptr) {
 	var i, length int32
 	var pack, pcx, v10, v2, v3, v4, v5, v6, v7, v9 uintptr
-	_, _, _, _, _, _, _, _, _, _, _, _ = i, length, pack, pcx, v10, v2, v3, v4, v5, v6, v7, v9
 	pcx = Z_Malloc(tls, width*height*int32(2)+int32(1000), int32(PU_STATIC), libc.UintptrFromInt32(0))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fmanufacturer = int8(0x0a) // PCX id
 	(*pcx_t)(unsafe.Pointer(pcx)).Fversion = int8(5)         // 256 color
@@ -64081,7 +63742,6 @@ func V_ScreenShot(tls *libc.TLS, format uintptr) {
 	var ext uintptr
 	var i int32
 	var _ /* lbmname at bp+0 */ [16]int8
-	_, _ = ext, i
 	// find a file name to save it to
 	ext = __ccgo_ts + 28304
 	i = 0
@@ -64107,7 +63767,6 @@ func V_ScreenShot(tls *libc.TLS, format uintptr) {
 
 func V_DrawMouseSpeedBox(tls *libc.TLS, speed int32) {
 	var bgcolor, black, bordercolor, box_x, box_y, linelen, original_speed, red, redline_x, white, yellow int32
-	_, _, _, _, _, _, _, _, _, _, _ = bgcolor, black, bordercolor, box_x, box_y, linelen, original_speed, red, redline_x, white, yellow
 	// Get palette indices for colors for widget. These depend on the
 	// palette of the game being played.
 	bgcolor = I_GetPaletteIndex(tls, int32(0x77), int32(0x77), int32(0x77))
@@ -64815,7 +64474,6 @@ func WI_drawOnLnode(tls *libc.TLS, n int32, c uintptr) {
 	defer tls.Free(16)
 	var bottom, i, left, right, top int32
 	var fits boolean
-	_, _, _, _, _, _ = bottom, fits, i, left, right, top
 	fits = uint32(false1)
 	i = 0
 	for cond := true; cond; cond = !(fits != 0) && i != int32(2) && *(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)) != libc.UintptrFromInt32(0) {
@@ -64840,7 +64498,6 @@ func WI_drawOnLnode(tls *libc.TLS, n int32, c uintptr) {
 func WI_initAnimatedBack(tls *libc.TLS) {
 	var a uintptr
 	var i int32
-	_, _ = a, i
 	if gamemode == int32(commercial) {
 		return
 	}
@@ -64877,7 +64534,6 @@ func WI_initAnimatedBack(tls *libc.TLS) {
 func WI_updateAnimatedBack(tls *libc.TLS) {
 	var a, v3 uintptr
 	var i, v2 int32
-	_, _, _, _ = a, i, v2, v3
 	if gamemode == int32(commercial) {
 		return
 	}
@@ -64930,7 +64586,6 @@ func WI_updateAnimatedBack(tls *libc.TLS) {
 func WI_drawAnimatedBack(tls *libc.TLS) {
 	var a uintptr
 	var i int32
-	_, _ = a, i
 	if gamemode == int32(commercial) {
 		return
 	}
@@ -64962,7 +64617,6 @@ func WI_drawAnimatedBack(tls *libc.TLS) {
 
 func WI_drawNum(tls *libc.TLS, x int32, y int32, n int32, digits int32) (r int32) {
 	var fontwidth, neg, temp, v1 int32
-	_, _, _, _ = fontwidth, neg, temp, v1
 	fontwidth = int32((*patch_t)(unsafe.Pointer(num[0])).Fwidth)
 	if digits < 0 {
 		if !(n != 0) {
@@ -65021,7 +64675,6 @@ func WI_drawPercent(tls *libc.TLS, x int32, y int32, p int32) {
 //	//
 func WI_drawTime(tls *libc.TLS, x int32, y int32, t int32) {
 	var div, n int32
-	_, _ = div, n
 	if t < 0 {
 		return
 	}
@@ -65092,7 +64745,6 @@ func WI_updateShowNextLoc(tls *libc.TLS) {
 
 func WI_drawShowNextLoc(tls *libc.TLS) {
 	var i, last, v1 int32
-	_, _, _ = i, last, v1
 	WI_slamBackground(tls)
 	// draw animated background
 	WI_drawAnimatedBack(tls)
@@ -65141,7 +64793,6 @@ func WI_drawNoState(tls *libc.TLS) {
 
 func WI_fragSum(tls *libc.TLS, playernum int32) (r int32) {
 	var frags, i int32
-	_, _ = frags, i
 	frags = 0
 	i = 0
 	for {
@@ -65169,7 +64820,6 @@ var dm_totals [4]int32
 
 func WI_initDeathmatchStats(tls *libc.TLS) {
 	var i, j int32
-	_, _ = i, j
 	state = int32(StatCount)
 	acceleratestage = 0
 	dm_state = int32(1)
@@ -65206,7 +64856,6 @@ func WI_initDeathmatchStats(tls *libc.TLS) {
 func WI_updateDeathmatchStats(tls *libc.TLS) {
 	var i, j, v5 int32
 	var stillticking boolean
-	_, _, _, _ = i, j, stillticking, v5
 	WI_updateAnimatedBack(tls)
 	if acceleratestage != 0 && dm_state != int32(4) {
 		acceleratestage = 0
@@ -65316,7 +64965,6 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 
 func WI_drawDeathmatchStats(tls *libc.TLS) {
 	var i, j, w, x, y int32
-	_, _, _, _, _ = i, j, w, x, y
 	WI_slamBackground(tls)
 	// draw animated background
 	WI_drawAnimatedBack(tls)
@@ -65393,7 +65041,6 @@ var ng_state int32
 
 func WI_initNetgameStats(tls *libc.TLS) {
 	var i, v2, v3, v4 int32
-	_, _, _, _ = i, v2, v3, v4
 	state = int32(StatCount)
 	acceleratestage = 0
 	ng_state = int32(1)
@@ -65426,7 +65073,6 @@ func WI_initNetgameStats(tls *libc.TLS) {
 func WI_updateNetgameStats(tls *libc.TLS) {
 	var fsum, i, v6, v7 int32
 	var stillticking boolean
-	_, _, _, _, _ = fsum, i, stillticking, v6, v7
 	WI_updateAnimatedBack(tls)
 	if acceleratestage != 0 && ng_state != int32(10) {
 		acceleratestage = 0
@@ -65597,7 +65243,6 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 
 func WI_drawNetgameStats(tls *libc.TLS) {
 	var i, pwidth, x, y int32
-	_, _, _, _ = i, pwidth, x, y
 	pwidth = int32((*patch_t)(unsafe.Pointer(percent)).Fwidth)
 	WI_slamBackground(tls)
 	// draw animated background
@@ -65647,7 +65292,6 @@ var sp_state int32
 
 func WI_initStats(tls *libc.TLS) {
 	var v1, v2, v3 int32
-	_, _, _ = v1, v2, v3
 	state = int32(StatCount)
 	acceleratestage = 0
 	sp_state = int32(1)
@@ -65777,7 +65421,6 @@ func WI_drawStats(tls *libc.TLS) {
 func WI_checkForAccelerate(tls *libc.TLS) {
 	var i int32
 	var player uintptr
-	_, _ = i, player
 	// check for button presses to skip delays
 	i = 0
 	player = uintptr(unsafe.Pointer(&players))
@@ -65854,7 +65497,6 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 	var a uintptr
 	var i, j int32
 	var _ /* name at bp+0 */ [9]int8
-	_, _, _ = a, i, j
 	if gamemode == int32(commercial) {
 		i = 0
 		for {
@@ -66103,7 +65745,6 @@ var num_open_wadfiles = int32(0)
 
 func GetFileNumber(tls *libc.TLS, handle uintptr) (r int32) {
 	var i, result int32
-	_, _ = i, result
 	i = 0
 	for {
 		if !(i < num_open_wadfiles) {
@@ -66174,7 +65815,6 @@ var wad_file_classes = [1]uintptr{
 func W_OpenFile(tls *libc.TLS, path uintptr) (r uintptr) {
 	var i int32
 	var result uintptr
-	_, _ = i, result
 	//!
 	// Use the OS's virtual memory subsystem to map WAD files
 	// directly into memory.
@@ -66219,7 +65859,6 @@ func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
 	var filename uintptr
 	var modifiedgame boolean
 	var p, v1 int32
-	_, _, _, _ = filename, modifiedgame, p, v1
 	modifiedgame = uint32(false1)
 	//!
 	// @arg <files>
@@ -66267,7 +65906,6 @@ var lumphash uintptr
 
 func W_LumpNameHash(tls *libc.TLS, s uintptr) (r uint32) {
 	var i, result uint32
-	_, _ = i, result
 	// This is the djb2 string hash function, modded to work on strings
 	// that have a maximum length of 8.
 	result = uint32(5381)
@@ -66292,7 +65930,6 @@ func ExtendLumpInfo(tls *libc.TLS, newnumlumps int32) {
 	var i uint32
 	var newlumpinfo uintptr
 	var nextlumpnum int32
-	_, _, _ = i, newlumpinfo, nextlumpnum
 	newlumpinfo = libc.Xcalloc(tls, libc.Uint64FromInt32(newnumlumps), uint64(40))
 	if newlumpinfo == libc.UintptrFromInt32(0) {
 		I_Error(tls, __ccgo_ts+28605, 0)
@@ -66346,7 +65983,6 @@ func W_AddFile(tls *libc.TLS, filename uintptr) (r uintptr) {
 	var i uint32
 	var length, newnumlumps, startlump int32
 	var _ /* header at bp+0 */ wadinfo_t
-	_, _, _, _, _, _, _, _ = fileinfo, filerover, i, length, lump_p, newnumlumps, startlump, wad_file
 	// open the file and add to directory
 	wad_file = W_OpenFile(tls, filename)
 	if wad_file == libc.UintptrFromInt32(0) {
@@ -66422,7 +66058,6 @@ func W_AddFile(tls *libc.TLS, filename uintptr) (r uintptr) {
 func W_CheckNumForName(tls *libc.TLS, name uintptr) (r int32) {
 	var hash, i int32
 	var lump_p uintptr
-	_, _, _ = hash, i, lump_p
 	// Do we have a hash table yet?
 	if lumphash != libc.UintptrFromInt32(0) {
 		// We do! Excellent.
@@ -66507,7 +66142,6 @@ func W_ReadLump(tls *libc.TLS, lump uint32, dest uintptr) {
 	defer tls.Free(32)
 	var c int32
 	var l uintptr
-	_, _ = c, l
 	if lump >= numlumps {
 		I_Error(tls, __ccgo_ts+28766, libc.VaList(bp+8, lump))
 	}
@@ -66536,7 +66170,6 @@ func W_CacheLumpNum(tls *libc.TLS, lumpnum int32, tag int32) (r uintptr) {
 	bp := tls.Alloc(16)
 	defer tls.Free(16)
 	var lump, result uintptr
-	_, _ = lump, result
 	if libc.Uint32FromInt32(lumpnum) >= numlumps {
 		I_Error(tls, __ccgo_ts+28835, libc.VaList(bp+8, lumpnum))
 	}
@@ -66606,7 +66239,6 @@ func W_ReleaseLumpName(tls *libc.TLS, name uintptr) {
 
 func W_GenerateHashTable(tls *libc.TLS) {
 	var hash, i uint32
-	_, _ = hash, i
 	// Free the old hash table, if there is one
 	if lumphash != libc.UintptrFromInt32(0) {
 		Z_Free(tls, lumphash)
@@ -66663,7 +66295,6 @@ func W_CheckCorrectIWAD(tls *libc.TLS, mission GameMission_t) {
 	bp := tls.Alloc(48)
 	defer tls.Free(48)
 	var i, lumpnum int32
-	_, _ = i, lumpnum
 	i = 0
 	for {
 		if !(libc.Uint64FromInt32(i) < libc.Uint64FromInt64(64)/libc.Uint64FromInt64(16)) {
@@ -66772,7 +66403,6 @@ func Z_Init(tls *libc.TLS) {
 	defer tls.Free(16)
 	var block, v1, v2, v3 uintptr
 	var _ /* size at bp+0 */ int32
-	_, _, _, _ = block, v1, v2, v3
 	mainzone = I_ZoneBase(tls, bp)
 	(*memzone_t)(unsafe.Pointer(mainzone)).Fsize = *(*int32)(unsafe.Pointer(bp))
 	// set the entire zone to one free block
@@ -66799,7 +66429,6 @@ func Z_Init(tls *libc.TLS) {
 //	//
 func Z_Free(tls *libc.TLS, ptr uintptr) {
 	var block, other uintptr
-	_, _ = block, other
 	block = ptr - libc.UintptrFromInt64(40)
 	if (*memblock_t)(unsafe.Pointer(block)).Fid != int32(ZONEID) {
 		I_Error(tls, __ccgo_ts+29075, 0)
@@ -66845,7 +66474,6 @@ func Z_Malloc(tls *libc.TLS, size int32, tag int32, user uintptr) (r uintptr) {
 	defer tls.Free(16)
 	var base, newblock, result, rover, start, v1 uintptr
 	var extra int32
-	_, _, _, _, _, _, _ = base, extra, newblock, result, rover, start, v1
 	size = libc.Int32FromUint64((libc.Uint64FromInt32(size) + uint64(8) - uint64(1)) & ^(libc.Uint64FromInt64(8) - libc.Uint64FromInt32(1)))
 	// scan through the block list,
 	// looking for the first free block
@@ -66921,7 +66549,6 @@ func Z_Malloc(tls *libc.TLS, size int32, tag int32, user uintptr) (r uintptr) {
 //	//
 func Z_FreeTags(tls *libc.TLS, lowtag int32, hightag int32) {
 	var block, next uintptr
-	_, _ = block, next
 	block = (*memzone_t)(unsafe.Pointer(mainzone)).Fblocklist.Fnext
 	for {
 		if !(block != mainzone+8) {
@@ -67016,7 +66643,6 @@ type stdc_wad_file_t = struct {
 
 func W_StdC_OpenFile(tls *libc.TLS, path uintptr) (r uintptr) {
 	var fstream, result uintptr
-	_, _ = fstream, result
 	fstream = libc.Xfopen(tls, path, __ccgo_ts+13884)
 	if fstream == libc.UintptrFromInt32(0) {
 		return libc.UintptrFromInt32(0)
@@ -67044,7 +66670,6 @@ func W_StdC_CloseFile(tls *libc.TLS, wad uintptr) {
 func W_StdC_Read(tls *libc.TLS, wad uintptr, offset uint32, buffer uintptr, buffer_len size_t) (r size_t) {
 	var result size_t
 	var stdc_wad uintptr
-	_, _ = result, stdc_wad
 	stdc_wad = wad
 	// Jump to the specified position in the file.
 	libc.Xfseek(tls, (*stdc_wad_file_t)(unsafe.Pointer(stdc_wad)).Ffstream, libc.Int64FromUint32(offset), 0)
@@ -67308,36 +66933,6 @@ type col_t = struct {
 	Fb byte1
 }
 
-func cmap_to_fb(tls *libc.TLS, out int, in uintptr, in_pixels int32) {
-	//bp := tls.Alloc(16)
-	//defer tls.Free(16)
-	//var b, g, r uint16_t
-	//var i, j, k int32
-	//var pix uint32_t
-	//var _ /* c at bp+0 */ color
-	for i := int32(0); i < in_pixels; i++ {
-		inRaw := *(*uint8_t)(unsafe.Pointer(in))
-		col := colors[inRaw]
-		//*(*color)(unsafe.Pointer(bp)) = colors[*(*uint8_t)(unsafe.Pointer(in))] /* R:8 G:8 B:8 format! */
-		//r = libc.Uint16FromInt32(int32(*(*uint32)(unsafe.Pointer(bp + 0))&0xff0000>>16) >> (libc.Uint32FromInt32(8) - s_Fb.Fred.Flength))
-		//g = libc.Uint16FromInt32(int32(*(*uint32)(unsafe.Pointer(bp + 0))&0xff00>>8) >> (libc.Uint32FromInt32(8) - s_Fb.Fgreen.Flength))
-		//b = libc.Uint16FromInt32(int32(*(*uint32)(unsafe.Pointer(bp + 0))&0xff>>0) >> (libc.Uint32FromInt32(8) - s_Fb.Fblue.Flength))
-		//pix = libc.Uint32FromInt32(libc.Int32FromUint16(r) << s_Fb.Fred.Foffset)
-		//pix |= libc.Uint32FromInt32(libc.Int32FromUint16(g) << s_Fb.Fgreen.Foffset)
-		//pix |= libc.Uint32FromInt32(libc.Int32FromUint16(b) << s_Fb.Fblue.Foffset)
-		DG_ScreenBuffer.Pix[out] = col.R
-		DG_ScreenBuffer.Pix[out+1] = col.G
-		DG_ScreenBuffer.Pix[out+2] = col.B
-		DG_ScreenBuffer.Pix[out+3] = 0xff
-		DG_ScreenBuffer.Pix[out+4] = col.R
-		DG_ScreenBuffer.Pix[out+5] = col.G
-		DG_ScreenBuffer.Pix[out+6] = col.B
-		DG_ScreenBuffer.Pix[out+7] = 0xff
-		out += 8
-		in++
-	}
-}
-
 func I_InitGraphics(tls *libc.TLS) {
 	/* Allocate screen to draw to */
 	I_VideoBuffer = Z_Malloc(tls, libc.Int32FromInt32(SCREENWIDTH)*libc.Int32FromInt32(SCREENHEIGHT), int32(PU_STATIC), libc.UintptrFromInt32(0)) // For DOOM to draw on
@@ -67401,8 +66996,6 @@ func I_SetPalette(tls *libc.TLS, palette uintptr) {
 
 func I_GetPaletteIndex(tls *libc.TLS, r int32, g int32, b int32) (r1 int32) {
 	var best, best_diff, diff int32
-	var color col_t
-	_, _, _, _ = best, best_diff, color, diff
 	libc.Xprintf(tls, __ccgo_ts+30076, 0)
 	best = 0
 	best_diff = int32(INT_MAX19)
@@ -68039,7 +67632,6 @@ func convertToDoomKey(tls *libc.TLS, key uint32) (r uint8) {
 func addKeyToQueue(tls *libc.TLS, pressed int32, keyCode uint32) {
 	var key uint8
 	var keyData uint16
-	_, _ = key, keyData
 	key = convertToDoomKey(tls, keyCode)
 	keyData = libc.Uint16FromInt32(pressed<<int32(8) | libc.Int32FromUint8(key))
 	s_KeyQueue[s_KeyQueueWriteIndex] = keyData
