@@ -5134,9 +5134,7 @@ func doomgeneric_Tick(tls *libc.TLS) {
 	TryRunTics(tls)                                 // will run at least one tic
 	S_UpdateSounds(tls, players[consoleplayer].Fmo) // move positional sounds
 	// Update display, next frame, with current state.
-	if screenvisible != 0 {
-		D_Display(tls)
-	}
+	D_Display(tls)
 }
 
 // C documentation
@@ -21037,17 +21035,6 @@ func I_GetMemoryValue(tls *libc.TLS, offset uint32, value uintptr, size int32) (
 }
 
 var firsttime = uint32(true1)
-
-const DOOMGENERIC_RESX = 640
-const DOOMGENERIC_RESY = 400
-
-//#include <sys/time.h>
-//#include <unistd.h>
-
-//
-// I_GetTime
-// returns time in 1/35th second tics
-//
 
 var basetime = uint32(0)
 
@@ -67308,40 +67295,11 @@ func I_InitInput(tls *libc.TLS) {
 }
 
 const INT_MAX19 = 2147483647
-const true2 = 1
-
-//#define CMAP256
-
-type FB_BitField = struct {
-	Foffset uint32_t
-	Flength uint32_t
-}
-
-type FB_ScreenInfo = struct {
-	Fxres           uint32_t
-	Fyres           uint32_t
-	Fxres_virtual   uint32_t
-	Fyres_virtual   uint32_t
-	Fbits_per_pixel uint32_t
-	Fred            FB_BitField
-	Fgreen          FB_BitField
-	Fblue           FB_BitField
-	Ftransp         FB_BitField
-}
-
-var s_Fb FB_ScreenInfo
-
-func init() {
-	fb_scaling = int32(1)
-}
 
 var colors [256]color.RGBA
 
 func init() {
 	mouse_acceleration = float32(2)
-}
-
-func init() {
 	mouse_threshold = int32(10)
 }
 
@@ -67382,42 +67340,8 @@ func cmap_to_fb(tls *libc.TLS, out int, in uintptr, in_pixels int32) {
 }
 
 func I_InitGraphics(tls *libc.TLS) {
-	bp := tls.Alloc(80)
-	defer tls.Free(80)
-	var i int32
-	_ = i
-	libc.Xmemset(tls, uintptr(unsafe.Pointer(&s_Fb)), 0, uint64(52))
-	s_Fb.Fxres = uint32(DOOMGENERIC_RESX)
-	s_Fb.Fyres = uint32(DOOMGENERIC_RESY)
-	s_Fb.Fxres_virtual = s_Fb.Fxres
-	s_Fb.Fyres_virtual = s_Fb.Fyres
-	s_Fb.Fbits_per_pixel = uint32(32)
-	s_Fb.Fblue.Flength = uint32(8)
-	s_Fb.Fgreen.Flength = uint32(8)
-	s_Fb.Fred.Flength = uint32(8)
-	s_Fb.Ftransp.Flength = uint32(8)
-	s_Fb.Fblue.Foffset = uint32(0)
-	s_Fb.Fgreen.Foffset = uint32(8)
-	s_Fb.Fred.Foffset = uint32(16)
-	s_Fb.Ftransp.Foffset = uint32(24)
-	libc.Xprintf(tls, __ccgo_ts+29747, libc.VaList(bp+8, s_Fb.Fxres, s_Fb.Fyres, s_Fb.Fxres_virtual, s_Fb.Fyres_virtual, s_Fb.Fbits_per_pixel))
-	libc.Xprintf(tls, __ccgo_ts+29837, libc.VaList(bp+8, s_Fb.Fred.Flength, s_Fb.Fgreen.Flength, s_Fb.Fblue.Flength, s_Fb.Ftransp.Flength, s_Fb.Fred.Foffset, s_Fb.Fgreen.Foffset, s_Fb.Fblue.Foffset, s_Fb.Ftransp.Foffset))
-	libc.Xprintf(tls, __ccgo_ts+29940, libc.VaList(bp+8, int32(SCREENWIDTH), int32(SCREENHEIGHT)))
-	i = M_CheckParmWithArgs(tls, __ccgo_ts+29990, int32(1))
-	if i > 0 {
-		i = libc.Xatoi(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8)))
-		fb_scaling = i
-		libc.Xprintf(tls, __ccgo_ts+29999, libc.VaList(bp+8, fb_scaling))
-	} else {
-		fb_scaling = libc.Int32FromUint32(s_Fb.Fxres / uint32(SCREENWIDTH))
-		if s_Fb.Fyres/uint32(SCREENHEIGHT) < libc.Uint32FromInt32(fb_scaling) {
-			fb_scaling = libc.Int32FromUint32(s_Fb.Fyres / uint32(SCREENHEIGHT))
-		}
-		libc.Xprintf(tls, __ccgo_ts+30035, libc.VaList(bp+8, fb_scaling))
-	}
 	/* Allocate screen to draw to */
 	I_VideoBuffer = Z_Malloc(tls, libc.Int32FromInt32(SCREENWIDTH)*libc.Int32FromInt32(SCREENHEIGHT), int32(PU_STATIC), libc.UintptrFromInt32(0)) // For DOOM to draw on
-	screenvisible = uint32(true2)
 	I_InitInput(tls)
 }
 
@@ -67436,40 +67360,16 @@ func I_UpdateNoBlit(tls *libc.TLS) {
 //
 
 func I_FinishUpdate(tls *libc.TLS) {
-	var i, x_offset, x_offset_end, y, y_offset, v1 int32
-	var line_in uintptr
-	var line_out int
-	_, _, _, _, _, _, _, _ = i, line_in, line_out, x_offset, x_offset_end, y, y_offset, v1
-	/* Offsets in case FB is bigger than DOOM */
-	/* 600 = s_Fb heigt, 200 screenheight */
-	/* 600 = s_Fb heigt, 200 screenheight */
-	/* 2048 =s_Fb width, 320 screenwidth */
-	y_offset = libc.Int32FromUint32((s_Fb.Fyres - libc.Uint32FromInt32(libc.Int32FromInt32(SCREENHEIGHT)*fb_scaling)) * s_Fb.Fbits_per_pixel / uint32(8) / uint32(2))
-	x_offset = libc.Int32FromUint32((s_Fb.Fxres - libc.Uint32FromInt32(libc.Int32FromInt32(SCREENWIDTH)*fb_scaling)) * s_Fb.Fbits_per_pixel / uint32(8) / uint32(2)) // XXX: siglent FB hack: /4 instead of /2, since it seems to handle the resolution in a funny way
-	//x_offset     = 0;
-	x_offset_end = libc.Int32FromUint32((s_Fb.Fxres-libc.Uint32FromInt32(libc.Int32FromInt32(SCREENWIDTH)*fb_scaling))*s_Fb.Fbits_per_pixel/uint32(8) - libc.Uint32FromInt32(x_offset))
-	/* DRAW SCREEN */
-	line_in = I_VideoBuffer
-	line_out = 0
-	y = int32(SCREENHEIGHT)
-	for {
-		v1 = y
-		y--
-		if !(v1 != 0) {
-			break
-		}
-		i = 0
-		for {
-			if !(i < fb_scaling) {
-				break
-			}
-			line_out += int(x_offset)
-			cmap_to_fb(tls, line_out, line_in, int32(SCREENWIDTH))
-			line_out += SCREENWIDTH*int(fb_scaling)*int(s_Fb.Fbits_per_pixel)/8 + int(x_offset_end)
-			goto _2
-		_2:
-			;
-			i++
+	var line_in = I_VideoBuffer
+	for y := SCREENHEIGHT - 1; y >= 0; y-- {
+		for i := 0; i < SCREENWIDTH; i++ {
+			inRaw := *(*uint8_t)(unsafe.Pointer(line_in + uintptr(i)))
+			col := colors[inRaw]
+			pos := SCREENWIDTH*4*int(SCREENHEIGHT-y-1) + i*4
+			DG_ScreenBuffer.Pix[pos] = col.R
+			DG_ScreenBuffer.Pix[pos+1] = col.G
+			DG_ScreenBuffer.Pix[pos+2] = col.B
+			DG_ScreenBuffer.Pix[pos+3] = 0xff
 		}
 		line_in += uintptr(SCREENWIDTH)
 	}
@@ -67559,7 +67459,7 @@ func doomgeneric_Create(tls *libc.TLS, argc int32, argv uintptr) {
 	myargv = argv
 	M_FindResponseFile(tls)
 
-	DG_ScreenBuffer = image.NewRGBA(image.Rect(0, 0, DOOMGENERIC_RESX, DOOMGENERIC_RESY))
+	DG_ScreenBuffer = image.NewRGBA(image.Rect(0, 0, SCREENWIDTH, SCREENHEIGHT))
 	DG_Init(tls)
 	D_DoomMain(tls)
 }
@@ -68823,8 +68723,6 @@ var extralight int32
 
 var fastparm boolean
 
-var fb_scaling int32
-
 var finalecount uint32
 
 var finaleflat uintptr
@@ -69784,8 +69682,6 @@ var screensaver_mode boolean
 
 // Flag indicating whether the screen is currently visible:
 // when the screen isnt visible, don't render the screen
-
-var screenvisible boolean
 
 var secondslidefrac fixed_t
 
