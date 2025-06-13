@@ -23,6 +23,15 @@ type boolean = uint32
 const false1 = 0
 const true1 = 1
 
+func alloc(size int) uintptr {
+	data := make([]byte, size)
+	return (uintptr)(unsafe.Pointer(&data[0]))
+}
+
+func free(ptr uintptr) {
+	// Do nothing - Go garbage collector will handle memory management
+}
+
 type byte1 = uint8
 
 const AM_NUMMARKPOINTS = 10
@@ -2770,8 +2779,7 @@ var st_notify = event_t{
 //	//
 //	//
 func AM_loadPics(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var i int32
 	i = 0
 	for {
@@ -2788,8 +2796,7 @@ func AM_loadPics(tls *libc.TLS) {
 }
 
 func AM_unloadPics(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var i int32
 	i = 0
 	for {
@@ -2909,8 +2916,7 @@ func AM_maxOutWindowScale(tls *libc.TLS) {
 //	// Handle events (user inputs) in automap mode
 //	//
 func AM_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var key, rc int32
 	rc = int32(false1)
 	if !(automapactive != 0) {
@@ -3305,8 +3311,7 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 //	// Classic Bresenham w/ whatever optimizations needed for speed
 //	//
 func AM_drawFline(tls *libc.TLS, fl uintptr, color int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var ax, ay, d, dx, dy, sx, sy, x, y, v1, v2, v3, v4, v5 int32
 	// For debugging only
 	if (*fline_t)(unsafe.Pointer(fl)).Fa.Fx < 0 || (*fline_t)(unsafe.Pointer(fl)).Fa.Fx >= f_w || (*fline_t)(unsafe.Pointer(fl)).Fa.Fy < 0 || (*fline_t)(unsafe.Pointer(fl)).Fa.Fy >= f_h || (*fline_t)(unsafe.Pointer(fl)).Fb.Fx < 0 || (*fline_t)(unsafe.Pointer(fl)).Fb.Fx >= f_w || (*fline_t)(unsafe.Pointer(fl)).Fb.Fy < 0 || (*fline_t)(unsafe.Pointer(fl)).Fb.Fy >= f_h {
@@ -3395,8 +3400,7 @@ var fl fline_t
 //	// Draws flat (floor/ceiling tile) aligned grid lines.
 //	//
 func AM_drawGrid(tls *libc.TLS, color int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var end, start, x, y fixed_t
 	// Figure out start of vertical gridlines
 	start = m_x
@@ -3523,8 +3527,7 @@ func AM_rotate(tls *libc.TLS, x uintptr, y uintptr, a angle_t) {
 }
 
 func AM_drawLineCharacter(tls *libc.TLS, lineguy uintptr, lineguylines int32, scale fixed_t, angle angle_t, color int32, x fixed_t, y fixed_t) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var i int32
 	i = 0
 	for {
@@ -3941,8 +3944,7 @@ func DirIsFile(tls *libc.TLS, path uintptr, filename uintptr) (r boolean) {
 // if not found.
 
 func CheckDirectoryHasIWAD(tls *libc.TLS, dir uintptr, iwadname uintptr) (r uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var filename uintptr
 	// As a special case, the "directory" may refer directly to an
 	// IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
@@ -4041,8 +4043,7 @@ func BuildIWADDirList(tls *libc.TLS) {
 //
 
 func D_FindWADByName(tls *libc.TLS, name uintptr) (r uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var i int32
 	var path uintptr
 	// Absolute path?
@@ -4103,8 +4104,7 @@ func D_TryFindWADByName(tls *libc.TLS, filename uintptr) (r uintptr) {
 //
 
 func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var i, iwadparm int32
 	var iwadfile, result uintptr
 	// Check for the -iwad parameter
@@ -4257,8 +4257,7 @@ func GetAdjustedTime(tls *libc.TLS) (r int32) {
 }
 
 func BuildNewTic(tls *libc.TLS) (r boolean) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var gameticdiv int32
 	gameticdiv = gametic / ticdup
 	I_StartTic(tls)
@@ -4962,8 +4961,7 @@ var borderdrawcount int32
 //
 
 func D_BindVariables(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var i int32
 	M_ApplyPlatformDefaults(tls)
 	I_BindVideoVariables(tls)
@@ -5201,8 +5199,7 @@ var banners = [7]uintptr{
 //
 
 func GetGameName(tls *libc.TLS, gamename uintptr) (r uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var deh_sub uintptr
 	var gamename_size, i size_t
 	var version, v2, v3, v6, v7 int32
@@ -5257,8 +5254,7 @@ func GetGameName(tls *libc.TLS, gamename uintptr) (r uintptr) {
 }
 
 func SetMissionForPackName(tls *libc.TLS, pack_name uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var i int32
 	i = 0
 	for {
@@ -5478,8 +5474,7 @@ func D_SetGameDescription(tls *libc.TLS) {
 }
 
 func D_AddFile(tls *libc.TLS, filename uintptr) (r boolean) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var handle uintptr
 	libc.Xprintf(tls, __ccgo_ts+2817, libc.VaList(bp+8, filename))
 	handle = W_AddFile(tls, filename)
@@ -5499,8 +5494,7 @@ var copyright_banners = [3]uintptr{
 // Prints a message only if it has been modified by dehacked.
 
 func PrintDehackedBanners(tls *libc.TLS) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var deh_s uintptr
 	var i size_t
 	i = uint64(0)
@@ -5580,8 +5574,7 @@ var gameversions = [10]struct {
 // Initialize the game version
 
 func InitGameVersion(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var i, p int32
 	//!
 	// @arg <version>
@@ -5667,8 +5660,7 @@ func InitGameVersion(tls *libc.TLS) {
 }
 
 func PrintGameVersion(tls *libc.TLS) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var i int32
 	i = 0
 	for {
@@ -5707,8 +5699,7 @@ func D_Endoom(tls *libc.TLS) {
 //	// D_DoomMain
 //	//
 func D_DoomMain(tls *libc.TLS) {
-	bp := tls.Alloc(480)
-	defer tls.Free(480)
+	bp := alloc(480)
 	var i, p, scale, v1 int32
 	I_AtExit(tls, __ccgo_fp(D_Endoom), uint32(false1))
 	// print banner
@@ -6297,8 +6288,7 @@ func InitConnectData(tls *libc.TLS, connect_data uintptr) {
 }
 
 func D_ConnectNetGame(tls *libc.TLS) {
-	bp := tls.Alloc(80)
-	defer tls.Free(80)
+	bp := alloc(80)
 	InitConnectData(tls, bp)
 	netgame = D_InitNetGame(tls, bp)
 	//!
@@ -6320,8 +6310,7 @@ func D_ConnectNetGame(tls *libc.TLS) {
 //	// Works out player numbers among the net participants
 //	//
 func D_CheckNetGame(tls *libc.TLS) {
-	bp := tls.Alloc(144)
-	defer tls.Free(144)
+	bp := alloc(144)
 	if netgame != 0 {
 		autostart = uint32(true1)
 	}
@@ -7087,8 +7076,7 @@ func F_DrawPatchCol(tls *libc.TLS, x int32, patch uintptr, col int32) {
 //	// F_BunnyScroll
 //	//
 func F_BunnyScroll(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var p1, p2 uintptr
 	var scrolled, stage, x int32
 	p1 = W_CacheLumpName(tls, __ccgo_ts+13640, int32(PU_LEVEL))
@@ -8101,8 +8089,7 @@ func G_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 //	// Make ticcmd_ts for the players.
 //	//
 func G_Ticker(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var buf, i int32
 	var cmd uintptr
 	// do player reborns if needed
@@ -8274,8 +8261,7 @@ func G_PlayerFinishLevel(tls *libc.TLS, player int32) {
 //	// almost everything is cleared and initialized
 //	//
 func G_PlayerReborn(tls *libc.TLS, player int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var i, itemcount, killcount, secretcount, v1 int32
 	var p uintptr
 	var v2 weapontype_t
@@ -8314,8 +8300,7 @@ func G_PlayerReborn(tls *libc.TLS, player int32) {
 }
 
 func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var an, i int32
 	var mo, ss uintptr
 	var x, xa, y, ya, v2 fixed_t
@@ -8412,8 +8397,7 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 //	// called at level load and each death
 //	//
 func G_DeathMatchSpawnPlayer(tls *libc.TLS, playernum int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var i, j, selections int32
 	selections = int32((int64(deathmatch_p) - __predefined_ptrdiff_t(uintptr(unsafe.Pointer(&deathmatchstarts)))) / 10)
 	if selections < int32(4) {
@@ -8838,8 +8822,7 @@ func G_SaveGame(tls *libc.TLS, slot int32, description uintptr) {
 }
 
 func G_DoSaveGame(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var recovery_savegame_file, savegame_file, temp_savegame_file uintptr
 	recovery_savegame_file = libc.UintptrFromInt32(0)
 	temp_savegame_file = P_TempSaveGameFile(tls)
@@ -9178,8 +9161,7 @@ func G_WriteDemoTiccmd(tls *libc.TLS, cmd uintptr) {
 //	// G_RecordDemo
 //	//
 func G_RecordDemo(tls *libc.TLS, name uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var demoname_size size_t
 	var i, maxsize int32
 	usergame = uint32(false1)
@@ -9294,8 +9276,7 @@ func G_DeferedPlayDemo(tls *libc.TLS, name uintptr) {
 // Generate a string describing a demo version
 
 func DemoVersionDescription(tls *libc.TLS, version int32) (r uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	switch version {
 	case int32(104):
 		return __ccgo_ts + 14158
@@ -9326,8 +9307,7 @@ func DemoVersionDescription(tls *libc.TLS, version int32) (r uintptr) {
 var resultbuf [16]int8
 
 func G_DoPlayDemo(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var demoversion, episode, i, map1 int32
 	var message, v1, v10, v12, v2, v3, v4, v5, v6, v7, v8, v9 uintptr
 	var skill skill_t
@@ -9428,8 +9408,7 @@ func G_TimeDemo(tls *libc.TLS, name uintptr) {
 ===================
 */
 func G_CheckDemoStatus(tls *libc.TLS) (r boolean) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var endtime, realtics int32
 	var fps float32
 	var v1, v2 boolean
@@ -9983,8 +9962,7 @@ func init() {
 }
 
 func HU_Init(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var i, j, v2 int32
 	// load the heads-up font
 	j = int32('!')
@@ -18115,8 +18093,7 @@ func I_InitJoystick(tls *libc.TLS) {
 }
 
 func I_BindJoystickVariables(tls *libc.TLS) {
-	bp := tls.Alloc(48)
-	defer tls.Free(48)
+	bp := alloc(48)
 	var i int32
 	M_BindVariable(tls, __ccgo_ts+18302, uintptr(unsafe.Pointer(&usejoystick)))
 	M_BindVariable(tls, __ccgo_ts+18315, uintptr(unsafe.Pointer(&joystick_index)))
@@ -20298,8 +20275,7 @@ func CheckVolumeSeparation(tls *libc.TLS, vol uintptr, sep uintptr) {
 }
 
 func I_UpdateSoundParams(tls *libc.TLS, channel int32, _vol int32, _sep int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	*(*int32)(unsafe.Pointer(bp)) = _vol
 	*(*int32)(unsafe.Pointer(bp + 4)) = _sep
 	if sound_module != libc.UintptrFromInt32(0) {
@@ -20309,8 +20285,7 @@ func I_UpdateSoundParams(tls *libc.TLS, channel int32, _vol int32, _sep int32) {
 }
 
 func I_StartSound(tls *libc.TLS, sfxinfo uintptr, channel int32, _vol int32, _sep int32) (r int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	*(*int32)(unsafe.Pointer(bp)) = _vol
 	*(*int32)(unsafe.Pointer(bp + 4)) = _sep
 	if sound_module != libc.UintptrFromInt32(0) {
@@ -20449,8 +20424,7 @@ func I_Tactile(tls *libc.TLS, on int32, off int32, total int32) {
 // works.
 
 func AutoAllocMemory(tls *libc.TLS, size uintptr, default_ram int32, min_ram int32) (r uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var zonemem uintptr
 	// Allocate the zone memory.  This loop tries progressively smaller
 	// zone sizes until a size is found that can be allocated.
@@ -20475,8 +20449,7 @@ func AutoAllocMemory(tls *libc.TLS, size uintptr, default_ram int32, min_ram int
 }
 
 func I_ZoneBase(tls *libc.TLS, size uintptr) (r uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var default_ram, min_ram, p int32
 	var zonemem uintptr
 	//!
@@ -20630,8 +20603,7 @@ func EscapeShellString(tls *libc.TLS, string1 uintptr) (r1 uintptr) {
 // Open a native error box with a message using zenity
 
 func ZenityErrorBox(tls *libc.TLS, message uintptr) (r int32) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var errorboxpath, escaped_message uintptr
 	var result int32
 	if !(ZenityAvailable(tls) != 0) {
@@ -20656,8 +20628,7 @@ var errorboxpath_size size_t
 var already_quitting = uint32(false1)
 
 func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
-	bp := tls.Alloc(512)
-	defer tls.Free(512)
+	bp := alloc(512)
 	var argptr va_list
 	var entry uintptr
 	var exit_gui_popup boolean
@@ -20741,8 +20712,7 @@ var mem_dump_custom [10]uint8
 var dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dos622))
 
 func I_GetMemoryValue(tls *libc.TLS, offset uint32, value uintptr, size int32) (r boolean) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var i, p, v2 int32
 	if firsttime != 0 {
 		firsttime = uint32(false1)
@@ -21802,8 +21772,7 @@ func M_SaveDefaults(tls *libc.TLS) {
 //
 
 func M_LoadDefaults(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var i int32
 	// check for a custom default file
 	//!
@@ -21841,8 +21810,7 @@ func M_LoadDefaults(tls *libc.TLS) {
 // Get a configuration file variable by its name
 
 func GetDefaultForName(tls *libc.TLS, name uintptr) (r uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var result uintptr
 	// Try the main list and the extras
 	result = SearchCollection(tls, uintptr(unsafe.Pointer(&doom_defaults)), name)
@@ -21886,8 +21854,7 @@ func GetDefaultConfigDir(tls *libc.TLS) (r uintptr) {
 //
 
 func M_SetConfigDir(tls *libc.TLS, dir uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	// Use the directory that was passed, or find the default.
 	if dir != libc.UintptrFromInt32(0) {
 		configdir = dir
@@ -21907,8 +21874,7 @@ func M_SetConfigDir(tls *libc.TLS, dir uintptr) {
 //
 
 func M_GetSaveGameDir(tls *libc.TLS, iwadname uintptr) (r uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var savegamedir uintptr
 	// If not "doing" a configuration directory (Windows), don't "do"
 	// a savegame directory, either.
@@ -22130,8 +22096,7 @@ func M_BindMenuControls(tls *libc.TLS) {
 }
 
 func M_BindChatControls(tls *libc.TLS, num_players uint32) {
-	bp := tls.Alloc(48)
-	defer tls.Free(48)
+	bp := alloc(48)
 	var i uint32
 	M_BindVariable(tls, __ccgo_ts+21681, uintptr(unsafe.Pointer(&key_multi_msg)))
 	i = uint32(0)
@@ -22726,8 +22691,7 @@ func init() {
 //	//  read the strings from the savegame files
 //	//
 func M_ReadSaveStrings(tls *libc.TLS) {
-	bp := tls.Alloc(256)
-	defer tls.Free(256)
+	bp := alloc(256)
 	var handle uintptr
 	var i int32
 	i = 0
@@ -22803,8 +22767,7 @@ func M_DrawSaveLoadBorder(tls *libc.TLS, x int32, y int32) {
 //	// User wants to load this game
 //	//
 func M_LoadSelect(tls *libc.TLS, choice int32) {
-	bp := tls.Alloc(256)
-	defer tls.Free(256)
+	bp := alloc(256)
 	M_StringCopy(tls, bp, P_SaveGameFile(tls, choice), uint64(256))
 	G_LoadGame(tls, bp)
 	M_ClearMenus(tls)
@@ -22905,8 +22868,7 @@ func M_QuickSaveResponse(tls *libc.TLS, key int32) {
 }
 
 func M_QuickSave(tls *libc.TLS) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	if !(usergame != 0) {
 		S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 		return
@@ -22938,8 +22900,7 @@ func M_QuickLoadResponse(tls *libc.TLS, key int32) {
 }
 
 func M_QuickLoad(tls *libc.TLS) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	if netgame != 0 {
 		M_StartMessage(tls, __ccgo_ts+22332, libc.UintptrFromInt32(0), uint32(false1))
 		return
@@ -23297,8 +23258,7 @@ func M_SelectEndMessage(tls *libc.TLS) (r uintptr) {
 }
 
 func M_QuitDOOM(tls *libc.TLS, choice int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&endstring)), uint64(160), __ccgo_ts+23010, libc.VaList(bp+8, M_SelectEndMessage(tls)))
 	M_StartMessage(tls, uintptr(unsafe.Pointer(&endstring)), __ccgo_fp(M_QuitResponse), uint32(true1))
 }
@@ -23913,8 +23873,7 @@ func M_StartControlPanel(tls *libc.TLS) {
 //	// but before it has been blitted.
 //	//
 func M_Drawer(tls *libc.TLS) {
-	bp := tls.Alloc(80)
-	defer tls.Free(80)
+	bp := alloc(80)
 	var foundnewline, start int32
 	var i, max uint32
 	var name uintptr
@@ -24145,8 +24104,7 @@ func M_WriteFile(tls *libc.TLS, name uintptr, source uintptr, length int32) (r b
 // The returned value must be freed with Z_Free after use.
 
 func M_TempFile(tls *libc.TLS, s uintptr) (r uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var tempdir uintptr
 	// In Unix, just use /tmp.
 	tempdir = __ccgo_ts + 23139
@@ -24154,14 +24112,12 @@ func M_TempFile(tls *libc.TLS, s uintptr) (r uintptr) {
 }
 
 func M_StrToInt(tls *libc.TLS, str uintptr, result uintptr) (r boolean) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	return libc.BoolUint32(libc.Xsscanf(tls, str, __ccgo_ts+23144, libc.VaList(bp+8, result)) == int32(1) || libc.Xsscanf(tls, str, __ccgo_ts+23150, libc.VaList(bp+8, result)) == int32(1) || libc.Xsscanf(tls, str, __ccgo_ts+23156, libc.VaList(bp+8, result)) == int32(1) || libc.Xsscanf(tls, str, __ccgo_ts+23161, libc.VaList(bp+8, result)) == int32(1))
 }
 
 func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var filename, src, v2 uintptr
 	var length, v1 int32
 	src = path + uintptr(libc.Xstrlen(tls, path)) - uintptr(1)
@@ -25754,8 +25710,7 @@ func P_LookForPlayers(tls *libc.TLS, actor uintptr, allaround boolean) (r boolea
 //	// Uses special tag 666.
 //	//
 func A_KeenDie(tls *libc.TLS, mo uintptr) {
-	bp := tls.Alloc(96)
-	defer tls.Free(96)
+	bp := alloc(96)
 	var mo2, th uintptr
 	A_Fall(tls, mo)
 	// scan the remaining thinkers
@@ -26629,8 +26584,7 @@ func CheckBossEnd(tls *libc.TLS, motype mobjtype_t) (r boolean) {
 //	// if on first boss level
 //	//
 func A_BossDeath(tls *libc.TLS, mo uintptr) {
-	bp := tls.Alloc(96)
-	defer tls.Free(96)
+	bp := alloc(96)
 	var i int32
 	var mo2, th uintptr
 	if gamemode == int32(commercial) {
@@ -27413,8 +27367,7 @@ func init() {
 //
 
 func P_GiveAmmo(tls *libc.TLS, player uintptr, ammo ammotype_t, num int32) (r boolean) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var oldammo int32
 	if ammo == int32(am_noammo) {
 		return uint32(false1)
@@ -29502,8 +29455,7 @@ func P_ChangeSector(tls *libc.TLS, sector uintptr, crunch boolean) (r boolean) {
 // PrBoom plus port.  A big thanks to Andrey for this.
 
 func SpechitOverrun(tls *libc.TLS, ld uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var addr uint32
 	var p int32
 	if baseaddr == uint32(0) {
@@ -29922,8 +29874,7 @@ func P_BlockThingsIterator(tls *libc.TLS, x int32, y int32, func1 uintptr) (r bo
 //	// Returns true if earlyout and a solid line hit.
 //	//
 func PIT_AddLineIntercepts(tls *libc.TLS, ld uintptr) (r boolean) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var frac fixed_t
 	var s1, s2 int32
 	// avoid precision problems with two routines
@@ -29961,8 +29912,7 @@ func PIT_AddLineIntercepts(tls *libc.TLS, ld uintptr) (r boolean) {
 //	// PIT_AddThingIntercepts
 //	//
 func PIT_AddThingIntercepts(tls *libc.TLS, thing uintptr) (r boolean) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var frac, x1, x2, y1, y2 fixed_t
 	var s1, s2 int32
 	var tracepositive boolean
@@ -30861,8 +30811,7 @@ func P_SpawnPlayer(tls *libc.TLS, mthing uintptr) {
 //	// already be in host byte order.
 //	//
 func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var bit, i int32
 	var mobj uintptr
 	var x, y, z fixed_t
@@ -32026,8 +31975,7 @@ const SAVEGAME_EOF = 29
 // real file.
 
 func P_TempSaveGameFile(tls *libc.TLS) (r uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	if filename == libc.UintptrFromInt32(0) {
 		filename = M_StringJoin(tls, savegamedir, libc.VaList(bp+8, __ccgo_ts+24924, libc.UintptrFromInt32(0)))
 	}
@@ -32039,8 +31987,7 @@ var filename = libc.UintptrFromInt32(0)
 // Get the filename of the save game file to use for the specified slot.
 
 func P_SaveGameFile(tls *libc.TLS, slot int32) (r uintptr) {
-	bp := tls.Alloc(64)
-	defer tls.Free(64)
+	bp := alloc(64)
 	if filename1 == libc.UintptrFromInt32(0) {
 		filename_size = libc.Xstrlen(tls, savegamedir) + uint64(32)
 		filename1 = libc.Xmalloc(tls, filename_size)
@@ -32057,8 +32004,7 @@ var filename_size size_t
 // Endian-safe integer read/write functions
 
 func saveg_read8(tls *libc.TLS) (r byte1) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	if libc.Xfread(tls, bp, uint64(1), uint64(1), save_stream) < uint64(1) {
 		if !(savegame_error != 0) {
 			libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts+24952, 0)
@@ -32069,8 +32015,7 @@ func saveg_read8(tls *libc.TLS) (r byte1) {
 }
 
 func saveg_write8(tls *libc.TLS, _value byte1) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	*(*byte1)(unsafe.Pointer(bp)) = _value
 	if libc.Xfwrite(tls, bp, uint64(1), uint64(1), save_stream) < uint64(1) {
 		if !(savegame_error != 0) {
@@ -33078,8 +33023,7 @@ func saveg_write_glow_t(tls *libc.TLS, str uintptr) {
 //
 
 func P_WriteSaveGameHeader(tls *libc.TLS, description uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var i int32
 	i = 0
 	for {
@@ -33139,8 +33083,7 @@ func P_WriteSaveGameHeader(tls *libc.TLS, description uintptr) {
 //
 
 func P_ReadSaveGameHeader(tls *libc.TLS) (r boolean) {
-	bp := tls.Alloc(48)
-	defer tls.Free(48)
+	bp := alloc(48)
 	var a, b, c byte1
 	var i int32
 	// skip the description field
@@ -33433,8 +33376,7 @@ func P_ArchiveThinkers(tls *libc.TLS) {
 //	// P_UnArchiveThinkers
 //	//
 func P_UnArchiveThinkers(tls *libc.TLS) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var currentthinker, mobj, next uintptr
 	var tclass byte1
 	// remove all the current thinkers
@@ -33582,8 +33524,7 @@ func P_ArchiveSpecials(tls *libc.TLS) {
 //	// P_UnArchiveSpecials
 //	//
 func P_UnArchiveSpecials(tls *libc.TLS) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var ceiling, door, flash, floor, glow, plat, strobe uintptr
 	var tclass byte1
 	// read in saved thinkers
@@ -33890,8 +33831,7 @@ func P_LoadNodes(tls *libc.TLS, lump int32) {
 //	// P_LoadThings
 //	//
 func P_LoadThings(tls *libc.TLS, lump int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var data, mt uintptr
 	var i, numthings int32
 	var spawn boolean
@@ -34107,8 +34047,7 @@ func P_LoadBlockMap(tls *libc.TLS, lump int32) {
 //	// Finds block bounding boxes for sectors.
 //	//
 func P_GroupLines(tls *libc.TLS) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var block, i, j, v10, v7, v8, v9 int32
 	var li, linebuffer, sector, seg, ss uintptr
 	// look up sector number for each subsector
@@ -34255,8 +34194,7 @@ func P_GroupLines(tls *libc.TLS) {
 // to simulate a REJECT buffer overflow in Vanilla Doom.
 
 func PadRejectArray(tls *libc.TLS, array uintptr, len1 uint32) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var byte_num, i, padvalue uint32
 	var dest uintptr
 	var rejectpad [4]uint32
@@ -34318,8 +34256,7 @@ func P_LoadReject(tls *libc.TLS, lumpnum int32) {
 //	// P_SetupLevel
 //	//
 func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, skill skill_t) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var i, lumpnum, v1, v2, v3, v5, v6, v8 int32
 	v3 = libc.Int32FromInt32(0)
 	wminfo.Fmaxfrags = v3
@@ -34494,8 +34431,7 @@ func P_InterceptVector2(tls *libc.TLS, v2 uintptr, v1 uintptr) (r fixed_t) {
 //	//  if strace crosses the given subsector successfully.
 //	//
 func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
-	bp := tls.Alloc(48)
-	defer tls.Free(48)
+	bp := alloc(48)
 	var back, front, line, seg, sub, v1, v2 uintptr
 	var count, s1, s2 int32
 	var frac, openbottom, opentop, slope fixed_t
@@ -34875,8 +34811,7 @@ func init() {
 }
 
 func P_InitPicAnims(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var endname, startname uintptr
 	var i int32
 	//	Init animation
@@ -35595,8 +35530,7 @@ func P_ShootSpecialLine(tls *libc.TLS, thing uintptr, line uintptr) {
 //	//  that the player origin is in a special sector
 //	//
 func P_PlayerInSpecialSector(tls *libc.TLS, player uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var sector uintptr
 	sector = (*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fsubsector)).Fsector
 	// Falling, not all the way down yet?
@@ -35740,8 +35674,7 @@ func P_UpdateSpecials(tls *libc.TLS) {
 //
 
 func DonutOverrun(tls *libc.TLS, s3_floorheight uintptr, s3_floorpic uintptr, line uintptr, pillar_sector uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var p int32
 	if first != 0 {
 		// This is the first time we have had an overrun.
@@ -35804,8 +35737,7 @@ var tmp_s3_floorpic int32
 //	// Special Stuff that can not be categorized
 //	//
 func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var floor, s1, s2, s3 uintptr
 	var i, rtn, secnum, v1 int32
 	secnum = -int32(1)
@@ -37568,8 +37500,7 @@ func R_CheckBBox(tls *libc.TLS, bspcoord uintptr) (r boolean) {
 //	// Draw one or more line segments.
 //	//
 func R_Subsector(tls *libc.TLS, num int32) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var count, v1 int32
 	var line, sub uintptr
 	if num >= numsubsectors {
@@ -37824,8 +37755,7 @@ func R_GenerateComposite(tls *libc.TLS, texnum int32) {
 //	// R_GenerateLookup
 //	//
 func R_GenerateLookup(tls *libc.TLS, texnum int32) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var collump, colofs, patch, realpatch, texture uintptr
 	var i, x, x1, x2 int32
 	texture = *(*uintptr)(unsafe.Pointer(textures + uintptr(texnum)*8))
@@ -37963,8 +37893,7 @@ func GenerateTextureHashTable(tls *libc.TLS) {
 //	//  with the textures from the world map.
 //	//
 func R_InitTextures(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var directory, maptex, maptex2, mpatch, mtexture, name_p, names, patch, patchlookup, texture, v2, v6 uintptr
 	var i, j, maxoff, maxoff2, nummappatches, numtextures1, numtextures2, offset, temp1, temp2, temp3, totalwidth int32
 	// Load the patch names from pnames.lmp.
@@ -38238,8 +38167,7 @@ func R_InitData(tls *libc.TLS) {
 //	// Retrieval, get a flat number for a flat name.
 //	//
 func R_FlatNumForName(tls *libc.TLS, name uintptr) (r int32) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var i int32
 	i = W_CheckNumForName(tls, name)
 	if i == -int32(1) {
@@ -38283,8 +38211,7 @@ func R_CheckTextureNumForName(tls *libc.TLS, name uintptr) (r int32) {
 //	//  aborts with error message.
 //	//
 func R_TextureNumForName(tls *libc.TLS, name uintptr) (r int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var i int32
 	i = R_CheckTextureNumForName(tls, name)
 	if i == -int32(1) {
@@ -38452,8 +38379,7 @@ var background_buffer = libc.UintptrFromInt32(0)
 //	//  be used. It has also been used with Wolfenstein 3D.
 //	//
 func R_DrawColumn(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var count, v1 int32
 	var dest uintptr
 	var frac, fracstep fixed_t
@@ -38497,8 +38423,7 @@ func R_DrawColumn(tls *libc.TLS) {
 // Loop unrolled.
 
 func R_DrawColumnLow(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var count, x, v1 int32
 	var dest, dest2 uintptr
 	var frac, fracstep fixed_t
@@ -38603,8 +38528,7 @@ func init() {
 //	//  i.e. spectres and invisible players.
 //	//
 func R_DrawFuzzColumn(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var count, v1, v3 int32
 	var dest uintptr
 	var frac, fracstep fixed_t
@@ -38658,8 +38582,7 @@ func R_DrawFuzzColumn(tls *libc.TLS) {
 
 // low detail mode version
 func R_DrawFuzzColumnLow(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var count, x, v1, v3 int32
 	var dest, dest2 uintptr
 	var frac, fracstep fixed_t
@@ -38717,8 +38640,7 @@ func R_DrawFuzzColumnLow(tls *libc.TLS) {
 }
 
 func R_DrawTranslatedColumn(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var count, v1 int32
 	var dest uintptr
 	var frac, fracstep fixed_t
@@ -38755,8 +38677,7 @@ func R_DrawTranslatedColumn(tls *libc.TLS) {
 }
 
 func R_DrawTranslatedColumnLow(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var count, x, v1 int32
 	var dest, dest2 uintptr
 	var frac, fracstep fixed_t
@@ -38841,8 +38762,7 @@ func R_InitTranslationTables(tls *libc.TLS) {
 //	//
 //	// Draws the actual span.
 func R_DrawSpan(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var count, spot, v1 int32
 	var dest, v3 uintptr
 	var position, step, xtemp, ytemp uint32
@@ -38890,8 +38810,7 @@ func R_DrawSpan(tls *libc.TLS) {
 //	// Again..
 //	//
 func R_DrawSpanLow(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var count, spot, v1 int32
 	var dest, v3, v4 uintptr
 	var position, step, xtemp, ytemp uint32
@@ -39770,8 +39689,7 @@ func R_InitPlanes(tls *libc.TLS) {
 //	// BASIC PRIMITIVE
 //	//
 func R_MapPlane(tls *libc.TLS, y int32, x1 int32, x2 int32) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var angle angle_t
 	var distance, length, v1, v2, v3 fixed_t
 	var index uint32
@@ -39948,8 +39866,7 @@ func R_CheckPlane(tls *libc.TLS, pl uintptr, start int32, stop int32) (r uintptr
 //	// At the end of each frame.
 //	//
 func R_DrawPlanes(tls *libc.TLS) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var angle, b1, b2, light, lumpnum, stop, t1, t2, x int32
 	var pl uintptr
 	if (int64(ds_p)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&drawsegs))))/64 > int64(MAXDRAWSEGS) {
@@ -40303,8 +40220,7 @@ func R_RenderSegLoop(tls *libc.TLS) {
 //	//  between start and stop pixels (inclusive).
 //	//
 func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var distangle, offsetangle angle_t
 	var hyp, sineval, vtop, v3, v4 fixed_t
 	var lightnum, v2, v5, v6 int32
@@ -40604,8 +40520,7 @@ const INT_MAX17 = 2147483647
 //	// Local function for R_InitSprites.
 //	//
 func R_InstallSpriteLump(tls *libc.TLS, lump int32, frame uint32, rotation uint32, flipped boolean) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var r int32
 	if frame >= uint32(29) || rotation > uint32(8) {
 		I_Error(tls, __ccgo_ts+26603, libc.VaList(bp+8, lump))
@@ -40668,8 +40583,7 @@ func R_InstallSpriteLump(tls *libc.TLS, lump int32, frame uint32, rotation uint3
 //	// The rotation character can be 0 to signify no rotations.
 //	//
 func R_InitSpriteDefs(tls *libc.TLS, namelist uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var check uintptr
 	var end, frame, i, l, patched, rotation, start int32
 	// count the number of sprite names
@@ -40919,8 +40833,7 @@ func R_DrawVisSprite(tls *libc.TLS, vis uintptr, x1 int32, x2 int32) {
 //	//  if it might be visible.
 //	//
 func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var ang angle_t
 	var flip boolean
 	var gxt, gyt, iscale, tr_x, tr_y, tx, tz, xscale fixed_t
@@ -41083,8 +40996,7 @@ func R_AddSprites(tls *libc.TLS, sec uintptr) {
 //	// R_DrawPSprite
 //	//
 func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
-	bp := tls.Alloc(112)
-	defer tls.Free(112)
+	bp := alloc(112)
 	var flip boolean
 	var lump, x1, x2, v1, v2 int32
 	var sprdef, sprframe, vis uintptr
@@ -41203,8 +41115,7 @@ func R_DrawPlayerSprites(tls *libc.TLS) {
 }
 
 func R_SortVisSprites(tls *libc.TLS) {
-	bp := tls.Alloc(80)
-	defer tls.Free(80)
+	bp := alloc(80)
 	var best, ds, v1, v3 uintptr
 	var bestscale fixed_t
 	var count, i int32
@@ -41483,8 +41394,7 @@ func SHA1_Init(tls *libc.TLS, hd uintptr) {
 //	 * Transform the message X which consists of 16 32-bit-words
 //	 */
 func Transform(tls *libc.TLS, hd uintptr, data uintptr) {
-	bp := tls.Alloc(64)
-	defer tls.Free(64)
+	bp := alloc(64)
 	var a, b, c, d, e, tm, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, v32, v33, v34, v35, v36, v37, v38, v39, v40, v41, v42, v43, v44, v45, v46, v47, v48, v49, v50, v51, v52, v53, v54, v55, v56, v57, v58, v59, v6, v60, v61, v62, v63, v64, v65, v66, v67, v68, v69, v7, v8, v9 uint32_t
 	var i int32
 	var p2, v2, v3, v4, v5 uintptr
@@ -42069,8 +41979,7 @@ func SHA1_Final(tls *libc.TLS, digest uintptr, hd uintptr) {
 }
 
 func SHA1_UpdateInt32(tls *libc.TLS, context uintptr, val uint32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	(*(*[4]byte1)(unsafe.Pointer(bp)))[0] = uint8(val >> int32(24) & uint32(0xff))
 	(*(*[4]byte1)(unsafe.Pointer(bp)))[int32(1)] = uint8(val >> int32(16) & uint32(0xff))
 	(*(*[4]byte1)(unsafe.Pointer(bp)))[int32(2)] = uint8(val >> int32(8) & uint32(0xff))
@@ -43622,8 +43531,7 @@ func ST_refreshBackground(tls *libc.TLS) {
 //	// Respond to keyboard input events,
 //	//  intercept cheats.
 func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
-	bp := tls.Alloc(48)
-	defer tls.Free(48)
+	bp := alloc(48)
 	var epsd, i, map1, musnum, v6, v7, v8, v9 int32
 	var v10 bool
 	// Filter automap on/off.
@@ -44230,8 +44138,7 @@ type load_callback_t = uintptr
 // the variable they use, invoking the specified callback function.
 
 func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
-	bp := tls.Alloc(48)
-	defer tls.Free(48)
+	bp := alloc(48)
 	var facenum, i, j int32
 	// Load the numbers, tall and short
 	i = 0
@@ -44759,8 +44666,7 @@ func S_AdjustSoundParams(tls *libc.TLS, listener uintptr, source uintptr, vol ui
 }
 
 func S_StartSound(tls *libc.TLS, origin_p uintptr, sfx_id int32) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var cnum, rc, v1 int32
 	var origin, sfx, v2 uintptr
 	origin = origin_p
@@ -44836,8 +44742,7 @@ func S_ResumeSound(tls *libc.TLS) {
 //
 
 func S_UpdateSounds(tls *libc.TLS, listener uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var audible, cnum int32
 	var c, sfx uintptr
 	I_UpdateSound(tls)
@@ -44888,8 +44793,7 @@ func S_UpdateSounds(tls *libc.TLS, listener uintptr) {
 }
 
 func S_SetMusicVolume(tls *libc.TLS, volume int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	if volume < 0 || volume > int32(127) {
 		I_Error(tls, __ccgo_ts+27997, libc.VaList(bp+8, volume))
 	}
@@ -44897,8 +44801,7 @@ func S_SetMusicVolume(tls *libc.TLS, volume int32) {
 }
 
 func S_SetSfxVolume(tls *libc.TLS, volume int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	if volume < 0 || volume > int32(127) {
 		I_Error(tls, __ccgo_ts+28031, libc.VaList(bp+8, volume))
 	}
@@ -44914,8 +44817,7 @@ func S_StartMusic(tls *libc.TLS, m_id int32) {
 }
 
 func S_ChangeMusic(tls *libc.TLS, musicnum int32, looping int32) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var handle, music uintptr
 	music = libc.UintptrFromInt32(0)
 	// The Doom IWAD file has two versions of the intro music: d_intro
@@ -61447,8 +61349,7 @@ func V_CopyRect(tls *libc.TLS, srcx int32, srcy int32, source uintptr, width int
 //
 
 func V_DrawPatch(tls *libc.TLS, x int32, y int32, patch uintptr) {
-	bp := tls.Alloc(64)
-	defer tls.Free(64)
+	bp := alloc(64)
 	var col, count, w, v2 int32
 	var column, dest, desttop, source, v3 uintptr
 	y -= int32((*patch_t)(unsafe.Pointer(patch)).Ftopoffset)
@@ -61789,8 +61690,7 @@ func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, he
 //
 
 func V_ScreenShot(tls *libc.TLS, format uintptr) {
-	bp := tls.Alloc(48)
-	defer tls.Free(48)
+	bp := alloc(48)
 	var ext uintptr
 	var i int32
 	// find a file name to save it to
@@ -62468,8 +62368,7 @@ func WI_slamBackground(tls *libc.TLS) {
 //
 //	// Draws "<Levelname> Finished!"
 func WI_drawLF(tls *libc.TLS) {
-	bp := tls.Alloc(48)
-	defer tls.Free(48)
+	bp := alloc(48)
 	var y int32
 	y = int32(WI_TITLEY)
 	if gamemode != int32(commercial) || (*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast < NUMCMAPS {
@@ -62513,8 +62412,7 @@ func WI_drawEL(tls *libc.TLS) {
 }
 
 func WI_drawOnLnode(tls *libc.TLS, n int32, c uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var bottom, i, left, right, top int32
 	var fits boolean
 	fits = uint32(false1)
@@ -63531,8 +63429,7 @@ func WI_Ticker(tls *libc.TLS) {
 // lumps to be loaded/unloaded into memory.
 
 func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
-	bp1 := tls.Alloc(48)
-	defer tls.Free(48)
+	bp1 := alloc(48)
 	var a uintptr
 	var i, j int32
 	if gamemode == int32(commercial) {
@@ -63804,8 +63701,7 @@ func GetFileNumber(tls *libc.TLS, handle uintptr) (r int32) {
 }
 
 func ChecksumAddLump(tls *libc.TLS, sha1_context uintptr, lump uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	M_StringCopy(tls, bp, lump, uint64(9))
 	SHA1_UpdateString(tls, sha1_context, bp)
 	SHA1_UpdateInt32(tls, sha1_context, libc.Uint32FromInt32(GetFileNumber(tls, (*lumpinfo_t)(unsafe.Pointer(lump)).Fwad_file)))
@@ -63814,8 +63710,7 @@ func ChecksumAddLump(tls *libc.TLS, sha1_context uintptr, lump uintptr) {
 }
 
 func W_Checksum(tls *libc.TLS, digest uintptr) {
-	bp := tls.Alloc(96)
-	defer tls.Free(96)
+	bp := alloc(96)
 	var i uint32
 	SHA1_Init(tls, bp)
 	num_open_wadfiles = 0
@@ -63887,8 +63782,7 @@ func W_Read(tls *libc.TLS, wad uintptr, offset uint32, buffer uintptr, buffer_le
 // Returns true if at least one file was added.
 
 func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var filename uintptr
 	var modifiedgame boolean
 	var p, v1 int32
@@ -64010,8 +63904,7 @@ func ExtendLumpInfo(tls *libc.TLS, newnumlumps int32) {
 //  for the lump name.
 
 func W_AddFile(tls *libc.TLS, filename uintptr) (r uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var fileinfo, filerover, lump_p, wad_file uintptr
 	var i uint32
 	var length, newnumlumps, startlump int32
@@ -64136,8 +64029,7 @@ func W_CheckNumForName(tls *libc.TLS, name uintptr) (r int32) {
 //	// Calls W_CheckNumForName, but bombs out if not found.
 //	//
 func W_GetNumForName(tls *libc.TLS, name uintptr) (r int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var i int32
 	i = W_CheckNumForName(tls, name)
 	if i < 0 {
@@ -64153,8 +64045,7 @@ func W_GetNumForName(tls *libc.TLS, name uintptr) (r int32) {
 //	// Returns the buffer size needed to load the given lump.
 //	//
 func W_LumpLength(tls *libc.TLS, lump uint32) (r int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	if lump >= numlumps {
 		I_Error(tls, __ccgo_ts+28737, libc.VaList(bp+8, lump))
 	}
@@ -64169,8 +64060,7 @@ func W_LumpLength(tls *libc.TLS, lump uint32) (r int32) {
 //	//  which must be >= W_LumpLength().
 //	//
 func W_ReadLump(tls *libc.TLS, lump uint32, dest uintptr) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var c int32
 	var l uintptr
 	if lump >= numlumps {
@@ -64198,8 +64088,7 @@ func W_ReadLump(tls *libc.TLS, lump uint32, dest uintptr) {
 //
 
 func W_CacheLumpNum(tls *libc.TLS, lumpnum int32, tag int32) (r uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var lump, result uintptr
 	if libc.Uint32FromInt32(lumpnum) >= numlumps {
 		I_Error(tls, __ccgo_ts+28835, libc.VaList(bp+8, lumpnum))
@@ -64247,8 +64136,7 @@ func W_CacheLumpName(tls *libc.TLS, name uintptr, tag int32) (r uintptr) {
 //
 
 func W_ReleaseLumpNum(tls *libc.TLS, lumpnum int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var lump uintptr
 	if libc.Uint32FromInt32(lumpnum) >= numlumps {
 		I_Error(tls, __ccgo_ts+28874, libc.VaList(bp+8, lumpnum))
@@ -64322,8 +64210,7 @@ var unique_lumps = [4]struct {
 }
 
 func W_CheckCorrectIWAD(tls *libc.TLS, mission GameMission_t) {
-	bp := tls.Alloc(48)
-	defer tls.Free(48)
+	bp := alloc(48)
 	var i, lumpnum int32
 	i = 0
 	for {
@@ -64429,8 +64316,7 @@ type memzone_t = struct {
 //	// Z_Init
 //	//
 func Z_Init(tls *libc.TLS) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var block, v1, v2, v3 uintptr
 	mainzone = I_ZoneBase(tls, bp)
 	(*memzone_t)(unsafe.Pointer(mainzone)).Fsize = *(*int32)(unsafe.Pointer(bp))
@@ -64499,8 +64385,7 @@ func Z_Free(tls *libc.TLS, ptr uintptr) {
 //
 
 func Z_Malloc(tls *libc.TLS, size int32, tag int32, user uintptr) (r uintptr) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
+	bp := alloc(16)
 	var base, newblock, result, rover, start, v1 uintptr
 	var extra int32
 	size = libc.Int32FromUint64((libc.Uint64FromInt32(size) + uint64(8) - uint64(1)) & ^(libc.Uint64FromInt64(8) - libc.Uint64FromInt32(1)))
@@ -64634,8 +64519,7 @@ func Z_CheckHeap(tls *libc.TLS) {
 //	// Z_ChangeTag
 //	//
 func Z_ChangeTag2(tls *libc.TLS, ptr uintptr, tag int32, file uintptr, line int32) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var block uintptr
 	block = ptr - libc.UintptrFromInt64(40)
 	if (*memblock_t)(unsafe.Pointer(block)).Fid != int32(ZONEID) {
@@ -64888,8 +64772,7 @@ type DoomKeyEvent struct {
 }
 
 func I_GetEvent(tls *libc.TLS) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
+	bp := alloc(32)
 	var event DoomKeyEvent
 	for DG_GetKey(&event) {
 		var pressed int32
