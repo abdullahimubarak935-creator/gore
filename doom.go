@@ -8,16 +8,6 @@ import (
 	"modernc.org/libc"
 )
 
-type __predefined_ptrdiff_t = int64
-
-type size_t = uint64
-
-type int64_t = int64
-
-type uint8_t = uint8
-
-type uint32_t = uint32
-
 type boolean = uint32
 
 func alloc(size int) uintptr {
@@ -97,12 +87,12 @@ const VDOORWAIT = 150
 type va_list = uintptr
 
 type sha1_context_t = struct {
-	Fh0      uint32_t
-	Fh1      uint32_t
-	Fh2      uint32_t
-	Fh3      uint32_t
-	Fh4      uint32_t
-	Fnblocks uint32_t
+	Fh0      uint32
+	Fh1      uint32
+	Fh2      uint32
+	Fh3      uint32
+	Fh4      uint32
+	Fnblocks uint32
 	Fbuf     [64]uint8
 	Fcount   int32
 }
@@ -253,9 +243,9 @@ const BTS_SAVESHIFT = 2
 
 type cheatseq_t = struct {
 	Fsequence         [25]int8
-	Fsequence_len     size_t
+	Fsequence_len     uint64
 	Fparameter_chars  int32
-	Fchars_read       size_t
+	Fchars_read       uint64
 	Fparam_chars_read int32
 	Fparameter_buf    [5]int8
 }
@@ -3924,7 +3914,7 @@ func AddIWADDir(tls *libc.TLS, dir uintptr) {
 // of the specified name.
 
 func DirIsFile(tls *libc.TLS, path uintptr, filename uintptr) (r boolean) {
-	var filename_len, path_len size_t
+	var filename_len, path_len uint64
 	path_len = libc.Xstrlen(tls, path)
 	filename_len = libc.Xstrlen(tls, filename)
 	return libc.BoolUint32(path_len >= filename_len+uint64(1) && int32(*(*int8)(unsafe.Pointer(path + uintptr(path_len-filename_len-uint64(1))))) == int32('/') && !(libc.Xstrcasecmp(tls, path+uintptr(path_len-filename_len), filename) != 0))
@@ -3962,7 +3952,7 @@ func CheckDirectoryHasIWAD(tls *libc.TLS, dir uintptr, iwadname uintptr) (r uint
 
 func SearchDirectoryForIWAD(tls *libc.TLS, dir uintptr, mask int32, mission uintptr) (r uintptr) {
 	var filename uintptr
-	var i size_t
+	var i uint64
 	i = uint64(0)
 	for {
 		if !(i < libc.Uint64FromInt64(336)/libc.Uint64FromInt64(24)) {
@@ -3988,7 +3978,7 @@ func SearchDirectoryForIWAD(tls *libc.TLS, dir uintptr, mask int32, mission uint
 // attempt to identify it by its name.
 
 func IdentifyIWADByName(tls *libc.TLS, name uintptr, mask int32) (r GameMission_t) {
-	var i size_t
+	var i uint64
 	var mission GameMission_t
 	var p uintptr
 	p = libc.Xstrrchr(tls, name, int32('/'))
@@ -4138,7 +4128,7 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
 //
 
 func D_SaveGameIWADName(tls *libc.TLS, gamemission GameMission_t) (r uintptr) {
-	var i size_t
+	var i uint64
 	// Determine the IWAD name to use for savegames.
 	// This determines the directory the savegame files get put into.
 	//
@@ -5192,7 +5182,7 @@ var banners = [7]uintptr{
 func GetGameName(tls *libc.TLS, gamename uintptr) (r uintptr) {
 	bp := alloc(32)
 	var deh_sub uintptr
-	var gamename_size, i size_t
+	var gamename_size, i uint64
 	var version, v2, v3, v6, v7 int32
 	var v5, v9 bool
 	i = uint64(0)
@@ -5487,7 +5477,7 @@ var copyright_banners = [3]uintptr{
 func PrintDehackedBanners(tls *libc.TLS) {
 	bp := alloc(16)
 	var deh_s uintptr
-	var i size_t
+	var i uint64
 	i = uint64(0)
 	for {
 		if !(i < libc.Uint64FromInt64(24)/libc.Uint64FromInt64(8)) {
@@ -6141,7 +6131,7 @@ const ANG901 = 1073741824
 func PlayerQuitGame(tls *libc.TLS, player uintptr) {
 	var player_num uint32
 	var p1 uintptr
-	player_num = libc.Uint32FromInt64((int64(player) - __predefined_ptrdiff_t(uintptr(unsafe.Pointer(&players)))) / 328)
+	player_num = libc.Uint32FromInt64((int64(player) - int64(uintptr(unsafe.Pointer(&players)))) / 328)
 	// Do this the same way as Vanilla Doom does, to allow dehacked
 	// replacements of this message
 	M_StringCopy(tls, uintptr(unsafe.Pointer(&exitmsg)), __ccgo_ts(5400), uint64(80))
@@ -6503,7 +6493,7 @@ var textscreens = [22]textscreen_t{
 //	// F_StartFinale
 //	//
 func F_StartFinale(tls *libc.TLS) {
-	var i size_t
+	var i uint64
 	var screen uintptr
 	var v1, v2, v4, v5, v6, v7 int32
 	var v8 bool
@@ -6588,7 +6578,7 @@ func F_Responder(tls *libc.TLS, event uintptr) (r boolean) {
 //	// F_Ticker
 //	//
 func F_Ticker(tls *libc.TLS) {
-	var i size_t
+	var i uint64
 	// check for skipping
 	if gamemode == int32(commercial) && finalecount > uint32(50) {
 		// go on to the next level
@@ -8390,7 +8380,7 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 func G_DeathMatchSpawnPlayer(tls *libc.TLS, playernum int32) {
 	bp := alloc(16)
 	var i, j, selections int32
-	selections = int32((int64(deathmatch_p) - __predefined_ptrdiff_t(uintptr(unsafe.Pointer(&deathmatchstarts)))) / 10)
+	selections = int32((int64(deathmatch_p) - int64(uintptr(unsafe.Pointer(&deathmatchstarts)))) / 10)
 	if selections < int32(4) {
 		I_Error(tls, __ccgo_ts(13841), libc.VaList(bp+8, selections))
 	}
@@ -9153,7 +9143,7 @@ func G_WriteDemoTiccmd(tls *libc.TLS, cmd uintptr) {
 //	//
 func G_RecordDemo(tls *libc.TLS, name uintptr) {
 	bp := alloc(16)
-	var demoname_size size_t
+	var demoname_size uint64
 	var i, maxsize int32
 	usergame = 0
 	demoname_size = libc.Xstrlen(tls, name) + uint64(5)
@@ -20610,7 +20600,7 @@ func ZenityErrorBox(tls *libc.TLS, message uintptr) (r int32) {
 	return result
 }
 
-var errorboxpath_size size_t
+var errorboxpath_size uint64
 
 //
 // I_Error
@@ -20773,7 +20763,7 @@ func I_GetTicks(tls *libc.TLS) (r int32) {
 }
 
 func I_GetTime(tls *libc.TLS) (r int32) {
-	var ticks uint32_t
+	var ticks uint32
 	ticks = libc.Uint32FromInt32(I_GetTicks(tls))
 	if basetime == uint32(0) {
 		basetime = ticks
@@ -20787,7 +20777,7 @@ func I_GetTime(tls *libc.TLS) (r int32) {
 //
 
 func I_GetTimeMS(tls *libc.TLS) (r int32) {
-	var ticks uint32_t
+	var ticks uint32
 	ticks = libc.Uint32FromInt32(I_GetTicks(tls))
 	if basetime == uint32(0) {
 		basetime = ticks
@@ -22126,7 +22116,7 @@ func FixedMul(tls *libc.TLS, a fixed_t, b fixed_t) (r fixed_t) {
 //
 
 func FixedDiv(tls *libc.TLS, a fixed_t, b fixed_t) (r fixed_t) {
-	var result int64_t
+	var result int64
 	var v1 int32
 	if libc.Xabs(tls, a)>>int32(14) >= libc.Xabs(tls, b) {
 		if a^b < 0 {
@@ -23339,7 +23329,7 @@ func M_StartMessage(tls *libc.TLS, string1 uintptr, routine uintptr, input boole
 //	//
 func M_StringWidth(tls *libc.TLS, string1 uintptr) (r int32) {
 	var c, w int32
-	var i size_t
+	var i uint64
 	w = 0
 	i = uint64(0)
 	for {
@@ -23367,7 +23357,7 @@ func M_StringWidth(tls *libc.TLS, string1 uintptr) (r int32) {
 //	//
 func M_StringHeight(tls *libc.TLS, string1 uintptr) (r int32) {
 	var h, height int32
-	var i size_t
+	var i uint64
 	height = int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight)
 	h = height
 	i = uint64(0)
@@ -24139,8 +24129,8 @@ func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
 // Safe string copy function that works like OpenBSD's strlcpy().
 // Returns true if the string was not truncated.
 
-func M_StringCopy(tls *libc.TLS, dest uintptr, src uintptr, dest_size size_t) (r boolean) {
-	var len1 size_t
+func M_StringCopy(tls *libc.TLS, dest uintptr, src uintptr, dest_size uint64) (r boolean) {
+	var len1 uint64
 	if dest_size >= uint64(1) {
 		*(*int8)(unsafe.Pointer(dest + uintptr(dest_size-uint64(1)))) = int8('\000')
 		libc.Xstrncpy(tls, dest, src, dest_size-uint64(1))
@@ -24154,8 +24144,8 @@ func M_StringCopy(tls *libc.TLS, dest uintptr, src uintptr, dest_size size_t) (r
 // Safe string concat function that works like OpenBSD's strlcat().
 // Returns true if string not truncated.
 
-func M_StringConcat(tls *libc.TLS, dest uintptr, src uintptr, dest_size size_t) (r boolean) {
-	var offset size_t
+func M_StringConcat(tls *libc.TLS, dest uintptr, src uintptr, dest_size uint64) (r boolean) {
+	var offset uint64
 	offset = libc.Xstrlen(tls, dest)
 	if offset > dest_size {
 		offset = dest_size
@@ -24175,7 +24165,7 @@ func M_StringEndsWith(tls *libc.TLS, s uintptr, suffix uintptr) (r boolean) {
 func M_StringJoin(tls *libc.TLS, s uintptr, va uintptr) (r uintptr) {
 	var args va_list
 	var result, v uintptr
-	var result_len size_t
+	var result_len uint64
 	result_len = libc.Xstrlen(tls, s) + uint64(1)
 	args = va
 	for {
@@ -24211,7 +24201,7 @@ func M_StringJoin(tls *libc.TLS, s uintptr, va uintptr) (r uintptr) {
 // C documentation
 //
 //	// Safe, portable vsnprintf().
-func M_vsnprintf(tls *libc.TLS, buf uintptr, buf_len size_t, s uintptr, args va_list) (r int32) {
+func M_vsnprintf(tls *libc.TLS, buf uintptr, buf_len uint64, s uintptr, args va_list) (r int32) {
 	var result int32
 	if buf_len < uint64(1) {
 		return 0
@@ -24232,7 +24222,7 @@ func M_vsnprintf(tls *libc.TLS, buf uintptr, buf_len size_t, s uintptr, args va_
 // C documentation
 //
 //	// Safe, portable snprintf().
-func M_snprintf(tls *libc.TLS, buf uintptr, buf_len size_t, s uintptr, va uintptr) (r int32) {
+func M_snprintf(tls *libc.TLS, buf uintptr, buf_len uint64, s uintptr, va uintptr) (r int32) {
 	var args va_list
 	var result int32
 	args = va
@@ -27902,7 +27892,7 @@ func P_KillMobj(tls *libc.TLS, source uintptr, target uintptr) {
 			(*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer)).Fkillcount++
 		}
 		if (*mobj_t)(unsafe.Pointer(target)).Fplayer != 0 {
-			*(*int32)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer + 108 + uintptr((int64((*mobj_t)(unsafe.Pointer(target)).Fplayer)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&players))))/328)*4))++
+			*(*int32)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer + 108 + uintptr((int64((*mobj_t)(unsafe.Pointer(target)).Fplayer)-int64(uintptr(unsafe.Pointer(&players))))/328)*4))++
 		}
 	} else {
 		if !(netgame != 0) && (*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_COUNTKILL) != 0 {
@@ -27914,7 +27904,7 @@ func P_KillMobj(tls *libc.TLS, source uintptr, target uintptr) {
 	if (*mobj_t)(unsafe.Pointer(target)).Fplayer != 0 {
 		// count environment kills against you
 		if !(source != 0) {
-			*(*int32)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Fplayer + 108 + uintptr((int64((*mobj_t)(unsafe.Pointer(target)).Fplayer)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&players))))/328)*4))++
+			*(*int32)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Fplayer + 108 + uintptr((int64((*mobj_t)(unsafe.Pointer(target)).Fplayer)-int64(uintptr(unsafe.Pointer(&players))))/328)*4))++
 		}
 		*(*int32)(unsafe.Pointer(target + 160)) &= ^int32(MF_SOLID)
 		(*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Fplayer)).Fplayerstate = int32(PST_DEAD)
@@ -29892,7 +29882,7 @@ func PIT_AddLineIntercepts(tls *libc.TLS, ld uintptr) (r boolean) {
 	(*intercept_t)(unsafe.Pointer(intercept_p)).Ffrac = frac
 	(*intercept_t)(unsafe.Pointer(intercept_p)).Fisaline = 1
 	*(*uintptr)(unsafe.Pointer(intercept_p + 8)) = ld
-	InterceptsOverrun(tls, int32((int64(intercept_p)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&intercepts))))/16), intercept_p)
+	InterceptsOverrun(tls, int32((int64(intercept_p)-int64(uintptr(unsafe.Pointer(&intercepts))))/16), intercept_p)
 	intercept_p += 16
 	return 1 // continue
 }
@@ -29936,7 +29926,7 @@ func PIT_AddThingIntercepts(tls *libc.TLS, thing uintptr) (r boolean) {
 	(*intercept_t)(unsafe.Pointer(intercept_p)).Ffrac = frac
 	(*intercept_t)(unsafe.Pointer(intercept_p)).Fisaline = 0
 	*(*uintptr)(unsafe.Pointer(intercept_p + 8)) = thing
-	InterceptsOverrun(tls, int32((int64(intercept_p)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&intercepts))))/16), intercept_p)
+	InterceptsOverrun(tls, int32((int64(intercept_p)-int64(uintptr(unsafe.Pointer(&intercepts))))/16), intercept_p)
 	intercept_p += 16
 	return 1 // keep going
 }
@@ -29952,7 +29942,7 @@ func P_TraverseIntercepts(tls *libc.TLS, func1 traverser_t, maxfrac fixed_t) (r 
 	var count, v1 int32
 	var dist fixed_t
 	var in, scan uintptr
-	count = int32((int64(intercept_p) - __predefined_ptrdiff_t(uintptr(unsafe.Pointer(&intercepts)))) / 16)
+	count = int32((int64(intercept_p) - int64(uintptr(unsafe.Pointer(&intercepts)))) / 16)
 	in = uintptr(0) // shut up compiler warning
 	for {
 		v1 = count
@@ -30391,7 +30381,7 @@ func P_XYMovement(tls *libc.TLS, mo uintptr) {
 	}
 	if (*mobj_t)(unsafe.Pointer(mo)).Fmomx > -int32(STOPSPEED) && (*mobj_t)(unsafe.Pointer(mo)).Fmomx < int32(STOPSPEED) && (*mobj_t)(unsafe.Pointer(mo)).Fmomy > -int32(STOPSPEED) && (*mobj_t)(unsafe.Pointer(mo)).Fmomy < int32(STOPSPEED) && (!(player != 0) || int32((*player_t)(unsafe.Pointer(player)).Fcmd.Fforwardmove) == 0 && int32((*player_t)(unsafe.Pointer(player)).Fcmd.Fsidemove) == 0) {
 		// if in a walking frame, stop moving
-		if player != 0 && libc.Uint32FromInt64((int64((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fstate)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&states))))/40-int64(S_PLAY_RUN1)) < uint32(4) {
+		if player != 0 && libc.Uint32FromInt64((int64((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fstate)-int64(uintptr(unsafe.Pointer(&states))))/40-int64(S_PLAY_RUN1)) < uint32(4) {
 			P_SetMobjState(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(S_PLAY))
 		}
 		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = 0
@@ -31823,7 +31813,7 @@ func A_FireCGun(tls *libc.TLS, player uintptr, psp uintptr) {
 	}
 	P_SetMobjState(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(S_PLAY_ATK2))
 	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, int32(1))
-	P_SetPsprite(tls, player, int32(ps_flash), int32((int64(uintptr(weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fflashstate)*40+(*pspdef_t)(unsafe.Pointer(psp)).Fstate)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&states))+uintptr(S_CHAIN1)*40))/40))
+	P_SetPsprite(tls, player, int32(ps_flash), int32((int64(uintptr(weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fflashstate)*40+(*pspdef_t)(unsafe.Pointer(psp)).Fstate)-int64(uintptr(unsafe.Pointer(&states))+uintptr(S_CHAIN1)*40))/40))
 	P_BulletSlope(tls, (*player_t)(unsafe.Pointer(player)).Fmo)
 	P_GunShot(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.BoolUint32(!((*player_t)(unsafe.Pointer(player)).Frefire != 0)))
 }
@@ -31990,7 +31980,7 @@ func P_SaveGameFile(tls *libc.TLS, slot int32) (r uintptr) {
 
 var filename1 = libc.UintptrFromInt32(0)
 
-var filename_size size_t
+var filename_size uint64
 
 // Endian-safe integer read/write functions
 
@@ -32302,7 +32292,7 @@ func saveg_write_mobj_t(tls *libc.TLS, str uintptr) {
 	// int tics;
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Ftics)
 	// state_t* state;
-	saveg_write32(tls, int32((int64((*mobj_t)(unsafe.Pointer(str)).Fstate)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&states))))/40))
+	saveg_write32(tls, int32((int64((*mobj_t)(unsafe.Pointer(str)).Fstate)-int64(uintptr(unsafe.Pointer(&states))))/40))
 	// int flags;
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Fflags)
 	// int health;
@@ -32319,7 +32309,7 @@ func saveg_write_mobj_t(tls *libc.TLS, str uintptr) {
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Fthreshold)
 	// struct player_s* player;
 	if (*mobj_t)(unsafe.Pointer(str)).Fplayer != 0 {
-		saveg_write32(tls, int32((int64((*mobj_t)(unsafe.Pointer(str)).Fplayer)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&players))))/328+int64(1)))
+		saveg_write32(tls, int32((int64((*mobj_t)(unsafe.Pointer(str)).Fplayer)-int64(uintptr(unsafe.Pointer(&players))))/328+int64(1)))
 	} else {
 		saveg_write32(tls, 0)
 	}
@@ -32389,7 +32379,7 @@ func saveg_read_pspdef_t(tls *libc.TLS, str uintptr) {
 func saveg_write_pspdef_t(tls *libc.TLS, str uintptr) {
 	// state_t* state;
 	if (*pspdef_t)(unsafe.Pointer(str)).Fstate != 0 {
-		saveg_write32(tls, int32((int64((*pspdef_t)(unsafe.Pointer(str)).Fstate)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&states))))/40))
+		saveg_write32(tls, int32((int64((*pspdef_t)(unsafe.Pointer(str)).Fstate)-int64(uintptr(unsafe.Pointer(&states))))/40))
 	} else {
 		saveg_write32(tls, 0)
 	}
@@ -39783,7 +39773,7 @@ func R_FindPlane(tls *libc.TLS, height fixed_t, picnum int32, lightlevel int32) 
 	if check < lastvisplane {
 		return check
 	}
-	if (int64(lastvisplane)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&visplanes))))/664 == int64(MAXVISPLANES) {
+	if (int64(lastvisplane)-int64(uintptr(unsafe.Pointer(&visplanes))))/664 == int64(MAXVISPLANES) {
 		I_Error(tls, __ccgo_ts(26430), 0)
 	}
 	lastvisplane += 664
@@ -39860,14 +39850,14 @@ func R_DrawPlanes(tls *libc.TLS) {
 	bp := alloc(16)
 	var angle, b1, b2, light, lumpnum, stop, t1, t2, x int32
 	var pl uintptr
-	if (int64(ds_p)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&drawsegs))))/64 > int64(MAXDRAWSEGS) {
-		I_Error(tls, __ccgo_ts(26461), libc.VaList(bp+8, (int64(ds_p)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&drawsegs))))/64))
+	if (int64(ds_p)-int64(uintptr(unsafe.Pointer(&drawsegs))))/64 > int64(MAXDRAWSEGS) {
+		I_Error(tls, __ccgo_ts(26461), libc.VaList(bp+8, (int64(ds_p)-int64(uintptr(unsafe.Pointer(&drawsegs))))/64))
 	}
-	if (int64(lastvisplane)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&visplanes))))/664 > int64(MAXVISPLANES) {
-		I_Error(tls, __ccgo_ts(26498), libc.VaList(bp+8, (int64(lastvisplane)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&visplanes))))/664))
+	if (int64(lastvisplane)-int64(uintptr(unsafe.Pointer(&visplanes))))/664 > int64(MAXVISPLANES) {
+		I_Error(tls, __ccgo_ts(26498), libc.VaList(bp+8, (int64(lastvisplane)-int64(uintptr(unsafe.Pointer(&visplanes))))/664))
 	}
-	if (int64(lastopening)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&openings))))/2 > int64(libc.Int32FromInt32(SCREENWIDTH)*libc.Int32FromInt32(64)) {
-		I_Error(tls, __ccgo_ts(26535), libc.VaList(bp+8, (int64(lastopening)-__predefined_ptrdiff_t(uintptr(unsafe.Pointer(&openings))))/2))
+	if (int64(lastopening)-int64(uintptr(unsafe.Pointer(&openings))))/2 > int64(libc.Int32FromInt32(SCREENWIDTH)*libc.Int32FromInt32(64)) {
+		I_Error(tls, __ccgo_ts(26535), libc.VaList(bp+8, (int64(lastopening)-int64(uintptr(unsafe.Pointer(&openings))))/2))
 	}
 	pl = uintptr(unsafe.Pointer(&visplanes))
 	for {
@@ -41110,7 +41100,7 @@ func R_SortVisSprites(tls *libc.TLS) {
 	var best, ds, v1, v3 uintptr
 	var bestscale fixed_t
 	var count, i int32
-	count = int32((int64(vissprite_p) - __predefined_ptrdiff_t(uintptr(unsafe.Pointer(&vissprites)))) / 80)
+	count = int32((int64(vissprite_p) - int64(uintptr(unsafe.Pointer(&vissprites)))) / 80)
 	v1 = bp
 	(*(*vissprite_t)(unsafe.Pointer(bp))).Fprev = v1
 	(*(*vissprite_t)(unsafe.Pointer(bp))).Fnext = v1
@@ -41386,7 +41376,7 @@ func SHA1_Init(tls *libc.TLS, hd uintptr) {
 //	 */
 func Transform(tls *libc.TLS, hd uintptr, data uintptr) {
 	bp := alloc(64)
-	var a, b, c, d, e, tm, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, v32, v33, v34, v35, v36, v37, v38, v39, v40, v41, v42, v43, v44, v45, v46, v47, v48, v49, v50, v51, v52, v53, v54, v55, v56, v57, v58, v59, v6, v60, v61, v62, v63, v64, v65, v66, v67, v68, v69, v7, v8, v9 uint32_t
+	var a, b, c, d, e, tm, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, v32, v33, v34, v35, v36, v37, v38, v39, v40, v41, v42, v43, v44, v45, v46, v47, v48, v49, v50, v51, v52, v53, v54, v55, v56, v57, v58, v59, v6, v60, v61, v62, v63, v64, v65, v66, v67, v68, v69, v7, v8, v9 uint32
 	var i int32
 	var p2, v2, v3, v4, v5 uintptr
 	/* get values from the chaining vars */
@@ -41419,364 +41409,364 @@ func Transform(tls *libc.TLS, hd uintptr, data uintptr) {
 		i++
 		p2 += uintptr(4)
 	}
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[0])))
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[0])))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(1)])))
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(1)])))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(2)])))
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(2)])))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(3)])))
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(3)])))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(4)])))
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(4)])))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(5)])))
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(5)])))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(6)])))
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(6)])))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(7)])))
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(7)])))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(8)])))
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(8)])))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(9)])))
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(9)])))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(10)])))
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(10)])))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(11)])))
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(11)])))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(12)])))
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(12)])))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(13)])))
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(13)])))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(14)])))
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(14)])))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32_t)(unsafe.Pointer(bp)))[int32(15)])))
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(15)])))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(16)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(16)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(16)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(16)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(16)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(16)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(16)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(16)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v6 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(16)&libc.Int32FromInt32(0x0f)] = v6
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v6)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(16)&libc.Int32FromInt32(0x0f)] = v6
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v6)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(17)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(17)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(17)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(17)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(17)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(17)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(17)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(17)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v7 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(17)&libc.Int32FromInt32(0x0f)] = v7
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v7)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(17)&libc.Int32FromInt32(0x0f)] = v7
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v7)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(18)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(18)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(18)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(18)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(18)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(18)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(18)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(18)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v8 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(18)&libc.Int32FromInt32(0x0f)] = v8
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v8)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(18)&libc.Int32FromInt32(0x0f)] = v8
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v8)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(19)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(19)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(19)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(19)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(19)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(19)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(19)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(19)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v9 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(19)&libc.Int32FromInt32(0x0f)] = v9
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v9)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(19)&libc.Int32FromInt32(0x0f)] = v9
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v9)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(20)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(20)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(20)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(20)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(20)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(20)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(20)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(20)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v10 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(20)&libc.Int32FromInt32(0x0f)] = v10
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v10)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(20)&libc.Int32FromInt32(0x0f)] = v10
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v10)))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(21)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(21)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(21)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(21)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(21)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(21)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(21)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(21)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v11 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(21)&libc.Int32FromInt32(0x0f)] = v11
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v11)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(21)&libc.Int32FromInt32(0x0f)] = v11
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v11)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(22)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(22)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(22)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(22)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(22)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(22)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(22)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(22)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v12 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(22)&libc.Int32FromInt32(0x0f)] = v12
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v12)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(22)&libc.Int32FromInt32(0x0f)] = v12
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v12)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(23)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(23)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(23)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(23)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(23)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(23)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(23)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(23)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v13 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(23)&libc.Int32FromInt32(0x0f)] = v13
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v13)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(23)&libc.Int32FromInt32(0x0f)] = v13
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v13)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(24)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(24)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(24)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(24)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(24)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(24)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(24)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(24)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v14 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(24)&libc.Int32FromInt32(0x0f)] = v14
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v14)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(24)&libc.Int32FromInt32(0x0f)] = v14
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v14)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(25)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(25)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(25)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(25)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(25)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(25)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(25)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(25)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v15 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(25)&libc.Int32FromInt32(0x0f)] = v15
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v15)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(25)&libc.Int32FromInt32(0x0f)] = v15
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v15)))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(26)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(26)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(26)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(26)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(26)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(26)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(26)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(26)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v16 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(26)&libc.Int32FromInt32(0x0f)] = v16
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v16)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(26)&libc.Int32FromInt32(0x0f)] = v16
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v16)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(27)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(27)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(27)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(27)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(27)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(27)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(27)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(27)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v17 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(27)&libc.Int32FromInt32(0x0f)] = v17
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v17)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(27)&libc.Int32FromInt32(0x0f)] = v17
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v17)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(28)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(28)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(28)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(28)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(28)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(28)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(28)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(28)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v18 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(28)&libc.Int32FromInt32(0x0f)] = v18
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v18)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(28)&libc.Int32FromInt32(0x0f)] = v18
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v18)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(29)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(29)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(29)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(29)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(29)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(29)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(29)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(29)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v19 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(29)&libc.Int32FromInt32(0x0f)] = v19
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v19)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(29)&libc.Int32FromInt32(0x0f)] = v19
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v19)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(30)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(30)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(30)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(30)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(30)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(30)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(30)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(30)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v20 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(30)&libc.Int32FromInt32(0x0f)] = v20
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v20)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(30)&libc.Int32FromInt32(0x0f)] = v20
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v20)))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(31)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(31)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(31)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(31)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(31)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(31)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(31)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(31)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v21 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(31)&libc.Int32FromInt32(0x0f)] = v21
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v21)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(31)&libc.Int32FromInt32(0x0f)] = v21
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v21)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(32)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(32)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(32)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(32)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(32)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(32)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(32)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(32)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v22 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(32)&libc.Int32FromInt32(0x0f)] = v22
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v22)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(32)&libc.Int32FromInt32(0x0f)] = v22
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v22)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(33)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(33)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(33)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(33)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(33)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(33)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(33)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(33)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v23 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(33)&libc.Int32FromInt32(0x0f)] = v23
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v23)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(33)&libc.Int32FromInt32(0x0f)] = v23
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v23)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(34)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(34)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(34)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(34)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(34)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(34)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(34)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(34)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v24 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(34)&libc.Int32FromInt32(0x0f)] = v24
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v24)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(34)&libc.Int32FromInt32(0x0f)] = v24
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v24)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(35)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(35)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(35)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(35)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(35)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(35)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(35)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(35)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v25 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(35)&libc.Int32FromInt32(0x0f)] = v25
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v25)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(35)&libc.Int32FromInt32(0x0f)] = v25
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v25)))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(36)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(36)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(36)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(36)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(36)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(36)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(36)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(36)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v26 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(36)&libc.Int32FromInt32(0x0f)] = v26
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v26)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(36)&libc.Int32FromInt32(0x0f)] = v26
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v26)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(37)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(37)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(37)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(37)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(37)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(37)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(37)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(37)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v27 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(37)&libc.Int32FromInt32(0x0f)] = v27
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v27)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(37)&libc.Int32FromInt32(0x0f)] = v27
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v27)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(38)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(38)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(38)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(38)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(38)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(38)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(38)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(38)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v28 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(38)&libc.Int32FromInt32(0x0f)] = v28
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v28)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(38)&libc.Int32FromInt32(0x0f)] = v28
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v28)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(39)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(39)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(39)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(39)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(39)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(39)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(39)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(39)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v29 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(39)&libc.Int32FromInt32(0x0f)] = v29
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v29)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(39)&libc.Int32FromInt32(0x0f)] = v29
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v29)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(40)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(40)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(40)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(40)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(40)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(40)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(40)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(40)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v30 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(40)&libc.Int32FromInt32(0x0f)] = v30
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v30)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(40)&libc.Int32FromInt32(0x0f)] = v30
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v30)))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(41)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(41)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(41)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(41)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(41)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(41)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(41)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(41)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v31 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(41)&libc.Int32FromInt32(0x0f)] = v31
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v31)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(41)&libc.Int32FromInt32(0x0f)] = v31
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v31)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(42)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(42)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(42)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(42)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(42)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(42)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(42)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(42)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v32 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(42)&libc.Int32FromInt32(0x0f)] = v32
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v32)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(42)&libc.Int32FromInt32(0x0f)] = v32
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v32)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(43)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(43)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(43)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(43)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(43)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(43)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(43)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(43)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v33 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(43)&libc.Int32FromInt32(0x0f)] = v33
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v33)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(43)&libc.Int32FromInt32(0x0f)] = v33
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v33)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(44)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(44)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(44)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(44)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(44)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(44)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(44)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(44)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v34 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(44)&libc.Int32FromInt32(0x0f)] = v34
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v34)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(44)&libc.Int32FromInt32(0x0f)] = v34
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v34)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(45)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(45)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(45)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(45)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(45)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(45)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(45)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(45)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v35 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(45)&libc.Int32FromInt32(0x0f)] = v35
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v35)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(45)&libc.Int32FromInt32(0x0f)] = v35
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v35)))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(46)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(46)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(46)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(46)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(46)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(46)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(46)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(46)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v36 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(46)&libc.Int32FromInt32(0x0f)] = v36
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v36)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(46)&libc.Int32FromInt32(0x0f)] = v36
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v36)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(47)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(47)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(47)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(47)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(47)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(47)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(47)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(47)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v37 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(47)&libc.Int32FromInt32(0x0f)] = v37
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v37)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(47)&libc.Int32FromInt32(0x0f)] = v37
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v37)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(48)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(48)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(48)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(48)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(48)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(48)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(48)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(48)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v38 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(48)&libc.Int32FromInt32(0x0f)] = v38
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v38)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(48)&libc.Int32FromInt32(0x0f)] = v38
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v38)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(49)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(49)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(49)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(49)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(49)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(49)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(49)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(49)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v39 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(49)&libc.Int32FromInt32(0x0f)] = v39
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v39)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(49)&libc.Int32FromInt32(0x0f)] = v39
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v39)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(50)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(50)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(50)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(50)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(50)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(50)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(50)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(50)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v40 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(50)&libc.Int32FromInt32(0x0f)] = v40
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v40)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(50)&libc.Int32FromInt32(0x0f)] = v40
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v40)))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(51)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(51)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(51)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(51)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(51)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(51)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(51)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(51)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v41 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(51)&libc.Int32FromInt32(0x0f)] = v41
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v41)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(51)&libc.Int32FromInt32(0x0f)] = v41
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v41)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(52)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(52)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(52)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(52)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(52)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(52)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(52)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(52)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v42 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(52)&libc.Int32FromInt32(0x0f)] = v42
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v42)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(52)&libc.Int32FromInt32(0x0f)] = v42
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v42)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(53)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(53)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(53)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(53)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(53)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(53)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(53)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(53)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v43 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(53)&libc.Int32FromInt32(0x0f)] = v43
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v43)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(53)&libc.Int32FromInt32(0x0f)] = v43
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v43)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(54)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(54)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(54)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(54)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(54)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(54)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(54)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(54)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v44 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(54)&libc.Int32FromInt32(0x0f)] = v44
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v44)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(54)&libc.Int32FromInt32(0x0f)] = v44
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v44)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(55)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(55)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(55)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(55)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(55)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(55)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(55)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(55)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v45 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(55)&libc.Int32FromInt32(0x0f)] = v45
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v45)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(55)&libc.Int32FromInt32(0x0f)] = v45
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v45)))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(56)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(56)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(56)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(56)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(56)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(56)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(56)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(56)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v46 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(56)&libc.Int32FromInt32(0x0f)] = v46
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v46)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(56)&libc.Int32FromInt32(0x0f)] = v46
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v46)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(57)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(57)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(57)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(57)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(57)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(57)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(57)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(57)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v47 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(57)&libc.Int32FromInt32(0x0f)] = v47
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v47)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(57)&libc.Int32FromInt32(0x0f)] = v47
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v47)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(58)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(58)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(58)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(58)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(58)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(58)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(58)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(58)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v48 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(58)&libc.Int32FromInt32(0x0f)] = v48
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v48)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(58)&libc.Int32FromInt32(0x0f)] = v48
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v48)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(59)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(59)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(59)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(59)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(59)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(59)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(59)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(59)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v49 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(59)&libc.Int32FromInt32(0x0f)] = v49
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v49)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(59)&libc.Int32FromInt32(0x0f)] = v49
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v49)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(60)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(60)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(60)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(60)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(60)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(60)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(60)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(60)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v50 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(60)&libc.Int32FromInt32(0x0f)] = v50
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v50)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(60)&libc.Int32FromInt32(0x0f)] = v50
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v50)))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(61)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(61)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(61)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(61)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(61)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(61)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(61)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(61)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v51 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(61)&libc.Int32FromInt32(0x0f)] = v51
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v51)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(61)&libc.Int32FromInt32(0x0f)] = v51
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v51)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(62)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(62)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(62)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(62)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(62)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(62)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(62)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(62)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v52 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(62)&libc.Int32FromInt32(0x0f)] = v52
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v52)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(62)&libc.Int32FromInt32(0x0f)] = v52
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v52)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(63)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(63)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(63)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(63)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(63)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(63)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(63)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(63)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v53 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(63)&libc.Int32FromInt32(0x0f)] = v53
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v53)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(63)&libc.Int32FromInt32(0x0f)] = v53
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v53)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(64)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(64)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(64)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(64)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(64)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(64)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(64)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(64)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v54 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(64)&libc.Int32FromInt32(0x0f)] = v54
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v54)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(64)&libc.Int32FromInt32(0x0f)] = v54
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v54)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(65)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(65)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(65)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(65)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(65)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(65)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(65)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(65)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v55 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(65)&libc.Int32FromInt32(0x0f)] = v55
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v55)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(65)&libc.Int32FromInt32(0x0f)] = v55
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v55)))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(66)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(66)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(66)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(66)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(66)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(66)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(66)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(66)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v56 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(66)&libc.Int32FromInt32(0x0f)] = v56
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v56)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(66)&libc.Int32FromInt32(0x0f)] = v56
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v56)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(67)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(67)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(67)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(67)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(67)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(67)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(67)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(67)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v57 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(67)&libc.Int32FromInt32(0x0f)] = v57
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v57)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(67)&libc.Int32FromInt32(0x0f)] = v57
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v57)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(68)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(68)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(68)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(68)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(68)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(68)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(68)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(68)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v58 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(68)&libc.Int32FromInt32(0x0f)] = v58
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v58)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(68)&libc.Int32FromInt32(0x0f)] = v58
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v58)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(69)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(69)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(69)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(69)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(69)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(69)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(69)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(69)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v59 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(69)&libc.Int32FromInt32(0x0f)] = v59
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v59)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(69)&libc.Int32FromInt32(0x0f)] = v59
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v59)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(70)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(70)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(70)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(70)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(70)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(70)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(70)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(70)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v60 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(70)&libc.Int32FromInt32(0x0f)] = v60
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v60)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(70)&libc.Int32FromInt32(0x0f)] = v60
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v60)))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(71)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(71)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(71)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(71)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(71)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(71)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(71)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(71)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v61 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(71)&libc.Int32FromInt32(0x0f)] = v61
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v61)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(71)&libc.Int32FromInt32(0x0f)] = v61
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v61)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(72)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(72)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(72)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(72)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(72)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(72)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(72)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(72)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v62 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(72)&libc.Int32FromInt32(0x0f)] = v62
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v62)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(72)&libc.Int32FromInt32(0x0f)] = v62
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v62)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(73)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(73)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(73)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(73)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(73)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(73)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(73)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(73)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v63 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(73)&libc.Int32FromInt32(0x0f)] = v63
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v63)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(73)&libc.Int32FromInt32(0x0f)] = v63
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v63)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(74)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(74)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(74)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(74)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(74)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(74)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(74)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(74)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v64 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(74)&libc.Int32FromInt32(0x0f)] = v64
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v64)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(74)&libc.Int32FromInt32(0x0f)] = v64
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v64)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(75)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(75)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(75)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(75)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(75)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(75)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(75)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(75)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v65 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(75)&libc.Int32FromInt32(0x0f)] = v65
-	e = uint32_t(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v65)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(75)&libc.Int32FromInt32(0x0f)] = v65
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v65)))
 	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(76)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(76)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(76)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(76)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(76)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(76)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(76)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(76)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v66 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(76)&libc.Int32FromInt32(0x0f)] = v66
-	d = uint32_t(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v66)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(76)&libc.Int32FromInt32(0x0f)] = v66
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v66)))
 	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(77)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(77)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(77)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(77)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(77)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(77)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(77)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(77)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v67 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(77)&libc.Int32FromInt32(0x0f)] = v67
-	c = uint32_t(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v67)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(77)&libc.Int32FromInt32(0x0f)] = v67
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v67)))
 	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(78)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(78)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(78)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(78)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(78)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(78)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(78)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(78)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v68 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(78)&libc.Int32FromInt32(0x0f)] = v68
-	b = uint32_t(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v68)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(78)&libc.Int32FromInt32(0x0f)] = v68
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v68)))
 	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(79)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(79)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(79)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32_t)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(79)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(79)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(79)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(79)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(79)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
 	v69 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32_t)(unsafe.Pointer(bp)))[libc.Int32FromInt32(79)&libc.Int32FromInt32(0x0f)] = v69
-	a = uint32_t(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v69)))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(79)&libc.Int32FromInt32(0x0f)] = v69
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v69)))
 	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
 	/* update chainig vars */
-	*(*uint32_t)(unsafe.Pointer(hd)) += a
-	*(*uint32_t)(unsafe.Pointer(hd + 4)) += b
-	*(*uint32_t)(unsafe.Pointer(hd + 8)) += c
-	*(*uint32_t)(unsafe.Pointer(hd + 12)) += d
-	*(*uint32_t)(unsafe.Pointer(hd + 16)) += e
+	*(*uint32)(unsafe.Pointer(hd)) += a
+	*(*uint32)(unsafe.Pointer(hd + 4)) += b
+	*(*uint32)(unsafe.Pointer(hd + 8)) += c
+	*(*uint32)(unsafe.Pointer(hd + 12)) += d
+	*(*uint32)(unsafe.Pointer(hd + 16)) += e
 }
 
 // C documentation
@@ -41784,7 +41774,7 @@ func Transform(tls *libc.TLS, hd uintptr, data uintptr) {
 //	/* Update the message digest with the contents
 //	 * of INBUF with length INLEN.
 //	 */
-func SHA1_Update(tls *libc.TLS, hd uintptr, inbuf uintptr, inlen size_t) {
+func SHA1_Update(tls *libc.TLS, hd uintptr, inbuf uintptr, inlen uint64) {
 	var v2, v6 int32
 	var v3, v4, v7, v8 uintptr
 	if (*sha1_context_t)(unsafe.Pointer(hd)).Fcount == int32(64) {
@@ -41849,7 +41839,7 @@ func SHA1_Update(tls *libc.TLS, hd uintptr, inbuf uintptr, inlen size_t) {
  */
 
 func SHA1_Final(tls *libc.TLS, digest uintptr, hd uintptr) {
-	var lsb, msb, t uint32_t
+	var lsb, msb, t uint32
 	var p, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v2, v20, v21, v22, v23, v24, v25, v26, v27, v28, v4, v6, v8, v9 uintptr
 	var v1, v3, v5, v7 int32
 	SHA1_Update(tls, hd, libc.UintptrFromInt32(0), uint64(0)) /* flush */
@@ -61495,7 +61485,7 @@ func V_DrawFilledBox(tls *libc.TLS, x int32, y int32, w int32, h int32, c int32)
 			}
 			v3 = buf1
 			buf1++
-			*(*uint8_t)(unsafe.Pointer(v3)) = libc.Uint8FromInt32(c)
+			*(*uint8)(unsafe.Pointer(v3)) = libc.Uint8FromInt32(c)
 			goto _2
 		_2:
 			;
@@ -61520,7 +61510,7 @@ func V_DrawHorizLine(tls *libc.TLS, x int32, y int32, w int32, c int32) {
 		}
 		v2 = buf
 		buf++
-		*(*uint8_t)(unsafe.Pointer(v2)) = libc.Uint8FromInt32(c)
+		*(*uint8)(unsafe.Pointer(v2)) = libc.Uint8FromInt32(c)
 		goto _1
 	_1:
 		;
@@ -61537,7 +61527,7 @@ func V_DrawVertLine(tls *libc.TLS, x int32, y int32, h int32, c int32) {
 		if !(y1 < h) {
 			break
 		}
-		*(*uint8_t)(unsafe.Pointer(buf)) = libc.Uint8FromInt32(c)
+		*(*uint8)(unsafe.Pointer(buf)) = libc.Uint8FromInt32(c)
 		buf += uintptr(SCREENWIDTH)
 		goto _1
 	_1:
@@ -63760,8 +63750,8 @@ func W_OpenFile(tls *libc.TLS, path uintptr) (r uintptr) {
 	return result
 }
 
-func W_Read(tls *libc.TLS, wad uintptr, offset uint32, buffer uintptr, buffer_len size_t) (r size_t) {
-	return (*(*func(*libc.TLS, uintptr, uint32, uintptr, size_t) size_t)(unsafe.Pointer(&struct{ uintptr }{(*wad_file_class_t)(unsafe.Pointer((*wad_file_t)(unsafe.Pointer(wad)).Ffile_class)).FRead})))(tls, wad, offset, buffer, buffer_len)
+func W_Read(tls *libc.TLS, wad uintptr, offset uint32, buffer uintptr, buffer_len uint64) (r uint64) {
+	return (*(*func(*libc.TLS, uintptr, uint32, uintptr, uint64) uint64)(unsafe.Pointer(&struct{ uintptr }{(*wad_file_class_t)(unsafe.Pointer((*wad_file_t)(unsafe.Pointer(wad)).Ffile_class)).FRead})))(tls, wad, offset, buffer, buffer_len)
 }
 
 //
@@ -64567,8 +64557,8 @@ func W_StdC_CloseFile(tls *libc.TLS, wad uintptr) {
 // Read data from the specified position in the file into the
 // provided buffer.  Returns the number of bytes read.
 
-func W_StdC_Read(tls *libc.TLS, wad uintptr, offset uint32, buffer uintptr, buffer_len size_t) (r size_t) {
-	var result size_t
+func W_StdC_Read(tls *libc.TLS, wad uintptr, offset uint32, buffer uintptr, buffer_len uint64) (r uint64) {
+	var result uint64
 	var stdc_wad uintptr
 	stdc_wad = wad
 	// Jump to the specified position in the file.
@@ -64844,7 +64834,7 @@ func I_FinishUpdate() {
 	var line_in = I_VideoBuffer
 	for y := SCREENHEIGHT - 1; y >= 0; y-- {
 		for i := 0; i < SCREENWIDTH; i++ {
-			inRaw := *(*uint8_t)(unsafe.Pointer(line_in + uintptr(i)))
+			inRaw := *(*uint8)(unsafe.Pointer(line_in + uintptr(i)))
 			col := colors[inRaw]
 			pos := SCREENWIDTH*4*int(SCREENHEIGHT-y-1) + i*4
 			DG_ScreenBuffer.Pix[pos] = col.R
