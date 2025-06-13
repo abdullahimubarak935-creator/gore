@@ -1,6 +1,9 @@
 package main
 
 import (
+	"image"
+	"image/color"
+	"log"
 	"reflect"
 	"unsafe"
 
@@ -1644,9 +1647,9 @@ type screen_mode_t = struct {
 
 type grabmouse_callback_t = uintptr
 
-type color = struct {
-	F__ccgo0 uint32
-}
+//type color = struct {
+//F__ccgo0 uint32
+//}
 
 type patch_t = struct {
 	Fwidth      int16
@@ -67332,7 +67335,7 @@ func init() {
 	fb_scaling = int32(1)
 }
 
-var colors [256]color
+var colors [256]color.RGBA
 
 func init() {
 	mouse_acceleration = float32(2)
@@ -67348,57 +67351,33 @@ type col_t = struct {
 	Fb byte1
 }
 
-// Palette converted to RGB565
-
-var rgb565_palette [256]uint16_t
-
-func cmap_to_fb(tls *libc.TLS, out uintptr, in uintptr, in_pixels int32) {
-	bp := tls.Alloc(16)
-	defer tls.Free(16)
-	var b, g, r uint16_t
-	var i, j, k int32
-	var pix uint32_t
-	var _ /* c at bp+0 */ color
-	_, _, _, _, _, _, _ = b, g, i, j, k, pix, r
-	i = 0
-	for {
-		if !(i < in_pixels) {
-			break
-		}
-		*(*color)(unsafe.Pointer(bp)) = colors[*(*uint8_t)(unsafe.Pointer(in))] /* R:8 G:8 B:8 format! */
-		r = libc.Uint16FromInt32(int32(*(*uint32)(unsafe.Pointer(bp + 0))&0xff0000>>16) >> (libc.Uint32FromInt32(8) - s_Fb.Fred.Flength))
-		g = libc.Uint16FromInt32(int32(*(*uint32)(unsafe.Pointer(bp + 0))&0xff00>>8) >> (libc.Uint32FromInt32(8) - s_Fb.Fgreen.Flength))
-		b = libc.Uint16FromInt32(int32(*(*uint32)(unsafe.Pointer(bp + 0))&0xff>>0) >> (libc.Uint32FromInt32(8) - s_Fb.Fblue.Flength))
-		pix = libc.Uint32FromInt32(libc.Int32FromUint16(r) << s_Fb.Fred.Foffset)
-		pix |= libc.Uint32FromInt32(libc.Int32FromUint16(g) << s_Fb.Fgreen.Foffset)
-		pix |= libc.Uint32FromInt32(libc.Int32FromUint16(b) << s_Fb.Fblue.Foffset)
-		k = 0
-		for {
-			if !(k < fb_scaling) {
-				break
-			}
-			j = 0
-			for {
-				if !(libc.Uint32FromInt32(j) < s_Fb.Fbits_per_pixel/uint32(8)) {
-					break
-				}
-				*(*uint8_t)(unsafe.Pointer(out)) = uint8(pix >> (j * libc.Int32FromInt32(8)))
-				out++
-				goto _3
-			_3:
-				;
-				j++
-			}
-			goto _2
-		_2:
-			;
-			k++
-		}
+func cmap_to_fb(tls *libc.TLS, out int, in uintptr, in_pixels int32) {
+	//bp := tls.Alloc(16)
+	//defer tls.Free(16)
+	//var b, g, r uint16_t
+	//var i, j, k int32
+	//var pix uint32_t
+	//var _ /* c at bp+0 */ color
+	for i := int32(0); i < in_pixels; i++ {
+		inRaw := *(*uint8_t)(unsafe.Pointer(in))
+		col := colors[inRaw]
+		//*(*color)(unsafe.Pointer(bp)) = colors[*(*uint8_t)(unsafe.Pointer(in))] /* R:8 G:8 B:8 format! */
+		//r = libc.Uint16FromInt32(int32(*(*uint32)(unsafe.Pointer(bp + 0))&0xff0000>>16) >> (libc.Uint32FromInt32(8) - s_Fb.Fred.Flength))
+		//g = libc.Uint16FromInt32(int32(*(*uint32)(unsafe.Pointer(bp + 0))&0xff00>>8) >> (libc.Uint32FromInt32(8) - s_Fb.Fgreen.Flength))
+		//b = libc.Uint16FromInt32(int32(*(*uint32)(unsafe.Pointer(bp + 0))&0xff>>0) >> (libc.Uint32FromInt32(8) - s_Fb.Fblue.Flength))
+		//pix = libc.Uint32FromInt32(libc.Int32FromUint16(r) << s_Fb.Fred.Foffset)
+		//pix |= libc.Uint32FromInt32(libc.Int32FromUint16(g) << s_Fb.Fgreen.Foffset)
+		//pix |= libc.Uint32FromInt32(libc.Int32FromUint16(b) << s_Fb.Fblue.Foffset)
+		DG_ScreenBuffer.Pix[out] = col.R
+		DG_ScreenBuffer.Pix[out+1] = col.G
+		DG_ScreenBuffer.Pix[out+2] = col.B
+		DG_ScreenBuffer.Pix[out+3] = 0xff
+		DG_ScreenBuffer.Pix[out+4] = col.R
+		DG_ScreenBuffer.Pix[out+5] = col.G
+		DG_ScreenBuffer.Pix[out+6] = col.B
+		DG_ScreenBuffer.Pix[out+7] = 0xff
+		out += 8
 		in++
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -67458,7 +67437,8 @@ func I_UpdateNoBlit(tls *libc.TLS) {
 
 func I_FinishUpdate(tls *libc.TLS) {
 	var i, x_offset, x_offset_end, y, y_offset, v1 int32
-	var line_in, line_out uintptr
+	var line_in uintptr
+	var line_out int
 	_, _, _, _, _, _, _, _ = i, line_in, line_out, x_offset, x_offset_end, y, y_offset, v1
 	/* Offsets in case FB is bigger than DOOM */
 	/* 600 = s_Fb heigt, 200 screenheight */
@@ -67470,7 +67450,7 @@ func I_FinishUpdate(tls *libc.TLS) {
 	x_offset_end = libc.Int32FromUint32((s_Fb.Fxres-libc.Uint32FromInt32(libc.Int32FromInt32(SCREENWIDTH)*fb_scaling))*s_Fb.Fbits_per_pixel/uint32(8) - libc.Uint32FromInt32(x_offset))
 	/* DRAW SCREEN */
 	line_in = I_VideoBuffer
-	line_out = DG_ScreenBuffer
+	line_out = 0
 	y = int32(SCREENHEIGHT)
 	for {
 		v1 = y
@@ -67483,10 +67463,9 @@ func I_FinishUpdate(tls *libc.TLS) {
 			if !(i < fb_scaling) {
 				break
 			}
-			line_out += uintptr(x_offset)
-			//cmap_to_rgb565((void*)line_out, (void*)line_in, SCREENWIDTH);
+			line_out += int(x_offset)
 			cmap_to_fb(tls, line_out, line_in, int32(SCREENWIDTH))
-			line_out += uintptr(libc.Uint32FromInt32(int32(SCREENWIDTH)*fb_scaling)*(s_Fb.Fbits_per_pixel/uint32(8)) + libc.Uint32FromInt32(x_offset_end))
+			line_out += SCREENWIDTH*int(fb_scaling)*int(s_Fb.Fbits_per_pixel)/8 + int(x_offset_end)
 			goto _2
 		_2:
 			;
@@ -67494,7 +67473,7 @@ func I_FinishUpdate(tls *libc.TLS) {
 		}
 		line_in += uintptr(SCREENWIDTH)
 	}
-	DG_DrawFrame(tls)
+	DG_DrawFrame(tls, DG_ScreenBuffer)
 }
 
 // C documentation
@@ -67511,60 +67490,30 @@ func I_ReadScreen(tls *libc.TLS, scr uintptr) {
 //
 
 func I_SetPalette(tls *libc.TLS, palette uintptr) {
-	var i int32
-	var v2, v3, v4 uintptr
-	_, _, _, _ = i, v2, v3, v4
-	//col_t* c;
-	//for (i = 0; i < 256; i++)
-	//{
-	//	c = (col_t*)palette;
-	//	rgb565_palette[i] = GFX_RGB565(gammatable[usegamma][c->r],
-	//								   gammatable[usegamma][c->g],
-	//								   gammatable[usegamma][c->b]);
-	//	palette += 3;
-	//}
-	/* performance boost:
-	 * map to the right pixel format over here! */
-	i = 0
-	for {
-		if !(i < int32(256)) {
-			break
-		}
-		libc.SetBitFieldPtr32Uint32(uintptr(unsafe.Pointer(&colors))+uintptr(i)*4+0, libc.Uint32FromInt32(0), 24, 0xff000000)
-		v2 = palette
-		palette++
-		libc.SetBitFieldPtr32Uint32(uintptr(unsafe.Pointer(&colors))+uintptr(i)*4+0, uint32(*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&gammatable)) + uintptr(usegamma)*256 + uintptr(*(*byte1)(unsafe.Pointer(v2)))))), 16, 0xff0000)
-		v3 = palette
-		palette++
-		libc.SetBitFieldPtr32Uint32(uintptr(unsafe.Pointer(&colors))+uintptr(i)*4+0, uint32(*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&gammatable)) + uintptr(usegamma)*256 + uintptr(*(*byte1)(unsafe.Pointer(v3)))))), 8, 0xff00)
-		v4 = palette
-		palette++
-		libc.SetBitFieldPtr32Uint32(uintptr(unsafe.Pointer(&colors))+uintptr(i)*4+0, uint32(*(*byte1)(unsafe.Pointer(uintptr(unsafe.Pointer(&gammatable)) + uintptr(usegamma)*256 + uintptr(*(*byte1)(unsafe.Pointer(v4)))))), 0, 0xff)
-		goto _1
-	_1:
-		;
-		i++
+	for i := range 256 {
+		base := *(*uint32)(unsafe.Pointer(palette))
+		log.Printf("color %d: 0x%x", i, base)
+		colors[i].R = *(*uint8)(unsafe.Pointer(palette))
+		colors[i].G = *(*uint8)(unsafe.Pointer(palette + 1))
+		colors[i].B = *(*uint8)(unsafe.Pointer(palette + 2))
+		palette += 3
 	}
 }
 
 // Given an RGB value, find the closest matching palette index.
 
 func I_GetPaletteIndex(tls *libc.TLS, r int32, g int32, b int32) (r1 int32) {
-	var best, best_diff, diff, i int32
+	var best, best_diff, diff int32
 	var color col_t
-	_, _, _, _, _ = best, best_diff, color, diff, i
+	_, _, _, _ = best, best_diff, color, diff
 	libc.Xprintf(tls, __ccgo_ts+30076, 0)
 	best = 0
 	best_diff = int32(INT_MAX19)
-	i = 0
-	for {
-		if !(i < int32(256)) {
-			break
-		}
-		color.Fr = libc.Uint8FromInt32(libc.Int32FromInt32(0xF800) & libc.Int32FromUint16(rgb565_palette[i]) >> libc.Int32FromInt32(11))
-		color.Fg = libc.Uint8FromInt32(libc.Int32FromInt32(0x07E0) & libc.Int32FromUint16(rgb565_palette[i]) >> libc.Int32FromInt32(5))
-		color.Fb = libc.Uint8FromInt32(libc.Int32FromInt32(0x001F) & libc.Int32FromUint16(rgb565_palette[i]))
-		diff = (r-libc.Int32FromUint8(color.Fr))*(r-libc.Int32FromUint8(color.Fr)) + (g-libc.Int32FromUint8(color.Fg))*(g-libc.Int32FromUint8(color.Fg)) + (b-libc.Int32FromUint8(color.Fb))*(b-libc.Int32FromUint8(color.Fb))
+	for i := int32(0); i < 256; i++ {
+		red := int32(colors[i].R)
+		green := int32(colors[i].G)
+		blue := int32(colors[i].B)
+		diff = (r-red)*(r-red) + (g-green)*(g-green) + (b-blue)*(b-blue)
 		if diff < best_diff {
 			best = i
 			best_diff = diff
@@ -67572,10 +67521,6 @@ func I_GetPaletteIndex(tls *libc.TLS, r int32, g int32, b int32) (r1 int32) {
 		if diff == 0 {
 			break
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return best
 }
@@ -67613,7 +67558,8 @@ func doomgeneric_Create(tls *libc.TLS, argc int32, argv uintptr) {
 	myargc = argc
 	myargv = argv
 	M_FindResponseFile(tls)
-	DG_ScreenBuffer = libc.Xmalloc(tls, libc.Uint64FromInt32(libc.Int32FromInt32(DOOMGENERIC_RESX)*libc.Int32FromInt32(DOOMGENERIC_RESY)*libc.Int32FromInt32(4)))
+
+	DG_ScreenBuffer = image.NewRGBA(image.Rect(0, 0, DOOMGENERIC_RESX, DOOMGENERIC_RESY))
 	DG_Init(tls)
 	D_DoomMain(tls)
 }
@@ -68221,7 +68167,7 @@ func __ccgo_fp(f interface{}) uintptr {
 	return (*iface)(unsafe.Pointer(&f))[1]
 }
 
-var DG_ScreenBuffer uintptr
+var DG_ScreenBuffer *image.RGBA
 
 var EpiDef menu_t
 

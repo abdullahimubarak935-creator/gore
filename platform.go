@@ -1,7 +1,10 @@
 package main
 
 import (
+	"image"
+	"image/png"
 	"log"
+	"os"
 	"time"
 
 	"modernc.org/libc"
@@ -16,17 +19,31 @@ func DG_Init(tls *libc.TLS) {
 	start = time.Now()
 }
 
-func DG_DrawFrame(tls *libc.TLS) {
+func DG_DrawFrame(tls *libc.TLS, frame *image.RGBA) {
 	log.Printf("DG_DrawFrame called\n")
+	output := "output.png"
+	f, err := os.Create(output)
+	if err != nil {
+		log.Printf("Error creating output file: %v\n", err)
+		return
+	}
+	defer f.Close()
+	if err := png.Encode(f, frame); err != nil {
+		log.Printf("Error encoding PNG: %v\n", err)
+		return
+	}
 }
 
 func DG_SleepMs(tls *libc.TLS, ms uint32) {
-	log.Printf("DG_SleepMs called with %d ms\n", ms)
 	time.Sleep(time.Duration(ms) * time.Millisecond)
 }
 
 func DG_GetTicksMs(tls *libc.TLS) (r int64) {
-	return time.Since(start).Milliseconds()
+	since := time.Since(start)
+	//if since > time.Second {
+	//log.Panic("Exiting early")
+	//}
+	return since.Milliseconds()
 }
 
 func DG_GetKey(tls *libc.TLS, pressed uintptr, doomKey uintptr) (r int32) {
