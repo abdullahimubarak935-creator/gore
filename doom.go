@@ -4546,7 +4546,7 @@ func TryRunTics(tls *libc.TLS) {
 		if I_GetTime(tls)/ticdup-entertic > 0 {
 			return
 		}
-		I_Sleep(tls, int32(1))
+		I_Sleep(1)
 	}
 	// run the count * ticdup dics
 	for {
@@ -4925,7 +4925,7 @@ func D_Display(tls *libc.TLS) {
 	NetUpdate(tls) // send out any new accumulation
 	// normal update
 	if !(wipe != 0) {
-		I_FinishUpdate(tls) // page flip or blit buffer
+		I_FinishUpdate() // page flip or blit buffer
 		return
 	}
 	// wipe update
@@ -4935,13 +4935,13 @@ func D_Display(tls *libc.TLS) {
 		for cond := true; cond; cond = tics <= 0 {
 			nowtime = I_GetTime(tls)
 			tics = nowtime - wipestart
-			I_Sleep(tls, int32(1))
+			I_Sleep(1)
 		}
 		wipestart = nowtime
 		done = libc.Uint32FromInt32(wipe_ScreenWipe(tls, int32(wipe_Melt), 0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT), tics))
 		I_UpdateNoBlit(tls)
-		M_Drawer(tls)       // menu is drawn even on top of wipes
-		I_FinishUpdate(tls) // page flip or blit buffer
+		M_Drawer(tls)    // menu is drawn even on top of wipes
+		I_FinishUpdate() // page flip or blit buffer
 	}
 }
 
@@ -5045,7 +5045,7 @@ func D_DoomLoop(tls *libc.TLS) {
 	}
 	main_loop_started = uint32(true1)
 	TryRunTics(tls)
-	I_SetWindowTitle(tls, gamedescription)
+	I_SetWindowTitle(gamedescription)
 	I_GraphicsCheckCommandLine(tls)
 	I_SetGrabMouseCallback(tls, __ccgo_fp(D_GrabMouseCallback))
 	I_InitGraphics(tls)
@@ -20808,7 +20808,7 @@ var firsttime = uint32(true1)
 var basetime = uint32(0)
 
 func I_GetTicks(tls *libc.TLS) (r int32) {
-	return int32(DG_GetTicksMs(tls))
+	return int32(DG_GetTicksMs())
 }
 
 func I_GetTime(tls *libc.TLS) (r int32) {
@@ -20836,10 +20836,8 @@ func I_GetTimeMS(tls *libc.TLS) (r int32) {
 
 // Sleep for a specified number of ms
 
-func I_Sleep(tls *libc.TLS, ms int32) {
-	//SDL_Delay(ms);
-	//usleep (ms * 1000);
-	DG_SleepMs(tls, libc.Uint32FromInt32(ms))
+func I_Sleep(ms uint32) {
+	DG_SleepMs(ms)
 }
 
 func I_WaitVBL(tls *libc.TLS, count int32) {
@@ -64968,7 +64966,7 @@ func I_UpdateNoBlit(tls *libc.TLS) {
 // I_FinishUpdate
 //
 
-func I_FinishUpdate(tls *libc.TLS) {
+func I_FinishUpdate() {
 	var line_in = I_VideoBuffer
 	for y := SCREENHEIGHT - 1; y >= 0; y-- {
 		for i := 0; i < SCREENWIDTH; i++ {
@@ -64982,7 +64980,7 @@ func I_FinishUpdate(tls *libc.TLS) {
 		}
 		line_in += uintptr(SCREENWIDTH)
 	}
-	DG_DrawFrame(tls, DG_ScreenBuffer)
+	DG_DrawFrame(DG_ScreenBuffer)
 }
 
 // C documentation
@@ -65036,8 +65034,8 @@ func I_BeginRead(tls *libc.TLS) {
 func I_EndRead(tls *libc.TLS) {
 }
 
-func I_SetWindowTitle(tls *libc.TLS, title uintptr) {
-	DG_SetWindowTitle(tls, title)
+func I_SetWindowTitle(title uintptr) {
+	DG_SetWindowTitle(title)
 }
 
 func I_GraphicsCheckCommandLine(tls *libc.TLS) {
@@ -65065,7 +65063,7 @@ func doomgeneric_Create(tls *libc.TLS, argc int32, argv uintptr) {
 	M_FindResponseFile(tls)
 
 	DG_ScreenBuffer = image.NewRGBA(image.Rect(0, 0, SCREENWIDTH, SCREENHEIGHT))
-	DG_Init(tls)
+	DG_Init()
 	D_DoomMain(tls)
 }
 

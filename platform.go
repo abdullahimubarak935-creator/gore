@@ -44,7 +44,7 @@ func handleKey(key string, state string) error {
 	return nil
 }
 
-func DG_Init(tls *libc.TLS) {
+func DG_Init() {
 	log.Printf("DG_Init called\n")
 	start = time.Now()
 	addr := ":8080"
@@ -71,17 +71,17 @@ func DG_Init(tls *libc.TLS) {
 	}()
 }
 
-func DG_DrawFrame(tls *libc.TLS, frame *image.RGBA) {
+func DG_DrawFrame(frame *image.RGBA) {
 	if _, err := streamer.AddImage(frame); err != nil {
 		log.Printf("Error adding image to MJPEG stream: %v\n", err)
 	}
 }
 
-func DG_SleepMs(tls *libc.TLS, ms uint32) {
+func DG_SleepMs(ms uint32) {
 	time.Sleep(time.Duration(ms) * time.Millisecond)
 }
 
-func DG_GetTicksMs(tls *libc.TLS) (r int64) {
+func DG_GetTicksMs() (r int64) {
 	since := time.Since(start)
 	return since.Milliseconds()
 }
@@ -126,7 +126,7 @@ func DG_GetKey(event *DoomKeyEvent) bool {
 	return false
 }
 
-func DG_SetWindowTitle(tls *libc.TLS, title uintptr) {
+func DG_SetWindowTitle(title uintptr) {
 	log.Printf("DG_SetWindowTitle called with title: %s\n", libc.GoString(title))
 	// This is a stub; actual window title setting would depend on the platform and windowing system.
 }
