@@ -1,4 +1,4 @@
-module gk_doom
+module github.com/AndreRenaud/gore
 
 go 1.24.3
 
