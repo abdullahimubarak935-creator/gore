@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"io"
 	"os"
+	"strconv"
 	"unsafe"
 
 	"modernc.org/libc"
@@ -26,6 +27,15 @@ func xabs(j int32) int32 {
 		return -j
 	}
 	return j
+}
+
+func xatoi(nptr uintptr) int32 {
+	val := libc.GoString(nptr)
+	ret, err := strconv.Atoi(val)
+	if err != nil {
+		panic(fmt.Sprintf("xatoi: %s", err.Error()))
+	}
+	return int32(ret)
 }
 
 const AM_NUMMARKPOINTS = 10
@@ -5760,7 +5770,7 @@ func D_DoomMain(tls *libc.TLS) {
 	if v1 != 0 {
 		scale = int32(200)
 		if p < myargc-int32(1) {
-			scale = libc.Xatoi(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+			scale = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		}
 		if scale < int32(10) {
 			scale = int32(10)
@@ -5983,7 +5993,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	p = M_CheckParmWithArgs(tls, __ccgo_ts(5043), int32(1))
 	if p != 0 {
-		timelimit = libc.Xatoi(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+		timelimit = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 	}
 	//!
 	// @category net
@@ -6005,7 +6015,7 @@ func D_DoomMain(tls *libc.TLS) {
 	p = M_CheckParmWithArgs(tls, __ccgo_ts(5055), int32(1))
 	if p != 0 {
 		if gamemode == int32(commercial) {
-			startmap = libc.Xatoi(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+			startmap = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		} else {
 			startepisode = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('0')
 			if p+int32(2) < myargc {
@@ -6036,7 +6046,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	p = M_CheckParmWithArgs(tls, __ccgo_ts(5061), int32(1))
 	if p != 0 {
-		startloadgame = libc.Xatoi(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+		startloadgame = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 	} else {
 		// Not loading a game
 		startloadgame = -int32(1)
@@ -9169,7 +9179,7 @@ func G_RecordDemo(tls *libc.TLS, name uintptr) {
 	//
 	i = M_CheckParmWithArgs(tls, __ccgo_ts(14110), int32(1))
 	if i != 0 {
-		maxsize = libc.Xatoi(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))) * int32(1024)
+		maxsize = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))) * int32(1024)
 	}
 	demobuffer = Z_Malloc(tls, maxsize, int32(PU_STATIC), libc.UintptrFromInt32(0))
 	demoend = demobuffer + uintptr(maxsize)
@@ -20447,7 +20457,7 @@ func I_ZoneBase(tls *libc.TLS, size uintptr) (r uintptr) {
 	//
 	p = M_CheckParmWithArgs(tls, __ccgo_ts(18874), int32(1))
 	if p > 0 {
-		default_ram = libc.Xatoi(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+		default_ram = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		min_ram = default_ram
 	} else {
 		default_ram = int32(DEFAULT_RAM)
@@ -64930,7 +64940,7 @@ func doomgeneric_Create(tls *libc.TLS, argc int32, argv uintptr) {
 
 func main1(tls *libc.TLS, argc int32, argv uintptr) (r int32) {
 	doomgeneric_Create(tls, argc, argv)
-	for int32(1) != 0 {
+	for {
 		doomgeneric_Tick(tls)
 	}
 	return 0
