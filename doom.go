@@ -52,8 +52,8 @@ func xstrcmp(s1, s2 uintptr) int32 {
 	}
 }
 
-func xstrcasecmp(s1, s2 uintptr) int32 {
-	for {
+func xstrncasecmp(s1, s2 uintptr, n uint64) int32 {
+	for n > 0 {
 		ch1 := *(*byte)(unsafe.Pointer(s1))
 		if ch1 >= 'a' && ch1 <= 'z' {
 			ch1 = ch1 - ('a' - 'A')
@@ -68,7 +68,13 @@ func xstrcasecmp(s1, s2 uintptr) int32 {
 			r := int32(ch1) - int32(ch2)
 			return r
 		}
+		n--
 	}
+	return 0
+}
+
+func xstrcasecmp(s1, s2 uintptr) int32 {
+	return xstrncasecmp(s1, s2, 0xffff_ffff_ffff_ffff) // max uint64
 }
 
 func xstrdup(s uintptr) uintptr {
@@ -5394,11 +5400,11 @@ func D_IdentifyVersion(tls *libc.TLS) {
 			if !(i < numlumps) {
 				break
 			}
-			if !(libc.Xstrncasecmp(tls, lumpinfo+uintptr(i)*40, __ccgo_ts(2613), uint64(8)) != 0) {
+			if !(xstrncasecmp(lumpinfo+uintptr(i)*40, __ccgo_ts(2613), uint64(8)) != 0) {
 				gamemission = int32(doom2)
 				break
 			} else {
-				if !(libc.Xstrncasecmp(tls, lumpinfo+uintptr(i)*40, __ccgo_ts(2619), uint64(8)) != 0) {
+				if !(xstrncasecmp(lumpinfo+uintptr(i)*40, __ccgo_ts(2619), uint64(8)) != 0) {
 					gamemission = int32(doom)
 					break
 				}
@@ -38230,7 +38236,7 @@ func R_CheckTextureNumForName(tls *libc.TLS, name uintptr) (r int32) {
 	key = libc.Int32FromUint32(W_LumpNameHash(tls, name) % libc.Uint32FromInt32(numtextures))
 	texture = *(*uintptr)(unsafe.Pointer(textures_hashtable + uintptr(key)*8))
 	for texture != libc.UintptrFromInt32(0) {
-		if !(libc.Xstrncasecmp(tls, texture, name, uint64(8)) != 0) {
+		if !(xstrncasecmp(texture, name, uint64(8)) != 0) {
 			return (*texture_t)(unsafe.Pointer(texture)).Findex
 		}
 		texture = (*texture_t)(unsafe.Pointer(texture)).Fnext
@@ -40651,7 +40657,7 @@ func R_InitSpriteDefs(tls *libc.TLS, namelist uintptr) {
 			if !(l < end) {
 				break
 			}
-			if !(libc.Xstrncasecmp(tls, lumpinfo+uintptr(l)*40, spritename, uint64(4)) != 0) {
+			if !(xstrncasecmp(lumpinfo+uintptr(l)*40, spritename, uint64(4)) != 0) {
 				frame = int32(*(*int8)(unsafe.Pointer(lumpinfo + uintptr(l)*40 + 4))) - int32('A')
 				rotation = int32(*(*int8)(unsafe.Pointer(lumpinfo + uintptr(l)*40 + 5))) - int32('0')
 				if modifiedgame != 0 {
@@ -64025,7 +64031,7 @@ func W_CheckNumForName(tls *libc.TLS, name uintptr) (r int32) {
 			if !(lump_p != libc.UintptrFromInt32(0)) {
 				break
 			}
-			if !(libc.Xstrncasecmp(tls, lump_p, name, uint64(8)) != 0) {
+			if !(xstrncasecmp(lump_p, name, uint64(8)) != 0) {
 				return int32((int64(lump_p) - int64(lumpinfo)) / 40)
 			}
 			goto _1
@@ -64042,7 +64048,7 @@ func W_CheckNumForName(tls *libc.TLS, name uintptr) (r int32) {
 			if !(i >= 0) {
 				break
 			}
-			if !(libc.Xstrncasecmp(tls, lumpinfo+uintptr(i)*40, name, uint64(8)) != 0) {
+			if !(xstrncasecmp(lumpinfo+uintptr(i)*40, name, uint64(8)) != 0) {
 				return i
 			}
 			goto _2
