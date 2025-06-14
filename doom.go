@@ -29,6 +29,33 @@ func xabs(j int32) int32 {
 	return j
 }
 
+func xstrlen(nptr uintptr) uint64 {
+	var r uint64
+	for ; *(*int8)(unsafe.Pointer(nptr)) != 0; nptr++ {
+		r++
+	}
+	return r
+}
+
+func xstrcasecmp(s1, s2 uintptr) int32 {
+	for {
+		ch1 := *(*byte)(unsafe.Pointer(s1))
+		if ch1 >= 'a' && ch1 <= 'z' {
+			ch1 = ch1 - ('a' - 'A')
+		}
+		s1++
+		ch2 := *(*byte)(unsafe.Pointer(s2))
+		if ch2 >= 'a' && ch2 <= 'z' {
+			ch2 = ch2 - ('a' - 'A')
+		}
+		s2++
+		if ch1 != ch2 || ch1 == 0 || ch2 == 0 {
+			r := int32(ch1) - int32(ch2)
+			return r
+		}
+	}
+}
+
 func xatoi(nptr uintptr) int32 {
 	val := libc.GoString(nptr)
 	ret, err := strconv.Atoi(val)
@@ -36,6 +63,13 @@ func xatoi(nptr uintptr) int32 {
 		panic(fmt.Sprintf("xatoi: %s", err.Error()))
 	}
 	return int32(ret)
+}
+
+func xmemset(dest uintptr, c uint8, n uint64) {
+	destSlice := unsafe.Slice((*byte)(unsafe.Pointer(dest)), n)
+	for i := range n {
+		destSlice[i] = byte(c)
+	}
 }
 
 const AM_NUMMARKPOINTS = 10
@@ -3137,8 +3171,8 @@ func AM_Ticker(tls *libc.TLS) {
 //	//
 //	// Clear automap frame buffer.
 //	//
-func AM_clearFB(tls *libc.TLS, color int32) {
-	libc.Xmemset(tls, fb, color, libc.Uint64FromInt32(f_w*f_h))
+func AM_clearFB(tls *libc.TLS, color uint8) {
+	xmemset(fb, color, libc.Uint64FromInt32(f_w*f_h))
 }
 
 // C documentation
@@ -3938,9 +3972,9 @@ func AddIWADDir(tls *libc.TLS, dir uintptr) {
 
 func DirIsFile(tls *libc.TLS, path uintptr, filename uintptr) (r boolean) {
 	var filename_len, path_len uint64
-	path_len = libc.Xstrlen(tls, path)
-	filename_len = libc.Xstrlen(tls, filename)
-	return libc.BoolUint32(path_len >= filename_len+uint64(1) && int32(*(*int8)(unsafe.Pointer(path + uintptr(path_len-filename_len-uint64(1))))) == int32('/') && !(libc.Xstrcasecmp(tls, path+uintptr(path_len-filename_len), filename) != 0))
+	path_len = xstrlen(path)
+	filename_len = xstrlen(filename)
+	return libc.BoolUint32(path_len >= filename_len+uint64(1) && int32(*(*int8)(unsafe.Pointer(path + uintptr(path_len-filename_len-uint64(1))))) == int32('/') && !(xstrcasecmp(path+uintptr(path_len-filename_len), filename) != 0))
 }
 
 // Check if the specified directory contains the specified IWAD
@@ -4020,7 +4054,7 @@ func IdentifyIWADByName(tls *libc.TLS, name uintptr, mask int32) (r GameMission_
 			goto _1
 		}
 		// Check if it ends in this IWAD name.
-		if !(libc.Xstrcasecmp(tls, name, iwads[i].Fname) != 0) {
+		if !(xstrcasecmp(name, iwads[i].Fname) != 0) {
 			mission = iwads[i].Fmission
 			break
 		}
@@ -4288,7 +4322,7 @@ func BuildNewTic(tls *libc.TLS) (r boolean) {
 		}
 	}
 	//printf ("mk:%i ",maketic);
-	libc.Xmemset(tls, bp, 0, uint64(16))
+	xmemset(bp, 0, uint64(16))
 	(*(*func(*libc.TLS, uintptr, int32))(unsafe.Pointer(&struct{ uintptr }{(*loop_interface_t)(unsafe.Pointer(loop_interface)).FBuildTiccmd})))(tls, bp, maketic)
 	*(*ticcmd_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&ticdata)) + uintptr(maketic%int32(BACKUPTICS))*160 + uintptr(localplayer)*16)) = *(*ticcmd_t)(unsafe.Pointer(bp))
 	*(*boolean)(unsafe.Pointer(uintptr(unsafe.Pointer(&ticdata)) + uintptr(maketic%int32(BACKUPTICS))*160 + 128 + uintptr(localplayer)*4)) = 1
@@ -5166,7 +5200,7 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 	}
 	// The Doom 3: BFG Edition version of doom2.wad does not have a
 	// TITLETPIC lump. Use INTERPIC instead as a workaround.
-	if bfgedition != 0 && !(libc.Xstrcasecmp(tls, pagename, __ccgo_ts(1896)) != 0) && W_CheckNumForName(tls, __ccgo_ts(1942)) < 0 {
+	if bfgedition != 0 && !(xstrcasecmp(pagename, __ccgo_ts(1896)) != 0) && W_CheckNumForName(tls, __ccgo_ts(1942)) < 0 {
 		pagename = __ccgo_ts(1951)
 	}
 }
@@ -5219,7 +5253,7 @@ func GetGameName(tls *libc.TLS, gamename uintptr) (r uintptr) {
 			// Has been replaced.
 			// We need to expand via printf to include the Doom version number
 			// We also need to cut off spaces to get the basic name
-			gamename_size = libc.Xstrlen(tls, deh_sub) + uint64(10)
+			gamename_size = xstrlen(deh_sub) + uint64(10)
 			gamename = Z_Malloc(tls, libc.Int32FromUint64(gamename_size), int32(PU_STATIC), uintptr(0))
 			version = G_VanillaVersionCode(tls)
 			M_snprintf(tls, gamename, gamename_size, deh_sub, libc.VaList(bp+8, version/int32(100), version%int32(100)))
@@ -5237,7 +5271,7 @@ func GetGameName(tls *libc.TLS, gamename uintptr) (r uintptr) {
 			}
 			for {
 				if v9 = int32(*(*int8)(unsafe.Pointer(gamename))) != int32('\000'); v9 {
-					v6 = int32(*(*int8)(unsafe.Pointer(gamename + uintptr(libc.Xstrlen(tls, gamename)-uint64(1)))))
+					v6 = int32(*(*int8)(unsafe.Pointer(gamename + uintptr(xstrlen(gamename)-uint64(1)))))
 					v7 = libc.BoolInt32(v6 == int32(' ') || libc.Uint32FromInt32(v6)-uint32('\t') < uint32(5))
 					goto _8
 				_8:
@@ -5245,7 +5279,7 @@ func GetGameName(tls *libc.TLS, gamename uintptr) (r uintptr) {
 				if !(v9 && v7 != 0) {
 					break
 				}
-				*(*int8)(unsafe.Pointer(gamename + uintptr(libc.Xstrlen(tls, gamename)-uint64(1)))) = int8('\000')
+				*(*int8)(unsafe.Pointer(gamename + uintptr(xstrlen(gamename)-uint64(1)))) = int8('\000')
 			}
 			return gamename
 		}
@@ -5265,7 +5299,7 @@ func SetMissionForPackName(tls *libc.TLS, pack_name uintptr) {
 		if !(libc.Uint64FromInt32(i) < libc.Uint64FromInt64(48)/libc.Uint64FromInt64(16)) {
 			break
 		}
-		if !(libc.Xstrcasecmp(tls, pack_name, packs[i].Fname) != 0) {
+		if !(xstrcasecmp(pack_name, packs[i].Fname) != 0) {
 			gamemission = packs[i].Fmission
 			return
 		}
@@ -5509,7 +5543,7 @@ func PrintDehackedBanners(tls *libc.TLS) {
 			fprintf_ccgo(os.Stdout, 3717, libc.GoString(deh_s))
 			// Make sure the modified banner always ends in a newline character.
 			// If it doesn't, add a newline.  This fixes av.wad.
-			if int32(*(*int8)(unsafe.Pointer(deh_s + uintptr(libc.Xstrlen(tls, deh_s)-uint64(1))))) != int32('\n') {
+			if int32(*(*int8)(unsafe.Pointer(deh_s + uintptr(xstrlen(deh_s)-uint64(1))))) != int32('\n') {
 				fprintf_ccgo(os.Stdout, 3720)
 			}
 		}
@@ -6632,7 +6666,7 @@ func F_Ticker(tls *libc.TLS) {
 	if gamemode == int32(commercial) {
 		return
 	}
-	if finalestage == int32(F_STAGE_TEXT) && uint64(finalecount) > libc.Xstrlen(tls, finaletext)*uint64(TEXTSPEED)+uint64(TEXTWAIT) {
+	if finalestage == int32(F_STAGE_TEXT) && uint64(finalecount) > xstrlen(finaletext)*uint64(TEXTSPEED)+uint64(TEXTWAIT) {
 		finalecount = uint32(0)
 		finalestage = int32(F_STAGE_ARTSCREEN)
 		wipegamestate = -int32(1) // force a wipe
@@ -7641,7 +7675,7 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 	var desired_angleturn int16
 	var forward, i, key, side, speed, tspeed, v1, v16 int32
 	var p11, p12, p13, p14, p15, p17, p18, p2, p3, p4, p5, p6, p7, p8, p9 uintptr
-	libc.Xmemset(tls, cmd, 0, uint64(16))
+	xmemset(cmd, 0, uint64(16))
 	(*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy = *(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(consoleplayer)*128 + uintptr(maketic%int32(BACKUPTICS))))
 	strafe = libc.BoolUint32(gamekeydown[key_strafe] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
 	// fraggle: support the old "joyb_speed = 31" hack which
@@ -7907,7 +7941,7 @@ func G_DoLoadLevel(tls *libc.TLS) {
 		if playeringame[i] != 0 && players[i].Fplayerstate == int32(PST_DEAD) {
 			players[i].Fplayerstate = int32(PST_REBORN)
 		}
-		libc.Xmemset(tls, uintptr(unsafe.Pointer(&players))+uintptr(i)*328+108, 0, uint64(16))
+		xmemset(uintptr(unsafe.Pointer(&players))+uintptr(i)*328+108, 0, uint64(16))
 		goto _1
 	_1:
 		;
@@ -7918,7 +7952,7 @@ func G_DoLoadLevel(tls *libc.TLS) {
 	gameaction = int32(ga_nothing)
 	Z_CheckHeap(tls)
 	// clear cmd building stuff
-	libc.Xmemset(tls, uintptr(unsafe.Pointer(&gamekeydown)), 0, uint64(1024))
+	xmemset(uintptr(unsafe.Pointer(&gamekeydown)), 0, uint64(1024))
 	v3 = 0
 	joystrafemove = v3
 	v2 = v3
@@ -7932,8 +7966,8 @@ func G_DoLoadLevel(tls *libc.TLS) {
 	v5 = v6
 	sendsave = v5
 	sendpause = v5
-	libc.Xmemset(tls, uintptr(unsafe.Pointer(&mousearray)), 0, uint64(36))
-	libc.Xmemset(tls, uintptr(unsafe.Pointer(&joyarray)), 0, uint64(84))
+	xmemset(uintptr(unsafe.Pointer(&mousearray)), 0, uint64(36))
+	xmemset(uintptr(unsafe.Pointer(&joyarray)), 0, uint64(84))
 	if testcontrols != 0 {
 		players[consoleplayer].Fmessage = __ccgo_ts(13701)
 	}
@@ -8245,8 +8279,8 @@ var turbomessage [80]int8
 func G_PlayerFinishLevel(tls *libc.TLS, player int32) {
 	var p uintptr
 	p = uintptr(unsafe.Pointer(&players)) + uintptr(player)*328
-	libc.Xmemset(tls, p+56, 0, uint64(24))
-	libc.Xmemset(tls, p+80, 0, uint64(24))
+	xmemset(p+56, 0, uint64(24))
+	xmemset(p+80, 0, uint64(24))
 	*(*int32)(unsafe.Pointer((*player_t)(unsafe.Pointer(p)).Fmo + 160)) &= ^int32(MF_SHADOW) // cancel invisibility
 	(*player_t)(unsafe.Pointer(p)).Fextralight = 0                                           // cancel gun flashes
 	(*player_t)(unsafe.Pointer(p)).Ffixedcolormap = 0                                        // cancel ir gogles
@@ -8271,7 +8305,7 @@ func G_PlayerReborn(tls *libc.TLS, player int32) {
 	itemcount = players[player].Fitemcount
 	secretcount = players[player].Fsecretcount
 	p = uintptr(unsafe.Pointer(&players)) + uintptr(player)*328
-	libc.Xmemset(tls, p, 0, uint64(328))
+	xmemset(p, 0, uint64(328))
 	libc.Xmemcpy(tls, uintptr(unsafe.Pointer(&players))+uintptr(player)*328+108, bp, uint64(16))
 	players[player].Fkillcount = killcount
 	players[player].Fitemcount = itemcount
@@ -9166,7 +9200,7 @@ func G_RecordDemo(tls *libc.TLS, name uintptr) {
 	var demoname_size uint64
 	var i, maxsize int32
 	usergame = 0
-	demoname_size = libc.Xstrlen(tls, name) + uint64(5)
+	demoname_size = xstrlen(name) + uint64(5)
 	demoname = Z_Malloc(tls, libc.Int32FromUint64(demoname_size), int32(PU_STATIC), libc.UintptrFromInt32(0))
 	M_snprintf(tls, demoname, demoname_size, __ccgo_ts(4481), libc.VaList(bp+8, name))
 	maxsize = int32(0x20000)
@@ -19256,7 +19290,7 @@ func I_Stretch5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 			if !(y < int32(1198)) {
 				break
 			}
-			libc.Xmemset(tls, screenp, 0, uint64(1600))
+			xmemset(screenp, 0, uint64(1600))
 			screenp += uintptr(dest_pitch * int32(3))
 			goto _2
 		_2:
@@ -20470,7 +20504,7 @@ func I_ZoneBase(tls *libc.TLS, size uintptr) (r uintptr) {
 
 func I_PrintBanner(tls *libc.TLS, msg uintptr) {
 	var i, spaces int32
-	spaces = libc.Int32FromUint64(uint64(35) - libc.Xstrlen(tls, msg)/uint64(2))
+	spaces = libc.Int32FromUint64(uint64(35) - xstrlen(msg)/uint64(2))
 	i = 0
 	for {
 		if !(i < spaces) {
@@ -20563,7 +20597,7 @@ func ZenityAvailable(tls *libc.TLS) (r int32) {
 func EscapeShellString(tls *libc.TLS, string1 uintptr) (r1 uintptr) {
 	var r, result, s uintptr
 	// In the worst case, every character might be escaped.
-	result = libc.Xmalloc(tls, libc.Xstrlen(tls, string1)*uint64(2)+uint64(3))
+	result = libc.Xmalloc(tls, xstrlen(string1)*uint64(2)+uint64(3))
 	r = result
 	// Enclosing quotes.
 	*(*int8)(unsafe.Pointer(r)) = int8('"')
@@ -20608,7 +20642,7 @@ func ZenityErrorBox(tls *libc.TLS, message uintptr) (r int32) {
 		return 0
 	}
 	escaped_message = EscapeShellString(tls, message)
-	errorboxpath_size = libc.Xstrlen(tls, __ccgo_ts(19241)) + libc.Xstrlen(tls, escaped_message) + uint64(19)
+	errorboxpath_size = xstrlen(__ccgo_ts(19241)) + xstrlen(escaped_message) + uint64(19)
 	errorboxpath = libc.Xmalloc(tls, errorboxpath_size)
 	M_snprintf(tls, errorboxpath, errorboxpath_size, __ccgo_ts(19257), libc.VaList(bp+8, __ccgo_ts(19241), escaped_message))
 	result = libc.Xsystem(tls, errorboxpath)
@@ -20643,7 +20677,7 @@ func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
 	libc.Xfflush(tls, libc.Xstderr)
 	// Write a copy of the message into buffer.
 	argptr = va
-	libc.Xmemset(tls, bp, 0, uint64(512))
+	xmemset(bp, 0, uint64(512))
 	M_vsnprintf(tls, bp, uint64(512), error1, argptr)
 	// Shutdown. Here might be other errors.
 	entry = exit_funcs
@@ -20725,13 +20759,13 @@ func I_GetMemoryValue(tls *libc.TLS, offset uint32, value uintptr, size int32) (
 		//
 		p = M_CheckParmWithArgs(tls, __ccgo_ts(19334), int32(1))
 		if p > 0 {
-			if !(libc.Xstrcasecmp(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19342)) != 0) {
+			if !(xstrcasecmp(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19342)) != 0) {
 				dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dos622))
 			}
-			if !(libc.Xstrcasecmp(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19349)) != 0) {
+			if !(xstrcasecmp(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19349)) != 0) {
 				dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_win98))
 			} else {
-				if !(libc.Xstrcasecmp(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19355)) != 0) {
+				if !(xstrcasecmp(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19355)) != 0) {
 					dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dosbox))
 				} else {
 					i = 0
@@ -20832,7 +20866,7 @@ func M_CheckParmWithArgs(tls *libc.TLS, check uintptr, num_args int32) (r int32)
 		if !(i < myargc-num_args) {
 			break
 		}
-		if !(libc.Xstrcasecmp(tls, check, *(*uintptr)(unsafe.Pointer(myargv + uintptr(i)*8))) != 0) {
+		if !(xstrcasecmp(check, *(*uintptr)(unsafe.Pointer(myargv + uintptr(i)*8))) != 0) {
 			return i
 		}
 		goto _1
@@ -20930,10 +20964,10 @@ func cht_CheckCheat(tls *libc.TLS, cht uintptr, key int8) (r int32) {
 	var v1 int32
 	// if we make a short sequence on a cheat with parameters, this
 	// will not work in vanilla doom.  behave the same.
-	if (*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars > 0 && libc.Xstrlen(tls, cht) < (*cheatseq_t)(unsafe.Pointer(cht)).Fsequence_len {
+	if (*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars > 0 && xstrlen(cht) < (*cheatseq_t)(unsafe.Pointer(cht)).Fsequence_len {
 		return 0
 	}
-	if (*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read < libc.Xstrlen(tls, cht) {
+	if (*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read < xstrlen(cht) {
 		// still reading characters from the cheat code
 		// and verifying.  reset back to the beginning
 		// if a key is wrong
@@ -20951,7 +20985,7 @@ func cht_CheckCheat(tls *libc.TLS, cht uintptr, key int8) (r int32) {
 			(*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read++
 		}
 	}
-	if (*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read >= libc.Xstrlen(tls, cht) && (*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read >= (*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars {
+	if (*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read >= xstrlen(cht) && (*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read >= (*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars {
 		v1 = 0
 		(*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read = v1
 		(*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read = libc.Uint64FromInt32(v1)
@@ -22837,7 +22871,7 @@ func M_SaveSelect(tls *libc.TLS, choice int32) {
 	if !(libc.Xstrcmp(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, __ccgo_ts(22118)) != 0) {
 		*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(choice)*24)) = 0
 	}
-	saveCharIndex = libc.Int32FromUint64(libc.Xstrlen(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24))
+	saveCharIndex = libc.Int32FromUint64(xstrlen(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(choice)*24))
 }
 
 // C documentation
@@ -23346,7 +23380,7 @@ func M_StringWidth(tls *libc.TLS, string1 uintptr) (r int32) {
 	w = 0
 	i = uint64(0)
 	for {
-		if !(i < libc.Xstrlen(tls, string1)) {
+		if !(i < xstrlen(string1)) {
 			break
 		}
 		c = libc.Xtoupper(tls, int32(*(*int8)(unsafe.Pointer(string1 + uintptr(i))))) - int32('!')
@@ -23375,7 +23409,7 @@ func M_StringHeight(tls *libc.TLS, string1 uintptr) (r int32) {
 	h = height
 	i = uint64(0)
 	for {
-		if !(i < libc.Xstrlen(tls, string1)) {
+		if !(i < xstrlen(string1)) {
 			break
 		}
 		if int32(*(*int8)(unsafe.Pointer(string1 + uintptr(i)))) == int32('\n') {
@@ -23880,7 +23914,7 @@ func M_Drawer(tls *libc.TLS) {
 			foundnewline = 0
 			i = uint32(0)
 			for {
-				if !(uint64(i) < libc.Xstrlen(tls, messageString+uintptr(start))) {
+				if !(uint64(i) < xstrlen(messageString+uintptr(start))) {
 					break
 				}
 				if int32(*(*int8)(unsafe.Pointer(messageString + uintptr(libc.Uint32FromInt32(start)+i)))) == int32('\n') {
@@ -23899,7 +23933,7 @@ func M_Drawer(tls *libc.TLS) {
 			}
 			if !(foundnewline != 0) {
 				M_StringCopy(tls, bp, messageString+uintptr(start), uint64(80))
-				start = int32(uint64(start) + libc.Xstrlen(tls, bp))
+				start = int32(uint64(start) + xstrlen(bp))
 			}
 			x = int16(SCREENWIDTH/2 - M_StringWidth(tls, bp)/int32(2))
 			M_WriteText(tls, int32(x), int32(y2), bp)
@@ -24113,7 +24147,7 @@ func M_StrToInt(tls *libc.TLS, str uintptr, result uintptr) (r boolean) {
 func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
 	var filename, src, v2 uintptr
 	var length, v1 int32
-	src = path + uintptr(libc.Xstrlen(tls, path)) - uintptr(1)
+	src = path + uintptr(xstrlen(path)) - uintptr(1)
 	// back up until a \ or the start
 	for src != path && int32(*(*int8)(unsafe.Pointer(src - libc.UintptrFromInt32(1)))) != int32('/') {
 		src--
@@ -24124,7 +24158,7 @@ func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
 	// with a base of more than eight characters.  To remove the 8.3
 	// filename limit, instead we simply truncate the name.
 	length = 0
-	libc.Xmemset(tls, dest, 0, uint64(8))
+	xmemset(dest, 0, uint64(8))
 	for int32(*(*int8)(unsafe.Pointer(src))) != int32('\000') && int32(*(*int8)(unsafe.Pointer(src))) != int32('.') {
 		if length >= int32(8) {
 			fprintf_ccgo(os.Stdout, 23165, libc.GoString(filename), libc.GoString(dest))
@@ -24149,7 +24183,7 @@ func M_StringCopy(tls *libc.TLS, dest uintptr, src uintptr, dest_size uint64) (r
 	} else {
 		return 0
 	}
-	len1 = libc.Xstrlen(tls, dest)
+	len1 = xstrlen(dest)
 	return libc.BoolUint32(int32(*(*int8)(unsafe.Pointer(src + uintptr(len1)))) == int32('\000'))
 }
 
@@ -24158,7 +24192,7 @@ func M_StringCopy(tls *libc.TLS, dest uintptr, src uintptr, dest_size uint64) (r
 
 func M_StringConcat(tls *libc.TLS, dest uintptr, src uintptr, dest_size uint64) (r boolean) {
 	var offset uint64
-	offset = libc.Xstrlen(tls, dest)
+	offset = xstrlen(dest)
 	if offset > dest_size {
 		offset = dest_size
 	}
@@ -24168,7 +24202,7 @@ func M_StringConcat(tls *libc.TLS, dest uintptr, src uintptr, dest_size uint64) 
 // Returns true if 's' ends with the specified suffix.
 
 func M_StringEndsWith(tls *libc.TLS, s uintptr, suffix uintptr) (r boolean) {
-	return libc.BoolUint32(libc.Xstrlen(tls, s) >= libc.Xstrlen(tls, suffix) && libc.Xstrcmp(tls, s+uintptr(libc.Xstrlen(tls, s))-uintptr(libc.Xstrlen(tls, suffix)), suffix) == 0)
+	return libc.BoolUint32(xstrlen(s) >= xstrlen(suffix) && libc.Xstrcmp(tls, s+uintptr(xstrlen(s))-uintptr(xstrlen(suffix)), suffix) == 0)
 }
 
 // Return a newly-malloced string with all the strings given as arguments
@@ -24178,14 +24212,14 @@ func M_StringJoin(tls *libc.TLS, s uintptr, va uintptr) (r uintptr) {
 	var args va_list
 	var result, v uintptr
 	var result_len uint64
-	result_len = libc.Xstrlen(tls, s) + uint64(1)
+	result_len = xstrlen(s) + uint64(1)
 	args = va
 	for {
 		v = libc.VaUintptr(&args)
 		if v == libc.UintptrFromInt32(0) {
 			break
 		}
-		result_len += libc.Xstrlen(tls, v)
+		result_len += xstrlen(v)
 		goto _1
 	_1:
 	}
@@ -30616,7 +30650,7 @@ func P_MobjThinker(tls *libc.TLS, mobj uintptr) {
 func P_SpawnMobj(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r uintptr) {
 	var info, mobj, st uintptr
 	mobj = Z_Malloc(tls, int32(224), int32(PU_LEVEL), libc.UintptrFromInt32(0))
-	libc.Xmemset(tls, mobj, 0, uint64(224))
+	xmemset(mobj, 0, uint64(224))
 	info = uintptr(unsafe.Pointer(&mobjinfo)) + uintptr(type1)*92
 	(*mobj_t)(unsafe.Pointer(mobj)).Ftype1 = type1
 	(*mobj_t)(unsafe.Pointer(mobj)).Finfo = info
@@ -31981,7 +32015,7 @@ var filename = libc.UintptrFromInt32(0)
 func P_SaveGameFile(tls *libc.TLS, slot int32) (r uintptr) {
 	bp := alloc(64)
 	if filename1 == libc.UintptrFromInt32(0) {
-		filename_size = libc.Xstrlen(tls, savegamedir) + uint64(32)
+		filename_size = xstrlen(savegamedir) + uint64(32)
 		filename1 = libc.Xmalloc(tls, filename_size)
 	}
 	snprintf_ccgo(bp, 32, 24933, slot)
@@ -33038,7 +33072,7 @@ func P_WriteSaveGameHeader(tls *libc.TLS, description uintptr) {
 		;
 		i++
 	}
-	libc.Xmemset(tls, bp, 0, uint64(16))
+	xmemset(bp, 0, uint64(16))
 	M_snprintf(tls, bp, uint64(16), __ccgo_ts(25058), libc.VaList(bp+24, G_VanillaVersionCode(tls)))
 	i = 0
 	for {
@@ -33101,7 +33135,7 @@ func P_ReadSaveGameHeader(tls *libc.TLS) (r boolean) {
 		;
 		i++
 	}
-	libc.Xmemset(tls, bp, 0, uint64(16))
+	xmemset(bp, 0, uint64(16))
 	M_snprintf(tls, bp, uint64(16), __ccgo_ts(25058), libc.VaList(bp+40, G_VanillaVersionCode(tls)))
 	if libc.Xstrcmp(tls, bp+16, bp) != 0 {
 		return 0
@@ -33629,7 +33663,7 @@ func P_LoadVertexes(tls *libc.TLS, lump int32) {
 //	//
 func GetSectorAtNullAddress(tls *libc.TLS) (r uintptr) {
 	if !(null_sector_is_initialized != 0) {
-		libc.Xmemset(tls, uintptr(unsafe.Pointer(&null_sector)), 0, uint64(128))
+		xmemset(uintptr(unsafe.Pointer(&null_sector)), 0, uint64(128))
 		I_GetMemoryValue(tls, uint32(0), uintptr(unsafe.Pointer(&null_sector)), int32(4))
 		I_GetMemoryValue(tls, uint32(4), uintptr(unsafe.Pointer(&null_sector))+4, int32(4))
 		null_sector_is_initialized = 1
@@ -33651,7 +33685,7 @@ func P_LoadSegs(tls *libc.TLS, lump int32) {
 	var i, linedef, side, sidenum int32
 	numsegs = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(12))
 	segs = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numsegs)*uint64(56)), int32(PU_LEVEL), uintptr(0))
-	libc.Xmemset(tls, segs, 0, libc.Uint64FromInt32(numsegs)*uint64(56))
+	xmemset(segs, 0, libc.Uint64FromInt32(numsegs)*uint64(56))
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
 	ml = data
 	li = segs
@@ -33707,7 +33741,7 @@ func P_LoadSubsectors(tls *libc.TLS, lump int32) {
 	subsectors = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numsubsectors)*uint64(16)), int32(PU_LEVEL), uintptr(0))
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
 	ms = data
-	libc.Xmemset(tls, subsectors, 0, libc.Uint64FromInt32(numsubsectors)*uint64(16))
+	xmemset(subsectors, 0, libc.Uint64FromInt32(numsubsectors)*uint64(16))
 	ss = subsectors
 	i = 0
 	for {
@@ -33736,7 +33770,7 @@ func P_LoadSectors(tls *libc.TLS, lump int32) {
 	var i int32
 	numsectors = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(26))
 	sectors = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numsectors)*uint64(128)), int32(PU_LEVEL), uintptr(0))
-	libc.Xmemset(tls, sectors, 0, libc.Uint64FromInt32(numsectors)*uint64(128))
+	xmemset(sectors, 0, libc.Uint64FromInt32(numsectors)*uint64(128))
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
 	ms = data
 	ss = sectors
@@ -33892,7 +33926,7 @@ func P_LoadLineDefs(tls *libc.TLS, lump int32) {
 	var i int32
 	numlines = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(14))
 	lines = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numlines)*uint64(88)), int32(PU_LEVEL), uintptr(0))
-	libc.Xmemset(tls, lines, 0, libc.Uint64FromInt32(numlines)*uint64(88))
+	xmemset(lines, 0, libc.Uint64FromInt32(numlines)*uint64(88))
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
 	mld = data
 	ld = lines
@@ -33971,7 +34005,7 @@ func P_LoadSideDefs(tls *libc.TLS, lump int32) {
 	var i int32
 	numsides = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(30))
 	sides = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numsides)*uint64(24)), int32(PU_LEVEL), uintptr(0))
-	libc.Xmemset(tls, sides, 0, libc.Uint64FromInt32(numsides)*uint64(24))
+	xmemset(sides, 0, libc.Uint64FromInt32(numsides)*uint64(24))
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
 	msd = data
 	sd = sides
@@ -34028,7 +34062,7 @@ func P_LoadBlockMap(tls *libc.TLS, lump int32) {
 	// Clear out mobj chains
 	count = libc.Int32FromUint64(uint64(8) * libc.Uint64FromInt32(bmapwidth) * libc.Uint64FromInt32(bmapheight))
 	blocklinks = Z_Malloc(tls, count, int32(PU_LEVEL), uintptr(0))
-	libc.Xmemset(tls, blocklinks, 0, libc.Uint64FromInt32(count))
+	xmemset(blocklinks, 0, libc.Uint64FromInt32(count))
 }
 
 // C documentation
@@ -34186,7 +34220,8 @@ func P_GroupLines(tls *libc.TLS) {
 // to simulate a REJECT buffer overflow in Vanilla Doom.
 
 func PadRejectArray(tls *libc.TLS, array uintptr, len1 uint32) {
-	var byte_num, i, padvalue uint32
+	var byte_num, i uint32
+	var padvalue uint8
 	var dest uintptr
 	var rejectpad [4]uint32
 	// Values to pad the REJECT array with:
@@ -34216,11 +34251,11 @@ func PadRejectArray(tls *libc.TLS, array uintptr, len1 uint32) {
 		fprintf_ccgo(os.Stderr, 25149, len1, 16)
 		// Pad remaining space with 0 (or 0xff, if specified on command line).
 		if M_CheckParm(tls, __ccgo_ts(25206)) != 0 {
-			padvalue = uint32(0xff)
+			padvalue = 0xff
 		} else {
-			padvalue = uint32(0xf00)
+			padvalue = 0x00
 		}
-		libc.Xmemset(tls, array+uintptr(16), libc.Int32FromUint32(padvalue), uint64(len1)-uint64(16))
+		xmemset(array+uintptr(16), padvalue, uint64(len1)-uint64(16))
 	}
 }
 
@@ -35647,7 +35682,7 @@ func P_UpdateSpecials(tls *libc.TLS) {
 					break
 				}
 				S_StartSound(tls, uintptr(unsafe.Pointer(&buttonlist))+uintptr(i)*32+24, int32(sfx_swtchn))
-				libc.Xmemset(tls, uintptr(unsafe.Pointer(&buttonlist))+uintptr(i)*32, 0, uint64(32))
+				xmemset(uintptr(unsafe.Pointer(&buttonlist))+uintptr(i)*32, 0, uint64(32))
 			}
 		}
 		goto _4
@@ -35927,7 +35962,7 @@ func P_SpawnSpecials(tls *libc.TLS) {
 		if !(i < int32(MAXBUTTONS)) {
 			break
 		}
-		libc.Xmemset(tls, uintptr(unsafe.Pointer(&buttonlist))+uintptr(i)*32, 0, uint64(32))
+		xmemset(uintptr(unsafe.Pointer(&buttonlist))+uintptr(i)*32, 0, uint64(32))
 		goto _5
 	_5:
 		;
@@ -37759,7 +37794,7 @@ func R_GenerateLookup(tls *libc.TLS, texnum int32) {
 	// Fill in the lump / offset, so columns
 	//  with only a single patch are all done.
 	*(*uintptr)(unsafe.Pointer(bp)) = Z_Malloc(tls, int32((*texture_t)(unsafe.Pointer(texture)).Fwidth), int32(PU_STATIC), bp)
-	libc.Xmemset(tls, *(*uintptr)(unsafe.Pointer(bp)), 0, libc.Uint64FromInt16((*texture_t)(unsafe.Pointer(texture)).Fwidth))
+	xmemset(*(*uintptr)(unsafe.Pointer(bp)), 0, libc.Uint64FromInt16((*texture_t)(unsafe.Pointer(texture)).Fwidth))
 	patch = texture + 28
 	i = 0
 	patch = texture + 28
@@ -37846,7 +37881,7 @@ func GenerateTextureHashTable(tls *libc.TLS) {
 	var i, key int32
 	var rover uintptr
 	textures_hashtable = Z_Malloc(tls, libc.Int32FromUint64(uint64(8)*libc.Uint64FromInt32(numtextures)), int32(PU_STATIC), uintptr(0))
-	libc.Xmemset(tls, textures_hashtable, 0, uint64(8)*libc.Uint64FromInt32(numtextures))
+	xmemset(textures_hashtable, 0, uint64(8)*libc.Uint64FromInt32(numtextures))
 	// Add all textures to hash table
 	i = 0
 	for {
@@ -38218,7 +38253,7 @@ func R_PrecacheLevel(tls *libc.TLS) {
 	}
 	// Precache flats.
 	flatpresent = Z_Malloc(tls, numflats, int32(PU_STATIC), libc.UintptrFromInt32(0))
-	libc.Xmemset(tls, flatpresent, 0, libc.Uint64FromInt32(numflats))
+	xmemset(flatpresent, 0, libc.Uint64FromInt32(numflats))
 	i = 0
 	for {
 		if !(i < numsectors) {
@@ -38248,7 +38283,7 @@ func R_PrecacheLevel(tls *libc.TLS) {
 	Z_Free(tls, flatpresent)
 	// Precache textures.
 	texturepresent = Z_Malloc(tls, numtextures, int32(PU_STATIC), libc.UintptrFromInt32(0))
-	libc.Xmemset(tls, texturepresent, 0, libc.Uint64FromInt32(numtextures))
+	xmemset(texturepresent, 0, libc.Uint64FromInt32(numtextures))
 	i = 0
 	for {
 		if !(i < numsides) {
@@ -38298,7 +38333,7 @@ func R_PrecacheLevel(tls *libc.TLS) {
 	Z_Free(tls, texturepresent)
 	// Precache sprites.
 	spritepresent = Z_Malloc(tls, numsprites, int32(PU_STATIC), libc.UintptrFromInt32(0))
-	libc.Xmemset(tls, spritepresent, 0, libc.Uint64FromInt32(numsprites))
+	xmemset(spritepresent, 0, libc.Uint64FromInt32(numsprites))
 	th = thinkercap.Fnext
 	for {
 		if !(th != uintptr(unsafe.Pointer(&thinkercap))) {
@@ -39747,7 +39782,7 @@ func R_ClearPlanes(tls *libc.TLS) {
 	lastvisplane = uintptr(unsafe.Pointer(&visplanes))
 	lastopening = uintptr(unsafe.Pointer(&openings))
 	// texture calculation
-	libc.Xmemset(tls, uintptr(unsafe.Pointer(&cachedheight)), 0, uint64(800))
+	xmemset(uintptr(unsafe.Pointer(&cachedheight)), 0, uint64(800))
 	// left to right mapping
 	angle = (viewangle - uint32(ANG909)) >> int32(ANGLETOFINESHIFT)
 	// scale will be unit scale at SCREENWIDTH/2 distance
@@ -39791,7 +39826,7 @@ func R_FindPlane(tls *libc.TLS, height fixed_t, picnum int32, lightlevel int32) 
 	(*visplane_t)(unsafe.Pointer(check)).Flightlevel = lightlevel
 	(*visplane_t)(unsafe.Pointer(check)).Fminx = int32(SCREENWIDTH)
 	(*visplane_t)(unsafe.Pointer(check)).Fmaxx = -int32(1)
-	libc.Xmemset(tls, check+21, int32(0xff), uint64(320))
+	xmemset(check+21, 0xff, 320)
 	return check
 }
 
@@ -39845,7 +39880,7 @@ func R_CheckPlane(tls *libc.TLS, pl uintptr, start int32, stop int32) (r uintptr
 	pl = v2
 	(*visplane_t)(unsafe.Pointer(pl)).Fminx = start
 	(*visplane_t)(unsafe.Pointer(pl)).Fmaxx = stop
-	libc.Xmemset(tls, pl+21, int32(0xff), uint64(320))
+	xmemset(pl+21, 0xff, 320)
 	return pl
 }
 
@@ -40597,7 +40632,7 @@ func R_InitSpriteDefs(tls *libc.TLS, namelist uintptr) {
 			break
 		}
 		spritename = *(*uintptr)(unsafe.Pointer(namelist + uintptr(i)*8))
-		libc.Xmemset(tls, uintptr(unsafe.Pointer(&sprtemp)), -int32(1), uint64(812))
+		xmemset(uintptr(unsafe.Pointer(&sprtemp)), 0xff, 812)
 		maxframe = -int32(1)
 		// scan the lumps,
 		//  filling in the frames for whatever is found
@@ -41892,7 +41927,7 @@ func SHA1_Final(tls *libc.TLS, digest uintptr, hd uintptr) {
 			*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v7))) = uint8(0)
 		}
 		SHA1_Update(tls, hd, libc.UintptrFromInt32(0), uint64(0)) /* flush */
-		libc.Xmemset(tls, hd+24, 0, uint64(56))                   /* fill next block with zeroes */
+		xmemset(hd+24, 0, uint64(56))                             /* fill next block with zeroes */
 	}
 	/* append the 64 bit count */
 	*(*uint8)(unsafe.Pointer(hd + 24 + 56)) = uint8(msb >> int32(24))
@@ -41978,7 +42013,7 @@ func SHA1_UpdateInt32(tls *libc.TLS, context uintptr, val uint32) {
 }
 
 func SHA1_UpdateString(tls *libc.TLS, context uintptr, str uintptr) {
-	SHA1_Update(tls, context, str, libc.Xstrlen(tls, str)+uint64(1))
+	SHA1_Update(tls, context, str, xstrlen(str)+uint64(1))
 }
 
 func init() {
@@ -61617,11 +61652,11 @@ func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, he
 	(*pcx_t)(unsafe.Pointer(pcx)).Fymax = libc.Uint16FromInt16(int16(height - 1))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fhres = libc.Uint16FromInt16(int16(width))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fvres = libc.Uint16FromInt16(int16(height))
-	libc.Xmemset(tls, pcx+16, 0, uint64(48))
+	xmemset(pcx+16, 0, uint64(48))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fcolor_planes = int8(1) // chunky image
 	(*pcx_t)(unsafe.Pointer(pcx)).Fbytes_per_line = libc.Uint16FromInt16(int16(width))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fpalette_type = libc.Uint16FromInt16(int16(2)) // not a grey scale
-	libc.Xmemset(tls, pcx+70, 0, uint64(58))
+	xmemset(pcx+70, 0, uint64(58))
 	// pack the image
 	pack = pcx + 128
 	i = 0
@@ -63903,7 +63938,7 @@ func W_AddFile(tls *libc.TLS, filename uintptr) (r uintptr) {
 		return libc.UintptrFromInt32(0)
 	}
 	newnumlumps = libc.Int32FromUint32(numlumps)
-	if libc.Xstrcasecmp(tls, filename+uintptr(libc.Xstrlen(tls, filename))-uintptr(3), __ccgo_ts(28650)) != 0 {
+	if xstrcasecmp(filename+uintptr(xstrlen(filename))-uintptr(3), __ccgo_ts(28650)) != 0 {
 		// single lump file
 		// fraggle: Swap the filepos and size here.  The WAD directory
 		// parsing code expects a little-endian directory, so will swap
@@ -64152,7 +64187,7 @@ func W_GenerateHashTable(tls *libc.TLS) {
 	// Generate hash table
 	if numlumps > uint32(0) {
 		lumphash = Z_Malloc(tls, libc.Int32FromUint64(uint64(8)*uint64(numlumps)), int32(PU_STATIC), libc.UintptrFromInt32(0))
-		libc.Xmemset(tls, lumphash, 0, uint64(8)*uint64(numlumps))
+		xmemset(lumphash, 0, uint64(8)*uint64(numlumps))
 		i = uint32(0)
 		for {
 			if !(i < numlumps) {
