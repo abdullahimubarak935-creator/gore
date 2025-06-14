@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"image/color"
+	"io"
+	"os"
 	"unsafe"
 
 	"modernc.org/libc"
@@ -3302,13 +3305,13 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 //	// Classic Bresenham w/ whatever optimizations needed for speed
 //	//
 func AM_drawFline(tls *libc.TLS, fl uintptr, color int32) {
-	bp := alloc(16)
 	var ax, ay, d, dx, dy, sx, sy, x, y, v1, v2, v3, v4, v5 int32
 	// For debugging only
 	if (*fline_t)(unsafe.Pointer(fl)).Fa.Fx < 0 || (*fline_t)(unsafe.Pointer(fl)).Fa.Fx >= f_w || (*fline_t)(unsafe.Pointer(fl)).Fa.Fy < 0 || (*fline_t)(unsafe.Pointer(fl)).Fa.Fy >= f_h || (*fline_t)(unsafe.Pointer(fl)).Fb.Fx < 0 || (*fline_t)(unsafe.Pointer(fl)).Fb.Fx >= f_w || (*fline_t)(unsafe.Pointer(fl)).Fb.Fy < 0 || (*fline_t)(unsafe.Pointer(fl)).Fb.Fy >= f_h {
 		v1 = fuck
 		fuck++
-		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(93), libc.VaList(bp+8, v1))
+
+		fprintf_ccgo(os.Stderr, 93, v1)
 		return
 	}
 	dx = (*fline_t)(unsafe.Pointer(fl)).Fb.Fx - (*fline_t)(unsafe.Pointer(fl)).Fa.Fx
@@ -3949,7 +3952,7 @@ func CheckDirectoryHasIWAD(tls *libc.TLS, dir uintptr, iwadname uintptr) (r uint
 	} else {
 		filename = M_StringJoin(tls, dir, libc.VaList(bp+8, __ccgo_ts(1252), iwadname, libc.UintptrFromInt32(0)))
 	}
-	libc.Xprintf(tls, __ccgo_ts(1254), libc.VaList(bp+8, filename))
+	fprintf_ccgo(os.Stdout, 1254, libc.GoString(filename))
 	if M_FileExists(tls, filename) != 0 {
 		return filename
 	}
@@ -4115,7 +4118,7 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
 		*(*GameMission_t)(unsafe.Pointer(mission)) = IdentifyIWADByName(tls, result, mask)
 	} else {
 		// Search through the list and look for an IWAD
-		libc.Xprintf(tls, __ccgo_ts(1307), 0)
+		fprintf_ccgo(os.Stdout, 1307)
 		result = libc.UintptrFromInt32(0)
 		BuildIWADDirList(tls)
 		i = 0
@@ -5027,7 +5030,7 @@ func doomgeneric_Tick(tls *libc.TLS) {
 //	//
 func D_DoomLoop(tls *libc.TLS) {
 	if bfgedition != 0 && (demorecording != 0 || gameaction == int32(ga_playdemo) || netgame != 0) {
-		libc.Xprintf(tls, __ccgo_ts(1666), 0)
+		fprintf_ccgo(os.Stdout, 1666)
 	}
 	if demorecording != 0 {
 		G_BeginRecording(tls)
@@ -5261,13 +5264,13 @@ func SetMissionForPackName(tls *libc.TLS, pack_name uintptr) {
 		;
 		i++
 	}
-	libc.Xprintf(tls, __ccgo_ts(2552), 0)
+	fprintf_ccgo(os.Stdout, 2552)
 	i = 0
 	for {
 		if !(libc.Uint64FromInt32(i) < libc.Uint64FromInt64(48)/libc.Uint64FromInt64(16)) {
 			break
 		}
-		libc.Xprintf(tls, __ccgo_ts(2578), libc.VaList(bp+8, packs[i].Fname))
+		fprintf_ccgo(os.Stdout, 2578, libc.GoString(packs[i].Fname))
 		goto _2
 	_2:
 		;
@@ -5465,9 +5468,8 @@ func D_SetGameDescription(tls *libc.TLS) {
 }
 
 func D_AddFile(tls *libc.TLS, filename uintptr) (r boolean) {
-	bp := alloc(16)
 	var handle uintptr
-	libc.Xprintf(tls, __ccgo_ts(2817), libc.VaList(bp+8, filename))
+	fprintf_ccgo(os.Stdout, 2817, libc.GoString(filename))
 	handle = W_AddFile(tls, filename)
 	return libc.BoolUint32(handle != libc.UintptrFromInt32(0))
 }
@@ -5485,7 +5487,6 @@ var copyright_banners = [3]uintptr{
 // Prints a message only if it has been modified by dehacked.
 
 func PrintDehackedBanners(tls *libc.TLS) {
-	bp := alloc(16)
 	var deh_s uintptr
 	var i uint64
 	i = uint64(0)
@@ -5495,11 +5496,11 @@ func PrintDehackedBanners(tls *libc.TLS) {
 		}
 		deh_s = copyright_banners[i]
 		if deh_s != copyright_banners[i] {
-			libc.Xprintf(tls, __ccgo_ts(3717), libc.VaList(bp+8, deh_s))
+			fprintf_ccgo(os.Stdout, 3717, libc.GoString(deh_s))
 			// Make sure the modified banner always ends in a newline character.
 			// If it doesn't, add a newline.  This fixes av.wad.
 			if int32(*(*int8)(unsafe.Pointer(deh_s + uintptr(libc.Xstrlen(tls, deh_s)-uint64(1))))) != int32('\n') {
-				libc.Xprintf(tls, __ccgo_ts(3720), 0)
+				fprintf_ccgo(os.Stdout, 3720)
 			}
 		}
 		goto _1
@@ -5591,13 +5592,13 @@ func InitGameVersion(tls *libc.TLS) {
 			i++
 		}
 		if gameversions[i].Fdescription == libc.UintptrFromInt32(0) {
-			libc.Xprintf(tls, __ccgo_ts(3870), 0)
+			fprintf_ccgo(os.Stdout, 3870)
 			i = 0
 			for {
 				if !(gameversions[i].Fdescription != libc.UintptrFromInt32(0)) {
 					break
 				}
-				libc.Xprintf(tls, __ccgo_ts(3896), libc.VaList(bp+8, gameversions[i].Fcmdline, gameversions[i].Fdescription))
+				fprintf_ccgo(os.Stdout, 3896, libc.GoString(gameversions[i].Fcmdline), libc.GoString(gameversions[i].Fdescription))
 				goto _2
 			_2:
 				;
@@ -5651,7 +5652,6 @@ func InitGameVersion(tls *libc.TLS) {
 }
 
 func PrintGameVersion(tls *libc.TLS) {
-	bp := alloc(16)
 	var i int32
 	i = 0
 	for {
@@ -5659,7 +5659,7 @@ func PrintGameVersion(tls *libc.TLS) {
 			break
 		}
 		if gameversions[i].Fversion == gameversion {
-			libc.Xprintf(tls, __ccgo_ts(3932), libc.VaList(bp+8, gameversions[i].Fdescription))
+			fprintf_ccgo(os.Stdout, 3932, libc.GoString(gameversions[i].Fdescription))
 			break
 		}
 		goto _1
@@ -5695,7 +5695,7 @@ func D_DoomMain(tls *libc.TLS) {
 	I_AtExit(tls, __ccgo_fp(D_Endoom), 0)
 	// print banner
 	I_PrintBanner(tls, __ccgo_ts(4001))
-	libc.Xprintf(tls, __ccgo_ts(4018), 0)
+	fprintf_ccgo(os.Stdout, 4018)
 	Z_Init(tls)
 	//!
 	// @vanilla
@@ -5743,7 +5743,7 @@ func D_DoomMain(tls *libc.TLS) {
 		deathmatch = int32(2)
 	}
 	if devparm != 0 {
-		libc.Xprintf(tls, __ccgo_ts(4122), 0)
+		fprintf_ccgo(os.Stdout, 4122)
 	}
 	// find which dir to use for config files
 	// Auto-detect the configuration dir.
@@ -5768,17 +5768,17 @@ func D_DoomMain(tls *libc.TLS) {
 		if scale > int32(400) {
 			scale = int32(400)
 		}
-		libc.Xprintf(tls, __ccgo_ts(4151), libc.VaList(bp+464, scale))
+		fprintf_ccgo(os.Stdout, 4151, scale)
 		forwardmove[0] = forwardmove[0] * scale / int32(100)
 		forwardmove[int32(1)] = forwardmove[int32(1)] * scale / int32(100)
 		sidemove[0] = sidemove[0] * scale / int32(100)
 		sidemove[int32(1)] = sidemove[int32(1)] * scale / int32(100)
 	}
 	// init subsystems
-	libc.Xprintf(tls, __ccgo_ts(4170), 0)
+	fprintf_ccgo(os.Stdout, 4170)
 	V_Init(tls)
 	// Load configuration files before initialising other subsystems.
-	libc.Xprintf(tls, __ccgo_ts(4197), 0)
+	fprintf_ccgo(os.Stdout, 4197)
 	M_SetConfigFilenames(tls, __ccgo_ts(4236), __ccgo_ts(4248))
 	D_BindVariables(tls)
 	M_LoadDefaults(tls)
@@ -5791,7 +5791,7 @@ func D_DoomMain(tls *libc.TLS) {
 		I_Error(tls, __ccgo_ts(4268), 0)
 	}
 	modifiedgame = 0
-	libc.Xprintf(tls, __ccgo_ts(4380), 0)
+	fprintf_ccgo(os.Stdout, 4380)
 	D_AddFile(tls, iwadfile)
 	W_CheckCorrectIWAD(tls, int32(doom))
 	// Now that we've loaded the IWAD, we can figure out what gamemission
@@ -5806,7 +5806,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// We specifically check for DMENUPIC here, before PWADs have been
 	// loaded which could probably include a lump of that name.
 	if W_CheckNumForName(tls, __ccgo_ts(4404)) >= 0 {
-		libc.Xprintf(tls, __ccgo_ts(4413), 0)
+		fprintf_ccgo(os.Stdout, 4413)
 		bfgedition = 1
 		// BFG Edition changes the names of the secret levels to
 		// censor the Wolfenstein references. It also has an extra
@@ -5862,7 +5862,7 @@ func D_DoomMain(tls *libc.TLS) {
 			// tricks like "-playdemo demo1" possible.
 			M_StringCopy(tls, bp+256, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uint64(9))
 		}
-		libc.Xprintf(tls, __ccgo_ts(4488), libc.VaList(bp+464, bp))
+		fprintf_ccgo(os.Stdout, 4488, libc.GoString(bp))
 	}
 	I_AtExit(tls, __ccgo_fp(G_CheckDemoStatus), 1)
 	// Generate the WAD hash table.  Speed things up a bit.
@@ -5925,7 +5925,7 @@ func D_DoomMain(tls *libc.TLS) {
 	}
 	if W_CheckNumForName(tls, __ccgo_ts(4599)) >= 0 || W_CheckNumForName(tls, __ccgo_ts(4608)) >= 0 {
 		I_PrintDivider(tls)
-		libc.Xprintf(tls, __ccgo_ts(4615), 0)
+		fprintf_ccgo(os.Stdout, 4615)
 	}
 	I_PrintStartupBanner(tls, gamedescription)
 	PrintDehackedBanners(tls)
@@ -5933,10 +5933,10 @@ func D_DoomMain(tls *libc.TLS) {
 	// don't work in Vanilla (though FreeDM is okay). Show a warning
 	// message and give a link to the website.
 	if W_CheckNumForName(tls, __ccgo_ts(2670)) >= 0 && W_CheckNumForName(tls, __ccgo_ts(2679)) < 0 {
-		libc.Xprintf(tls, __ccgo_ts(4767), 0)
+		fprintf_ccgo(os.Stdout, 4767)
 		I_PrintDivider(tls)
 	}
-	libc.Xprintf(tls, __ccgo_ts(4992), 0)
+	fprintf_ccgo(os.Stdout, 4992)
 	I_CheckIsScreensaver(tls)
 	I_InitTimer(tls)
 	I_InitJoystick(tls)
@@ -6041,20 +6041,20 @@ func D_DoomMain(tls *libc.TLS) {
 		// Not loading a game
 		startloadgame = -int32(1)
 	}
-	libc.Xprintf(tls, __ccgo_ts(5071), 0)
+	fprintf_ccgo(os.Stdout, 5071)
 	M_Init(tls)
-	libc.Xprintf(tls, __ccgo_ts(5105), 0)
+	fprintf_ccgo(os.Stdout, 5105)
 	R_Init(tls)
-	libc.Xprintf(tls, __ccgo_ts(5141), 0)
+	fprintf_ccgo(os.Stdout, 5141)
 	P_Init(tls)
-	libc.Xprintf(tls, __ccgo_ts(5172), 0)
+	fprintf_ccgo(os.Stdout, 5172)
 	S_Init(tls, sfxVolume*int32(8), musicVolume*int32(8))
-	libc.Xprintf(tls, __ccgo_ts(5199), 0)
+	fprintf_ccgo(os.Stdout, 5199)
 	D_CheckNetGame(tls)
 	PrintGameVersion(tls)
-	libc.Xprintf(tls, __ccgo_ts(5246), 0)
+	fprintf_ccgo(os.Stdout, 5246)
 	HU_Init(tls)
-	libc.Xprintf(tls, __ccgo_ts(5285), 0)
+	fprintf_ccgo(os.Stdout, 5285)
 	ST_Init(tls)
 	// If Doom II without a MAP01 lump, this is a store demo.
 	// Moved this here so that MAP01 isn't constantly looked up
@@ -6064,7 +6064,7 @@ func D_DoomMain(tls *libc.TLS) {
 	}
 	if M_CheckParmWithArgs(tls, __ccgo_ts(5318), int32(1)) != 0 {
 		I_AtExit(tls, __ccgo_fp(StatDump), 1)
-		libc.Xprintf(tls, __ccgo_ts(5328), 0)
+		fprintf_ccgo(os.Stdout, 5328)
 	}
 	//!
 	// @arg <x>
@@ -6209,7 +6209,7 @@ func LoadGameSettings(tls *libc.TLS, settings uintptr) {
 	timelimit = (*net_gamesettings_t)(unsafe.Pointer(settings)).Ftimelimit
 	consoleplayer = (*net_gamesettings_t)(unsafe.Pointer(settings)).Fconsoleplayer
 	if lowres_turn != 0 {
-		libc.Xprintf(tls, __ccgo_ts(5423), 0)
+		fprintf_ccgo(os.Stdout, 5423)
 	}
 	i = uint32(0)
 	for {
@@ -6309,19 +6309,19 @@ func D_CheckNetGame(tls *libc.TLS) {
 	SaveGameSettings(tls, bp)
 	D_StartNetGame(tls, bp, libc.UintptrFromInt32(0))
 	LoadGameSettings(tls, bp)
-	libc.Xprintf(tls, __ccgo_ts(5563), libc.VaList(bp+112, startskill, deathmatch, startmap, startepisode))
-	libc.Xprintf(tls, __ccgo_ts(5626), libc.VaList(bp+112, consoleplayer+int32(1), (*(*net_gamesettings_t)(unsafe.Pointer(bp))).Fnum_players, (*(*net_gamesettings_t)(unsafe.Pointer(bp))).Fnum_players))
+	fprintf_ccgo(os.Stdout, 5563, startskill, deathmatch, startmap, startepisode)
+	fprintf_ccgo(os.Stdout, 5626, consoleplayer+int32(1), (*(*net_gamesettings_t)(unsafe.Pointer(bp))).Fnum_players, (*(*net_gamesettings_t)(unsafe.Pointer(bp))).Fnum_players)
 	// Show players here; the server might have specified a time limit
 	if timelimit > 0 && deathmatch != 0 {
 		// Gross hack to work like Vanilla:
 		if timelimit == int32(20) && M_CheckParm(tls, __ccgo_ts(5050)) != 0 {
-			libc.Xprintf(tls, __ccgo_ts(5654), 0)
+			fprintf_ccgo(os.Stdout, 5654)
 		} else {
-			libc.Xprintf(tls, __ccgo_ts(5711), libc.VaList(bp+112, timelimit))
+			fprintf_ccgo(os.Stdout, 5711, timelimit)
 			if timelimit > int32(1) {
-				libc.Xprintf(tls, __ccgo_ts(5743), 0)
+				fprintf_ccgo(os.Stdout, 5743)
 			}
-			libc.Xprintf(tls, __ccgo_ts(5745), 0)
+			fprintf_ccgo(os.Stdout, 5745)
 		}
 	}
 }
@@ -9298,9 +9298,8 @@ func DemoVersionDescription(tls *libc.TLS, version int32) (r uintptr) {
 var resultbuf [16]int8
 
 func G_DoPlayDemo(tls *libc.TLS) {
-	bp := alloc(32)
 	var demoversion, episode, i, map1 int32
-	var message, v1, v10, v12, v2, v3, v4, v5, v6, v7, v8, v9 uintptr
+	var v1, v10, v12, v2, v3, v4, v5, v6, v7, v8, v9 uintptr
 	var skill skill_t
 	gameaction = int32(ga_nothing)
 	v1 = W_CacheLumpName(tls, defdemoname, int32(PU_STATIC))
@@ -9316,9 +9315,8 @@ func G_DoPlayDemo(tls *libc.TLS) {
 			// demo recorded with cph's modified "v1.91" doom exe
 			longtics = 1
 		} else {
-			message = __ccgo_ts(14232)
 			//I_Error(message, demoversion, G_VanillaVersionCode(),
-			libc.Xprintf(tls, message, libc.VaList(bp+8, demoversion, G_VanillaVersionCode(tls), DemoVersionDescription(tls, demoversion)))
+			fprintf_ccgo(os.Stdout, 14232, demoversion, G_VanillaVersionCode(tls), libc.GoString(DemoVersionDescription(tls, demoversion)))
 		}
 	}
 	v3 = demo_p
@@ -18648,10 +18646,10 @@ func I_InitStretchTables(tls *libc.TLS, palette uintptr) {
 	// mix 60%  =  stretch_tables[1] used backwards
 	// mix 80%  =  stretch_tables[0] used backwards
 	// mix 100% =  just write line 2
-	libc.Xprintf(tls, __ccgo_ts(18469), 0)
+	fprintf_ccgo(os.Stdout, 18469)
 	libc.Xfflush(tls, libc.Xstdout)
 	stretch_tables[0] = GenerateStretchTable(tls, palette, int32(20))
-	libc.Xprintf(tls, __ccgo_ts(18517), 0)
+	fprintf_ccgo(os.Stdout, 18517)
 	libc.Xfflush(tls, libc.Xstdout)
 	stretch_tables[int32(1)] = GenerateStretchTable(tls, palette, int32(40))
 	libc.Xputs(tls, __ccgo_ts(14092))
@@ -18663,7 +18661,7 @@ func I_InitSquashTable(tls *libc.TLS, palette uintptr) {
 	if half_stretch_table != libc.UintptrFromInt32(0) {
 		return
 	}
-	libc.Xprintf(tls, __ccgo_ts(18520), 0)
+	fprintf_ccgo(os.Stdout, 18520)
 	libc.Xfflush(tls, libc.Xstdout)
 	half_stretch_table = GenerateStretchTable(tls, palette, int32(50))
 	libc.Xputs(tls, __ccgo_ts(14092))
@@ -20440,7 +20438,6 @@ func AutoAllocMemory(tls *libc.TLS, size uintptr, default_ram int32, min_ram int
 }
 
 func I_ZoneBase(tls *libc.TLS, size uintptr) (r uintptr) {
-	bp := alloc(32)
 	var default_ram, min_ram, p int32
 	var zonemem uintptr
 	//!
@@ -20457,7 +20454,7 @@ func I_ZoneBase(tls *libc.TLS, size uintptr) (r uintptr) {
 		min_ram = int32(MIN_RAM)
 	}
 	zonemem = AutoAllocMemory(tls, size, default_ram, min_ram)
-	libc.Xprintf(tls, __ccgo_ts(18878), libc.VaList(bp+8, zonemem, *(*int32)(unsafe.Pointer(size))))
+	fprintf_ccgo(os.Stdout, 18878, zonemem, size)
 	return zonemem
 }
 
@@ -20498,7 +20495,7 @@ func I_PrintStartupBanner(tls *libc.TLS, gamedescription uintptr) {
 	I_PrintDivider(tls)
 	I_PrintBanner(tls, gamedescription)
 	I_PrintDivider(tls)
-	libc.Xprintf(tls, __ccgo_ts(18918), 0)
+	fprintf_ccgo(os.Stdout, 18918)
 	I_PrintDivider(tls)
 }
 
@@ -20624,7 +20621,7 @@ func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
 	var entry uintptr
 	var exit_gui_popup boolean
 	if already_quitting != 0 {
-		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(19278), 0)
+		fprintf_ccgo(os.Stderr, 19278)
 	} else {
 		already_quitting = 1
 	}
@@ -20632,7 +20629,7 @@ func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
 	argptr = va
 	//fprintf(stderr, "\nError: ");
 	libc.Xvfprintf(tls, libc.Xstderr, error1, argptr)
-	libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(19324), 0)
+	fprintf_ccgo(os.Stderr, 19324)
 	libc.Xfflush(tls, libc.Xstderr)
 	// Write a copy of the message into buffer.
 	argptr = va
@@ -21776,11 +21773,11 @@ func M_LoadDefaults(tls *libc.TLS) {
 	i = M_CheckParmWithArgs(tls, __ccgo_ts(21869), int32(1))
 	if i != 0 {
 		doom_defaults.Ffilename = *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))
-		libc.Xprintf(tls, __ccgo_ts(21877), libc.VaList(bp+8, doom_defaults.Ffilename))
+		fprintf_ccgo(os.Stdout, 21877, libc.GoString(doom_defaults.Ffilename))
 	} else {
 		doom_defaults.Ffilename = M_StringJoin(tls, configdir, libc.VaList(bp+8, default_main_config, libc.UintptrFromInt32(0)))
 	}
-	libc.Xprintf(tls, __ccgo_ts(21896), libc.VaList(bp+8, doom_defaults.Ffilename))
+	fprintf_ccgo(os.Stdout, 21896, libc.GoString(doom_defaults.Ffilename))
 	//!
 	// @arg <file>
 	//
@@ -21790,7 +21787,7 @@ func M_LoadDefaults(tls *libc.TLS) {
 	i = M_CheckParmWithArgs(tls, __ccgo_ts(21917), int32(1))
 	if i != 0 {
 		extra_defaults.Ffilename = *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))
-		libc.Xprintf(tls, __ccgo_ts(21930), libc.VaList(bp+8, extra_defaults.Ffilename))
+		fprintf_ccgo(os.Stdout, 21930, libc.GoString(extra_defaults.Ffilename))
 	} else {
 		extra_defaults.Ffilename = M_StringJoin(tls, configdir, libc.VaList(bp+8, default_extra_config, libc.UintptrFromInt32(0)))
 	}
@@ -21845,7 +21842,6 @@ func GetDefaultConfigDir(tls *libc.TLS) (r uintptr) {
 //
 
 func M_SetConfigDir(tls *libc.TLS, dir uintptr) {
-	bp := alloc(16)
 	// Use the directory that was passed, or find the default.
 	if dir != libc.UintptrFromInt32(0) {
 		configdir = dir
@@ -21853,7 +21849,7 @@ func M_SetConfigDir(tls *libc.TLS, dir uintptr) {
 		configdir = GetDefaultConfigDir(tls)
 	}
 	if libc.Xstrcmp(tls, configdir, __ccgo_ts(14092)) != 0 {
-		libc.Xprintf(tls, __ccgo_ts(22005), libc.VaList(bp+8, configdir))
+		fprintf_ccgo(os.Stdout, 22005, libc.GoString(configdir))
 	}
 	// Make the directory if it doesn't already exist:
 	M_MakeDirectory(tls, configdir)
@@ -21874,7 +21870,7 @@ func M_GetSaveGameDir(tls *libc.TLS, iwadname uintptr) (r uintptr) {
 	} else {
 		savegamedir = M_StringJoin(tls, configdir, libc.VaList(bp+8, __ccgo_ts(1252), __ccgo_ts(22043), libc.UintptrFromInt32(0)))
 		M_MakeDirectory(tls, savegamedir)
-		libc.Xprintf(tls, __ccgo_ts(22054), libc.VaList(bp+8, savegamedir))
+		fprintf_ccgo(os.Stdout, 22054, libc.GoString(savegamedir))
 	}
 	return savegamedir
 }
@@ -23080,7 +23076,7 @@ func M_Episode(tls *libc.TLS, choice int32) {
 	}
 	// Yet another hack...
 	if gamemode == int32(registered) && choice > int32(2) {
-		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(22803), 0)
+		fprintf_ccgo(os.Stderr, 22803)
 		choice = 0
 	}
 	epi = choice
@@ -24108,7 +24104,6 @@ func M_StrToInt(tls *libc.TLS, str uintptr, result uintptr) (r boolean) {
 }
 
 func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
-	bp := alloc(32)
 	var filename, src, v2 uintptr
 	var length, v1 int32
 	src = path + uintptr(libc.Xstrlen(tls, path)) - uintptr(1)
@@ -24125,7 +24120,7 @@ func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
 	libc.Xmemset(tls, dest, 0, uint64(8))
 	for int32(*(*int8)(unsafe.Pointer(src))) != int32('\000') && int32(*(*int8)(unsafe.Pointer(src))) != int32('.') {
 		if length >= int32(8) {
-			libc.Xprintf(tls, __ccgo_ts(23165), libc.VaList(bp+8, filename, dest))
+			fprintf_ccgo(os.Stdout, 23165, libc.GoString(filename), libc.GoString(dest))
 			break
 		}
 		v1 = length
@@ -25119,7 +25114,7 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 						(*plat_t)(unsafe.Pointer(plat)).Fwait = -int32(1)
 					} else {
 						// This isn't a door OR a plat.  Now we're in trouble.
-						libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(23591), 0)
+						fprintf_ccgo(os.Stderr, 23591)
 						// Try closing it anyway. At least it will work on 32-bit
 						// machines.
 						(*vldoor_t)(unsafe.Pointer(door)).Fdirection = -int32(1)
@@ -29446,7 +29441,6 @@ func P_ChangeSector(tls *libc.TLS, sector uintptr, crunch boolean) (r boolean) {
 // PrBoom plus port.  A big thanks to Andrey for this.
 
 func SpechitOverrun(tls *libc.TLS, ld uintptr) {
-	bp := alloc(16)
 	var addr uint32
 	var p int32
 	if baseaddr == uint32(0) {
@@ -29482,7 +29476,7 @@ func SpechitOverrun(tls *libc.TLS, ld uintptr) {
 	case int32(14):
 		nofit = addr
 	default:
-		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(24736), libc.VaList(bp+8, numspechit))
+		fprintf_ccgo(os.Stderr, 24736, numspechit)
 		break
 	}
 }
@@ -31998,7 +31992,7 @@ func saveg_read8(tls *libc.TLS) (r uint8) {
 	bp := alloc(16)
 	if libc.Xfread(tls, bp, uint64(1), uint64(1), save_stream) < uint64(1) {
 		if !(savegame_error != 0) {
-			libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(24952), 0)
+			fprintf_ccgo(os.Stderr, 24952)
 			savegame_error = 1
 		}
 	}
@@ -32010,7 +32004,7 @@ func saveg_write8(tls *libc.TLS, _value uint8) {
 	*(*uint8)(unsafe.Pointer(bp)) = _value
 	if libc.Xfwrite(tls, bp, uint64(1), uint64(1), save_stream) < uint64(1) {
 		if !(savegame_error != 0) {
-			libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(25013), 0)
+			fprintf_ccgo(os.Stderr, 25013)
 			savegame_error = 1
 		}
 	}
@@ -34185,7 +34179,6 @@ func P_GroupLines(tls *libc.TLS) {
 // to simulate a REJECT buffer overflow in Vanilla Doom.
 
 func PadRejectArray(tls *libc.TLS, array uintptr, len1 uint32) {
-	bp := alloc(32)
 	var byte_num, i, padvalue uint32
 	var dest uintptr
 	var rejectpad [4]uint32
@@ -34213,7 +34206,7 @@ func PadRejectArray(tls *libc.TLS, array uintptr, len1 uint32) {
 	// We only have a limited pad size.  Print a warning if the
 	// REJECT lump is too small.
 	if uint64(len1) > uint64(16) {
-		libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(25149), libc.VaList(bp+8, len1, libc.Int32FromInt64(16)))
+		fprintf_ccgo(os.Stderr, 25149, len1, 16)
 		// Pad remaining space with 0 (or 0xff, if specified on command line).
 		if M_CheckParm(tls, __ccgo_ts(25206)) != 0 {
 			padvalue = uint32(0xff)
@@ -35665,7 +35658,6 @@ func P_UpdateSpecials(tls *libc.TLS) {
 //
 
 func DonutOverrun(tls *libc.TLS, s3_floorheight uintptr, s3_floorpic uintptr, line uintptr, pillar_sector uintptr) {
-	bp := alloc(32)
 	var p int32
 	if first != 0 {
 		// This is the first time we have had an overrun.
@@ -35700,7 +35692,7 @@ func DonutOverrun(tls *libc.TLS, s3_floorheight uintptr, s3_floorpic uintptr, li
 			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uintptr(unsafe.Pointer(&tmp_s3_floorheight)))
 			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(2))*8)), uintptr(unsafe.Pointer(&tmp_s3_floorpic)))
 			if tmp_s3_floorpic >= numflats {
-				libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(25438), libc.VaList(bp+8, numflats, int32(DONUT_FLOORPIC_DEFAULT)))
+				fprintf_ccgo(os.Stderr, 25438, numflats, DONUT_FLOORPIC_DEFAULT)
 				tmp_s3_floorpic = int32(DONUT_FLOORPIC_DEFAULT)
 			}
 		}
@@ -35755,7 +35747,7 @@ func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
 		// isn't something that should be done, anyway.
 		// Just print a warning and return.
 		if s2 == libc.UintptrFromInt32(0) {
-			libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(25590), 0)
+			fprintf_ccgo(os.Stderr, 25590)
 			break
 		}
 		i = 0
@@ -35773,7 +35765,7 @@ func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
 				// s3->floorheight is an int at 0000:0000
 				// s3->floorpic is a short at 0000:0008
 				// Trying to emulate
-				libc.Xfprintf(tls, libc.Xstderr, __ccgo_ts(25682), 0)
+				fprintf_ccgo(os.Stderr, 25682)
 				DonutOverrun(tls, bp, bp+4, line, s1)
 			} else {
 				*(*fixed_t)(unsafe.Pointer(bp)) = (*sector_t)(unsafe.Pointer(s3)).Ffloorheight
@@ -37803,7 +37795,7 @@ func R_GenerateLookup(tls *libc.TLS, texnum int32) {
 			break
 		}
 		if !(*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x))) != 0) {
-			libc.Xprintf(tls, __ccgo_ts(25938), libc.VaList(bp+16, texture))
+			fprintf_ccgo(os.Stdout, 25938, texture)
 			return
 		}
 		// I_Error ("R_GenerateLookup: column without a patch");
@@ -37940,25 +37932,25 @@ func R_InitTextures(tls *libc.TLS) {
 	// up the box" effect, which uses backspace to "step back" inside
 	// the box.  If stdout is a file, don't draw the box.
 	if I_ConsoleStdout(tls) != 0 {
-		libc.Xprintf(tls, __ccgo_ts(26061), 0)
+		fprintf_ccgo(os.Stdout, 26061)
 		i = 0
 		for {
 			if !(i < temp3+int32(9)) {
 				break
 			}
-			libc.Xprintf(tls, __ccgo_ts(26063), 0)
+			fprintf_ccgo(os.Stdout, 26063)
 			goto _3
 		_3:
 			;
 			i++
 		}
-		libc.Xprintf(tls, __ccgo_ts(26065), 0)
+		fprintf_ccgo(os.Stdout, 26065)
 		i = 0
 		for {
 			if !(i < temp3+int32(10)) {
 				break
 			}
-			libc.Xprintf(tls, __ccgo_ts(26067), 0)
+			fprintf_ccgo(os.Stdout, 26067)
 			goto _4
 		_4:
 			;
@@ -37971,7 +37963,7 @@ func R_InitTextures(tls *libc.TLS) {
 			break
 		}
 		if !(i&63 != 0) {
-			libc.Xprintf(tls, __ccgo_ts(1250), 0)
+			fprintf_ccgo(os.Stdout, 1250)
 		}
 		if i == numtextures1 {
 			// Start looking in second texture file.
@@ -38107,7 +38099,7 @@ func R_InitSpriteLumps(tls *libc.TLS) {
 			break
 		}
 		if !(i&63 != 0) {
-			libc.Xprintf(tls, __ccgo_ts(1250), 0)
+			fprintf_ccgo(os.Stdout, 1250)
 		}
 		patch = W_CacheLumpNum(tls, firstspritelump+i, int32(PU_CACHE))
 		*(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(i)*4)) = int32((*patch_t)(unsafe.Pointer(patch)).Fwidth) << int32(FRACBITS)
@@ -38143,11 +38135,11 @@ func R_InitColormaps(tls *libc.TLS) {
 //	//
 func R_InitData(tls *libc.TLS) {
 	R_InitTextures(tls)
-	libc.Xprintf(tls, __ccgo_ts(1250), 0)
+	fprintf_ccgo(os.Stdout, 1250)
 	R_InitFlats(tls)
-	libc.Xprintf(tls, __ccgo_ts(1250), 0)
+	fprintf_ccgo(os.Stdout, 1250)
 	R_InitSpriteLumps(tls)
-	libc.Xprintf(tls, __ccgo_ts(1250), 0)
+	fprintf_ccgo(os.Stdout, 1250)
 	R_InitColormaps(tls)
 }
 
@@ -39554,20 +39546,20 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 
 func R_Init(tls *libc.TLS) {
 	R_InitData(tls)
-	libc.Xprintf(tls, __ccgo_ts(1250), 0)
+	fprintf_ccgo(os.Stdout, 1250)
 	R_InitPointToAngle(tls)
-	libc.Xprintf(tls, __ccgo_ts(1250), 0)
+	fprintf_ccgo(os.Stdout, 1250)
 	R_InitTables(tls)
 	// viewwidth / viewheight / detailLevel are set by the defaults
-	libc.Xprintf(tls, __ccgo_ts(1250), 0)
+	fprintf_ccgo(os.Stdout, 1250)
 	R_SetViewSize(tls, screenblocks, detailLevel)
 	R_InitPlanes(tls)
-	libc.Xprintf(tls, __ccgo_ts(1250), 0)
+	fprintf_ccgo(os.Stdout, 1250)
 	R_InitLightTables(tls)
-	libc.Xprintf(tls, __ccgo_ts(1250), 0)
+	fprintf_ccgo(os.Stdout, 1250)
 	R_InitSkyMap(tls)
 	R_InitTranslationTables(tls)
-	libc.Xprintf(tls, __ccgo_ts(1250), 0)
+	fprintf_ccgo(os.Stdout, 1250)
 }
 
 // C documentation
@@ -62403,7 +62395,6 @@ func WI_drawEL(tls *libc.TLS) {
 }
 
 func WI_drawOnLnode(tls *libc.TLS, n int32, c uintptr) {
-	bp := alloc(16)
 	var bottom, i, left, right, top int32
 	var fits boolean
 	fits = 0
@@ -62423,7 +62414,7 @@ func WI_drawOnLnode(tls *libc.TLS, n int32, c uintptr) {
 		V_DrawPatch(tls, (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fx, (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fy, *(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))
 	} else {
 		// DEBUG
-		libc.Xprintf(tls, __ccgo_ts(28344), libc.VaList(bp+8, n+int32(1)))
+		fprintf_ccgo(os.Stdout, 28344, n+1)
 	}
 }
 
@@ -63773,7 +63764,6 @@ func W_Read(tls *libc.TLS, wad uintptr, offset uint32, buffer uintptr, buffer_le
 // Returns true if at least one file was added.
 
 func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
-	bp := alloc(16)
 	var filename uintptr
 	var modifiedgame boolean
 	var p, v1 int32
@@ -63796,7 +63786,7 @@ func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
 				break
 			}
 			filename = D_TryFindWADByName(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8)))
-			libc.Xprintf(tls, __ccgo_ts(2817), libc.VaList(bp+8, filename))
+			fprintf_ccgo(os.Stdout, 2817, libc.GoString(filename))
 			W_AddFile(tls, filename)
 		}
 	}
@@ -63902,7 +63892,7 @@ func W_AddFile(tls *libc.TLS, filename uintptr) (r uintptr) {
 	// open the file and add to directory
 	wad_file = W_OpenFile(tls, filename)
 	if wad_file == libc.UintptrFromInt32(0) {
-		libc.Xprintf(tls, __ccgo_ts(28631), libc.VaList(bp+24, filename))
+		fprintf_ccgo(os.Stdout, 28631, libc.GoString(filename))
 		return libc.UintptrFromInt32(0)
 	}
 	newnumlumps = libc.Int32FromUint32(numlumps)
@@ -64883,7 +64873,7 @@ func I_SetPalette(tls *libc.TLS, palette uintptr) {
 
 func I_GetPaletteIndex(tls *libc.TLS, r int32, g int32, b int32) (r1 int32) {
 	var best, best_diff, diff int32
-	libc.Xprintf(tls, __ccgo_ts(30076), 0)
+	fprintf_ccgo(os.Stdout, 30076)
 	best = 0
 	best_diff = int32(INT_MAX19)
 	for i := int32(0); i < 256; i++ {
@@ -67212,6 +67202,14 @@ var yslope [200]fixed_t
 var yspeed [8]fixed_t
 
 var zlight [16][128]uintptr
+
+func fprintf_ccgo(output io.Writer, index int, args ...any) {
+	fmtStr, ok := __ccgo_ts_map[index]
+	if !ok {
+		panic(fmt.Sprintf("index %d not found in __ccgo_ts_map", index))
+	}
+	fmt.Fprintf(output, string(fmtStr), args...)
+}
 
 func __ccgo_ts(index int) uintptr {
 	val, ok := __ccgo_ts_map[index]
