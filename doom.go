@@ -72,6 +72,15 @@ func xmemset(dest uintptr, c uint8, n uint64) {
 	}
 }
 
+func xmemcpy(dest, src uintptr, n uint64) (r uintptr) {
+	if n != 0 {
+		srcSlice := unsafe.Slice((*byte)(unsafe.Pointer(src)), n)
+		destSlice := unsafe.Slice((*byte)(unsafe.Pointer(dest)), n)
+		copy(destSlice, srcSlice)
+	}
+	return dest
+}
+
 const AM_NUMMARKPOINTS = 10
 const ANGLETOFINESHIFT = 19
 const BACKUPTICS = 128
@@ -4607,7 +4616,7 @@ func TryRunTics(tls *libc.TLS) {
 			if gametic/ticdup > lowtic {
 				I_Error(tls, __ccgo_ts(1475), 0)
 			}
-			libc.Xmemcpy(tls, uintptr(unsafe.Pointer(&local_playeringame)), set+128, uint64(32))
+			xmemcpy(uintptr(unsafe.Pointer(&local_playeringame)), set+128, uint64(32))
 			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*loop_interface_t)(unsafe.Pointer(loop_interface)).FRunTic})))(tls, set, set+128)
 			gametic++
 			// modify command for duplicated tics
@@ -6692,7 +6701,7 @@ func F_TextWrite(tls *libc.TLS) {
 			if !(x < SCREENWIDTH/64) {
 				break
 			}
-			libc.Xmemcpy(tls, dest, src+uintptr(y&63<<6), uint64(64))
+			xmemcpy(dest, src+uintptr(y&63<<6), uint64(64))
 			dest += uintptr(64)
 			goto _2
 		_2:
@@ -6700,7 +6709,7 @@ func F_TextWrite(tls *libc.TLS) {
 			x++
 		}
 		if SCREENWIDTH&63 != 0 {
-			libc.Xmemcpy(tls, dest, src+uintptr(y&63<<6), libc.Uint64FromInt32(SCREENWIDTH&63))
+			xmemcpy(dest, src+uintptr(y&63<<6), libc.Uint64FromInt32(SCREENWIDTH&63))
 			dest += uintptr(SCREENWIDTH & 63)
 		}
 		goto _1
@@ -7240,12 +7249,12 @@ func wipe_shittyColMajorXform(tls *libc.TLS, array uintptr, width int32, height 
 		;
 		y++
 	}
-	libc.Xmemcpy(tls, array, dest, libc.Uint64FromInt32(width*height*int32(2)))
+	xmemcpy(array, dest, libc.Uint64FromInt32(width*height*int32(2)))
 	Z_Free(tls, dest)
 }
 
 func wipe_initColorXForm(tls *libc.TLS, width int32, height int32, ticks int32) (r int32) {
-	libc.Xmemcpy(tls, wipe_scr, wipe_scr_start, libc.Uint64FromInt32(width*height))
+	xmemcpy(wipe_scr, wipe_scr_start, libc.Uint64FromInt32(width*height))
 	return 0
 }
 
@@ -7293,7 +7302,7 @@ var y uintptr
 func wipe_initMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r1 int32) {
 	var i, r int32
 	// copy start screen to main screen
-	libc.Xmemcpy(tls, wipe_scr, wipe_scr_start, libc.Uint64FromInt32(width*height))
+	xmemcpy(wipe_scr, wipe_scr_start, libc.Uint64FromInt32(width*height))
 	// makes this wipe faster (in theory)
 	// to have stuff in column-major format
 	wipe_shittyColMajorXform(tls, wipe_scr_start, width/int32(2), height)
@@ -8178,7 +8187,7 @@ func G_Ticker(tls *libc.TLS) {
 		}
 		if playeringame[i] != 0 {
 			cmd = uintptr(unsafe.Pointer(&players)) + uintptr(i)*328 + 12
-			libc.Xmemcpy(tls, cmd, netcmds+uintptr(i)*16, uint64(16))
+			xmemcpy(cmd, netcmds+uintptr(i)*16, uint64(16))
 			if demoplayback != 0 {
 				G_ReadDemoTiccmd(tls, cmd)
 			}
@@ -8300,13 +8309,13 @@ func G_PlayerReborn(tls *libc.TLS, player int32) {
 	var i, itemcount, killcount, secretcount, v1 int32
 	var p uintptr
 	var v2 weapontype_t
-	libc.Xmemcpy(tls, bp, uintptr(unsafe.Pointer(&players))+uintptr(player)*328+108, uint64(16))
+	xmemcpy(bp, uintptr(unsafe.Pointer(&players))+uintptr(player)*328+108, uint64(16))
 	killcount = players[player].Fkillcount
 	itemcount = players[player].Fitemcount
 	secretcount = players[player].Fsecretcount
 	p = uintptr(unsafe.Pointer(&players)) + uintptr(player)*328
 	xmemset(p, 0, uint64(328))
-	libc.Xmemcpy(tls, uintptr(unsafe.Pointer(&players))+uintptr(player)*328+108, bp, uint64(16))
+	xmemcpy(uintptr(unsafe.Pointer(&players))+uintptr(player)*328+108, bp, uint64(16))
 	players[player].Fkillcount = killcount
 	players[player].Fitemcount = itemcount
 	players[player].Fsecretcount = secretcount
@@ -8753,7 +8762,7 @@ func G_DoCompleted(tls *libc.TLS) {
 		(*(*wbplayerstruct_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&wminfo)) + 40 + uintptr(i)*40))).Fsitems = players[i].Fitemcount
 		(*(*wbplayerstruct_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&wminfo)) + 40 + uintptr(i)*40))).Fssecret = players[i].Fsecretcount
 		(*(*wbplayerstruct_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&wminfo)) + 40 + uintptr(i)*40))).Fstime = leveltime
-		libc.Xmemcpy(tls, uintptr(unsafe.Pointer(&wminfo))+40+uintptr(i)*40+20, uintptr(unsafe.Pointer(&players))+uintptr(i)*328+108, uint64(16))
+		xmemcpy(uintptr(unsafe.Pointer(&wminfo))+40+uintptr(i)*40+20, uintptr(unsafe.Pointer(&players))+uintptr(i)*328+108, uint64(16))
 		goto _9
 	_9:
 		;
@@ -9138,7 +9147,7 @@ func IncreaseDemoBuffer(tls *libc.TLS) {
 	new_demobuffer = Z_Malloc(tls, new_length, int32(PU_STATIC), uintptr(0))
 	new_demop = new_demobuffer + uintptr(int64(demo_p)-int64(demobuffer))
 	// Copy over the old data
-	libc.Xmemcpy(tls, new_demobuffer, demobuffer, libc.Uint64FromInt32(current_length))
+	xmemcpy(new_demobuffer, demobuffer, libc.Uint64FromInt32(current_length))
 	// Free the old buffer and point the demo pointers at the new buffer.
 	Z_Free(tls, demobuffer)
 	demobuffer = new_demobuffer
@@ -18199,7 +18208,7 @@ func I_Scale1x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 		if !(y < y2) {
 			break
 		}
-		libc.Xmemcpy(tls, screenp, bufp, libc.Uint64FromInt32(w))
+		xmemcpy(screenp, bufp, libc.Uint64FromInt32(w))
 		screenp += uintptr(dest_pitch)
 		bufp += uintptr(SCREENWIDTH)
 		goto _1
@@ -18756,7 +18765,7 @@ func I_Stretch1x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 			break
 		}
 		// 100% line 0
-		libc.Xmemcpy(tls, screenp, bufp, uint64(SCREENWIDTH))
+		xmemcpy(screenp, bufp, uint64(SCREENWIDTH))
 		screenp += uintptr(dest_pitch)
 		// 20% line 0, 80% line 1
 		WriteBlendedLine1x(tls, screenp, bufp, bufp+uintptr(SCREENWIDTH), stretch_tables[0])
@@ -18775,7 +18784,7 @@ func I_Stretch1x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 		screenp += uintptr(dest_pitch)
 		bufp += uintptr(SCREENWIDTH)
 		// 100% line 4
-		libc.Xmemcpy(tls, screenp, bufp, uint64(SCREENWIDTH))
+		xmemcpy(screenp, bufp, uint64(SCREENWIDTH))
 		screenp += uintptr(dest_pitch)
 		bufp += uintptr(SCREENWIDTH)
 		goto _1
@@ -20971,7 +20980,7 @@ func cht_CheckCheat(tls *libc.TLS, cht uintptr, key int8) (r int32) {
 }
 
 func cht_GetParam(tls *libc.TLS, cht uintptr, buffer uintptr) {
-	libc.Xmemcpy(tls, buffer, cht+60, libc.Uint64FromInt32((*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars))
+	xmemcpy(buffer, cht+60, libc.Uint64FromInt32((*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars))
 }
 
 const EISDIR = 21
@@ -30819,7 +30828,7 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 	// count deathmatch start positions
 	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) == int32(11) {
 		if deathmatch_p < uintptr(unsafe.Pointer(&deathmatchstarts))+10*10 {
-			libc.Xmemcpy(tls, deathmatch_p, mthing, uint64(10))
+			xmemcpy(deathmatch_p, mthing, uint64(10))
 			deathmatch_p += 10
 		}
 		return
@@ -37683,7 +37692,7 @@ func R_DrawColumnInCache(tls *libc.TLS, patch uintptr, cache uintptr, originy in
 			count = cacheheight - position
 		}
 		if count > 0 {
-			libc.Xmemcpy(tls, cache+uintptr(position), source, libc.Uint64FromInt32(count))
+			xmemcpy(cache+uintptr(position), source, libc.Uint64FromInt32(count))
 		}
 		patch = patch + uintptr((*column_t)(unsafe.Pointer(patch)).Flength) + libc.UintptrFromInt32(4)
 	}
@@ -37999,7 +38008,7 @@ func R_InitTextures(tls *libc.TLS) {
 		(*texture_t)(unsafe.Pointer(texture)).Fwidth = (*maptexture_t)(unsafe.Pointer(mtexture)).Fwidth
 		(*texture_t)(unsafe.Pointer(texture)).Fheight = (*maptexture_t)(unsafe.Pointer(mtexture)).Fheight
 		(*texture_t)(unsafe.Pointer(texture)).Fpatchcount = (*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount
-		libc.Xmemcpy(tls, texture, mtexture, uint64(8))
+		xmemcpy(texture, mtexture, uint64(8))
 		mpatch = mtexture + 22
 		patch = texture + 28
 		j = 0
@@ -38172,7 +38181,7 @@ func R_FlatNumForName(tls *libc.TLS, name uintptr) (r int32) {
 	i = W_CheckNumForName(tls, name)
 	if i == -int32(1) {
 		(*(*[9]int8)(unsafe.Pointer(bp)))[int32(8)] = 0
-		libc.Xmemcpy(tls, bp, name, uint64(8))
+		xmemcpy(bp, name, uint64(8))
 		I_Error(tls, __ccgo_ts(26174), libc.VaList(bp+24, bp))
 	}
 	return i - firstflat
@@ -38942,7 +38951,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 			if !(x < SCREENWIDTH/64) {
 				break
 			}
-			libc.Xmemcpy(tls, dest, src+uintptr(y&63<<6), uint64(64))
+			xmemcpy(dest, src+uintptr(y&63<<6), uint64(64))
 			dest += uintptr(64)
 			goto _2
 		_2:
@@ -38950,7 +38959,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 			x++
 		}
 		if SCREENWIDTH&63 != 0 {
-			libc.Xmemcpy(tls, dest, src+uintptr(y&63<<6), libc.Uint64FromInt32(SCREENWIDTH&63))
+			xmemcpy(dest, src+uintptr(y&63<<6), libc.Uint64FromInt32(SCREENWIDTH&63))
 			dest += uintptr(SCREENWIDTH & 63)
 		}
 		goto _1
@@ -39028,7 +39037,7 @@ func R_VideoErase(tls *libc.TLS, ofs uint32, count int32) {
 	//  a 32bit CPU, as GNU GCC/Linux libc did
 	//  at one point.
 	if background_buffer != libc.UintptrFromInt32(0) {
-		libc.Xmemcpy(tls, I_VideoBuffer+uintptr(ofs), background_buffer+uintptr(ofs), libc.Uint64FromInt32(count))
+		xmemcpy(I_VideoBuffer+uintptr(ofs), background_buffer+uintptr(ofs), libc.Uint64FromInt32(count))
 	}
 }
 
@@ -40476,12 +40485,12 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	R_RenderSegLoop(tls)
 	// save sprite clipping info
 	if ((*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette&int32(SIL_TOP) != 0 || maskedtexture != 0) && !((*drawseg_t)(unsafe.Pointer(ds_p)).Fsprtopclip != 0) {
-		libc.Xmemcpy(tls, lastopening, uintptr(unsafe.Pointer(&ceilingclip))+uintptr(start)*2, libc.Uint64FromInt32(int32(2)*(rw_stopx-start)))
+		xmemcpy(lastopening, uintptr(unsafe.Pointer(&ceilingclip))+uintptr(start)*2, libc.Uint64FromInt32(int32(2)*(rw_stopx-start)))
 		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprtopclip = lastopening - uintptr(start)*2
 		lastopening += uintptr(rw_stopx-start) * 2
 	}
 	if ((*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette&int32(SIL_BOTTOM) != 0 || maskedtexture != 0) && !((*drawseg_t)(unsafe.Pointer(ds_p)).Fsprbottomclip != 0) {
-		libc.Xmemcpy(tls, lastopening, uintptr(unsafe.Pointer(&floorclip))+uintptr(start)*2, libc.Uint64FromInt32(int32(2)*(rw_stopx-start)))
+		xmemcpy(lastopening, uintptr(unsafe.Pointer(&floorclip))+uintptr(start)*2, libc.Uint64FromInt32(int32(2)*(rw_stopx-start)))
 		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprbottomclip = lastopening - uintptr(start)*2
 		lastopening += uintptr(rw_stopx-start) * 2
 	}
@@ -40696,7 +40705,7 @@ func R_InitSpriteDefs(tls *libc.TLS, namelist uintptr) {
 		// allocate space for the frames present and copy sprtemp to it
 		(*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fnumframes = maxframe
 		(*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(maxframe)*uint64(28)), int32(PU_STATIC), libc.UintptrFromInt32(0))
-		libc.Xmemcpy(tls, (*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes, uintptr(unsafe.Pointer(&sprtemp)), libc.Uint64FromInt32(maxframe)*uint64(28))
+		xmemcpy((*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes, uintptr(unsafe.Pointer(&sprtemp)), libc.Uint64FromInt32(maxframe)*uint64(28))
 		goto _1
 	_1:
 		;
@@ -41975,7 +41984,7 @@ func SHA1_Final(tls *libc.TLS, digest uintptr, hd uintptr) {
 	v28 = p
 	p++
 	*(*uint8)(unsafe.Pointer(v28)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4)
-	libc.Xmemcpy(tls, digest, hd+24, uint64(20))
+	xmemcpy(digest, hd+24, uint64(20))
 }
 
 func SHA1_UpdateInt32(tls *libc.TLS, context uintptr, val uint32) {
@@ -42974,7 +42983,7 @@ var num_captured_stats = int32(0)
 
 func StatCopy(tls *libc.TLS, stats uintptr) {
 	if M_ParmExists(tls, __ccgo_ts(5318)) != 0 && num_captured_stats < int32(MAX_CAPTURES) {
-		libc.Xmemcpy(tls, uintptr(unsafe.Pointer(&captured_stats))+uintptr(num_captured_stats)*200, stats, uint64(200))
+		xmemcpy(uintptr(unsafe.Pointer(&captured_stats))+uintptr(num_captured_stats)*200, stats, uint64(200))
 		num_captured_stats++
 	}
 }
@@ -61333,7 +61342,7 @@ func V_CopyRect(tls *libc.TLS, srcx int32, srcy int32, source uintptr, width int
 		if !(height > 0) {
 			break
 		}
-		libc.Xmemcpy(tls, dest, src, libc.Uint64FromInt32(width))
+		xmemcpy(dest, src, libc.Uint64FromInt32(width))
 		src += uintptr(SCREENWIDTH)
 		dest += uintptr(SCREENWIDTH)
 		goto _1
@@ -61481,7 +61490,7 @@ func V_DrawBlock(tls *libc.TLS, x int32, y int32, width int32, height int32, src
 		if !(v1 != 0) {
 			break
 		}
-		libc.Xmemcpy(tls, dest, src, libc.Uint64FromInt32(width))
+		xmemcpy(dest, src, libc.Uint64FromInt32(width))
 		src += uintptr(width)
 		dest += uintptr(SCREENWIDTH)
 	}
@@ -63867,7 +63876,7 @@ func ExtendLumpInfo(tls *libc.TLS, newnumlumps int32) {
 		if !(i < numlumps && i < libc.Uint32FromInt32(newnumlumps)) {
 			break
 		}
-		libc.Xmemcpy(tls, newlumpinfo+uintptr(i)*40, lumpinfo+uintptr(i)*40, uint64(40))
+		xmemcpy(newlumpinfo+uintptr(i)*40, lumpinfo+uintptr(i)*40, uint64(40))
 		if (*(*lumpinfo_t)(unsafe.Pointer(newlumpinfo + uintptr(i)*40))).Fcache != libc.UintptrFromInt32(0) {
 			Z_ChangeUser(tls, (*(*lumpinfo_t)(unsafe.Pointer(newlumpinfo + uintptr(i)*40))).Fcache, newlumpinfo+uintptr(i)*40+24)
 		}
@@ -64870,7 +64879,7 @@ func I_FinishUpdate() {
 //	// I_ReadScreen
 //	//
 func I_ReadScreen(tls *libc.TLS, scr uintptr) {
-	libc.Xmemcpy(tls, scr, I_VideoBuffer, libc.Uint64FromInt32(SCREENWIDTH*SCREENHEIGHT))
+	xmemcpy(scr, I_VideoBuffer, libc.Uint64FromInt32(SCREENWIDTH*SCREENHEIGHT))
 }
 
 //
