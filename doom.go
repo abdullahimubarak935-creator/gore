@@ -2780,7 +2780,7 @@ func AM_loadPics(tls *libc.TLS) {
 		if !(i < int32(10)) {
 			break
 		}
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(0), libc.VaList(bp+24, i))
+		snprintf_ccgo(bp, 9, 0, i)
 		marknums[i] = W_CacheLumpName(tls, bp, int32(PU_STATIC))
 		goto _1
 	_1:
@@ -2797,7 +2797,7 @@ func AM_unloadPics(tls *libc.TLS) {
 		if !(i < int32(10)) {
 			break
 		}
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(0), libc.VaList(bp+24, i))
+		snprintf_ccgo(bp, 9, 0, i)
 		W_ReleaseLumpName(tls, bp)
 		goto _1
 	_1:
@@ -5852,7 +5852,7 @@ func D_DoomMain(tls *libc.TLS) {
 		if M_StringEndsWith(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(4476)) != 0 {
 			M_StringCopy(tls, bp, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uint64(256))
 		} else {
-			libc.X__builtin_snprintf(tls, bp, uint64(256), __ccgo_ts(4481), libc.VaList(bp+464, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))
+			snprintf_ccgo(bp, 256, 4481, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		}
 		if D_AddFile(tls, bp) != 0 {
 			M_StringCopy(tls, bp+256, lumpinfo+uintptr(numlumps-uint32(1))*40, uint64(9))
@@ -7111,7 +7111,7 @@ func F_BunnyScroll(tls *libc.TLS) {
 		S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_pistol))
 		laststage = stage
 	}
-	libc.X__builtin_snprintf(tls, bp, uint64(10), __ccgo_ts(13657), libc.VaList(bp+24, stage))
+	snprintf_ccgo(bp, 10, 13657, stage)
 	V_DrawPatch(tls, (SCREENWIDTH-13*8)/2, (SCREENHEIGHT-8*8)/2, W_CacheLumpName(tls, bp, int32(PU_CACHE)))
 }
 
@@ -9962,7 +9962,7 @@ func HU_Init(tls *libc.TLS) {
 		}
 		v2 = j
 		j++
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(17480), libc.VaList(bp+24, v2))
+		snprintf_ccgo(bp, 9, 17480, v2)
 		hu_font[i] = W_CacheLumpName(tls, bp, int32(PU_STATIC))
 		goto _1
 	_1:
@@ -22855,7 +22855,6 @@ func M_QuickSaveResponse(tls *libc.TLS, key int32) {
 }
 
 func M_QuickSave(tls *libc.TLS) {
-	bp := alloc(16)
 	if !(usergame != 0) {
 		S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 		return
@@ -22870,7 +22869,7 @@ func M_QuickSave(tls *libc.TLS) {
 		quickSaveSlot = -int32(2) // means to pick a slot now
 		return
 	}
-	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&tempstring)), uint64(80), __ccgo_ts(22279), libc.VaList(bp+8, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
+	snprintf_ccgo(uintptr(unsafe.Pointer(&tempstring)), 80, 22279, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24)
 	M_StartMessage(tls, uintptr(unsafe.Pointer(&tempstring)), __ccgo_fp(M_QuickSaveResponse), 1)
 }
 
@@ -22887,7 +22886,6 @@ func M_QuickLoadResponse(tls *libc.TLS, key int32) {
 }
 
 func M_QuickLoad(tls *libc.TLS) {
-	bp := alloc(16)
 	if netgame != 0 {
 		M_StartMessage(tls, __ccgo_ts(22332), libc.UintptrFromInt32(0), 0)
 		return
@@ -22896,7 +22894,7 @@ func M_QuickLoad(tls *libc.TLS) {
 		M_StartMessage(tls, __ccgo_ts(22384), libc.UintptrFromInt32(0), 0)
 		return
 	}
-	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&tempstring)), uint64(80), __ccgo_ts(22439), libc.VaList(bp+8, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
+	snprintf_ccgo(uintptr(unsafe.Pointer(&tempstring)), 80, 22439, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24)
 	M_StartMessage(tls, uintptr(unsafe.Pointer(&tempstring)), __ccgo_fp(M_QuickLoadResponse), 1)
 }
 
@@ -23245,8 +23243,7 @@ func M_SelectEndMessage(tls *libc.TLS) (r uintptr) {
 }
 
 func M_QuitDOOM(tls *libc.TLS, choice int32) {
-	bp := alloc(16)
-	libc.X__builtin_snprintf(tls, uintptr(unsafe.Pointer(&endstring)), uint64(160), __ccgo_ts(23010), libc.VaList(bp+8, M_SelectEndMessage(tls)))
+	snprintf_ccgo(uintptr(unsafe.Pointer(&endstring)), 160, 23010, M_SelectEndMessage(tls))
 	M_StartMessage(tls, uintptr(unsafe.Pointer(&endstring)), __ccgo_fp(M_QuitResponse), 1)
 }
 
@@ -31977,7 +31974,7 @@ func P_SaveGameFile(tls *libc.TLS, slot int32) (r uintptr) {
 		filename_size = libc.Xstrlen(tls, savegamedir) + uint64(32)
 		filename1 = libc.Xmalloc(tls, filename_size)
 	}
-	libc.X__builtin_snprintf(tls, bp, uint64(32), __ccgo_ts(24933), libc.VaList(bp+40, slot))
+	snprintf_ccgo(bp, 32, 24933, slot)
 	M_snprintf(tls, filename1, filename_size, __ccgo_ts(24947), libc.VaList(bp+40, savegamedir, bp))
 	return filename1
 }
@@ -34276,9 +34273,9 @@ func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, sk
 	// find map name
 	if gamemode == int32(commercial) {
 		if map1 < int32(10) {
-			libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(25226), libc.VaList(bp+24, map1))
+			snprintf_ccgo(bp, 9, 25226, map1)
 		} else {
-			libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(25233), libc.VaList(bp+24, map1))
+			snprintf_ccgo(bp, 9, 25233, map1)
 		}
 	} else {
 		(*(*[9]int8)(unsafe.Pointer(bp)))[0] = int8('E')
@@ -44129,9 +44126,9 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 		if !(i < int32(10)) {
 			break
 		}
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27843), libc.VaList(bp+24, i))
+		snprintf_ccgo(bp, 9, 27843, i)
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&tallnum))+uintptr(i)*8)
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27852), libc.VaList(bp+24, i))
+		snprintf_ccgo(bp, 9, 27852, i)
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&shortnum))+uintptr(i)*8)
 		goto _1
 	_1:
@@ -44147,7 +44144,7 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 		if !(i < int32(NUMCARDS)) {
 			break
 		}
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27871), libc.VaList(bp+24, i))
+		snprintf_ccgo(bp, 9, 27871, i)
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&keys))+uintptr(i)*8)
 		goto _2
 	_2:
@@ -44162,7 +44159,7 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 		if !(i < int32(6)) {
 			break
 		}
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27887), libc.VaList(bp+24, i+int32(2)))
+		snprintf_ccgo(bp, 9, 27887, i+2)
 		// gray #
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&arms))+uintptr(i)*16)
 		// yellow #
@@ -44173,7 +44170,7 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 		i++
 	}
 	// face backgrounds for different color players
-	libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27896), libc.VaList(bp+24, consoleplayer))
+	snprintf_ccgo(bp, 9, 27896, consoleplayer)
 	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faceback)))
 	// status bar background bits
 	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(27903), uintptr(unsafe.Pointer(&sbar)))
@@ -44189,7 +44186,7 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 			if !(j < int32(ST_NUMSTRAIGHTFACES)) {
 				break
 			}
-			libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27909), libc.VaList(bp+24, i, j))
+			snprintf_ccgo(bp, 9, 27909, i, j)
 			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 			facenum++
 			goto _5
@@ -44197,19 +44194,19 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 			;
 			j++
 		}
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27919), libc.VaList(bp+24, i)) // turn right
+		snprintf_ccgo(bp, 9, 27919, i) // turn right
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27928), libc.VaList(bp+24, i)) // turn left
+		snprintf_ccgo(bp, 9, 27928, i) // turn left
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27937), libc.VaList(bp+24, i)) // ouch!
+		snprintf_ccgo(bp, 9, 27937, i) // ouch!
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27947), libc.VaList(bp+24, i)) // evil grin ;)
+		snprintf_ccgo(bp, 9, 27947, i) // evil grin ;)
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
-		libc.X__builtin_snprintf(tls, bp, uint64(9), __ccgo_ts(27956), libc.VaList(bp+24, i)) // pissed off
+		snprintf_ccgo(bp, 9, 27956, i) // pissed off
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
 		goto _4
@@ -63420,7 +63417,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 			if !(i < NUMCMAPS) {
 				break
 			}
-			libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28378), libc.VaList(bp1+24, i))
+			snprintf_ccgo(bp1, 9, 28378, i)
 			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, lnames+uintptr(i)*8)
 			goto _1
 		_1:
@@ -63433,7 +63430,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 			if !(i < int32(NUMMAPS)) {
 				break
 			}
-			libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28389), libc.VaList(bp1+24, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, i))
+			snprintf_ccgo(bp1, 9, 28389, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, i)
 			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, lnames+uintptr(i)*8)
 			goto _2
 		_2:
@@ -63461,7 +63458,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 					// MONDO HACK!
 					if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd != int32(1) || j != int32(8) {
 						// animations
-						libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28420), libc.VaList(bp1+24, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, j, i))
+						snprintf_ccgo(bp1, 9, 28420, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, j, i)
 						(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, a+32+uintptr(i)*8)
 					} else {
 						// HACK ALERT!
@@ -63487,7 +63484,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 			break
 		}
 		// numbers 0-9
-		libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28442), libc.VaList(bp1+24, i))
+		snprintf_ccgo(bp1, 9, 28442, i)
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, uintptr(unsafe.Pointer(&num))+uintptr(i)*8)
 		goto _5
 	_5:
@@ -63539,10 +63536,10 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 			break
 		}
 		// "1,2,3,4"
-		libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28563), libc.VaList(bp1+24, i))
+		snprintf_ccgo(bp1, 9, 28563, i)
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, uintptr(unsafe.Pointer(&p))+uintptr(i)*8)
 		// "1,2,3,4"
-		libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28570), libc.VaList(bp1+24, i+int32(1)))
+		snprintf_ccgo(bp1, 9, 28570, i+int32(1))
 		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, uintptr(unsafe.Pointer(&bp))+uintptr(i)*8)
 		goto _6
 	_6:
@@ -63556,7 +63553,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 		if gamemode == int32(retail) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd == int32(3) {
 			M_StringCopy(tls, bp1, __ccgo_ts(1951), uint64(9))
 		} else {
-			libc.X__builtin_snprintf(tls, bp1, uint64(9), __ccgo_ts(28577), libc.VaList(bp1+24, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd))
+			snprintf_ccgo(bp1, 9, 28577, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)
 		}
 	}
 	// Draw backdrop and save to a temporary buffer
@@ -67213,6 +67210,31 @@ func fprintf_ccgo(output io.Writer, index int, args ...any) {
 		fmtStr = fmtStr[:len(fmtStr)-1]
 	}
 	fmt.Fprintf(output, string(fmtStr), args...)
+}
+
+func snprintf_ccgo(bp uintptr, maxlen int, index int, args ...any) {
+	if maxlen <= 0 {
+		panic("snprintf_ccgo: negative length")
+	}
+	fmtStr, ok := __ccgo_ts_map[index]
+	if !ok {
+		panic(fmt.Sprintf("index %d not found in __ccgo_ts_map", index))
+	}
+	if len(fmtStr) > 0 && fmtStr[len(fmtStr)-1] == 0 {
+		// Remove the null terminator for printing
+		fmtStr = fmtStr[:len(fmtStr)-1]
+	}
+	n := fmt.Sprintf(string(fmtStr), args...)
+	if len(n) >= maxlen {
+		panic(fmt.Sprintf("snprintf_ccgo: output length %d exceeds buffer size %d", len(n), maxlen))
+	}
+	copyBytes := []byte(n)
+	copyBytes = append(copyBytes, 0) // Add null terminator
+	if len(copyBytes) > maxlen {
+		copyBytes = copyBytes[:maxlen]
+	}
+	output := unsafe.Slice((*uint8)(unsafe.Pointer(bp)), maxlen)
+	copy(output, copyBytes)
 }
 
 func __ccgo_ts(index int) uintptr {
