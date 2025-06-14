@@ -4184,7 +4184,6 @@ func D_TryFindWADByName(tls *libc.TLS, filename uintptr) (r uintptr) {
 //
 
 func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
-	bp := alloc(16)
 	var i, iwadparm int32
 	var iwadfile, result uintptr
 	// Check for the -iwad parameter
@@ -4199,7 +4198,7 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
 		iwadfile = *(*uintptr)(unsafe.Pointer(myargv + uintptr(iwadparm+int32(1))*8))
 		result = D_FindWADByName(tls, iwadfile)
 		if result == libc.UintptrFromInt32(0) {
-			I_Error(tls, __ccgo_ts(1281), libc.VaList(bp+8, iwadfile))
+			I_Error(tls, __ccgo_ts(1281), libc.GoString(iwadfile))
 		}
 		*(*GameMission_t)(unsafe.Pointer(mission)) = IdentifyIWADByName(tls, result, mask)
 	} else {
@@ -20676,9 +20675,7 @@ var errorboxpath_size uint64
 
 var already_quitting = 0
 
-func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
-	bp := alloc(512)
-	var argptr va_list
+func I_Error(tls *libc.TLS, error1 uintptr, args ...any) {
 	var entry uintptr
 	var exit_gui_popup boolean
 	if already_quitting != 0 {
@@ -20686,16 +20683,13 @@ func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
 	} else {
 		already_quitting = 1
 	}
-	// Message first.
-	argptr = va
-	//fprintf(stderr, "\nError: ");
-	libc.Xvfprintf(tls, libc.Xstderr, error1, argptr)
+	strLen := xstrlen(error1)
+	strBytes := unsafe.Slice((*byte)(unsafe.Pointer(error1)), strLen)
+	if strLen > 0 && strBytes[strLen-1] == 0 {
+		strLen--
+	}
+	fmt.Fprintf(os.Stderr, string(strBytes[:strLen]), args...)
 	fprintf_ccgo(os.Stderr, 19324)
-	libc.Xfflush(tls, libc.Xstderr)
-	// Write a copy of the message into buffer.
-	argptr = va
-	xmemset(bp, 0, uint64(512))
-	M_vsnprintf(tls, bp, uint64(512), error1, argptr)
 	// Shutdown. Here might be other errors.
 	entry = exit_funcs
 	for entry != libc.UintptrFromInt32(0) {
