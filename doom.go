@@ -15,6 +15,14 @@ func alloc(size int) uintptr {
 	return (uintptr)(unsafe.Pointer(&data[0]))
 }
 
+// LIBC functions
+func xabs(j int32) int32 {
+	if j < 0 {
+		return -j
+	}
+	return j
+}
+
 const AM_NUMMARKPOINTS = 10
 const ANGLETOFINESHIFT = 19
 const BACKUPTICS = 128
@@ -8020,7 +8028,7 @@ func G_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 		// mouse speed so that we can display it on-screen.
 		// Perform a low pass filter on this so that the thermometer
 		// appears to move smoothly.
-		testcontrols_mousespeed = libc.Xabs(tls, (*event_t)(unsafe.Pointer(ev)).Fdata2)
+		testcontrols_mousespeed = xabs((*event_t)(unsafe.Pointer(ev)).Fdata2)
 	}
 	// If the next/previous weapon keys are pressed, set the next_weapon
 	// variable to change weapons when the next ticcmd is generated.
@@ -22118,7 +22126,7 @@ func FixedMul(tls *libc.TLS, a fixed_t, b fixed_t) (r fixed_t) {
 func FixedDiv(tls *libc.TLS, a fixed_t, b fixed_t) (r fixed_t) {
 	var result int64
 	var v1 int32
-	if libc.Xabs(tls, a)>>int32(14) >= libc.Xabs(tls, b) {
+	if xabs(a)>>int32(14) >= xabs(b) {
 		if a^b < 0 {
 			v1 = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
 		} else {
@@ -25555,7 +25563,7 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 		}
 	}
 	// try other directions
-	if P_Random(tls) > int32(200) || libc.Xabs(tls, deltay) > libc.Xabs(tls, deltax) {
+	if P_Random(tls) > int32(200) || xabs(deltay) > xabs(deltax) {
 		tdir = d[int32(1)]
 		d[int32(1)] = d[int32(2)]
 		d[int32(2)] = tdir
@@ -26153,7 +26161,7 @@ func PIT_VileCheck(tls *libc.TLS, thing uintptr) (r boolean) {
 		return 1
 	} // monster doesn't have a raise state
 	maxdist = (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Finfo)).Fradius + mobjinfo[int32(MT_VILE)].Fradius
-	if libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx-viletryx) > maxdist || libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fy-viletryy) > maxdist {
+	if xabs((*mobj_t)(unsafe.Pointer(thing)).Fx-viletryx) > maxdist || xabs((*mobj_t)(unsafe.Pointer(thing)).Fy-viletryy) > maxdist {
 		return 1
 	} // not actually touching
 	corpsehit = thing
@@ -28409,7 +28417,7 @@ func PIT_StompThing(tls *libc.TLS, thing uintptr) (r boolean) {
 		return 1
 	}
 	blockdist = (*mobj_t)(unsafe.Pointer(thing)).Fradius + (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
-	if libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx-tmx) >= blockdist || libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fy-tmy) >= blockdist {
+	if xabs((*mobj_t)(unsafe.Pointer(thing)).Fx-tmx) >= blockdist || xabs((*mobj_t)(unsafe.Pointer(thing)).Fy-tmy) >= blockdist {
 		// didn't hit it
 		return 1
 	}
@@ -28565,7 +28573,7 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 		return 1
 	}
 	blockdist = (*mobj_t)(unsafe.Pointer(thing)).Fradius + (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
-	if libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx-tmx) >= blockdist || libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fy-tmy) >= blockdist {
+	if xabs((*mobj_t)(unsafe.Pointer(thing)).Fx-tmx) >= blockdist || xabs((*mobj_t)(unsafe.Pointer(thing)).Fy-tmy) >= blockdist {
 		// didn't hit it
 		return 1
 	}
@@ -29293,8 +29301,8 @@ func PIT_RadiusAttack(tls *libc.TLS, thing uintptr) (r boolean) {
 	if (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_CYBORG) || (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_SPIDER) {
 		return 1
 	}
-	dx = libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx-(*mobj_t)(unsafe.Pointer(bombspot)).Fx)
-	dy = libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(thing)).Fy-(*mobj_t)(unsafe.Pointer(bombspot)).Fy)
+	dx = xabs((*mobj_t)(unsafe.Pointer(thing)).Fx - (*mobj_t)(unsafe.Pointer(bombspot)).Fx)
+	dy = xabs((*mobj_t)(unsafe.Pointer(thing)).Fy - (*mobj_t)(unsafe.Pointer(bombspot)).Fy)
 	if dx > dy {
 		v1 = dx
 	} else {
@@ -29506,8 +29514,8 @@ const INT_MAX11 = 2147483647
 //
 
 func P_AproxDistance(tls *libc.TLS, dx fixed_t, dy fixed_t) (r fixed_t) {
-	dx = libc.Xabs(tls, dx)
-	dy = libc.Xabs(tls, dy)
+	dx = xabs(dx)
+	dy = xabs(dy)
 	if dx < dy {
 		return dx + dy - dx>>libc.Int32FromInt32(1)
 	}
@@ -30162,12 +30170,12 @@ func P_PathTraverse(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_
 	if xt2 > xt1 {
 		mapxstep = int32(1)
 		partial = libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) - x1>>(libc.Int32FromInt32(FRACBITS)+libc.Int32FromInt32(7)-libc.Int32FromInt32(FRACBITS))&(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)-libc.Int32FromInt32(1))
-		ystep = FixedDiv(tls, y2-y1, libc.Xabs(tls, x2-x1))
+		ystep = FixedDiv(tls, y2-y1, xabs(x2-x1))
 	} else {
 		if xt2 < xt1 {
 			mapxstep = -int32(1)
 			partial = x1 >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7) - libc.Int32FromInt32(FRACBITS)) & (libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) - libc.Int32FromInt32(1))
-			ystep = FixedDiv(tls, y2-y1, libc.Xabs(tls, x2-x1))
+			ystep = FixedDiv(tls, y2-y1, xabs(x2-x1))
 		} else {
 			mapxstep = 0
 			partial = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
@@ -30178,12 +30186,12 @@ func P_PathTraverse(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_
 	if yt2 > yt1 {
 		mapystep = int32(1)
 		partial = libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) - y1>>(libc.Int32FromInt32(FRACBITS)+libc.Int32FromInt32(7)-libc.Int32FromInt32(FRACBITS))&(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)-libc.Int32FromInt32(1))
-		xstep = FixedDiv(tls, x2-x1, libc.Xabs(tls, y2-y1))
+		xstep = FixedDiv(tls, x2-x1, xabs(y2-y1))
 	} else {
 		if yt2 < yt1 {
 			mapystep = -int32(1)
 			partial = y1 >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7) - libc.Int32FromInt32(FRACBITS)) & (libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) - libc.Int32FromInt32(1))
-			xstep = FixedDiv(tls, x2-x1, libc.Xabs(tls, y2-y1))
+			xstep = FixedDiv(tls, x2-x1, xabs(y2-y1))
 		} else {
 			mapystep = 0
 			partial = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
@@ -39217,8 +39225,8 @@ func R_PointToAngle2(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed
 func R_PointToDist(tls *libc.TLS, x fixed_t, y fixed_t) (r fixed_t) {
 	var angle int32
 	var dist, dx, dy, frac, temp fixed_t
-	dx = libc.Xabs(tls, x-viewx)
-	dy = libc.Xabs(tls, y-viewy)
+	dx = xabs(x - viewx)
+	dy = xabs(y - viewy)
 	if dy > dx {
 		temp = dx
 		dx = dy
@@ -39486,7 +39494,7 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 			break
 		}
 		dy = (i-viewheight/int32(2))<<int32(FRACBITS) + libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)/libc.Int32FromInt32(2)
-		dy = libc.Xabs(tls, dy)
+		dy = xabs(dy)
 		yslope[i] = FixedDiv(tls, viewwidth<<detailshift/int32(2)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), dy)
 		goto _4
 	_4:
@@ -39498,7 +39506,7 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 		if !(i < viewwidth) {
 			break
 		}
-		cosadj = libc.Xabs(tls, *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(xtoviewangle[i]>>int32(ANGLETOFINESHIFT))*4)))
+		cosadj = xabs(*(*fixed_t)(unsafe.Pointer(finecosine + uintptr(xtoviewangle[i]>>int32(ANGLETOFINESHIFT))*4)))
 		distscale[i] = FixedDiv(tls, libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS), cosadj)
 		goto _5
 	_5:
@@ -39899,7 +39907,7 @@ func R_DrawPlanes(tls *libc.TLS) {
 		// regular flat
 		lumpnum = firstflat + *(*int32)(unsafe.Pointer(flattranslation + uintptr((*visplane_t)(unsafe.Pointer(pl)).Fpicnum)*4))
 		ds_source = W_CacheLumpNum(tls, lumpnum, int32(PU_STATIC))
-		planeheight = libc.Xabs(tls, (*visplane_t)(unsafe.Pointer(pl)).Fheight-viewz)
+		planeheight = xabs((*visplane_t)(unsafe.Pointer(pl)).Fheight - viewz)
 		light = (*visplane_t)(unsafe.Pointer(pl)).Flightlevel>>int32(LIGHTSEGSHIFT) + extralight
 		if light >= int32(LIGHTLEVELS) {
 			light = libc.Int32FromInt32(LIGHTLEVELS) - libc.Int32FromInt32(1)
@@ -40221,7 +40229,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	*(*int16)(unsafe.Pointer(p1)) = int16(int32(*(*int16)(unsafe.Pointer(p1))) | libc.Int32FromInt32(ML_MAPPED))
 	// calculate rw_distance for scale calculation
 	rw_normalangle = (*seg_t)(unsafe.Pointer(curline)).Fangle + uint32(ANG909)
-	offsetangle = libc.Uint32FromInt32(libc.Xabs(tls, libc.Int32FromUint32(rw_normalangle-libc.Uint32FromInt32(rw_angle1))))
+	offsetangle = libc.Uint32FromInt32(xabs(libc.Int32FromUint32(rw_normalangle - libc.Uint32FromInt32(rw_angle1))))
 	if offsetangle > uint32(ANG909) {
 		offsetangle = uint32(ANG909)
 	}
@@ -40781,7 +40789,7 @@ func R_DrawVisSprite(tls *libc.TLS, vis uintptr, x1 int32, x2 int32) {
 			dc_translation = translationtables - uintptr(256) + uintptr((*vissprite_t)(unsafe.Pointer(vis)).Fmobjflags&int32(MF_TRANSLATION)>>(int32(MF_TRANSSHIFT)-libc.Int32FromInt32(8)))
 		}
 	}
-	dc_iscale = libc.Xabs(tls, (*vissprite_t)(unsafe.Pointer(vis)).Fxiscale) >> detailshift
+	dc_iscale = xabs((*vissprite_t)(unsafe.Pointer(vis)).Fxiscale) >> detailshift
 	dc_texturemid = (*vissprite_t)(unsafe.Pointer(vis)).Ftexturemid
 	frac = (*vissprite_t)(unsafe.Pointer(vis)).Fstartfrac
 	spryscale = (*vissprite_t)(unsafe.Pointer(vis)).Fscale
@@ -40836,7 +40844,7 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 	gyt = FixedMul(tls, tr_y, viewcos)
 	tx = -(gyt + gxt)
 	// too far off the side?
-	if libc.Xabs(tls, tx) > tz<<libc.Int32FromInt32(2) {
+	if xabs(tx) > tz<<libc.Int32FromInt32(2) {
 		return
 	}
 	// decide which patch to use for sprite relative to player
@@ -44607,8 +44615,8 @@ func S_AdjustSoundParams(tls *libc.TLS, listener uintptr, source uintptr, vol ui
 	var v1 int32
 	// calculate the distance to sound origin
 	//  and clip it if necessary
-	adx = libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(listener)).Fx-(*mobj_t)(unsafe.Pointer(source)).Fx)
-	ady = libc.Xabs(tls, (*mobj_t)(unsafe.Pointer(listener)).Fy-(*mobj_t)(unsafe.Pointer(source)).Fy)
+	adx = xabs((*mobj_t)(unsafe.Pointer(listener)).Fx - (*mobj_t)(unsafe.Pointer(source)).Fx)
+	ady = xabs((*mobj_t)(unsafe.Pointer(listener)).Fy - (*mobj_t)(unsafe.Pointer(source)).Fy)
 	// From _GG1_ p.428. Appox. eucledian distance fast.
 	if adx < ady {
 		v1 = adx
