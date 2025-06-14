@@ -2644,7 +2644,7 @@ var followplayer = int32(1) // specifies whether to follow the player around
 func init() {
 	cheat_amap = cheatseq_t{
 		Fsequence:      [25]int8{'i', 'd', 'd', 't'},
-		Fsequence_len:  libc.Uint64FromInt64(5) - libc.Uint64FromInt32(1),
+		Fsequence_len:  5 - 1,
 		Fparameter_buf: [5]int8{},
 	}
 }
@@ -2659,8 +2659,8 @@ var stopped = 1
 func AM_activateNewScale(tls *libc.TLS) {
 	m_x += m_w / int32(2)
 	m_y += m_h / int32(2)
-	m_w = FixedMul(tls, f_w<<16, scale_ftom)
-	m_h = FixedMul(tls, f_h<<16, scale_ftom)
+	m_w = FixedMul(f_w<<16, scale_ftom)
+	m_h = FixedMul(f_h<<16, scale_ftom)
 	m_x -= m_w / int32(2)
 	m_y -= m_h / int32(2)
 	m_x2 = m_x + m_w
@@ -2697,8 +2697,8 @@ func AM_restoreScaleAndLoc(tls *libc.TLS) {
 	m_x2 = m_x + m_w
 	m_y2 = m_y + m_h
 	// Change the scaling multipliers
-	scale_mtof = FixedDiv(tls, f_w<<int32(FRACBITS), m_w)
-	scale_ftom = FixedDiv(tls, 1<<FRACBITS, scale_mtof)
+	scale_mtof = FixedDiv(f_w<<int32(FRACBITS), m_w)
+	scale_ftom = FixedDiv(1<<FRACBITS, scale_mtof)
 }
 
 // C documentation
@@ -2753,15 +2753,15 @@ func AM_findMinMaxBoundaries(tls *libc.TLS) {
 	}
 	max_w = max_x - min_x
 	max_h = max_y - min_y
-	a = FixedDiv(tls, f_w<<int32(FRACBITS), max_w)
-	b = FixedDiv(tls, f_h<<int32(FRACBITS), max_h)
+	a = FixedDiv(f_w<<int32(FRACBITS), max_w)
+	b = FixedDiv(f_h<<int32(FRACBITS), max_h)
 	if a < b {
 		v4 = a
 	} else {
 		v4 = b
 	}
 	min_scale_mtof = v4
-	max_scale_mtof = FixedDiv(tls, f_h<<int32(FRACBITS), 2*16*(1<<FRACBITS))
+	max_scale_mtof = FixedDiv(f_h<<int32(FRACBITS), 2*16*(1<<FRACBITS))
 }
 
 // C documentation
@@ -2811,8 +2811,8 @@ func AM_initVariables(tls *libc.TLS) {
 	m_paninc.Fx = v1
 	ftom_zoommul = 1 << FRACBITS
 	mtof_zoommul = 1 << FRACBITS
-	m_w = FixedMul(tls, f_w<<16, scale_ftom)
-	m_h = FixedMul(tls, f_h<<16, scale_ftom)
+	m_w = FixedMul(f_w<<16, scale_ftom)
+	m_h = FixedMul(f_h<<16, scale_ftom)
 	// find player to center on initially
 	if playeringame[consoleplayer] != 0 {
 		plr = uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328
@@ -2918,11 +2918,11 @@ func AM_LevelInit(tls *libc.TLS) {
 	f_h = finit_height
 	AM_clearMarks(tls)
 	AM_findMinMaxBoundaries(tls)
-	scale_mtof = FixedDiv(tls, min_scale_mtof, int32(libc.Float64FromFloat64(0.7)*float64(1<<FRACBITS)))
+	scale_mtof = FixedDiv(min_scale_mtof, int32(libc.Float64FromFloat64(0.7)*float64(1<<FRACBITS)))
 	if scale_mtof > max_scale_mtof {
 		scale_mtof = min_scale_mtof
 	}
-	scale_ftom = FixedDiv(tls, 1<<FRACBITS, scale_mtof)
+	scale_ftom = FixedDiv(1<<FRACBITS, scale_mtof)
 }
 
 // C documentation
@@ -2972,7 +2972,7 @@ var lastepisode = -int32(1)
 //	//
 func AM_minOutWindowScale(tls *libc.TLS) {
 	scale_mtof = min_scale_mtof
-	scale_ftom = FixedDiv(tls, 1<<FRACBITS, scale_mtof)
+	scale_ftom = FixedDiv(1<<FRACBITS, scale_mtof)
 	AM_activateNewScale(tls)
 }
 
@@ -2983,7 +2983,7 @@ func AM_minOutWindowScale(tls *libc.TLS) {
 //	//
 func AM_maxOutWindowScale(tls *libc.TLS) {
 	scale_mtof = max_scale_mtof
-	scale_ftom = FixedDiv(tls, 1<<FRACBITS, scale_mtof)
+	scale_ftom = FixedDiv(1<<FRACBITS, scale_mtof)
 	AM_activateNewScale(tls)
 }
 
@@ -3008,28 +3008,28 @@ func AM_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 			key = (*event_t)(unsafe.Pointer(ev)).Fdata1
 			if key == key_map_east { // pan right
 				if !(followplayer != 0) {
-					m_paninc.Fx = FixedMul(tls, F_PANINC<<16, scale_ftom)
+					m_paninc.Fx = FixedMul(F_PANINC<<16, scale_ftom)
 				} else {
 					rc = 0
 				}
 			} else {
 				if key == key_map_west { // pan left
 					if !(followplayer != 0) {
-						m_paninc.Fx = -FixedMul(tls, F_PANINC<<16, scale_ftom)
+						m_paninc.Fx = -FixedMul(F_PANINC<<16, scale_ftom)
 					} else {
 						rc = 0
 					}
 				} else {
 					if key == key_map_north { // pan up
 						if !(followplayer != 0) {
-							m_paninc.Fy = FixedMul(tls, F_PANINC<<16, scale_ftom)
+							m_paninc.Fy = FixedMul(F_PANINC<<16, scale_ftom)
 						} else {
 							rc = 0
 						}
 					} else {
 						if key == key_map_south { // pan down
 							if !(followplayer != 0) {
-								m_paninc.Fy = -FixedMul(tls, F_PANINC<<16, scale_ftom)
+								m_paninc.Fy = -FixedMul(F_PANINC<<16, scale_ftom)
 							} else {
 								rc = 0
 							}
@@ -3148,8 +3148,8 @@ var buffer [20]int8
 //	//
 func AM_changeWindowScale(tls *libc.TLS) {
 	// Change the scaling multipliers
-	scale_mtof = FixedMul(tls, scale_mtof, mtof_zoommul)
-	scale_ftom = FixedDiv(tls, 1<<FRACBITS, scale_mtof)
+	scale_mtof = FixedMul(scale_mtof, mtof_zoommul)
+	scale_ftom = FixedDiv(1<<FRACBITS, scale_mtof)
 	if scale_mtof < min_scale_mtof {
 		AM_minOutWindowScale(tls)
 	} else {
@@ -3168,8 +3168,8 @@ func AM_changeWindowScale(tls *libc.TLS) {
 //	//
 func AM_doFollowPlayer(tls *libc.TLS) {
 	if f_oldloc.Fx != (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx || f_oldloc.Fy != (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy {
-		m_x = FixedMul(tls, FixedMul(tls, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_w/int32(2)
-		m_y = FixedMul(tls, FixedMul(tls, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_h/int32(2)
+		m_x = FixedMul(FixedMul((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_w/int32(2)
+		m_y = FixedMul(FixedMul((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_h/int32(2)
 		m_x2 = m_x + m_w
 		m_y2 = m_y + m_h
 		f_oldloc.Fx = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx
@@ -3264,10 +3264,10 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 		return 0
 	} // trivially outside
 	// transform to frame-buffer coordinates.
-	(*fline_t)(unsafe.Pointer(fl)).Fa.Fx = f_x + FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fa.Fx-m_x, scale_mtof)>>16
-	(*fline_t)(unsafe.Pointer(fl)).Fa.Fy = f_y + (f_h - FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fa.Fy-m_y, scale_mtof)>>16)
-	(*fline_t)(unsafe.Pointer(fl)).Fb.Fx = f_x + FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fb.Fx-m_x, scale_mtof)>>16
-	(*fline_t)(unsafe.Pointer(fl)).Fb.Fy = f_y + (f_h - FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fb.Fy-m_y, scale_mtof)>>16)
+	(*fline_t)(unsafe.Pointer(fl)).Fa.Fx = f_x + FixedMul((*mline_t)(unsafe.Pointer(ml)).Fa.Fx-m_x, scale_mtof)>>16
+	(*fline_t)(unsafe.Pointer(fl)).Fa.Fy = f_y + (f_h - FixedMul((*mline_t)(unsafe.Pointer(ml)).Fa.Fy-m_y, scale_mtof)>>16)
+	(*fline_t)(unsafe.Pointer(fl)).Fb.Fx = f_x + FixedMul((*mline_t)(unsafe.Pointer(ml)).Fb.Fx-m_x, scale_mtof)>>16
+	(*fline_t)(unsafe.Pointer(fl)).Fb.Fy = f_y + (f_h - FixedMul((*mline_t)(unsafe.Pointer(ml)).Fb.Fy-m_y, scale_mtof)>>16)
 	outcode1 = 0
 	if (*fline_t)(unsafe.Pointer(fl)).Fa.Fy < 0 {
 		outcode1 |= 8
@@ -3598,8 +3598,8 @@ var l mline_t
 //	//
 func AM_rotate(tls *libc.TLS, x uintptr, y uintptr, a angle_t) {
 	var tmpx fixed_t
-	tmpx = FixedMul(tls, *(*fixed_t)(unsafe.Pointer(x)), finecosine[a>>int32(ANGLETOFINESHIFT)]) - FixedMul(tls, *(*fixed_t)(unsafe.Pointer(y)), finesine[a>>int32(ANGLETOFINESHIFT)])
-	*(*fixed_t)(unsafe.Pointer(y)) = FixedMul(tls, *(*fixed_t)(unsafe.Pointer(x)), finesine[a>>int32(ANGLETOFINESHIFT)]) + FixedMul(tls, *(*fixed_t)(unsafe.Pointer(y)), finecosine[a>>int32(ANGLETOFINESHIFT)])
+	tmpx = FixedMul(*(*fixed_t)(unsafe.Pointer(x)), finecosine[a>>int32(ANGLETOFINESHIFT)]) - FixedMul(*(*fixed_t)(unsafe.Pointer(y)), finesine[a>>int32(ANGLETOFINESHIFT)])
+	*(*fixed_t)(unsafe.Pointer(y)) = FixedMul(*(*fixed_t)(unsafe.Pointer(x)), finesine[a>>int32(ANGLETOFINESHIFT)]) + FixedMul(*(*fixed_t)(unsafe.Pointer(y)), finecosine[a>>int32(ANGLETOFINESHIFT)])
 	*(*fixed_t)(unsafe.Pointer(x)) = tmpx
 }
 
@@ -3614,8 +3614,8 @@ func AM_drawLineCharacter(tls *libc.TLS, lineguy uintptr, lineguylines int32, sc
 		(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx = (*(*mline_t)(unsafe.Pointer(lineguy + uintptr(i)*16))).Fa.Fx
 		(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy = (*(*mline_t)(unsafe.Pointer(lineguy + uintptr(i)*16))).Fa.Fy
 		if scale != 0 {
-			(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx = FixedMul(tls, scale, (*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx)
-			(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy = FixedMul(tls, scale, (*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy)
+			(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx)
+			(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy)
 		}
 		if angle != 0 {
 			AM_rotate(tls, bp, bp+4, angle)
@@ -3625,8 +3625,8 @@ func AM_drawLineCharacter(tls *libc.TLS, lineguy uintptr, lineguylines int32, sc
 		(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fx = (*(*mline_t)(unsafe.Pointer(lineguy + uintptr(i)*16))).Fb.Fx
 		(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy = (*(*mline_t)(unsafe.Pointer(lineguy + uintptr(i)*16))).Fb.Fy
 		if scale != 0 {
-			(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fx = FixedMul(tls, scale, (*(*mline_t)(unsafe.Pointer(bp))).Fb.Fx)
-			(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy = FixedMul(tls, scale, (*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy)
+			(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fx = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fb.Fx)
+			(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy)
 		}
 		if angle != 0 {
 			AM_rotate(tls, bp+8, bp+8+4, angle)
@@ -3718,8 +3718,8 @@ func AM_drawMarks(tls *libc.TLS) {
 			//      h = SHORT(marknums[i]->height);
 			w = int32(5) // because something's wrong with the wad, i guess
 			h = int32(6) // because something's wrong with the wad, i guess
-			fx = f_x + FixedMul(tls, markpoints[i].Fx-m_x, scale_mtof)>>16
-			fy = f_y + (f_h - FixedMul(tls, markpoints[i].Fy-m_y, scale_mtof)>>16)
+			fx = f_x + FixedMul(markpoints[i].Fx-m_x, scale_mtof)>>16
+			fy = f_y + (f_h - FixedMul(markpoints[i].Fy-m_y, scale_mtof)>>16)
 			if fx >= f_x && fx <= f_w-w && fy >= f_y && fy <= f_h-h {
 				V_DrawPatch(tls, fx, fy, marknums[i])
 			}
@@ -22155,7 +22155,7 @@ const INT_MAX7 = 2147483647
 
 // Fixme. __USE_C_FIXED__ or something.
 
-func FixedMul(tls *libc.TLS, a fixed_t, b fixed_t) (r fixed_t) {
+func FixedMul(a fixed_t, b fixed_t) (r fixed_t) {
 	return int32(int64(a) * int64(b) >> int32(FRACBITS))
 }
 
@@ -22163,7 +22163,7 @@ func FixedMul(tls *libc.TLS, a fixed_t, b fixed_t) (r fixed_t) {
 // FixedDiv, C version.
 //
 
-func FixedDiv(tls *libc.TLS, a fixed_t, b fixed_t) (r fixed_t) {
+func FixedDiv(a fixed_t, b fixed_t) (r fixed_t) {
 	var result int64
 	var v1 int32
 	if xabs(a)>>int32(14) >= xabs(b) {
@@ -22184,17 +22184,8 @@ const LINEHEIGHT = 16
 
 func init() {
 	mouseSensitivity = int32(5)
-}
-
-func init() {
 	showMessages = int32(1)
-}
-
-func init() {
 	screenblocks = int32(10)
-}
-
-func init() {
 	gammamsg = [5][26]int8{
 		0: {'G', 'a', 'm', 'm', 'a', ' ', 'c', 'o', 'r', 'r', 'e', 'c', 't', 'i', 'o', 'n', ' ', 'O', 'F', 'F'},
 		1: {'G', 'a', 'm', 'm', 'a', ' ', 'c', 'o', 'r', 'r', 'e', 'c', 't', 'i', 'o', 'n', ' ', 'l', 'e', 'v', 'e', 'l', ' ', '1'},
@@ -26146,8 +26137,8 @@ func A_Tracer(tls *libc.TLS, actor uintptr) {
 		}
 	}
 	exact = (*mobj_t)(unsafe.Pointer(actor)).Fangle >> int32(ANGLETOFINESHIFT)
-	(*mobj_t)(unsafe.Pointer(actor)).Fmomx = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed, finecosine[exact])
-	(*mobj_t)(unsafe.Pointer(actor)).Fmomy = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed, finesine[exact])
+	(*mobj_t)(unsafe.Pointer(actor)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed, finecosine[exact])
+	(*mobj_t)(unsafe.Pointer(actor)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed, finesine[exact])
 	// change slope
 	dist = P_AproxDistance(tls, (*mobj_t)(unsafe.Pointer(dest)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fy)
 	dist = dist / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed
@@ -26307,8 +26298,8 @@ func A_Fire(tls *libc.TLS, actor uintptr) {
 	}
 	an = (*mobj_t)(unsafe.Pointer(dest)).Fangle >> int32(ANGLETOFINESHIFT)
 	P_UnsetThingPosition(tls, actor)
-	(*mobj_t)(unsafe.Pointer(actor)).Fx = (*mobj_t)(unsafe.Pointer(dest)).Fx + FixedMul(tls, 24*(1<<FRACBITS), finecosine[an])
-	(*mobj_t)(unsafe.Pointer(actor)).Fy = (*mobj_t)(unsafe.Pointer(dest)).Fy + FixedMul(tls, 24*(1<<FRACBITS), finesine[an])
+	(*mobj_t)(unsafe.Pointer(actor)).Fx = (*mobj_t)(unsafe.Pointer(dest)).Fx + FixedMul(24*(1<<FRACBITS), finecosine[an])
+	(*mobj_t)(unsafe.Pointer(actor)).Fy = (*mobj_t)(unsafe.Pointer(dest)).Fy + FixedMul(24*(1<<FRACBITS), finesine[an])
 	(*mobj_t)(unsafe.Pointer(actor)).Fz = (*mobj_t)(unsafe.Pointer(dest)).Fz
 	P_SetThingPosition(tls, actor)
 }
@@ -26356,8 +26347,8 @@ func A_VileAttack(tls *libc.TLS, actor uintptr) {
 		return
 	}
 	// move the fire between the vile and the player
-	(*mobj_t)(unsafe.Pointer(fire)).Fx = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - FixedMul(tls, 24*(1<<FRACBITS), finecosine[an])
-	(*mobj_t)(unsafe.Pointer(fire)).Fy = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - FixedMul(tls, 24*(1<<FRACBITS), finesine[an])
+	(*mobj_t)(unsafe.Pointer(fire)).Fx = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - FixedMul(24*(1<<FRACBITS), finecosine[an])
+	(*mobj_t)(unsafe.Pointer(fire)).Fy = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - FixedMul(24*(1<<FRACBITS), finesine[an])
 	P_RadiusAttack(tls, fire, actor, int32(70))
 }
 
@@ -26384,8 +26375,8 @@ func A_FatAttack1(tls *libc.TLS, actor uintptr) {
 	mo = P_SpawnMissile(tls, actor, target, int32(MT_FATSHOT))
 	*(*angle_t)(unsafe.Pointer(mo + 56)) += libc.Uint32FromInt32(ANG903 / 8)
 	an = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(mo)).Fangle >> int32(ANGLETOFINESHIFT))
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finecosine[an])
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
+	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finecosine[an])
+	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
 }
 
 func A_FatAttack2(tls *libc.TLS, actor uintptr) {
@@ -26399,8 +26390,8 @@ func A_FatAttack2(tls *libc.TLS, actor uintptr) {
 	mo = P_SpawnMissile(tls, actor, target, int32(MT_FATSHOT))
 	*(*angle_t)(unsafe.Pointer(mo + 56)) -= libc.Uint32FromInt32(ANG903 / 8 * 2)
 	an = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(mo)).Fangle >> int32(ANGLETOFINESHIFT))
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finecosine[an])
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
+	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finecosine[an])
+	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
 }
 
 func A_FatAttack3(tls *libc.TLS, actor uintptr) {
@@ -26411,13 +26402,13 @@ func A_FatAttack3(tls *libc.TLS, actor uintptr) {
 	mo = P_SpawnMissile(tls, actor, target, int32(MT_FATSHOT))
 	*(*angle_t)(unsafe.Pointer(mo + 56)) -= libc.Uint32FromInt32(ANG903 / 8 / 2)
 	an = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(mo)).Fangle >> int32(ANGLETOFINESHIFT))
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finecosine[an])
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
+	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finecosine[an])
+	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
 	mo = P_SpawnMissile(tls, actor, target, int32(MT_FATSHOT))
 	*(*angle_t)(unsafe.Pointer(mo + 56)) += libc.Uint32FromInt32(ANG903 / 8 / 2)
 	an = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(mo)).Fangle >> int32(ANGLETOFINESHIFT))
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finecosine[an])
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
+	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finecosine[an])
+	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
 }
 
 //
@@ -26437,8 +26428,8 @@ func A_SkullAttack(tls *libc.TLS, actor uintptr) {
 	S_StartSound(tls, actor, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fattacksound)
 	A_FaceTarget(tls, actor)
 	an = (*mobj_t)(unsafe.Pointer(actor)).Fangle >> int32(ANGLETOFINESHIFT)
-	(*mobj_t)(unsafe.Pointer(actor)).Fmomx = FixedMul(tls, 20*(1<<FRACBITS), finecosine[an])
-	(*mobj_t)(unsafe.Pointer(actor)).Fmomy = FixedMul(tls, 20*(1<<FRACBITS), finesine[an])
+	(*mobj_t)(unsafe.Pointer(actor)).Fmomx = FixedMul(20*(1<<FRACBITS), finecosine[an])
+	(*mobj_t)(unsafe.Pointer(actor)).Fmomy = FixedMul(20*(1<<FRACBITS), finesine[an])
 	dist = P_AproxDistance(tls, (*mobj_t)(unsafe.Pointer(dest)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fy)
 	dist = dist / (20 * (1 << FRACBITS))
 	if dist < int32(1) {
@@ -26475,8 +26466,8 @@ func A_PainShootSkull(tls *libc.TLS, actor uintptr, angle angle_t) {
 	// okay, there's playe for another one
 	an = angle >> int32(ANGLETOFINESHIFT)
 	prestep = 4*(1<<FRACBITS) + int32(3)*((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fradius+mobjinfo[int32(MT_SKULL)].Fradius)/int32(2)
-	x = (*mobj_t)(unsafe.Pointer(actor)).Fx + FixedMul(tls, prestep, finecosine[an])
-	y = (*mobj_t)(unsafe.Pointer(actor)).Fy + FixedMul(tls, prestep, finesine[an])
+	x = (*mobj_t)(unsafe.Pointer(actor)).Fx + FixedMul(prestep, finecosine[an])
+	y = (*mobj_t)(unsafe.Pointer(actor)).Fy + FixedMul(prestep, finesine[an])
 	z = (*mobj_t)(unsafe.Pointer(actor)).Fz + 8*(1<<FRACBITS)
 	newmobj = P_SpawnMobj(tls, x, y, z, int32(MT_SKULL))
 	// Check for movements.
@@ -28038,8 +28029,8 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 			thrust *= int32(4)
 		}
 		ang >>= uint32(ANGLETOFINESHIFT)
-		*(*fixed_t)(unsafe.Pointer(target + 112)) += FixedMul(tls, thrust, finecosine[ang])
-		*(*fixed_t)(unsafe.Pointer(target + 116)) += FixedMul(tls, thrust, finesine[ang])
+		*(*fixed_t)(unsafe.Pointer(target + 112)) += FixedMul(thrust, finecosine[ang])
+		*(*fixed_t)(unsafe.Pointer(target + 116)) += FixedMul(thrust, finesine[ang])
 	}
 	// player specific
 	if player != 0 {
@@ -28923,9 +28914,9 @@ func P_HitSlideLine(tls *libc.TLS, ld uintptr) {
 	lineangle >>= uint32(ANGLETOFINESHIFT)
 	deltaangle >>= uint32(ANGLETOFINESHIFT)
 	movelen = P_AproxDistance(tls, tmxmove, tmymove)
-	newlen = FixedMul(tls, movelen, finecosine[deltaangle])
-	tmxmove = FixedMul(tls, newlen, finecosine[lineangle])
-	tmymove = FixedMul(tls, newlen, finesine[lineangle])
+	newlen = FixedMul(movelen, finecosine[deltaangle])
+	tmxmove = FixedMul(newlen, finecosine[lineangle])
+	tmymove = FixedMul(newlen, finesine[lineangle])
 }
 
 // C documentation
@@ -29031,8 +29022,8 @@ _2:
 	// fudge a bit to make sure it doesn't hit
 	bestslidefrac -= int32(0x800)
 	if bestslidefrac > 0 {
-		newx = FixedMul(tls, (*mobj_t)(unsafe.Pointer(mo)).Fmomx, bestslidefrac)
-		newy = FixedMul(tls, (*mobj_t)(unsafe.Pointer(mo)).Fmomy, bestslidefrac)
+		newx = FixedMul((*mobj_t)(unsafe.Pointer(mo)).Fmomx, bestslidefrac)
+		newy = FixedMul((*mobj_t)(unsafe.Pointer(mo)).Fmomy, bestslidefrac)
 		if !(P_TryMove(tls, mo, (*mobj_t)(unsafe.Pointer(mo)).Fx+newx, (*mobj_t)(unsafe.Pointer(mo)).Fy+newy) != 0) {
 			goto stairstep
 		}
@@ -29046,8 +29037,8 @@ _2:
 	if bestslidefrac <= 0 {
 		return
 	}
-	tmxmove = FixedMul(tls, (*mobj_t)(unsafe.Pointer(mo)).Fmomx, bestslidefrac)
-	tmymove = FixedMul(tls, (*mobj_t)(unsafe.Pointer(mo)).Fmomy, bestslidefrac)
+	tmxmove = FixedMul((*mobj_t)(unsafe.Pointer(mo)).Fmomx, bestslidefrac)
+	tmymove = FixedMul((*mobj_t)(unsafe.Pointer(mo)).Fmomy, bestslidefrac)
 	P_HitSlideLine(tls, bestslideline) // clip the moves
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = tmxmove
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = tmymove
@@ -29077,15 +29068,15 @@ func PTR_AimTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 		if openbottom >= opentop {
 			return 0
 		} // stop
-		dist = FixedMul(tls, attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
+		dist = FixedMul(attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
 		if (*line_t)(unsafe.Pointer(li)).Fbacksector == libc.UintptrFromInt32(0) || (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Ffrontsector)).Ffloorheight != (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fbacksector)).Ffloorheight {
-			slope = FixedDiv(tls, openbottom-shootz, dist)
+			slope = FixedDiv(openbottom-shootz, dist)
 			if slope > bottomslope {
 				bottomslope = slope
 			}
 		}
 		if (*line_t)(unsafe.Pointer(li)).Fbacksector == libc.UintptrFromInt32(0) || (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Ffrontsector)).Fceilingheight != (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fbacksector)).Fceilingheight {
-			slope = FixedDiv(tls, opentop-shootz, dist)
+			slope = FixedDiv(opentop-shootz, dist)
 			if slope < topslope {
 				topslope = slope
 			}
@@ -29104,12 +29095,12 @@ func PTR_AimTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 		return 1
 	} // corpse or something
 	// check angles to see if the thing can be aimed at
-	dist = FixedMul(tls, attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
-	thingtopslope = FixedDiv(tls, (*mobj_t)(unsafe.Pointer(th)).Fz+(*mobj_t)(unsafe.Pointer(th)).Fheight-shootz, dist)
+	dist = FixedMul(attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
+	thingtopslope = FixedDiv((*mobj_t)(unsafe.Pointer(th)).Fz+(*mobj_t)(unsafe.Pointer(th)).Fheight-shootz, dist)
 	if thingtopslope < bottomslope {
 		return 1
 	} // shot over the thing
-	thingbottomslope = FixedDiv(tls, (*mobj_t)(unsafe.Pointer(th)).Fz-shootz, dist)
+	thingbottomslope = FixedDiv((*mobj_t)(unsafe.Pointer(th)).Fz-shootz, dist)
 	if thingbottomslope > topslope {
 		return 1
 	} // shot under the thing
@@ -29143,27 +29134,27 @@ func PTR_ShootTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 		}
 		// crosses a two sided line
 		P_LineOpening(tls, li)
-		dist = FixedMul(tls, attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
+		dist = FixedMul(attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
 		// e6y: emulation of missed back side on two-sided lines.
 		// backsector can be NULL when emulating missing back side.
 		if (*line_t)(unsafe.Pointer(li)).Fbacksector == libc.UintptrFromInt32(0) {
-			slope = FixedDiv(tls, openbottom-shootz, dist)
+			slope = FixedDiv(openbottom-shootz, dist)
 			if slope > aimslope {
 				goto hitline
 			}
-			slope = FixedDiv(tls, opentop-shootz, dist)
+			slope = FixedDiv(opentop-shootz, dist)
 			if slope < aimslope {
 				goto hitline
 			}
 		} else {
 			if (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Ffrontsector)).Ffloorheight != (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fbacksector)).Ffloorheight {
-				slope = FixedDiv(tls, openbottom-shootz, dist)
+				slope = FixedDiv(openbottom-shootz, dist)
 				if slope > aimslope {
 					goto hitline
 				}
 			}
 			if (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Ffrontsector)).Fceilingheight != (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fbacksector)).Fceilingheight {
-				slope = FixedDiv(tls, opentop-shootz, dist)
+				slope = FixedDiv(opentop-shootz, dist)
 				if slope < aimslope {
 					goto hitline
 				}
@@ -29176,10 +29167,10 @@ func PTR_ShootTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	hitline:
 		;
 		// position a bit closer
-		frac = (*intercept_t)(unsafe.Pointer(in)).Ffrac - FixedDiv(tls, 4*(1<<FRACBITS), attackrange)
-		x = trace.Fx + FixedMul(tls, trace.Fdx, frac)
-		y = trace.Fy + FixedMul(tls, trace.Fdy, frac)
-		z = shootz + FixedMul(tls, aimslope, FixedMul(tls, frac, attackrange))
+		frac = (*intercept_t)(unsafe.Pointer(in)).Ffrac - FixedDiv(4*(1<<FRACBITS), attackrange)
+		x = trace.Fx + FixedMul(trace.Fdx, frac)
+		y = trace.Fy + FixedMul(trace.Fdy, frac)
+		z = shootz + FixedMul(aimslope, FixedMul(frac, attackrange))
 		if int32((*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Ffrontsector)).Fceilingpic) == skyflatnum {
 			// don't shoot the sky!
 			if z > (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Ffrontsector)).Fceilingheight {
@@ -29204,21 +29195,21 @@ func PTR_ShootTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 		return 1
 	} // corpse or something
 	// check angles to see if the thing can be aimed at
-	dist = FixedMul(tls, attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
-	thingtopslope = FixedDiv(tls, (*mobj_t)(unsafe.Pointer(th)).Fz+(*mobj_t)(unsafe.Pointer(th)).Fheight-shootz, dist)
+	dist = FixedMul(attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
+	thingtopslope = FixedDiv((*mobj_t)(unsafe.Pointer(th)).Fz+(*mobj_t)(unsafe.Pointer(th)).Fheight-shootz, dist)
 	if thingtopslope < aimslope {
 		return 1
 	} // shot over the thing
-	thingbottomslope = FixedDiv(tls, (*mobj_t)(unsafe.Pointer(th)).Fz-shootz, dist)
+	thingbottomslope = FixedDiv((*mobj_t)(unsafe.Pointer(th)).Fz-shootz, dist)
 	if thingbottomslope > aimslope {
 		return 1
 	} // shot under the thing
 	// hit thing
 	// position a bit closer
-	frac = (*intercept_t)(unsafe.Pointer(in)).Ffrac - FixedDiv(tls, 10*(1<<FRACBITS), attackrange)
-	x = trace.Fx + FixedMul(tls, trace.Fdx, frac)
-	y = trace.Fy + FixedMul(tls, trace.Fdy, frac)
-	z = shootz + FixedMul(tls, aimslope, FixedMul(tls, frac, attackrange))
+	frac = (*intercept_t)(unsafe.Pointer(in)).Ffrac - FixedDiv(10*(1<<FRACBITS), attackrange)
+	x = trace.Fx + FixedMul(trace.Fdx, frac)
+	y = trace.Fy + FixedMul(trace.Fdy, frac)
+	z = shootz + FixedMul(aimslope, FixedMul(frac, attackrange))
 	// Spawn bullet puffs or blod spots,
 	// depending on target type.
 	if (*mobj_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(in + 8)))).Fflags&int32(MF_NOBLOOD) != 0 {
@@ -29578,8 +29569,8 @@ func P_PointOnLineSide(tls *libc.TLS, x fixed_t, y fixed_t, line uintptr) (r int
 	}
 	dx = x - (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(line)).Fv1)).Fx
 	dy = y - (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(line)).Fv1)).Fy
-	left = FixedMul(tls, (*line_t)(unsafe.Pointer(line)).Fdy>>int32(FRACBITS), dx)
-	right = FixedMul(tls, dy, (*line_t)(unsafe.Pointer(line)).Fdx>>int32(FRACBITS))
+	left = FixedMul((*line_t)(unsafe.Pointer(line)).Fdy>>int32(FRACBITS), dx)
+	right = FixedMul(dy, (*line_t)(unsafe.Pointer(line)).Fdx>>int32(FRACBITS))
 	if right < left {
 		return 0
 	} // front side
@@ -29655,8 +29646,8 @@ func P_PointOnDivlineSide(tls *libc.TLS, x fixed_t, y fixed_t, line uintptr) (r 
 		} // (left is negative)
 		return 0
 	}
-	left = FixedMul(tls, (*divline_t)(unsafe.Pointer(line)).Fdy>>int32(8), dx>>int32(8))
-	right = FixedMul(tls, dy>>int32(8), (*divline_t)(unsafe.Pointer(line)).Fdx>>int32(8))
+	left = FixedMul((*divline_t)(unsafe.Pointer(line)).Fdy>>int32(8), dx>>int32(8))
+	right = FixedMul(dy>>int32(8), (*divline_t)(unsafe.Pointer(line)).Fdx>>int32(8))
 	if right < left {
 		return 0
 	} // front side
@@ -29686,13 +29677,13 @@ func P_MakeDivline(tls *libc.TLS, li uintptr, dl uintptr) {
 //	//
 func P_InterceptVector(tls *libc.TLS, v2 uintptr, v1 uintptr) (r fixed_t) {
 	var den, frac, num fixed_t
-	den = FixedMul(tls, (*divline_t)(unsafe.Pointer(v1)).Fdy>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdx) - FixedMul(tls, (*divline_t)(unsafe.Pointer(v1)).Fdx>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdy)
+	den = FixedMul((*divline_t)(unsafe.Pointer(v1)).Fdy>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdx) - FixedMul((*divline_t)(unsafe.Pointer(v1)).Fdx>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdy)
 	if den == 0 {
 		return 0
 	}
 	//	I_Error ("P_InterceptVector: parallel");
-	num = FixedMul(tls, ((*divline_t)(unsafe.Pointer(v1)).Fx-(*divline_t)(unsafe.Pointer(v2)).Fx)>>int32(8), (*divline_t)(unsafe.Pointer(v1)).Fdy) + FixedMul(tls, ((*divline_t)(unsafe.Pointer(v2)).Fy-(*divline_t)(unsafe.Pointer(v1)).Fy)>>int32(8), (*divline_t)(unsafe.Pointer(v1)).Fdx)
-	frac = FixedDiv(tls, num, den)
+	num = FixedMul(((*divline_t)(unsafe.Pointer(v1)).Fx-(*divline_t)(unsafe.Pointer(v2)).Fx)>>int32(8), (*divline_t)(unsafe.Pointer(v1)).Fdy) + FixedMul(((*divline_t)(unsafe.Pointer(v2)).Fy-(*divline_t)(unsafe.Pointer(v1)).Fy)>>int32(8), (*divline_t)(unsafe.Pointer(v1)).Fdx)
+	frac = FixedDiv(num, den)
 	return frac
 }
 
@@ -30204,35 +30195,35 @@ func P_PathTraverse(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_
 	if xt2 > xt1 {
 		mapxstep = int32(1)
 		partial = 1<<FRACBITS - x1>>(FRACBITS+7-FRACBITS)&(1<<FRACBITS-1)
-		ystep = FixedDiv(tls, y2-y1, xabs(x2-x1))
+		ystep = FixedDiv(y2-y1, xabs(x2-x1))
 	} else {
 		if xt2 < xt1 {
 			mapxstep = -int32(1)
 			partial = x1 >> (FRACBITS + 7 - FRACBITS) & (1<<FRACBITS - 1)
-			ystep = FixedDiv(tls, y2-y1, xabs(x2-x1))
+			ystep = FixedDiv(y2-y1, xabs(x2-x1))
 		} else {
 			mapxstep = 0
 			partial = 1 << FRACBITS
 			ystep = 256 * (1 << FRACBITS)
 		}
 	}
-	yintercept = y1>>(FRACBITS+7-FRACBITS) + FixedMul(tls, partial, ystep)
+	yintercept = y1>>(FRACBITS+7-FRACBITS) + FixedMul(partial, ystep)
 	if yt2 > yt1 {
 		mapystep = int32(1)
 		partial = 1<<FRACBITS - y1>>(FRACBITS+7-FRACBITS)&(1<<FRACBITS-1)
-		xstep = FixedDiv(tls, x2-x1, xabs(y2-y1))
+		xstep = FixedDiv(x2-x1, xabs(y2-y1))
 	} else {
 		if yt2 < yt1 {
 			mapystep = -int32(1)
 			partial = y1 >> (FRACBITS + 7 - FRACBITS) & (1<<FRACBITS - 1)
-			xstep = FixedDiv(tls, x2-x1, xabs(y2-y1))
+			xstep = FixedDiv(x2-x1, xabs(y2-y1))
 		} else {
 			mapystep = 0
 			partial = 1 << FRACBITS
 			xstep = 256 * (1 << FRACBITS)
 		}
 	}
-	xintercept = x1>>(FRACBITS+7-FRACBITS) + FixedMul(tls, partial, xstep)
+	xintercept = x1>>(FRACBITS+7-FRACBITS) + FixedMul(partial, xstep)
 	// Step through map blocks.
 	// Count is present to prevent a round off error
 	// from skipping the break.
@@ -30429,8 +30420,8 @@ func P_XYMovement(tls *libc.TLS, mo uintptr) {
 		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = 0
 		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = 0
 	} else {
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul(tls, (*mobj_t)(unsafe.Pointer(mo)).Fmomx, int32(FRICTION))
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul(tls, (*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(FRICTION))
+		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul((*mobj_t)(unsafe.Pointer(mo)).Fmomx, int32(FRICTION))
+		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul((*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(FRICTION))
 	}
 }
 
@@ -31025,8 +31016,8 @@ func P_SpawnMissile(tls *libc.TLS, source uintptr, dest uintptr, type1 mobjtype_
 	}
 	(*mobj_t)(unsafe.Pointer(th)).Fangle = an
 	an >>= uint32(ANGLETOFINESHIFT)
-	(*mobj_t)(unsafe.Pointer(th)).Fmomx = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, finecosine[an])
-	(*mobj_t)(unsafe.Pointer(th)).Fmomy = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, finesine[an])
+	(*mobj_t)(unsafe.Pointer(th)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, finecosine[an])
+	(*mobj_t)(unsafe.Pointer(th)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, finesine[an])
 	dist = P_AproxDistance(tls, (*mobj_t)(unsafe.Pointer(dest)).Fx-(*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy-(*mobj_t)(unsafe.Pointer(source)).Fy)
 	dist = dist / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed
 	if dist < int32(1) {
@@ -31071,9 +31062,9 @@ func P_SpawnPlayerMissile(tls *libc.TLS, source uintptr, type1 mobjtype_t) {
 	}
 	(*mobj_t)(unsafe.Pointer(th)).Ftarget = source
 	(*mobj_t)(unsafe.Pointer(th)).Fangle = an
-	(*mobj_t)(unsafe.Pointer(th)).Fmomx = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, finecosine[an>>int32(ANGLETOFINESHIFT)])
-	(*mobj_t)(unsafe.Pointer(th)).Fmomy = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, finesine[an>>int32(ANGLETOFINESHIFT)])
-	(*mobj_t)(unsafe.Pointer(th)).Fmomz = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, slope)
+	(*mobj_t)(unsafe.Pointer(th)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, finecosine[an>>int32(ANGLETOFINESHIFT)])
+	(*mobj_t)(unsafe.Pointer(th)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, finesine[an>>int32(ANGLETOFINESHIFT)])
+	(*mobj_t)(unsafe.Pointer(th)).Fmomz = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, slope)
 	P_CheckMissileSpawn(tls, th)
 }
 
@@ -31548,9 +31539,9 @@ func A_WeaponReady(tls *libc.TLS, player uintptr, psp uintptr) {
 	}
 	// bob the weapon based on movement speed
 	angle = int32(128) * leveltime & (FINEANGLES - 1)
-	(*pspdef_t)(unsafe.Pointer(psp)).Fsx = 1<<FRACBITS + FixedMul(tls, (*player_t)(unsafe.Pointer(player)).Fbob, finecosine[angle])
+	(*pspdef_t)(unsafe.Pointer(psp)).Fsx = 1<<FRACBITS + FixedMul((*player_t)(unsafe.Pointer(player)).Fbob, finecosine[angle])
 	angle &= FINEANGLES/2 - 1
-	(*pspdef_t)(unsafe.Pointer(psp)).Fsy = 32*(1<<FRACBITS) + FixedMul(tls, (*player_t)(unsafe.Pointer(player)).Fbob, finesine[angle])
+	(*pspdef_t)(unsafe.Pointer(psp)).Fsy = 32*(1<<FRACBITS) + FixedMul((*player_t)(unsafe.Pointer(player)).Fbob, finesine[angle])
 }
 
 // C documentation
@@ -33946,7 +33937,7 @@ func P_LoadLineDefs(tls *libc.TLS, lump int32) {
 			if !((*line_t)(unsafe.Pointer(ld)).Fdy != 0) {
 				(*line_t)(unsafe.Pointer(ld)).Fslopetype = int32(ST_HORIZONTAL)
 			} else {
-				if FixedDiv(tls, (*line_t)(unsafe.Pointer(ld)).Fdy, (*line_t)(unsafe.Pointer(ld)).Fdx) > 0 {
+				if FixedDiv((*line_t)(unsafe.Pointer(ld)).Fdy, (*line_t)(unsafe.Pointer(ld)).Fdx) > 0 {
 					(*line_t)(unsafe.Pointer(ld)).Fslopetype = int32(ST_POSITIVE)
 				} else {
 					(*line_t)(unsafe.Pointer(ld)).Fslopetype = int32(ST_NEGATIVE)
@@ -34433,13 +34424,13 @@ func P_DivlineSide(tls *libc.TLS, x fixed_t, y fixed_t, node uintptr) (r int32) 
 //	//
 func P_InterceptVector2(tls *libc.TLS, v2 uintptr, v1 uintptr) (r fixed_t) {
 	var den, frac, num fixed_t
-	den = FixedMul(tls, (*divline_t)(unsafe.Pointer(v1)).Fdy>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdx) - FixedMul(tls, (*divline_t)(unsafe.Pointer(v1)).Fdx>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdy)
+	den = FixedMul((*divline_t)(unsafe.Pointer(v1)).Fdy>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdx) - FixedMul((*divline_t)(unsafe.Pointer(v1)).Fdx>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdy)
 	if den == 0 {
 		return 0
 	}
 	//	I_Error ("P_InterceptVector: parallel");
-	num = FixedMul(tls, ((*divline_t)(unsafe.Pointer(v1)).Fx-(*divline_t)(unsafe.Pointer(v2)).Fx)>>int32(8), (*divline_t)(unsafe.Pointer(v1)).Fdy) + FixedMul(tls, ((*divline_t)(unsafe.Pointer(v2)).Fy-(*divline_t)(unsafe.Pointer(v1)).Fy)>>int32(8), (*divline_t)(unsafe.Pointer(v1)).Fdx)
-	frac = FixedDiv(tls, num, den)
+	num = FixedMul(((*divline_t)(unsafe.Pointer(v1)).Fx-(*divline_t)(unsafe.Pointer(v2)).Fx)>>int32(8), (*divline_t)(unsafe.Pointer(v1)).Fdy) + FixedMul(((*divline_t)(unsafe.Pointer(v2)).Fy-(*divline_t)(unsafe.Pointer(v1)).Fy)>>int32(8), (*divline_t)(unsafe.Pointer(v1)).Fdx)
+	frac = FixedDiv(num, den)
 	return frac
 }
 
@@ -34526,13 +34517,13 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 		} // stop
 		frac = P_InterceptVector2(tls, uintptr(unsafe.Pointer(&strace)), bp)
 		if (*sector_t)(unsafe.Pointer(front)).Ffloorheight != (*sector_t)(unsafe.Pointer(back)).Ffloorheight {
-			slope = FixedDiv(tls, openbottom-sightzstart, frac)
+			slope = FixedDiv(openbottom-sightzstart, frac)
 			if slope > bottomslope {
 				bottomslope = slope
 			}
 		}
 		if (*sector_t)(unsafe.Pointer(front)).Fceilingheight != (*sector_t)(unsafe.Pointer(back)).Fceilingheight {
-			slope = FixedDiv(tls, opentop-sightzstart, frac)
+			slope = FixedDiv(opentop-sightzstart, frac)
 			if slope < topslope {
 				topslope = slope
 			}
@@ -36884,8 +36875,8 @@ const MAXBOB = 1048576
 //	//
 func P_Thrust(tls *libc.TLS, player uintptr, angle angle_t, move fixed_t) {
 	angle >>= uint32(ANGLETOFINESHIFT)
-	*(*fixed_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 112)) += FixedMul(tls, move, finecosine[angle])
-	*(*fixed_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 116)) += FixedMul(tls, move, finesine[angle])
+	*(*fixed_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 112)) += FixedMul(move, finecosine[angle])
+	*(*fixed_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 116)) += FixedMul(move, finesine[angle])
 }
 
 // C documentation
@@ -36903,7 +36894,7 @@ func P_CalcHeight(tls *libc.TLS, player uintptr) {
 	// OPTIMIZE: tablify angle
 	// Note: a LUT allows for effects
 	//  like a ramp with low health.
-	(*player_t)(unsafe.Pointer(player)).Fbob = FixedMul(tls, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fmomx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fmomx) + FixedMul(tls, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fmomy, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fmomy)
+	(*player_t)(unsafe.Pointer(player)).Fbob = FixedMul((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fmomx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fmomx) + FixedMul((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fmomy, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fmomy)
 	*(*fixed_t)(unsafe.Pointer(player + 40)) >>= int32(2)
 	if (*player_t)(unsafe.Pointer(player)).Fbob > int32(MAXBOB) {
 		(*player_t)(unsafe.Pointer(player)).Fbob = int32(MAXBOB)
@@ -36917,7 +36908,7 @@ func P_CalcHeight(tls *libc.TLS, player uintptr) {
 		return
 	}
 	angle = FINEANGLES / 20 * leveltime & (FINEANGLES - 1)
-	bob = FixedMul(tls, (*player_t)(unsafe.Pointer(player)).Fbob/int32(2), finesine[angle])
+	bob = FixedMul((*player_t)(unsafe.Pointer(player)).Fbob/int32(2), finesine[angle])
 	// move viewheight
 	if (*player_t)(unsafe.Pointer(player)).Fplayerstate == int32(PST_LIVE) {
 		*(*fixed_t)(unsafe.Pointer(player + 32)) += (*player_t)(unsafe.Pointer(player)).Fdeltaviewheight
@@ -39120,8 +39111,8 @@ func R_PointOnSide(tls *libc.TLS, x fixed_t, y fixed_t, node uintptr) (r int32) 
 		}
 		return 0
 	}
-	left = FixedMul(tls, (*node_t)(unsafe.Pointer(node)).Fdy>>int32(FRACBITS), dx)
-	right = FixedMul(tls, dy, (*node_t)(unsafe.Pointer(node)).Fdx>>int32(FRACBITS))
+	left = FixedMul((*node_t)(unsafe.Pointer(node)).Fdy>>int32(FRACBITS), dx)
+	right = FixedMul(dy, (*node_t)(unsafe.Pointer(node)).Fdx>>int32(FRACBITS))
 	if right < left {
 		// front side
 		return 0
@@ -39158,8 +39149,8 @@ func R_PointOnSegSide(tls *libc.TLS, x fixed_t, y fixed_t, line uintptr) (r int3
 		}
 		return 0
 	}
-	left = FixedMul(tls, ldy>>int32(FRACBITS), dx)
-	right = FixedMul(tls, dy, ldx>>int32(FRACBITS))
+	left = FixedMul(ldy>>int32(FRACBITS), dx)
+	right = FixedMul(dy, ldx>>int32(FRACBITS))
 	if right < left {
 		// front side
 		return 0
@@ -39252,13 +39243,13 @@ func R_PointToDist(tls *libc.TLS, x fixed_t, y fixed_t) (r fixed_t) {
 	}
 	// Fix crashes in udm1.wad
 	if dx != 0 {
-		frac = FixedDiv(tls, dy, dx)
+		frac = FixedDiv(dy, dx)
 	} else {
 		frac = 0
 	}
 	angle = libc.Int32FromUint32((tantoangle[frac>>(FRACBITS-SLOPEBITS)] + uint32(ANG909)) >> int32(ANGLETOFINESHIFT))
 	// use as cosine
-	dist = FixedDiv(tls, dx, finesine[angle])
+	dist = FixedDiv(dx, finesine[angle])
 	return dist
 }
 
@@ -39290,10 +39281,10 @@ func R_ScaleFromGlobalAngle(tls *libc.TLS, visangle angle_t) (r fixed_t) {
 	// both sines are allways positive
 	sinea = finesine[anglea>>int32(ANGLETOFINESHIFT)]
 	sineb = finesine[angleb>>int32(ANGLETOFINESHIFT)]
-	num = FixedMul(tls, projection, sineb) << detailshift
-	den = FixedMul(tls, rw_distance, sinea)
+	num = FixedMul(projection, sineb) << detailshift
+	den = FixedMul(rw_distance, sinea)
 	if den > num>>int32(16) {
-		scale = FixedDiv(tls, num, den)
+		scale = FixedDiv(num, den)
 		if scale > 64*(1<<FRACBITS) {
 			scale = 64 * (1 << FRACBITS)
 		} else {
@@ -39330,7 +39321,7 @@ func R_InitTextureMapping(tls *libc.TLS) {
 	//
 	// Calc focallength
 	//  so FIELDOFVIEW angles covers SCREENWIDTH.
-	focallength = FixedDiv(tls, centerxfrac, finetangent[FINEANGLES/4+FIELDOFVIEW/2])
+	focallength = FixedDiv(centerxfrac, finetangent[FINEANGLES/4+FIELDOFVIEW/2])
 	i = 0
 	for {
 		if !(i < FINEANGLES/2) {
@@ -39342,7 +39333,7 @@ func R_InitTextureMapping(tls *libc.TLS) {
 			if finetangent[i] < -(1<<FRACBITS)*2 {
 				t = viewwidth + int32(1)
 			} else {
-				t = FixedMul(tls, finetangent[i], focallength)
+				t = FixedMul(finetangent[i], focallength)
 				t = (centerxfrac - t + 1<<FRACBITS - int32(1)) >> int32(FRACBITS)
 				if t < -int32(1) {
 					t = -int32(1)
@@ -39383,7 +39374,7 @@ func R_InitTextureMapping(tls *libc.TLS) {
 		if !(i < FINEANGLES/2) {
 			break
 		}
-		t = FixedMul(tls, finetangent[i], focallength)
+		t = FixedMul(finetangent[i], focallength)
 		t = centerx - t
 		if viewangletox[i] == -int32(1) {
 			viewangletox[i] = 0
@@ -39421,7 +39412,7 @@ func R_InitLightTables(tls *libc.TLS) {
 			if !(j < int32(MAXLIGHTZ)) {
 				break
 			}
-			scale = FixedDiv(tls, SCREENWIDTH/2*(1<<FRACBITS), (j+int32(1))<<int32(LIGHTZSHIFT))
+			scale = FixedDiv(SCREENWIDTH/2*(1<<FRACBITS), (j+int32(1))<<int32(LIGHTZSHIFT))
 			scale >>= int32(LIGHTSCALESHIFT)
 			level = startmap - scale/int32(DISTMAP)
 			if level < 0 {
@@ -39513,7 +39504,7 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 		}
 		dy = (i-viewheight/int32(2))<<int32(FRACBITS) + 1<<FRACBITS/2
 		dy = xabs(dy)
-		yslope[i] = FixedDiv(tls, viewwidth<<detailshift/int32(2)*(1<<FRACBITS), dy)
+		yslope[i] = FixedDiv(viewwidth<<detailshift/int32(2)*(1<<FRACBITS), dy)
 		goto _4
 	_4:
 		;
@@ -39525,7 +39516,7 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 			break
 		}
 		cosadj = xabs(finecosine[xtoviewangle[i]>>int32(ANGLETOFINESHIFT)])
-		distscale[i] = FixedDiv(tls, 1<<FRACBITS, cosadj)
+		distscale[i] = FixedDiv(1<<FRACBITS, cosadj)
 		goto _5
 	_5:
 		;
@@ -39704,13 +39695,13 @@ func R_MapPlane(tls *libc.TLS, y int32, x1 int32, x2 int32) {
 	}
 	if planeheight != cachedheight[y] {
 		cachedheight[y] = planeheight
-		v1 = FixedMul(tls, planeheight, yslope[y])
+		v1 = FixedMul(planeheight, yslope[y])
 		cacheddistance[y] = v1
 		distance = v1
-		v2 = FixedMul(tls, distance, basexscale)
+		v2 = FixedMul(distance, basexscale)
 		cachedxstep[y] = v2
 		ds_xstep = v2
-		v3 = FixedMul(tls, distance, baseyscale)
+		v3 = FixedMul(distance, baseyscale)
 		cachedystep[y] = v3
 		ds_ystep = v3
 	} else {
@@ -39718,10 +39709,10 @@ func R_MapPlane(tls *libc.TLS, y int32, x1 int32, x2 int32) {
 		ds_xstep = cachedxstep[y]
 		ds_ystep = cachedystep[y]
 	}
-	length = FixedMul(tls, distance, distscale[x1])
+	length = FixedMul(distance, distscale[x1])
 	angle = (viewangle + xtoviewangle[x1]) >> int32(ANGLETOFINESHIFT)
-	ds_xfrac = viewx + FixedMul(tls, finecosine[angle], length)
-	ds_yfrac = -viewy - FixedMul(tls, finesine[angle], length)
+	ds_xfrac = viewx + FixedMul(finecosine[angle], length)
+	ds_yfrac = -viewy - FixedMul(finesine[angle], length)
 	if fixedcolormap != 0 {
 		ds_colormap = fixedcolormap
 	} else {
@@ -39767,8 +39758,8 @@ func R_ClearPlanes(tls *libc.TLS) {
 	// left to right mapping
 	angle = (viewangle - uint32(ANG909)) >> int32(ANGLETOFINESHIFT)
 	// scale will be unit scale at SCREENWIDTH/2 distance
-	basexscale = FixedDiv(tls, finecosine[angle], centerxfrac)
-	baseyscale = -FixedDiv(tls, finesine[angle], centerxfrac)
+	basexscale = FixedDiv(finecosine[angle], centerxfrac)
+	baseyscale = -FixedDiv(finesine[angle], centerxfrac)
 }
 
 // C documentation
@@ -40054,7 +40045,7 @@ func R_RenderMaskedSegRange(tls *libc.TLS, ds uintptr, x1 int32, x2 int32) {
 				}
 				dc_colormap = *(*uintptr)(unsafe.Pointer(walllights + uintptr(index)*8))
 			}
-			sprtopscreen = centeryfrac - FixedMul(tls, dc_texturemid, spryscale)
+			sprtopscreen = centeryfrac - FixedMul(dc_texturemid, spryscale)
 			dc_iscale = libc.Int32FromUint32(uint32(0xffffffff) / libc.Uint32FromInt32(spryscale))
 			// draw the texture
 			col = R_GetColumn(tls, texnum, int32(*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2)))) - libc.UintptrFromInt32(3)
@@ -40126,7 +40117,7 @@ func R_RenderSegLoop(tls *libc.TLS) {
 		if segtextured != 0 {
 			// calculate texture offset
 			angle = (rw_centerangle + xtoviewangle[rw_x]) >> int32(ANGLETOFINESHIFT)
-			texturecolumn = rw_offset - FixedMul(tls, finetangent[angle], rw_distance)
+			texturecolumn = rw_offset - FixedMul(finetangent[angle], rw_distance)
 			texturecolumn >>= int32(FRACBITS)
 			// calculate lighting
 			index = libc.Uint32FromInt32(rw_scale >> int32(LIGHTSCALESHIFT))
@@ -40251,7 +40242,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	distangle = uint32(ANG909) - offsetangle
 	hyp = R_PointToDist(tls, (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fv1)).Fx, (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fv1)).Fy)
 	sineval = finesine[distangle>>int32(ANGLETOFINESHIFT)]
-	rw_distance = FixedMul(tls, hyp, sineval)
+	rw_distance = FixedMul(hyp, sineval)
 	v2 = start
 	rw_x = v2
 	(*drawseg_t)(unsafe.Pointer(ds_p)).Fx1 = v2
@@ -40410,7 +40401,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 			offsetangle = uint32(ANG909)
 		}
 		sineval = finesine[offsetangle>>int32(ANGLETOFINESHIFT)]
-		rw_offset = FixedMul(tls, hyp, sineval)
+		rw_offset = FixedMul(hyp, sineval)
 		if rw_normalangle-libc.Uint32FromInt32(rw_angle1) < uint32(ANG18013) {
 			rw_offset = -rw_offset
 		}
@@ -40454,20 +40445,20 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	// calculate incremental stepping values for texture edges
 	worldtop >>= int32(4)
 	worldbottom >>= int32(4)
-	topstep = -FixedMul(tls, rw_scalestep, worldtop)
-	topfrac = centeryfrac>>4 - FixedMul(tls, worldtop, rw_scale)
-	bottomstep = -FixedMul(tls, rw_scalestep, worldbottom)
-	bottomfrac = centeryfrac>>4 - FixedMul(tls, worldbottom, rw_scale)
+	topstep = -FixedMul(rw_scalestep, worldtop)
+	topfrac = centeryfrac>>4 - FixedMul(worldtop, rw_scale)
+	bottomstep = -FixedMul(rw_scalestep, worldbottom)
+	bottomfrac = centeryfrac>>4 - FixedMul(worldbottom, rw_scale)
 	if backsector != 0 {
 		worldhigh >>= int32(4)
 		worldlow >>= int32(4)
 		if worldhigh < worldtop {
-			pixhigh = centeryfrac>>4 - FixedMul(tls, worldhigh, rw_scale)
-			pixhighstep = -FixedMul(tls, rw_scalestep, worldhigh)
+			pixhigh = centeryfrac>>4 - FixedMul(worldhigh, rw_scale)
+			pixhighstep = -FixedMul(rw_scalestep, worldhigh)
 		}
 		if worldlow > worldbottom {
-			pixlow = centeryfrac>>4 - FixedMul(tls, worldlow, rw_scale)
-			pixlowstep = -FixedMul(tls, rw_scalestep, worldlow)
+			pixlow = centeryfrac>>4 - FixedMul(worldlow, rw_scale)
+			pixlowstep = -FixedMul(rw_scalestep, worldlow)
 		}
 	}
 	// render it
@@ -40806,7 +40797,7 @@ func R_DrawVisSprite(tls *libc.TLS, vis uintptr, x1 int32, x2 int32) {
 	dc_texturemid = (*vissprite_t)(unsafe.Pointer(vis)).Ftexturemid
 	frac = (*vissprite_t)(unsafe.Pointer(vis)).Fstartfrac
 	spryscale = (*vissprite_t)(unsafe.Pointer(vis)).Fscale
-	sprtopscreen = centeryfrac - FixedMul(tls, dc_texturemid, spryscale)
+	sprtopscreen = centeryfrac - FixedMul(dc_texturemid, spryscale)
 	dc_x = (*vissprite_t)(unsafe.Pointer(vis)).Fx1
 	for {
 		if !(dc_x <= (*vissprite_t)(unsafe.Pointer(vis)).Fx2) {
@@ -40844,16 +40835,16 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 	// transform the origin point
 	tr_x = (*mobj_t)(unsafe.Pointer(thing)).Fx - viewx
 	tr_y = (*mobj_t)(unsafe.Pointer(thing)).Fy - viewy
-	gxt = FixedMul(tls, tr_x, viewcos)
-	gyt = -FixedMul(tls, tr_y, viewsin)
+	gxt = FixedMul(tr_x, viewcos)
+	gyt = -FixedMul(tr_y, viewsin)
 	tz = gxt - gyt
 	// thing is behind view plane?
 	if tz < 1<<FRACBITS*4 {
 		return
 	}
-	xscale = FixedDiv(tls, projection, tz)
-	gxt = -FixedMul(tls, tr_x, viewsin)
-	gyt = FixedMul(tls, tr_y, viewcos)
+	xscale = FixedDiv(projection, tz)
+	gxt = -FixedMul(tr_x, viewsin)
+	gyt = FixedMul(tr_y, viewcos)
 	tx = -(gyt + gxt)
 	// too far off the side?
 	if xabs(tx) > tz<<2 {
@@ -40881,13 +40872,13 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 	}
 	// calculate edges of the shape
 	tx -= *(*fixed_t)(unsafe.Pointer(spriteoffset + uintptr(lump)*4))
-	x1 = (centerxfrac + FixedMul(tls, tx, xscale)) >> int32(FRACBITS)
+	x1 = (centerxfrac + FixedMul(tx, xscale)) >> int32(FRACBITS)
 	// off the right side?
 	if x1 > viewwidth {
 		return
 	}
 	tx += *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4))
-	x2 = (centerxfrac+FixedMul(tls, tx, xscale))>>int32(FRACBITS) - int32(1)
+	x2 = (centerxfrac+FixedMul(tx, xscale))>>int32(FRACBITS) - int32(1)
 	// off the left side
 	if x2 < 0 {
 		return
@@ -40913,7 +40904,7 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 		v2 = x2
 	}
 	(*vissprite_t)(unsafe.Pointer(vis)).Fx2 = v2
-	iscale = FixedDiv(tls, 1<<FRACBITS, xscale)
+	iscale = FixedDiv(1<<FRACBITS, xscale)
 	if flip != 0 {
 		(*vissprite_t)(unsafe.Pointer(vis)).Fstartfrac = *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4)) - int32(1)
 		(*vissprite_t)(unsafe.Pointer(vis)).Fxiscale = -iscale
@@ -41016,13 +41007,13 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 	// calculate edges of the shape
 	tx = (*pspdef_t)(unsafe.Pointer(psp)).Fsx - 160*(1<<FRACBITS)
 	tx -= *(*fixed_t)(unsafe.Pointer(spriteoffset + uintptr(lump)*4))
-	x1 = (centerxfrac + FixedMul(tls, tx, pspritescale)) >> int32(FRACBITS)
+	x1 = (centerxfrac + FixedMul(tx, pspritescale)) >> int32(FRACBITS)
 	// off the right side
 	if x1 > viewwidth {
 		return
 	}
 	tx += *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4))
-	x2 = (centerxfrac+FixedMul(tls, tx, pspritescale))>>int32(FRACBITS) - int32(1)
+	x2 = (centerxfrac+FixedMul(tx, pspritescale))>>int32(FRACBITS) - int32(1)
 	// off the left side
 	if x2 < 0 {
 		return
@@ -44642,7 +44633,7 @@ func S_AdjustSoundParams(tls *libc.TLS, listener uintptr, source uintptr, vol ui
 	}
 	angle >>= uint32(ANGLETOFINESHIFT)
 	// stereo separation
-	*(*int32)(unsafe.Pointer(sep)) = int32(128) - FixedMul(tls, 96*(1<<FRACBITS), finesine[angle])>>FRACBITS
+	*(*int32)(unsafe.Pointer(sep)) = int32(128) - FixedMul(96*(1<<FRACBITS), finesine[angle])>>FRACBITS
 	// volume calculation
 	if approx_dist < 200*(1<<FRACBITS) {
 		*(*int32)(unsafe.Pointer(vol)) = snd_SfxVolume
