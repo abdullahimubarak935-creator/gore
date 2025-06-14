@@ -5321,7 +5321,6 @@ func GetGameName(tls *libc.TLS, gamename uintptr) (r uintptr) {
 }
 
 func SetMissionForPackName(tls *libc.TLS, pack_name uintptr) {
-	bp := alloc(16)
 	var i int32
 	i = 0
 	for {
@@ -5349,7 +5348,7 @@ func SetMissionForPackName(tls *libc.TLS, pack_name uintptr) {
 		;
 		i++
 	}
-	I_Error(tls, __ccgo_ts(2583), libc.VaList(bp+8, pack_name))
+	I_Error(tls, __ccgo_ts(2583), pack_name)
 }
 
 var packs = [3]struct {
@@ -5639,7 +5638,6 @@ var gameversions = [10]struct {
 // Initialize the game version
 
 func InitGameVersion(tls *libc.TLS) {
-	bp := alloc(32)
 	var i, p int32
 	//!
 	// @arg <version>
@@ -5677,7 +5675,7 @@ func InitGameVersion(tls *libc.TLS) {
 				;
 				i++
 			}
-			I_Error(tls, __ccgo_ts(3906), libc.VaList(bp+8, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))
+			I_Error(tls, __ccgo_ts(3906), *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		}
 	} else {
 		// Determine automatically
@@ -8230,7 +8228,7 @@ func G_Ticker(tls *libc.TLS) {
 			}
 			if netgame != 0 && !(netdemo != 0) && !(gametic%ticdup != 0) {
 				if gametic > int32(BACKUPTICS) && libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))) != libc.Int32FromUint8((*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy) {
-					I_Error(tls, __ccgo_ts(13760), libc.VaList(bp+8, libc.Int32FromUint8((*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy), libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))))))
+					I_Error(tls, __ccgo_ts(13760), libc.Int32FromUint8((*ticcmd_t)(unsafe.Pointer(cmd)).Fconsistancy), libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))))
 				}
 				if players[i].Fmo != 0 {
 					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = libc.Uint8FromInt32((*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fx)
@@ -8364,7 +8362,6 @@ func G_PlayerReborn(tls *libc.TLS, player int32) {
 }
 
 func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
-	bp := alloc(16)
 	var an, i int32
 	var mo, ss uintptr
 	var x, xa, y, ya, v2 fixed_t
@@ -8440,7 +8437,7 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 		xa = finecosine[an]
 		ya = finesine[an]
 	default:
-		I_Error(tls, __ccgo_ts(13807), libc.VaList(bp+8, an))
+		I_Error(tls, __ccgo_ts(13807), an)
 		v2 = 0
 		ya = v2
 		xa = v2
@@ -8461,11 +8458,10 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 //	// called at level load and each death
 //	//
 func G_DeathMatchSpawnPlayer(tls *libc.TLS, playernum int32) {
-	bp := alloc(16)
 	var i, j, selections int32
 	selections = int32((int64(deathmatch_p) - int64(uintptr(unsafe.Pointer(&deathmatchstarts)))) / 10)
 	if selections < int32(4) {
-		I_Error(tls, __ccgo_ts(13841), libc.VaList(bp+8, selections))
+		I_Error(tls, __ccgo_ts(13841), selections)
 	}
 	j = 0
 	for {
@@ -8886,7 +8882,6 @@ func G_SaveGame(tls *libc.TLS, slot int32, description uintptr) {
 }
 
 func G_DoSaveGame(tls *libc.TLS) {
-	bp := alloc(32)
 	var recovery_savegame_file, savegame_file, temp_savegame_file uintptr
 	recovery_savegame_file = libc.UintptrFromInt32(0)
 	temp_savegame_file = P_TempSaveGameFile(tls)
@@ -8902,7 +8897,7 @@ func G_DoSaveGame(tls *libc.TLS) {
 		recovery_savegame_file = M_TempFile(tls, __ccgo_ts(13903))
 		save_stream = libc.Xfopen(tls, recovery_savegame_file, __ccgo_ts(13900))
 		if save_stream == libc.UintptrFromInt32(0) {
-			I_Error(tls, __ccgo_ts(13916), libc.VaList(bp+8, temp_savegame_file, recovery_savegame_file))
+			I_Error(tls, __ccgo_ts(13916), temp_savegame_file, recovery_savegame_file)
 		}
 	}
 	savegame_error = 0
@@ -8923,7 +8918,7 @@ func G_DoSaveGame(tls *libc.TLS) {
 		// We failed to save to the normal location, but we wrote a
 		// recovery file to the temp directory. Now we can bomb out
 		// with an error.
-		I_Error(tls, __ccgo_ts(13994), libc.VaList(bp+8, temp_savegame_file, recovery_savegame_file))
+		I_Error(tls, __ccgo_ts(13994), temp_savegame_file, recovery_savegame_file)
 	}
 	// Now rename the temporary savegame file to the actual savegame
 	// file, overwriting the old savegame if there was one there.
@@ -9470,7 +9465,6 @@ func G_TimeDemo(tls *libc.TLS, name uintptr) {
 ===================
 */
 func G_CheckDemoStatus(tls *libc.TLS) (r boolean) {
-	bp := alloc(32)
 	var endtime, realtics int32
 	var fps float32
 	var v1, v2 boolean
@@ -9482,7 +9476,7 @@ func G_CheckDemoStatus(tls *libc.TLS) (r boolean) {
 		// Prevent recursive calls
 		timingdemo = 0
 		demoplayback = 0
-		I_Error(tls, __ccgo_ts(14466), libc.VaList(bp+8, gametic, realtics, float64(fps)))
+		I_Error(tls, __ccgo_ts(14466), gametic, realtics, float64(fps))
 	}
 	if demoplayback != 0 {
 		W_ReleaseLumpName(tls, defdemoname)
@@ -9513,7 +9507,7 @@ func G_CheckDemoStatus(tls *libc.TLS) (r boolean) {
 		M_WriteFile(tls, demoname, demobuffer, int32(int64(demo_p)-int64(demobuffer)))
 		Z_Free(tls, demobuffer)
 		demorecording = 0
-		I_Error(tls, __ccgo_ts(14508), libc.VaList(bp+8, demoname))
+		I_Error(tls, __ccgo_ts(14508), demoname)
 	}
 	return 0
 }
@@ -20486,7 +20480,6 @@ func I_Tactile(tls *libc.TLS, on int32, off int32, total int32) {
 // works.
 
 func AutoAllocMemory(tls *libc.TLS, size uintptr, default_ram int32, min_ram int32) (r uintptr) {
-	bp := alloc(16)
 	var zonemem uintptr
 	// Allocate the zone memory.  This loop tries progressively smaller
 	// zone sizes until a size is found that can be allocated.
@@ -20496,7 +20489,7 @@ func AutoAllocMemory(tls *libc.TLS, size uintptr, default_ram int32, min_ram int
 	for zonemem == libc.UintptrFromInt32(0) {
 		// We need a reasonable minimum amount of RAM to start.
 		if default_ram < min_ram {
-			I_Error(tls, __ccgo_ts(18832), libc.VaList(bp+8, default_ram))
+			I_Error(tls, __ccgo_ts(18832), default_ram)
 		}
 		// Try to allocate the zone memory.
 		*(*int32)(unsafe.Pointer(size)) = default_ram * int32(1024) * int32(1024)
@@ -48119,14 +48112,13 @@ func Z_CheckHeap(tls *libc.TLS) {
 //	// Z_ChangeTag
 //	//
 func Z_ChangeTag2(tls *libc.TLS, ptr uintptr, tag int32, file uintptr, line int32) {
-	bp := alloc(32)
 	var block uintptr
 	block = ptr - libc.UintptrFromInt64(40)
 	if (*memblock_t)(unsafe.Pointer(block)).Fid != int32(ZONEID) {
-		I_Error(tls, __ccgo_ts(29588), libc.VaList(bp+8, file, line))
+		I_Error(tls, __ccgo_ts(29588), file, line)
 	}
 	if tag >= int32(PU_PURGELEVEL) && (*memblock_t)(unsafe.Pointer(block)).Fuser == libc.UintptrFromInt32(0) {
-		I_Error(tls, __ccgo_ts(29632), libc.VaList(bp+8, file, line))
+		I_Error(tls, __ccgo_ts(29632), file, line)
 	}
 	(*memblock_t)(unsafe.Pointer(block)).Ftag = tag
 }
