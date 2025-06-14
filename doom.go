@@ -40,6 +40,18 @@ func xstrlen(nptr uintptr) uint64 {
 	return r
 }
 
+func xstrcmp(s1, s2 uintptr) int32 {
+	for {
+		ch1 := *(*byte)(unsafe.Pointer(s1))
+		s1++
+		ch2 := *(*byte)(unsafe.Pointer(s2))
+		s2++
+		if ch1 != ch2 || ch1 == 0 || ch2 == 0 {
+			return int32(ch1) - int32(ch2)
+		}
+	}
+}
+
 func xstrcasecmp(s1, s2 uintptr) int32 {
 	for {
 		ch1 := *(*byte)(unsafe.Pointer(s1))
@@ -4014,7 +4026,7 @@ func CheckDirectoryHasIWAD(tls *libc.TLS, dir uintptr, iwadname uintptr) (r uint
 	}
 	// Construct the full path to the IWAD if it is located in
 	// this directory, and check if it exists.
-	if !(libc.Xstrcmp(tls, dir, __ccgo_ts(1250)) != 0) {
+	if !(xstrcmp(dir, __ccgo_ts(1250)) != 0) {
 		filename = xstrdup(iwadname)
 	} else {
 		filename = M_StringJoin(tls, dir, libc.VaList(bp+8, __ccgo_ts(1252), iwadname, libc.UintptrFromInt32(0)))
@@ -5649,7 +5661,7 @@ func InitGameVersion(tls *libc.TLS) {
 			if !(gameversions[i].Fdescription != libc.UintptrFromInt32(0)) {
 				break
 			}
-			if !(libc.Xstrcmp(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), gameversions[i].Fcmdline) != 0) {
+			if !(xstrcmp(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), gameversions[i].Fcmdline) != 0) {
 				gameversion = gameversions[i].Fversion
 				break
 			}
@@ -21764,7 +21776,7 @@ func SearchCollection(tls *libc.TLS, collection uintptr, name uintptr) (r uintpt
 		if !(i < (*default_collection_t)(unsafe.Pointer(collection)).Fnumdefaults) {
 			break
 		}
-		if !(libc.Xstrcmp(tls, name, (*(*default_t)(unsafe.Pointer((*default_collection_t)(unsafe.Pointer(collection)).Fdefaults + uintptr(i)*32))).Fname) != 0) {
+		if !(xstrcmp(name, (*(*default_t)(unsafe.Pointer((*default_collection_t)(unsafe.Pointer(collection)).Fdefaults + uintptr(i)*32))).Fname) != 0) {
 			return (*default_collection_t)(unsafe.Pointer(collection)).Fdefaults + uintptr(i)*32
 		}
 		goto _1
@@ -21890,7 +21902,7 @@ func M_SetConfigDir(tls *libc.TLS, dir uintptr) {
 	} else {
 		configdir = GetDefaultConfigDir(tls)
 	}
-	if libc.Xstrcmp(tls, configdir, __ccgo_ts(14092)) != 0 {
+	if xstrcmp(configdir, __ccgo_ts(14092)) != 0 {
 		fprintf_ccgo(os.Stdout, 22005, libc.GoString(configdir))
 	}
 	// Make the directory if it doesn't already exist:
@@ -21907,7 +21919,7 @@ func M_GetSaveGameDir(tls *libc.TLS, iwadname uintptr) (r uintptr) {
 	var savegamedir uintptr
 	// If not "doing" a configuration directory (Windows), don't "do"
 	// a savegame directory, either.
-	if !(libc.Xstrcmp(tls, configdir, __ccgo_ts(14092)) != 0) {
+	if !(xstrcmp(configdir, __ccgo_ts(14092)) != 0) {
 		savegamedir = xstrdup(__ccgo_ts(14092))
 	} else {
 		savegamedir = M_StringJoin(tls, configdir, libc.VaList(bp+8, __ccgo_ts(1252), __ccgo_ts(22043), libc.UintptrFromInt32(0)))
@@ -22866,7 +22878,7 @@ func M_SaveSelect(tls *libc.TLS, choice int32) {
 	saveStringEnter = int32(1)
 	saveSlot = choice
 	M_StringCopy(tls, uintptr(unsafe.Pointer(&saveOldString)), uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, uint64(SAVESTRINGSIZE))
-	if !(libc.Xstrcmp(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, __ccgo_ts(22118)) != 0) {
+	if !(xstrcmp(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, __ccgo_ts(22118)) != 0) {
 		*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(choice)*24)) = 0
 	}
 	saveCharIndex = libc.Int32FromUint64(xstrlen(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(choice)*24))
@@ -24200,7 +24212,7 @@ func M_StringConcat(tls *libc.TLS, dest uintptr, src uintptr, dest_size uint64) 
 // Returns true if 's' ends with the specified suffix.
 
 func M_StringEndsWith(tls *libc.TLS, s uintptr, suffix uintptr) (r boolean) {
-	return libc.BoolUint32(xstrlen(s) >= xstrlen(suffix) && libc.Xstrcmp(tls, s+uintptr(xstrlen(s))-uintptr(xstrlen(suffix)), suffix) == 0)
+	return libc.BoolUint32(xstrlen(s) >= xstrlen(suffix) && xstrcmp(s+uintptr(xstrlen(s))-uintptr(xstrlen(suffix)), suffix) == 0)
 }
 
 // Return a newly-malloced string with all the strings given as arguments
@@ -33135,7 +33147,7 @@ func P_ReadSaveGameHeader(tls *libc.TLS) (r boolean) {
 	}
 	xmemset(bp, 0, uint64(16))
 	M_snprintf(tls, bp, uint64(16), __ccgo_ts(25058), libc.VaList(bp+40, G_VanillaVersionCode(tls)))
-	if libc.Xstrcmp(tls, bp+16, bp) != 0 {
+	if xstrcmp(bp+16, bp) != 0 {
 		return 0
 	} // bad version
 	gameskill = libc.Int32FromUint8(saveg_read8(tls))
