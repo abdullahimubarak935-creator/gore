@@ -10,6 +10,8 @@ import (
 
 type boolean = uint32
 
+const uintptr_negative_one = ^uintptr(0)
+
 func alloc(size int) uintptr {
 	data := make([]byte, size)
 	return (uintptr)(unsafe.Pointer(&data[0]))
@@ -2219,64 +2221,64 @@ func init() {
 	player_arrow = [7]mline_t{
 		0: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
 			},
 			Fb: mpoint_t{
-				Fx: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7),
+				Fx: (8) * (16) * ((1) << (FRACBITS)) / (7),
 			},
 		},
 		1: {
 			Fa: mpoint_t{
-				Fx: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7),
+				Fx: (8) * (16) * ((1) << (FRACBITS)) / (7),
 			},
 			Fb: mpoint_t{
-				Fx: libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7) - libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(2),
-				Fy: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7) / libc.Int32FromInt32(4),
+				Fx: (8)*(16)*((1)<<(FRACBITS))/(7) - (8)*(16)*((1)<<(FRACBITS))/(7)/(2),
+				Fy: (8) * (16) * ((1) << (FRACBITS)) / (7) / (4),
 			},
 		},
 		2: {
 			Fa: mpoint_t{
-				Fx: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7),
+				Fx: (8) * (16) * ((1) << (FRACBITS)) / (7),
 			},
 			Fb: mpoint_t{
-				Fx: libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7) - libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(2),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(4),
+				Fx: (8)*(16)*((1)<<(FRACBITS))/(7) - (8)*(16)*((1)<<(FRACBITS))/(7)/(2),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (4),
 			},
 		},
 		3: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
 			},
 			Fb: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) - libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
-				Fy: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7) / libc.Int32FromInt32(4),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) - (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
+				Fy: (8) * (16) * ((1) << (FRACBITS)) / (7) / (4),
 			},
 		},
 		4: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
 			},
 			Fb: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) - libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(4),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) - (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (4),
 			},
 		},
 		5: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(3)*(libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7))/libc.Int32FromInt32(8),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (3)*((8)*(16)*((1)<<(FRACBITS))/(7))/(8),
 			},
 			Fb: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
-				Fy: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7) / libc.Int32FromInt32(4),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
+				Fy: (8) * (16) * ((1) << (FRACBITS)) / (7) / (4),
 			},
 		},
 		6: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(3)*(libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7))/libc.Int32FromInt32(8),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (3)*((8)*(16)*((1)<<(FRACBITS))/(7))/(8),
 			},
 			Fb: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(4),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (4),
 			},
 		},
 	}
@@ -2286,149 +2288,149 @@ func init() {
 	cheat_player_arrow = [16]mline_t{
 		0: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
 			},
 			Fb: mpoint_t{
-				Fx: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7),
+				Fx: (8) * (16) * ((1) << (FRACBITS)) / (7),
 			},
 		},
 		1: {
 			Fa: mpoint_t{
-				Fx: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7),
+				Fx: (8) * (16) * ((1) << (FRACBITS)) / (7),
 			},
 			Fb: mpoint_t{
-				Fx: libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7) - libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(2),
-				Fy: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7) / libc.Int32FromInt32(6),
+				Fx: (8)*(16)*((1)<<(FRACBITS))/(7) - (8)*(16)*((1)<<(FRACBITS))/(7)/(2),
+				Fy: (8) * (16) * ((1) << (FRACBITS)) / (7) / (6),
 			},
 		},
 		2: {
 			Fa: mpoint_t{
-				Fx: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7),
+				Fx: (8) * (16) * ((1) << (FRACBITS)) / (7),
 			},
 			Fb: mpoint_t{
-				Fx: libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7) - libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(2),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
+				Fx: (8)*(16)*((1)<<(FRACBITS))/(7) - (8)*(16)*((1)<<(FRACBITS))/(7)/(2),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
 			},
 		},
 		3: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
 			},
 			Fb: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) - libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
-				Fy: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7) / libc.Int32FromInt32(6),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) - (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
+				Fy: (8) * (16) * ((1) << (FRACBITS)) / (7) / (6),
 			},
 		},
 		4: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
 			},
 			Fb: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) - libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) - (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
 			},
 		},
 		5: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(3)*(libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7))/libc.Int32FromInt32(8),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (3)*((8)*(16)*((1)<<(FRACBITS))/(7))/(8),
 			},
 			Fb: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
-				Fy: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7) / libc.Int32FromInt32(6),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
+				Fy: (8) * (16) * ((1) << (FRACBITS)) / (7) / (6),
 			},
 		},
 		6: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(3)*(libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7))/libc.Int32FromInt32(8),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (3)*((8)*(16)*((1)<<(FRACBITS))/(7))/(8),
 			},
 			Fb: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(8),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) + (8)*(16)*((1)<<(FRACBITS))/(7)/(8),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
 			},
 		},
 		7: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(2),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (2),
 			},
 			Fb: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(2),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (2),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
 			},
 		},
 		8: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(2),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (2),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
 			},
 			Fb: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7))/libc.Int32FromInt32(2) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(6),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
+				Fx: -((8)*(16)*((1)<<(FRACBITS))/(7))/(2) + (8)*(16)*((1)<<(FRACBITS))/(7)/(6),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
 			},
 		},
 		9: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7))/libc.Int32FromInt32(2) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(6),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
+				Fx: -((8)*(16)*((1)<<(FRACBITS))/(7))/(2) + (8)*(16)*((1)<<(FRACBITS))/(7)/(6),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
 			},
 			Fb: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7))/libc.Int32FromInt32(2) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(6),
-				Fy: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7) / libc.Int32FromInt32(4),
+				Fx: -((8)*(16)*((1)<<(FRACBITS))/(7))/(2) + (8)*(16)*((1)<<(FRACBITS))/(7)/(6),
+				Fy: (8) * (16) * ((1) << (FRACBITS)) / (7) / (4),
 			},
 		},
 		10: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
 			},
 			Fb: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
 			},
 		},
 		11: {
 			Fa: mpoint_t{
-				Fx: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
+				Fx: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
 			},
 			Fb: mpoint_t{
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
 			},
 		},
 		12: {
 			Fa: mpoint_t{
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(6),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (6),
 			},
 			Fb: mpoint_t{
-				Fy: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7) / libc.Int32FromInt32(4),
+				Fy: (8) * (16) * ((1) << (FRACBITS)) / (7) / (4),
 			},
 		},
 		13: {
 			Fa: mpoint_t{
-				Fx: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7) / libc.Int32FromInt32(6),
-				Fy: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7) / libc.Int32FromInt32(4),
+				Fx: (8) * (16) * ((1) << (FRACBITS)) / (7) / (6),
+				Fy: (8) * (16) * ((1) << (FRACBITS)) / (7) / (4),
 			},
 			Fb: mpoint_t{
-				Fx: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7) / libc.Int32FromInt32(6),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(7),
+				Fx: (8) * (16) * ((1) << (FRACBITS)) / (7) / (6),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (7),
 			},
 		},
 		14: {
 			Fa: mpoint_t{
-				Fx: libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7) / libc.Int32FromInt32(6),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(7),
+				Fx: (8) * (16) * ((1) << (FRACBITS)) / (7) / (6),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (7),
 			},
 			Fb: mpoint_t{
-				Fx: libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(6) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(32),
-				Fy: -(libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7))/libc.Int32FromInt32(7) - libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(32),
+				Fx: (8)*(16)*((1)<<(FRACBITS))/(7)/(6) + (8)*(16)*((1)<<(FRACBITS))/(7)/(32),
+				Fy: -((8)*(16)*((1)<<(FRACBITS))/(7))/(7) - (8)*(16)*((1)<<(FRACBITS))/(7)/(32),
 			},
 		},
 		15: {
 			Fa: mpoint_t{
-				Fx: libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(6) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(32),
-				Fy: -(libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7))/libc.Int32FromInt32(7) - libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(32),
+				Fx: (8)*(16)*((1)<<(FRACBITS))/(7)/(6) + (8)*(16)*((1)<<(FRACBITS))/(7)/(32),
+				Fy: -((8)*(16)*((1)<<(FRACBITS))/(7))/(7) - (8)*(16)*((1)<<(FRACBITS))/(7)/(32),
 			},
 			Fb: mpoint_t{
-				Fx: libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(6) + libc.Int32FromInt32(8)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(7)/libc.Int32FromInt32(10),
-				Fy: -(libc.Int32FromInt32(8) * libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(7)) / libc.Int32FromInt32(7),
+				Fx: (8)*(16)*((1)<<(FRACBITS))/(7)/(6) + (8)*(16)*((1)<<(FRACBITS))/(7)/(10),
+				Fy: -((8) * (16) * ((1) << (FRACBITS)) / (7)) / (7),
 			},
 		},
 	}
@@ -2438,30 +2440,30 @@ func init() {
 	thintriangle_guy = [3]mline_t{
 		0: {
 			Fa: mpoint_t{
-				Fx: int32(-libc.Float64FromFloat64(0.5) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
-				Fy: int32(-libc.Float64FromFloat64(0.7) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
+				Fx: int32(-libc.Float64FromFloat64(0.5) * float64((1)<<(FRACBITS))),
+				Fy: int32(-libc.Float64FromFloat64(0.7) * float64((1)<<(FRACBITS))),
 			},
 			Fb: mpoint_t{
-				Fx: libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS),
+				Fx: (1) << (FRACBITS),
 			},
 		},
 		1: {
 			Fa: mpoint_t{
-				Fx: libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS),
+				Fx: (1) << (FRACBITS),
 			},
 			Fb: mpoint_t{
-				Fx: int32(-libc.Float64FromFloat64(0.5) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
-				Fy: int32(libc.Float64FromFloat64(0.7) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
+				Fx: int32(-libc.Float64FromFloat64(0.5) * float64((1)<<(FRACBITS))),
+				Fy: int32(libc.Float64FromFloat64(0.7) * float64((1)<<(FRACBITS))),
 			},
 		},
 		2: {
 			Fa: mpoint_t{
-				Fx: int32(-libc.Float64FromFloat64(0.5) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
-				Fy: int32(libc.Float64FromFloat64(0.7) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
+				Fx: int32(-libc.Float64FromFloat64(0.5) * float64((1)<<(FRACBITS))),
+				Fy: int32(libc.Float64FromFloat64(0.7) * float64((1)<<(FRACBITS))),
 			},
 			Fb: mpoint_t{
-				Fx: int32(-libc.Float64FromFloat64(0.5) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
-				Fy: int32(-libc.Float64FromFloat64(0.7) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))),
+				Fx: int32(-libc.Float64FromFloat64(0.5) * float64((1)<<(FRACBITS))),
+				Fy: int32(-libc.Float64FromFloat64(0.7) * float64((1)<<(FRACBITS))),
 			},
 		},
 	}
@@ -2471,7 +2473,7 @@ var cheating = int32(0)
 var grid = int32(0)
 
 var finit_width = int32(SCREENWIDTH)
-var finit_height = libc.Int32FromInt32(SCREENHEIGHT) - libc.Int32FromInt32(32)
+var finit_height = int32(SCREENHEIGHT) - (32)
 
 // C documentation
 //
@@ -2538,7 +2540,7 @@ var f_oldloc mpoint_t
 // C documentation
 //
 //	// used by MTOF to scale from map-to-frame-buffer coords
-var scale_mtof = int32(libc.Float64FromFloat64(0.2) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+var scale_mtof = int32(libc.Float64FromFloat64(0.2) * float64((1)<<(FRACBITS)))
 
 // C documentation
 //
@@ -2571,8 +2573,8 @@ var stopped = 1
 func AM_activateNewScale(tls *libc.TLS) {
 	m_x += m_w / int32(2)
 	m_y += m_h / int32(2)
-	m_w = FixedMul(tls, f_w<<libc.Int32FromInt32(16), scale_ftom)
-	m_h = FixedMul(tls, f_h<<libc.Int32FromInt32(16), scale_ftom)
+	m_w = FixedMul(tls, f_w<<(16), scale_ftom)
+	m_h = FixedMul(tls, f_h<<(16), scale_ftom)
 	m_x -= m_w / int32(2)
 	m_y -= m_h / int32(2)
 	m_x2 = m_x + m_w
@@ -2610,7 +2612,7 @@ func AM_restoreScaleAndLoc(tls *libc.TLS) {
 	m_y2 = m_y + m_h
 	// Change the scaling multipliers
 	scale_mtof = FixedDiv(tls, f_w<<int32(FRACBITS), m_w)
-	scale_ftom = FixedDiv(tls, libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS), scale_mtof)
+	scale_ftom = FixedDiv(tls, (1)<<(FRACBITS), scale_mtof)
 }
 
 // C documentation
@@ -2633,10 +2635,10 @@ func AM_addMark(tls *libc.TLS) {
 func AM_findMinMaxBoundaries(tls *libc.TLS) {
 	var a, b, v1, v2 fixed_t
 	var i, v4 int32
-	v1 = libc.Int32FromInt32(INT_MAX1)
+	v1 = (INT_MAX1)
 	min_y = v1
 	min_x = v1
-	v2 = -libc.Int32FromInt32(INT_MAX1)
+	v2 = -(INT_MAX1)
 	max_y = v2
 	max_x = v2
 	i = 0
@@ -2673,7 +2675,7 @@ func AM_findMinMaxBoundaries(tls *libc.TLS) {
 		v4 = b
 	}
 	min_scale_mtof = v4
-	max_scale_mtof = FixedDiv(tls, f_h<<int32(FRACBITS), libc.Int32FromInt32(2)*libc.Int32FromInt32(16)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+	max_scale_mtof = FixedDiv(tls, f_h<<int32(FRACBITS), (2)*(16)*((1)<<(FRACBITS)))
 }
 
 // C documentation
@@ -2718,13 +2720,13 @@ func AM_initVariables(tls *libc.TLS) {
 	fb = I_VideoBuffer
 	f_oldloc.Fx = int32(INT_MAX1)
 	lightlev = 0
-	v1 = libc.Int32FromInt32(0)
+	v1 = (0)
 	m_paninc.Fy = v1
 	m_paninc.Fx = v1
-	ftom_zoommul = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
-	mtof_zoommul = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
-	m_w = FixedMul(tls, f_w<<libc.Int32FromInt32(16), scale_ftom)
-	m_h = FixedMul(tls, f_h<<libc.Int32FromInt32(16), scale_ftom)
+	ftom_zoommul = (1) << (FRACBITS)
+	mtof_zoommul = (1) << (FRACBITS)
+	m_w = FixedMul(tls, f_w<<(16), scale_ftom)
+	m_h = FixedMul(tls, f_h<<(16), scale_ftom)
 	// find player to center on initially
 	if playeringame[consoleplayer] != 0 {
 		plr = uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328
@@ -2759,7 +2761,7 @@ func AM_initVariables(tls *libc.TLS) {
 
 var st_notify = event_t{
 	Ftype1: int32(ev_keyup),
-	Fdata1: libc.Int32FromUint8('a')<<libc.Int32FromInt32(24) + libc.Int32FromUint8('m')<<libc.Int32FromInt32(16) | libc.Int32FromUint8('e')<<libc.Int32FromInt32(8),
+	Fdata1: libc.Int32FromUint8('a')<<(24) + libc.Int32FromUint8('m')<<(16) | libc.Int32FromUint8('e')<<(8),
 }
 
 // C documentation
@@ -2830,11 +2832,11 @@ func AM_LevelInit(tls *libc.TLS) {
 	f_h = finit_height
 	AM_clearMarks(tls)
 	AM_findMinMaxBoundaries(tls)
-	scale_mtof = FixedDiv(tls, min_scale_mtof, int32(libc.Float64FromFloat64(0.7)*float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))))
+	scale_mtof = FixedDiv(tls, min_scale_mtof, int32(libc.Float64FromFloat64(0.7)*float64((1)<<(FRACBITS))))
 	if scale_mtof > max_scale_mtof {
 		scale_mtof = min_scale_mtof
 	}
-	scale_ftom = FixedDiv(tls, libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS), scale_mtof)
+	scale_ftom = FixedDiv(tls, (1)<<(FRACBITS), scale_mtof)
 }
 
 // C documentation
@@ -2851,7 +2853,7 @@ func AM_Stop(tls *libc.TLS) {
 
 var st_notify1 = event_t{
 	Fdata1: int32(ev_keyup),
-	Fdata2: libc.Int32FromUint8('a')<<libc.Int32FromInt32(24) + libc.Int32FromUint8('m')<<libc.Int32FromInt32(16) | libc.Int32FromUint8('x')<<libc.Int32FromInt32(8),
+	Fdata2: libc.Int32FromUint8('a')<<(24) + libc.Int32FromUint8('m')<<(16) | libc.Int32FromUint8('x')<<(8),
 }
 
 // C documentation
@@ -2884,7 +2886,7 @@ var lastepisode = -int32(1)
 //	//
 func AM_minOutWindowScale(tls *libc.TLS) {
 	scale_mtof = min_scale_mtof
-	scale_ftom = FixedDiv(tls, libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS), scale_mtof)
+	scale_ftom = FixedDiv(tls, (1)<<(FRACBITS), scale_mtof)
 	AM_activateNewScale(tls)
 }
 
@@ -2895,7 +2897,7 @@ func AM_minOutWindowScale(tls *libc.TLS) {
 //	//
 func AM_maxOutWindowScale(tls *libc.TLS) {
 	scale_mtof = max_scale_mtof
-	scale_ftom = FixedDiv(tls, libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS), scale_mtof)
+	scale_ftom = FixedDiv(tls, (1)<<(FRACBITS), scale_mtof)
 	AM_activateNewScale(tls)
 }
 
@@ -2920,39 +2922,39 @@ func AM_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 			key = (*event_t)(unsafe.Pointer(ev)).Fdata1
 			if key == key_map_east { // pan right
 				if !(followplayer != 0) {
-					m_paninc.Fx = FixedMul(tls, libc.Int32FromInt32(F_PANINC)<<libc.Int32FromInt32(16), scale_ftom)
+					m_paninc.Fx = FixedMul(tls, (F_PANINC)<<(16), scale_ftom)
 				} else {
 					rc = 0
 				}
 			} else {
 				if key == key_map_west { // pan left
 					if !(followplayer != 0) {
-						m_paninc.Fx = -FixedMul(tls, libc.Int32FromInt32(F_PANINC)<<libc.Int32FromInt32(16), scale_ftom)
+						m_paninc.Fx = -FixedMul(tls, (F_PANINC)<<(16), scale_ftom)
 					} else {
 						rc = 0
 					}
 				} else {
 					if key == key_map_north { // pan up
 						if !(followplayer != 0) {
-							m_paninc.Fy = FixedMul(tls, libc.Int32FromInt32(F_PANINC)<<libc.Int32FromInt32(16), scale_ftom)
+							m_paninc.Fy = FixedMul(tls, (F_PANINC)<<(16), scale_ftom)
 						} else {
 							rc = 0
 						}
 					} else {
 						if key == key_map_south { // pan down
 							if !(followplayer != 0) {
-								m_paninc.Fy = -FixedMul(tls, libc.Int32FromInt32(F_PANINC)<<libc.Int32FromInt32(16), scale_ftom)
+								m_paninc.Fy = -FixedMul(tls, (F_PANINC)<<(16), scale_ftom)
 							} else {
 								rc = 0
 							}
 						} else {
 							if key == key_map_zoomout { // zoom out
-								mtof_zoommul = int32(float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) / libc.Float64FromFloat64(1.02))
-								ftom_zoommul = int32(libc.Float64FromFloat64(1.02) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+								mtof_zoommul = int32(float64((1)<<(FRACBITS)) / libc.Float64FromFloat64(1.02))
+								ftom_zoommul = int32(libc.Float64FromFloat64(1.02) * float64((1)<<(FRACBITS)))
 							} else {
 								if key == key_map_zoomin { // zoom in
-									mtof_zoommul = int32(libc.Float64FromFloat64(1.02) * float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
-									ftom_zoommul = int32(float64(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) / libc.Float64FromFloat64(1.02))
+									mtof_zoommul = int32(libc.Float64FromFloat64(1.02) * float64((1)<<(FRACBITS)))
+									ftom_zoommul = int32(float64((1)<<(FRACBITS)) / libc.Float64FromFloat64(1.02))
 								} else {
 									if key == key_map_toggle {
 										bigstate = 0
@@ -3036,8 +3038,8 @@ func AM_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 								}
 							} else {
 								if key == key_map_zoomout || key == key_map_zoomin {
-									mtof_zoommul = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
-									ftom_zoommul = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+									mtof_zoommul = (1) << (FRACBITS)
+									ftom_zoommul = (1) << (FRACBITS)
 								}
 							}
 						}
@@ -3061,7 +3063,7 @@ var buffer [20]int8
 func AM_changeWindowScale(tls *libc.TLS) {
 	// Change the scaling multipliers
 	scale_mtof = FixedMul(tls, scale_mtof, mtof_zoommul)
-	scale_ftom = FixedDiv(tls, libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS), scale_mtof)
+	scale_ftom = FixedDiv(tls, (1)<<(FRACBITS), scale_mtof)
 	if scale_mtof < min_scale_mtof {
 		AM_minOutWindowScale(tls)
 	} else {
@@ -3106,7 +3108,7 @@ func AM_Ticker(tls *libc.TLS) {
 		AM_doFollowPlayer(tls)
 	}
 	// Change the zoom if necessary
-	if ftom_zoommul != libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) {
+	if ftom_zoommul != (1)<<(FRACBITS) {
 		AM_changeWindowScale(tls)
 	}
 	// Change x,y location
@@ -3176,10 +3178,10 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 		return 0
 	} // trivially outside
 	// transform to frame-buffer coordinates.
-	(*fline_t)(unsafe.Pointer(fl)).Fa.Fx = f_x + FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fa.Fx-m_x, scale_mtof)>>libc.Int32FromInt32(16)
-	(*fline_t)(unsafe.Pointer(fl)).Fa.Fy = f_y + (f_h - FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fa.Fy-m_y, scale_mtof)>>libc.Int32FromInt32(16))
-	(*fline_t)(unsafe.Pointer(fl)).Fb.Fx = f_x + FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fb.Fx-m_x, scale_mtof)>>libc.Int32FromInt32(16)
-	(*fline_t)(unsafe.Pointer(fl)).Fb.Fy = f_y + (f_h - FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fb.Fy-m_y, scale_mtof)>>libc.Int32FromInt32(16))
+	(*fline_t)(unsafe.Pointer(fl)).Fa.Fx = f_x + FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fa.Fx-m_x, scale_mtof)>>(16)
+	(*fline_t)(unsafe.Pointer(fl)).Fa.Fy = f_y + (f_h - FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fa.Fy-m_y, scale_mtof)>>(16))
+	(*fline_t)(unsafe.Pointer(fl)).Fb.Fx = f_x + FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fb.Fx-m_x, scale_mtof)>>(16)
+	(*fline_t)(unsafe.Pointer(fl)).Fb.Fy = f_y + (f_h - FixedMul(tls, (*mline_t)(unsafe.Pointer(ml)).Fb.Fy-m_y, scale_mtof)>>(16))
 	outcode1 = 0
 	if (*fline_t)(unsafe.Pointer(fl)).Fa.Fy < 0 {
 		outcode1 |= 8
@@ -3393,8 +3395,8 @@ func AM_drawGrid(tls *libc.TLS, color int32) {
 	var end, start, x, y fixed_t
 	// Figure out start of vertical gridlines
 	start = m_x
-	if (start-bmaporgx)%(libc.Int32FromInt32(MAPBLOCKUNITS)<<libc.Int32FromInt32(FRACBITS)) != 0 {
-		start += libc.Int32FromInt32(MAPBLOCKUNITS)<<libc.Int32FromInt32(FRACBITS) - (start-bmaporgx)%(libc.Int32FromInt32(MAPBLOCKUNITS)<<libc.Int32FromInt32(FRACBITS))
+	if (start-bmaporgx)%((MAPBLOCKUNITS)<<(FRACBITS)) != 0 {
+		start += (MAPBLOCKUNITS)<<(FRACBITS) - (start-bmaporgx)%((MAPBLOCKUNITS)<<(FRACBITS))
 	}
 	end = m_x + m_w
 	// draw vertical gridlines
@@ -3411,12 +3413,12 @@ func AM_drawGrid(tls *libc.TLS, color int32) {
 		goto _1
 	_1:
 		;
-		x += libc.Int32FromInt32(MAPBLOCKUNITS) << libc.Int32FromInt32(FRACBITS)
+		x += (MAPBLOCKUNITS) << (FRACBITS)
 	}
 	// Figure out start of horizontal gridlines
 	start = m_y
-	if (start-bmaporgy)%(libc.Int32FromInt32(MAPBLOCKUNITS)<<libc.Int32FromInt32(FRACBITS)) != 0 {
-		start += libc.Int32FromInt32(MAPBLOCKUNITS)<<libc.Int32FromInt32(FRACBITS) - (start-bmaporgy)%(libc.Int32FromInt32(MAPBLOCKUNITS)<<libc.Int32FromInt32(FRACBITS))
+	if (start-bmaporgy)%((MAPBLOCKUNITS)<<(FRACBITS)) != 0 {
+		start += (MAPBLOCKUNITS)<<(FRACBITS) - (start-bmaporgy)%((MAPBLOCKUNITS)<<(FRACBITS))
 	}
 	end = m_y + m_h
 	// draw horizontal gridlines
@@ -3433,7 +3435,7 @@ func AM_drawGrid(tls *libc.TLS, color int32) {
 		goto _2
 	_2:
 		;
-		y += libc.Int32FromInt32(MAPBLOCKUNITS) << libc.Int32FromInt32(FRACBITS)
+		y += (MAPBLOCKUNITS) << (FRACBITS)
 	}
 }
 
@@ -3459,27 +3461,27 @@ func AM_drawWalls(tls *libc.TLS) {
 				goto _1
 			}
 			if !((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fbacksector != 0) {
-				AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), libc.Int32FromInt32(256)-libc.Int32FromInt32(5)*libc.Int32FromInt32(16)+lightlev)
+				AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), (256)-(5)*(16)+lightlev)
 			} else {
 				if int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fspecial) == int32(39) {
 					// teleporters
-					AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), libc.Int32FromInt32(256)-libc.Int32FromInt32(5)*libc.Int32FromInt32(16)+libc.Int32FromInt32(REDRANGE)/libc.Int32FromInt32(2))
+					AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), (256)-(5)*(16)+(REDRANGE)/(2))
 				} else {
 					if int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&int32(ML_SECRET) != 0 { // secret door
 						if cheating != 0 {
-							AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), libc.Int32FromInt32(256)-libc.Int32FromInt32(5)*libc.Int32FromInt32(16)+lightlev)
+							AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), (256)-(5)*(16)+lightlev)
 						} else {
-							AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), libc.Int32FromInt32(256)-libc.Int32FromInt32(5)*libc.Int32FromInt32(16)+lightlev)
+							AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), (256)-(5)*(16)+lightlev)
 						}
 					} else {
 						if (*sector_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fbacksector)).Ffloorheight != (*sector_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Ffrontsector)).Ffloorheight {
-							AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), libc.Int32FromInt32(4)*libc.Int32FromInt32(16)+lightlev) // floor level change
+							AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), (4)*(16)+lightlev) // floor level change
 						} else {
 							if (*sector_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fbacksector)).Fceilingheight != (*sector_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Ffrontsector)).Fceilingheight {
-								AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), libc.Int32FromInt32(256)-libc.Int32FromInt32(32)+libc.Int32FromInt32(7)+lightlev) // ceiling level change
+								AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), (256)-(32)+(7)+lightlev) // ceiling level change
 							} else {
 								if cheating != 0 {
-									AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), libc.Int32FromInt32(6)*libc.Int32FromInt32(16)+lightlev)
+									AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), (6)*(16)+lightlev)
 								}
 							}
 						}
@@ -3488,8 +3490,8 @@ func AM_drawWalls(tls *libc.TLS) {
 			}
 		} else {
 			if *(*int32)(unsafe.Pointer(plr + 56 + uintptr(pw_allmap)*4)) != 0 {
-				if !(int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&libc.Int32FromInt32(ML_DONTDRAW) != 0) {
-					AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), libc.Int32FromInt32(6)*libc.Int32FromInt32(16)+libc.Int32FromInt32(3))
+				if !(int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&(ML_DONTDRAW) != 0) {
+					AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), (6)*(16)+(3))
 				}
 			}
 		}
@@ -3559,9 +3561,9 @@ func AM_drawPlayers(tls *libc.TLS) {
 	their_color = -int32(1)
 	if !(netgame != 0) {
 		if cheating != 0 {
-			AM_drawLineCharacter(tls, uintptr(unsafe.Pointer(&cheat_player_arrow)), libc.Int32FromUint64(libc.Uint64FromInt64(256)/libc.Uint64FromInt64(16)), 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fangle, libc.Int32FromInt32(256)-libc.Int32FromInt32(47), (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy)
+			AM_drawLineCharacter(tls, uintptr(unsafe.Pointer(&cheat_player_arrow)), libc.Int32FromUint64(libc.Uint64FromInt64(256)/libc.Uint64FromInt64(16)), 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fangle, (256)-(47), (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy)
 		} else {
-			AM_drawLineCharacter(tls, uintptr(unsafe.Pointer(&player_arrow)), libc.Int32FromUint64(libc.Uint64FromInt64(112)/libc.Uint64FromInt64(16)), 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fangle, libc.Int32FromInt32(256)-libc.Int32FromInt32(47), (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy)
+			AM_drawLineCharacter(tls, uintptr(unsafe.Pointer(&player_arrow)), libc.Int32FromUint64(libc.Uint64FromInt64(112)/libc.Uint64FromInt64(16)), 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fangle, (256)-(47), (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy)
 		}
 		return
 	}
@@ -3592,10 +3594,10 @@ func AM_drawPlayers(tls *libc.TLS) {
 }
 
 var their_colors = [4]int32{
-	0: libc.Int32FromInt32(7) * libc.Int32FromInt32(16),
-	1: libc.Int32FromInt32(6) * libc.Int32FromInt32(16),
-	2: libc.Int32FromInt32(4) * libc.Int32FromInt32(16),
-	3: libc.Int32FromInt32(256) - libc.Int32FromInt32(5)*libc.Int32FromInt32(16),
+	0: (7) * (16),
+	1: (6) * (16),
+	2: (4) * (16),
+	3: (256) - (5)*(16),
 }
 
 func AM_drawThings(tls *libc.TLS, colors int32, colorrange int32) {
@@ -3608,7 +3610,7 @@ func AM_drawThings(tls *libc.TLS, colors int32, colorrange int32) {
 		}
 		t = (*(*sector_t)(unsafe.Pointer(sectors + uintptr(i)*128))).Fthinglist
 		for t != 0 {
-			AM_drawLineCharacter(tls, uintptr(unsafe.Pointer(&thintriangle_guy)), libc.Int32FromUint64(libc.Uint64FromInt64(48)/libc.Uint64FromInt64(16)), libc.Int32FromInt32(16)<<libc.Int32FromInt32(FRACBITS), (*mobj_t)(unsafe.Pointer(t)).Fangle, colors+lightlev, (*mobj_t)(unsafe.Pointer(t)).Fx, (*mobj_t)(unsafe.Pointer(t)).Fy)
+			AM_drawLineCharacter(tls, uintptr(unsafe.Pointer(&thintriangle_guy)), libc.Int32FromUint64(libc.Uint64FromInt64(48)/libc.Uint64FromInt64(16)), (16)<<(FRACBITS), (*mobj_t)(unsafe.Pointer(t)).Fangle, colors+lightlev, (*mobj_t)(unsafe.Pointer(t)).Fx, (*mobj_t)(unsafe.Pointer(t)).Fy)
 			t = (*mobj_t)(unsafe.Pointer(t)).Fsnext
 		}
 		goto _1
@@ -3630,8 +3632,8 @@ func AM_drawMarks(tls *libc.TLS) {
 			//      h = SHORT(marknums[i]->height);
 			w = int32(5) // because something's wrong with the wad, i guess
 			h = int32(6) // because something's wrong with the wad, i guess
-			fx = f_x + FixedMul(tls, markpoints[i].Fx-m_x, scale_mtof)>>libc.Int32FromInt32(16)
-			fy = f_y + (f_h - FixedMul(tls, markpoints[i].Fy-m_y, scale_mtof)>>libc.Int32FromInt32(16))
+			fx = f_x + FixedMul(tls, markpoints[i].Fx-m_x, scale_mtof)>>(16)
+			fy = f_y + (f_h - FixedMul(tls, markpoints[i].Fy-m_y, scale_mtof)>>(16))
 			if fx >= f_x && fx <= f_w-w && fy >= f_y && fy <= f_h-h {
 				V_DrawPatch(tls, fx, fy, marknums[i])
 			}
@@ -3653,14 +3655,14 @@ func AM_Drawer(tls *libc.TLS) {
 	}
 	AM_clearFB(tls, BLACK)
 	if grid != 0 {
-		AM_drawGrid(tls, libc.Int32FromInt32(6)*libc.Int32FromInt32(16)+libc.Int32FromInt32(GRAYSRANGE)/libc.Int32FromInt32(2))
+		AM_drawGrid(tls, (6)*(16)+(GRAYSRANGE)/(2))
 	}
 	AM_drawWalls(tls)
 	AM_drawPlayers(tls)
 	if cheating == int32(2) {
-		AM_drawThings(tls, libc.Int32FromInt32(7)*libc.Int32FromInt32(16), int32(GREENRANGE))
+		AM_drawThings(tls, (7)*(16), int32(GREENRANGE))
 	}
-	AM_drawCrosshair(tls, libc.Int32FromInt32(6)*libc.Int32FromInt32(16))
+	AM_drawCrosshair(tls, (6)*(16))
 	AM_drawMarks(tls)
 	V_MarkRect(tls, f_x, f_y, f_w, f_h)
 }
@@ -4240,7 +4242,7 @@ func GetAdjustedTime(tls *libc.TLS) (r int32) {
 	if new_sync != 0 {
 		// Use the adjustments from net_client.c only if we are
 		// using the new sync mode.
-		time_ms += offsetms / (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+		time_ms += offsetms / ((1) << (FRACBITS))
 	}
 	return time_ms * int32(TICRATE) / int32(1000)
 }
@@ -5107,7 +5109,7 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 	switch demosequence {
 	case 0:
 		if gamemode == int32(commercial) {
-			pagetic = libc.Int32FromInt32(TICRATE) * libc.Int32FromInt32(11)
+			pagetic = (TICRATE) * (11)
 		} else {
 			pagetic = int32(170)
 		}
@@ -5129,7 +5131,7 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 	case int32(4):
 		gamestate = int32(GS_DEMOSCREEN)
 		if gamemode == int32(commercial) {
-			pagetic = libc.Int32FromInt32(TICRATE) * libc.Int32FromInt32(11)
+			pagetic = (TICRATE) * (11)
 			pagename = __ccgo_ts(1896)
 			S_StartMusic(tls, int32(mus_dm2ttl))
 		} else {
@@ -5783,7 +5785,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Save configuration at exit.
 	I_AtExit(tls, __ccgo_fp(M_SaveDefaults), 0)
 	// Find main IWAD file and load it.
-	iwadfile = D_FindIWAD(tls, libc.Int32FromInt32(1)<<int32(doom)|libc.Int32FromInt32(1)<<int32(doom2)|libc.Int32FromInt32(1)<<int32(pack_tnt)|libc.Int32FromInt32(1)<<int32(pack_plut)|libc.Int32FromInt32(1)<<int32(pack_chex)|libc.Int32FromInt32(1)<<int32(pack_hacx), uintptr(unsafe.Pointer(&gamemission)))
+	iwadfile = D_FindIWAD(tls, (1)<<int32(doom)|(1)<<int32(doom2)|(1)<<int32(pack_tnt)|(1)<<int32(pack_plut)|(1)<<int32(pack_chex)|(1)<<int32(pack_hacx), uintptr(unsafe.Pointer(&gamemission)))
 	// None found?
 	if iwadfile == libc.UintptrFromInt32(0) {
 		I_Error(tls, __ccgo_ts(4268), 0)
@@ -6643,19 +6645,19 @@ func F_TextWrite(tls *libc.TLS) {
 		}
 		x = 0
 		for {
-			if !(x < libc.Int32FromInt32(SCREENWIDTH)/libc.Int32FromInt32(64)) {
+			if !(x < (SCREENWIDTH)/(64)) {
 				break
 			}
-			libc.Xmemcpy(tls, dest, src+uintptr(y&libc.Int32FromInt32(63)<<libc.Int32FromInt32(6)), uint64(64))
+			libc.Xmemcpy(tls, dest, src+uintptr(y&(63)<<(6)), uint64(64))
 			dest += uintptr(64)
 			goto _2
 		_2:
 			;
 			x++
 		}
-		if libc.Int32FromInt32(SCREENWIDTH)&libc.Int32FromInt32(63) != 0 {
-			libc.Xmemcpy(tls, dest, src+uintptr(y&libc.Int32FromInt32(63)<<libc.Int32FromInt32(6)), libc.Uint64FromInt32(libc.Int32FromInt32(SCREENWIDTH)&libc.Int32FromInt32(63)))
-			dest += uintptr(libc.Int32FromInt32(SCREENWIDTH) & libc.Int32FromInt32(63))
+		if (SCREENWIDTH)&(63) != 0 {
+			libc.Xmemcpy(tls, dest, src+uintptr(y&(63)<<(6)), libc.Uint64FromInt32((SCREENWIDTH)&(63)))
+			dest += uintptr((SCREENWIDTH) & (63))
 		}
 		goto _1
 	_1:
@@ -6687,7 +6689,7 @@ func F_TextWrite(tls *libc.TLS) {
 			goto _3
 		}
 		c = libc.Xtoupper(tls, c) - int32('!')
-		if c < 0 || c > libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+libc.Int32FromInt32(1) {
+		if c < 0 || c > libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+(1) {
 			cx += int32(4)
 			goto _3
 		}
@@ -6977,7 +6979,7 @@ func F_CastPrint(tls *libc.TLS, text uintptr) {
 			break
 		}
 		c = libc.Xtoupper(tls, c) - int32('!')
-		if c < 0 || c > libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+libc.Int32FromInt32(1) {
+		if c < 0 || c > libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+(1) {
 			width += int32(4)
 			continue
 		}
@@ -6995,7 +6997,7 @@ func F_CastPrint(tls *libc.TLS, text uintptr) {
 			break
 		}
 		c = libc.Xtoupper(tls, c) - int32('!')
-		if c < 0 || c > libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+libc.Int32FromInt32(1) {
+		if c < 0 || c > libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+(1) {
 			cx += int32(4)
 			continue
 		}
@@ -7097,7 +7099,7 @@ func F_BunnyScroll(tls *libc.TLS) {
 		return
 	}
 	if finalecount < uint32(1180) {
-		V_DrawPatch(tls, (libc.Int32FromInt32(SCREENWIDTH)-libc.Int32FromInt32(13)*libc.Int32FromInt32(8))/libc.Int32FromInt32(2), (libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(8)*libc.Int32FromInt32(8))/libc.Int32FromInt32(2), W_CacheLumpName(tls, __ccgo_ts(13652), int32(PU_CACHE)))
+		V_DrawPatch(tls, ((SCREENWIDTH)-(13)*(8))/(2), ((SCREENHEIGHT)-(8)*(8))/(2), W_CacheLumpName(tls, __ccgo_ts(13652), int32(PU_CACHE)))
 		laststage = 0
 		return
 	}
@@ -7110,7 +7112,7 @@ func F_BunnyScroll(tls *libc.TLS) {
 		laststage = stage
 	}
 	libc.X__builtin_snprintf(tls, bp, uint64(10), __ccgo_ts(13657), libc.VaList(bp+24, stage))
-	V_DrawPatch(tls, (libc.Int32FromInt32(SCREENWIDTH)-libc.Int32FromInt32(13)*libc.Int32FromInt32(8))/libc.Int32FromInt32(2), (libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(8)*libc.Int32FromInt32(8))/libc.Int32FromInt32(2), W_CacheLumpName(tls, bp, int32(PU_CACHE)))
+	V_DrawPatch(tls, ((SCREENWIDTH)-(13)*(8))/(2), ((SCREENHEIGHT)-(8)*(8))/(2), W_CacheLumpName(tls, bp, int32(PU_CACHE)))
 }
 
 var laststage int32
@@ -7364,13 +7366,13 @@ func wipe_exitMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r int
 }
 
 func wipe_StartScreen(tls *libc.TLS, x int32, y int32, width int32, height int32) (r int32) {
-	wipe_scr_start = Z_Malloc(tls, libc.Int32FromInt32(SCREENWIDTH)*libc.Int32FromInt32(SCREENHEIGHT), int32(PU_STATIC), libc.UintptrFromInt32(0))
+	wipe_scr_start = Z_Malloc(tls, (SCREENWIDTH)*(SCREENHEIGHT), int32(PU_STATIC), libc.UintptrFromInt32(0))
 	I_ReadScreen(tls, wipe_scr_start)
 	return 0
 }
 
 func wipe_EndScreen(tls *libc.TLS, x int32, y int32, width int32, height int32) (r int32) {
-	wipe_scr_end = Z_Malloc(tls, libc.Int32FromInt32(SCREENWIDTH)*libc.Int32FromInt32(SCREENHEIGHT), int32(PU_STATIC), libc.UintptrFromInt32(0))
+	wipe_scr_end = Z_Malloc(tls, (SCREENWIDTH)*(SCREENHEIGHT), int32(PU_STATIC), libc.UintptrFromInt32(0))
 	I_ReadScreen(tls, wipe_scr_end)
 	V_DrawBlock(tls, x, y, width, height, wipe_scr_start) // restore start scr.
 	return 0
@@ -7383,16 +7385,16 @@ func wipe_ScreenWipe(tls *libc.TLS, wipeno int32, x int32, y int32, width int32,
 		go1 = uint32(1)
 		// wipe_scr = (byte *) Z_Malloc(width*height, PU_STATIC, 0); // DEBUG
 		wipe_scr = I_VideoBuffer
-		(*(*func(*libc.TLS, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{wipes[wipeno*libc.Int32FromInt32(3)]})))(tls, width, height, ticks)
+		(*(*func(*libc.TLS, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{wipes[wipeno*(3)]})))(tls, width, height, ticks)
 	}
 	// do a piece of wipe-in
 	V_MarkRect(tls, 0, 0, width, height)
-	rc = (*(*func(*libc.TLS, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{wipes[wipeno*libc.Int32FromInt32(3)+libc.Int32FromInt32(1)]})))(tls, width, height, ticks)
+	rc = (*(*func(*libc.TLS, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{wipes[wipeno*(3)+(1)]})))(tls, width, height, ticks)
 	//  V_DrawBlock(x, y, 0, width, height, wipe_scr); // DEBUG
 	// final stuff
 	if rc != 0 {
 		go1 = uint32(0)
-		(*(*func(*libc.TLS, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{wipes[wipeno*libc.Int32FromInt32(3)+libc.Int32FromInt32(2)]})))(tls, width, height, ticks)
+		(*(*func(*libc.TLS, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{wipes[wipeno*(3)+(2)]})))(tls, width, height, ticks)
 	}
 	return libc.BoolInt32(!(go1 != 0))
 }
@@ -7635,7 +7637,7 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 	// fraggle: support the old "joyb_speed = 31" hack which
 	// allowed an autorun effect
 	speed = libc.BoolInt32(key_speed >= int32(NUMKEYS) || joybspeed >= int32(MAX_JOY_BUTTONS) || gamekeydown[key_speed] != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybspeed)*4)) != 0)
-	v1 = libc.Int32FromInt32(0)
+	v1 = (0)
 	side = v1
 	forward = v1
 	// use two stage accelerative turning
@@ -7802,13 +7804,13 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 		side += mousex * int32(2)
 	} else {
 		p15 = cmd + 2
-		*(*int16)(unsafe.Pointer(p15)) = int16(int32(*(*int16)(unsafe.Pointer(p15))) - mousex*libc.Int32FromInt32(0x8))
+		*(*int16)(unsafe.Pointer(p15)) = int16(int32(*(*int16)(unsafe.Pointer(p15))) - mousex*(0x8))
 	}
 	if mousex == 0 {
 		// No movement in the previous frame
 		testcontrols_mousespeed = 0
 	}
-	v16 = libc.Int32FromInt32(0)
+	v16 = (0)
 	mousey = v16
 	mousex = v16
 	if forward > forwardmove[int32(1)] {
@@ -7907,12 +7909,12 @@ func G_DoLoadLevel(tls *libc.TLS) {
 	Z_CheckHeap(tls)
 	// clear cmd building stuff
 	libc.Xmemset(tls, uintptr(unsafe.Pointer(&gamekeydown)), 0, uint64(1024))
-	v3 = libc.Int32FromInt32(0)
+	v3 = (0)
 	joystrafemove = v3
 	v2 = v3
 	joyymove = v2
 	joyxmove = v2
-	v4 = libc.Int32FromInt32(0)
+	v4 = (0)
 	mousey = v4
 	mousex = v4
 	v6 = 0
@@ -7934,7 +7936,7 @@ func SetJoyButtons(tls *libc.TLS, buttons_mask uint32) {
 		if !(i < int32(MAX_JOY_BUTTONS)) {
 			break
 		}
-		button_on = libc.BoolInt32(buttons_mask&libc.Uint32FromInt32(libc.Int32FromInt32(1)<<i) != uint32(0))
+		button_on = libc.BoolInt32(buttons_mask&libc.Uint32FromInt32((1)<<i) != uint32(0))
 		// Detect button press:
 		if !(*(*boolean)(unsafe.Pointer(joybuttons + uintptr(i)*4)) != 0) && button_on != 0 {
 			// Weapon cycling:
@@ -7962,7 +7964,7 @@ func SetMouseButtons(tls *libc.TLS, buttons_mask uint32) {
 		if !(i < int32(MAX_MOUSE_BUTTONS)) {
 			break
 		}
-		button_on = libc.BoolUint32(buttons_mask&libc.Uint32FromInt32(libc.Int32FromInt32(1)<<i) != uint32(0))
+		button_on = libc.BoolUint32(buttons_mask&libc.Uint32FromInt32((1)<<i) != uint32(0))
 		// Detect button press:
 		if !(*(*boolean)(unsafe.Pointer(mousebuttons + uintptr(i)*4)) != 0) && button_on != 0 {
 			if i == mousebprevweapon {
@@ -8341,7 +8343,7 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 	// This calculation overflows in Vanilla Doom, but here we deliberately
 	// avoid integer overflow as it is undefined behavior, so the value of
 	// 'an' will always be positive.
-	an = libc.Int32FromInt32(ANG451) >> libc.Int32FromInt32(ANGLETOFINESHIFT) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / int32(45))
+	an = (ANG451) >> (ANGLETOFINESHIFT) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / int32(45))
 	switch an {
 	case int32(4096): // -4096:
 		xa = finetangent[int32(2048)] // finecosine[-4096]
@@ -8366,7 +8368,7 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 		ya = finesine[an]
 	default:
 		I_Error(tls, __ccgo_ts(13807), libc.VaList(bp+8, an))
-		v2 = libc.Int32FromInt32(0)
+		v2 = (0)
 		ya = v2
 		xa = v2
 		break
@@ -8963,9 +8965,9 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 			;
 			i++
 		}
-		mobjinfo[int32(MT_BRUISERSHOT)].Fspeed = libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
-		mobjinfo[int32(MT_HEADSHOT)].Fspeed = libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
-		mobjinfo[int32(MT_TROOPSHOT)].Fspeed = libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+		mobjinfo[int32(MT_BRUISERSHOT)].Fspeed = (20) * ((1) << (FRACBITS))
+		mobjinfo[int32(MT_HEADSHOT)].Fspeed = (20) * ((1) << (FRACBITS))
+		mobjinfo[int32(MT_TROOPSHOT)].Fspeed = (20) * ((1) << (FRACBITS))
 	} else {
 		if skill != int32(sk_nightmare) && gameskill == int32(sk_nightmare) {
 			i = int32(S_SARG_RUN1)
@@ -8979,9 +8981,9 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 				;
 				i++
 			}
-			mobjinfo[int32(MT_BRUISERSHOT)].Fspeed = libc.Int32FromInt32(15) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
-			mobjinfo[int32(MT_HEADSHOT)].Fspeed = libc.Int32FromInt32(10) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
-			mobjinfo[int32(MT_TROOPSHOT)].Fspeed = libc.Int32FromInt32(10) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+			mobjinfo[int32(MT_BRUISERSHOT)].Fspeed = (15) * ((1) << (FRACBITS))
+			mobjinfo[int32(MT_HEADSHOT)].Fspeed = (10) * ((1) << (FRACBITS))
+			mobjinfo[int32(MT_TROOPSHOT)].Fspeed = (10) * ((1) << (FRACBITS))
 		}
 	}
 	// force players to be initialized upon first level load
@@ -9069,7 +9071,7 @@ func G_ReadDemoTiccmd(tls *libc.TLS, cmd uintptr) {
 		p4 = cmd + 2
 		v5 = demo_p
 		demo_p++
-		*(*int16)(unsafe.Pointer(p4)) = int16(int32(*(*int16)(unsafe.Pointer(p4))) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v5)))<<libc.Int32FromInt32(8))
+		*(*int16)(unsafe.Pointer(p4)) = int16(int32(*(*int16)(unsafe.Pointer(p4))) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v5)))<<(8))
 	} else {
 		v6 = demo_p
 		demo_p++
@@ -9116,7 +9118,7 @@ func G_WriteDemoTiccmd(tls *libc.TLS, cmd uintptr) {
 	if longtics != 0 {
 		v3 = demo_p
 		demo_p++
-		*(*uint8)(unsafe.Pointer(v3)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) & libc.Int32FromInt32(0xff))
+		*(*uint8)(unsafe.Pointer(v3)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) & (0xff))
 		v4 = demo_p
 		demo_p++
 		*(*uint8)(unsafe.Pointer(v4)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) >> int32(8) & int32(0xff))
@@ -9566,7 +9568,7 @@ func HUlib_eraseTextLine(tls *libc.TLS, l uintptr) {
 	if !(automapactive != 0) && viewwindowx != 0 && (*hu_textline_t)(unsafe.Pointer(l)).Fneedsupdate != 0 {
 		lh = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*hu_textline_t)(unsafe.Pointer(l)).Ff)))).Fheight) + int32(1)
 		y = (*hu_textline_t)(unsafe.Pointer(l)).Fy
-		yoffset = y * libc.Int32FromInt32(SCREENWIDTH)
+		yoffset = y * (SCREENWIDTH)
 		for {
 			if !(y < (*hu_textline_t)(unsafe.Pointer(l)).Fy+lh) {
 				break
@@ -9957,7 +9959,7 @@ func HU_Init(tls *libc.TLS) {
 	j = int32('!')
 	i = 0
 	for {
-		if !(i < libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+libc.Int32FromInt32(1)) {
+		if !(i < libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+(1)) {
 			break
 		}
 		v2 = j
@@ -10075,7 +10077,7 @@ func HU_Ticker(tls *libc.TLS) {
 			HUlib_addMessageToSText(tls, uintptr(unsafe.Pointer(&w_message)), uintptr(0), (*player_t)(unsafe.Pointer(plr1)).Fmessage)
 			(*player_t)(unsafe.Pointer(plr1)).Fmessage = uintptr(0)
 			message_on = 1
-			message_counter = libc.Int32FromInt32(4) * libc.Int32FromInt32(TICRATE)
+			message_counter = (4) * (TICRATE)
 			message_nottobefuckedwith = message_dontfuckwithme
 			message_dontfuckwithme = uint32(0)
 		}
@@ -10104,7 +10106,7 @@ func HU_Ticker(tls *libc.TLS) {
 							HUlib_addMessageToSText(tls, uintptr(unsafe.Pointer(&w_message)), player_names[i], uintptr(unsafe.Pointer(&w_inputbuffer))+uintptr(i)*136+20)
 							message_nottobefuckedwith = 1
 							message_on = 1
-							message_counter = libc.Int32FromInt32(4) * libc.Int32FromInt32(TICRATE)
+							message_counter = (4) * (TICRATE)
 							if gamemode == int32(commercial) {
 								S_StartSound(tls, uintptr(0), int32(sfx_radio))
 							} else {
@@ -10129,11 +10131,11 @@ var head = int32(0)
 var tail = int32(0)
 
 func HU_queueChatChar(tls *libc.TLS, c int8) {
-	if (head+int32(1))&(libc.Int32FromInt32(QUEUESIZE)-libc.Int32FromInt32(1)) == tail {
+	if (head+int32(1))&((QUEUESIZE)-(1)) == tail {
 		(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17504)
 	} else {
 		chatchars[head] = c
-		head = (head + int32(1)) & (libc.Int32FromInt32(QUEUESIZE) - libc.Int32FromInt32(1))
+		head = (head + int32(1)) & ((QUEUESIZE) - (1))
 	}
 }
 
@@ -10141,7 +10143,7 @@ func HU_dequeueChatChar(tls *libc.TLS) (r int8) {
 	var c int8
 	if head != tail {
 		c = chatchars[tail]
-		tail = (tail + int32(1)) & (libc.Int32FromInt32(QUEUESIZE) - libc.Int32FromInt32(1))
+		tail = (tail + int32(1)) & ((QUEUESIZE) - (1))
 	} else {
 		c = 0
 	}
@@ -10166,10 +10168,10 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 		;
 		i++
 	}
-	if (*event_t)(unsafe.Pointer(ev)).Fdata1 == libc.Int32FromInt32(0x80)+libc.Int32FromInt32(0x36) {
+	if (*event_t)(unsafe.Pointer(ev)).Fdata1 == (0x80)+(0x36) {
 		return 0
 	} else {
-		if (*event_t)(unsafe.Pointer(ev)).Fdata1 == libc.Int32FromInt32(0x80)+libc.Int32FromInt32(0x38) {
+		if (*event_t)(unsafe.Pointer(ev)).Fdata1 == (0x80)+(0x38) {
 			altdown = libc.BoolUint32((*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown))
 			return 0
 		}
@@ -10180,7 +10182,7 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	if !(chat_on != 0) {
 		if (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_message_refresh {
 			message_on = 1
-			message_counter = libc.Int32FromInt32(4) * libc.Int32FromInt32(TICRATE)
+			message_counter = (4) * (TICRATE)
 			eatkey = 1
 		} else {
 			if netgame != 0 && (*event_t)(unsafe.Pointer(ev)).Fdata2 == key_multi_msg {
@@ -16401,8 +16403,8 @@ func init() {
 			Fdeathstate:   int32(S_PLAY_DIE1),
 			Fxdeathstate:  int32(S_PLAY_XDIE1),
 			Fdeathsound:   int32(sfx_pldeth),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_DROPOFF) | int32(MF_PICKUP) | int32(MF_NOTDMATCH),
 		},
@@ -16422,8 +16424,8 @@ func init() {
 			Fxdeathstate:  int32(S_POSS_XDIE1),
 			Fdeathsound:   int32(sfx_podth1),
 			Fspeed:        int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Factivesound:  int32(sfx_posact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16444,8 +16446,8 @@ func init() {
 			Fxdeathstate:  int32(S_SPOS_XDIE1),
 			Fdeathsound:   int32(sfx_podth2),
 			Fspeed:        int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Factivesound:  int32(sfx_posact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16465,8 +16467,8 @@ func init() {
 			Fdeathstate:   int32(S_VILE_DIE1),
 			Fdeathsound:   int32(sfx_vildth),
 			Fspeed:        int32(15),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(500),
 			Factivesound:  int32(sfx_vilact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16476,8 +16478,8 @@ func init() {
 			Fspawnstate:   int32(S_FIRE1),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
@@ -16496,8 +16498,8 @@ func init() {
 			Fdeathstate:   int32(S_SKEL_DIE1),
 			Fdeathsound:   int32(sfx_skedth),
 			Fspeed:        int32(10),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(500),
 			Factivesound:  int32(sfx_skeact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16511,9 +16513,9 @@ func init() {
 			Freactiontime: int32(8),
 			Fdeathstate:   int32(S_TRACEEXP1),
 			Fdeathsound:   int32(sfx_barexp),
-			Fspeed:        libc.Int32FromInt32(10) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fradius:       libc.Int32FromInt32(11) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fspeed:        (10) * ((1) << (FRACBITS)),
+			Fradius:       (11) * ((1) << (FRACBITS)),
+			Fheight:       (8) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fdamage:       int32(10),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
@@ -16523,8 +16525,8 @@ func init() {
 			Fspawnstate:   int32(S_SMOKE1),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
@@ -16542,8 +16544,8 @@ func init() {
 			Fdeathstate:   int32(S_FATT_DIE1),
 			Fdeathsound:   int32(sfx_mandth),
 			Fspeed:        int32(8),
-			Fradius:       libc.Int32FromInt32(48) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(64) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (48) * ((1) << (FRACBITS)),
+			Fheight:       (64) * ((1) << (FRACBITS)),
 			Fmass:         int32(1000),
 			Factivesound:  int32(sfx_posact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16557,9 +16559,9 @@ func init() {
 			Freactiontime: int32(8),
 			Fdeathstate:   int32(S_FATSHOTX1),
 			Fdeathsound:   int32(sfx_firxpl),
-			Fspeed:        libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fradius:       libc.Int32FromInt32(6) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fspeed:        (20) * ((1) << (FRACBITS)),
+			Fradius:       (6) * ((1) << (FRACBITS)),
+			Fheight:       (8) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fdamage:       int32(8),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
@@ -16579,8 +16581,8 @@ func init() {
 			Fxdeathstate:  int32(S_CPOS_XDIE1),
 			Fdeathsound:   int32(sfx_podth2),
 			Fspeed:        int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Factivesound:  int32(sfx_posact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16602,8 +16604,8 @@ func init() {
 			Fxdeathstate:  int32(S_TROO_XDIE1),
 			Fdeathsound:   int32(sfx_bgdth1),
 			Fspeed:        int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Factivesound:  int32(sfx_bgact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16624,8 +16626,8 @@ func init() {
 			Fdeathstate:   int32(S_SARG_DIE1),
 			Fdeathsound:   int32(sfx_sgtdth),
 			Fspeed:        int32(10),
-			Fradius:       libc.Int32FromInt32(30) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (30) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(400),
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16646,8 +16648,8 @@ func init() {
 			Fdeathstate:   int32(S_SARG_DIE1),
 			Fdeathsound:   int32(sfx_sgtdth),
 			Fspeed:        int32(10),
-			Fradius:       libc.Int32FromInt32(30) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (30) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(400),
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_SHADOW) | int32(MF_COUNTKILL),
@@ -16667,8 +16669,8 @@ func init() {
 			Fdeathstate:   int32(S_HEAD_DIE1),
 			Fdeathsound:   int32(sfx_cacdth),
 			Fspeed:        int32(8),
-			Fradius:       libc.Int32FromInt32(31) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (31) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(400),
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_FLOAT) | int32(MF_NOGRAVITY) | int32(MF_COUNTKILL),
@@ -16689,8 +16691,8 @@ func init() {
 			Fdeathstate:   int32(S_BOSS_DIE1),
 			Fdeathsound:   int32(sfx_brsdth),
 			Fspeed:        int32(8),
-			Fradius:       libc.Int32FromInt32(24) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(64) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (24) * ((1) << (FRACBITS)),
+			Fheight:       (64) * ((1) << (FRACBITS)),
 			Fmass:         int32(1000),
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16704,9 +16706,9 @@ func init() {
 			Freactiontime: int32(8),
 			Fdeathstate:   int32(S_BRBALLX1),
 			Fdeathsound:   int32(sfx_firxpl),
-			Fspeed:        libc.Int32FromInt32(15) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fradius:       libc.Int32FromInt32(6) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fspeed:        (15) * ((1) << (FRACBITS)),
+			Fradius:       (6) * ((1) << (FRACBITS)),
+			Fheight:       (8) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fdamage:       int32(8),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
@@ -16726,8 +16728,8 @@ func init() {
 			Fdeathstate:   int32(S_BOS2_DIE1),
 			Fdeathsound:   int32(sfx_kntdth),
 			Fspeed:        int32(8),
-			Fradius:       libc.Int32FromInt32(24) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(64) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (24) * ((1) << (FRACBITS)),
+			Fheight:       (64) * ((1) << (FRACBITS)),
 			Fmass:         int32(1000),
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16747,8 +16749,8 @@ func init() {
 			Fdeathstate:   int32(S_SKULL_DIE1),
 			Fdeathsound:   int32(sfx_firxpl),
 			Fspeed:        int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(50),
 			Fdamage:       int32(3),
 			Factivesound:  int32(sfx_dmact),
@@ -16769,8 +16771,8 @@ func init() {
 			Fdeathstate:   int32(S_SPID_DIE1),
 			Fdeathsound:   int32(sfx_spidth),
 			Fspeed:        int32(12),
-			Fradius:       libc.Int32FromInt32(128) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(100) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (128) * ((1) << (FRACBITS)),
+			Fheight:       (100) * ((1) << (FRACBITS)),
 			Fmass:         int32(1000),
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16789,8 +16791,8 @@ func init() {
 			Fdeathstate:   int32(S_BSPI_DIE1),
 			Fdeathsound:   int32(sfx_bspdth),
 			Fspeed:        int32(12),
-			Fradius:       libc.Int32FromInt32(64) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(64) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (64) * ((1) << (FRACBITS)),
+			Fheight:       (64) * ((1) << (FRACBITS)),
 			Fmass:         int32(600),
 			Factivesound:  int32(sfx_bspact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16810,8 +16812,8 @@ func init() {
 			Fdeathstate:   int32(S_CYBER_DIE1),
 			Fdeathsound:   int32(sfx_cybdth),
 			Fspeed:        int32(16),
-			Fradius:       libc.Int32FromInt32(40) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(110) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (40) * ((1) << (FRACBITS)),
+			Fheight:       (110) * ((1) << (FRACBITS)),
 			Fmass:         int32(1000),
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16830,8 +16832,8 @@ func init() {
 			Fdeathstate:   int32(S_PAIN_DIE1),
 			Fdeathsound:   int32(sfx_pedth),
 			Fspeed:        int32(8),
-			Fradius:       libc.Int32FromInt32(31) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (31) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(400),
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_FLOAT) | int32(MF_NOGRAVITY) | int32(MF_COUNTKILL),
@@ -16852,8 +16854,8 @@ func init() {
 			Fxdeathstate:  int32(S_SSWV_XDIE1),
 			Fdeathsound:   int32(sfx_ssdth),
 			Fspeed:        int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(56) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (56) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Factivesound:  int32(sfx_posact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
@@ -16869,8 +16871,8 @@ func init() {
 			Fpainsound:    int32(sfx_keenpn),
 			Fdeathstate:   int32(S_COMMKEEN),
 			Fdeathsound:   int32(sfx_keendt),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(72) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (72) * ((1) << (FRACBITS)),
 			Fmass:         int32(10000000),
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 		},
@@ -16884,8 +16886,8 @@ func init() {
 			Fpainsound:    int32(sfx_bospn),
 			Fdeathstate:   int32(S_BRAIN_DIE1),
 			Fdeathsound:   int32(sfx_bosdth),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(10000000),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE),
 		},
@@ -16895,8 +16897,8 @@ func init() {
 			Fspawnhealth:  int32(1000),
 			Fseestate:     int32(S_BRAINEYESEE),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(32) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (32) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOSECTOR),
 		},
@@ -16904,8 +16906,8 @@ func init() {
 			Fdoomednum:    int32(87),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(32) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (32) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOSECTOR),
 		},
@@ -16916,9 +16918,9 @@ func init() {
 			Fseesound:     int32(sfx_bospit),
 			Freactiontime: int32(8),
 			Fdeathsound:   int32(sfx_firxpl),
-			Fspeed:        libc.Int32FromInt32(10) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fradius:       libc.Int32FromInt32(6) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(32) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fspeed:        (10) * ((1) << (FRACBITS)),
+			Fradius:       (6) * ((1) << (FRACBITS)),
+			Fheight:       (32) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fdamage:       int32(3),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY) | int32(MF_NOCLIP),
@@ -16928,8 +16930,8 @@ func init() {
 			Fspawnstate:   int32(S_SPAWNFIRE1),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
@@ -16940,8 +16942,8 @@ func init() {
 			Freactiontime: int32(8),
 			Fdeathstate:   int32(S_BEXP),
 			Fdeathsound:   int32(sfx_barexp),
-			Fradius:       libc.Int32FromInt32(10) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(42) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (10) * ((1) << (FRACBITS)),
+			Fheight:       (42) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_NOBLOOD),
 		},
@@ -16953,9 +16955,9 @@ func init() {
 			Freactiontime: int32(8),
 			Fdeathstate:   int32(S_TBALLX1),
 			Fdeathsound:   int32(sfx_firxpl),
-			Fspeed:        libc.Int32FromInt32(10) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fradius:       libc.Int32FromInt32(6) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fspeed:        (10) * ((1) << (FRACBITS)),
+			Fradius:       (6) * ((1) << (FRACBITS)),
+			Fheight:       (8) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fdamage:       int32(3),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
@@ -16968,9 +16970,9 @@ func init() {
 			Freactiontime: int32(8),
 			Fdeathstate:   int32(S_RBALLX1),
 			Fdeathsound:   int32(sfx_firxpl),
-			Fspeed:        libc.Int32FromInt32(10) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fradius:       libc.Int32FromInt32(6) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fspeed:        (10) * ((1) << (FRACBITS)),
+			Fradius:       (6) * ((1) << (FRACBITS)),
+			Fheight:       (8) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fdamage:       int32(5),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
@@ -16983,9 +16985,9 @@ func init() {
 			Freactiontime: int32(8),
 			Fdeathstate:   int32(S_EXPLODE1),
 			Fdeathsound:   int32(sfx_barexp),
-			Fspeed:        libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fradius:       libc.Int32FromInt32(11) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fspeed:        (20) * ((1) << (FRACBITS)),
+			Fradius:       (11) * ((1) << (FRACBITS)),
+			Fheight:       (8) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fdamage:       int32(20),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
@@ -16998,9 +17000,9 @@ func init() {
 			Freactiontime: int32(8),
 			Fdeathstate:   int32(S_PLASEXP),
 			Fdeathsound:   int32(sfx_firxpl),
-			Fspeed:        libc.Int32FromInt32(25) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fradius:       libc.Int32FromInt32(13) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fspeed:        (25) * ((1) << (FRACBITS)),
+			Fradius:       (13) * ((1) << (FRACBITS)),
+			Fheight:       (8) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fdamage:       int32(5),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
@@ -17012,9 +17014,9 @@ func init() {
 			Freactiontime: int32(8),
 			Fdeathstate:   int32(S_BFGLAND),
 			Fdeathsound:   int32(sfx_rxplod),
-			Fspeed:        libc.Int32FromInt32(25) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fradius:       libc.Int32FromInt32(13) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fspeed:        (25) * ((1) << (FRACBITS)),
+			Fradius:       (13) * ((1) << (FRACBITS)),
+			Fheight:       (8) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fdamage:       int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
@@ -17027,9 +17029,9 @@ func init() {
 			Freactiontime: int32(8),
 			Fdeathstate:   int32(S_ARACH_PLEX),
 			Fdeathsound:   int32(sfx_firxpl),
-			Fspeed:        libc.Int32FromInt32(25) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fradius:       libc.Int32FromInt32(13) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fspeed:        (25) * ((1) << (FRACBITS)),
+			Fradius:       (13) * ((1) << (FRACBITS)),
+			Fheight:       (8) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fdamage:       int32(5),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
@@ -17039,8 +17041,8 @@ func init() {
 			Fspawnstate:   int32(S_PUFF1),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
@@ -17049,8 +17051,8 @@ func init() {
 			Fspawnstate:   int32(S_BLOOD1),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP),
 		},
@@ -17059,8 +17061,8 @@ func init() {
 			Fspawnstate:   int32(S_TFOG),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
@@ -17069,8 +17071,8 @@ func init() {
 			Fspawnstate:   int32(S_IFOG),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
@@ -17078,8 +17080,8 @@ func init() {
 			Fdoomednum:    int32(14),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOSECTOR),
 		},
@@ -17088,8 +17090,8 @@ func init() {
 			Fspawnstate:   int32(S_BFGEXP),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
@@ -17098,8 +17100,8 @@ func init() {
 			Fspawnstate:   int32(S_ARM1),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17108,8 +17110,8 @@ func init() {
 			Fspawnstate:   int32(S_ARM2),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17118,8 +17120,8 @@ func init() {
 			Fspawnstate:   int32(S_BON1),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
@@ -17128,8 +17130,8 @@ func init() {
 			Fspawnstate:   int32(S_BON2),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
@@ -17138,8 +17140,8 @@ func init() {
 			Fspawnstate:   int32(S_BKEY),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
 		},
@@ -17148,8 +17150,8 @@ func init() {
 			Fspawnstate:   int32(S_RKEY),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
 		},
@@ -17158,8 +17160,8 @@ func init() {
 			Fspawnstate:   int32(S_YKEY),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
 		},
@@ -17168,8 +17170,8 @@ func init() {
 			Fspawnstate:   int32(S_YSKULL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
 		},
@@ -17178,8 +17180,8 @@ func init() {
 			Fspawnstate:   int32(S_RSKULL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
 		},
@@ -17188,8 +17190,8 @@ func init() {
 			Fspawnstate:   int32(S_BSKULL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
 		},
@@ -17198,8 +17200,8 @@ func init() {
 			Fspawnstate:   int32(S_STIM),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17208,8 +17210,8 @@ func init() {
 			Fspawnstate:   int32(S_MEDI),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17218,8 +17220,8 @@ func init() {
 			Fspawnstate:   int32(S_SOUL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
@@ -17228,8 +17230,8 @@ func init() {
 			Fspawnstate:   int32(S_PINV),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
@@ -17238,8 +17240,8 @@ func init() {
 			Fspawnstate:   int32(S_PSTR),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
@@ -17248,8 +17250,8 @@ func init() {
 			Fspawnstate:   int32(S_PINS),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
@@ -17258,8 +17260,8 @@ func init() {
 			Fspawnstate:   int32(S_SUIT),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17268,8 +17270,8 @@ func init() {
 			Fspawnstate:   int32(S_PMAP),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
@@ -17278,8 +17280,8 @@ func init() {
 			Fspawnstate:   int32(S_PVIS),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
@@ -17288,8 +17290,8 @@ func init() {
 			Fspawnstate:   int32(S_MEGA),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
@@ -17298,8 +17300,8 @@ func init() {
 			Fspawnstate:   int32(S_CLIP),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17308,8 +17310,8 @@ func init() {
 			Fspawnstate:   int32(S_AMMO),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17318,8 +17320,8 @@ func init() {
 			Fspawnstate:   int32(S_ROCK),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17328,8 +17330,8 @@ func init() {
 			Fspawnstate:   int32(S_BROK),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17338,8 +17340,8 @@ func init() {
 			Fspawnstate:   int32(S_CELL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17348,8 +17350,8 @@ func init() {
 			Fspawnstate:   int32(S_CELP),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17358,8 +17360,8 @@ func init() {
 			Fspawnstate:   int32(S_SHEL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17368,8 +17370,8 @@ func init() {
 			Fspawnstate:   int32(S_SBOX),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17378,8 +17380,8 @@ func init() {
 			Fspawnstate:   int32(S_BPAK),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17388,8 +17390,8 @@ func init() {
 			Fspawnstate:   int32(S_BFUG),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17398,8 +17400,8 @@ func init() {
 			Fspawnstate:   int32(S_MGUN),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17408,8 +17410,8 @@ func init() {
 			Fspawnstate:   int32(S_CSAW),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17418,8 +17420,8 @@ func init() {
 			Fspawnstate:   int32(S_LAUN),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17428,8 +17430,8 @@ func init() {
 			Fspawnstate:   int32(S_PLAS),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17438,8 +17440,8 @@ func init() {
 			Fspawnstate:   int32(S_SHOT),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17448,8 +17450,8 @@ func init() {
 			Fspawnstate:   int32(S_SHOT2),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPECIAL),
 		},
@@ -17458,8 +17460,8 @@ func init() {
 			Fspawnstate:   int32(S_TECHLAMP),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17468,8 +17470,8 @@ func init() {
 			Fspawnstate:   int32(S_TECH2LAMP),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17478,8 +17480,8 @@ func init() {
 			Fspawnstate:   int32(S_COLU),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17488,8 +17490,8 @@ func init() {
 			Fspawnstate:   int32(S_TALLGRNCOL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17498,8 +17500,8 @@ func init() {
 			Fspawnstate:   int32(S_SHRTGRNCOL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17508,8 +17510,8 @@ func init() {
 			Fspawnstate:   int32(S_TALLREDCOL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17518,8 +17520,8 @@ func init() {
 			Fspawnstate:   int32(S_SHRTREDCOL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17528,8 +17530,8 @@ func init() {
 			Fspawnstate:   int32(S_SKULLCOL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17538,8 +17540,8 @@ func init() {
 			Fspawnstate:   int32(S_HEARTCOL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17548,8 +17550,8 @@ func init() {
 			Fspawnstate:   int32(S_EVILEYE),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17558,8 +17560,8 @@ func init() {
 			Fspawnstate:   int32(S_FLOATSKULL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17568,8 +17570,8 @@ func init() {
 			Fspawnstate:   int32(S_TORCHTREE),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17578,8 +17580,8 @@ func init() {
 			Fspawnstate:   int32(S_BLUETORCH),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17588,8 +17590,8 @@ func init() {
 			Fspawnstate:   int32(S_GREENTORCH),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17598,8 +17600,8 @@ func init() {
 			Fspawnstate:   int32(S_REDTORCH),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17608,8 +17610,8 @@ func init() {
 			Fspawnstate:   int32(S_BTORCHSHRT),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17618,8 +17620,8 @@ func init() {
 			Fspawnstate:   int32(S_GTORCHSHRT),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17628,8 +17630,8 @@ func init() {
 			Fspawnstate:   int32(S_RTORCHSHRT),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17638,8 +17640,8 @@ func init() {
 			Fspawnstate:   int32(S_STALAGTITE),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17648,8 +17650,8 @@ func init() {
 			Fspawnstate:   int32(S_TECHPILLAR),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17658,8 +17660,8 @@ func init() {
 			Fspawnstate:   int32(S_CANDLESTIK),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 		},
 		100: {
@@ -17667,8 +17669,8 @@ func init() {
 			Fspawnstate:   int32(S_CANDELABRA),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17677,8 +17679,8 @@ func init() {
 			Fspawnstate:   int32(S_BLOODYTWITCH),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(68) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (68) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17687,8 +17689,8 @@ func init() {
 			Fspawnstate:   int32(S_MEAT2),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(84) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (84) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17697,8 +17699,8 @@ func init() {
 			Fspawnstate:   int32(S_MEAT3),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(84) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (84) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17707,8 +17709,8 @@ func init() {
 			Fspawnstate:   int32(S_MEAT4),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(68) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (68) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17717,8 +17719,8 @@ func init() {
 			Fspawnstate:   int32(S_MEAT5),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(52) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (52) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17727,8 +17729,8 @@ func init() {
 			Fspawnstate:   int32(S_MEAT2),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(84) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (84) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17737,8 +17739,8 @@ func init() {
 			Fspawnstate:   int32(S_MEAT4),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(68) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (68) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17747,8 +17749,8 @@ func init() {
 			Fspawnstate:   int32(S_MEAT3),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(52) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (52) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17757,8 +17759,8 @@ func init() {
 			Fspawnstate:   int32(S_MEAT5),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(52) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (52) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17767,8 +17769,8 @@ func init() {
 			Fspawnstate:   int32(S_BLOODYTWITCH),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(68) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (68) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17777,8 +17779,8 @@ func init() {
 			Fspawnstate:   int32(S_HEAD_DIE6),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 		},
 		112: {
@@ -17786,8 +17788,8 @@ func init() {
 			Fspawnstate:   int32(S_PLAY_DIE7),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 		},
 		113: {
@@ -17795,8 +17797,8 @@ func init() {
 			Fspawnstate:   int32(S_POSS_DIE5),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 		},
 		114: {
@@ -17804,8 +17806,8 @@ func init() {
 			Fspawnstate:   int32(S_SARG_DIE6),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 		},
 		115: {
@@ -17813,8 +17815,8 @@ func init() {
 			Fspawnstate:   int32(S_SKULL_DIE6),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 		},
 		116: {
@@ -17822,8 +17824,8 @@ func init() {
 			Fspawnstate:   int32(S_TROO_DIE5),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 		},
 		117: {
@@ -17831,8 +17833,8 @@ func init() {
 			Fspawnstate:   int32(S_SPOS_DIE5),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 		},
 		118: {
@@ -17840,8 +17842,8 @@ func init() {
 			Fspawnstate:   int32(S_PLAY_XDIE9),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 		},
 		119: {
@@ -17849,8 +17851,8 @@ func init() {
 			Fspawnstate:   int32(S_PLAY_XDIE9),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 		},
 		120: {
@@ -17858,8 +17860,8 @@ func init() {
 			Fspawnstate:   int32(S_HEADSONSTICK),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17868,8 +17870,8 @@ func init() {
 			Fspawnstate:   int32(S_GIBS),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 		},
 		122: {
@@ -17877,8 +17879,8 @@ func init() {
 			Fspawnstate:   int32(S_HEADONASTICK),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17887,8 +17889,8 @@ func init() {
 			Fspawnstate:   int32(S_HEADCANDLES),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17897,8 +17899,8 @@ func init() {
 			Fspawnstate:   int32(S_DEADSTICK),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17907,8 +17909,8 @@ func init() {
 			Fspawnstate:   int32(S_LIVESTICK),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17917,8 +17919,8 @@ func init() {
 			Fspawnstate:   int32(S_BIGTREE),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(32) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (32) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17927,8 +17929,8 @@ func init() {
 			Fspawnstate:   int32(S_BBAR1),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID),
 		},
@@ -17937,8 +17939,8 @@ func init() {
 			Fspawnstate:   int32(S_HANGNOGUTS),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(88) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (88) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17947,8 +17949,8 @@ func init() {
 			Fspawnstate:   int32(S_HANGBNOBRAIN),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(88) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (88) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17957,8 +17959,8 @@ func init() {
 			Fspawnstate:   int32(S_HANGTLOOKDN),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(64) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (64) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17967,8 +17969,8 @@ func init() {
 			Fspawnstate:   int32(S_HANGTSKULL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(64) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (64) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17977,8 +17979,8 @@ func init() {
 			Fspawnstate:   int32(S_HANGTLOOKUP),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(64) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (64) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17987,8 +17989,8 @@ func init() {
 			Fspawnstate:   int32(S_HANGTNOBRAIN),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(64) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (16) * ((1) << (FRACBITS)),
+			Fheight:       (64) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
@@ -17997,8 +17999,8 @@ func init() {
 			Fspawnstate:   int32(S_COLONGIBS),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP),
 		},
@@ -18007,8 +18009,8 @@ func init() {
 			Fspawnstate:   int32(S_SMALLPOOL),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP),
 		},
@@ -18017,8 +18019,8 @@ func init() {
 			Fspawnstate:   int32(S_BRAINSTEM),
 			Fspawnhealth:  int32(1000),
 			Freactiontime: int32(8),
-			Fradius:       libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
-			Fheight:       libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+			Fradius:       (20) * ((1) << (FRACBITS)),
+			Fheight:       (16) * ((1) << (FRACBITS)),
 			Fmass:         int32(100),
 			Fflags:        int32(MF_NOBLOCKMAP),
 		},
@@ -18231,8 +18233,8 @@ func I_Scale2x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 
 func init() {
 	mode_scale_2x = screen_mode_t{
-		Fwidth:  libc.Int32FromInt32(SCREENWIDTH) * libc.Int32FromInt32(2),
-		Fheight: libc.Int32FromInt32(SCREENHEIGHT) * libc.Int32FromInt32(2),
+		Fwidth:  (SCREENWIDTH) * (2),
+		Fheight: (SCREENHEIGHT) * (2),
 	}
 }
 
@@ -18312,8 +18314,8 @@ func I_Scale3x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 
 func init() {
 	mode_scale_3x = screen_mode_t{
-		Fwidth:  libc.Int32FromInt32(SCREENWIDTH) * libc.Int32FromInt32(3),
-		Fheight: libc.Int32FromInt32(SCREENHEIGHT) * libc.Int32FromInt32(3),
+		Fwidth:  (SCREENWIDTH) * (3),
+		Fheight: (SCREENHEIGHT) * (3),
 	}
 }
 
@@ -18417,8 +18419,8 @@ func I_Scale4x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 
 func init() {
 	mode_scale_4x = screen_mode_t{
-		Fwidth:  libc.Int32FromInt32(SCREENWIDTH) * libc.Int32FromInt32(4),
-		Fheight: libc.Int32FromInt32(SCREENHEIGHT) * libc.Int32FromInt32(4),
+		Fwidth:  (SCREENWIDTH) * (4),
+		Fheight: (SCREENHEIGHT) * (4),
 	}
 }
 
@@ -18552,8 +18554,8 @@ func I_Scale5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolean
 
 func init() {
 	mode_scale_5x = screen_mode_t{
-		Fwidth:  libc.Int32FromInt32(SCREENWIDTH) * libc.Int32FromInt32(5),
-		Fheight: libc.Int32FromInt32(SCREENHEIGHT) * libc.Int32FromInt32(5),
+		Fwidth:  (SCREENWIDTH) * (5),
+		Fheight: (SCREENHEIGHT) * (5),
 	}
 }
 
@@ -18601,7 +18603,7 @@ func FindNearestColor(tls *libc.TLS, palette uintptr, r int32, g int32, b int32)
 func GenerateStretchTable(tls *libc.TLS, palette uintptr, pct int32) (r1 uintptr) {
 	var b, g, r, x, y int32
 	var col1, col2, result uintptr
-	result = Z_Malloc(tls, libc.Int32FromInt32(256)*libc.Int32FromInt32(256), int32(PU_STATIC), libc.UintptrFromInt32(0))
+	result = Z_Malloc(tls, (256)*(256), int32(PU_STATIC), libc.UintptrFromInt32(0))
 	x = 0
 	for {
 		if !(x < int32(256)) {
@@ -18864,8 +18866,8 @@ func I_Stretch2x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 
 func init() {
 	mode_stretch_2x = screen_mode_t{
-		Fwidth:  libc.Int32FromInt32(SCREENWIDTH) * libc.Int32FromInt32(2),
-		Fheight: libc.Int32FromInt32(SCREENHEIGHT_4_3) * libc.Int32FromInt32(2),
+		Fwidth:  (SCREENWIDTH) * (2),
+		Fheight: (SCREENHEIGHT_4_3) * (2),
 	}
 }
 
@@ -19003,8 +19005,8 @@ func I_Stretch3x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 
 func init() {
 	mode_stretch_3x = screen_mode_t{
-		Fwidth:  libc.Int32FromInt32(SCREENWIDTH) * libc.Int32FromInt32(3),
-		Fheight: libc.Int32FromInt32(SCREENHEIGHT_4_3) * libc.Int32FromInt32(3),
+		Fwidth:  (SCREENWIDTH) * (3),
+		Fheight: (SCREENHEIGHT_4_3) * (3),
 	}
 }
 
@@ -19162,8 +19164,8 @@ func I_Stretch4x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 
 func init() {
 	mode_stretch_4x = screen_mode_t{
-		Fwidth:  libc.Int32FromInt32(SCREENWIDTH) * libc.Int32FromInt32(4),
-		Fheight: libc.Int32FromInt32(SCREENHEIGHT_4_3) * libc.Int32FromInt32(4),
+		Fwidth:  (SCREENWIDTH) * (4),
+		Fheight: (SCREENHEIGHT_4_3) * (4),
 	}
 }
 
@@ -19259,8 +19261,8 @@ func I_Stretch5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boole
 
 func init() {
 	mode_stretch_5x = screen_mode_t{
-		Fwidth:  libc.Int32FromInt32(SCREENWIDTH) * libc.Int32FromInt32(5),
-		Fheight: libc.Int32FromInt32(SCREENHEIGHT_4_3) * libc.Int32FromInt32(5),
+		Fwidth:  (SCREENWIDTH) * (5),
+		Fheight: (SCREENHEIGHT_4_3) * (5),
 	}
 }
 
@@ -19482,8 +19484,8 @@ func I_Squash2x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 
 func init() {
 	mode_squash_2x = screen_mode_t{
-		Fwidth:  libc.Int32FromInt32(SCREENWIDTH_4_3) * libc.Int32FromInt32(2),
-		Fheight: libc.Int32FromInt32(SCREENHEIGHT) * libc.Int32FromInt32(2),
+		Fwidth:  (SCREENWIDTH_4_3) * (2),
+		Fheight: (SCREENHEIGHT) * (2),
 	}
 }
 
@@ -19928,8 +19930,8 @@ func I_Squash4x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 
 func init() {
 	mode_squash_4x = screen_mode_t{
-		Fwidth:  libc.Int32FromInt32(SCREENWIDTH_4_3) * libc.Int32FromInt32(4),
-		Fheight: libc.Int32FromInt32(SCREENHEIGHT) * libc.Int32FromInt32(4),
+		Fwidth:  (SCREENWIDTH_4_3) * (4),
+		Fheight: (SCREENHEIGHT) * (4),
 	}
 }
 
@@ -20071,8 +20073,8 @@ func I_Squash5x(tls *libc.TLS, x1 int32, y1 int32, x2 int32, y2 int32) (r boolea
 
 func init() {
 	mode_squash_5x = screen_mode_t{
-		Fwidth:  libc.Int32FromInt32(SCREENWIDTH_4_3) * libc.Int32FromInt32(5),
-		Fheight: libc.Int32FromInt32(SCREENHEIGHT) * libc.Int32FromInt32(5),
+		Fwidth:  (SCREENWIDTH_4_3) * (5),
+		Fheight: (SCREENHEIGHT) * (5),
 	}
 }
 
@@ -20087,7 +20089,7 @@ func init() {
 }
 
 func init() {
-	snd_cachesize = libc.Int32FromInt32(64) * libc.Int32FromInt32(1024) * libc.Int32FromInt32(1024)
+	snd_cachesize = (64) * (1024) * (1024)
 }
 
 func init() {
@@ -20882,10 +20884,10 @@ const BOXRIGHT = 3
 
 func M_ClearBox(tls *libc.TLS, box uintptr) {
 	var v1, v2 fixed_t
-	v1 = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
+	v1 = -(1) - (0x7fffffff)
 	*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXRIGHT)*4)) = v1
 	*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXTOP)*4)) = v1
-	v2 = libc.Int32FromInt32(INT_MAX5)
+	v2 = (INT_MAX5)
 	*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXLEFT)*4)) = v2
 	*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXBOTTOM)*4)) = v2
 }
@@ -20943,7 +20945,7 @@ func cht_CheckCheat(tls *libc.TLS, cht uintptr, key int8) (r int32) {
 		}
 	}
 	if (*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read >= libc.Xstrlen(tls, cht) && (*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read >= (*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars {
-		v1 = libc.Int32FromInt32(0)
+		v1 = (0)
 		(*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read = v1
 		(*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read = libc.Uint64FromInt32(v1)
 		return 1
@@ -21892,14 +21894,14 @@ func init() {
 	key_straferight = int32(KEY_STRAFE_R1)
 	key_fire = int32(KEY_FIRE1)
 	key_use = int32(KEY_USE1)
-	key_strafe = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x38)
-	key_speed = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x36)
-	key_flyup = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x49)
-	key_flydown = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x52)
-	key_flycenter = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x47)
-	key_lookup = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x51)
-	key_lookdown = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x53)
-	key_lookcenter = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x4f)
+	key_strafe = (0x80) + (0x38)
+	key_speed = (0x80) + (0x36)
+	key_flyup = (0x80) + (0x49)
+	key_flydown = (0x80) + (0x52)
+	key_flycenter = (0x80) + (0x47)
+	key_lookup = (0x80) + (0x51)
+	key_lookdown = (0x80) + (0x53)
+	key_lookcenter = (0x80) + (0x4f)
 	key_invleft = int32('[')
 	key_invright = int32(']')
 	key_useartifact = int32(KEY_ENTER)
@@ -21917,8 +21919,8 @@ func init() {
 	key_mission = int32('w')
 	key_invpop = int32('z')
 	key_invkey = int32('k')
-	key_invhome = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x47)
-	key_invend = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x4f)
+	key_invhome = (0x80) + (0x47)
+	key_invend = (0x80) + (0x4f)
 	key_invuse = int32(KEY_ENTER)
 	key_invdrop = int32(KEY_BACKSPACE3)
 	mousebstrafe = int32(1)
@@ -21933,7 +21935,7 @@ func init() {
 	key_message_refresh = int32(KEY_ENTER)
 	key_pause = int32(KEY_PAUSE1)
 	key_demo_quit = int32('q')
-	key_spy = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x58)
+	key_spy = (0x80) + (0x58)
 	key_multi_msg = int32('t')
 	key_weapon1 = int32('1')
 	key_weapon2 = int32('2')
@@ -21964,17 +21966,17 @@ func init() {
 	key_menu_forward = int32(KEY_ENTER)
 	key_menu_confirm = int32('y')
 	key_menu_abort = int32('n')
-	key_menu_help = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x3b)
-	key_menu_save = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x3c)
-	key_menu_load = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x3d)
-	key_menu_volume = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x3e)
-	key_menu_detail = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x3f)
-	key_menu_qsave = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x40)
-	key_menu_endgame = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x41)
-	key_menu_messages = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x42)
-	key_menu_qload = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x43)
-	key_menu_quit = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x44)
-	key_menu_gamma = libc.Int32FromInt32(0x80) + libc.Int32FromInt32(0x57)
+	key_menu_help = (0x80) + (0x3b)
+	key_menu_save = (0x80) + (0x3c)
+	key_menu_load = (0x80) + (0x3d)
+	key_menu_volume = (0x80) + (0x3e)
+	key_menu_detail = (0x80) + (0x3f)
+	key_menu_qsave = (0x80) + (0x40)
+	key_menu_endgame = (0x80) + (0x41)
+	key_menu_messages = (0x80) + (0x42)
+	key_menu_qload = (0x80) + (0x43)
+	key_menu_quit = (0x80) + (0x44)
+	key_menu_gamma = (0x80) + (0x57)
 	key_menu_incscreen = int32(KEY_EQUALS1)
 	key_menu_decscreen = int32(KEY_MINUS1)
 	joybstrafe = int32(1)
@@ -22128,13 +22130,13 @@ func FixedDiv(tls *libc.TLS, a fixed_t, b fixed_t) (r fixed_t) {
 	var v1 int32
 	if xabs(a)>>int32(14) >= xabs(b) {
 		if a^b < 0 {
-			v1 = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
+			v1 = -(1) - (0x7fffffff)
 		} else {
 			v1 = int32(INT_MAX7)
 		}
 		return v1
 	} else {
-		result = int64(a) << libc.Int32FromInt32(16) / int64(b)
+		result = int64(a) << (16) / int64(b)
 		return int32(result)
 	}
 	return r
@@ -22979,8 +22981,8 @@ func M_DrawReadThis2(tls *libc.TLS) {
 //	//
 func M_DrawSound(tls *libc.TLS) {
 	V_DrawPatchDirect(tls, int32(60), int32(38), W_CacheLumpName(tls, __ccgo_ts(22535), int32(PU_CACHE)))
-	M_DrawThermo(tls, int32(SoundDef.Fx), int32(SoundDef.Fy)+libc.Int32FromInt32(LINEHEIGHT)*(int32(sfx_vol)+libc.Int32FromInt32(1)), int32(16), sfxVolume)
-	M_DrawThermo(tls, int32(SoundDef.Fx), int32(SoundDef.Fy)+libc.Int32FromInt32(LINEHEIGHT)*(int32(music_vol)+libc.Int32FromInt32(1)), int32(16), musicVolume)
+	M_DrawThermo(tls, int32(SoundDef.Fx), int32(SoundDef.Fy)+(LINEHEIGHT)*(int32(sfx_vol)+(1)), int32(16), sfxVolume)
+	M_DrawThermo(tls, int32(SoundDef.Fx), int32(SoundDef.Fy)+(LINEHEIGHT)*(int32(music_vol)+(1)), int32(16), musicVolume)
 }
 
 func M_Sound(tls *libc.TLS, choice int32) {
@@ -23101,10 +23103,10 @@ var msgNames = [2]uintptr{
 
 func M_DrawOptions(tls *libc.TLS) {
 	V_DrawPatchDirect(tls, int32(108), int32(15), W_CacheLumpName(tls, __ccgo_ts(22883), int32(PU_CACHE)))
-	V_DrawPatchDirect(tls, int32(OptionsDef.Fx)+int32(175), int32(OptionsDef.Fy)+libc.Int32FromInt32(LINEHEIGHT)*int32(detail), W_CacheLumpName(tls, detailNames[detailLevel], int32(PU_CACHE)))
-	V_DrawPatchDirect(tls, int32(OptionsDef.Fx)+int32(120), int32(OptionsDef.Fy)+libc.Int32FromInt32(LINEHEIGHT)*int32(messages), W_CacheLumpName(tls, msgNames[showMessages], int32(PU_CACHE)))
-	M_DrawThermo(tls, int32(OptionsDef.Fx), int32(OptionsDef.Fy)+libc.Int32FromInt32(LINEHEIGHT)*(int32(mousesens)+libc.Int32FromInt32(1)), int32(10), mouseSensitivity)
-	M_DrawThermo(tls, int32(OptionsDef.Fx), int32(OptionsDef.Fy)+libc.Int32FromInt32(LINEHEIGHT)*(int32(scrnsize)+libc.Int32FromInt32(1)), int32(9), screenSize)
+	V_DrawPatchDirect(tls, int32(OptionsDef.Fx)+int32(175), int32(OptionsDef.Fy)+(LINEHEIGHT)*int32(detail), W_CacheLumpName(tls, detailNames[detailLevel], int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, int32(OptionsDef.Fx)+int32(120), int32(OptionsDef.Fy)+(LINEHEIGHT)*int32(messages), W_CacheLumpName(tls, msgNames[showMessages], int32(PU_CACHE)))
+	M_DrawThermo(tls, int32(OptionsDef.Fx), int32(OptionsDef.Fy)+(LINEHEIGHT)*(int32(mousesens)+(1)), int32(10), mouseSensitivity)
+	M_DrawThermo(tls, int32(OptionsDef.Fx), int32(OptionsDef.Fy)+(LINEHEIGHT)*(int32(scrnsize)+(1)), int32(9), screenSize)
 }
 
 func M_Options(tls *libc.TLS, choice int32) {
@@ -23345,7 +23347,7 @@ func M_StringWidth(tls *libc.TLS, string1 uintptr) (r int32) {
 			break
 		}
 		c = libc.Xtoupper(tls, int32(*(*int8)(unsafe.Pointer(string1 + uintptr(i))))) - int32('!')
-		if c < 0 || c >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+libc.Int32FromInt32(1) {
+		if c < 0 || c >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+(1) {
 			w += int32(4)
 		} else {
 			w += int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
@@ -23408,7 +23410,7 @@ func M_WriteText(tls *libc.TLS, x int32, y int32, string1 uintptr) {
 			continue
 		}
 		c = libc.Xtoupper(tls, c) - int32('!')
-		if c < 0 || c >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+libc.Int32FromInt32(1) {
+		if c < 0 || c >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+(1) {
 			cx += int32(4)
 			continue
 		}
@@ -23425,7 +23427,7 @@ func M_WriteText(tls *libc.TLS, x int32, y int32, string1 uintptr) {
 // jumping in the menus. Preserve this behavior for accuracy.
 
 func IsNullKey(tls *libc.TLS, key int32) (r boolean) {
-	return libc.BoolUint32(key == int32(KEY_PAUSE1) || key == libc.Int32FromInt32(0x80)+libc.Int32FromInt32(0x3a) || key == libc.Int32FromInt32(0x80)+libc.Int32FromInt32(0x46) || key == libc.Int32FromInt32(0x80)+libc.Int32FromInt32(0x45))
+	return libc.BoolUint32(key == int32(KEY_PAUSE1) || key == (0x80)+(0x3a) || key == (0x80)+(0x46) || key == (0x80)+(0x45))
 }
 
 //
@@ -23569,10 +23571,10 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 				ch = key
 			}
 			ch = libc.Xtoupper(tls, ch)
-			if ch != int32(' ') && (ch-int32('!') < 0 || ch-int32('!') >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+libc.Int32FromInt32(1)) {
+			if ch != int32(' ') && (ch-int32('!') < 0 || ch-int32('!') >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+(1)) {
 				break
 			}
-			if ch >= int32(32) && ch <= int32(127) && saveCharIndex < libc.Int32FromInt32(SAVESTRINGSIZE)-libc.Int32FromInt32(1) && M_StringWidth(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24) < (libc.Int32FromInt32(SAVESTRINGSIZE)-libc.Int32FromInt32(2))*libc.Int32FromInt32(8) {
+			if ch >= int32(32) && ch <= int32(127) && saveCharIndex < (SAVESTRINGSIZE)-(1) && M_StringWidth(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24) < ((SAVESTRINGSIZE)-(2))*(8) {
 				v1 = saveCharIndex
 				saveCharIndex++
 				*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(saveSlot)*24 + uintptr(v1))) = int8(ch)
@@ -23870,7 +23872,7 @@ func M_Drawer(tls *libc.TLS) {
 	// Horiz. & Vertically center string and print it.
 	if messageToPrint != 0 {
 		start = 0
-		y2 = int16(libc.Int32FromInt32(SCREENHEIGHT)/libc.Int32FromInt32(2) - M_StringHeight(tls, messageString)/int32(2))
+		y2 = int16((SCREENHEIGHT)/(2) - M_StringHeight(tls, messageString)/int32(2))
 		for int32(*(*int8)(unsafe.Pointer(messageString + uintptr(start)))) != int32('\000') {
 			foundnewline = 0
 			i = uint32(0)
@@ -23896,7 +23898,7 @@ func M_Drawer(tls *libc.TLS) {
 				M_StringCopy(tls, bp, messageString+uintptr(start), uint64(80))
 				start = int32(uint64(start) + libc.Xstrlen(tls, bp))
 			}
-			x = int16(libc.Int32FromInt32(SCREENWIDTH)/libc.Int32FromInt32(2) - M_StringWidth(tls, bp)/int32(2))
+			x = int16((SCREENWIDTH)/(2) - M_StringWidth(tls, bp)/int32(2))
 			M_WriteText(tls, int32(x), int32(y2), bp)
 			y2 = int16(int32(y2) + int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight))
 		}
@@ -23925,7 +23927,7 @@ func M_Drawer(tls *libc.TLS) {
 		if *(*int8)(unsafe.Pointer(name)) != 0 {
 			V_DrawPatchDirect(tls, int32(x), int32(y2), W_CacheLumpName(tls, name, int32(PU_CACHE)))
 		}
-		y2 = int16(int32(y2) + libc.Int32FromInt32(LINEHEIGHT))
+		y2 = int16(int32(y2) + (LINEHEIGHT))
 		goto _2
 	_2:
 		;
@@ -23970,7 +23972,7 @@ func M_Ticker(tls *libc.TLS) {
 	skullAnimCounter--
 	v1 = skullAnimCounter
 	if int32(v1) <= 0 {
-		whichSkull = int16(int32(whichSkull) ^ libc.Int32FromInt32(1))
+		whichSkull = int16(int32(whichSkull) ^ (1))
 		skullAnimCounter = int16(8)
 	}
 }
@@ -24000,7 +24002,7 @@ func M_Init(tls *libc.TLS) {
 		MainMenu[int32(readthis)] = MainMenu[int32(quitdoom)]
 		MainDef.Fnumitems--
 		p1 = uintptr(unsafe.Pointer(&MainDef)) + 34
-		*(*int16)(unsafe.Pointer(p1)) = int16(int32(*(*int16)(unsafe.Pointer(p1))) + libc.Int32FromInt32(8))
+		*(*int16)(unsafe.Pointer(p1)) = int16(int32(*(*int16)(unsafe.Pointer(p1))) + (8))
 		NewDef.FprevMenu = uintptr(unsafe.Pointer(&MainDef))
 	case int32(shareware):
 		// Episode 2 and 3 are handled,
@@ -24533,7 +24535,7 @@ func M_Random(tls *libc.TLS) (r int32) {
 
 func M_ClearRandom(tls *libc.TLS) {
 	var v1 int32
-	v1 = libc.Int32FromInt32(0)
+	v1 = (0)
 	prndindex = v1
 	rndindex = v1
 }
@@ -24550,7 +24552,7 @@ func T_MoveCeiling(tls *libc.TLS, ceiling uintptr) {
 	case int32(1):
 		// UP
 		res = T_MovePlane(tls, (*ceiling_t)(unsafe.Pointer(ceiling)).Fsector, (*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed, (*ceiling_t)(unsafe.Pointer(ceiling)).Ftopheight, 0, int32(1), (*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection)
-		if !(leveltime&libc.Int32FromInt32(7) != 0) {
+		if !(leveltime&(7) != 0) {
 			switch (*ceiling_t)(unsafe.Pointer(ceiling)).Ftype1 {
 			case int32(silentCrushAndRaise):
 			default:
@@ -24577,7 +24579,7 @@ func T_MoveCeiling(tls *libc.TLS, ceiling uintptr) {
 	case -int32(1):
 		// DOWN
 		res = T_MovePlane(tls, (*ceiling_t)(unsafe.Pointer(ceiling)).Fsector, (*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed, (*ceiling_t)(unsafe.Pointer(ceiling)).Fbottomheight, (*ceiling_t)(unsafe.Pointer(ceiling)).Fcrush, int32(1), (*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection)
-		if !(leveltime&libc.Int32FromInt32(7) != 0) {
+		if !(leveltime&(7) != 0) {
 			switch (*ceiling_t)(unsafe.Pointer(ceiling)).Ftype1 {
 			case int32(silentCrushAndRaise):
 			default:
@@ -24590,7 +24592,7 @@ func T_MoveCeiling(tls *libc.TLS, ceiling uintptr) {
 				S_StartSound(tls, (*ceiling_t)(unsafe.Pointer(ceiling)).Fsector+48, int32(sfx_pstop))
 				fallthrough
 			case int32(crushAndRaise):
-				(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+				(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = (1) << (FRACBITS)
 				fallthrough
 			case int32(fastCrushAndRaise):
 				(*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection = int32(1)
@@ -24609,7 +24611,7 @@ func T_MoveCeiling(tls *libc.TLS, ceiling uintptr) {
 				case int32(crushAndRaise):
 					fallthrough
 				case int32(lowerAndCrush):
-					(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) / libc.Int32FromInt32(8)
+					(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = (1) << (FRACBITS) / (8)
 				default:
 					break
 				}
@@ -24664,9 +24666,9 @@ func EV_DoCeiling(tls *libc.TLS, line uintptr, type1 ceiling_e) (r int32) {
 		case int32(fastCrushAndRaise):
 			(*ceiling_t)(unsafe.Pointer(ceiling)).Fcrush = 1
 			(*ceiling_t)(unsafe.Pointer(ceiling)).Ftopheight = (*sector_t)(unsafe.Pointer(sec)).Fceilingheight
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fbottomheight = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight + libc.Int32FromInt32(8)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+			(*ceiling_t)(unsafe.Pointer(ceiling)).Fbottomheight = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight + (8)*((1)<<(FRACBITS))
 			(*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection = -int32(1)
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(2)
+			(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = (1) << (FRACBITS) * (2)
 		case int32(silentCrushAndRaise):
 			fallthrough
 		case int32(crushAndRaise):
@@ -24678,14 +24680,14 @@ func EV_DoCeiling(tls *libc.TLS, line uintptr, type1 ceiling_e) (r int32) {
 		case int32(lowerToFloor):
 			(*ceiling_t)(unsafe.Pointer(ceiling)).Fbottomheight = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight
 			if type1 != int32(lowerToFloor) {
-				*(*fixed_t)(unsafe.Pointer(ceiling + 40)) += libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+				*(*fixed_t)(unsafe.Pointer(ceiling + 40)) += (8) * ((1) << (FRACBITS))
 			}
 			(*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection = -int32(1)
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+			(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = (1) << (FRACBITS)
 		case int32(raiseToHighest):
 			(*ceiling_t)(unsafe.Pointer(ceiling)).Ftopheight = P_FindHighestCeilingSurrounding(tls, sec)
 			(*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection = int32(1)
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+			(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = (1) << (FRACBITS)
 			break
 		}
 		(*ceiling_t)(unsafe.Pointer(ceiling)).Ftag = int32((*sector_t)(unsafe.Pointer(sec)).Ftag)
@@ -24880,7 +24882,7 @@ func T_VerticalDoor(tls *libc.TLS, door uintptr) {
 				P_RemoveThinker(tls, door) // unlink and free
 			case int32(vld_close30ThenOpen):
 				(*vldoor_t)(unsafe.Pointer(door)).Fdirection = 0
-				(*vldoor_t)(unsafe.Pointer(door)).Ftopcountdown = libc.Int32FromInt32(TICRATE) * libc.Int32FromInt32(30)
+				(*vldoor_t)(unsafe.Pointer(door)).Ftopcountdown = (TICRATE) * (30)
 			default:
 				break
 			}
@@ -24996,17 +24998,17 @@ func EV_DoDoor(tls *libc.TLS, line uintptr, type1 vldoor_e) (r int32) {
 		(*vldoor_t)(unsafe.Pointer(door)).Fsector = sec
 		(*vldoor_t)(unsafe.Pointer(door)).Ftype1 = type1
 		(*vldoor_t)(unsafe.Pointer(door)).Ftopwait = int32(VDOORWAIT)
-		(*vldoor_t)(unsafe.Pointer(door)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(2)
+		(*vldoor_t)(unsafe.Pointer(door)).Fspeed = (1) << (FRACBITS) * (2)
 		switch type1 {
 		case int32(vld_blazeClose):
 			(*vldoor_t)(unsafe.Pointer(door)).Ftopheight = P_FindLowestCeilingSurrounding(tls, sec)
-			*(*fixed_t)(unsafe.Pointer(door + 40)) -= libc.Int32FromInt32(4) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+			*(*fixed_t)(unsafe.Pointer(door + 40)) -= (4) * ((1) << (FRACBITS))
 			(*vldoor_t)(unsafe.Pointer(door)).Fdirection = -int32(1)
-			(*vldoor_t)(unsafe.Pointer(door)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(2) * libc.Int32FromInt32(4)
+			(*vldoor_t)(unsafe.Pointer(door)).Fspeed = (1) << (FRACBITS) * (2) * (4)
 			S_StartSound(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector+48, int32(sfx_bdcls))
 		case int32(vld_close):
 			(*vldoor_t)(unsafe.Pointer(door)).Ftopheight = P_FindLowestCeilingSurrounding(tls, sec)
-			*(*fixed_t)(unsafe.Pointer(door + 40)) -= libc.Int32FromInt32(4) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+			*(*fixed_t)(unsafe.Pointer(door + 40)) -= (4) * ((1) << (FRACBITS))
 			(*vldoor_t)(unsafe.Pointer(door)).Fdirection = -int32(1)
 			S_StartSound(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector+48, int32(sfx_dorcls))
 		case int32(vld_close30ThenOpen):
@@ -25018,8 +25020,8 @@ func EV_DoDoor(tls *libc.TLS, line uintptr, type1 vldoor_e) (r int32) {
 		case int32(vld_blazeOpen):
 			(*vldoor_t)(unsafe.Pointer(door)).Fdirection = int32(1)
 			(*vldoor_t)(unsafe.Pointer(door)).Ftopheight = P_FindLowestCeilingSurrounding(tls, sec)
-			*(*fixed_t)(unsafe.Pointer(door + 40)) -= libc.Int32FromInt32(4) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
-			(*vldoor_t)(unsafe.Pointer(door)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(2) * libc.Int32FromInt32(4)
+			*(*fixed_t)(unsafe.Pointer(door + 40)) -= (4) * ((1) << (FRACBITS))
+			(*vldoor_t)(unsafe.Pointer(door)).Fspeed = (1) << (FRACBITS) * (2) * (4)
 			if (*vldoor_t)(unsafe.Pointer(door)).Ftopheight != (*sector_t)(unsafe.Pointer(sec)).Fceilingheight {
 				S_StartSound(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector+48, int32(sfx_bdopn))
 			}
@@ -25028,7 +25030,7 @@ func EV_DoDoor(tls *libc.TLS, line uintptr, type1 vldoor_e) (r int32) {
 		case int32(vld_open):
 			(*vldoor_t)(unsafe.Pointer(door)).Fdirection = int32(1)
 			(*vldoor_t)(unsafe.Pointer(door)).Ftopheight = P_FindLowestCeilingSurrounding(tls, sec)
-			*(*fixed_t)(unsafe.Pointer(door + 40)) -= libc.Int32FromInt32(4) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+			*(*fixed_t)(unsafe.Pointer(door + 40)) -= (4) * ((1) << (FRACBITS))
 			if (*vldoor_t)(unsafe.Pointer(door)).Ftopheight != (*sector_t)(unsafe.Pointer(sec)).Fceilingheight {
 				S_StartSound(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector+48, int32(sfx_doropn))
 			}
@@ -25148,7 +25150,7 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 	*(*actionf_p1)(unsafe.Pointer(door + 16)) = __ccgo_fp(T_VerticalDoor)
 	(*vldoor_t)(unsafe.Pointer(door)).Fsector = sec
 	(*vldoor_t)(unsafe.Pointer(door)).Fdirection = int32(1)
-	(*vldoor_t)(unsafe.Pointer(door)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(2)
+	(*vldoor_t)(unsafe.Pointer(door)).Fspeed = (1) << (FRACBITS) * (2)
 	(*vldoor_t)(unsafe.Pointer(door)).Ftopwait = int32(VDOORWAIT)
 	switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
 	case int32(1):
@@ -25170,16 +25172,16 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
 	case int32(117): // blazing door raise
 		(*vldoor_t)(unsafe.Pointer(door)).Ftype1 = int32(vld_blazeRaise)
-		(*vldoor_t)(unsafe.Pointer(door)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(2) * libc.Int32FromInt32(4)
+		(*vldoor_t)(unsafe.Pointer(door)).Fspeed = (1) << (FRACBITS) * (2) * (4)
 	case int32(118): // blazing door open
 		(*vldoor_t)(unsafe.Pointer(door)).Ftype1 = int32(vld_blazeOpen)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-		(*vldoor_t)(unsafe.Pointer(door)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(2) * libc.Int32FromInt32(4)
+		(*vldoor_t)(unsafe.Pointer(door)).Fspeed = (1) << (FRACBITS) * (2) * (4)
 		break
 	}
 	// find the top and bottom of the movement range
 	(*vldoor_t)(unsafe.Pointer(door)).Ftopheight = P_FindLowestCeilingSurrounding(tls, sec)
-	*(*fixed_t)(unsafe.Pointer(door + 40)) -= libc.Int32FromInt32(4) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+	*(*fixed_t)(unsafe.Pointer(door + 40)) -= (4) * ((1) << (FRACBITS))
 }
 
 // C documentation
@@ -25197,8 +25199,8 @@ func P_SpawnDoorCloseIn30(tls *libc.TLS, sec uintptr) {
 	(*vldoor_t)(unsafe.Pointer(door)).Fsector = sec
 	(*vldoor_t)(unsafe.Pointer(door)).Fdirection = 0
 	(*vldoor_t)(unsafe.Pointer(door)).Ftype1 = int32(vld_normal)
-	(*vldoor_t)(unsafe.Pointer(door)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(2)
-	(*vldoor_t)(unsafe.Pointer(door)).Ftopcountdown = libc.Int32FromInt32(30) * libc.Int32FromInt32(TICRATE)
+	(*vldoor_t)(unsafe.Pointer(door)).Fspeed = (1) << (FRACBITS) * (2)
+	(*vldoor_t)(unsafe.Pointer(door)).Ftopcountdown = (30) * (TICRATE)
 }
 
 // C documentation
@@ -25216,11 +25218,11 @@ func P_SpawnDoorRaiseIn5Mins(tls *libc.TLS, sec uintptr, secnum int32) {
 	(*vldoor_t)(unsafe.Pointer(door)).Fsector = sec
 	(*vldoor_t)(unsafe.Pointer(door)).Fdirection = int32(2)
 	(*vldoor_t)(unsafe.Pointer(door)).Ftype1 = int32(vld_raiseIn5Mins)
-	(*vldoor_t)(unsafe.Pointer(door)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(2)
+	(*vldoor_t)(unsafe.Pointer(door)).Fspeed = (1) << (FRACBITS) * (2)
 	(*vldoor_t)(unsafe.Pointer(door)).Ftopheight = P_FindLowestCeilingSurrounding(tls, sec)
-	*(*fixed_t)(unsafe.Pointer(door + 40)) -= libc.Int32FromInt32(4) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+	*(*fixed_t)(unsafe.Pointer(door + 40)) -= (4) * ((1) << (FRACBITS))
 	(*vldoor_t)(unsafe.Pointer(door)).Ftopwait = int32(VDOORWAIT)
-	(*vldoor_t)(unsafe.Pointer(door)).Ftopcountdown = libc.Int32FromInt32(5) * libc.Int32FromInt32(60) * libc.Int32FromInt32(TICRATE)
+	(*vldoor_t)(unsafe.Pointer(door)).Ftopcountdown = (5) * (60) * (TICRATE)
 }
 
 const ANG1801 = 2147483648
@@ -25315,7 +25317,7 @@ func P_RecursiveSound(tls *libc.TLS, sec uintptr, soundblocks int32) {
 			break
 		}
 		check = *(*uintptr)(unsafe.Pointer((*sector_t)(unsafe.Pointer(sec)).Flines + uintptr(i)*8))
-		if !(int32((*line_t)(unsafe.Pointer(check)).Fflags)&libc.Int32FromInt32(ML_TWOSIDED) != 0) {
+		if !(int32((*line_t)(unsafe.Pointer(check)).Fflags)&(ML_TWOSIDED) != 0) {
 			goto _1
 		}
 		P_LineOpening(tls, check)
@@ -25367,7 +25369,7 @@ func P_CheckMeleeRange(tls *libc.TLS, actor uintptr) (r boolean) {
 	}
 	pl = (*mobj_t)(unsafe.Pointer(actor)).Ftarget
 	dist = P_AproxDistance(tls, (*mobj_t)(unsafe.Pointer(pl)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(pl)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fy)
-	if dist >= libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))-libc.Int32FromInt32(20)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))+(*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(pl)).Finfo)).Fradius {
+	if dist >= (64)*((1)<<(FRACBITS))-(20)*((1)<<(FRACBITS))+(*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(pl)).Finfo)).Fradius {
 		return 0
 	}
 	if !(P_CheckSight(tls, actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
@@ -25396,13 +25398,13 @@ func P_CheckMissileRange(tls *libc.TLS, actor uintptr) (r boolean) {
 		return 0
 	} // do not attack yet
 	// OPTIMIZE: get this from a global checksight
-	dist = P_AproxDistance(tls, (*mobj_t)(unsafe.Pointer(actor)).Fx-(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy-(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy) - libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+	dist = P_AproxDistance(tls, (*mobj_t)(unsafe.Pointer(actor)).Fx-(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy-(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy) - (64)*((1)<<(FRACBITS))
 	if !((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fmeleestate != 0) {
-		dist -= libc.Int32FromInt32(128) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+		dist -= (128) * ((1) << (FRACBITS))
 	} // no melee attack, so fire more
 	dist >>= int32(16)
 	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_VILE) {
-		if dist > libc.Int32FromInt32(14)*libc.Int32FromInt32(64) {
+		if dist > (14)*(64) {
 			return 0
 		} // too far away
 	}
@@ -25429,10 +25431,10 @@ func P_CheckMissileRange(tls *libc.TLS, actor uintptr) (r boolean) {
 
 func init() {
 	xspeed = [8]fixed_t{
-		0: libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS),
+		0: (1) << (FRACBITS),
 		1: int32(47000),
 		3: -int32(47000),
-		4: -(libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+		4: -((1) << (FRACBITS)),
 		5: -int32(47000),
 		7: int32(47000),
 	}
@@ -25441,10 +25443,10 @@ func init() {
 func init() {
 	yspeed = [8]fixed_t{
 		1: int32(47000),
-		2: libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS),
+		2: (1) << (FRACBITS),
 		3: int32(47000),
 		5: -int32(47000),
-		6: -(libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)),
+		6: -((1) << (FRACBITS)),
 		7: -int32(47000),
 	}
 }
@@ -25468,9 +25470,9 @@ func P_Move(tls *libc.TLS, actor uintptr) (r boolean) {
 		if (*mobj_t)(unsafe.Pointer(actor)).Fflags&int32(MF_FLOAT) != 0 && floatok != 0 {
 			// must adjust height
 			if (*mobj_t)(unsafe.Pointer(actor)).Fz < tmfloorz {
-				*(*fixed_t)(unsafe.Pointer(actor + 32)) += libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(4)
+				*(*fixed_t)(unsafe.Pointer(actor + 32)) += (1) << (FRACBITS) * (4)
 			} else {
-				*(*fixed_t)(unsafe.Pointer(actor + 32)) -= libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(4)
+				*(*fixed_t)(unsafe.Pointer(actor + 32)) -= (1) << (FRACBITS) * (4)
 			}
 			*(*int32)(unsafe.Pointer(actor + 160)) |= int32(MF_INFLOAT)
 			return 1
@@ -25537,19 +25539,19 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 	turnaround = opposite[olddir]
 	deltax = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - (*mobj_t)(unsafe.Pointer(actor)).Fx
 	deltay = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - (*mobj_t)(unsafe.Pointer(actor)).Fy
-	if deltax > libc.Int32FromInt32(10)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+	if deltax > (10)*((1)<<(FRACBITS)) {
 		d[int32(1)] = int32(DI_EAST)
 	} else {
-		if deltax < -libc.Int32FromInt32(10)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+		if deltax < -(10)*((1)<<(FRACBITS)) {
 			d[int32(1)] = int32(DI_WEST)
 		} else {
 			d[int32(1)] = int32(DI_NODIR)
 		}
 	}
-	if deltay < -libc.Int32FromInt32(10)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+	if deltay < -(10)*((1)<<(FRACBITS)) {
 		d[int32(2)] = int32(DI_SOUTH)
 	} else {
-		if deltay > libc.Int32FromInt32(10)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+		if deltay > (10)*((1)<<(FRACBITS)) {
 			d[int32(2)] = int32(DI_NORTH)
 		} else {
 			d[int32(2)] = int32(DI_NODIR)
@@ -25616,7 +25618,7 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 	} else {
 		tdir = int32(DI_SOUTHEAST)
 		for {
-			if !(tdir != int32(DI_EAST)-libc.Int32FromInt32(1)) {
+			if !(tdir != int32(DI_EAST)-(1)) {
 				break
 			}
 			if tdir != turnaround {
@@ -25676,7 +25678,7 @@ func P_LookForPlayers(tls *libc.TLS, actor uintptr, allaround boolean) (r boolea
 			if an > uint32(ANG903) && an < uint32(ANG2703) {
 				dist = P_AproxDistance(tls, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fy)
 				// if real close, react anyway
-				if dist > libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+				if dist > (64)*((1)<<(FRACBITS)) {
 					goto _1
 				} // behind back
 			}
@@ -25807,13 +25809,13 @@ func A_Chase(tls *libc.TLS, actor uintptr) {
 	}
 	// turn towards movement direction if not there yet
 	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir < int32(8) {
-		*(*angle_t)(unsafe.Pointer(actor + 56)) &= libc.Uint32FromInt32(libc.Int32FromInt32(7) << libc.Int32FromInt32(29))
-		delta = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(actor)).Fangle - libc.Uint32FromInt32((*mobj_t)(unsafe.Pointer(actor)).Fmovedir<<libc.Int32FromInt32(29)))
+		*(*angle_t)(unsafe.Pointer(actor + 56)) &= (7 << 29)
+		delta = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(actor)).Fangle - libc.Uint32FromInt32((*mobj_t)(unsafe.Pointer(actor)).Fmovedir<<(29)))
 		if delta > 0 {
-			*(*angle_t)(unsafe.Pointer(actor + 56)) -= libc.Uint32FromInt32(libc.Int32FromInt32(ANG903) / libc.Int32FromInt32(2))
+			*(*angle_t)(unsafe.Pointer(actor + 56)) -= libc.Uint32FromInt32((ANG903) / (2))
 		} else {
 			if delta < 0 {
-				*(*angle_t)(unsafe.Pointer(actor + 56)) += libc.Uint32FromInt32(libc.Int32FromInt32(ANG903) / libc.Int32FromInt32(2))
+				*(*angle_t)(unsafe.Pointer(actor + 56)) += libc.Uint32FromInt32((ANG903) / (2))
 			}
 		}
 	}
@@ -25904,11 +25906,11 @@ func A_PosAttack(tls *libc.TLS, actor uintptr) {
 	}
 	A_FaceTarget(tls, actor)
 	angle = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(actor)).Fangle)
-	slope = P_AimLineAttack(tls, actor, libc.Uint32FromInt32(angle), libc.Int32FromInt32(32)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+	slope = P_AimLineAttack(tls, actor, libc.Uint32FromInt32(angle), (32)*(64)*((1)<<(FRACBITS)))
 	S_StartSound(tls, actor, int32(sfx_pistol))
 	angle += (P_Random(tls) - P_Random(tls)) << int32(20)
 	damage = (P_Random(tls)%int32(5) + int32(1)) * int32(3)
-	P_LineAttack(tls, actor, libc.Uint32FromInt32(angle), libc.Int32FromInt32(32)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), slope, damage)
+	P_LineAttack(tls, actor, libc.Uint32FromInt32(angle), (32)*(64)*((1)<<(FRACBITS)), slope, damage)
 }
 
 func A_SPosAttack(tls *libc.TLS, actor uintptr) {
@@ -25919,7 +25921,7 @@ func A_SPosAttack(tls *libc.TLS, actor uintptr) {
 	S_StartSound(tls, actor, int32(sfx_shotgn))
 	A_FaceTarget(tls, actor)
 	bangle = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(actor)).Fangle)
-	slope = P_AimLineAttack(tls, actor, libc.Uint32FromInt32(bangle), libc.Int32FromInt32(32)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+	slope = P_AimLineAttack(tls, actor, libc.Uint32FromInt32(bangle), (32)*(64)*((1)<<(FRACBITS)))
 	i = 0
 	for {
 		if !(i < int32(3)) {
@@ -25927,7 +25929,7 @@ func A_SPosAttack(tls *libc.TLS, actor uintptr) {
 		}
 		angle = bangle + (P_Random(tls)-P_Random(tls))<<int32(20)
 		damage = (P_Random(tls)%int32(5) + int32(1)) * int32(3)
-		P_LineAttack(tls, actor, libc.Uint32FromInt32(angle), libc.Int32FromInt32(32)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), slope, damage)
+		P_LineAttack(tls, actor, libc.Uint32FromInt32(angle), (32)*(64)*((1)<<(FRACBITS)), slope, damage)
 		goto _1
 	_1:
 		;
@@ -25943,10 +25945,10 @@ func A_CPosAttack(tls *libc.TLS, actor uintptr) {
 	S_StartSound(tls, actor, int32(sfx_shotgn))
 	A_FaceTarget(tls, actor)
 	bangle = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(actor)).Fangle)
-	slope = P_AimLineAttack(tls, actor, libc.Uint32FromInt32(bangle), libc.Int32FromInt32(32)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+	slope = P_AimLineAttack(tls, actor, libc.Uint32FromInt32(bangle), (32)*(64)*((1)<<(FRACBITS)))
 	angle = bangle + (P_Random(tls)-P_Random(tls))<<int32(20)
 	damage = (P_Random(tls)%int32(5) + int32(1)) * int32(3)
-	P_LineAttack(tls, actor, libc.Uint32FromInt32(angle), libc.Int32FromInt32(32)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), slope, damage)
+	P_LineAttack(tls, actor, libc.Uint32FromInt32(angle), (32)*(64)*((1)<<(FRACBITS)), slope, damage)
 }
 
 func A_CPosRefire(tls *libc.TLS, actor uintptr) {
@@ -26062,9 +26064,9 @@ func A_SkelMissile(tls *libc.TLS, actor uintptr) {
 		return
 	}
 	A_FaceTarget(tls, actor)
-	*(*fixed_t)(unsafe.Pointer(actor + 32)) += libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) // so missile spawns higher
+	*(*fixed_t)(unsafe.Pointer(actor + 32)) += (16) * ((1) << (FRACBITS)) // so missile spawns higher
 	mo = P_SpawnMissile(tls, actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, int32(MT_TRACER))
-	*(*fixed_t)(unsafe.Pointer(actor + 32)) -= libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) // back to normal
+	*(*fixed_t)(unsafe.Pointer(actor + 32)) -= (16) * ((1) << (FRACBITS)) // back to normal
 	*(*fixed_t)(unsafe.Pointer(mo + 24)) += (*mobj_t)(unsafe.Pointer(mo)).Fmomx
 	*(*fixed_t)(unsafe.Pointer(mo + 28)) += (*mobj_t)(unsafe.Pointer(mo)).Fmomy
 	(*mobj_t)(unsafe.Pointer(mo)).Ftracer = (*mobj_t)(unsafe.Pointer(actor)).Ftarget
@@ -26084,7 +26086,7 @@ func A_Tracer(tls *libc.TLS, actor uintptr) {
 	// spawn a puff of smoke behind the rocket
 	P_SpawnPuff(tls, (*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy, (*mobj_t)(unsafe.Pointer(actor)).Fz)
 	th = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fmomx, (*mobj_t)(unsafe.Pointer(actor)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fmomy, (*mobj_t)(unsafe.Pointer(actor)).Fz, int32(MT_SMOKE))
-	(*mobj_t)(unsafe.Pointer(th)).Fmomz = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+	(*mobj_t)(unsafe.Pointer(th)).Fmomz = (1) << (FRACBITS)
 	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random(tls) & int32(3)
 	if (*mobj_t)(unsafe.Pointer(th)).Ftics < int32(1) {
 		(*mobj_t)(unsafe.Pointer(th)).Ftics = int32(1)
@@ -26118,11 +26120,11 @@ func A_Tracer(tls *libc.TLS, actor uintptr) {
 	if dist < int32(1) {
 		dist = int32(1)
 	}
-	slope = ((*mobj_t)(unsafe.Pointer(dest)).Fz + libc.Int32FromInt32(40)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) - (*mobj_t)(unsafe.Pointer(actor)).Fz) / dist
+	slope = ((*mobj_t)(unsafe.Pointer(dest)).Fz + (40)*((1)<<(FRACBITS)) - (*mobj_t)(unsafe.Pointer(actor)).Fz) / dist
 	if slope < (*mobj_t)(unsafe.Pointer(actor)).Fmomz {
-		*(*fixed_t)(unsafe.Pointer(actor + 120)) -= libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) / libc.Int32FromInt32(8)
+		*(*fixed_t)(unsafe.Pointer(actor + 120)) -= (1) << (FRACBITS) / (8)
 	} else {
-		*(*fixed_t)(unsafe.Pointer(actor + 120)) += libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) / libc.Int32FromInt32(8)
+		*(*fixed_t)(unsafe.Pointer(actor + 120)) += (1) << (FRACBITS) / (8)
 	}
 }
 
@@ -26165,7 +26167,7 @@ func PIT_VileCheck(tls *libc.TLS, thing uintptr) (r boolean) {
 		return 1
 	} // not actually touching
 	corpsehit = thing
-	v1 = libc.Int32FromInt32(0)
+	v1 = (0)
 	(*mobj_t)(unsafe.Pointer(corpsehit)).Fmomy = v1
 	(*mobj_t)(unsafe.Pointer(corpsehit)).Fmomx = v1
 	*(*fixed_t)(unsafe.Pointer(corpsehit + 108)) <<= int32(2)
@@ -26190,10 +26192,10 @@ func A_VileChase(tls *libc.TLS, actor uintptr) {
 		// check for corpses to raise
 		viletryx = (*mobj_t)(unsafe.Pointer(actor)).Fx + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*xspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
 		viletryy = (*mobj_t)(unsafe.Pointer(actor)).Fy + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*yspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
-		xl = (viletryx - bmaporgx - libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(2)) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-		xh = (viletryx - bmaporgx + libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(2)) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-		yl = (viletryy - bmaporgy - libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(2)) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-		yh = (viletryy - bmaporgy + libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(2)) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+		xl = (viletryx - bmaporgx - (32)*((1)<<(FRACBITS))*(2)) >> ((FRACBITS) + (7))
+		xh = (viletryx - bmaporgx + (32)*((1)<<(FRACBITS))*(2)) >> ((FRACBITS) + (7))
+		yl = (viletryy - bmaporgy - (32)*((1)<<(FRACBITS))*(2)) >> ((FRACBITS) + (7))
+		yh = (viletryy - bmaporgy + (32)*((1)<<(FRACBITS))*(2)) >> ((FRACBITS) + (7))
 		bx = xl
 		for {
 			if !(bx <= xh) {
@@ -26271,8 +26273,8 @@ func A_Fire(tls *libc.TLS, actor uintptr) {
 	}
 	an = (*mobj_t)(unsafe.Pointer(dest)).Fangle >> int32(ANGLETOFINESHIFT)
 	P_UnsetThingPosition(tls, actor)
-	(*mobj_t)(unsafe.Pointer(actor)).Fx = (*mobj_t)(unsafe.Pointer(dest)).Fx + FixedMul(tls, libc.Int32FromInt32(24)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(an)*4)))
-	(*mobj_t)(unsafe.Pointer(actor)).Fy = (*mobj_t)(unsafe.Pointer(dest)).Fy + FixedMul(tls, libc.Int32FromInt32(24)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), finesine[an])
+	(*mobj_t)(unsafe.Pointer(actor)).Fx = (*mobj_t)(unsafe.Pointer(dest)).Fx + FixedMul(tls, (24)*((1)<<(FRACBITS)), *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(an)*4)))
+	(*mobj_t)(unsafe.Pointer(actor)).Fy = (*mobj_t)(unsafe.Pointer(dest)).Fy + FixedMul(tls, (24)*((1)<<(FRACBITS)), finesine[an])
 	(*mobj_t)(unsafe.Pointer(actor)).Fz = (*mobj_t)(unsafe.Pointer(dest)).Fz
 	P_SetThingPosition(tls, actor)
 }
@@ -26313,15 +26315,15 @@ func A_VileAttack(tls *libc.TLS, actor uintptr) {
 	}
 	S_StartSound(tls, actor, int32(sfx_barexp))
 	P_DamageMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, int32(20))
-	(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fmomz = libc.Int32FromInt32(1000) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / (*mobjinfo_t)(unsafe.Pointer((*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Finfo)).Fmass
+	(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fmomz = (1000) * ((1) << (FRACBITS)) / (*mobjinfo_t)(unsafe.Pointer((*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Finfo)).Fmass
 	an = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(actor)).Fangle >> int32(ANGLETOFINESHIFT))
 	fire = (*mobj_t)(unsafe.Pointer(actor)).Ftracer
 	if !(fire != 0) {
 		return
 	}
 	// move the fire between the vile and the player
-	(*mobj_t)(unsafe.Pointer(fire)).Fx = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - FixedMul(tls, libc.Int32FromInt32(24)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(an)*4)))
-	(*mobj_t)(unsafe.Pointer(fire)).Fy = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - FixedMul(tls, libc.Int32FromInt32(24)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), finesine[an])
+	(*mobj_t)(unsafe.Pointer(fire)).Fx = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - FixedMul(tls, (24)*((1)<<(FRACBITS)), *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(an)*4)))
+	(*mobj_t)(unsafe.Pointer(fire)).Fy = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - FixedMul(tls, (24)*((1)<<(FRACBITS)), finesine[an])
 	P_RadiusAttack(tls, fire, actor, int32(70))
 }
 
@@ -26342,11 +26344,11 @@ func A_FatAttack1(tls *libc.TLS, actor uintptr) {
 	var mo, target uintptr
 	A_FaceTarget(tls, actor)
 	// Change direction  to ...
-	*(*angle_t)(unsafe.Pointer(actor + 56)) += libc.Uint32FromInt32(libc.Int32FromInt32(ANG903) / libc.Int32FromInt32(8))
+	*(*angle_t)(unsafe.Pointer(actor + 56)) += libc.Uint32FromInt32((ANG903) / (8))
 	target = P_SubstNullMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget)
 	P_SpawnMissile(tls, actor, target, int32(MT_FATSHOT))
 	mo = P_SpawnMissile(tls, actor, target, int32(MT_FATSHOT))
-	*(*angle_t)(unsafe.Pointer(mo + 56)) += libc.Uint32FromInt32(libc.Int32FromInt32(ANG903) / libc.Int32FromInt32(8))
+	*(*angle_t)(unsafe.Pointer(mo + 56)) += libc.Uint32FromInt32((ANG903) / (8))
 	an = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(mo)).Fangle >> int32(ANGLETOFINESHIFT))
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(an)*4)))
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
@@ -26357,11 +26359,11 @@ func A_FatAttack2(tls *libc.TLS, actor uintptr) {
 	var mo, target uintptr
 	A_FaceTarget(tls, actor)
 	// Now here choose opposite deviation.
-	*(*angle_t)(unsafe.Pointer(actor + 56)) -= libc.Uint32FromInt32(libc.Int32FromInt32(ANG903) / libc.Int32FromInt32(8))
+	*(*angle_t)(unsafe.Pointer(actor + 56)) -= libc.Uint32FromInt32((ANG903) / (8))
 	target = P_SubstNullMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget)
 	P_SpawnMissile(tls, actor, target, int32(MT_FATSHOT))
 	mo = P_SpawnMissile(tls, actor, target, int32(MT_FATSHOT))
-	*(*angle_t)(unsafe.Pointer(mo + 56)) -= libc.Uint32FromInt32(libc.Int32FromInt32(ANG903) / libc.Int32FromInt32(8) * libc.Int32FromInt32(2))
+	*(*angle_t)(unsafe.Pointer(mo + 56)) -= libc.Uint32FromInt32((ANG903) / (8) * (2))
 	an = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(mo)).Fangle >> int32(ANGLETOFINESHIFT))
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(an)*4)))
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
@@ -26373,12 +26375,12 @@ func A_FatAttack3(tls *libc.TLS, actor uintptr) {
 	A_FaceTarget(tls, actor)
 	target = P_SubstNullMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget)
 	mo = P_SpawnMissile(tls, actor, target, int32(MT_FATSHOT))
-	*(*angle_t)(unsafe.Pointer(mo + 56)) -= libc.Uint32FromInt32(libc.Int32FromInt32(ANG903) / libc.Int32FromInt32(8) / libc.Int32FromInt32(2))
+	*(*angle_t)(unsafe.Pointer(mo + 56)) -= libc.Uint32FromInt32((ANG903) / (8) / (2))
 	an = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(mo)).Fangle >> int32(ANGLETOFINESHIFT))
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(an)*4)))
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
 	mo = P_SpawnMissile(tls, actor, target, int32(MT_FATSHOT))
-	*(*angle_t)(unsafe.Pointer(mo + 56)) += libc.Uint32FromInt32(libc.Int32FromInt32(ANG903) / libc.Int32FromInt32(8) / libc.Int32FromInt32(2))
+	*(*angle_t)(unsafe.Pointer(mo + 56)) += libc.Uint32FromInt32((ANG903) / (8) / (2))
 	an = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(mo)).Fangle >> int32(ANGLETOFINESHIFT))
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(an)*4)))
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul(tls, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
@@ -26401,14 +26403,14 @@ func A_SkullAttack(tls *libc.TLS, actor uintptr) {
 	S_StartSound(tls, actor, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fattacksound)
 	A_FaceTarget(tls, actor)
 	an = (*mobj_t)(unsafe.Pointer(actor)).Fangle >> int32(ANGLETOFINESHIFT)
-	(*mobj_t)(unsafe.Pointer(actor)).Fmomx = FixedMul(tls, libc.Int32FromInt32(20)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(an)*4)))
-	(*mobj_t)(unsafe.Pointer(actor)).Fmomy = FixedMul(tls, libc.Int32FromInt32(20)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), finesine[an])
+	(*mobj_t)(unsafe.Pointer(actor)).Fmomx = FixedMul(tls, (20)*((1)<<(FRACBITS)), *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(an)*4)))
+	(*mobj_t)(unsafe.Pointer(actor)).Fmomy = FixedMul(tls, (20)*((1)<<(FRACBITS)), finesine[an])
 	dist = P_AproxDistance(tls, (*mobj_t)(unsafe.Pointer(dest)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fy)
-	dist = dist / (libc.Int32FromInt32(20) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)))
+	dist = dist / ((20) * ((1) << (FRACBITS)))
 	if dist < int32(1) {
 		dist = int32(1)
 	}
-	(*mobj_t)(unsafe.Pointer(actor)).Fmomz = ((*mobj_t)(unsafe.Pointer(dest)).Fz + (*mobj_t)(unsafe.Pointer(dest)).Fheight>>libc.Int32FromInt32(1) - (*mobj_t)(unsafe.Pointer(actor)).Fz) / dist
+	(*mobj_t)(unsafe.Pointer(actor)).Fmomz = ((*mobj_t)(unsafe.Pointer(dest)).Fz + (*mobj_t)(unsafe.Pointer(dest)).Fheight>>(1) - (*mobj_t)(unsafe.Pointer(actor)).Fz) / dist
 }
 
 // C documentation
@@ -26438,10 +26440,10 @@ func A_PainShootSkull(tls *libc.TLS, actor uintptr, angle angle_t) {
 	}
 	// okay, there's playe for another one
 	an = angle >> int32(ANGLETOFINESHIFT)
-	prestep = libc.Int32FromInt32(4)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) + int32(3)*((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fradius+mobjinfo[int32(MT_SKULL)].Fradius)/int32(2)
+	prestep = (4)*((1)<<(FRACBITS)) + int32(3)*((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fradius+mobjinfo[int32(MT_SKULL)].Fradius)/int32(2)
 	x = (*mobj_t)(unsafe.Pointer(actor)).Fx + FixedMul(tls, prestep, *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(an)*4)))
 	y = (*mobj_t)(unsafe.Pointer(actor)).Fy + FixedMul(tls, prestep, finesine[an])
-	z = (*mobj_t)(unsafe.Pointer(actor)).Fz + libc.Int32FromInt32(8)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+	z = (*mobj_t)(unsafe.Pointer(actor)).Fz + (8)*((1)<<(FRACBITS))
 	newmobj = P_SpawnMobj(tls, x, y, z, int32(MT_SKULL))
 	// Check for movements.
 	if !(P_TryMove(tls, newmobj, (*mobj_t)(unsafe.Pointer(newmobj)).Fx, (*mobj_t)(unsafe.Pointer(newmobj)).Fy) != 0) {
@@ -26724,13 +26726,13 @@ func A_BrainPain(tls *libc.TLS, mo uintptr) {
 func A_BrainScream(tls *libc.TLS, mo uintptr) {
 	var th uintptr
 	var x, y, z int32
-	x = (*mobj_t)(unsafe.Pointer(mo)).Fx - libc.Int32FromInt32(196)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+	x = (*mobj_t)(unsafe.Pointer(mo)).Fx - (196)*((1)<<(FRACBITS))
 	for {
-		if !(x < (*mobj_t)(unsafe.Pointer(mo)).Fx+libc.Int32FromInt32(320)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) {
+		if !(x < (*mobj_t)(unsafe.Pointer(mo)).Fx+(320)*((1)<<(FRACBITS))) {
 			break
 		}
-		y = (*mobj_t)(unsafe.Pointer(mo)).Fy - libc.Int32FromInt32(320)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
-		z = int32(128) + P_Random(tls)*int32(2)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+		y = (*mobj_t)(unsafe.Pointer(mo)).Fy - (320)*((1)<<(FRACBITS))
+		z = int32(128) + P_Random(tls)*int32(2)*((1)<<(FRACBITS))
 		th = P_SpawnMobj(tls, x, y, z, int32(MT_ROCKET))
 		(*mobj_t)(unsafe.Pointer(th)).Fmomz = P_Random(tls) * int32(512)
 		P_SetMobjState(tls, th, int32(S_BRAINEXPLODE1))
@@ -26741,7 +26743,7 @@ func A_BrainScream(tls *libc.TLS, mo uintptr) {
 		goto _1
 	_1:
 		;
-		x += libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(8)
+		x += (1) << (FRACBITS) * (8)
 	}
 	S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_bosdth))
 }
@@ -26751,7 +26753,7 @@ func A_BrainExplode(tls *libc.TLS, mo uintptr) {
 	var x, y, z int32
 	x = (*mobj_t)(unsafe.Pointer(mo)).Fx + (P_Random(tls)-P_Random(tls))*int32(2048)
 	y = (*mobj_t)(unsafe.Pointer(mo)).Fy
-	z = int32(128) + P_Random(tls)*int32(2)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+	z = int32(128) + P_Random(tls)*int32(2)*((1)<<(FRACBITS))
 	th = P_SpawnMobj(tls, x, y, z, int32(MT_ROCKET))
 	(*mobj_t)(unsafe.Pointer(th)).Fmomz = P_Random(tls) * int32(512)
 	P_SetMobjState(tls, th, int32(S_BRAINEXPLODE1))
@@ -27040,7 +27042,7 @@ func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, cru
 func T_MoveFloor(tls *libc.TLS, floor uintptr) {
 	var res result_e
 	res = T_MovePlane(tls, (*floormove_t)(unsafe.Pointer(floor)).Fsector, (*floormove_t)(unsafe.Pointer(floor)).Fspeed, (*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight, (*floormove_t)(unsafe.Pointer(floor)).Fcrush, 0, (*floormove_t)(unsafe.Pointer(floor)).Fdirection)
-	if !(leveltime&libc.Int32FromInt32(7) != 0) {
+	if !(leveltime&(7) != 0) {
 		S_StartSound(tls, (*floormove_t)(unsafe.Pointer(floor)).Fsector+48, int32(sfx_stnmov))
 	}
 	if res == int32(pastdest) {
@@ -27104,20 +27106,20 @@ func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 		case int32(lowerFloor):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = -int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS)
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = P_FindHighestFloorSurrounding(tls, sec)
 		case int32(lowerFloorToLowest):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = -int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS)
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = P_FindLowestFloorSurrounding(tls, sec)
 		case int32(turboLower):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = -int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(4)
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS) * (4)
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = P_FindHighestFloorSurrounding(tls, sec)
 			if (*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight != (*sector_t)(unsafe.Pointer(sec)).Ffloorheight {
-				*(*fixed_t)(unsafe.Pointer(floor + 52)) += libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+				*(*fixed_t)(unsafe.Pointer(floor + 52)) += (8) * ((1) << (FRACBITS))
 			}
 		case int32(raiseFloorCrush):
 			(*floormove_t)(unsafe.Pointer(floor)).Fcrush = 1
@@ -27125,44 +27127,44 @@ func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 		case int32(raiseFloor):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS)
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = P_FindLowestCeilingSurrounding(tls, sec)
 			if (*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight > (*sector_t)(unsafe.Pointer(sec)).Fceilingheight {
 				(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = (*sector_t)(unsafe.Pointer(sec)).Fceilingheight
 			}
-			*(*fixed_t)(unsafe.Pointer(floor + 52)) -= libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) * libc.BoolInt32(floortype == int32(raiseFloorCrush))
+			*(*fixed_t)(unsafe.Pointer(floor + 52)) -= (8) * ((1) << (FRACBITS)) * libc.BoolInt32(floortype == int32(raiseFloorCrush))
 		case int32(raiseFloorTurbo):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(4)
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS) * (4)
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = P_FindNextHighestFloor(tls, sec, (*sector_t)(unsafe.Pointer(sec)).Ffloorheight)
 		case int32(raiseFloorToNearest):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS)
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = P_FindNextHighestFloor(tls, sec, (*sector_t)(unsafe.Pointer(sec)).Ffloorheight)
 		case int32(raiseFloor24):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
-			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + libc.Int32FromInt32(24)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS)
+			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + (24)*((1)<<(FRACBITS))
 		case int32(raiseFloor512):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
-			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + libc.Int32FromInt32(512)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS)
+			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + (512)*((1)<<(FRACBITS))
 		case int32(raiseFloor24AndChange):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
-			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + libc.Int32FromInt32(24)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS)
+			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + (24)*((1)<<(FRACBITS))
 			(*sector_t)(unsafe.Pointer(sec)).Ffloorpic = (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(line)).Ffrontsector)).Ffloorpic
 			(*sector_t)(unsafe.Pointer(sec)).Fspecial = (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(line)).Ffrontsector)).Fspecial
 		case int32(raiseToTexture):
 			minsize = int32(INT_MAX9)
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS)
 			i = 0
 			for {
 				if !(i < (*sector_t)(unsafe.Pointer(sec)).Flinecount) {
@@ -27191,7 +27193,7 @@ func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 		case int32(lowerAndChange):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = -int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS)
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = P_FindLowestFloorSurrounding(tls, sec)
 			(*floormove_t)(unsafe.Pointer(floor)).Ftexture = (*sector_t)(unsafe.Pointer(sec)).Ffloorpic
 			i = 0
@@ -27263,11 +27265,11 @@ func EV_BuildStairs(tls *libc.TLS, line uintptr, type1 stair_e) (r int32) {
 		(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
 		switch type1 {
 		case int32(build8):
-			speed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) / libc.Int32FromInt32(4)
-			stairsize = libc.Int32FromInt32(8) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+			speed = (1) << (FRACBITS) / (4)
+			stairsize = (8) * ((1) << (FRACBITS))
 		case int32(turbo16):
-			speed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(4)
-			stairsize = libc.Int32FromInt32(16) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+			speed = (1) << (FRACBITS) * (4)
+			stairsize = (16) * ((1) << (FRACBITS))
 			break
 		}
 		(*floormove_t)(unsafe.Pointer(floor)).Fspeed = speed
@@ -27284,7 +27286,7 @@ func EV_BuildStairs(tls *libc.TLS, line uintptr, type1 stair_e) (r int32) {
 				if !(i < (*sector_t)(unsafe.Pointer(sec)).Flinecount) {
 					break
 				}
-				if !(int32((*line_s)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*sector_t)(unsafe.Pointer(sec)).Flines + uintptr(i)*8)))).Fflags)&libc.Int32FromInt32(ML_TWOSIDED) != 0) {
+				if !(int32((*line_s)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*sector_t)(unsafe.Pointer(sec)).Flines + uintptr(i)*8)))).Fflags)&(ML_TWOSIDED) != 0) {
 					goto _2
 				}
 				tsec = (*line_s)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*sector_t)(unsafe.Pointer(sec)).Flines + uintptr(i)*8)))).Ffrontsector
@@ -27566,7 +27568,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 	var i, sound int32
 	var player uintptr
 	delta = (*mobj_t)(unsafe.Pointer(special)).Fz - (*mobj_t)(unsafe.Pointer(toucher)).Fz
-	if delta > (*mobj_t)(unsafe.Pointer(toucher)).Fheight || delta < -libc.Int32FromInt32(8)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+	if delta > (*mobj_t)(unsafe.Pointer(toucher)).Fheight || delta < -(8)*((1)<<(FRACBITS)) {
 		// out of reach
 		return
 	}
@@ -27952,7 +27954,7 @@ func P_KillMobj(tls *libc.TLS, source uintptr, target uintptr) {
 	default:
 		return
 	}
-	mo = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(target)).Fx, (*mobj_t)(unsafe.Pointer(target)).Fy, -libc.Int32FromInt32(1)-libc.Int32FromInt32(0x7fffffff), item)
+	mo = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(target)).Fx, (*mobj_t)(unsafe.Pointer(target)).Fy, -(1)-(0x7fffffff), item)
 	*(*int32)(unsafe.Pointer(mo + 160)) |= int32(MF_DROPPED) // special versions of items
 }
 
@@ -27981,7 +27983,7 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 		return
 	}
 	if (*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_SKULLFLY) != 0 {
-		v2 = libc.Int32FromInt32(0)
+		v2 = (0)
 		(*mobj_t)(unsafe.Pointer(target)).Fmomz = v2
 		v1 = v2
 		(*mobj_t)(unsafe.Pointer(target)).Fmomy = v1
@@ -27996,9 +27998,9 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 	// thus kick away unless using the chainsaw.
 	if inflictor != 0 && !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_NOCLIP) != 0) && (!(source != 0) || !((*mobj_t)(unsafe.Pointer(source)).Fplayer != 0) || (*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer)).Freadyweapon != int32(wp_chainsaw)) {
 		ang = R_PointToAngle2(tls, (*mobj_t)(unsafe.Pointer(inflictor)).Fx, (*mobj_t)(unsafe.Pointer(inflictor)).Fy, (*mobj_t)(unsafe.Pointer(target)).Fx, (*mobj_t)(unsafe.Pointer(target)).Fy)
-		thrust = damage * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) >> libc.Int32FromInt32(3)) * int32(100) / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fmass
+		thrust = damage * ((1) << (FRACBITS) >> (3)) * int32(100) / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fmass
 		// make fall forwards sometimes
-		if damage < int32(40) && damage > (*mobj_t)(unsafe.Pointer(target)).Fhealth && (*mobj_t)(unsafe.Pointer(target)).Fz-(*mobj_t)(unsafe.Pointer(inflictor)).Fz > libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) && P_Random(tls)&int32(1) != 0 {
+		if damage < int32(40) && damage > (*mobj_t)(unsafe.Pointer(target)).Fhealth && (*mobj_t)(unsafe.Pointer(target)).Fz-(*mobj_t)(unsafe.Pointer(inflictor)).Fz > (64)*((1)<<(FRACBITS)) && P_Random(tls)&int32(1) != 0 {
 			ang += uint32(ANG1803)
 			thrust *= int32(4)
 		}
@@ -28368,19 +28370,19 @@ func T_Glow(tls *libc.TLS, g uintptr) {
 	case -int32(1):
 		// DOWN
 		p1 = (*glow_t)(unsafe.Pointer(g)).Fsector + 12
-		*(*int16)(unsafe.Pointer(p1)) = int16(int32(*(*int16)(unsafe.Pointer(p1))) - libc.Int32FromInt32(GLOWSPEED))
+		*(*int16)(unsafe.Pointer(p1)) = int16(int32(*(*int16)(unsafe.Pointer(p1))) - (GLOWSPEED))
 		if int32((*sector_t)(unsafe.Pointer((*glow_t)(unsafe.Pointer(g)).Fsector)).Flightlevel) <= (*glow_t)(unsafe.Pointer(g)).Fminlight {
 			p2 = (*glow_t)(unsafe.Pointer(g)).Fsector + 12
-			*(*int16)(unsafe.Pointer(p2)) = int16(int32(*(*int16)(unsafe.Pointer(p2))) + libc.Int32FromInt32(GLOWSPEED))
+			*(*int16)(unsafe.Pointer(p2)) = int16(int32(*(*int16)(unsafe.Pointer(p2))) + (GLOWSPEED))
 			(*glow_t)(unsafe.Pointer(g)).Fdirection = int32(1)
 		}
 	case int32(1):
 		// UP
 		p3 = (*glow_t)(unsafe.Pointer(g)).Fsector + 12
-		*(*int16)(unsafe.Pointer(p3)) = int16(int32(*(*int16)(unsafe.Pointer(p3))) + libc.Int32FromInt32(GLOWSPEED))
+		*(*int16)(unsafe.Pointer(p3)) = int16(int32(*(*int16)(unsafe.Pointer(p3))) + (GLOWSPEED))
 		if int32((*sector_t)(unsafe.Pointer((*glow_t)(unsafe.Pointer(g)).Fsector)).Flightlevel) >= (*glow_t)(unsafe.Pointer(g)).Fmaxlight {
 			p4 = (*glow_t)(unsafe.Pointer(g)).Fsector + 12
-			*(*int16)(unsafe.Pointer(p4)) = int16(int32(*(*int16)(unsafe.Pointer(p4))) - libc.Int32FromInt32(GLOWSPEED))
+			*(*int16)(unsafe.Pointer(p4)) = int16(int32(*(*int16)(unsafe.Pointer(p4))) - (GLOWSPEED))
 			(*glow_t)(unsafe.Pointer(g)).Fdirection = -int32(1)
 		}
 		break
@@ -28464,10 +28466,10 @@ func P_TeleportMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boole
 	validcount++
 	numspechit = 0
 	// stomp on any things contacted
-	xl = (tmbbox[int32(BOXLEFT)] - bmaporgx - libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	xh = (tmbbox[int32(BOXRIGHT)] - bmaporgx + libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	yl = (tmbbox[int32(BOXBOTTOM)] - bmaporgy - libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	yh = (tmbbox[int32(BOXTOP)] - bmaporgy + libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+	xl = (tmbbox[int32(BOXLEFT)] - bmaporgx - (32)*((1)<<(FRACBITS))) >> ((FRACBITS) + (7))
+	xh = (tmbbox[int32(BOXRIGHT)] - bmaporgx + (32)*((1)<<(FRACBITS))) >> ((FRACBITS) + (7))
+	yl = (tmbbox[int32(BOXBOTTOM)] - bmaporgy - (32)*((1)<<(FRACBITS))) >> ((FRACBITS) + (7))
+	yh = (tmbbox[int32(BOXTOP)] - bmaporgy + (32)*((1)<<(FRACBITS))) >> ((FRACBITS) + (7))
 	bx = xl
 	for {
 		if !(bx <= xh) {
@@ -28586,7 +28588,7 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 		damage = (P_Random(tls)%int32(8) + int32(1)) * (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Finfo)).Fdamage
 		P_DamageMobj(tls, thing, tmthing, tmthing, damage)
 		*(*int32)(unsafe.Pointer(tmthing + 160)) &= ^int32(MF_SKULLFLY)
-		v2 = libc.Int32FromInt32(0)
+		v2 = (0)
 		(*mobj_t)(unsafe.Pointer(tmthing)).Fmomz = v2
 		v1 = v2
 		(*mobj_t)(unsafe.Pointer(tmthing)).Fmomy = v1
@@ -28611,7 +28613,7 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 			// sdh: Add deh_species_infighting here.  We can override the
 			// "monsters of the same species cant hurt each other" behavior
 			// through dehacked patches
-			if (*mobj_t)(unsafe.Pointer(thing)).Ftype1 != int32(MT_PLAYER) && libc.Bool(!(libc.Int32FromInt32(DEH_DEFAULT_SPECIES_INFIGHTING) != 0)) {
+			if (*mobj_t)(unsafe.Pointer(thing)).Ftype1 != int32(MT_PLAYER) && libc.Bool(!((DEH_DEFAULT_SPECIES_INFIGHTING) != 0)) {
 				// Explode, but do no damage.
 				// Let players missile other players.
 				return 0
@@ -28701,10 +28703,10 @@ func P_CheckPosition(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r bool
 	// because mobj_ts are grouped into mapblocks
 	// based on their origin point, and can overlap
 	// into adjacent blocks by up to MAXRADIUS units.
-	xl = (tmbbox[int32(BOXLEFT)] - bmaporgx - libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	xh = (tmbbox[int32(BOXRIGHT)] - bmaporgx + libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	yl = (tmbbox[int32(BOXBOTTOM)] - bmaporgy - libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	yh = (tmbbox[int32(BOXTOP)] - bmaporgy + libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+	xl = (tmbbox[int32(BOXLEFT)] - bmaporgx - (32)*((1)<<(FRACBITS))) >> ((FRACBITS) + (7))
+	xh = (tmbbox[int32(BOXRIGHT)] - bmaporgx + (32)*((1)<<(FRACBITS))) >> ((FRACBITS) + (7))
+	yl = (tmbbox[int32(BOXBOTTOM)] - bmaporgy - (32)*((1)<<(FRACBITS))) >> ((FRACBITS) + (7))
+	yh = (tmbbox[int32(BOXTOP)] - bmaporgy + (32)*((1)<<(FRACBITS))) >> ((FRACBITS) + (7))
 	bx = xl
 	for {
 		if !(bx <= xh) {
@@ -28729,10 +28731,10 @@ func P_CheckPosition(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r bool
 		bx++
 	}
 	// check lines
-	xl = (tmbbox[int32(BOXLEFT)] - bmaporgx) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	xh = (tmbbox[int32(BOXRIGHT)] - bmaporgx) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	yl = (tmbbox[int32(BOXBOTTOM)] - bmaporgy) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	yh = (tmbbox[int32(BOXTOP)] - bmaporgy) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+	xl = (tmbbox[int32(BOXLEFT)] - bmaporgx) >> ((FRACBITS) + (7))
+	xh = (tmbbox[int32(BOXRIGHT)] - bmaporgx) >> ((FRACBITS) + (7))
+	yl = (tmbbox[int32(BOXBOTTOM)] - bmaporgy) >> ((FRACBITS) + (7))
+	yh = (tmbbox[int32(BOXTOP)] - bmaporgy) >> ((FRACBITS) + (7))
 	bx = xl
 	for {
 		if !(bx <= xh) {
@@ -28782,10 +28784,10 @@ func P_TryMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_TELEPORT) != 0) && tmceilingz-(*mobj_t)(unsafe.Pointer(thing)).Fz < (*mobj_t)(unsafe.Pointer(thing)).Fheight {
 			return 0
 		} // mobj must lower itself to fit
-		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_TELEPORT) != 0) && tmfloorz-(*mobj_t)(unsafe.Pointer(thing)).Fz > libc.Int32FromInt32(24)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_TELEPORT) != 0) && tmfloorz-(*mobj_t)(unsafe.Pointer(thing)).Fz > (24)*((1)<<(FRACBITS)) {
 			return 0
 		} // too big a step up
-		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&(int32(MF_DROPOFF)|int32(MF_FLOAT)) != 0) && tmfloorz-tmdropoffz > libc.Int32FromInt32(24)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&(int32(MF_DROPOFF)|int32(MF_FLOAT)) != 0) && tmfloorz-tmdropoffz > (24)*((1)<<(FRACBITS)) {
 			return 0
 		} // don't stand over a dropoff
 	}
@@ -28904,7 +28906,7 @@ func PTR_SlideTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 		I_Error(tls, __ccgo_ts(24696), 0)
 	}
 	li = *(*uintptr)(unsafe.Pointer(in + 8))
-	if !(int32((*line_t)(unsafe.Pointer(li)).Fflags)&libc.Int32FromInt32(ML_TWOSIDED) != 0) {
+	if !(int32((*line_t)(unsafe.Pointer(li)).Fflags)&(ML_TWOSIDED) != 0) {
 		if P_PointOnLineSide(tls, (*mobj_t)(unsafe.Pointer(slidemo)).Fx, (*mobj_t)(unsafe.Pointer(slidemo)).Fy, li) != 0 {
 			// don't hit the back side
 			return 1
@@ -28919,7 +28921,7 @@ func PTR_SlideTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	if opentop-(*mobj_t)(unsafe.Pointer(slidemo)).Fz < (*mobj_t)(unsafe.Pointer(slidemo)).Fheight {
 		goto isblocking
 	} // mobj is too high
-	if openbottom-(*mobj_t)(unsafe.Pointer(slidemo)).Fz > libc.Int32FromInt32(24)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+	if openbottom-(*mobj_t)(unsafe.Pointer(slidemo)).Fz > (24)*((1)<<(FRACBITS)) {
 		goto isblocking
 	} // too big a step up
 	// this line doesn't block movement
@@ -28975,12 +28977,12 @@ retry:
 		leady = (*mobj_t)(unsafe.Pointer(mo)).Fy - (*mobj_t)(unsafe.Pointer(mo)).Fradius
 		traily = (*mobj_t)(unsafe.Pointer(mo)).Fy + (*mobj_t)(unsafe.Pointer(mo)).Fradius
 	}
-	bestslidefrac = libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(1)
+	bestslidefrac = (1)<<(FRACBITS) + (1)
 	P_PathTraverse(tls, leadx, leady, leadx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, leady+(*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(PT_ADDLINES), __ccgo_fp(PTR_SlideTraverse))
 	P_PathTraverse(tls, trailx, leady, trailx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, leady+(*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(PT_ADDLINES), __ccgo_fp(PTR_SlideTraverse))
 	P_PathTraverse(tls, leadx, traily, leadx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, traily+(*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(PT_ADDLINES), __ccgo_fp(PTR_SlideTraverse))
 	// move up to the wall
-	if !(bestslidefrac == libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)+libc.Int32FromInt32(1)) {
+	if !(bestslidefrac == (1)<<(FRACBITS)+(1)) {
 		goto _2
 	}
 	// the move most have hit the middle, so stairstep
@@ -29004,9 +29006,9 @@ _2:
 	}
 	// Now continue along the wall.
 	// First calculate remainder.
-	bestslidefrac = libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) - (bestslidefrac + int32(0x800))
-	if bestslidefrac > libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) {
-		bestslidefrac = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+	bestslidefrac = (1)<<(FRACBITS) - (bestslidefrac + int32(0x800))
+	if bestslidefrac > (1)<<(FRACBITS) {
+		bestslidefrac = (1) << (FRACBITS)
 	}
 	if bestslidefrac <= 0 {
 		return
@@ -29032,7 +29034,7 @@ func PTR_AimTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	var li, th uintptr
 	if (*intercept_t)(unsafe.Pointer(in)).Fisaline != 0 {
 		li = *(*uintptr)(unsafe.Pointer(in + 8))
-		if !(int32((*line_t)(unsafe.Pointer(li)).Fflags)&libc.Int32FromInt32(ML_TWOSIDED) != 0) {
+		if !(int32((*line_t)(unsafe.Pointer(li)).Fflags)&(ML_TWOSIDED) != 0) {
 			return 0
 		} // stop
 		// Crosses a two sided line.
@@ -29103,7 +29105,7 @@ func PTR_ShootTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 		if (*line_t)(unsafe.Pointer(li)).Fspecial != 0 {
 			P_ShootSpecialLine(tls, shootthing, li)
 		}
-		if !(int32((*line_t)(unsafe.Pointer(li)).Fflags)&libc.Int32FromInt32(ML_TWOSIDED) != 0) {
+		if !(int32((*line_t)(unsafe.Pointer(li)).Fflags)&(ML_TWOSIDED) != 0) {
 			goto hitline
 		}
 		// crosses a two sided line
@@ -29141,7 +29143,7 @@ func PTR_ShootTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	hitline:
 		;
 		// position a bit closer
-		frac = (*intercept_t)(unsafe.Pointer(in)).Ffrac - FixedDiv(tls, libc.Int32FromInt32(4)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), attackrange)
+		frac = (*intercept_t)(unsafe.Pointer(in)).Ffrac - FixedDiv(tls, (4)*((1)<<(FRACBITS)), attackrange)
 		x = trace.Fx + FixedMul(tls, trace.Fdx, frac)
 		y = trace.Fy + FixedMul(tls, trace.Fdy, frac)
 		z = shootz + FixedMul(tls, aimslope, FixedMul(tls, frac, attackrange))
@@ -29180,7 +29182,7 @@ func PTR_ShootTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	} // shot under the thing
 	// hit thing
 	// position a bit closer
-	frac = (*intercept_t)(unsafe.Pointer(in)).Ffrac - FixedDiv(tls, libc.Int32FromInt32(10)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), attackrange)
+	frac = (*intercept_t)(unsafe.Pointer(in)).Ffrac - FixedDiv(tls, (10)*((1)<<(FRACBITS)), attackrange)
 	x = trace.Fx + FixedMul(tls, trace.Fdx, frac)
 	y = trace.Fy + FixedMul(tls, trace.Fdy, frac)
 	z = shootz + FixedMul(tls, aimslope, FixedMul(tls, frac, attackrange))
@@ -29208,15 +29210,15 @@ func P_AimLineAttack(tls *libc.TLS, t1 uintptr, angle angle_t, distance fixed_t)
 	t1 = P_SubstNullMobj(tls, t1)
 	angle >>= uint32(ANGLETOFINESHIFT)
 	shootthing = t1
-	x2 = (*mobj_t)(unsafe.Pointer(t1)).Fx + distance>>libc.Int32FromInt32(FRACBITS)**(*fixed_t)(unsafe.Pointer(finecosine + uintptr(angle)*4))
-	y2 = (*mobj_t)(unsafe.Pointer(t1)).Fy + distance>>libc.Int32FromInt32(FRACBITS)*finesine[angle]
-	shootz = (*mobj_t)(unsafe.Pointer(t1)).Fz + (*mobj_t)(unsafe.Pointer(t1)).Fheight>>libc.Int32FromInt32(1) + libc.Int32FromInt32(8)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+	x2 = (*mobj_t)(unsafe.Pointer(t1)).Fx + distance>>(FRACBITS)**(*fixed_t)(unsafe.Pointer(finecosine + uintptr(angle)*4))
+	y2 = (*mobj_t)(unsafe.Pointer(t1)).Fy + distance>>(FRACBITS)*finesine[angle]
+	shootz = (*mobj_t)(unsafe.Pointer(t1)).Fz + (*mobj_t)(unsafe.Pointer(t1)).Fheight>>(1) + (8)*((1)<<(FRACBITS))
 	// can't shoot outside view angles
-	topslope = libc.Int32FromInt32(100) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(160)
-	bottomslope = -libc.Int32FromInt32(100) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(160)
+	topslope = (100) * ((1) << (FRACBITS)) / (160)
+	bottomslope = -(100) * ((1) << (FRACBITS)) / (160)
 	attackrange = distance
 	linetarget = libc.UintptrFromInt32(0)
-	P_PathTraverse(tls, (*mobj_t)(unsafe.Pointer(t1)).Fx, (*mobj_t)(unsafe.Pointer(t1)).Fy, x2, y2, libc.Int32FromInt32(PT_ADDLINES)|libc.Int32FromInt32(PT_ADDTHINGS), __ccgo_fp(PTR_AimTraverse))
+	P_PathTraverse(tls, (*mobj_t)(unsafe.Pointer(t1)).Fx, (*mobj_t)(unsafe.Pointer(t1)).Fy, x2, y2, (PT_ADDLINES)|(PT_ADDTHINGS), __ccgo_fp(PTR_AimTraverse))
 	if linetarget != 0 {
 		return aimslope
 	}
@@ -29235,12 +29237,12 @@ func P_LineAttack(tls *libc.TLS, t1 uintptr, angle angle_t, distance fixed_t, sl
 	angle >>= uint32(ANGLETOFINESHIFT)
 	shootthing = t1
 	la_damage = damage
-	x2 = (*mobj_t)(unsafe.Pointer(t1)).Fx + distance>>libc.Int32FromInt32(FRACBITS)**(*fixed_t)(unsafe.Pointer(finecosine + uintptr(angle)*4))
-	y2 = (*mobj_t)(unsafe.Pointer(t1)).Fy + distance>>libc.Int32FromInt32(FRACBITS)*finesine[angle]
-	shootz = (*mobj_t)(unsafe.Pointer(t1)).Fz + (*mobj_t)(unsafe.Pointer(t1)).Fheight>>libc.Int32FromInt32(1) + libc.Int32FromInt32(8)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+	x2 = (*mobj_t)(unsafe.Pointer(t1)).Fx + distance>>(FRACBITS)**(*fixed_t)(unsafe.Pointer(finecosine + uintptr(angle)*4))
+	y2 = (*mobj_t)(unsafe.Pointer(t1)).Fy + distance>>(FRACBITS)*finesine[angle]
+	shootz = (*mobj_t)(unsafe.Pointer(t1)).Fz + (*mobj_t)(unsafe.Pointer(t1)).Fheight>>(1) + (8)*((1)<<(FRACBITS))
 	attackrange = distance
 	aimslope = slope
-	P_PathTraverse(tls, (*mobj_t)(unsafe.Pointer(t1)).Fx, (*mobj_t)(unsafe.Pointer(t1)).Fy, x2, y2, libc.Int32FromInt32(PT_ADDLINES)|libc.Int32FromInt32(PT_ADDTHINGS), __ccgo_fp(PTR_ShootTraverse))
+	P_PathTraverse(tls, (*mobj_t)(unsafe.Pointer(t1)).Fx, (*mobj_t)(unsafe.Pointer(t1)).Fy, x2, y2, (PT_ADDLINES)|(PT_ADDTHINGS), __ccgo_fp(PTR_ShootTraverse))
 }
 
 func PTR_UseTraverse(tls *libc.TLS, in uintptr) (r boolean) {
@@ -29278,8 +29280,8 @@ func P_UseLines(tls *libc.TLS, player uintptr) {
 	angle = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle >> int32(ANGLETOFINESHIFT))
 	x1 = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fx
 	y1 = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fy
-	x2 = x1 + libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))>>libc.Int32FromInt32(FRACBITS)**(*fixed_t)(unsafe.Pointer(finecosine + uintptr(angle)*4))
-	y2 = y1 + libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))>>libc.Int32FromInt32(FRACBITS)*finesine[angle]
+	x2 = x1 + (64)*((1)<<(FRACBITS))>>(FRACBITS)**(*fixed_t)(unsafe.Pointer(finecosine + uintptr(angle)*4))
+	y2 = y1 + (64)*((1)<<(FRACBITS))>>(FRACBITS)*finesine[angle]
 	P_PathTraverse(tls, x1, y1, x2, y2, int32(PT_ADDLINES), __ccgo_fp(PTR_UseTraverse))
 }
 
@@ -29332,11 +29334,11 @@ func PIT_RadiusAttack(tls *libc.TLS, thing uintptr) (r boolean) {
 func P_RadiusAttack(tls *libc.TLS, spot uintptr, source uintptr, damage int32) {
 	var dist fixed_t
 	var x, xh, xl, y, yh, yl int32
-	dist = (damage + libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) << int32(FRACBITS)
-	yh = ((*mobj_t)(unsafe.Pointer(spot)).Fy + dist - bmaporgy) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	yl = ((*mobj_t)(unsafe.Pointer(spot)).Fy - dist - bmaporgy) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	xh = ((*mobj_t)(unsafe.Pointer(spot)).Fx + dist - bmaporgx) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	xl = ((*mobj_t)(unsafe.Pointer(spot)).Fx - dist - bmaporgx) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+	dist = (damage + (32)*((1)<<(FRACBITS))) << int32(FRACBITS)
+	yh = ((*mobj_t)(unsafe.Pointer(spot)).Fy + dist - bmaporgy) >> ((FRACBITS) + (7))
+	yl = ((*mobj_t)(unsafe.Pointer(spot)).Fy - dist - bmaporgy) >> ((FRACBITS) + (7))
+	xh = ((*mobj_t)(unsafe.Pointer(spot)).Fx + dist - bmaporgx) >> ((FRACBITS) + (7))
+	xl = ((*mobj_t)(unsafe.Pointer(spot)).Fx - dist - bmaporgx) >> ((FRACBITS) + (7))
 	bombspot = spot
 	bombsource = source
 	bombdamage = damage
@@ -29394,7 +29396,7 @@ func PIT_ChangeSector(tls *libc.TLS, thing uintptr) (r boolean) {
 		return 1
 	}
 	nofit = 1
-	if crushchange != 0 && !(leveltime&libc.Int32FromInt32(3) != 0) {
+	if crushchange != 0 && !(leveltime&(3) != 0) {
 		P_DamageMobj(tls, thing, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), int32(10))
 		// spray blood in a random direction
 		mo = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy, (*mobj_t)(unsafe.Pointer(thing)).Fz+(*mobj_t)(unsafe.Pointer(thing)).Fheight/int32(2), int32(MT_BLOOD))
@@ -29517,9 +29519,9 @@ func P_AproxDistance(tls *libc.TLS, dx fixed_t, dy fixed_t) (r fixed_t) {
 	dx = xabs(dx)
 	dy = xabs(dy)
 	if dx < dy {
-		return dx + dy - dx>>libc.Int32FromInt32(1)
+		return dx + dy - dx>>(1)
 	}
-	return dx + dy - dy>>libc.Int32FromInt32(1)
+	return dx + dy - dy>>(1)
 }
 
 // C documentation
@@ -29722,8 +29724,8 @@ func P_UnsetThingPosition(tls *libc.TLS, thing uintptr) {
 		if (*mobj_t)(unsafe.Pointer(thing)).Fbprev != 0 {
 			(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fbprev)).Fbnext = (*mobj_t)(unsafe.Pointer(thing)).Fbnext
 		} else {
-			blockx = ((*mobj_t)(unsafe.Pointer(thing)).Fx - bmaporgx) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-			blocky = ((*mobj_t)(unsafe.Pointer(thing)).Fy - bmaporgy) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+			blockx = ((*mobj_t)(unsafe.Pointer(thing)).Fx - bmaporgx) >> ((FRACBITS) + (7))
+			blocky = ((*mobj_t)(unsafe.Pointer(thing)).Fy - bmaporgy) >> ((FRACBITS) + (7))
 			if blockx >= 0 && blockx < bmapwidth && blocky >= 0 && blocky < bmapheight {
 				*(*uintptr)(unsafe.Pointer(blocklinks + uintptr(blocky*bmapwidth+blockx)*8)) = (*mobj_t)(unsafe.Pointer(thing)).Fbnext
 			}
@@ -29758,8 +29760,8 @@ func P_SetThingPosition(tls *libc.TLS, thing uintptr) {
 	// link into blockmap
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_NOBLOCKMAP) != 0) {
 		// inert things don't need to be in blockmap
-		blockx = ((*mobj_t)(unsafe.Pointer(thing)).Fx - bmaporgx) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-		blocky = ((*mobj_t)(unsafe.Pointer(thing)).Fy - bmaporgy) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+		blockx = ((*mobj_t)(unsafe.Pointer(thing)).Fx - bmaporgx) >> ((FRACBITS) + (7))
+		blocky = ((*mobj_t)(unsafe.Pointer(thing)).Fy - bmaporgy) >> ((FRACBITS) + (7))
 		if blockx >= 0 && blockx < bmapwidth && blocky >= 0 && blocky < bmapheight {
 			link = blocklinks + uintptr(blocky*bmapwidth+blockx)*8
 			(*mobj_t)(unsafe.Pointer(thing)).Fbprev = libc.UintptrFromInt32(0)
@@ -29867,7 +29869,7 @@ func PIT_AddLineIntercepts(tls *libc.TLS, ld uintptr) (r boolean) {
 	var frac fixed_t
 	var s1, s2 int32
 	// avoid precision problems with two routines
-	if trace.Fdx > libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)*libc.Int32FromInt32(16) || trace.Fdy > libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)*libc.Int32FromInt32(16) || trace.Fdx < -(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(16) || trace.Fdy < -(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(16) {
+	if trace.Fdx > (1)<<(FRACBITS)*(16) || trace.Fdy > (1)<<(FRACBITS)*(16) || trace.Fdx < -((1)<<(FRACBITS))*(16) || trace.Fdy < -((1)<<(FRACBITS))*(16) {
 		s1 = P_PointOnDivlineSide(tls, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv1)).Fx, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv1)).Fy, uintptr(unsafe.Pointer(&trace)))
 		s2 = P_PointOnDivlineSide(tls, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv2)).Fx, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv2)).Fy, uintptr(unsafe.Pointer(&trace)))
 	} else {
@@ -29884,7 +29886,7 @@ func PIT_AddLineIntercepts(tls *libc.TLS, ld uintptr) (r boolean) {
 		return 1
 	} // behind source
 	// try to early out the check
-	if earlyout != 0 && frac < libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) && !((*line_t)(unsafe.Pointer(ld)).Fbacksector != 0) {
+	if earlyout != 0 && frac < (1)<<(FRACBITS) && !((*line_t)(unsafe.Pointer(ld)).Fbacksector != 0) {
 		return 0 // stop checking
 	}
 	(*intercept_t)(unsafe.Pointer(intercept_p)).Ffrac = frac
@@ -30149,11 +30151,11 @@ func P_PathTraverse(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_
 	earlyout = libc.Uint32FromInt32(flags & int32(PT_EARLYOUT))
 	validcount++
 	intercept_p = uintptr(unsafe.Pointer(&intercepts))
-	if (x1-bmaporgx)&(libc.Int32FromInt32(MAPBLOCKUNITS)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))-libc.Int32FromInt32(1)) == 0 {
-		x1 += libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+	if (x1-bmaporgx)&((MAPBLOCKUNITS)*((1)<<(FRACBITS))-(1)) == 0 {
+		x1 += (1) << (FRACBITS)
 	} // don't side exactly on a line
-	if (y1-bmaporgy)&(libc.Int32FromInt32(MAPBLOCKUNITS)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))-libc.Int32FromInt32(1)) == 0 {
-		y1 += libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+	if (y1-bmaporgy)&((MAPBLOCKUNITS)*((1)<<(FRACBITS))-(1)) == 0 {
+		y1 += (1) << (FRACBITS)
 	} // don't side exactly on a line
 	trace.Fx = x1
 	trace.Fy = y1
@@ -30161,44 +30163,44 @@ func P_PathTraverse(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_
 	trace.Fdy = y2 - y1
 	x1 -= bmaporgx
 	y1 -= bmaporgy
-	xt1 = x1 >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	yt1 = y1 >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+	xt1 = x1 >> ((FRACBITS) + (7))
+	yt1 = y1 >> ((FRACBITS) + (7))
 	x2 -= bmaporgx
 	y2 -= bmaporgy
-	xt2 = x2 >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
-	yt2 = y2 >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+	xt2 = x2 >> ((FRACBITS) + (7))
+	yt2 = y2 >> ((FRACBITS) + (7))
 	if xt2 > xt1 {
 		mapxstep = int32(1)
-		partial = libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) - x1>>(libc.Int32FromInt32(FRACBITS)+libc.Int32FromInt32(7)-libc.Int32FromInt32(FRACBITS))&(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)-libc.Int32FromInt32(1))
+		partial = (1)<<(FRACBITS) - x1>>((FRACBITS)+(7)-(FRACBITS))&((1)<<(FRACBITS)-(1))
 		ystep = FixedDiv(tls, y2-y1, xabs(x2-x1))
 	} else {
 		if xt2 < xt1 {
 			mapxstep = -int32(1)
-			partial = x1 >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7) - libc.Int32FromInt32(FRACBITS)) & (libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) - libc.Int32FromInt32(1))
+			partial = x1 >> ((FRACBITS) + (7) - (FRACBITS)) & ((1)<<(FRACBITS) - (1))
 			ystep = FixedDiv(tls, y2-y1, xabs(x2-x1))
 		} else {
 			mapxstep = 0
-			partial = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
-			ystep = libc.Int32FromInt32(256) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+			partial = (1) << (FRACBITS)
+			ystep = (256) * ((1) << (FRACBITS))
 		}
 	}
-	yintercept = y1>>(libc.Int32FromInt32(FRACBITS)+libc.Int32FromInt32(7)-libc.Int32FromInt32(FRACBITS)) + FixedMul(tls, partial, ystep)
+	yintercept = y1>>((FRACBITS)+(7)-(FRACBITS)) + FixedMul(tls, partial, ystep)
 	if yt2 > yt1 {
 		mapystep = int32(1)
-		partial = libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) - y1>>(libc.Int32FromInt32(FRACBITS)+libc.Int32FromInt32(7)-libc.Int32FromInt32(FRACBITS))&(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)-libc.Int32FromInt32(1))
+		partial = (1)<<(FRACBITS) - y1>>((FRACBITS)+(7)-(FRACBITS))&((1)<<(FRACBITS)-(1))
 		xstep = FixedDiv(tls, x2-x1, xabs(y2-y1))
 	} else {
 		if yt2 < yt1 {
 			mapystep = -int32(1)
-			partial = y1 >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7) - libc.Int32FromInt32(FRACBITS)) & (libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) - libc.Int32FromInt32(1))
+			partial = y1 >> ((FRACBITS) + (7) - (FRACBITS)) & ((1)<<(FRACBITS) - (1))
 			xstep = FixedDiv(tls, x2-x1, xabs(y2-y1))
 		} else {
 			mapystep = 0
-			partial = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
-			xstep = libc.Int32FromInt32(256) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+			partial = (1) << (FRACBITS)
+			xstep = (256) * ((1) << (FRACBITS))
 		}
 	}
-	xintercept = x1>>(libc.Int32FromInt32(FRACBITS)+libc.Int32FromInt32(7)-libc.Int32FromInt32(FRACBITS)) + FixedMul(tls, partial, xstep)
+	xintercept = x1>>((FRACBITS)+(7)-(FRACBITS)) + FixedMul(tls, partial, xstep)
 	// Step through map blocks.
 	// Count is present to prevent a round off error
 	// from skipping the break.
@@ -30222,11 +30224,11 @@ func P_PathTraverse(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_
 		if mapx == xt2 && mapy == yt2 {
 			break
 		}
-		if yintercept>>libc.Int32FromInt32(FRACBITS) == mapy {
+		if yintercept>>(FRACBITS) == mapy {
 			yintercept += ystep
 			mapx += mapxstep
 		} else {
-			if xintercept>>libc.Int32FromInt32(FRACBITS) == mapx {
+			if xintercept>>(FRACBITS) == mapx {
 				xintercept += xstep
 				mapy += mapystep
 			}
@@ -30237,7 +30239,7 @@ func P_PathTraverse(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_
 		count++
 	}
 	// go through the sorted list
-	return P_TraverseIntercepts(tls, trav, libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+	return P_TraverseIntercepts(tls, trav, (1)<<(FRACBITS))
 }
 
 const ANG453 = 536870912
@@ -30274,7 +30276,7 @@ func P_SetMobjState(tls *libc.TLS, mobj uintptr, state statenum_t) (r boolean) {
 //	//
 func P_ExplodeMissile(tls *libc.TLS, mo uintptr) {
 	var v1, v2 fixed_t
-	v2 = libc.Int32FromInt32(0)
+	v2 = (0)
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomz = v2
 	v1 = v2
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = v1
@@ -30301,7 +30303,7 @@ func P_XYMovement(tls *libc.TLS, mo uintptr) {
 		if (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_SKULLFLY) != 0 {
 			// the skull slammed into something
 			*(*int32)(unsafe.Pointer(mo + 160)) &= ^int32(MF_SKULLFLY)
-			v2 = libc.Int32FromInt32(0)
+			v2 = (0)
 			(*mobj_t)(unsafe.Pointer(mo)).Fmomz = v2
 			v1 = v2
 			(*mobj_t)(unsafe.Pointer(mo)).Fmomy = v1
@@ -30311,24 +30313,24 @@ func P_XYMovement(tls *libc.TLS, mo uintptr) {
 		return
 	}
 	player = (*mobj_t)(unsafe.Pointer(mo)).Fplayer
-	if (*mobj_t)(unsafe.Pointer(mo)).Fmomx > libc.Int32FromInt32(30)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = libc.Int32FromInt32(30) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+	if (*mobj_t)(unsafe.Pointer(mo)).Fmomx > (30)*((1)<<(FRACBITS)) {
+		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = (30) * ((1) << (FRACBITS))
 	} else {
-		if (*mobj_t)(unsafe.Pointer(mo)).Fmomx < -(libc.Int32FromInt32(30) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))) {
-			(*mobj_t)(unsafe.Pointer(mo)).Fmomx = -(libc.Int32FromInt32(30) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)))
+		if (*mobj_t)(unsafe.Pointer(mo)).Fmomx < -((30) * ((1) << (FRACBITS))) {
+			(*mobj_t)(unsafe.Pointer(mo)).Fmomx = -((30) * ((1) << (FRACBITS)))
 		}
 	}
-	if (*mobj_t)(unsafe.Pointer(mo)).Fmomy > libc.Int32FromInt32(30)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = libc.Int32FromInt32(30) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+	if (*mobj_t)(unsafe.Pointer(mo)).Fmomy > (30)*((1)<<(FRACBITS)) {
+		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = (30) * ((1) << (FRACBITS))
 	} else {
-		if (*mobj_t)(unsafe.Pointer(mo)).Fmomy < -(libc.Int32FromInt32(30) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))) {
-			(*mobj_t)(unsafe.Pointer(mo)).Fmomy = -(libc.Int32FromInt32(30) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)))
+		if (*mobj_t)(unsafe.Pointer(mo)).Fmomy < -((30) * ((1) << (FRACBITS))) {
+			(*mobj_t)(unsafe.Pointer(mo)).Fmomy = -((30) * ((1) << (FRACBITS)))
 		}
 	}
 	xmove = (*mobj_t)(unsafe.Pointer(mo)).Fmomx
 	ymove = (*mobj_t)(unsafe.Pointer(mo)).Fmomy
 	for cond := true; cond; cond = xmove != 0 || ymove != 0 {
-		if xmove > libc.Int32FromInt32(30)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(2) || ymove > libc.Int32FromInt32(30)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(2) {
+		if xmove > (30)*((1)<<(FRACBITS))/(2) || ymove > (30)*((1)<<(FRACBITS))/(2) {
 			ptryx = (*mobj_t)(unsafe.Pointer(mo)).Fx + xmove/int32(2)
 			ptryy = (*mobj_t)(unsafe.Pointer(mo)).Fy + ymove/int32(2)
 			xmove >>= int32(1)
@@ -30336,7 +30338,7 @@ func P_XYMovement(tls *libc.TLS, mo uintptr) {
 		} else {
 			ptryx = (*mobj_t)(unsafe.Pointer(mo)).Fx + xmove
 			ptryy = (*mobj_t)(unsafe.Pointer(mo)).Fy + ymove
-			v3 = libc.Int32FromInt32(0)
+			v3 = (0)
 			ymove = v3
 			xmove = v3
 		}
@@ -30357,7 +30359,7 @@ func P_XYMovement(tls *libc.TLS, mo uintptr) {
 					}
 					P_ExplodeMissile(tls, mo)
 				} else {
-					v4 = libc.Int32FromInt32(0)
+					v4 = (0)
 					(*mobj_t)(unsafe.Pointer(mo)).Fmomy = v4
 					(*mobj_t)(unsafe.Pointer(mo)).Fmomx = v4
 				}
@@ -30367,7 +30369,7 @@ func P_XYMovement(tls *libc.TLS, mo uintptr) {
 	// slow down
 	if player != 0 && (*player_t)(unsafe.Pointer(player)).Fcheats&int32(CF_NOMOMENTUM) != 0 {
 		// debug option for no sliding at all
-		v5 = libc.Int32FromInt32(0)
+		v5 = (0)
 		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = v5
 		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = v5
 		return
@@ -30381,7 +30383,7 @@ func P_XYMovement(tls *libc.TLS, mo uintptr) {
 	if (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_CORPSE) != 0 {
 		// do not stop sliding
 		//  if halfway off a step with some momentum
-		if (*mobj_t)(unsafe.Pointer(mo)).Fmomx > libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)/libc.Int32FromInt32(4) || (*mobj_t)(unsafe.Pointer(mo)).Fmomx < -(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(4) || (*mobj_t)(unsafe.Pointer(mo)).Fmomy > libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)/libc.Int32FromInt32(4) || (*mobj_t)(unsafe.Pointer(mo)).Fmomy < -(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(4) {
+		if (*mobj_t)(unsafe.Pointer(mo)).Fmomx > (1)<<(FRACBITS)/(4) || (*mobj_t)(unsafe.Pointer(mo)).Fmomx < -((1)<<(FRACBITS))/(4) || (*mobj_t)(unsafe.Pointer(mo)).Fmomy > (1)<<(FRACBITS)/(4) || (*mobj_t)(unsafe.Pointer(mo)).Fmomy < -((1)<<(FRACBITS))/(4) {
 			if (*mobj_t)(unsafe.Pointer(mo)).Ffloorz != (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fsubsector)).Fsector)).Ffloorheight {
 				return
 			}
@@ -30411,7 +30413,7 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 	// check for smooth step up
 	if (*mobj_t)(unsafe.Pointer(mo)).Fplayer != 0 && (*mobj_t)(unsafe.Pointer(mo)).Fz < (*mobj_t)(unsafe.Pointer(mo)).Ffloorz {
 		*(*fixed_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer + 32)) -= (*mobj_t)(unsafe.Pointer(mo)).Ffloorz - (*mobj_t)(unsafe.Pointer(mo)).Fz
-		(*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fdeltaviewheight = (libc.Int32FromInt32(41)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) - (*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fviewheight) >> int32(3)
+		(*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fdeltaviewheight = ((41)*((1)<<(FRACBITS)) - (*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fviewheight) >> int32(3)
 	}
 	// adjust height
 	*(*fixed_t)(unsafe.Pointer(mo + 32)) += (*mobj_t)(unsafe.Pointer(mo)).Fmomz
@@ -30419,12 +30421,12 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 		// float down towards target if too close
 		if !((*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_SKULLFLY) != 0) && !((*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_INFLOAT) != 0) {
 			dist = P_AproxDistance(tls, (*mobj_t)(unsafe.Pointer(mo)).Fx-(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(mo)).Fy-(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fy)
-			delta = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fz + (*mobj_t)(unsafe.Pointer(mo)).Fheight>>libc.Int32FromInt32(1) - (*mobj_t)(unsafe.Pointer(mo)).Fz
+			delta = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fz + (*mobj_t)(unsafe.Pointer(mo)).Fheight>>(1) - (*mobj_t)(unsafe.Pointer(mo)).Fz
 			if delta < 0 && dist < -(delta*int32(3)) {
-				*(*fixed_t)(unsafe.Pointer(mo + 32)) -= libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(4)
+				*(*fixed_t)(unsafe.Pointer(mo + 32)) -= (1) << (FRACBITS) * (4)
 			} else {
 				if delta > 0 && dist < delta*int32(3) {
-					*(*fixed_t)(unsafe.Pointer(mo + 32)) += libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(4)
+					*(*fixed_t)(unsafe.Pointer(mo + 32)) += (1) << (FRACBITS) * (4)
 				}
 			}
 		}
@@ -30460,7 +30462,7 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 			(*mobj_t)(unsafe.Pointer(mo)).Fmomz = -(*mobj_t)(unsafe.Pointer(mo)).Fmomz
 		}
 		if (*mobj_t)(unsafe.Pointer(mo)).Fmomz < 0 {
-			if (*mobj_t)(unsafe.Pointer(mo)).Fplayer != 0 && (*mobj_t)(unsafe.Pointer(mo)).Fmomz < -(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(8) {
+			if (*mobj_t)(unsafe.Pointer(mo)).Fplayer != 0 && (*mobj_t)(unsafe.Pointer(mo)).Fmomz < -((1)<<(FRACBITS))*(8) {
 				// Squat down.
 				// Decrease viewheight for a moment
 				// after hitting the ground (hard),
@@ -30486,9 +30488,9 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 	} else {
 		if !((*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_NOGRAVITY) != 0) {
 			if (*mobj_t)(unsafe.Pointer(mo)).Fmomz == 0 {
-				(*mobj_t)(unsafe.Pointer(mo)).Fmomz = -(libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) * libc.Int32FromInt32(2)
+				(*mobj_t)(unsafe.Pointer(mo)).Fmomz = -((1) << (FRACBITS)) * (2)
 			} else {
-				*(*fixed_t)(unsafe.Pointer(mo + 120)) -= libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+				*(*fixed_t)(unsafe.Pointer(mo + 120)) -= (1) << (FRACBITS)
 			}
 		}
 	}
@@ -30538,7 +30540,7 @@ func P_NightmareRespawn(tls *libc.TLS, mobj uintptr) {
 	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Finfo)).Fflags&int32(MF_SPAWNCEILING) != 0 {
 		z = int32(INT_MAX11)
 	} else {
-		z = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
+		z = -(1) - (0x7fffffff)
 	}
 	// inherit attributes from deceased one
 	mo = P_SpawnMobj(tls, x, y, z, (*mobj_t)(unsafe.Pointer(mobj)).Ftype1)
@@ -30562,14 +30564,14 @@ func P_MobjThinker(tls *libc.TLS, mobj uintptr) {
 	if (*mobj_t)(unsafe.Pointer(mobj)).Fmomx != 0 || (*mobj_t)(unsafe.Pointer(mobj)).Fmomy != 0 || (*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_SKULLFLY) != 0 {
 		P_XYMovement(tls, mobj)
 		// FIXME: decent NOP/NULL/Nil function pointer please.
-		if *(*actionf_v)(unsafe.Pointer(mobj + 16)) == uintptr(-libc.Int32FromInt32(1)) {
+		if *(*actionf_v)(unsafe.Pointer(mobj + 16)) == uintptr_negative_one {
 			return
 		} // mobj was removed
 	}
 	if (*mobj_t)(unsafe.Pointer(mobj)).Fz != (*mobj_t)(unsafe.Pointer(mobj)).Ffloorz || (*mobj_t)(unsafe.Pointer(mobj)).Fmomz != 0 {
 		P_ZMovement(tls, mobj)
 		// FIXME: decent NOP/NULL/Nil function pointer please.
-		if *(*actionf_v)(unsafe.Pointer(mobj + 16)) == uintptr(-libc.Int32FromInt32(1)) {
+		if *(*actionf_v)(unsafe.Pointer(mobj + 16)) == uintptr_negative_one {
 			return
 		} // mobj was removed
 	}
@@ -30592,7 +30594,7 @@ func P_MobjThinker(tls *libc.TLS, mobj uintptr) {
 			return
 		}
 		(*mobj_t)(unsafe.Pointer(mobj)).Fmovecount++
-		if (*mobj_t)(unsafe.Pointer(mobj)).Fmovecount < libc.Int32FromInt32(12)*libc.Int32FromInt32(TICRATE) {
+		if (*mobj_t)(unsafe.Pointer(mobj)).Fmovecount < (12)*(TICRATE) {
 			return
 		}
 		if leveltime&int32(31) != 0 {
@@ -30638,7 +30640,7 @@ func P_SpawnMobj(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_
 	P_SetThingPosition(tls, mobj)
 	(*mobj_t)(unsafe.Pointer(mobj)).Ffloorz = (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Ffloorheight
 	(*mobj_t)(unsafe.Pointer(mobj)).Fceilingz = (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Fceilingheight
-	if z == -libc.Int32FromInt32(1)-libc.Int32FromInt32(0x7fffffff) {
+	if z == -(1)-(0x7fffffff) {
 		(*mobj_t)(unsafe.Pointer(mobj)).Fz = (*mobj_t)(unsafe.Pointer(mobj)).Ffloorz
 	} else {
 		if z == int32(INT_MAX11) {
@@ -30656,10 +30658,10 @@ func P_RemoveMobj(tls *libc.TLS, mobj uintptr) {
 	if (*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_SPECIAL) != 0 && !((*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_DROPPED) != 0) && (*mobj_t)(unsafe.Pointer(mobj)).Ftype1 != int32(MT_INV) && (*mobj_t)(unsafe.Pointer(mobj)).Ftype1 != int32(MT_INS) {
 		itemrespawnque[iquehead] = (*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint
 		itemrespawntime[iquehead] = leveltime
-		iquehead = (iquehead + int32(1)) & (libc.Int32FromInt32(ITEMQUESIZE) - libc.Int32FromInt32(1))
+		iquehead = (iquehead + int32(1)) & ((ITEMQUESIZE) - (1))
 		// lose one off the end?
 		if iquehead == iquetail {
-			iquetail = (iquetail + int32(1)) & (libc.Int32FromInt32(ITEMQUESIZE) - libc.Int32FromInt32(1))
+			iquetail = (iquetail + int32(1)) & ((ITEMQUESIZE) - (1))
 		}
 	}
 	// unlink from sector and block lists
@@ -30688,7 +30690,7 @@ func P_RespawnSpecials(tls *libc.TLS) {
 		return
 	}
 	// wait at least 30 seconds
-	if leveltime-itemrespawntime[iquetail] < libc.Int32FromInt32(30)*libc.Int32FromInt32(TICRATE) {
+	if leveltime-itemrespawntime[iquetail] < (30)*(TICRATE) {
 		return
 	}
 	mthing = uintptr(unsafe.Pointer(&itemrespawnque)) + uintptr(iquetail)*10
@@ -30716,13 +30718,13 @@ func P_RespawnSpecials(tls *libc.TLS) {
 	if mobjinfo[i].Fflags&int32(MF_SPAWNCEILING) != 0 {
 		z = int32(INT_MAX11)
 	} else {
-		z = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
+		z = -(1) - (0x7fffffff)
 	}
 	mo = P_SpawnMobj(tls, x, y, z, i)
 	(*mobj_t)(unsafe.Pointer(mo)).Fspawnpoint = *(*mapthing_t)(unsafe.Pointer(mthing))
 	(*mobj_t)(unsafe.Pointer(mo)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / int32(45)))
 	// pull it from the que
-	iquetail = (iquetail + int32(1)) & (libc.Int32FromInt32(ITEMQUESIZE) - libc.Int32FromInt32(1))
+	iquetail = (iquetail + int32(1)) & ((ITEMQUESIZE) - (1))
 }
 
 // C documentation
@@ -30750,7 +30752,7 @@ func P_SpawnPlayer(tls *libc.TLS, mthing uintptr) {
 	}
 	x = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx) << int32(FRACBITS)
 	y = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy) << int32(FRACBITS)
-	z = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
+	z = -(1) - (0x7fffffff)
 	mobj = P_SpawnMobj(tls, x, y, z, int32(MT_PLAYER))
 	// set color translations for player sprites
 	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) > int32(1) {
@@ -30767,7 +30769,7 @@ func P_SpawnPlayer(tls *libc.TLS, mthing uintptr) {
 	(*player_t)(unsafe.Pointer(p)).Fbonuscount = 0
 	(*player_t)(unsafe.Pointer(p)).Fextralight = 0
 	(*player_t)(unsafe.Pointer(p)).Ffixedcolormap = 0
-	(*player_t)(unsafe.Pointer(p)).Fviewheight = libc.Int32FromInt32(41) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+	(*player_t)(unsafe.Pointer(p)).Fviewheight = (41) * ((1) << (FRACBITS))
 	// setup gun psprite
 	P_SetupPsprites(tls, p)
 	// give all cards in death match mode
@@ -30873,7 +30875,7 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 	if mobjinfo[i].Fflags&int32(MF_SPAWNCEILING) != 0 {
 		z = int32(INT_MAX11)
 	} else {
-		z = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
+		z = -(1) - (0x7fffffff)
 	}
 	mobj = P_SpawnMobj(tls, x, y, z, i)
 	(*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint = *(*mapthing_t)(unsafe.Pointer(mthing))
@@ -30896,13 +30898,13 @@ func P_SpawnPuff(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t) {
 	var th uintptr
 	z += (P_Random(tls) - P_Random(tls)) << int32(10)
 	th = P_SpawnMobj(tls, x, y, z, int32(MT_PUFF))
-	(*mobj_t)(unsafe.Pointer(th)).Fmomz = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+	(*mobj_t)(unsafe.Pointer(th)).Fmomz = (1) << (FRACBITS)
 	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random(tls) & int32(3)
 	if (*mobj_t)(unsafe.Pointer(th)).Ftics < int32(1) {
 		(*mobj_t)(unsafe.Pointer(th)).Ftics = int32(1)
 	}
 	// don't make punches spark on the wall
-	if attackrange == libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+	if attackrange == (64)*((1)<<(FRACBITS)) {
 		P_SetMobjState(tls, th, int32(S_PUFF3))
 	}
 }
@@ -30916,7 +30918,7 @@ func P_SpawnBlood(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t, damage int32) 
 	var th uintptr
 	z += (P_Random(tls) - P_Random(tls)) << int32(10)
 	th = P_SpawnMobj(tls, x, y, z, int32(MT_BLOOD))
-	(*mobj_t)(unsafe.Pointer(th)).Fmomz = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(2)
+	(*mobj_t)(unsafe.Pointer(th)).Fmomz = (1) << (FRACBITS) * (2)
 	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random(tls) & int32(3)
 	if (*mobj_t)(unsafe.Pointer(th)).Ftics < int32(1) {
 		(*mobj_t)(unsafe.Pointer(th)).Ftics = int32(1)
@@ -30944,9 +30946,9 @@ func P_CheckMissileSpawn(tls *libc.TLS, th uintptr) {
 	}
 	// move a little forward so an angle can
 	// be computed if it immediately explodes
-	*(*fixed_t)(unsafe.Pointer(th + 24)) += (*mobj_t)(unsafe.Pointer(th)).Fmomx >> libc.Int32FromInt32(1)
-	*(*fixed_t)(unsafe.Pointer(th + 28)) += (*mobj_t)(unsafe.Pointer(th)).Fmomy >> libc.Int32FromInt32(1)
-	*(*fixed_t)(unsafe.Pointer(th + 32)) += (*mobj_t)(unsafe.Pointer(th)).Fmomz >> libc.Int32FromInt32(1)
+	*(*fixed_t)(unsafe.Pointer(th + 24)) += (*mobj_t)(unsafe.Pointer(th)).Fmomx >> (1)
+	*(*fixed_t)(unsafe.Pointer(th + 28)) += (*mobj_t)(unsafe.Pointer(th)).Fmomy >> (1)
+	*(*fixed_t)(unsafe.Pointer(th + 32)) += (*mobj_t)(unsafe.Pointer(th)).Fmomz >> (1)
 	if !(P_TryMove(tls, th, (*mobj_t)(unsafe.Pointer(th)).Fx, (*mobj_t)(unsafe.Pointer(th)).Fy) != 0) {
 		P_ExplodeMissile(tls, th)
 	}
@@ -30980,7 +30982,7 @@ func P_SpawnMissile(tls *libc.TLS, source uintptr, dest uintptr, type1 mobjtype_
 	var an angle_t
 	var dist int32
 	var th uintptr
-	th = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(source)).Fy, (*mobj_t)(unsafe.Pointer(source)).Fz+libc.Int32FromInt32(4)*libc.Int32FromInt32(8)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), type1)
+	th = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(source)).Fy, (*mobj_t)(unsafe.Pointer(source)).Fz+(4)*(8)*((1)<<(FRACBITS)), type1)
 	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fseesound != 0 {
 		S_StartSound(tls, th, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fseesound)
 	}
@@ -31016,13 +31018,13 @@ func P_SpawnPlayerMissile(tls *libc.TLS, source uintptr, type1 mobjtype_t) {
 	var th uintptr
 	// see which target is to be aimed at
 	an = (*mobj_t)(unsafe.Pointer(source)).Fangle
-	slope = P_AimLineAttack(tls, source, an, libc.Int32FromInt32(16)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+	slope = P_AimLineAttack(tls, source, an, (16)*(64)*((1)<<(FRACBITS)))
 	if !(linetarget != 0) {
-		an += libc.Uint32FromInt32(libc.Int32FromInt32(1) << libc.Int32FromInt32(26))
-		slope = P_AimLineAttack(tls, source, an, libc.Int32FromInt32(16)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+		an += libc.Uint32FromInt32((1) << (26))
+		slope = P_AimLineAttack(tls, source, an, (16)*(64)*((1)<<(FRACBITS)))
 		if !(linetarget != 0) {
-			an -= libc.Uint32FromInt32(libc.Int32FromInt32(2) << libc.Int32FromInt32(26))
-			slope = P_AimLineAttack(tls, source, an, libc.Int32FromInt32(16)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+			an -= libc.Uint32FromInt32((2) << (26))
+			slope = P_AimLineAttack(tls, source, an, (16)*(64)*((1)<<(FRACBITS)))
 		}
 		if !(linetarget != 0) {
 			an = (*mobj_t)(unsafe.Pointer(source)).Fangle
@@ -31031,7 +31033,7 @@ func P_SpawnPlayerMissile(tls *libc.TLS, source uintptr, type1 mobjtype_t) {
 	}
 	x = (*mobj_t)(unsafe.Pointer(source)).Fx
 	y = (*mobj_t)(unsafe.Pointer(source)).Fy
-	z = (*mobj_t)(unsafe.Pointer(source)).Fz + libc.Int32FromInt32(4)*libc.Int32FromInt32(8)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+	z = (*mobj_t)(unsafe.Pointer(source)).Fz + (4)*(8)*((1)<<(FRACBITS))
 	th = P_SpawnMobj(tls, x, y, z, type1)
 	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fseesound != 0 {
 		S_StartSound(tls, th, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fseesound)
@@ -31057,7 +31059,7 @@ func T_PlatRaise(tls *libc.TLS, plat uintptr) {
 	case int32(up):
 		res = T_MovePlane(tls, (*plat_t)(unsafe.Pointer(plat)).Fsector, (*plat_t)(unsafe.Pointer(plat)).Fspeed, (*plat_t)(unsafe.Pointer(plat)).Fhigh, (*plat_t)(unsafe.Pointer(plat)).Fcrush, 0, int32(1))
 		if (*plat_t)(unsafe.Pointer(plat)).Ftype1 == int32(raiseAndChange) || (*plat_t)(unsafe.Pointer(plat)).Ftype1 == int32(raiseToNearestAndChange) {
-			if !(leveltime&libc.Int32FromInt32(7) != 0) {
+			if !(leveltime&(7) != 0) {
 				S_StartSound(tls, (*plat_t)(unsafe.Pointer(plat)).Fsector+48, int32(sfx_stnmov))
 			}
 		}
@@ -31149,7 +31151,7 @@ func EV_DoPlat(tls *libc.TLS, line uintptr, type1 plattype_e, amount int32) (r i
 		(*plat_t)(unsafe.Pointer(plat)).Ftag = int32((*line_t)(unsafe.Pointer(line)).Ftag)
 		switch type1 {
 		case int32(raiseToNearestAndChange):
-			(*plat_t)(unsafe.Pointer(plat)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) / libc.Int32FromInt32(2)
+			(*plat_t)(unsafe.Pointer(plat)).Fspeed = (1) << (FRACBITS) / (2)
 			(*sector_t)(unsafe.Pointer(sec)).Ffloorpic = (*sector_t)(unsafe.Pointer((*(*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(line + 30)))*24))).Fsector)).Ffloorpic
 			(*plat_t)(unsafe.Pointer(plat)).Fhigh = P_FindNextHighestFloor(tls, sec, (*sector_t)(unsafe.Pointer(sec)).Ffloorheight)
 			(*plat_t)(unsafe.Pointer(plat)).Fwait = 0
@@ -31158,34 +31160,34 @@ func EV_DoPlat(tls *libc.TLS, line uintptr, type1 plattype_e, amount int32) (r i
 			(*sector_t)(unsafe.Pointer(sec)).Fspecial = 0
 			S_StartSound(tls, sec+48, int32(sfx_stnmov))
 		case int32(raiseAndChange):
-			(*plat_t)(unsafe.Pointer(plat)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) / libc.Int32FromInt32(2)
+			(*plat_t)(unsafe.Pointer(plat)).Fspeed = (1) << (FRACBITS) / (2)
 			(*sector_t)(unsafe.Pointer(sec)).Ffloorpic = (*sector_t)(unsafe.Pointer((*(*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(line + 30)))*24))).Fsector)).Ffloorpic
-			(*plat_t)(unsafe.Pointer(plat)).Fhigh = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight + amount*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+			(*plat_t)(unsafe.Pointer(plat)).Fhigh = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight + amount*((1)<<(FRACBITS))
 			(*plat_t)(unsafe.Pointer(plat)).Fwait = 0
 			(*plat_t)(unsafe.Pointer(plat)).Fstatus = int32(up)
 			S_StartSound(tls, sec+48, int32(sfx_stnmov))
 		case int32(downWaitUpStay):
-			(*plat_t)(unsafe.Pointer(plat)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(4)
+			(*plat_t)(unsafe.Pointer(plat)).Fspeed = (1) << (FRACBITS) * (4)
 			(*plat_t)(unsafe.Pointer(plat)).Flow = P_FindLowestFloorSurrounding(tls, sec)
 			if (*plat_t)(unsafe.Pointer(plat)).Flow > (*sector_t)(unsafe.Pointer(sec)).Ffloorheight {
 				(*plat_t)(unsafe.Pointer(plat)).Flow = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight
 			}
 			(*plat_t)(unsafe.Pointer(plat)).Fhigh = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight
-			(*plat_t)(unsafe.Pointer(plat)).Fwait = libc.Int32FromInt32(TICRATE) * libc.Int32FromInt32(PLATWAIT)
+			(*plat_t)(unsafe.Pointer(plat)).Fwait = (TICRATE) * (PLATWAIT)
 			(*plat_t)(unsafe.Pointer(plat)).Fstatus = int32(down)
 			S_StartSound(tls, sec+48, int32(sfx_pstart))
 		case int32(blazeDWUS):
-			(*plat_t)(unsafe.Pointer(plat)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(8)
+			(*plat_t)(unsafe.Pointer(plat)).Fspeed = (1) << (FRACBITS) * (8)
 			(*plat_t)(unsafe.Pointer(plat)).Flow = P_FindLowestFloorSurrounding(tls, sec)
 			if (*plat_t)(unsafe.Pointer(plat)).Flow > (*sector_t)(unsafe.Pointer(sec)).Ffloorheight {
 				(*plat_t)(unsafe.Pointer(plat)).Flow = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight
 			}
 			(*plat_t)(unsafe.Pointer(plat)).Fhigh = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight
-			(*plat_t)(unsafe.Pointer(plat)).Fwait = libc.Int32FromInt32(TICRATE) * libc.Int32FromInt32(PLATWAIT)
+			(*plat_t)(unsafe.Pointer(plat)).Fwait = (TICRATE) * (PLATWAIT)
 			(*plat_t)(unsafe.Pointer(plat)).Fstatus = int32(down)
 			S_StartSound(tls, sec+48, int32(sfx_pstart))
 		case int32(perpetualRaise):
-			(*plat_t)(unsafe.Pointer(plat)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+			(*plat_t)(unsafe.Pointer(plat)).Fspeed = (1) << (FRACBITS)
 			(*plat_t)(unsafe.Pointer(plat)).Flow = P_FindLowestFloorSurrounding(tls, sec)
 			if (*plat_t)(unsafe.Pointer(plat)).Flow > (*sector_t)(unsafe.Pointer(sec)).Ffloorheight {
 				(*plat_t)(unsafe.Pointer(plat)).Flow = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight
@@ -31194,7 +31196,7 @@ func EV_DoPlat(tls *libc.TLS, line uintptr, type1 plattype_e, amount int32) (r i
 			if (*plat_t)(unsafe.Pointer(plat)).Fhigh < (*sector_t)(unsafe.Pointer(sec)).Ffloorheight {
 				(*plat_t)(unsafe.Pointer(plat)).Fhigh = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight
 			}
-			(*plat_t)(unsafe.Pointer(plat)).Fwait = libc.Int32FromInt32(TICRATE) * libc.Int32FromInt32(PLATWAIT)
+			(*plat_t)(unsafe.Pointer(plat)).Fwait = (TICRATE) * (PLATWAIT)
 			(*plat_t)(unsafe.Pointer(plat)).Fstatus = P_Random(tls) & int32(1)
 			S_StartSound(tls, sec+48, int32(sfx_pstart))
 			break
@@ -31375,7 +31377,7 @@ func P_BringUpWeapon(tls *libc.TLS, player uintptr) {
 	}
 	newstate = weaponinfo[(*player_t)(unsafe.Pointer(player)).Fpendingweapon].Fupstate
 	(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_nochange)
-	(*(*pspdef_t)(unsafe.Pointer(player + 272 + uintptr(ps_weapon)*24))).Fsy = libc.Int32FromInt32(128) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+	(*(*pspdef_t)(unsafe.Pointer(player + 272 + uintptr(ps_weapon)*24))).Fsy = (128) * ((1) << (FRACBITS))
 	P_SetPsprite(tls, player, int32(ps_weapon), newstate)
 }
 
@@ -31514,10 +31516,10 @@ func A_WeaponReady(tls *libc.TLS, player uintptr, psp uintptr) {
 		(*player_t)(unsafe.Pointer(player)).Fattackdown = 0
 	}
 	// bob the weapon based on movement speed
-	angle = int32(128) * leveltime & (libc.Int32FromInt32(FINEANGLES) - libc.Int32FromInt32(1))
-	(*pspdef_t)(unsafe.Pointer(psp)).Fsx = libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) + FixedMul(tls, (*player_t)(unsafe.Pointer(player)).Fbob, *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(angle)*4)))
-	angle &= libc.Int32FromInt32(FINEANGLES)/libc.Int32FromInt32(2) - libc.Int32FromInt32(1)
-	(*pspdef_t)(unsafe.Pointer(psp)).Fsy = libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) + FixedMul(tls, (*player_t)(unsafe.Pointer(player)).Fbob, finesine[angle])
+	angle = int32(128) * leveltime & ((FINEANGLES) - (1))
+	(*pspdef_t)(unsafe.Pointer(psp)).Fsx = (1)<<(FRACBITS) + FixedMul(tls, (*player_t)(unsafe.Pointer(player)).Fbob, *(*fixed_t)(unsafe.Pointer(finecosine + uintptr(angle)*4)))
+	angle &= (FINEANGLES)/(2) - (1)
+	(*pspdef_t)(unsafe.Pointer(psp)).Fsy = (32)*((1)<<(FRACBITS)) + FixedMul(tls, (*player_t)(unsafe.Pointer(player)).Fbob, finesine[angle])
 }
 
 // C documentation
@@ -31551,14 +31553,14 @@ func A_CheckReload(tls *libc.TLS, player uintptr, psp uintptr) {
 //	//  and changes weapon at bottom.
 //	//
 func A_Lower(tls *libc.TLS, player uintptr, psp uintptr) {
-	*(*fixed_t)(unsafe.Pointer(psp + 16)) += libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(6)
+	*(*fixed_t)(unsafe.Pointer(psp + 16)) += (1) << (FRACBITS) * (6)
 	// Is already down.
-	if (*pspdef_t)(unsafe.Pointer(psp)).Fsy < libc.Int32FromInt32(128)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+	if (*pspdef_t)(unsafe.Pointer(psp)).Fsy < (128)*((1)<<(FRACBITS)) {
 		return
 	}
 	// Player is dead.
 	if (*player_t)(unsafe.Pointer(player)).Fplayerstate == int32(PST_DEAD) {
-		(*pspdef_t)(unsafe.Pointer(psp)).Fsy = libc.Int32FromInt32(128) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+		(*pspdef_t)(unsafe.Pointer(psp)).Fsy = (128) * ((1) << (FRACBITS))
 		// don't bring weapon back up
 		return
 	}
@@ -31580,11 +31582,11 @@ func A_Lower(tls *libc.TLS, player uintptr, psp uintptr) {
 //	//
 func A_Raise(tls *libc.TLS, player uintptr, psp uintptr) {
 	var newstate statenum_t
-	*(*fixed_t)(unsafe.Pointer(psp + 16)) -= libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(6)
-	if (*pspdef_t)(unsafe.Pointer(psp)).Fsy > libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+	*(*fixed_t)(unsafe.Pointer(psp + 16)) -= (1) << (FRACBITS) * (6)
+	if (*pspdef_t)(unsafe.Pointer(psp)).Fsy > (32)*((1)<<(FRACBITS)) {
 		return
 	}
-	(*pspdef_t)(unsafe.Pointer(psp)).Fsy = libc.Int32FromInt32(32) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+	(*pspdef_t)(unsafe.Pointer(psp)).Fsy = (32) * ((1) << (FRACBITS))
 	// The weapon has been raised all the way,
 	//  so change to the ready state.
 	newstate = weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Freadystate
@@ -31619,8 +31621,8 @@ func A_Punch(tls *libc.TLS, player uintptr, psp uintptr) {
 	}
 	angle = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle
 	angle += libc.Uint32FromInt32((P_Random(tls) - P_Random(tls)) << int32(18))
-	slope = P_AimLineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
-	P_LineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), slope, damage)
+	slope = P_AimLineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, (64)*((1)<<(FRACBITS)))
+	P_LineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, (64)*((1)<<(FRACBITS)), slope, damage)
 	// turn to face target
 	if linetarget != 0 {
 		S_StartSound(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(sfx_punch))
@@ -31640,8 +31642,8 @@ func A_Saw(tls *libc.TLS, player uintptr, psp uintptr) {
 	angle = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle
 	angle += libc.Uint32FromInt32((P_Random(tls) - P_Random(tls)) << int32(18))
 	// use meleerange + 1 se the puff doesn't skip the flash
-	slope = P_AimLineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))+libc.Int32FromInt32(1))
-	P_LineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))+libc.Int32FromInt32(1), slope, damage)
+	slope = P_AimLineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, (64)*((1)<<(FRACBITS))+(1))
+	P_LineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, (64)*((1)<<(FRACBITS))+(1), slope, damage)
 	if !(linetarget != 0) {
 		S_StartSound(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(sfx_sawful))
 		return
@@ -31650,16 +31652,16 @@ func A_Saw(tls *libc.TLS, player uintptr, psp uintptr) {
 	// turn to face target
 	angle = R_PointToAngle2(tls, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fy, (*mobj_t)(unsafe.Pointer(linetarget)).Fx, (*mobj_t)(unsafe.Pointer(linetarget)).Fy)
 	if angle-(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle > uint32(ANG1807) {
-		if libc.Int32FromUint32(angle-(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle) < -libc.Int32FromInt32(ANG905)/libc.Int32FromInt32(20) {
-			(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle = angle + libc.Uint32FromInt32(libc.Int32FromInt32(ANG905)/libc.Int32FromInt32(21))
+		if libc.Int32FromUint32(angle-(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle) < -(ANG905)/(20) {
+			(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle = angle + libc.Uint32FromInt32((ANG905)/(21))
 		} else {
-			*(*angle_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 56)) -= libc.Uint32FromInt32(libc.Int32FromInt32(ANG905) / libc.Int32FromInt32(20))
+			*(*angle_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 56)) -= libc.Uint32FromInt32((ANG905) / (20))
 		}
 	} else {
-		if angle-(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle > libc.Uint32FromInt32(libc.Int32FromInt32(ANG905)/libc.Int32FromInt32(20)) {
-			(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle = angle - libc.Uint32FromInt32(libc.Int32FromInt32(ANG905)/libc.Int32FromInt32(21))
+		if angle-(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle > libc.Uint32FromInt32((ANG905)/(20)) {
+			(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle = angle - libc.Uint32FromInt32((ANG905)/(21))
 		} else {
-			*(*angle_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 56)) += libc.Uint32FromInt32(libc.Int32FromInt32(ANG905) / libc.Int32FromInt32(20))
+			*(*angle_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 56)) += libc.Uint32FromInt32((ANG905) / (20))
 		}
 	}
 	*(*int32)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 160)) |= int32(MF_JUSTATTACKED)
@@ -31714,13 +31716,13 @@ func P_BulletSlope(tls *libc.TLS, mo uintptr) {
 	var an angle_t
 	// see which target is to be aimed at
 	an = (*mobj_t)(unsafe.Pointer(mo)).Fangle
-	bulletslope = P_AimLineAttack(tls, mo, an, libc.Int32FromInt32(16)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+	bulletslope = P_AimLineAttack(tls, mo, an, (16)*(64)*((1)<<(FRACBITS)))
 	if !(linetarget != 0) {
-		an += libc.Uint32FromInt32(libc.Int32FromInt32(1) << libc.Int32FromInt32(26))
-		bulletslope = P_AimLineAttack(tls, mo, an, libc.Int32FromInt32(16)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+		an += libc.Uint32FromInt32((1) << (26))
+		bulletslope = P_AimLineAttack(tls, mo, an, (16)*(64)*((1)<<(FRACBITS)))
 		if !(linetarget != 0) {
-			an -= libc.Uint32FromInt32(libc.Int32FromInt32(2) << libc.Int32FromInt32(26))
-			bulletslope = P_AimLineAttack(tls, mo, an, libc.Int32FromInt32(16)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+			an -= libc.Uint32FromInt32((2) << (26))
+			bulletslope = P_AimLineAttack(tls, mo, an, (16)*(64)*((1)<<(FRACBITS)))
 		}
 	}
 }
@@ -31738,7 +31740,7 @@ func P_GunShot(tls *libc.TLS, mo uintptr, accurate boolean) {
 	if !(accurate != 0) {
 		angle += libc.Uint32FromInt32((P_Random(tls) - P_Random(tls)) << int32(18))
 	}
-	P_LineAttack(tls, mo, angle, libc.Int32FromInt32(32)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), bulletslope, damage)
+	P_LineAttack(tls, mo, angle, (32)*(64)*((1)<<(FRACBITS)), bulletslope, damage)
 }
 
 // C documentation
@@ -31801,7 +31803,7 @@ func A_FireShotgun2(tls *libc.TLS, player uintptr, psp uintptr) {
 		damage = int32(5) * (P_Random(tls)%int32(3) + int32(1))
 		angle = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle
 		angle += libc.Uint32FromInt32((P_Random(tls) - P_Random(tls)) << int32(19))
-		P_LineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, libc.Int32FromInt32(32)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), bulletslope+(P_Random(tls)-P_Random(tls))<<int32(5), damage)
+		P_LineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, (32)*(64)*((1)<<(FRACBITS)), bulletslope+(P_Random(tls)-P_Random(tls))<<int32(5), damage)
 		goto _1
 	_1:
 		;
@@ -31858,14 +31860,14 @@ func A_BFGSpray(tls *libc.TLS, mo uintptr) {
 		if !(i < int32(40)) {
 			break
 		}
-		an = (*mobj_t)(unsafe.Pointer(mo)).Fangle - libc.Uint32FromInt32(libc.Int32FromInt32(ANG905)/libc.Int32FromInt32(2)) + libc.Uint32FromInt32(libc.Int32FromInt32(ANG905)/libc.Int32FromInt32(40)*i)
+		an = (*mobj_t)(unsafe.Pointer(mo)).Fangle - libc.Uint32FromInt32((ANG905)/(2)) + libc.Uint32FromInt32((ANG905)/(40)*i)
 		// mo->target is the originator (player)
 		//  of the missile
-		P_AimLineAttack(tls, (*mobj_t)(unsafe.Pointer(mo)).Ftarget, an, libc.Int32FromInt32(16)*libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))
+		P_AimLineAttack(tls, (*mobj_t)(unsafe.Pointer(mo)).Ftarget, an, (16)*(64)*((1)<<(FRACBITS)))
 		if !(linetarget != 0) {
 			goto _1
 		}
-		P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(linetarget)).Fx, (*mobj_t)(unsafe.Pointer(linetarget)).Fy, (*mobj_t)(unsafe.Pointer(linetarget)).Fz+(*mobj_t)(unsafe.Pointer(linetarget)).Fheight>>libc.Int32FromInt32(2), int32(MT_EXTRABFG))
+		P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(linetarget)).Fx, (*mobj_t)(unsafe.Pointer(linetarget)).Fy, (*mobj_t)(unsafe.Pointer(linetarget)).Fz+(*mobj_t)(unsafe.Pointer(linetarget)).Fheight>>(2), int32(MT_EXTRABFG))
 		damage = 0
 		j = 0
 		for {
@@ -34139,7 +34141,7 @@ func P_GroupLines(tls *libc.TLS) {
 		(*sector_t)(unsafe.Pointer(sector)).Fsoundorg.Fx = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXRIGHT)] + (*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXLEFT)]) / int32(2)
 		(*sector_t)(unsafe.Pointer(sector)).Fsoundorg.Fy = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXTOP)] + (*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXBOTTOM)]) / int32(2)
 		// adjust bounding box to map blocks
-		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXTOP)] - bmaporgy + libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXTOP)] - bmaporgy + (32)*((1)<<(FRACBITS))) >> ((FRACBITS) + (7))
 		if block >= bmapheight {
 			v7 = bmapheight - int32(1)
 		} else {
@@ -34147,7 +34149,7 @@ func P_GroupLines(tls *libc.TLS) {
 		}
 		block = v7
 		*(*int32)(unsafe.Pointer(sector + 32 + uintptr(BOXTOP)*4)) = block
-		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXBOTTOM)] - bmaporgy - libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXBOTTOM)] - bmaporgy - (32)*((1)<<(FRACBITS))) >> ((FRACBITS) + (7))
 		if block < 0 {
 			v8 = 0
 		} else {
@@ -34155,7 +34157,7 @@ func P_GroupLines(tls *libc.TLS) {
 		}
 		block = v8
 		*(*int32)(unsafe.Pointer(sector + 32 + uintptr(BOXBOTTOM)*4)) = block
-		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXRIGHT)] - bmaporgx + libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXRIGHT)] - bmaporgx + (32)*((1)<<(FRACBITS))) >> ((FRACBITS) + (7))
 		if block >= bmapwidth {
 			v9 = bmapwidth - int32(1)
 		} else {
@@ -34163,7 +34165,7 @@ func P_GroupLines(tls *libc.TLS) {
 		}
 		block = v9
 		*(*int32)(unsafe.Pointer(sector + 32 + uintptr(BOXRIGHT)*4)) = block
-		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXLEFT)] - bmaporgx - libc.Int32FromInt32(32)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> (libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(7))
+		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXLEFT)] - bmaporgx - (32)*((1)<<(FRACBITS))) >> ((FRACBITS) + (7))
 		if block < 0 {
 			v10 = 0
 		} else {
@@ -34189,7 +34191,7 @@ func PadRejectArray(tls *libc.TLS, array uintptr, len1 uint32) {
 	var rejectpad [4]uint32
 	// Values to pad the REJECT array with:
 	rejectpad = [4]uint32{
-		0: libc.Uint32FromInt32((totallines*int32(4)+int32(3)) & ^libc.Int32FromInt32(3) + int32(24)),
+		0: libc.Uint32FromInt32((totallines*int32(4)+int32(3)) & ^(3) + int32(24)),
 		2: uint32(50),
 		3: uint32(0x1d4a11),
 	}
@@ -34247,7 +34249,7 @@ func P_LoadReject(tls *libc.TLS, lumpnum int32) {
 func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, skill skill_t) {
 	bp := alloc(32)
 	var i, lumpnum, v1, v2, v3, v5, v6, v8 int32
-	v3 = libc.Int32FromInt32(0)
+	v3 = (0)
 	wminfo.Fmaxfrags = v3
 	v2 = v3
 	totalsecret = v2
@@ -34260,7 +34262,7 @@ func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, sk
 		if !(i < int32(MAXPLAYERS)) {
 			break
 		}
-		v6 = libc.Int32FromInt32(0)
+		v6 = (0)
 		players[i].Fitemcount = v6
 		v5 = v6
 		players[i].Fsecretcount = v5
@@ -34275,7 +34277,7 @@ func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, sk
 	players[consoleplayer].Fviewz = int32(1)
 	// Make sure all sounds are stopped before Z_FreeTags.
 	S_Start(tls)
-	Z_FreeTags(tls, int32(PU_LEVEL), int32(PU_PURGELEVEL)-libc.Int32FromInt32(1))
+	Z_FreeTags(tls, int32(PU_LEVEL), int32(PU_PURGELEVEL)-(1))
 	// UNUSED W_Profile ();
 	P_InitThinkers(tls)
 	// find map name
@@ -34326,7 +34328,7 @@ func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, sk
 		}
 	}
 	// clear special respawning que
-	v8 = libc.Int32FromInt32(0)
+	v8 = (0)
 	iquetail = v8
 	iquehead = v8
 	// set up world state
@@ -34381,8 +34383,8 @@ func P_DivlineSide(tls *libc.TLS, x fixed_t, y fixed_t, node uintptr) (r int32) 
 	}
 	dx = x - (*divline_t)(unsafe.Pointer(node)).Fx
 	dy = y - (*divline_t)(unsafe.Pointer(node)).Fy
-	left = (*divline_t)(unsafe.Pointer(node)).Fdy >> libc.Int32FromInt32(FRACBITS) * (dx >> libc.Int32FromInt32(FRACBITS))
-	right = dy >> libc.Int32FromInt32(FRACBITS) * ((*divline_t)(unsafe.Pointer(node)).Fdx >> libc.Int32FromInt32(FRACBITS))
+	left = (*divline_t)(unsafe.Pointer(node)).Fdy >> (FRACBITS) * (dx >> (FRACBITS))
+	right = dy >> (FRACBITS) * ((*divline_t)(unsafe.Pointer(node)).Fdx >> (FRACBITS))
 	if right < left {
 		return 0
 	} // front side
@@ -34466,7 +34468,7 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 		}
 		// stop because it is not two sided anyway
 		// might do this after updating validcount?
-		if !(int32((*line_t)(unsafe.Pointer(line)).Fflags)&libc.Int32FromInt32(ML_TWOSIDED) != 0) {
+		if !(int32((*line_t)(unsafe.Pointer(line)).Fflags)&(ML_TWOSIDED) != 0) {
 			return 0
 		}
 		// crosses a two sided line
@@ -34533,7 +34535,7 @@ func P_CrossBSPNode(tls *libc.TLS, bspnum int32) (r boolean) {
 		if bspnum == -int32(1) {
 			return P_CrossSubsector(tls, 0)
 		} else {
-			return P_CrossSubsector(tls, bspnum & ^libc.Int32FromInt32(NF_SUBSECTOR1))
+			return P_CrossSubsector(tls, bspnum & ^(NF_SUBSECTOR1))
 		}
 	}
 	bsp = nodes + uintptr(bspnum)*52
@@ -34582,7 +34584,7 @@ func P_CheckSight(tls *libc.TLS, t1 uintptr, t2 uintptr) (r boolean) {
 	// Now look from eyes of t1 to any part of t2.
 	sightcounts[int32(1)]++
 	validcount++
-	sightzstart = (*mobj_t)(unsafe.Pointer(t1)).Fz + (*mobj_t)(unsafe.Pointer(t1)).Fheight - (*mobj_t)(unsafe.Pointer(t1)).Fheight>>libc.Int32FromInt32(2)
+	sightzstart = (*mobj_t)(unsafe.Pointer(t1)).Fz + (*mobj_t)(unsafe.Pointer(t1)).Fheight - (*mobj_t)(unsafe.Pointer(t1)).Fheight>>(2)
 	topslope = (*mobj_t)(unsafe.Pointer(t2)).Fz + (*mobj_t)(unsafe.Pointer(t2)).Fheight - sightzstart
 	bottomslope = (*mobj_t)(unsafe.Pointer(t2)).Fz - sightzstart
 	strace.Fx = (*mobj_t)(unsafe.Pointer(t1)).Fx
@@ -34887,7 +34889,7 @@ func twoSided(tls *libc.TLS, sector int32, line int32) (r int32) {
 //	// NULL if not two-sided line
 //	//
 func getNextSector(tls *libc.TLS, line uintptr, sec uintptr) (r uintptr) {
-	if !(int32((*line_t)(unsafe.Pointer(line)).Fflags)&libc.Int32FromInt32(ML_TWOSIDED) != 0) {
+	if !(int32((*line_t)(unsafe.Pointer(line)).Fflags)&(ML_TWOSIDED) != 0) {
 		return libc.UintptrFromInt32(0)
 	}
 	if (*line_t)(unsafe.Pointer(line)).Ffrontsector == sec {
@@ -34938,7 +34940,7 @@ func P_FindHighestFloorSurrounding(tls *libc.TLS, sec uintptr) (r fixed_t) {
 	var check, other uintptr
 	var floor fixed_t
 	var i int32
-	floor = -libc.Int32FromInt32(500) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+	floor = -(500) * ((1) << (FRACBITS))
 	i = 0
 	for {
 		if !(i < (*sector_t)(unsafe.Pointer(sec)).Flinecount) {
@@ -34976,7 +34978,7 @@ func P_FindNextHighestFloor(tls *libc.TLS, sec uintptr, currentheight int32) (r 
 	var heightlist [22]fixed_t
 	height = currentheight
 	i = 0
-	h = libc.Int32FromInt32(0)
+	h = (0)
 	for {
 		if !(i < (*sector_t)(unsafe.Pointer(sec)).Flinecount) {
 			break
@@ -34988,10 +34990,10 @@ func P_FindNextHighestFloor(tls *libc.TLS, sec uintptr, currentheight int32) (r 
 		}
 		if (*sector_t)(unsafe.Pointer(other)).Ffloorheight > height {
 			// Emulation of memory (stack) overflow
-			if h == libc.Int32FromInt32(MAX_ADJOINING_SECTORS)+libc.Int32FromInt32(1) {
+			if h == (MAX_ADJOINING_SECTORS)+(1) {
 				height = (*sector_t)(unsafe.Pointer(other)).Ffloorheight
 			} else {
-				if h == libc.Int32FromInt32(MAX_ADJOINING_SECTORS)+libc.Int32FromInt32(2) {
+				if h == (MAX_ADJOINING_SECTORS)+(2) {
 					// Fatal overflow: game crashes at 22 textures
 					I_Error(tls, __ccgo_ts(25319), 0)
 				}
@@ -35531,14 +35533,14 @@ func P_PlayerInSpecialSector(tls *libc.TLS, player uintptr) {
 	case int32(5):
 		// HELLSLIME DAMAGE
 		if !(*(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_ironfeet)*4)) != 0) {
-			if !(leveltime&libc.Int32FromInt32(0x1f) != 0) {
+			if !(leveltime&(0x1f) != 0) {
 				P_DamageMobj(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), int32(10))
 			}
 		}
 	case int32(7):
 		// NUKAGE DAMAGE
 		if !(*(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_ironfeet)*4)) != 0) {
-			if !(leveltime&libc.Int32FromInt32(0x1f) != 0) {
+			if !(leveltime&(0x1f) != 0) {
 				P_DamageMobj(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), int32(5))
 			}
 		}
@@ -35548,7 +35550,7 @@ func P_PlayerInSpecialSector(tls *libc.TLS, player uintptr) {
 	case int32(4):
 		// STROBE HURT
 		if !(*(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_ironfeet)*4)) != 0) || P_Random(tls) < int32(5) {
-			if !(leveltime&libc.Int32FromInt32(0x1f) != 0) {
+			if !(leveltime&(0x1f) != 0) {
 				P_DamageMobj(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), int32(20))
 			}
 		}
@@ -35559,7 +35561,7 @@ func P_PlayerInSpecialSector(tls *libc.TLS, player uintptr) {
 	case int32(11):
 		// EXIT SUPER DAMAGE! (for E1M8 finale)
 		*(*int32)(unsafe.Pointer(player + 208)) &= ^int32(CF_GODMODE)
-		if !(leveltime&libc.Int32FromInt32(0x1f) != 0) {
+		if !(leveltime&(0x1f) != 0) {
 			P_DamageMobj(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), int32(20))
 		}
 		if (*player_t)(unsafe.Pointer(player)).Fhealth <= int32(10) {
@@ -35618,7 +35620,7 @@ func P_UpdateSpecials(tls *libc.TLS) {
 		switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
 		case int32(48):
 			// EFFECT FIRSTCOL SCROLL +
-			(*(*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(line + 30)))*24))).Ftextureoffset += libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+			(*(*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(line + 30)))*24))).Ftextureoffset += (1) << (FRACBITS)
 			break
 		}
 		goto _3
@@ -35786,7 +35788,7 @@ func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
 			(*floormove_t)(unsafe.Pointer(floor)).Fcrush = 0
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = s2
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) / libc.Int32FromInt32(2)
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS) / (2)
 			(*floormove_t)(unsafe.Pointer(floor)).Ftexture = *(*int16)(unsafe.Pointer(bp + 4))
 			(*floormove_t)(unsafe.Pointer(floor)).Fnewspecial = 0
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = *(*fixed_t)(unsafe.Pointer(bp))
@@ -35799,7 +35801,7 @@ func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
 			(*floormove_t)(unsafe.Pointer(floor)).Fcrush = 0
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = -int32(1)
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = s1
-			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) / libc.Int32FromInt32(2)
+			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = (1) << (FRACBITS) / (2)
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = *(*fixed_t)(unsafe.Pointer(bp))
 			break
 			goto _2
@@ -36162,7 +36164,7 @@ func P_InitSwitchList(tls *libc.TLS) {
 		}
 	}
 	index = 0
-	i = libc.Int32FromInt32(0)
+	i = (0)
 	for {
 		if !(i < int32(MAXSWITCHES)) {
 			break
@@ -36729,7 +36731,7 @@ func EV_Teleport(tls *libc.TLS, line uintptr, side int32, thing uintptr) (r int3
 					(*mobj_t)(unsafe.Pointer(thing)).Freactiontime = int32(18)
 				}
 				(*mobj_t)(unsafe.Pointer(thing)).Fangle = (*mobj_t)(unsafe.Pointer(m)).Fangle
-				v4 = libc.Int32FromInt32(0)
+				v4 = (0)
 				(*mobj_t)(unsafe.Pointer(thing)).Fmomz = v4
 				v3 = v4
 				(*mobj_t)(unsafe.Pointer(thing)).Fmomy = v3
@@ -36783,7 +36785,7 @@ func P_AddThinker(tls *libc.TLS, thinker uintptr) {
 //	//
 func P_RemoveThinker(tls *libc.TLS, thinker uintptr) {
 	// FIXME: NOP.
-	*(*actionf_v)(unsafe.Pointer(thinker + 16)) = uintptr(-libc.Int32FromInt32(1))
+	*(*actionf_v)(unsafe.Pointer(thinker + 16)) = uintptr_negative_one
 }
 
 // C documentation
@@ -36795,7 +36797,7 @@ func P_RunThinkers(tls *libc.TLS) {
 	var currentthinker uintptr
 	currentthinker = thinkercap.Fnext
 	for currentthinker != uintptr(unsafe.Pointer(&thinkercap)) {
-		if *(*actionf_v)(unsafe.Pointer(currentthinker + 16)) == uintptr(-libc.Int32FromInt32(1)) {
+		if *(*actionf_v)(unsafe.Pointer(currentthinker + 16)) == uintptr_negative_one {
 			// time to remove it
 			(*thinker_s)(unsafe.Pointer((*thinker_t)(unsafe.Pointer(currentthinker)).Fnext)).Fprev = (*thinker_t)(unsafe.Pointer(currentthinker)).Fprev
 			(*thinker_s)(unsafe.Pointer((*thinker_t)(unsafe.Pointer(currentthinker)).Fprev)).Fnext = (*thinker_t)(unsafe.Pointer(currentthinker)).Fnext
@@ -36881,38 +36883,38 @@ func P_CalcHeight(tls *libc.TLS, player uintptr) {
 		(*player_t)(unsafe.Pointer(player)).Fbob = int32(MAXBOB)
 	}
 	if (*player_t)(unsafe.Pointer(player)).Fcheats&int32(CF_NOMOMENTUM) != 0 || !(onground != 0) {
-		(*player_t)(unsafe.Pointer(player)).Fviewz = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fz + libc.Int32FromInt32(41)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
-		if (*player_t)(unsafe.Pointer(player)).Fviewz > (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fceilingz-libc.Int32FromInt32(4)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
-			(*player_t)(unsafe.Pointer(player)).Fviewz = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fceilingz - libc.Int32FromInt32(4)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+		(*player_t)(unsafe.Pointer(player)).Fviewz = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fz + (41)*((1)<<(FRACBITS))
+		if (*player_t)(unsafe.Pointer(player)).Fviewz > (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fceilingz-(4)*((1)<<(FRACBITS)) {
+			(*player_t)(unsafe.Pointer(player)).Fviewz = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fceilingz - (4)*((1)<<(FRACBITS))
 		}
 		(*player_t)(unsafe.Pointer(player)).Fviewz = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fz + (*player_t)(unsafe.Pointer(player)).Fviewheight
 		return
 	}
-	angle = libc.Int32FromInt32(FINEANGLES) / libc.Int32FromInt32(20) * leveltime & (libc.Int32FromInt32(FINEANGLES) - libc.Int32FromInt32(1))
+	angle = (FINEANGLES) / (20) * leveltime & ((FINEANGLES) - (1))
 	bob = FixedMul(tls, (*player_t)(unsafe.Pointer(player)).Fbob/int32(2), finesine[angle])
 	// move viewheight
 	if (*player_t)(unsafe.Pointer(player)).Fplayerstate == int32(PST_LIVE) {
 		*(*fixed_t)(unsafe.Pointer(player + 32)) += (*player_t)(unsafe.Pointer(player)).Fdeltaviewheight
-		if (*player_t)(unsafe.Pointer(player)).Fviewheight > libc.Int32FromInt32(41)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
-			(*player_t)(unsafe.Pointer(player)).Fviewheight = libc.Int32FromInt32(41) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+		if (*player_t)(unsafe.Pointer(player)).Fviewheight > (41)*((1)<<(FRACBITS)) {
+			(*player_t)(unsafe.Pointer(player)).Fviewheight = (41) * ((1) << (FRACBITS))
 			(*player_t)(unsafe.Pointer(player)).Fdeltaviewheight = 0
 		}
-		if (*player_t)(unsafe.Pointer(player)).Fviewheight < libc.Int32FromInt32(41)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))/libc.Int32FromInt32(2) {
-			(*player_t)(unsafe.Pointer(player)).Fviewheight = libc.Int32FromInt32(41) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)) / libc.Int32FromInt32(2)
+		if (*player_t)(unsafe.Pointer(player)).Fviewheight < (41)*((1)<<(FRACBITS))/(2) {
+			(*player_t)(unsafe.Pointer(player)).Fviewheight = (41) * ((1) << (FRACBITS)) / (2)
 			if (*player_t)(unsafe.Pointer(player)).Fdeltaviewheight <= 0 {
 				(*player_t)(unsafe.Pointer(player)).Fdeltaviewheight = int32(1)
 			}
 		}
 		if (*player_t)(unsafe.Pointer(player)).Fdeltaviewheight != 0 {
-			*(*fixed_t)(unsafe.Pointer(player + 36)) += libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) / libc.Int32FromInt32(4)
+			*(*fixed_t)(unsafe.Pointer(player + 36)) += (1) << (FRACBITS) / (4)
 			if !((*player_t)(unsafe.Pointer(player)).Fdeltaviewheight != 0) {
 				(*player_t)(unsafe.Pointer(player)).Fdeltaviewheight = int32(1)
 			}
 		}
 	}
 	(*player_t)(unsafe.Pointer(player)).Fviewz = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fz + (*player_t)(unsafe.Pointer(player)).Fviewheight + bob
-	if (*player_t)(unsafe.Pointer(player)).Fviewz > (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fceilingz-libc.Int32FromInt32(4)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
-		(*player_t)(unsafe.Pointer(player)).Fviewz = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fceilingz - libc.Int32FromInt32(4)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+	if (*player_t)(unsafe.Pointer(player)).Fviewz > (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fceilingz-(4)*((1)<<(FRACBITS)) {
+		(*player_t)(unsafe.Pointer(player)).Fviewz = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fceilingz - (4)*((1)<<(FRACBITS))
 	}
 }
 
@@ -36924,7 +36926,7 @@ func P_CalcHeight(tls *libc.TLS, player uintptr) {
 func P_MovePlayer(tls *libc.TLS, player uintptr) {
 	var cmd uintptr
 	cmd = player + 12
-	*(*angle_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 56)) += libc.Uint32FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) << libc.Int32FromInt32(16))
+	*(*angle_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 56)) += libc.Uint32FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) << (16))
 	// Do not let the player control movement
 	//  if not onground.
 	onground = libc.BoolUint32((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fz <= (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Ffloorz)
@@ -36949,11 +36951,11 @@ func P_DeathThink(tls *libc.TLS, player uintptr) {
 	var angle, delta angle_t
 	P_MovePsprites(tls, player)
 	// fall to the ground
-	if (*player_t)(unsafe.Pointer(player)).Fviewheight > libc.Int32FromInt32(6)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
-		*(*fixed_t)(unsafe.Pointer(player + 32)) -= libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS)
+	if (*player_t)(unsafe.Pointer(player)).Fviewheight > (6)*((1)<<(FRACBITS)) {
+		*(*fixed_t)(unsafe.Pointer(player + 32)) -= (1) << (FRACBITS)
 	}
-	if (*player_t)(unsafe.Pointer(player)).Fviewheight < libc.Int32FromInt32(6)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
-		(*player_t)(unsafe.Pointer(player)).Fviewheight = libc.Int32FromInt32(6) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+	if (*player_t)(unsafe.Pointer(player)).Fviewheight < (6)*((1)<<(FRACBITS)) {
+		(*player_t)(unsafe.Pointer(player)).Fviewheight = (6) * ((1) << (FRACBITS))
 	}
 	(*player_t)(unsafe.Pointer(player)).Fdeltaviewheight = 0
 	onground = libc.BoolUint32((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fz <= (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Ffloorz)
@@ -36961,7 +36963,7 @@ func P_DeathThink(tls *libc.TLS, player uintptr) {
 	if (*player_t)(unsafe.Pointer(player)).Fattacker != 0 && (*player_t)(unsafe.Pointer(player)).Fattacker != (*player_t)(unsafe.Pointer(player)).Fmo {
 		angle = R_PointToAngle2(tls, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fy, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fattacker)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fattacker)).Fy)
 		delta = angle - (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle
-		if delta < libc.Uint32FromInt32(libc.Int32FromInt32(ANG907)/libc.Int32FromInt32(18)) || delta > libc.Uint32FromInt32(-(libc.Int32FromInt32(ANG907)/libc.Int32FromInt32(18))) {
+		if delta < libc.Uint32FromInt32((ANG907)/(18)) || delta > libc.Uint32FromInt32(-((ANG907)/(18))) {
 			// Looking at killer,
 			//  so fade damage flash down.
 			(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle = angle
@@ -36970,9 +36972,9 @@ func P_DeathThink(tls *libc.TLS, player uintptr) {
 			}
 		} else {
 			if delta < uint32(ANG1809) {
-				*(*angle_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 56)) += libc.Uint32FromInt32(libc.Int32FromInt32(ANG907) / libc.Int32FromInt32(18))
+				*(*angle_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 56)) += libc.Uint32FromInt32((ANG907) / (18))
 			} else {
-				*(*angle_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 56)) -= libc.Uint32FromInt32(libc.Int32FromInt32(ANG907) / libc.Int32FromInt32(18))
+				*(*angle_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 56)) -= libc.Uint32FromInt32((ANG907) / (18))
 			}
 		}
 	} else {
@@ -37004,7 +37006,7 @@ func P_PlayerThink(tls *libc.TLS, player uintptr) {
 	cmd = player + 12
 	if (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fflags&int32(MF_JUSTATTACKED) != 0 {
 		(*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn = 0
-		(*ticcmd_t)(unsafe.Pointer(cmd)).Fforwardmove = int8(libc.Int32FromInt32(0xc800) / libc.Int32FromInt32(512))
+		(*ticcmd_t)(unsafe.Pointer(cmd)).Fforwardmove = int8((0xc800) / (512))
 		(*ticcmd_t)(unsafe.Pointer(cmd)).Fsidemove = 0
 		*(*int32)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo + 160)) &= ^int32(MF_JUSTATTACKED)
 	}
@@ -37089,14 +37091,14 @@ func P_PlayerThink(tls *libc.TLS, player uintptr) {
 	}
 	// Handling colormaps.
 	if *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_invulnerability)*4)) != 0 {
-		if *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_invulnerability)*4)) > libc.Int32FromInt32(4)*libc.Int32FromInt32(32) || *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_invulnerability)*4))&int32(8) != 0 {
+		if *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_invulnerability)*4)) > (4)*(32) || *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_invulnerability)*4))&int32(8) != 0 {
 			(*player_t)(unsafe.Pointer(player)).Ffixedcolormap = int32(INVERSECOLORMAP)
 		} else {
 			(*player_t)(unsafe.Pointer(player)).Ffixedcolormap = 0
 		}
 	} else {
 		if *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_infrared)*4)) != 0 {
-			if *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_infrared)*4)) > libc.Int32FromInt32(4)*libc.Int32FromInt32(32) || *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_infrared)*4))&int32(8) != 0 {
+			if *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_infrared)*4)) > (4)*(32) || *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_infrared)*4))&int32(8) != 0 {
 				// almost full bright
 				(*player_t)(unsafe.Pointer(player)).Ffixedcolormap = int32(1)
 			} else {
@@ -37536,7 +37538,7 @@ func R_RenderBSPNode(tls *libc.TLS, bspnum int32) {
 		if bspnum == -int32(1) {
 			R_Subsector(tls, 0)
 		} else {
-			R_Subsector(tls, bspnum & ^libc.Int32FromInt32(NF_SUBSECTOR3))
+			R_Subsector(tls, bspnum & ^(NF_SUBSECTOR3))
 		}
 		return
 	}
@@ -37968,7 +37970,7 @@ func R_InitTextures(tls *libc.TLS) {
 		if !(i < numtextures) {
 			break
 		}
-		if !(i&libc.Int32FromInt32(63) != 0) {
+		if !(i&(63) != 0) {
 			libc.Xprintf(tls, __ccgo_ts(1250), 0)
 		}
 		if i == numtextures1 {
@@ -37982,7 +37984,7 @@ func R_InitTextures(tls *libc.TLS) {
 			I_Error(tls, __ccgo_ts(26069), 0)
 		}
 		mtexture = maptex + uintptr(offset)
-		v6 = Z_Malloc(tls, libc.Int32FromUint64(uint64(40)+uint64(8)*libc.Uint64FromInt32(int32((*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount)-libc.Int32FromInt32(1))), int32(PU_STATIC), uintptr(0))
+		v6 = Z_Malloc(tls, libc.Int32FromUint64(uint64(40)+uint64(8)*libc.Uint64FromInt32(int32((*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount)-(1))), int32(PU_STATIC), uintptr(0))
 		*(*uintptr)(unsafe.Pointer(textures + uintptr(i)*8)) = v6
 		texture = v6
 		(*texture_t)(unsafe.Pointer(texture)).Fwidth = (*maptexture_t)(unsafe.Pointer(mtexture)).Fwidth
@@ -38042,7 +38044,7 @@ func R_InitTextures(tls *libc.TLS) {
 		i++
 	}
 	// Create translation table for global animation.
-	texturetranslation = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numtextures+libc.Int32FromInt32(1))*uint64(4)), int32(PU_STATIC), uintptr(0))
+	texturetranslation = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numtextures+(1))*uint64(4)), int32(PU_STATIC), uintptr(0))
 	i = 0
 	for {
 		if !(i < numtextures) {
@@ -38068,7 +38070,7 @@ func R_InitFlats(tls *libc.TLS) {
 	lastflat = W_GetNumForName(tls, __ccgo_ts(26159)) - int32(1)
 	numflats = lastflat - firstflat + int32(1)
 	// Create translation table for global animation.
-	flattranslation = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numflats+libc.Int32FromInt32(1))*uint64(4)), int32(PU_STATIC), uintptr(0))
+	flattranslation = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numflats+(1))*uint64(4)), int32(PU_STATIC), uintptr(0))
 	i = 0
 	for {
 		if !(i < numflats) {
@@ -38104,7 +38106,7 @@ func R_InitSpriteLumps(tls *libc.TLS) {
 		if !(i < numspritelumps) {
 			break
 		}
-		if !(i&libc.Int32FromInt32(63) != 0) {
+		if !(i&(63) != 0) {
 			libc.Xprintf(tls, __ccgo_ts(1250), 0)
 		}
 		patch = W_CacheLumpNum(tls, firstspritelump+i, int32(PU_CACHE))
@@ -38394,7 +38396,7 @@ func R_DrawColumn(tls *libc.TLS) {
 	for {
 		// Re-map color indices from wall texture column
 		//  using a lighting/special effects LUT.
-		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>libc.Int32FromInt32(FRACBITS)&int32(127)))))))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>(FRACBITS)&int32(127)))))))
 		dest += uintptr(SCREENWIDTH)
 		frac += fracstep
 		goto _2
@@ -38434,7 +38436,7 @@ func R_DrawColumnLow(tls *libc.TLS) {
 	frac = dc_texturemid + (dc_yl-centery)*fracstep
 	for {
 		// Hack. Does not work corretly.
-		v3 = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>libc.Int32FromInt32(FRACBITS)&int32(127)))))))
+		v3 = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>(FRACBITS)&int32(127)))))))
 		*(*uint8)(unsafe.Pointer(dest)) = v3
 		*(*uint8)(unsafe.Pointer(dest2)) = v3
 		dest += uintptr(SCREENWIDTH)
@@ -38549,7 +38551,7 @@ func R_DrawFuzzColumn(tls *libc.TLS) {
 		//  a pixel that is either one column
 		//  left or right of the current one.
 		// Add index from colormap to index.
-		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr(libc.Int32FromInt32(6)*libc.Int32FromInt32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos])))))))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr((6)*(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos])))))))
 		// Clamp table lookup index.
 		fuzzpos++
 		v3 = fuzzpos
@@ -38606,8 +38608,8 @@ func R_DrawFuzzColumnLow(tls *libc.TLS) {
 		//  a pixel that is either one column
 		//  left or right of the current one.
 		// Add index from colormap to index.
-		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr(libc.Int32FromInt32(6)*libc.Int32FromInt32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos])))))))
-		*(*uint8)(unsafe.Pointer(dest2)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr(libc.Int32FromInt32(6)*libc.Int32FromInt32(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dest2 + uintptr(fuzzoffset[fuzzpos])))))))
+		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr((6)*(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos])))))))
+		*(*uint8)(unsafe.Pointer(dest2)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr((6)*(256)+libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dest2 + uintptr(fuzzoffset[fuzzpos])))))))
 		// Clamp table lookup index.
 		fuzzpos++
 		v3 = fuzzpos
@@ -38719,7 +38721,7 @@ func R_DrawTranslatedColumnLow(tls *libc.TLS) {
 func R_InitTranslationTables(tls *libc.TLS) {
 	var i int32
 	var v2, v3 uint8
-	translationtables = Z_Malloc(tls, libc.Int32FromInt32(256)*libc.Int32FromInt32(3), int32(PU_STATIC), uintptr(0))
+	translationtables = Z_Malloc(tls, (256)*(3), int32(PU_STATIC), uintptr(0))
 	// translate just the 16 green colors
 	i = 0
 	for {
@@ -38763,8 +38765,8 @@ func R_DrawSpan(tls *libc.TLS) {
 	// with x in the top 16 bits and y in the bottom 16 bits.  For
 	// each 16-bit part, the top 6 bits are the integer part and the
 	// bottom 10 bits are the fractional part of the pixel position.
-	position = libc.Uint32FromInt32(ds_xfrac<<libc.Int32FromInt32(10))&uint32(0xffff0000) | libc.Uint32FromInt32(ds_yfrac>>libc.Int32FromInt32(6)&libc.Int32FromInt32(0x0000ffff))
-	step = libc.Uint32FromInt32(ds_xstep<<libc.Int32FromInt32(10))&uint32(0xffff0000) | libc.Uint32FromInt32(ds_ystep>>libc.Int32FromInt32(6)&libc.Int32FromInt32(0x0000ffff))
+	position = libc.Uint32FromInt32(ds_xfrac<<(10))&uint32(0xffff0000) | libc.Uint32FromInt32(ds_yfrac>>(6)&(0x0000ffff))
+	step = libc.Uint32FromInt32(ds_xstep<<(10))&uint32(0xffff0000) | libc.Uint32FromInt32(ds_ystep>>(6)&(0x0000ffff))
 	dest = ylookup[ds_y] + uintptr(columnofs[ds_x1])
 	// We do not check for zero spans here?
 	count = ds_x2 - ds_x1
@@ -38807,8 +38809,8 @@ func R_DrawSpanLow(tls *libc.TLS) {
 		I_Error(tls, __ccgo_ts(26301), libc.VaList(bp+8, ds_x1, ds_x2, ds_y))
 	}
 	//	dscount++;
-	position = libc.Uint32FromInt32(ds_xfrac<<libc.Int32FromInt32(10))&uint32(0xffff0000) | libc.Uint32FromInt32(ds_yfrac>>libc.Int32FromInt32(6)&libc.Int32FromInt32(0x0000ffff))
-	step = libc.Uint32FromInt32(ds_xstep<<libc.Int32FromInt32(10))&uint32(0xffff0000) | libc.Uint32FromInt32(ds_ystep>>libc.Int32FromInt32(6)&libc.Int32FromInt32(0x0000ffff))
+	position = libc.Uint32FromInt32(ds_xfrac<<(10))&uint32(0xffff0000) | libc.Uint32FromInt32(ds_yfrac>>(6)&(0x0000ffff))
+	step = libc.Uint32FromInt32(ds_xstep<<(10))&uint32(0xffff0000) | libc.Uint32FromInt32(ds_ystep>>(6)&(0x0000ffff))
 	count = ds_x2 - ds_x1
 	// Blocky mode, need to multiply by 2.
 	ds_x1 <<= int32(1)
@@ -38870,7 +38872,7 @@ func R_InitBuffer(tls *libc.TLS, width int32, height int32) {
 	if width == int32(SCREENWIDTH) {
 		viewwindowy = 0
 	} else {
-		viewwindowy = (libc.Int32FromInt32(SCREENHEIGHT) - libc.Int32FromInt32(SBARHEIGHT) - height) >> int32(1)
+		viewwindowy = ((SCREENHEIGHT) - (SBARHEIGHT) - height) >> int32(1)
 	}
 	// Preclaculate all row offsets.
 	i = 0
@@ -38912,7 +38914,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 	}
 	// Allocate the background buffer if necessary
 	if background_buffer == libc.UintptrFromInt32(0) {
-		background_buffer = Z_Malloc(tls, libc.Int32FromInt32(SCREENWIDTH)*(libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(SBARHEIGHT)), int32(PU_STATIC), libc.UintptrFromInt32(0))
+		background_buffer = Z_Malloc(tls, (SCREENWIDTH)*((SCREENHEIGHT)-(SBARHEIGHT)), int32(PU_STATIC), libc.UintptrFromInt32(0))
 	}
 	if gamemode == int32(commercial) {
 		name = name2
@@ -38923,24 +38925,24 @@ func R_FillBackScreen(tls *libc.TLS) {
 	dest = background_buffer
 	y = 0
 	for {
-		if !(y < libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(SBARHEIGHT)) {
+		if !(y < (SCREENHEIGHT)-(SBARHEIGHT)) {
 			break
 		}
 		x = 0
 		for {
-			if !(x < libc.Int32FromInt32(SCREENWIDTH)/libc.Int32FromInt32(64)) {
+			if !(x < (SCREENWIDTH)/(64)) {
 				break
 			}
-			libc.Xmemcpy(tls, dest, src+uintptr(y&libc.Int32FromInt32(63)<<libc.Int32FromInt32(6)), uint64(64))
+			libc.Xmemcpy(tls, dest, src+uintptr(y&(63)<<(6)), uint64(64))
 			dest += uintptr(64)
 			goto _2
 		_2:
 			;
 			x++
 		}
-		if libc.Int32FromInt32(SCREENWIDTH)&libc.Int32FromInt32(63) != 0 {
-			libc.Xmemcpy(tls, dest, src+uintptr(y&libc.Int32FromInt32(63)<<libc.Int32FromInt32(6)), libc.Uint64FromInt32(libc.Int32FromInt32(SCREENWIDTH)&libc.Int32FromInt32(63)))
-			dest += uintptr(libc.Int32FromInt32(SCREENWIDTH) & libc.Int32FromInt32(63))
+		if (SCREENWIDTH)&(63) != 0 {
+			libc.Xmemcpy(tls, dest, src+uintptr(y&(63)<<(6)), libc.Uint64FromInt32((SCREENWIDTH)&(63)))
+			dest += uintptr((SCREENWIDTH) & (63))
 		}
 		goto _1
 	_1:
@@ -39033,7 +39035,7 @@ func R_DrawViewBorder(tls *libc.TLS) {
 	if scaledviewwidth == int32(SCREENWIDTH) {
 		return
 	}
-	top = (libc.Int32FromInt32(SCREENHEIGHT) - libc.Int32FromInt32(SBARHEIGHT) - viewheight) / int32(2)
+	top = ((SCREENHEIGHT) - (SBARHEIGHT) - viewheight) / int32(2)
 	side = (int32(SCREENWIDTH) - scaledviewwidth) / int32(2)
 	// copy top and one line of left side
 	R_VideoErase(tls, uint32(0), top*int32(SCREENWIDTH)+side)
@@ -39056,7 +39058,7 @@ func R_DrawViewBorder(tls *libc.TLS) {
 		i++
 	}
 	// ?
-	V_MarkRect(tls, 0, 0, int32(SCREENWIDTH), libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(SBARHEIGHT))
+	V_MarkRect(tls, 0, 0, int32(SCREENWIDTH), (SCREENHEIGHT)-(SBARHEIGHT))
 }
 
 const ANG18011 = 2147483648
@@ -39176,7 +39178,7 @@ func R_PointToAngle(tls *libc.TLS, x fixed_t, y fixed_t) (r angle_t) {
 				return tantoangle[SlopeDiv(tls, libc.Uint32FromInt32(y), libc.Uint32FromInt32(x))]
 			} else {
 				// octant 1
-				return libc.Uint32FromInt32(libc.Int32FromInt32(ANG909)-libc.Int32FromInt32(1)) - tantoangle[SlopeDiv(tls, libc.Uint32FromInt32(x), libc.Uint32FromInt32(y))]
+				return libc.Uint32FromInt32((ANG909)-(1)) - tantoangle[SlopeDiv(tls, libc.Uint32FromInt32(x), libc.Uint32FromInt32(y))]
 			}
 		} else {
 			// y<0
@@ -39238,7 +39240,7 @@ func R_PointToDist(tls *libc.TLS, x fixed_t, y fixed_t) (r fixed_t) {
 	} else {
 		frac = 0
 	}
-	angle = libc.Int32FromUint32((tantoangle[frac>>(libc.Int32FromInt32(FRACBITS)-libc.Int32FromInt32(SLOPEBITS))] + uint32(ANG909)) >> int32(ANGLETOFINESHIFT))
+	angle = libc.Int32FromUint32((tantoangle[frac>>((FRACBITS)-(SLOPEBITS))] + uint32(ANG909)) >> int32(ANGLETOFINESHIFT))
 	// use as cosine
 	dist = FixedDiv(tls, dx, finesine[angle])
 	return dist
@@ -39276,15 +39278,15 @@ func R_ScaleFromGlobalAngle(tls *libc.TLS, visangle angle_t) (r fixed_t) {
 	den = FixedMul(tls, rw_distance, sinea)
 	if den > num>>int32(16) {
 		scale = FixedDiv(tls, num, den)
-		if scale > libc.Int32FromInt32(64)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
-			scale = libc.Int32FromInt32(64) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+		if scale > (64)*((1)<<(FRACBITS)) {
+			scale = (64) * ((1) << (FRACBITS))
 		} else {
 			if scale < int32(256) {
 				scale = int32(256)
 			}
 		}
 	} else {
-		scale = libc.Int32FromInt32(64) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+		scale = (64) * ((1) << (FRACBITS))
 	}
 	return scale
 }
@@ -39312,20 +39314,20 @@ func R_InitTextureMapping(tls *libc.TLS) {
 	//
 	// Calc focallength
 	//  so FIELDOFVIEW angles covers SCREENWIDTH.
-	focallength = FixedDiv(tls, centerxfrac, finetangent[libc.Int32FromInt32(FINEANGLES)/libc.Int32FromInt32(4)+libc.Int32FromInt32(FIELDOFVIEW)/libc.Int32FromInt32(2)])
+	focallength = FixedDiv(tls, centerxfrac, finetangent[(FINEANGLES)/(4)+(FIELDOFVIEW)/(2)])
 	i = 0
 	for {
-		if !(i < libc.Int32FromInt32(FINEANGLES)/libc.Int32FromInt32(2)) {
+		if !(i < (FINEANGLES)/(2)) {
 			break
 		}
-		if finetangent[i] > libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)*libc.Int32FromInt32(2) {
+		if finetangent[i] > (1)<<(FRACBITS)*(2) {
 			t = -int32(1)
 		} else {
-			if finetangent[i] < -(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))*libc.Int32FromInt32(2) {
+			if finetangent[i] < -((1)<<(FRACBITS))*(2) {
 				t = viewwidth + int32(1)
 			} else {
 				t = FixedMul(tls, finetangent[i], focallength)
-				t = (centerxfrac - t + libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) - int32(1)) >> int32(FRACBITS)
+				t = (centerxfrac - t + (1)<<(FRACBITS) - int32(1)) >> int32(FRACBITS)
 				if t < -int32(1) {
 					t = -int32(1)
 				} else {
@@ -39362,7 +39364,7 @@ func R_InitTextureMapping(tls *libc.TLS) {
 	// Take out the fencepost cases from viewangletox.
 	i = 0
 	for {
-		if !(i < libc.Int32FromInt32(FINEANGLES)/libc.Int32FromInt32(2)) {
+		if !(i < (FINEANGLES)/(2)) {
 			break
 		}
 		t = FixedMul(tls, finetangent[i], focallength)
@@ -39397,20 +39399,20 @@ func R_InitLightTables(tls *libc.TLS) {
 		if !(i < int32(LIGHTLEVELS)) {
 			break
 		}
-		startmap = (libc.Int32FromInt32(LIGHTLEVELS) - libc.Int32FromInt32(1) - i) * int32(2) * int32(NUMCOLORMAPS) / int32(LIGHTLEVELS)
+		startmap = ((LIGHTLEVELS) - (1) - i) * int32(2) * int32(NUMCOLORMAPS) / int32(LIGHTLEVELS)
 		j = 0
 		for {
 			if !(j < int32(MAXLIGHTZ)) {
 				break
 			}
-			scale = FixedDiv(tls, libc.Int32FromInt32(SCREENWIDTH)/libc.Int32FromInt32(2)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), (j+int32(1))<<int32(LIGHTZSHIFT))
+			scale = FixedDiv(tls, (SCREENWIDTH)/(2)*((1)<<(FRACBITS)), (j+int32(1))<<int32(LIGHTZSHIFT))
 			scale >>= int32(LIGHTSCALESHIFT)
 			level = startmap - scale/int32(DISTMAP)
 			if level < 0 {
 				level = 0
 			}
 			if level >= int32(NUMCOLORMAPS) {
-				level = libc.Int32FromInt32(NUMCOLORMAPS) - libc.Int32FromInt32(1)
+				level = (NUMCOLORMAPS) - (1)
 			}
 			*(*uintptr)(unsafe.Pointer(uintptr(unsafe.Pointer(&zlight)) + uintptr(i)*1024 + uintptr(j)*8)) = colormaps + uintptr(level*int32(256))
 			goto _2
@@ -39446,7 +39448,7 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 		viewheight = int32(SCREENHEIGHT)
 	} else {
 		scaledviewwidth = setblocks * int32(32)
-		viewheight = setblocks * int32(168) / int32(10) & ^libc.Int32FromInt32(7)
+		viewheight = setblocks * int32(168) / int32(10) & ^(7)
 	}
 	detailshift = setdetail
 	viewwidth = scaledviewwidth >> detailshift
@@ -39473,8 +39475,8 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 	R_InitBuffer(tls, scaledviewwidth, viewheight)
 	R_InitTextureMapping(tls)
 	// psprite scales
-	pspritescale = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * viewwidth / int32(SCREENWIDTH)
-	pspriteiscale = libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS) * libc.Int32FromInt32(SCREENWIDTH) / viewwidth
+	pspritescale = (1) << (FRACBITS) * viewwidth / int32(SCREENWIDTH)
+	pspriteiscale = (1) << (FRACBITS) * (SCREENWIDTH) / viewwidth
 	// thing clipping
 	i = 0
 	for {
@@ -39493,9 +39495,9 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 		if !(i < viewheight) {
 			break
 		}
-		dy = (i-viewheight/int32(2))<<int32(FRACBITS) + libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)/libc.Int32FromInt32(2)
+		dy = (i-viewheight/int32(2))<<int32(FRACBITS) + (1)<<(FRACBITS)/(2)
 		dy = xabs(dy)
-		yslope[i] = FixedDiv(tls, viewwidth<<detailshift/int32(2)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), dy)
+		yslope[i] = FixedDiv(tls, viewwidth<<detailshift/int32(2)*((1)<<(FRACBITS)), dy)
 		goto _4
 	_4:
 		;
@@ -39507,7 +39509,7 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 			break
 		}
 		cosadj = xabs(*(*fixed_t)(unsafe.Pointer(finecosine + uintptr(xtoviewangle[i]>>int32(ANGLETOFINESHIFT))*4)))
-		distscale[i] = FixedDiv(tls, libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS), cosadj)
+		distscale[i] = FixedDiv(tls, (1)<<(FRACBITS), cosadj)
 		goto _5
 	_5:
 		;
@@ -39520,7 +39522,7 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 		if !(i < int32(LIGHTLEVELS)) {
 			break
 		}
-		startmap = (libc.Int32FromInt32(LIGHTLEVELS) - libc.Int32FromInt32(1) - i) * int32(2) * int32(NUMCOLORMAPS) / int32(LIGHTLEVELS)
+		startmap = ((LIGHTLEVELS) - (1) - i) * int32(2) * int32(NUMCOLORMAPS) / int32(LIGHTLEVELS)
 		j = 0
 		for {
 			if !(j < int32(MAXLIGHTSCALE)) {
@@ -39531,7 +39533,7 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 				level = 0
 			}
 			if level >= int32(NUMCOLORMAPS) {
-				level = libc.Int32FromInt32(NUMCOLORMAPS) - libc.Int32FromInt32(1)
+				level = (NUMCOLORMAPS) - (1)
 			}
 			*(*uintptr)(unsafe.Pointer(uintptr(unsafe.Pointer(&scalelight)) + uintptr(i)*384 + uintptr(j)*8)) = colormaps + uintptr(level*int32(256))
 			goto _7
@@ -39581,12 +39583,12 @@ func R_PointInSubsector(tls *libc.TLS, x fixed_t, y fixed_t) (r uintptr) {
 		return subsectors
 	}
 	nodenum = numnodes - int32(1)
-	for !(nodenum&libc.Int32FromInt32(NF_SUBSECTOR5) != 0) {
+	for !(nodenum&(NF_SUBSECTOR5) != 0) {
 		node = nodes + uintptr(nodenum)*52
 		side = R_PointOnSide(tls, x, y, node)
 		nodenum = libc.Int32FromUint16(*(*uint16)(unsafe.Pointer(node + 48 + uintptr(side)*2)))
 	}
-	return subsectors + uintptr(nodenum & ^libc.Int32FromInt32(NF_SUBSECTOR5))*16
+	return subsectors + uintptr(nodenum & ^(NF_SUBSECTOR5))*16
 }
 
 // C documentation
@@ -39710,7 +39712,7 @@ func R_MapPlane(tls *libc.TLS, y int32, x1 int32, x2 int32) {
 	} else {
 		index = libc.Uint32FromInt32(distance >> int32(LIGHTZSHIFT))
 		if index >= uint32(MAXLIGHTZ) {
-			index = libc.Uint32FromInt32(libc.Int32FromInt32(MAXLIGHTZ) - libc.Int32FromInt32(1))
+			index = libc.Uint32FromInt32((MAXLIGHTZ) - (1))
 		}
 		ds_colormap = *(*uintptr)(unsafe.Pointer(planezlight + uintptr(index)*8))
 	}
@@ -39864,7 +39866,7 @@ func R_DrawPlanes(tls *libc.TLS) {
 	if (int64(lastvisplane)-int64(uintptr(unsafe.Pointer(&visplanes))))/664 > int64(MAXVISPLANES) {
 		I_Error(tls, __ccgo_ts(26498), libc.VaList(bp+8, (int64(lastvisplane)-int64(uintptr(unsafe.Pointer(&visplanes))))/664))
 	}
-	if (int64(lastopening)-int64(uintptr(unsafe.Pointer(&openings))))/2 > int64(libc.Int32FromInt32(SCREENWIDTH)*libc.Int32FromInt32(64)) {
+	if (int64(lastopening)-int64(uintptr(unsafe.Pointer(&openings))))/2 > int64((SCREENWIDTH)*(64)) {
 		I_Error(tls, __ccgo_ts(26535), libc.VaList(bp+8, (int64(lastopening)-int64(uintptr(unsafe.Pointer(&openings))))/2))
 	}
 	pl = uintptr(unsafe.Pointer(&visplanes))
@@ -39910,7 +39912,7 @@ func R_DrawPlanes(tls *libc.TLS) {
 		planeheight = xabs((*visplane_t)(unsafe.Pointer(pl)).Fheight - viewz)
 		light = (*visplane_t)(unsafe.Pointer(pl)).Flightlevel>>int32(LIGHTSEGSHIFT) + extralight
 		if light >= int32(LIGHTLEVELS) {
-			light = libc.Int32FromInt32(LIGHTLEVELS) - libc.Int32FromInt32(1)
+			light = (LIGHTLEVELS) - (1)
 		}
 		if light < 0 {
 			light = 0
@@ -39991,7 +39993,7 @@ func R_RenderMaskedSegRange(tls *libc.TLS, ds uintptr, x1 int32, x2 int32) {
 		walllights = uintptr(unsafe.Pointer(&scalelight))
 	} else {
 		if lightnum >= int32(LIGHTLEVELS) {
-			walllights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(libc.Int32FromInt32(LIGHTLEVELS)-libc.Int32FromInt32(1))*384
+			walllights = uintptr(unsafe.Pointer(&scalelight)) + uintptr((LIGHTLEVELS)-(1))*384
 		} else {
 			walllights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(lightnum)*384
 		}
@@ -40034,7 +40036,7 @@ func R_RenderMaskedSegRange(tls *libc.TLS, ds uintptr, x1 int32, x2 int32) {
 			if !(fixedcolormap != 0) {
 				index = libc.Uint32FromInt32(spryscale >> int32(LIGHTSCALESHIFT))
 				if index >= uint32(MAXLIGHTSCALE) {
-					index = libc.Uint32FromInt32(libc.Int32FromInt32(MAXLIGHTSCALE) - libc.Int32FromInt32(1))
+					index = libc.Uint32FromInt32((MAXLIGHTSCALE) - (1))
 				}
 				dc_colormap = *(*uintptr)(unsafe.Pointer(walllights + uintptr(index)*8))
 			}
@@ -40075,7 +40077,7 @@ func R_RenderSegLoop(tls *libc.TLS) {
 			break
 		}
 		// mark floor / ceiling areas
-		yl = (topfrac + libc.Int32FromInt32(1)<<libc.Int32FromInt32(HEIGHTBITS) - int32(1)) >> int32(HEIGHTBITS)
+		yl = (topfrac + (1)<<(HEIGHTBITS) - int32(1)) >> int32(HEIGHTBITS)
 		// no space above wall?
 		if yl < int32(*(*int16)(unsafe.Pointer(ceilingclip_temp)))+int32(1) {
 			yl = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + int32(1)
@@ -40115,7 +40117,7 @@ func R_RenderSegLoop(tls *libc.TLS) {
 			// calculate lighting
 			index = libc.Uint32FromInt32(rw_scale >> int32(LIGHTSCALESHIFT))
 			if index >= uint32(MAXLIGHTSCALE) {
-				index = libc.Uint32FromInt32(libc.Int32FromInt32(MAXLIGHTSCALE) - libc.Int32FromInt32(1))
+				index = libc.Uint32FromInt32((MAXLIGHTSCALE) - (1))
 			}
 			dc_colormap = *(*uintptr)(unsafe.Pointer(walllights + uintptr(index)*8))
 			dc_x = rw_x
@@ -40161,7 +40163,7 @@ func R_RenderSegLoop(tls *libc.TLS) {
 			}
 			if bottomtexture != 0 {
 				// bottom wall
-				mid = (pixlow + libc.Int32FromInt32(1)<<libc.Int32FromInt32(HEIGHTBITS) - int32(1)) >> int32(HEIGHTBITS)
+				mid = (pixlow + (1)<<(HEIGHTBITS) - int32(1)) >> int32(HEIGHTBITS)
 				pixlow += pixlowstep
 				// no space above wall?
 				if mid <= int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) {
@@ -40226,7 +40228,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	linedef = (*seg_t)(unsafe.Pointer(curline)).Flinedef
 	// mark the segment as visible for auto map
 	p1 = linedef + 24
-	*(*int16)(unsafe.Pointer(p1)) = int16(int32(*(*int16)(unsafe.Pointer(p1))) | libc.Int32FromInt32(ML_MAPPED))
+	*(*int16)(unsafe.Pointer(p1)) = int16(int32(*(*int16)(unsafe.Pointer(p1))) | (ML_MAPPED))
 	// calculate rw_distance for scale calculation
 	rw_normalangle = (*seg_t)(unsafe.Pointer(curline)).Fangle + uint32(ANG909)
 	offsetangle = libc.Uint32FromInt32(xabs(libc.Int32FromUint32(rw_normalangle - libc.Uint32FromInt32(rw_angle1))))
@@ -40288,7 +40290,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprtopclip = uintptr(unsafe.Pointer(&screenheightarray))
 		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprbottomclip = uintptr(unsafe.Pointer(&negonearray))
 		(*drawseg_t)(unsafe.Pointer(ds_p)).Fbsilheight = int32(INT_MAX15)
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
+		(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = -(1) - (0x7fffffff)
 	} else {
 		// two sided line
 		v9 = libc.UintptrFromInt32(0)
@@ -40311,7 +40313,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		} else {
 			if (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight < viewz {
 				*(*int32)(unsafe.Pointer(ds_p + 28)) |= int32(SIL_TOP)
-				(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
+				(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = -(1) - (0x7fffffff)
 				// ds_p->sprtopclip = screenheightarray;
 			}
 		}
@@ -40322,7 +40324,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		}
 		if (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight >= (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight {
 			(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprtopclip = uintptr(unsafe.Pointer(&screenheightarray))
-			(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
+			(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = -(1) - (0x7fffffff)
 			*(*int32)(unsafe.Pointer(ds_p + 28)) |= int32(SIL_TOP)
 		}
 		worldhigh = (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight - viewz
@@ -40418,7 +40420,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 				walllights = uintptr(unsafe.Pointer(&scalelight))
 			} else {
 				if lightnum >= int32(LIGHTLEVELS) {
-					walllights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(libc.Int32FromInt32(LIGHTLEVELS)-libc.Int32FromInt32(1))*384
+					walllights = uintptr(unsafe.Pointer(&scalelight)) + uintptr((LIGHTLEVELS)-(1))*384
 				} else {
 					walllights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(lightnum)*384
 				}
@@ -40440,18 +40442,18 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	worldtop >>= int32(4)
 	worldbottom >>= int32(4)
 	topstep = -FixedMul(tls, rw_scalestep, worldtop)
-	topfrac = centeryfrac>>libc.Int32FromInt32(4) - FixedMul(tls, worldtop, rw_scale)
+	topfrac = centeryfrac>>(4) - FixedMul(tls, worldtop, rw_scale)
 	bottomstep = -FixedMul(tls, rw_scalestep, worldbottom)
-	bottomfrac = centeryfrac>>libc.Int32FromInt32(4) - FixedMul(tls, worldbottom, rw_scale)
+	bottomfrac = centeryfrac>>(4) - FixedMul(tls, worldbottom, rw_scale)
 	if backsector != 0 {
 		worldhigh >>= int32(4)
 		worldlow >>= int32(4)
 		if worldhigh < worldtop {
-			pixhigh = centeryfrac>>libc.Int32FromInt32(4) - FixedMul(tls, worldhigh, rw_scale)
+			pixhigh = centeryfrac>>(4) - FixedMul(tls, worldhigh, rw_scale)
 			pixhighstep = -FixedMul(tls, rw_scalestep, worldhigh)
 		}
 		if worldlow > worldbottom {
-			pixlow = centeryfrac>>libc.Int32FromInt32(4) - FixedMul(tls, worldlow, rw_scale)
+			pixlow = centeryfrac>>(4) - FixedMul(tls, worldlow, rw_scale)
 			pixlowstep = -FixedMul(tls, rw_scalestep, worldlow)
 		}
 	}
@@ -40474,11 +40476,11 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprbottomclip = lastopening - uintptr(start)*2
 		lastopening += uintptr(rw_stopx-start) * 2
 	}
-	if maskedtexture != 0 && !((*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette&libc.Int32FromInt32(SIL_TOP) != 0) {
+	if maskedtexture != 0 && !((*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette&(SIL_TOP) != 0) {
 		*(*int32)(unsafe.Pointer(ds_p + 28)) |= int32(SIL_TOP)
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = -libc.Int32FromInt32(1) - libc.Int32FromInt32(0x7fffffff)
+		(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = -(1) - (0x7fffffff)
 	}
-	if maskedtexture != 0 && !((*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette&libc.Int32FromInt32(SIL_BOTTOM) != 0) {
+	if maskedtexture != 0 && !((*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette&(SIL_BOTTOM) != 0) {
 		*(*int32)(unsafe.Pointer(ds_p + 28)) |= int32(SIL_BOTTOM)
 		(*drawseg_t)(unsafe.Pointer(ds_p)).Fbsilheight = int32(INT_MAX15)
 	}
@@ -40493,7 +40495,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 //	//
 func R_InitSkyMap(tls *libc.TLS) {
 	// skyflatnum = R_FlatNumForName ( SKYFLATNAME );
-	skytexturemid = libc.Int32FromInt32(100) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+	skytexturemid = (100) * ((1) << (FRACBITS))
 }
 
 const ANG455 = 536870912
@@ -40745,7 +40747,7 @@ func R_DrawMaskedColumn(tls *libc.TLS, column uintptr) {
 		//  for post
 		topscreen = sprtopscreen + spryscale*libc.Int32FromUint8((*column_t)(unsafe.Pointer(column)).Ftopdelta)
 		bottomscreen = topscreen + spryscale*libc.Int32FromUint8((*column_t)(unsafe.Pointer(column)).Flength)
-		dc_yl = (topscreen + libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS) - int32(1)) >> int32(FRACBITS)
+		dc_yl = (topscreen + (1)<<(FRACBITS) - int32(1)) >> int32(FRACBITS)
 		dc_yh = (bottomscreen - int32(1)) >> int32(FRACBITS)
 		if dc_yh >= int32(*(*int16)(unsafe.Pointer(mfloorclip + uintptr(dc_x)*2))) {
 			dc_yh = int32(*(*int16)(unsafe.Pointer(mfloorclip + uintptr(dc_x)*2))) - int32(1)
@@ -40786,7 +40788,7 @@ func R_DrawVisSprite(tls *libc.TLS, vis uintptr, x1 int32, x2 int32) {
 	} else {
 		if (*vissprite_t)(unsafe.Pointer(vis)).Fmobjflags&int32(MF_TRANSLATION) != 0 {
 			colfunc = transcolfunc
-			dc_translation = translationtables - uintptr(256) + uintptr((*vissprite_t)(unsafe.Pointer(vis)).Fmobjflags&int32(MF_TRANSLATION)>>(int32(MF_TRANSSHIFT)-libc.Int32FromInt32(8)))
+			dc_translation = translationtables - uintptr(256) + uintptr((*vissprite_t)(unsafe.Pointer(vis)).Fmobjflags&int32(MF_TRANSLATION)>>(int32(MF_TRANSSHIFT)-(8)))
 		}
 	}
 	dc_iscale = xabs((*vissprite_t)(unsafe.Pointer(vis)).Fxiscale) >> detailshift
@@ -40836,7 +40838,7 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 	gyt = -FixedMul(tls, tr_y, viewsin)
 	tz = gxt - gyt
 	// thing is behind view plane?
-	if tz < libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)*libc.Int32FromInt32(4) {
+	if tz < (1)<<(FRACBITS)*(4) {
 		return
 	}
 	xscale = FixedDiv(tls, projection, tz)
@@ -40844,7 +40846,7 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 	gyt = FixedMul(tls, tr_y, viewcos)
 	tx = -(gyt + gxt)
 	// too far off the side?
-	if xabs(tx) > tz<<libc.Int32FromInt32(2) {
+	if xabs(tx) > tz<<(2) {
 		return
 	}
 	// decide which patch to use for sprite relative to player
@@ -40859,7 +40861,7 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 	if (*spriteframe_t)(unsafe.Pointer(sprframe)).Frotate != 0 {
 		// choose a different rotation based on player view
 		ang = R_PointToAngle(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy)
-		rot = (ang - (*mobj_t)(unsafe.Pointer(thing)).Fangle + libc.Uint32FromInt32(libc.Int32FromInt32(ANG455)/libc.Int32FromInt32(2))*libc.Uint32FromInt32(9)) >> int32(29)
+		rot = (ang - (*mobj_t)(unsafe.Pointer(thing)).Fangle + libc.Uint32FromInt32((ANG455)/(2))*libc.Uint32FromInt32(9)) >> int32(29)
 		lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4 + uintptr(rot)*2)))
 		flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20 + uintptr(rot))))
 	} else {
@@ -40901,7 +40903,7 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 		v2 = x2
 	}
 	(*vissprite_t)(unsafe.Pointer(vis)).Fx2 = v2
-	iscale = FixedDiv(tls, libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS), xscale)
+	iscale = FixedDiv(tls, (1)<<(FRACBITS), xscale)
 	if flip != 0 {
 		(*vissprite_t)(unsafe.Pointer(vis)).Fstartfrac = *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4)) - int32(1)
 		(*vissprite_t)(unsafe.Pointer(vis)).Fxiscale = -iscale
@@ -40929,7 +40931,7 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 				// diminished light
 				index = xscale >> (int32(LIGHTSCALESHIFT) - detailshift)
 				if index >= int32(MAXLIGHTSCALE) {
-					index = libc.Int32FromInt32(MAXLIGHTSCALE) - libc.Int32FromInt32(1)
+					index = (MAXLIGHTSCALE) - (1)
 				}
 				(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = *(*uintptr)(unsafe.Pointer(spritelights + uintptr(index)*8))
 			}
@@ -40960,7 +40962,7 @@ func R_AddSprites(tls *libc.TLS, sec uintptr) {
 		spritelights = uintptr(unsafe.Pointer(&scalelight))
 	} else {
 		if lightnum >= int32(LIGHTLEVELS) {
-			spritelights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(libc.Int32FromInt32(LIGHTLEVELS)-libc.Int32FromInt32(1))*384
+			spritelights = uintptr(unsafe.Pointer(&scalelight)) + uintptr((LIGHTLEVELS)-(1))*384
 		} else {
 			spritelights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(lightnum)*384
 		}
@@ -41002,7 +41004,7 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 	lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4)))
 	flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20)))
 	// calculate edges of the shape
-	tx = (*pspdef_t)(unsafe.Pointer(psp)).Fsx - libc.Int32FromInt32(160)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))
+	tx = (*pspdef_t)(unsafe.Pointer(psp)).Fsx - (160)*((1)<<(FRACBITS))
 	tx -= *(*fixed_t)(unsafe.Pointer(spriteoffset + uintptr(lump)*4))
 	x1 = (centerxfrac + FixedMul(tls, tx, pspritescale)) >> int32(FRACBITS)
 	// off the right side
@@ -41018,7 +41020,7 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 	// store information in a vissprite
 	vis = bp
 	(*vissprite_t)(unsafe.Pointer(vis)).Fmobjflags = 0
-	(*vissprite_t)(unsafe.Pointer(vis)).Ftexturemid = libc.Int32FromInt32(BASEYCENTER)<<libc.Int32FromInt32(FRACBITS) + libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)/libc.Int32FromInt32(2) - ((*pspdef_t)(unsafe.Pointer(psp)).Fsy - *(*fixed_t)(unsafe.Pointer(spritetopoffset + uintptr(lump)*4)))
+	(*vissprite_t)(unsafe.Pointer(vis)).Ftexturemid = (BASEYCENTER)<<(FRACBITS) + (1)<<(FRACBITS)/(2) - ((*pspdef_t)(unsafe.Pointer(psp)).Fsy - *(*fixed_t)(unsafe.Pointer(spritetopoffset + uintptr(lump)*4)))
 	if x1 < 0 {
 		v1 = 0
 	} else {
@@ -41043,7 +41045,7 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 		*(*fixed_t)(unsafe.Pointer(vis + 40)) += (*vissprite_t)(unsafe.Pointer(vis)).Fxiscale * ((*vissprite_t)(unsafe.Pointer(vis)).Fx1 - x1)
 	}
 	(*vissprite_t)(unsafe.Pointer(vis)).Fpatch = lump
-	if *(*int32)(unsafe.Pointer(viewplayer + 56 + uintptr(pw_invisibility)*4)) > libc.Int32FromInt32(4)*libc.Int32FromInt32(32) || *(*int32)(unsafe.Pointer(viewplayer + 56 + uintptr(pw_invisibility)*4))&int32(8) != 0 {
+	if *(*int32)(unsafe.Pointer(viewplayer + 56 + uintptr(pw_invisibility)*4)) > (4)*(32) || *(*int32)(unsafe.Pointer(viewplayer + 56 + uintptr(pw_invisibility)*4))&int32(8) != 0 {
 		// shadow draw
 		(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = libc.UintptrFromInt32(0)
 	} else {
@@ -41056,7 +41058,7 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 				(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = colormaps
 			} else {
 				// local light
-				(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = *(*uintptr)(unsafe.Pointer(spritelights + uintptr(libc.Int32FromInt32(MAXLIGHTSCALE)-libc.Int32FromInt32(1))*8))
+				(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = *(*uintptr)(unsafe.Pointer(spritelights + uintptr((MAXLIGHTSCALE)-(1))*8))
 			}
 		}
 	}
@@ -41077,7 +41079,7 @@ func R_DrawPlayerSprites(tls *libc.TLS) {
 		spritelights = uintptr(unsafe.Pointer(&scalelight))
 	} else {
 		if lightnum >= int32(LIGHTLEVELS) {
-			spritelights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(libc.Int32FromInt32(LIGHTLEVELS)-libc.Int32FromInt32(1))*384
+			spritelights = uintptr(unsafe.Pointer(&scalelight)) + uintptr((LIGHTLEVELS)-(1))*384
 		} else {
 			spritelights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(lightnum)*384
 		}
@@ -41187,7 +41189,7 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 		if !(x <= (*vissprite_t)(unsafe.Pointer(spr)).Fx2) {
 			break
 		}
-		v2 = int16(-libc.Int32FromInt32(2))
+		v2 = int16(-(2))
 		cliptop[x] = v2
 		clipbot[x] = v2
 		goto _1
@@ -41238,10 +41240,10 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 		// clip this piece of the sprite
 		silhouette = (*drawseg_t)(unsafe.Pointer(ds)).Fsilhouette
 		if (*vissprite_t)(unsafe.Pointer(spr)).Fgz >= (*drawseg_t)(unsafe.Pointer(ds)).Fbsilheight {
-			silhouette &= ^libc.Int32FromInt32(SIL_BOTTOM)
+			silhouette &= ^(SIL_BOTTOM)
 		}
 		if (*vissprite_t)(unsafe.Pointer(spr)).Fgzt <= (*drawseg_t)(unsafe.Pointer(ds)).Ftsilheight {
-			silhouette &= ^libc.Int32FromInt32(SIL_TOP)
+			silhouette &= ^(SIL_TOP)
 		}
 		if silhouette == int32(1) {
 			// bottom sil
@@ -41417,358 +41419,358 @@ func Transform(tls *libc.TLS, hd uintptr, data uintptr) {
 		i++
 		p2 += uintptr(4)
 	}
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[0])))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(1)])))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(2)])))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(3)])))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(4)])))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(5)])))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(6)])))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(7)])))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(8)])))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(9)])))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(10)])))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(11)])))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(12)])))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(13)])))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(14)])))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(15)])))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(16)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(16)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(16)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(16)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v6 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(16)&libc.Int32FromInt32(0x0f)] = v6
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v6)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(17)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(17)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(17)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(17)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v7 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(17)&libc.Int32FromInt32(0x0f)] = v7
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v7)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(18)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(18)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(18)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(18)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v8 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(18)&libc.Int32FromInt32(0x0f)] = v8
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v8)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(19)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(19)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(19)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(19)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v9 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(19)&libc.Int32FromInt32(0x0f)] = v9
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v9)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(20)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(20)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(20)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(20)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v10 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(20)&libc.Int32FromInt32(0x0f)] = v10
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v10)))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(21)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(21)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(21)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(21)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v11 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(21)&libc.Int32FromInt32(0x0f)] = v11
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v11)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(22)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(22)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(22)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(22)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v12 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(22)&libc.Int32FromInt32(0x0f)] = v12
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v12)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(23)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(23)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(23)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(23)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v13 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(23)&libc.Int32FromInt32(0x0f)] = v13
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v13)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(24)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(24)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(24)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(24)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v14 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(24)&libc.Int32FromInt32(0x0f)] = v14
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v14)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(25)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(25)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(25)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(25)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v15 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(25)&libc.Int32FromInt32(0x0f)] = v15
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v15)))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(26)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(26)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(26)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(26)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v16 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(26)&libc.Int32FromInt32(0x0f)] = v16
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v16)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(27)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(27)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(27)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(27)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v17 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(27)&libc.Int32FromInt32(0x0f)] = v17
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v17)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(28)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(28)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(28)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(28)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v18 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(28)&libc.Int32FromInt32(0x0f)] = v18
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v18)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(29)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(29)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(29)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(29)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v19 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(29)&libc.Int32FromInt32(0x0f)] = v19
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v19)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(30)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(30)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(30)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(30)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v20 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(30)&libc.Int32FromInt32(0x0f)] = v20
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v20)))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(31)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(31)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(31)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(31)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v21 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(31)&libc.Int32FromInt32(0x0f)] = v21
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v21)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(32)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(32)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(32)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(32)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v22 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(32)&libc.Int32FromInt32(0x0f)] = v22
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v22)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(33)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(33)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(33)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(33)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v23 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(33)&libc.Int32FromInt32(0x0f)] = v23
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v23)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(34)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(34)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(34)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(34)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v24 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(34)&libc.Int32FromInt32(0x0f)] = v24
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v24)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(35)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(35)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(35)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(35)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v25 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(35)&libc.Int32FromInt32(0x0f)] = v25
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v25)))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(36)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(36)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(36)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(36)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v26 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(36)&libc.Int32FromInt32(0x0f)] = v26
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v26)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(37)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(37)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(37)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(37)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v27 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(37)&libc.Int32FromInt32(0x0f)] = v27
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v27)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(38)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(38)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(38)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(38)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v28 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(38)&libc.Int32FromInt32(0x0f)] = v28
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v28)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(39)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(39)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(39)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(39)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v29 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(39)&libc.Int32FromInt32(0x0f)] = v29
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v29)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(40)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(40)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(40)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(40)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v30 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(40)&libc.Int32FromInt32(0x0f)] = v30
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v30)))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(41)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(41)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(41)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(41)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v31 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(41)&libc.Int32FromInt32(0x0f)] = v31
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v31)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(42)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(42)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(42)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(42)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v32 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(42)&libc.Int32FromInt32(0x0f)] = v32
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v32)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(43)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(43)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(43)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(43)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v33 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(43)&libc.Int32FromInt32(0x0f)] = v33
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v33)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(44)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(44)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(44)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(44)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v34 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(44)&libc.Int32FromInt32(0x0f)] = v34
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v34)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(45)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(45)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(45)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(45)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v35 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(45)&libc.Int32FromInt32(0x0f)] = v35
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v35)))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(46)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(46)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(46)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(46)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v36 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(46)&libc.Int32FromInt32(0x0f)] = v36
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v36)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(47)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(47)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(47)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(47)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v37 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(47)&libc.Int32FromInt32(0x0f)] = v37
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v37)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(48)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(48)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(48)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(48)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v38 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(48)&libc.Int32FromInt32(0x0f)] = v38
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v38)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(49)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(49)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(49)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(49)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v39 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(49)&libc.Int32FromInt32(0x0f)] = v39
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v39)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(50)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(50)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(50)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(50)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v40 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(50)&libc.Int32FromInt32(0x0f)] = v40
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v40)))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(51)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(51)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(51)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(51)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v41 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(51)&libc.Int32FromInt32(0x0f)] = v41
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v41)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(52)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(52)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(52)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(52)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v42 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(52)&libc.Int32FromInt32(0x0f)] = v42
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v42)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(53)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(53)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(53)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(53)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v43 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(53)&libc.Int32FromInt32(0x0f)] = v43
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v43)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(54)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(54)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(54)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(54)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v44 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(54)&libc.Int32FromInt32(0x0f)] = v44
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v44)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(55)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(55)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(55)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(55)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v45 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(55)&libc.Int32FromInt32(0x0f)] = v45
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v45)))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(56)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(56)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(56)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(56)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v46 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(56)&libc.Int32FromInt32(0x0f)] = v46
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v46)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(57)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(57)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(57)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(57)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v47 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(57)&libc.Int32FromInt32(0x0f)] = v47
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v47)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(58)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(58)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(58)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(58)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v48 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(58)&libc.Int32FromInt32(0x0f)] = v48
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v48)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(59)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(59)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(59)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(59)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v49 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(59)&libc.Int32FromInt32(0x0f)] = v49
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v49)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(60)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(60)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(60)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(60)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v50 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(60)&libc.Int32FromInt32(0x0f)] = v50
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v50)))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(61)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(61)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(61)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(61)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v51 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(61)&libc.Int32FromInt32(0x0f)] = v51
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v51)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(62)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(62)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(62)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(62)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v52 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(62)&libc.Int32FromInt32(0x0f)] = v52
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v52)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(63)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(63)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(63)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(63)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v53 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(63)&libc.Int32FromInt32(0x0f)] = v53
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v53)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(64)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(64)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(64)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(64)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v54 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(64)&libc.Int32FromInt32(0x0f)] = v54
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v54)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(65)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(65)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(65)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(65)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v55 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(65)&libc.Int32FromInt32(0x0f)] = v55
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v55)))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(66)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(66)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(66)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(66)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v56 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(66)&libc.Int32FromInt32(0x0f)] = v56
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v56)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(67)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(67)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(67)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(67)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v57 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(67)&libc.Int32FromInt32(0x0f)] = v57
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v57)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(68)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(68)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(68)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(68)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v58 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(68)&libc.Int32FromInt32(0x0f)] = v58
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v58)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(69)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(69)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(69)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(69)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v59 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(69)&libc.Int32FromInt32(0x0f)] = v59
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v59)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(70)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(70)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(70)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(70)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v60 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(70)&libc.Int32FromInt32(0x0f)] = v60
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v60)))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(71)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(71)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(71)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(71)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v61 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(71)&libc.Int32FromInt32(0x0f)] = v61
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v61)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(72)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(72)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(72)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(72)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v62 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(72)&libc.Int32FromInt32(0x0f)] = v62
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v62)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(73)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(73)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(73)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(73)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v63 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(73)&libc.Int32FromInt32(0x0f)] = v63
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v63)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(74)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(74)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(74)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(74)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v64 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(74)&libc.Int32FromInt32(0x0f)] = v64
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v64)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(75)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(75)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(75)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(75)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v65 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(75)&libc.Int32FromInt32(0x0f)] = v65
-	e = uint32(int64(e) + (libc.Int64FromUint32(a<<libc.Int32FromInt32(5)|a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v65)))
-	b = b<<libc.Int32FromInt32(30) | b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(76)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(76)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(76)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(76)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v66 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(76)&libc.Int32FromInt32(0x0f)] = v66
-	d = uint32(int64(d) + (libc.Int64FromUint32(e<<libc.Int32FromInt32(5)|e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v66)))
-	a = a<<libc.Int32FromInt32(30) | a>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(77)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(77)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(77)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(77)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v67 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(77)&libc.Int32FromInt32(0x0f)] = v67
-	c = uint32(int64(c) + (libc.Int64FromUint32(d<<libc.Int32FromInt32(5)|d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v67)))
-	e = e<<libc.Int32FromInt32(30) | e>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(78)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(78)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(78)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(78)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v68 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(78)&libc.Int32FromInt32(0x0f)] = v68
-	b = uint32(int64(b) + (libc.Int64FromUint32(c<<libc.Int32FromInt32(5)|c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v68)))
-	d = d<<libc.Int32FromInt32(30) | d>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(79)&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(79)-libc.Int32FromInt32(14))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(79)-libc.Int32FromInt32(8))&libc.Int32FromInt32(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(libc.Int32FromInt32(79)-libc.Int32FromInt32(3))&libc.Int32FromInt32(0x0f)]
-	v69 = tm<<libc.Int32FromInt32(1) | tm>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(1))
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[libc.Int32FromInt32(79)&libc.Int32FromInt32(0x0f)] = v69
-	a = uint32(int64(a) + (libc.Int64FromUint32(b<<libc.Int32FromInt32(5)|b>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v69)))
-	c = c<<libc.Int32FromInt32(30) | c>>(libc.Int32FromInt32(32)-libc.Int32FromInt32(30))
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[0])))
+	b = b<<(30) | b>>((32)-(30))
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(1)])))
+	a = a<<(30) | a>>((32)-(30))
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(2)])))
+	e = e<<(30) | e>>((32)-(30))
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(3)])))
+	d = d<<(30) | d>>((32)-(30))
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(4)])))
+	c = c<<(30) | c>>((32)-(30))
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(5)])))
+	b = b<<(30) | b>>((32)-(30))
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(6)])))
+	a = a<<(30) | a>>((32)-(30))
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(7)])))
+	e = e<<(30) | e>>((32)-(30))
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(8)])))
+	d = d<<(30) | d>>((32)-(30))
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(9)])))
+	c = c<<(30) | c>>((32)-(30))
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(10)])))
+	b = b<<(30) | b>>((32)-(30))
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(11)])))
+	a = a<<(30) | a>>((32)-(30))
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(12)])))
+	e = e<<(30) | e>>((32)-(30))
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(13)])))
+	d = d<<(30) | d>>((32)-(30))
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(14)])))
+	c = c<<(30) | c>>((32)-(30))
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(d^b&(c^d))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(15)])))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(16)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((16)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((16)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((16)-(3))&(0x0f)]
+	v6 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(16)&(0x0f)] = v6
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(c^a&(b^c))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v6)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(17)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((17)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((17)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((17)-(3))&(0x0f)]
+	v7 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(17)&(0x0f)] = v7
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(b^e&(a^b))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v7)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(18)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((18)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((18)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((18)-(3))&(0x0f)]
+	v8 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(18)&(0x0f)] = v8
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(a^d&(e^a))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v8)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(19)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((19)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((19)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((19)-(3))&(0x0f)]
+	v9 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(19)&(0x0f)] = v9
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(e^c&(d^e))) + libc.Int64FromInt64(0x5A827999) + libc.Int64FromUint32(v9)))
+	c = c<<(30) | c>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(20)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((20)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((20)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((20)-(3))&(0x0f)]
+	v10 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(20)&(0x0f)] = v10
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v10)))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(21)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((21)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((21)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((21)-(3))&(0x0f)]
+	v11 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(21)&(0x0f)] = v11
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v11)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(22)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((22)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((22)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((22)-(3))&(0x0f)]
+	v12 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(22)&(0x0f)] = v12
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v12)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(23)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((23)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((23)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((23)-(3))&(0x0f)]
+	v13 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(23)&(0x0f)] = v13
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v13)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(24)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((24)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((24)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((24)-(3))&(0x0f)]
+	v14 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(24)&(0x0f)] = v14
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v14)))
+	c = c<<(30) | c>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(25)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((25)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((25)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((25)-(3))&(0x0f)]
+	v15 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(25)&(0x0f)] = v15
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v15)))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(26)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((26)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((26)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((26)-(3))&(0x0f)]
+	v16 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(26)&(0x0f)] = v16
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v16)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(27)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((27)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((27)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((27)-(3))&(0x0f)]
+	v17 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(27)&(0x0f)] = v17
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v17)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(28)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((28)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((28)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((28)-(3))&(0x0f)]
+	v18 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(28)&(0x0f)] = v18
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v18)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(29)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((29)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((29)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((29)-(3))&(0x0f)]
+	v19 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(29)&(0x0f)] = v19
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v19)))
+	c = c<<(30) | c>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(30)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((30)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((30)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((30)-(3))&(0x0f)]
+	v20 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(30)&(0x0f)] = v20
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v20)))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(31)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((31)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((31)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((31)-(3))&(0x0f)]
+	v21 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(31)&(0x0f)] = v21
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v21)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(32)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((32)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((32)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((32)-(3))&(0x0f)]
+	v22 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(32)&(0x0f)] = v22
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v22)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(33)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((33)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((33)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((33)-(3))&(0x0f)]
+	v23 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(33)&(0x0f)] = v23
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v23)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(34)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((34)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((34)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((34)-(3))&(0x0f)]
+	v24 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(34)&(0x0f)] = v24
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v24)))
+	c = c<<(30) | c>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(35)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((35)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((35)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((35)-(3))&(0x0f)]
+	v25 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(35)&(0x0f)] = v25
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(b^c^d)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v25)))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(36)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((36)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((36)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((36)-(3))&(0x0f)]
+	v26 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(36)&(0x0f)] = v26
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(a^b^c)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v26)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(37)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((37)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((37)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((37)-(3))&(0x0f)]
+	v27 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(37)&(0x0f)] = v27
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(e^a^b)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v27)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(38)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((38)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((38)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((38)-(3))&(0x0f)]
+	v28 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(38)&(0x0f)] = v28
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(d^e^a)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v28)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(39)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((39)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((39)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((39)-(3))&(0x0f)]
+	v29 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(39)&(0x0f)] = v29
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(c^d^e)) + libc.Int64FromInt64(0x6ED9EBA1) + libc.Int64FromUint32(v29)))
+	c = c<<(30) | c>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(40)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((40)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((40)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((40)-(3))&(0x0f)]
+	v30 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(40)&(0x0f)] = v30
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v30)))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(41)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((41)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((41)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((41)-(3))&(0x0f)]
+	v31 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(41)&(0x0f)] = v31
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v31)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(42)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((42)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((42)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((42)-(3))&(0x0f)]
+	v32 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(42)&(0x0f)] = v32
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v32)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(43)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((43)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((43)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((43)-(3))&(0x0f)]
+	v33 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(43)&(0x0f)] = v33
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v33)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(44)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((44)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((44)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((44)-(3))&(0x0f)]
+	v34 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(44)&(0x0f)] = v34
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v34)))
+	c = c<<(30) | c>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(45)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((45)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((45)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((45)-(3))&(0x0f)]
+	v35 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(45)&(0x0f)] = v35
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v35)))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(46)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((46)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((46)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((46)-(3))&(0x0f)]
+	v36 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(46)&(0x0f)] = v36
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v36)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(47)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((47)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((47)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((47)-(3))&(0x0f)]
+	v37 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(47)&(0x0f)] = v37
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v37)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(48)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((48)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((48)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((48)-(3))&(0x0f)]
+	v38 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(48)&(0x0f)] = v38
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v38)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(49)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((49)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((49)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((49)-(3))&(0x0f)]
+	v39 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(49)&(0x0f)] = v39
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v39)))
+	c = c<<(30) | c>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(50)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((50)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((50)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((50)-(3))&(0x0f)]
+	v40 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(50)&(0x0f)] = v40
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v40)))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(51)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((51)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((51)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((51)-(3))&(0x0f)]
+	v41 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(51)&(0x0f)] = v41
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v41)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(52)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((52)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((52)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((52)-(3))&(0x0f)]
+	v42 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(52)&(0x0f)] = v42
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v42)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(53)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((53)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((53)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((53)-(3))&(0x0f)]
+	v43 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(53)&(0x0f)] = v43
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v43)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(54)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((54)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((54)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((54)-(3))&(0x0f)]
+	v44 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(54)&(0x0f)] = v44
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v44)))
+	c = c<<(30) | c>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(55)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((55)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((55)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((55)-(3))&(0x0f)]
+	v45 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(55)&(0x0f)] = v45
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(b&c|d&(b|c))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v45)))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(56)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((56)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((56)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((56)-(3))&(0x0f)]
+	v46 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(56)&(0x0f)] = v46
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(a&b|c&(a|b))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v46)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(57)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((57)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((57)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((57)-(3))&(0x0f)]
+	v47 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(57)&(0x0f)] = v47
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(e&a|b&(e|a))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v47)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(58)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((58)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((58)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((58)-(3))&(0x0f)]
+	v48 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(58)&(0x0f)] = v48
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(d&e|a&(d|e))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v48)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(59)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((59)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((59)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((59)-(3))&(0x0f)]
+	v49 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(59)&(0x0f)] = v49
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(c&d|e&(c|d))) + libc.Int64FromInt64(0x8F1BBCDC) + libc.Int64FromUint32(v49)))
+	c = c<<(30) | c>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(60)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((60)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((60)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((60)-(3))&(0x0f)]
+	v50 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(60)&(0x0f)] = v50
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v50)))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(61)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((61)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((61)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((61)-(3))&(0x0f)]
+	v51 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(61)&(0x0f)] = v51
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v51)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(62)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((62)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((62)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((62)-(3))&(0x0f)]
+	v52 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(62)&(0x0f)] = v52
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v52)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(63)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((63)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((63)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((63)-(3))&(0x0f)]
+	v53 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(63)&(0x0f)] = v53
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v53)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(64)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((64)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((64)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((64)-(3))&(0x0f)]
+	v54 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(64)&(0x0f)] = v54
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v54)))
+	c = c<<(30) | c>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(65)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((65)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((65)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((65)-(3))&(0x0f)]
+	v55 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(65)&(0x0f)] = v55
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v55)))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(66)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((66)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((66)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((66)-(3))&(0x0f)]
+	v56 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(66)&(0x0f)] = v56
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v56)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(67)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((67)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((67)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((67)-(3))&(0x0f)]
+	v57 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(67)&(0x0f)] = v57
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v57)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(68)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((68)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((68)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((68)-(3))&(0x0f)]
+	v58 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(68)&(0x0f)] = v58
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v58)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(69)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((69)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((69)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((69)-(3))&(0x0f)]
+	v59 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(69)&(0x0f)] = v59
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v59)))
+	c = c<<(30) | c>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(70)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((70)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((70)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((70)-(3))&(0x0f)]
+	v60 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(70)&(0x0f)] = v60
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v60)))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(71)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((71)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((71)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((71)-(3))&(0x0f)]
+	v61 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(71)&(0x0f)] = v61
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v61)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(72)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((72)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((72)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((72)-(3))&(0x0f)]
+	v62 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(72)&(0x0f)] = v62
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v62)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(73)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((73)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((73)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((73)-(3))&(0x0f)]
+	v63 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(73)&(0x0f)] = v63
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v63)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(74)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((74)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((74)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((74)-(3))&(0x0f)]
+	v64 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(74)&(0x0f)] = v64
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v64)))
+	c = c<<(30) | c>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(75)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((75)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((75)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((75)-(3))&(0x0f)]
+	v65 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(75)&(0x0f)] = v65
+	e = uint32(int64(e) + (libc.Int64FromUint32(a<<(5)|a>>((32)-(5))+(b^c^d)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v65)))
+	b = b<<(30) | b>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(76)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((76)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((76)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((76)-(3))&(0x0f)]
+	v66 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(76)&(0x0f)] = v66
+	d = uint32(int64(d) + (libc.Int64FromUint32(e<<(5)|e>>((32)-(5))+(a^b^c)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v66)))
+	a = a<<(30) | a>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(77)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((77)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((77)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((77)-(3))&(0x0f)]
+	v67 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(77)&(0x0f)] = v67
+	c = uint32(int64(c) + (libc.Int64FromUint32(d<<(5)|d>>((32)-(5))+(e^a^b)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v67)))
+	e = e<<(30) | e>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(78)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((78)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((78)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((78)-(3))&(0x0f)]
+	v68 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(78)&(0x0f)] = v68
+	b = uint32(int64(b) + (libc.Int64FromUint32(c<<(5)|c>>((32)-(5))+(d^e^a)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v68)))
+	d = d<<(30) | d>>((32)-(30))
+	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[(79)&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((79)-(14))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((79)-(8))&(0x0f)] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[((79)-(3))&(0x0f)]
+	v69 = tm<<(1) | tm>>((32)-(1))
+	(*(*[16]uint32)(unsafe.Pointer(bp)))[(79)&(0x0f)] = v69
+	a = uint32(int64(a) + (libc.Int64FromUint32(b<<(5)|b>>((32)-(5))+(c^d^e)) + libc.Int64FromInt64(0xCA62C1D6) + libc.Int64FromUint32(v69)))
+	c = c<<(30) | c>>((32)-(30))
 	/* update chainig vars */
 	*(*uint32)(unsafe.Pointer(hd)) += a
 	*(*uint32)(unsafe.Pointer(hd + 4)) += b
@@ -43056,10 +43058,10 @@ func STlib_drawNum(tls *libc.TLS, n uintptr, refresh boolean) {
 	}
 	// clear the area
 	x = (*st_number_t)(unsafe.Pointer(n)).Fx - numdigits*w
-	if (*st_number_t)(unsafe.Pointer(n)).Fy-(libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(ST_HEIGHT)) < 0 {
+	if (*st_number_t)(unsafe.Pointer(n)).Fy-((SCREENHEIGHT)-(ST_HEIGHT)) < 0 {
 		I_Error(tls, __ccgo_ts(27468), 0)
 	}
-	V_CopyRect(tls, x, (*st_number_t)(unsafe.Pointer(n)).Fy-(libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(ST_HEIGHT)), st_backing_screen, w*numdigits, h, x, (*st_number_t)(unsafe.Pointer(n)).Fy)
+	V_CopyRect(tls, x, (*st_number_t)(unsafe.Pointer(n)).Fy-((SCREENHEIGHT)-(ST_HEIGHT)), st_backing_screen, w*numdigits, h, x, (*st_number_t)(unsafe.Pointer(n)).Fy)
 	// if non-number, do not draw it
 	if num == int32(1994) {
 		return
@@ -43129,10 +43131,10 @@ func STlib_updateMultIcon(tls *libc.TLS, mi uintptr, refresh boolean) {
 			y = (*st_multicon_t)(unsafe.Pointer(mi)).Fy - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr((*st_multicon_t)(unsafe.Pointer(mi)).Foldinum)*8)))).Ftopoffset)
 			w = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr((*st_multicon_t)(unsafe.Pointer(mi)).Foldinum)*8)))).Fwidth)
 			h = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr((*st_multicon_t)(unsafe.Pointer(mi)).Foldinum)*8)))).Fheight)
-			if y-(libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(ST_HEIGHT)) < 0 {
+			if y-((SCREENHEIGHT)-(ST_HEIGHT)) < 0 {
 				I_Error(tls, __ccgo_ts(27493), 0)
 			}
-			V_CopyRect(tls, x, y-(libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(ST_HEIGHT)), st_backing_screen, w, h, x, y)
+			V_CopyRect(tls, x, y-((SCREENHEIGHT)-(ST_HEIGHT)), st_backing_screen, w, h, x, y)
 		}
 		V_DrawPatch(tls, (*st_multicon_t)(unsafe.Pointer(mi)).Fx, (*st_multicon_t)(unsafe.Pointer(mi)).Fy, *(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr(*(*int32)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Finum)))*8)))
 		(*st_multicon_t)(unsafe.Pointer(mi)).Foldinum = *(*int32)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Finum))
@@ -43155,13 +43157,13 @@ func STlib_updateBinIcon(tls *libc.TLS, bi uintptr, refresh boolean) {
 		y = (*st_binicon_t)(unsafe.Pointer(bi)).Fy - int32((*patch_t)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fp)).Ftopoffset)
 		w = int32((*patch_t)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fp)).Fwidth)
 		h = int32((*patch_t)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fp)).Fheight)
-		if y-(libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(ST_HEIGHT)) < 0 {
+		if y-((SCREENHEIGHT)-(ST_HEIGHT)) < 0 {
 			I_Error(tls, __ccgo_ts(27522), 0)
 		}
 		if *(*boolean)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fval)) != 0 {
 			V_DrawPatch(tls, (*st_binicon_t)(unsafe.Pointer(bi)).Fx, (*st_binicon_t)(unsafe.Pointer(bi)).Fy, (*st_binicon_t)(unsafe.Pointer(bi)).Fp)
 		} else {
-			V_CopyRect(tls, x, y-(libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(ST_HEIGHT)), st_backing_screen, w, h, x, y)
+			V_CopyRect(tls, x, y-((SCREENHEIGHT)-(ST_HEIGHT)), st_backing_screen, w, h, x, y)
 		}
 		(*st_binicon_t)(unsafe.Pointer(bi)).Foldval = *(*boolean)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fval))
 	}
@@ -43511,7 +43513,7 @@ func ST_refreshBackground(tls *libc.TLS) {
 			V_DrawPatch(tls, int32(ST_FX), 0, faceback)
 		}
 		V_RestoreBuffer(tls)
-		V_CopyRect(tls, ST_X, 0, st_backing_screen, int32(SCREENWIDTH), int32(ST_HEIGHT), ST_X, libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(ST_HEIGHT))
+		V_CopyRect(tls, ST_X, 0, st_backing_screen, int32(SCREENWIDTH), int32(ST_HEIGHT), ST_X, (SCREENHEIGHT)-(ST_HEIGHT))
 	}
 }
 
@@ -43524,11 +43526,11 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	var epsd, i, map1, musnum, v6, v7, v8, v9 int32
 	var v10 bool
 	// Filter automap on/off.
-	if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keyup) && libc.Uint32FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata1)&uint32(0xffff0000) == libc.Uint32FromInt32(libc.Int32FromUint8('a')<<libc.Int32FromInt32(24)+libc.Int32FromUint8('m')<<libc.Int32FromInt32(16)) {
+	if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keyup) && libc.Uint32FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata1)&uint32(0xffff0000) == libc.Uint32FromInt32(libc.Int32FromUint8('a')<<(24)+libc.Int32FromUint8('m')<<(16)) {
 		switch (*event_t)(unsafe.Pointer(ev)).Fdata1 {
-		case libc.Int32FromUint8('a')<<libc.Int32FromInt32(24) + libc.Int32FromUint8('m')<<libc.Int32FromInt32(16) | libc.Int32FromUint8('e')<<libc.Int32FromInt32(8):
+		case libc.Int32FromUint8('a')<<(24) + libc.Int32FromUint8('m')<<(16) | libc.Int32FromUint8('e')<<(8):
 			st_firsttime = 1
-		case libc.Int32FromUint8('a')<<libc.Int32FromInt32(24) + libc.Int32FromUint8('m')<<libc.Int32FromInt32(16) | libc.Int32FromUint8('x')<<libc.Int32FromInt32(8):
+		case libc.Int32FromUint8('a')<<(24) + libc.Int32FromUint8('m')<<(16) | libc.Int32FromUint8('x')<<(8):
 			//	fprintf(stderr, "AM exited\n");
 			break
 		}
@@ -43768,7 +43770,7 @@ func ST_calcPainOffset(tls *libc.TLS) (r int32) {
 	}
 	health = v1
 	if health != oldhealth {
-		lastcalc = (libc.Int32FromInt32(ST_NUMSTRAIGHTFACES) + libc.Int32FromInt32(ST_NUMTURNFACES) + libc.Int32FromInt32(ST_NUMSPECIALFACES)) * ((int32(100) - health) * int32(ST_NUMPAINFACES) / int32(101))
+		lastcalc = ((ST_NUMSTRAIGHTFACES) + (ST_NUMTURNFACES) + (ST_NUMSPECIALFACES)) * ((int32(100) - health) * int32(ST_NUMPAINFACES) / int32(101))
 		oldhealth = health
 	}
 	return lastcalc
@@ -43794,7 +43796,7 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 		// dead
 		if !((*player_t)(unsafe.Pointer(plyr)).Fhealth != 0) {
 			priority = int32(9)
-			st_faceindex = libc.Int32FromInt32(ST_NUMPAINFACES)*(libc.Int32FromInt32(ST_NUMSTRAIGHTFACES)+libc.Int32FromInt32(ST_NUMTURNFACES)+libc.Int32FromInt32(ST_NUMSPECIALFACES)) + libc.Int32FromInt32(1)
+			st_faceindex = (ST_NUMPAINFACES)*((ST_NUMSTRAIGHTFACES)+(ST_NUMTURNFACES)+(ST_NUMSPECIALFACES)) + (1)
 			st_facecount = int32(1)
 		}
 	}
@@ -43819,8 +43821,8 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 			if doevilgrin != 0 {
 				// evil grin if just picked up weapon
 				priority = int32(8)
-				st_facecount = libc.Int32FromInt32(2) * libc.Int32FromInt32(TICRATE)
-				st_faceindex = ST_calcPainOffset(tls) + (libc.Int32FromInt32(ST_NUMSTRAIGHTFACES) + libc.Int32FromInt32(ST_NUMTURNFACES) + libc.Int32FromInt32(1))
+				st_facecount = (2) * (TICRATE)
+				st_faceindex = ST_calcPainOffset(tls) + ((ST_NUMSTRAIGHTFACES) + (ST_NUMTURNFACES) + (1))
 			}
 		}
 	}
@@ -43829,8 +43831,8 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 			// being attacked
 			priority = int32(7)
 			if (*player_t)(unsafe.Pointer(plyr)).Fhealth-st_oldhealth > int32(ST_MUCHPAIN) {
-				st_facecount = libc.Int32FromInt32(1) * libc.Int32FromInt32(TICRATE)
-				st_faceindex = ST_calcPainOffset(tls) + (libc.Int32FromInt32(ST_NUMSTRAIGHTFACES) + libc.Int32FromInt32(ST_NUMTURNFACES))
+				st_facecount = (1) * (TICRATE)
+				st_faceindex = ST_calcPainOffset(tls) + ((ST_NUMSTRAIGHTFACES) + (ST_NUMTURNFACES))
 			} else {
 				badguyangle = R_PointToAngle2(tls, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fy, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fattacker)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fattacker)).Fy)
 				if badguyangle > (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fangle {
@@ -43842,18 +43844,18 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 					diffang = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fangle - badguyangle
 					i = libc.BoolInt32(diffang <= uint32(ANG18015))
 				} // confusing, aint it?
-				st_facecount = libc.Int32FromInt32(1) * libc.Int32FromInt32(TICRATE)
+				st_facecount = (1) * (TICRATE)
 				st_faceindex = ST_calcPainOffset(tls)
 				if diffang < uint32(ANG457) {
 					// head-on
-					st_faceindex += libc.Int32FromInt32(ST_NUMSTRAIGHTFACES) + libc.Int32FromInt32(ST_NUMTURNFACES) + libc.Int32FromInt32(1) + libc.Int32FromInt32(1)
+					st_faceindex += (ST_NUMSTRAIGHTFACES) + (ST_NUMTURNFACES) + (1) + (1)
 				} else {
 					if i != 0 {
 						// turn face right
 						st_faceindex += int32(ST_NUMSTRAIGHTFACES)
 					} else {
 						// turn face left
-						st_faceindex += libc.Int32FromInt32(ST_NUMSTRAIGHTFACES) + libc.Int32FromInt32(1)
+						st_faceindex += (ST_NUMSTRAIGHTFACES) + (1)
 					}
 				}
 			}
@@ -43864,12 +43866,12 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 		if (*player_t)(unsafe.Pointer(plyr)).Fdamagecount != 0 {
 			if (*player_t)(unsafe.Pointer(plyr)).Fhealth-st_oldhealth > int32(ST_MUCHPAIN) {
 				priority = int32(7)
-				st_facecount = libc.Int32FromInt32(1) * libc.Int32FromInt32(TICRATE)
-				st_faceindex = ST_calcPainOffset(tls) + (libc.Int32FromInt32(ST_NUMSTRAIGHTFACES) + libc.Int32FromInt32(ST_NUMTURNFACES))
+				st_facecount = (1) * (TICRATE)
+				st_faceindex = ST_calcPainOffset(tls) + ((ST_NUMSTRAIGHTFACES) + (ST_NUMTURNFACES))
 			} else {
 				priority = int32(6)
-				st_facecount = libc.Int32FromInt32(1) * libc.Int32FromInt32(TICRATE)
-				st_faceindex = ST_calcPainOffset(tls) + (libc.Int32FromInt32(ST_NUMSTRAIGHTFACES) + libc.Int32FromInt32(ST_NUMTURNFACES) + libc.Int32FromInt32(1) + libc.Int32FromInt32(1))
+				st_facecount = (1) * (TICRATE)
+				st_faceindex = ST_calcPainOffset(tls) + ((ST_NUMSTRAIGHTFACES) + (ST_NUMTURNFACES) + (1) + (1))
 			}
 		}
 	}
@@ -43877,13 +43879,13 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 		// rapid firing
 		if (*player_t)(unsafe.Pointer(plyr)).Fattackdown != 0 {
 			if lastattackdown == -int32(1) {
-				lastattackdown = libc.Int32FromInt32(2) * libc.Int32FromInt32(TICRATE)
+				lastattackdown = (2) * (TICRATE)
 			} else {
 				lastattackdown--
 				v2 = lastattackdown
 				if !(v2 != 0) {
 					priority = int32(5)
-					st_faceindex = ST_calcPainOffset(tls) + (libc.Int32FromInt32(ST_NUMSTRAIGHTFACES) + libc.Int32FromInt32(ST_NUMTURNFACES) + libc.Int32FromInt32(1) + libc.Int32FromInt32(1))
+					st_faceindex = ST_calcPainOffset(tls) + ((ST_NUMSTRAIGHTFACES) + (ST_NUMTURNFACES) + (1) + (1))
 					st_facecount = int32(1)
 					lastattackdown = int32(1)
 				}
@@ -43896,14 +43898,14 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 		// invulnerability
 		if (*player_t)(unsafe.Pointer(plyr)).Fcheats&int32(CF_GODMODE) != 0 || *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_invulnerability)*4)) != 0 {
 			priority = int32(4)
-			st_faceindex = libc.Int32FromInt32(ST_NUMPAINFACES) * (libc.Int32FromInt32(ST_NUMSTRAIGHTFACES) + libc.Int32FromInt32(ST_NUMTURNFACES) + libc.Int32FromInt32(ST_NUMSPECIALFACES))
+			st_faceindex = (ST_NUMPAINFACES) * ((ST_NUMSTRAIGHTFACES) + (ST_NUMTURNFACES) + (ST_NUMSPECIALFACES))
 			st_facecount = int32(1)
 		}
 	}
 	// look left or look right if the facecount has timed out
 	if !(st_facecount != 0) {
 		st_faceindex = ST_calcPainOffset(tls) + st_randomnumber%int32(3)
-		st_facecount = libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(2)
+		st_facecount = (TICRATE) / (2)
 		priority = 0
 	}
 	st_facecount--
@@ -44008,7 +44010,7 @@ func ST_doPaletteStuff(tls *libc.TLS) {
 		if cnt >= int32(4) {
 			palette = (cnt + int32(7)) >> int32(3)
 			if palette >= int32(NUMREDPALS) {
-				palette = libc.Int32FromInt32(NUMREDPALS) - libc.Int32FromInt32(1)
+				palette = (NUMREDPALS) - (1)
 			}
 		} else {
 			palette = 0
@@ -44019,14 +44021,14 @@ func ST_doPaletteStuff(tls *libc.TLS) {
 			if (*player_t)(unsafe.Pointer(plyr)).Fbonuscount >= int32(4) {
 				palette = ((*player_t)(unsafe.Pointer(plyr)).Fbonuscount + int32(7)) >> int32(3)
 				if palette >= int32(NUMBONUSPALS) {
-					palette = libc.Int32FromInt32(NUMBONUSPALS) - libc.Int32FromInt32(1)
+					palette = (NUMBONUSPALS) - (1)
 				}
 			} else {
 				palette = 0
 			}
 			palette += int32(STARTBONUSPALS)
 		} else {
-			if *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_ironfeet)*4)) > libc.Int32FromInt32(4)*libc.Int32FromInt32(32) || *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_ironfeet)*4))&int32(8) != 0 {
+			if *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_ironfeet)*4)) > (4)*(32) || *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_ironfeet)*4))&int32(8) != 0 {
 				palette = int32(RADIATIONPAL)
 			} else {
 				palette = 0
@@ -44037,7 +44039,7 @@ func ST_doPaletteStuff(tls *libc.TLS) {
 	// radiation suit palette is used to tint the screen green,
 	// as though the player is being covered in goo by an
 	// attacking flemoid.
-	if gameversion == int32(exe_chex) && palette >= int32(STARTREDPALS) && palette < libc.Int32FromInt32(STARTREDPALS)+libc.Int32FromInt32(NUMREDPALS) {
+	if gameversion == int32(exe_chex) && palette >= int32(STARTREDPALS) && palette < (STARTREDPALS)+(NUMREDPALS) {
 		palette = int32(RADIATIONPAL)
 	}
 	if palette != st_palette {
@@ -44340,7 +44342,7 @@ func ST_Stop(tls *libc.TLS) {
 
 func ST_Init(tls *libc.TLS) {
 	ST_loadData(tls)
-	st_backing_screen = Z_Malloc(tls, libc.Int32FromInt32(SCREENWIDTH)*libc.Int32FromInt32(ST_HEIGHT), int32(PU_STATIC), uintptr(0))
+	st_backing_screen = Z_Malloc(tls, (SCREENWIDTH)*(ST_HEIGHT), int32(PU_STATIC), uintptr(0))
 }
 
 const NORM_SEP = 128
@@ -44432,7 +44434,7 @@ func S_Init(tls *libc.TLS, sfxVolume int32, musicVolume int32) {
 		if !(i < int32(NUMSFX)) {
 			break
 		}
-		v3 = -libc.Int32FromInt32(1)
+		v3 = -(1)
 		S_sfx[i].Fusefulness = v3
 		S_sfx[i].Flumpnum = v3
 		goto _2
@@ -44624,7 +44626,7 @@ func S_AdjustSoundParams(tls *libc.TLS, listener uintptr, source uintptr, vol ui
 		v1 = ady
 	}
 	approx_dist = adx + ady - v1>>int32(1)
-	if gamemap != int32(8) && approx_dist > libc.Int32FromInt32(1200)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+	if gamemap != int32(8) && approx_dist > (1200)*((1)<<(FRACBITS)) {
 		return 0
 	}
 	// angle of source to listener
@@ -44636,19 +44638,19 @@ func S_AdjustSoundParams(tls *libc.TLS, listener uintptr, source uintptr, vol ui
 	}
 	angle >>= uint32(ANGLETOFINESHIFT)
 	// stereo separation
-	*(*int32)(unsafe.Pointer(sep)) = int32(128) - FixedMul(tls, libc.Int32FromInt32(96)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)), finesine[angle])>>libc.Int32FromInt32(FRACBITS)
+	*(*int32)(unsafe.Pointer(sep)) = int32(128) - FixedMul(tls, (96)*((1)<<(FRACBITS)), finesine[angle])>>(FRACBITS)
 	// volume calculation
-	if approx_dist < libc.Int32FromInt32(200)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
+	if approx_dist < (200)*((1)<<(FRACBITS)) {
 		*(*int32)(unsafe.Pointer(vol)) = snd_SfxVolume
 	} else {
 		if gamemap == int32(8) {
-			if approx_dist > libc.Int32FromInt32(1200)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) {
-				approx_dist = libc.Int32FromInt32(1200) * (libc.Int32FromInt32(1) << libc.Int32FromInt32(FRACBITS))
+			if approx_dist > (1200)*((1)<<(FRACBITS)) {
+				approx_dist = (1200) * ((1) << (FRACBITS))
 			}
-			*(*int32)(unsafe.Pointer(vol)) = int32(15) + (snd_SfxVolume-int32(15))*((libc.Int32FromInt32(1200)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))-approx_dist)>>int32(FRACBITS))/((libc.Int32FromInt32(1200)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))-libc.Int32FromInt32(200)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)))>>libc.Int32FromInt32(FRACBITS))
+			*(*int32)(unsafe.Pointer(vol)) = int32(15) + (snd_SfxVolume-int32(15))*(((1200)*((1)<<(FRACBITS))-approx_dist)>>int32(FRACBITS))/(((1200)*((1)<<(FRACBITS))-(200)*((1)<<(FRACBITS)))>>(FRACBITS))
 		} else {
 			// distance effect
-			*(*int32)(unsafe.Pointer(vol)) = snd_SfxVolume * ((libc.Int32FromInt32(1200)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) - approx_dist) >> int32(FRACBITS)) / ((libc.Int32FromInt32(1200)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS)) - libc.Int32FromInt32(200)*(libc.Int32FromInt32(1)<<libc.Int32FromInt32(FRACBITS))) >> libc.Int32FromInt32(FRACBITS))
+			*(*int32)(unsafe.Pointer(vol)) = snd_SfxVolume * (((1200)*((1)<<(FRACBITS)) - approx_dist) >> int32(FRACBITS)) / (((1200)*((1)<<(FRACBITS)) - (200)*((1)<<(FRACBITS))) >> (FRACBITS))
 		}
 	}
 	return libc.BoolInt32(*(*int32)(unsafe.Pointer(vol)) > 0)
@@ -59217,7 +59219,7 @@ func init() {
 }
 
 func init() {
-	finecosine = uintptr(unsafe.Pointer(&finesine)) + uintptr(libc.Int32FromInt32(FINEANGLES)/libc.Int32FromInt32(4))*4
+	finecosine = uintptr(unsafe.Pointer(&finesine)) + uintptr((FINEANGLES)/(4))*4
 }
 
 func init() {
@@ -61612,14 +61614,14 @@ func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, he
 	(*pcx_t)(unsafe.Pointer(pcx)).Fbits_per_pixel = int8(8)  // 256 color
 	(*pcx_t)(unsafe.Pointer(pcx)).Fxmin = uint16(0)
 	(*pcx_t)(unsafe.Pointer(pcx)).Fymin = uint16(0)
-	(*pcx_t)(unsafe.Pointer(pcx)).Fxmax = libc.Uint16FromInt16(int16(width - libc.Int32FromInt32(1)))
-	(*pcx_t)(unsafe.Pointer(pcx)).Fymax = libc.Uint16FromInt16(int16(height - libc.Int32FromInt32(1)))
+	(*pcx_t)(unsafe.Pointer(pcx)).Fxmax = libc.Uint16FromInt16(int16(width - (1)))
+	(*pcx_t)(unsafe.Pointer(pcx)).Fymax = libc.Uint16FromInt16(int16(height - (1)))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fhres = libc.Uint16FromInt16(int16(width))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fvres = libc.Uint16FromInt16(int16(height))
 	libc.Xmemset(tls, pcx+16, 0, uint64(48))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fcolor_planes = int8(1) // chunky image
 	(*pcx_t)(unsafe.Pointer(pcx)).Fbytes_per_line = libc.Uint16FromInt16(int16(width))
-	(*pcx_t)(unsafe.Pointer(pcx)).Fpalette_type = libc.Uint16FromInt16(int16(libc.Int32FromInt32(2))) // not a grey scale
+	(*pcx_t)(unsafe.Pointer(pcx)).Fpalette_type = libc.Uint16FromInt16(int16((2))) // not a grey scale
 	libc.Xmemset(tls, pcx+70, 0, uint64(58))
 	// pack the image
 	pack = pcx + 128
@@ -61721,13 +61723,13 @@ func V_DrawMouseSpeedBox(tls *libc.TLS, speed int32) {
 		return
 	}
 	// Calculate box position
-	box_x = libc.Int32FromInt32(SCREENWIDTH) - libc.Int32FromInt32(MOUSE_SPEED_BOX_WIDTH) - libc.Int32FromInt32(10)
+	box_x = (SCREENWIDTH) - (MOUSE_SPEED_BOX_WIDTH) - (10)
 	box_y = int32(15)
 	V_DrawFilledBox(tls, box_x, box_y, int32(MOUSE_SPEED_BOX_WIDTH), int32(MOUSE_SPEED_BOX_HEIGHT), bgcolor)
 	V_DrawBox(tls, box_x, box_y, int32(MOUSE_SPEED_BOX_WIDTH), int32(MOUSE_SPEED_BOX_HEIGHT), bordercolor)
 	// Calculate the position of the red line.  This is 1/3 of the way
 	// along the box.
-	redline_x = libc.Int32FromInt32(MOUSE_SPEED_BOX_WIDTH) / libc.Int32FromInt32(3)
+	redline_x = (MOUSE_SPEED_BOX_WIDTH) / (3)
 	// Undo acceleration and get back the original mouse speed
 	if speed < mouse_threshold {
 		original_speed = speed
@@ -61739,18 +61741,18 @@ func V_DrawMouseSpeedBox(tls *libc.TLS, speed int32) {
 	// Calculate line length
 	linelen = original_speed * redline_x / mouse_threshold
 	// Draw horizontal "thermometer"
-	if linelen > libc.Int32FromInt32(MOUSE_SPEED_BOX_WIDTH)-libc.Int32FromInt32(1) {
-		linelen = libc.Int32FromInt32(MOUSE_SPEED_BOX_WIDTH) - libc.Int32FromInt32(1)
+	if linelen > (MOUSE_SPEED_BOX_WIDTH)-(1) {
+		linelen = (MOUSE_SPEED_BOX_WIDTH) - (1)
 	}
-	V_DrawHorizLine(tls, box_x+int32(1), box_y+int32(4), libc.Int32FromInt32(MOUSE_SPEED_BOX_WIDTH)-libc.Int32FromInt32(2), black)
+	V_DrawHorizLine(tls, box_x+int32(1), box_y+int32(4), (MOUSE_SPEED_BOX_WIDTH)-(2), black)
 	if linelen < redline_x {
-		V_DrawHorizLine(tls, box_x+int32(1), box_y+libc.Int32FromInt32(MOUSE_SPEED_BOX_HEIGHT)/libc.Int32FromInt32(2), linelen, white)
+		V_DrawHorizLine(tls, box_x+int32(1), box_y+(MOUSE_SPEED_BOX_HEIGHT)/(2), linelen, white)
 	} else {
-		V_DrawHorizLine(tls, box_x+int32(1), box_y+libc.Int32FromInt32(MOUSE_SPEED_BOX_HEIGHT)/libc.Int32FromInt32(2), redline_x, white)
-		V_DrawHorizLine(tls, box_x+redline_x, box_y+libc.Int32FromInt32(MOUSE_SPEED_BOX_HEIGHT)/libc.Int32FromInt32(2), linelen-redline_x, yellow)
+		V_DrawHorizLine(tls, box_x+int32(1), box_y+(MOUSE_SPEED_BOX_HEIGHT)/(2), redline_x, white)
+		V_DrawHorizLine(tls, box_x+redline_x, box_y+(MOUSE_SPEED_BOX_HEIGHT)/(2), linelen-redline_x, yellow)
 	}
 	// Draw red line
-	V_DrawVertLine(tls, box_x+redline_x, box_y+int32(1), libc.Int32FromInt32(MOUSE_SPEED_BOX_HEIGHT)-libc.Int32FromInt32(2), red)
+	V_DrawVertLine(tls, box_x+redline_x, box_y+int32(1), (MOUSE_SPEED_BOX_HEIGHT)-(2), red)
 }
 
 const DM_KILLERSX = 10
@@ -61956,7 +61958,7 @@ var lnodes = [4][9]point_t{
 
 var epsd0animinfo = [10]anim_t1{
 	0: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(224),
@@ -61964,7 +61966,7 @@ var epsd0animinfo = [10]anim_t1{
 		},
 	},
 	1: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(184),
@@ -61972,7 +61974,7 @@ var epsd0animinfo = [10]anim_t1{
 		},
 	},
 	2: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(112),
@@ -61980,7 +61982,7 @@ var epsd0animinfo = [10]anim_t1{
 		},
 	},
 	3: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(72),
@@ -61988,7 +61990,7 @@ var epsd0animinfo = [10]anim_t1{
 		},
 	},
 	4: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(88),
@@ -61996,7 +61998,7 @@ var epsd0animinfo = [10]anim_t1{
 		},
 	},
 	5: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(64),
@@ -62004,7 +62006,7 @@ var epsd0animinfo = [10]anim_t1{
 		},
 	},
 	6: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(192),
@@ -62012,7 +62014,7 @@ var epsd0animinfo = [10]anim_t1{
 		},
 	},
 	7: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(136),
@@ -62020,7 +62022,7 @@ var epsd0animinfo = [10]anim_t1{
 		},
 	},
 	8: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(80),
@@ -62028,7 +62030,7 @@ var epsd0animinfo = [10]anim_t1{
 		},
 	},
 	9: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(64),
@@ -62040,7 +62042,7 @@ var epsd0animinfo = [10]anim_t1{
 var epsd1animinfo = [9]anim_t1{
 	0: {
 		Ftype1:  int32(ANIM_LEVEL),
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(1),
 		Floc: point_t{
 			Fx: int32(128),
@@ -62050,7 +62052,7 @@ var epsd1animinfo = [9]anim_t1{
 	},
 	1: {
 		Ftype1:  int32(ANIM_LEVEL),
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(1),
 		Floc: point_t{
 			Fx: int32(128),
@@ -62060,7 +62062,7 @@ var epsd1animinfo = [9]anim_t1{
 	},
 	2: {
 		Ftype1:  int32(ANIM_LEVEL),
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(1),
 		Floc: point_t{
 			Fx: int32(128),
@@ -62070,7 +62072,7 @@ var epsd1animinfo = [9]anim_t1{
 	},
 	3: {
 		Ftype1:  int32(ANIM_LEVEL),
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(1),
 		Floc: point_t{
 			Fx: int32(128),
@@ -62080,7 +62082,7 @@ var epsd1animinfo = [9]anim_t1{
 	},
 	4: {
 		Ftype1:  int32(ANIM_LEVEL),
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(1),
 		Floc: point_t{
 			Fx: int32(128),
@@ -62090,7 +62092,7 @@ var epsd1animinfo = [9]anim_t1{
 	},
 	5: {
 		Ftype1:  int32(ANIM_LEVEL),
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(1),
 		Floc: point_t{
 			Fx: int32(128),
@@ -62100,7 +62102,7 @@ var epsd1animinfo = [9]anim_t1{
 	},
 	6: {
 		Ftype1:  int32(ANIM_LEVEL),
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(1),
 		Floc: point_t{
 			Fx: int32(128),
@@ -62110,7 +62112,7 @@ var epsd1animinfo = [9]anim_t1{
 	},
 	7: {
 		Ftype1:  int32(ANIM_LEVEL),
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(192),
@@ -62120,7 +62122,7 @@ var epsd1animinfo = [9]anim_t1{
 	},
 	8: {
 		Ftype1:  int32(ANIM_LEVEL),
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(1),
 		Floc: point_t{
 			Fx: int32(128),
@@ -62132,7 +62134,7 @@ var epsd1animinfo = [9]anim_t1{
 
 var epsd2animinfo = [6]anim_t1{
 	0: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(104),
@@ -62140,7 +62142,7 @@ var epsd2animinfo = [6]anim_t1{
 		},
 	},
 	1: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(40),
@@ -62148,7 +62150,7 @@ var epsd2animinfo = [6]anim_t1{
 		},
 	},
 	2: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(160),
@@ -62156,7 +62158,7 @@ var epsd2animinfo = [6]anim_t1{
 		},
 	},
 	3: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(104),
@@ -62164,7 +62166,7 @@ var epsd2animinfo = [6]anim_t1{
 		},
 	},
 	4: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(3),
+		Fperiod: (TICRATE) / (3),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(120),
@@ -62172,7 +62174,7 @@ var epsd2animinfo = [6]anim_t1{
 		},
 	},
 	5: {
-		Fperiod: libc.Int32FromInt32(TICRATE) / libc.Int32FromInt32(4),
+		Fperiod: (TICRATE) / (4),
 		Fnanims: int32(3),
 		Floc: point_t{
 			Fx: int32(40),
@@ -62608,7 +62610,7 @@ func WI_drawTime(tls *libc.TLS, x int32, y int32, t int32) {
 	if t < 0 {
 		return
 	}
-	if t <= libc.Int32FromInt32(61)*libc.Int32FromInt32(59) {
+	if t <= (61)*(59) {
 		div = int32(1)
 		for cond := true; cond; cond = t/div != 0 {
 			n = t / div % int32(60)
@@ -62655,7 +62657,7 @@ var snl_pointeron = uint32(0)
 func WI_initShowNextLoc(tls *libc.TLS) {
 	state = int32(ShowNextLoc)
 	acceleratestage = 0
-	cnt = libc.Int32FromInt32(SHOWNEXTLOCDELAY) * libc.Int32FromInt32(TICRATE)
+	cnt = (SHOWNEXTLOCDELAY) * (TICRATE)
 	WI_initAnimatedBack(tls)
 }
 
@@ -62817,7 +62819,7 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 		dm_state = int32(4)
 	}
 	if dm_state == int32(2) {
-		if !(bcnt&libc.Int32FromInt32(3) != 0) {
+		if !(bcnt&(3) != 0) {
 			S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 		}
 		stillticking = 0
@@ -62898,11 +62900,11 @@ func WI_drawDeathmatchStats(tls *libc.TLS) {
 	WI_drawAnimatedBack(tls)
 	WI_drawLF(tls)
 	// draw stat titles (top line)
-	V_DrawPatch(tls, int32(DM_TOTALSX)-int32((*patch_t)(unsafe.Pointer(total)).Fwidth)/int32(2), libc.Int32FromInt32(DM_MATRIXY)-libc.Int32FromInt32(WI_SPACINGY)+libc.Int32FromInt32(10), total)
+	V_DrawPatch(tls, int32(DM_TOTALSX)-int32((*patch_t)(unsafe.Pointer(total)).Fwidth)/int32(2), (DM_MATRIXY)-(WI_SPACINGY)+(10), total)
 	V_DrawPatch(tls, int32(DM_KILLERSX), int32(DM_KILLERSY), killers)
 	V_DrawPatch(tls, int32(DM_VICTIMSX), int32(DM_VICTIMSY), victims)
 	// draw P?
-	x = libc.Int32FromInt32(DM_MATRIXX) + libc.Int32FromInt32(DM_SPACINGX)
+	x = (DM_MATRIXX) + (DM_SPACINGX)
 	y = int32(DM_MATRIXY)
 	i = 0
 	for {
@@ -62910,10 +62912,10 @@ func WI_drawDeathmatchStats(tls *libc.TLS) {
 			break
 		}
 		if playeringame[i] != 0 {
-			V_DrawPatch(tls, x-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth)/int32(2), libc.Int32FromInt32(DM_MATRIXY)-libc.Int32FromInt32(WI_SPACINGY), p[i])
+			V_DrawPatch(tls, x-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth)/int32(2), (DM_MATRIXY)-(WI_SPACINGY), p[i])
 			V_DrawPatch(tls, int32(DM_MATRIXX)-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth)/int32(2), y, p[i])
 			if i == me {
-				V_DrawPatch(tls, x-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth)/int32(2), libc.Int32FromInt32(DM_MATRIXY)-libc.Int32FromInt32(WI_SPACINGY), bstar)
+				V_DrawPatch(tls, x-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth)/int32(2), (DM_MATRIXY)-(WI_SPACINGY), bstar)
 				V_DrawPatch(tls, int32(DM_MATRIXX)-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth)/int32(2), y, star)
 			}
 		} else {
@@ -62930,14 +62932,14 @@ func WI_drawDeathmatchStats(tls *libc.TLS) {
 		i++
 	}
 	// draw stats
-	y = libc.Int32FromInt32(DM_MATRIXY) + libc.Int32FromInt32(10)
+	y = (DM_MATRIXY) + (10)
 	w = int32((*patch_t)(unsafe.Pointer(num[0])).Fwidth)
 	i = 0
 	for {
 		if !(i < int32(MAXPLAYERS)) {
 			break
 		}
-		x = libc.Int32FromInt32(DM_MATRIXX) + libc.Int32FromInt32(DM_SPACINGX)
+		x = (DM_MATRIXX) + (DM_SPACINGX)
 		if playeringame[i] != 0 {
 			j = 0
 			for {
@@ -62981,7 +62983,7 @@ func WI_initNetgameStats(tls *libc.TLS) {
 		if !(playeringame[i] != 0) {
 			goto _1
 		}
-		v4 = libc.Int32FromInt32(0)
+		v4 = (0)
 		cnt_frags[i] = v4
 		v3 = v4
 		cnt_secret[i] = v3
@@ -63027,7 +63029,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 		ng_state = int32(10)
 	}
 	if ng_state == int32(2) {
-		if !(bcnt&libc.Int32FromInt32(3) != 0) {
+		if !(bcnt&(3) != 0) {
 			S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 		}
 		stillticking = 0
@@ -63056,7 +63058,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 		}
 	} else {
 		if ng_state == int32(4) {
-			if !(bcnt&libc.Int32FromInt32(3) != 0) {
+			if !(bcnt&(3) != 0) {
 				S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 			}
 			stillticking = 0
@@ -63085,7 +63087,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 			}
 		} else {
 			if ng_state == int32(6) {
-				if !(bcnt&libc.Int32FromInt32(3) != 0) {
+				if !(bcnt&(3) != 0) {
 					S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 				}
 				stillticking = 0
@@ -63114,7 +63116,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 				}
 			} else {
 				if ng_state == int32(8) {
-					if !(bcnt&libc.Int32FromInt32(3) != 0) {
+					if !(bcnt&(3) != 0) {
 						S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 					}
 					stillticking = 0
@@ -63178,10 +63180,10 @@ func WI_drawNetgameStats(tls *libc.TLS) {
 	WI_drawLF(tls)
 	// draw stat titles (top line)
 	V_DrawPatch(tls, int32(32)+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+int32(NG_SPACINGX)-int32((*patch_t)(unsafe.Pointer(kills)).Fwidth), int32(NG_STATSY), kills)
-	V_DrawPatch(tls, int32(32)+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+libc.Int32FromInt32(2)*libc.Int32FromInt32(NG_SPACINGX)-int32((*patch_t)(unsafe.Pointer(items)).Fwidth), int32(NG_STATSY), items)
-	V_DrawPatch(tls, int32(32)+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+libc.Int32FromInt32(3)*libc.Int32FromInt32(NG_SPACINGX)-int32((*patch_t)(unsafe.Pointer(secret)).Fwidth), int32(NG_STATSY), secret)
+	V_DrawPatch(tls, int32(32)+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+(2)*(NG_SPACINGX)-int32((*patch_t)(unsafe.Pointer(items)).Fwidth), int32(NG_STATSY), items)
+	V_DrawPatch(tls, int32(32)+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+(3)*(NG_SPACINGX)-int32((*patch_t)(unsafe.Pointer(secret)).Fwidth), int32(NG_STATSY), secret)
 	if dofrags != 0 {
-		V_DrawPatch(tls, int32(32)+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+libc.Int32FromInt32(4)*libc.Int32FromInt32(NG_SPACINGX)-int32((*patch_t)(unsafe.Pointer(frags)).Fwidth), int32(NG_STATSY), frags)
+		V_DrawPatch(tls, int32(32)+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+(4)*(NG_SPACINGX)-int32((*patch_t)(unsafe.Pointer(frags)).Fwidth), int32(NG_STATSY), frags)
 	}
 	// draw stats
 	y = int32(NG_STATSY) + int32((*patch_t)(unsafe.Pointer(kills)).Fheight)
@@ -63223,12 +63225,12 @@ func WI_initStats(tls *libc.TLS) {
 	state = int32(StatCount)
 	acceleratestage = 0
 	sp_state = int32(1)
-	v2 = -libc.Int32FromInt32(1)
+	v2 = -(1)
 	cnt_secret[0] = v2
 	v1 = v2
 	cnt_items[0] = v1
 	cnt_kills[0] = v1
-	v3 = -libc.Int32FromInt32(1)
+	v3 = -(1)
 	cnt_par = v3
 	cnt_time = v3
 	cnt_pause = int32(TICRATE)
@@ -63250,7 +63252,7 @@ func WI_updateStats(tls *libc.TLS) {
 	}
 	if sp_state == int32(2) {
 		*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_kills)))) += int32(2)
-		if !(bcnt&libc.Int32FromInt32(3) != 0) {
+		if !(bcnt&(3) != 0) {
 			S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 		}
 		if cnt_kills[0] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fskills*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills {
@@ -63261,7 +63263,7 @@ func WI_updateStats(tls *libc.TLS) {
 	} else {
 		if sp_state == int32(4) {
 			*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_items)))) += int32(2)
-			if !(bcnt&libc.Int32FromInt32(3) != 0) {
+			if !(bcnt&(3) != 0) {
 				S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 			}
 			if cnt_items[0] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fsitems*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems {
@@ -63272,7 +63274,7 @@ func WI_updateStats(tls *libc.TLS) {
 		} else {
 			if sp_state == int32(6) {
 				*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_secret)))) += int32(2)
-				if !(bcnt&libc.Int32FromInt32(3) != 0) {
+				if !(bcnt&(3) != 0) {
 					S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 				}
 				if cnt_secret[0] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fssecret*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret {
@@ -63282,7 +63284,7 @@ func WI_updateStats(tls *libc.TLS) {
 				}
 			} else {
 				if sp_state == int32(8) {
-					if !(bcnt&libc.Int32FromInt32(3) != 0) {
+					if !(bcnt&(3) != 0) {
 						S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 					}
 					cnt_time += int32(3)
@@ -63331,16 +63333,16 @@ func WI_drawStats(tls *libc.TLS) {
 	WI_drawAnimatedBack(tls)
 	WI_drawLF(tls)
 	V_DrawPatch(tls, int32(SP_STATSX), int32(SP_STATSY), kills)
-	WI_drawPercent(tls, libc.Int32FromInt32(SCREENWIDTH)-libc.Int32FromInt32(SP_STATSX), int32(SP_STATSY), cnt_kills[0])
+	WI_drawPercent(tls, (SCREENWIDTH)-(SP_STATSX), int32(SP_STATSY), cnt_kills[0])
 	V_DrawPatch(tls, int32(SP_STATSX), int32(SP_STATSY)+lh, items)
-	WI_drawPercent(tls, libc.Int32FromInt32(SCREENWIDTH)-libc.Int32FromInt32(SP_STATSX), int32(SP_STATSY)+lh, cnt_items[0])
+	WI_drawPercent(tls, (SCREENWIDTH)-(SP_STATSX), int32(SP_STATSY)+lh, cnt_items[0])
 	V_DrawPatch(tls, int32(SP_STATSX), int32(SP_STATSY)+int32(2)*lh, sp_secret)
-	WI_drawPercent(tls, libc.Int32FromInt32(SCREENWIDTH)-libc.Int32FromInt32(SP_STATSX), int32(SP_STATSY)+int32(2)*lh, cnt_secret[0])
-	V_DrawPatch(tls, int32(SP_TIMEX), libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(32), timepatch)
-	WI_drawTime(tls, libc.Int32FromInt32(SCREENWIDTH)/libc.Int32FromInt32(2)-libc.Int32FromInt32(SP_TIMEX), libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(32), cnt_time)
+	WI_drawPercent(tls, (SCREENWIDTH)-(SP_STATSX), int32(SP_STATSY)+int32(2)*lh, cnt_secret[0])
+	V_DrawPatch(tls, int32(SP_TIMEX), (SCREENHEIGHT)-(32), timepatch)
+	WI_drawTime(tls, (SCREENWIDTH)/(2)-(SP_TIMEX), (SCREENHEIGHT)-(32), cnt_time)
 	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd < int32(3) {
-		V_DrawPatch(tls, libc.Int32FromInt32(SCREENWIDTH)/libc.Int32FromInt32(2)+libc.Int32FromInt32(SP_TIMEX), libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(32), par)
-		WI_drawTime(tls, libc.Int32FromInt32(SCREENWIDTH)-libc.Int32FromInt32(SP_TIMEX), libc.Int32FromInt32(SCREENHEIGHT)-libc.Int32FromInt32(32), cnt_par)
+		V_DrawPatch(tls, (SCREENWIDTH)/(2)+(SP_TIMEX), (SCREENHEIGHT)-(32), par)
+		WI_drawTime(tls, (SCREENWIDTH)-(SP_TIMEX), (SCREENHEIGHT)-(32), cnt_par)
 	}
 }
 
@@ -63627,7 +63629,7 @@ func WI_initVariables(tls *libc.TLS, wbstartstruct uintptr) {
 	var v1 int32
 	wbs = wbstartstruct
 	acceleratestage = 0
-	v1 = libc.Int32FromInt32(0)
+	v1 = (0)
 	bcnt = v1
 	cnt = v1
 	me = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpnum
@@ -63682,7 +63684,7 @@ func GetFileNumber(tls *libc.TLS, handle uintptr) (r int32) {
 	}
 	// Not found in list.  This is a new file we haven't seen yet.
 	// Allocate another slot for this file.
-	open_wadfiles = libc.Xrealloc(tls, open_wadfiles, uint64(8)*libc.Uint64FromInt32(num_open_wadfiles+libc.Int32FromInt32(1)))
+	open_wadfiles = libc.Xrealloc(tls, open_wadfiles, uint64(8)*libc.Uint64FromInt32(num_open_wadfiles+(1)))
 	*(*uintptr)(unsafe.Pointer(open_wadfiles + uintptr(num_open_wadfiles)*8)) = handle
 	result = num_open_wadfiles
 	num_open_wadfiles++
@@ -63911,7 +63913,7 @@ func W_AddFile(tls *libc.TLS, filename uintptr) (r uintptr) {
 		// them back.  Effectively we're constructing a "fake WAD directory"
 		// here, as it would appear on disk.
 		fileinfo = Z_Malloc(tls, int32(16), int32(PU_STATIC), uintptr(0))
-		(*filelump_t)(unsafe.Pointer(fileinfo)).Ffilepos = libc.Int32FromInt32(0)
+		(*filelump_t)(unsafe.Pointer(fileinfo)).Ffilepos = (0)
 		(*filelump_t)(unsafe.Pointer(fileinfo)).Fsize = libc.Int32FromUint32((*wad_file_t)(unsafe.Pointer(wad_file)).Flength)
 		// Name the lump after the base of the filename (without the
 		// extension).
@@ -64750,7 +64752,7 @@ func UpdateShiftStatus(tls *libc.TLS, pressed int32, key uint8) {
 	} else {
 		change = -int32(1)
 	}
-	if libc.Int32FromUint8(key) == libc.Int32FromInt32(0x80)+libc.Int32FromInt32(0x36) {
+	if libc.Int32FromUint8(key) == (0x80)+(0x36) {
 		shiftdown += change
 	}
 }
@@ -64820,7 +64822,7 @@ func init() {
 
 func I_InitGraphics(tls *libc.TLS) {
 	/* Allocate screen to draw to */
-	I_VideoBuffer = Z_Malloc(tls, libc.Int32FromInt32(SCREENWIDTH)*libc.Int32FromInt32(SCREENHEIGHT), int32(PU_STATIC), libc.UintptrFromInt32(0)) // For DOOM to draw on
+	I_VideoBuffer = Z_Malloc(tls, (SCREENWIDTH)*(SCREENHEIGHT), int32(PU_STATIC), libc.UintptrFromInt32(0)) // For DOOM to draw on
 	I_InitInput(tls)
 }
 
@@ -64861,7 +64863,7 @@ func I_FinishUpdate() {
 //	// I_ReadScreen
 //	//
 func I_ReadScreen(tls *libc.TLS, scr uintptr) {
-	libc.Xmemcpy(tls, scr, I_VideoBuffer, libc.Uint64FromInt32(libc.Int32FromInt32(SCREENWIDTH)*libc.Int32FromInt32(SCREENHEIGHT)))
+	libc.Xmemcpy(tls, scr, I_VideoBuffer, libc.Uint64FromInt32((SCREENWIDTH)*(SCREENHEIGHT)))
 }
 
 //
