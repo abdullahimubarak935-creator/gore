@@ -2372,9 +2372,7 @@ func init() {
 			},
 		},
 	}
-}
 
-func init() {
 	cheat_player_arrow = [16]mline_t{
 		0: {
 			Fa: mpoint_t{
@@ -2524,9 +2522,7 @@ func init() {
 			},
 		},
 	}
-}
 
-func init() {
 	thintriangle_guy = [3]mline_t{
 		0: {
 			Fa: mpoint_t{
@@ -3759,13 +3755,7 @@ func AM_Drawer(tls *libc.TLS) {
 
 func init() {
 	gamemode = int32(indetermined)
-}
-
-func init() {
 	gameversion = int32(exe_final2)
-}
-
-func init() {
 	doom1_endmsg = [8]uintptr{
 		0: __ccgo_ts(103),
 		1: __ccgo_ts(150),
@@ -3776,9 +3766,6 @@ func init() {
 		6: __ccgo_ts(414),
 		7: __ccgo_ts(470),
 	}
-}
-
-func init() {
 	doom2_endmsg = [8]uintptr{
 		0: __ccgo_ts(103),
 		1: __ccgo_ts(505),
@@ -44400,10 +44387,8 @@ var channels uintptr
 
 func init() {
 	sfxVolume = int32(8)
-}
-
-func init() {
 	musicVolume = int32(8)
+	snd_channels = int32(8)
 }
 
 // Internal volume level, ranging from 0-127
@@ -44417,10 +44402,6 @@ var mus_paused boolean
 // Music currently being played
 
 var mus_playing = libc.UintptrFromInt32(0)
-
-func init() {
-	snd_channels = int32(8)
-}
 
 //
 // Initializes sound stuff, including volume
@@ -48216,16 +48197,12 @@ func W_StdC_Read(tls *libc.TLS, wad uintptr, offset uint32, buffer uintptr, buff
 
 func init() {
 	stdc_wad_file = wad_file_class_t{}
-}
 
-func init() {
 	p := unsafe.Pointer(&stdc_wad_file)
 	*(*uintptr)(unsafe.Add(p, 0)) = __ccgo_fp(W_StdC_OpenFile)
 	*(*uintptr)(unsafe.Add(p, 8)) = __ccgo_fp(W_StdC_CloseFile)
 	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(W_StdC_Read)
-}
 
-func init() {
 	vanilla_keyboard_mapping = int32(1)
 }
 
