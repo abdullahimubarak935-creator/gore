@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"io"
+	"math"
 	"os"
 	"strconv"
 	"unsafe"
@@ -61769,7 +61770,7 @@ func V_DrawMouseSpeedBox(tls *libc.TLS, speed int32) {
 	white = I_GetPaletteIndex(tls, int32(0xff), int32(0xff), int32(0xff))
 	// If the mouse is turned off or acceleration is turned off, don't
 	// draw the box at all.
-	if !(usemouse != 0) || libc.Xfabs(tls, float64(mouse_acceleration-libc.Float32FromInt32(1))) < float64(0.01) {
+	if !(usemouse != 0) || math.Abs(float64(mouse_acceleration-1)) < float64(0.01) {
 		return
 	}
 	// Calculate box position
