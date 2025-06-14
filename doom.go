@@ -30,6 +30,9 @@ func xabs(j int32) int32 {
 }
 
 func xstrlen(nptr uintptr) uint64 {
+	if nptr == 0 {
+		return 0
+	}
 	var r uint64
 	for ; *(*int8)(unsafe.Pointer(nptr)) != 0; nptr++ {
 		r++
@@ -56,6 +59,15 @@ func xstrcasecmp(s1, s2 uintptr) int32 {
 	}
 }
 
+func xstrdup(s uintptr) uintptr {
+	if s == 0 {
+		return 0
+	}
+	l := xstrlen(s)
+	d := alloc(int(l + 1))
+	return xmemcpy(d, s, l+1)
+}
+
 func xatoi(nptr uintptr) int32 {
 	val := libc.GoString(nptr)
 	ret, err := strconv.Atoi(val)
@@ -66,9 +78,11 @@ func xatoi(nptr uintptr) int32 {
 }
 
 func xmemset(dest uintptr, c uint8, n uint64) {
-	destSlice := unsafe.Slice((*byte)(unsafe.Pointer(dest)), n)
-	for i := range n {
-		destSlice[i] = byte(c)
+	if n != 0 {
+		destSlice := unsafe.Slice((*byte)(unsafe.Pointer(dest)), n)
+		for i := range n {
+			destSlice[i] = byte(c)
+		}
 	}
 }
 
@@ -3996,12 +4010,12 @@ func CheckDirectoryHasIWAD(tls *libc.TLS, dir uintptr, iwadname uintptr) (r uint
 	// As a special case, the "directory" may refer directly to an
 	// IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
 	if DirIsFile(tls, dir, iwadname) != 0 && M_FileExists(tls, dir) != 0 {
-		return libc.Xstrdup(tls, dir)
+		return xstrdup(dir)
 	}
 	// Construct the full path to the IWAD if it is located in
 	// this directory, and check if it exists.
 	if !(libc.Xstrcmp(tls, dir, __ccgo_ts(1250)) != 0) {
-		filename = libc.Xstrdup(tls, iwadname)
+		filename = xstrdup(iwadname)
 	} else {
 		filename = M_StringJoin(tls, dir, libc.VaList(bp+8, __ccgo_ts(1252), iwadname, libc.UintptrFromInt32(0)))
 	}
@@ -4108,7 +4122,7 @@ func D_FindWADByName(tls *libc.TLS, name uintptr) (r uintptr) {
 		// the "directory" may actually refer directly to an IWAD
 		// file.
 		if DirIsFile(tls, iwad_dirs[i], name) != 0 && M_FileExists(tls, iwad_dirs[i]) != 0 {
-			return libc.Xstrdup(tls, iwad_dirs[i])
+			return xstrdup(iwad_dirs[i])
 		}
 		// Construct a string for the full path
 		path = M_StringJoin(tls, iwad_dirs[i], libc.VaList(bp+8, __ccgo_ts(1252), name, libc.UintptrFromInt32(0)))
@@ -21894,7 +21908,7 @@ func M_GetSaveGameDir(tls *libc.TLS, iwadname uintptr) (r uintptr) {
 	// If not "doing" a configuration directory (Windows), don't "do"
 	// a savegame directory, either.
 	if !(libc.Xstrcmp(tls, configdir, __ccgo_ts(14092)) != 0) {
-		savegamedir = libc.Xstrdup(tls, __ccgo_ts(14092))
+		savegamedir = xstrdup(__ccgo_ts(14092))
 	} else {
 		savegamedir = M_StringJoin(tls, configdir, libc.VaList(bp+8, __ccgo_ts(1252), __ccgo_ts(22043), libc.UintptrFromInt32(0)))
 		M_MakeDirectory(tls, savegamedir)
