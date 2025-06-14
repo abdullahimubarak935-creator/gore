@@ -20585,12 +20585,6 @@ func I_Quit(tls *libc.TLS) {
 	}
 }
 
-// returns non-zero if zenity is available
-
-func ZenityAvailable(tls *libc.TLS) (r int32) {
-	return libc.BoolInt32(libc.Xsystem(tls, __ccgo_ts(19197)) == 0)
-}
-
 // Escape special characters in the given string so that they can be
 // safely enclosed in shell quotes.
 
@@ -20629,25 +20623,6 @@ func EscapeShellString(tls *libc.TLS, string1 uintptr) (r1 uintptr) {
 	*(*int8)(unsafe.Pointer(r)) = int8('"')
 	r++
 	*(*int8)(unsafe.Pointer(r)) = int8('\000')
-	return result
-}
-
-// Open a native error box with a message using zenity
-
-func ZenityErrorBox(tls *libc.TLS, message uintptr) (r int32) {
-	bp := alloc(32)
-	var errorboxpath, escaped_message uintptr
-	var result int32
-	if !(ZenityAvailable(tls) != 0) {
-		return 0
-	}
-	escaped_message = EscapeShellString(tls, message)
-	errorboxpath_size = xstrlen(__ccgo_ts(19241)) + xstrlen(escaped_message) + uint64(19)
-	errorboxpath = libc.Xmalloc(tls, errorboxpath_size)
-	M_snprintf(tls, errorboxpath, errorboxpath_size, __ccgo_ts(19257), libc.VaList(bp+8, __ccgo_ts(19241), escaped_message))
-	result = libc.Xsystem(tls, errorboxpath)
-	libc.Xfree(tls, errorboxpath)
-	libc.Xfree(tls, escaped_message)
 	return result
 }
 
@@ -20692,7 +20667,7 @@ func I_Error(tls *libc.TLS, error1 uintptr, va uintptr) {
 	// game was not run from the console (and the user will
 	// therefore be unable to otherwise see the message).
 	if exit_gui_popup != 0 && !(I_ConsoleStdout(tls) != 0) {
-		ZenityErrorBox(tls, bp)
+		// TODO: Expose error message somehow?
 	}
 	// abort();
 	for 1 != 0 {
@@ -67919,9 +67894,7 @@ var __ccgo_ts_map = map[int][]byte{
 	18874: []byte("-mb\x00"),
 	18878: []byte("zone memory: %p, %x allocated for zone\n\x00"),
 	18918: []byte(" Doom Generic is free software, covered by the GNU General Public\n License.  There is NO warranty; not even for MERCHANTABILITY or FITNESS\n FOR A PARTICULAR PURPOSE. You are welcome to change and distribute\n copies under certain conditions. See the source for more information.\n\x00"),
-	19197: []byte("/usr/bin/zenity --help >/dev/null 2>&1\x00"),
 	19236: []byte("$`\\!\x00"),
-	19241: []byte("/usr/bin/zenity\x00"),
 	19257: []byte("%s --error --text=%s\x00"),
 	19278: []byte("Warning: recursive call to I_Error detected.\n\x00"),
 	19324: []byte("\n\n\x00"),
