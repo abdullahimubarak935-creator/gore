@@ -3692,12 +3692,8 @@ func AM_drawThings(tls *libc.TLS, colors int32, colorrange int32) {
 }
 
 func AM_drawMarks(tls *libc.TLS) {
-	var fx, fy, h, i, w int32
-	i = 0
-	for {
-		if !(i < int32(AM_NUMMARKPOINTS)) {
-			break
-		}
+	var fx, fy, h, w int32
+	for i := 0; i < AM_NUMMARKPOINTS; i++ {
 		if markpoints[i].Fx != -int32(1) {
 			//      w = SHORT(marknums[i]->width);
 			//      h = SHORT(marknums[i]->height);
@@ -3709,10 +3705,6 @@ func AM_drawMarks(tls *libc.TLS) {
 				V_DrawPatch(tls, fx, fy, marknums[i])
 			}
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -48072,134 +48064,134 @@ var shiftdown = int32(0)
 //
 //	// Lookup table for mapping ASCII characters to their equivalent when
 //	// shift is pressed on an American layout keyboard:
-var shiftxform = [128]int8{
-	1:   int8(1),
-	2:   int8(2),
-	3:   int8(3),
-	4:   int8(4),
-	5:   int8(5),
-	6:   int8(6),
-	7:   int8(7),
-	8:   int8(8),
-	9:   int8(9),
-	10:  int8(10),
-	11:  int8(11),
-	12:  int8(12),
-	13:  int8(13),
-	14:  int8(14),
-	15:  int8(15),
-	16:  int8(16),
-	17:  int8(17),
-	18:  int8(18),
-	19:  int8(19),
-	20:  int8(20),
-	21:  int8(21),
-	22:  int8(22),
-	23:  int8(23),
-	24:  int8(24),
-	25:  int8(25),
-	26:  int8(26),
-	27:  int8(27),
-	28:  int8(28),
-	29:  int8(29),
-	30:  int8(30),
-	31:  int8(31),
-	32:  int8(' '),
-	33:  int8('!'),
-	34:  int8('"'),
-	35:  int8('#'),
-	36:  int8('$'),
-	37:  int8('%'),
-	38:  int8('&'),
-	39:  int8('"'),
-	40:  int8('('),
-	41:  int8(')'),
-	42:  int8('*'),
-	43:  int8('+'),
-	44:  int8('<'),
-	45:  int8('_'),
-	46:  int8('>'),
-	47:  int8('?'),
-	48:  int8(')'),
-	49:  int8('!'),
-	50:  int8('@'),
-	51:  int8('#'),
-	52:  int8('$'),
-	53:  int8('%'),
-	54:  int8('^'),
-	55:  int8('&'),
-	56:  int8('*'),
-	57:  int8('('),
-	58:  int8(':'),
-	59:  int8(':'),
-	60:  int8('<'),
-	61:  int8('+'),
-	62:  int8('>'),
-	63:  int8('?'),
-	64:  int8('@'),
-	65:  int8('A'),
-	66:  int8('B'),
-	67:  int8('C'),
-	68:  int8('D'),
-	69:  int8('E'),
-	70:  int8('F'),
-	71:  int8('G'),
-	72:  int8('H'),
-	73:  int8('I'),
-	74:  int8('J'),
-	75:  int8('K'),
-	76:  int8('L'),
-	77:  int8('M'),
-	78:  int8('N'),
-	79:  int8('O'),
-	80:  int8('P'),
-	81:  int8('Q'),
-	82:  int8('R'),
-	83:  int8('S'),
-	84:  int8('T'),
-	85:  int8('U'),
-	86:  int8('V'),
-	87:  int8('W'),
-	88:  int8('X'),
-	89:  int8('Y'),
-	90:  int8('Z'),
-	91:  int8('['),
-	92:  int8('!'),
-	93:  int8(']'),
-	94:  int8('"'),
-	95:  int8('_'),
-	96:  int8('\''),
-	97:  int8('A'),
-	98:  int8('B'),
-	99:  int8('C'),
-	100: int8('D'),
-	101: int8('E'),
-	102: int8('F'),
-	103: int8('G'),
-	104: int8('H'),
-	105: int8('I'),
-	106: int8('J'),
-	107: int8('K'),
-	108: int8('L'),
-	109: int8('M'),
-	110: int8('N'),
-	111: int8('O'),
-	112: int8('P'),
-	113: int8('Q'),
-	114: int8('R'),
-	115: int8('S'),
-	116: int8('T'),
-	117: int8('U'),
-	118: int8('V'),
-	119: int8('W'),
-	120: int8('X'),
-	121: int8('Y'),
-	122: int8('Z'),
-	123: int8('{'),
-	124: int8('|'),
-	125: int8('}'),
-	126: int8('~'),
-	127: int8(127),
+var shiftxform = [128]uint8{
+	1:   (1),
+	2:   (2),
+	3:   (3),
+	4:   (4),
+	5:   (5),
+	6:   (6),
+	7:   (7),
+	8:   (8),
+	9:   (9),
+	10:  (10),
+	11:  (11),
+	12:  (12),
+	13:  (13),
+	14:  (14),
+	15:  (15),
+	16:  (16),
+	17:  (17),
+	18:  (18),
+	19:  (19),
+	20:  (20),
+	21:  (21),
+	22:  (22),
+	23:  (23),
+	24:  (24),
+	25:  (25),
+	26:  (26),
+	27:  (27),
+	28:  (28),
+	29:  (29),
+	30:  (30),
+	31:  (31),
+	32:  (' '),
+	33:  ('!'),
+	34:  ('"'),
+	35:  ('#'),
+	36:  ('$'),
+	37:  ('%'),
+	38:  ('&'),
+	39:  ('"'),
+	40:  ('('),
+	41:  (')'),
+	42:  ('*'),
+	43:  ('+'),
+	44:  ('<'),
+	45:  ('_'),
+	46:  ('>'),
+	47:  ('?'),
+	48:  (')'),
+	49:  ('!'),
+	50:  ('@'),
+	51:  ('#'),
+	52:  ('$'),
+	53:  ('%'),
+	54:  ('^'),
+	55:  ('&'),
+	56:  ('*'),
+	57:  ('('),
+	58:  (':'),
+	59:  (':'),
+	60:  ('<'),
+	61:  ('+'),
+	62:  ('>'),
+	63:  ('?'),
+	64:  ('@'),
+	65:  ('A'),
+	66:  ('B'),
+	67:  ('C'),
+	68:  ('D'),
+	69:  ('E'),
+	70:  ('F'),
+	71:  ('G'),
+	72:  ('H'),
+	73:  ('I'),
+	74:  ('J'),
+	75:  ('K'),
+	76:  ('L'),
+	77:  ('M'),
+	78:  ('N'),
+	79:  ('O'),
+	80:  ('P'),
+	81:  ('Q'),
+	82:  ('R'),
+	83:  ('S'),
+	84:  ('T'),
+	85:  ('U'),
+	86:  ('V'),
+	87:  ('W'),
+	88:  ('X'),
+	89:  ('Y'),
+	90:  ('Z'),
+	91:  ('['),
+	92:  ('!'),
+	93:  (']'),
+	94:  ('"'),
+	95:  ('_'),
+	96:  ('\''),
+	97:  ('A'),
+	98:  ('B'),
+	99:  ('C'),
+	100: ('D'),
+	101: ('E'),
+	102: ('F'),
+	103: ('G'),
+	104: ('H'),
+	105: ('I'),
+	106: ('J'),
+	107: ('K'),
+	108: ('L'),
+	109: ('M'),
+	110: ('N'),
+	111: ('O'),
+	112: ('P'),
+	113: ('Q'),
+	114: ('R'),
+	115: ('S'),
+	116: ('T'),
+	117: ('U'),
+	118: ('V'),
+	119: ('W'),
+	120: ('X'),
+	121: ('Y'),
+	122: ('Z'),
+	123: ('{'),
+	124: ('|'),
+	125: ('}'),
+	126: ('~'),
+	127: (127),
 }
 
 // Get the equivalent ASCII (Unicode?) character for a keypress.
@@ -48207,10 +48199,10 @@ var shiftxform = [128]int8{
 func GetTypedChar(tls *libc.TLS, key uint8) (r uint8) {
 	// Is shift held down?  If so, perform a translation.
 	if shiftdown > 0 {
-		if libc.Int32FromUint8(key) >= 0 && uint64(key) < libc.Uint64FromInt64(128)/libc.Uint64FromInt64(1) {
-			key = libc.Uint8FromInt8(shiftxform[key])
+		if key >= 0 && key < 128 {
+			key = shiftxform[key]
 		} else {
-			key = uint8(0)
+			key = 0
 		}
 	}
 	return key
@@ -48219,11 +48211,11 @@ func GetTypedChar(tls *libc.TLS, key uint8) (r uint8) {
 func UpdateShiftStatus(tls *libc.TLS, pressed int32, key uint8) {
 	var change int32
 	if pressed != 0 {
-		change = int32(1)
+		change = 1
 	} else {
-		change = -int32(1)
+		change = -1
 	}
-	if libc.Int32FromUint8(key) == 0x80+0x36 {
+	if key == 0x80+0x36 {
 		shiftdown += change
 	}
 }
