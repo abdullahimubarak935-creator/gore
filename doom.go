@@ -2642,7 +2642,7 @@ var scale_mtof = int32(libc.Float64FromFloat64(0.2) * float64(1<<FRACBITS))
 //	// used by FTOM to scale from frame-buffer-to-map coords (=1/scale_mtof)
 var scale_ftom fixed_t
 
-var plr uintptr // the player represented by an arrow
+var plr *player_t // the player represented by an arrow
 
 var marknums [10]uintptr    // numbers used for marking by the automap
 var markpoints [10]mpoint_t // where the points are
@@ -2809,7 +2809,6 @@ func AM_changeWindowLoc(tls *libc.TLS) {
 //	//
 //	//
 func AM_initVariables(tls *libc.TLS) {
-	var pnum int32
 	var v1 fixed_t
 	automapactive = 1
 	fb = I_VideoBuffer
@@ -2824,22 +2823,14 @@ func AM_initVariables(tls *libc.TLS) {
 	m_h = FixedMul(f_h<<16, scale_ftom)
 	// find player to center on initially
 	if playeringame[consoleplayer] != 0 {
-		plr = uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328
+		plr = &players[consoleplayer]
 	} else {
-		plr = uintptr(unsafe.Pointer(&players))
-		pnum = 0
-		for {
-			if !(pnum < int32(MAXPLAYERS)) {
-				break
-			}
+		plr = &players[0]
+		for pnum := 0; pnum < MAXPLAYERS; pnum++ {
 			if playeringame[pnum] != 0 {
-				plr = uintptr(unsafe.Pointer(&players)) + uintptr(pnum)*328
+				plr = &players[pnum]
 				break
 			}
-			goto _2
-		_2:
-			;
-			pnum++
 		}
 	}
 	m_x = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx - m_w/int32(2)
@@ -3584,7 +3575,7 @@ func AM_drawWalls(tls *libc.TLS) {
 				}
 			}
 		} else {
-			if *(*int32)(unsafe.Pointer(plr + 56 + uintptr(pw_allmap)*4)) != 0 {
+			if plr.Fpowers[pw_allmap] != 0 {
 				if !(int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&ML_DONTDRAW != 0) {
 					AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), 6*16+3)
 				}
@@ -3651,8 +3642,7 @@ func AM_drawLineCharacter(tls *libc.TLS, lineguy uintptr, lineguylines int32, sc
 }
 
 func AM_drawPlayers(tls *libc.TLS) {
-	var color, i, their_color int32
-	var p uintptr
+	var color, their_color int32
 	their_color = -int32(1)
 	if !(netgame != 0) {
 		if cheating != 0 {
@@ -3662,20 +3652,16 @@ func AM_drawPlayers(tls *libc.TLS) {
 		}
 		return
 	}
-	i = 0
-	for {
-		if !(i < int32(MAXPLAYERS)) {
-			break
-		}
+	for i := 0; i < MAXPLAYERS; i++ {
 		their_color++
-		p = uintptr(unsafe.Pointer(&players)) + uintptr(i)*328
+		p := &players[i]
 		if deathmatch != 0 && !(singledemo != 0) && p != plr {
 			goto _1
 		}
 		if !(playeringame[i] != 0) {
 			goto _1
 		}
-		if *(*int32)(unsafe.Pointer(p + 56 + uintptr(pw_invisibility)*4)) != 0 {
+		if p.Fpowers[pw_invisibility] != 0 {
 			color = int32(246)
 		} else {
 			color = their_colors[their_color]
