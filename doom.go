@@ -372,15 +372,11 @@ type actionf_p1 = uintptr
 type actionf_p2 = uintptr
 
 type actionf_t = struct {
-	Facp1 [0]actionf_p1
-	Facp2 [0]actionf_p2
-	Facv  actionf_v
+	Facv actionf_v
 }
 
 type think_t = struct {
-	Facp1 [0]actionf_p1
-	Facp2 [0]actionf_p2
-	Facv  actionf_v
+	Facv actionf_v
 }
 
 type thinker_t = struct {
@@ -24479,58 +24475,58 @@ func M_ClearRandom(tls *libc.TLS) {
 // T_MoveCeiling
 //
 
-func T_MoveCeiling(tls *libc.TLS, ceiling uintptr) {
+func T_MoveCeiling(tls *libc.TLS, ceiling *ceiling_t) {
 	var res result_e
-	switch (*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection {
+	switch ceiling.Fdirection {
 	case 0:
 		// IN STASIS
 	case int32(1):
 		// UP
-		res = T_MovePlane(tls, (*ceiling_t)(unsafe.Pointer(ceiling)).Fsector, (*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed, (*ceiling_t)(unsafe.Pointer(ceiling)).Ftopheight, 0, int32(1), (*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection)
+		res = T_MovePlane(tls, ceiling.Fsector, ceiling.Fspeed, ceiling.Ftopheight, 0, int32(1), ceiling.Fdirection)
 		if !(leveltime&7 != 0) {
-			switch (*ceiling_t)(unsafe.Pointer(ceiling)).Ftype1 {
+			switch ceiling.Ftype1 {
 			case int32(silentCrushAndRaise):
 			default:
-				S_StartSound(tls, (*ceiling_t)(unsafe.Pointer(ceiling)).Fsector+48, int32(sfx_stnmov))
+				S_StartSound(tls, ceiling.Fsector+48, int32(sfx_stnmov))
 				// ?
 				break
 			}
 		}
 		if res == int32(pastdest) {
-			switch (*ceiling_t)(unsafe.Pointer(ceiling)).Ftype1 {
+			switch ceiling.Ftype1 {
 			case int32(raiseToHighest):
 				P_RemoveActiveCeiling(tls, ceiling)
 			case int32(silentCrushAndRaise):
-				S_StartSound(tls, (*ceiling_t)(unsafe.Pointer(ceiling)).Fsector+48, int32(sfx_pstop))
+				S_StartSound(tls, ceiling.Fsector+48, int32(sfx_pstop))
 				fallthrough
 			case int32(fastCrushAndRaise):
 				fallthrough
 			case int32(crushAndRaise):
-				(*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection = -int32(1)
+				ceiling.Fdirection = -int32(1)
 			default:
 				break
 			}
 		}
 	case -int32(1):
 		// DOWN
-		res = T_MovePlane(tls, (*ceiling_t)(unsafe.Pointer(ceiling)).Fsector, (*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed, (*ceiling_t)(unsafe.Pointer(ceiling)).Fbottomheight, (*ceiling_t)(unsafe.Pointer(ceiling)).Fcrush, int32(1), (*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection)
+		res = T_MovePlane(tls, ceiling.Fsector, ceiling.Fspeed, ceiling.Fbottomheight, ceiling.Fcrush, int32(1), ceiling.Fdirection)
 		if !(leveltime&7 != 0) {
-			switch (*ceiling_t)(unsafe.Pointer(ceiling)).Ftype1 {
+			switch ceiling.Ftype1 {
 			case int32(silentCrushAndRaise):
 			default:
-				S_StartSound(tls, (*ceiling_t)(unsafe.Pointer(ceiling)).Fsector+48, int32(sfx_stnmov))
+				S_StartSound(tls, ceiling.Fsector+48, int32(sfx_stnmov))
 			}
 		}
 		if res == int32(pastdest) {
-			switch (*ceiling_t)(unsafe.Pointer(ceiling)).Ftype1 {
+			switch ceiling.Ftype1 {
 			case int32(silentCrushAndRaise):
-				S_StartSound(tls, (*ceiling_t)(unsafe.Pointer(ceiling)).Fsector+48, int32(sfx_pstop))
+				S_StartSound(tls, ceiling.Fsector+48, int32(sfx_pstop))
 				fallthrough
 			case int32(crushAndRaise):
-				(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = 1 << FRACBITS
+				ceiling.Fspeed = 1 << FRACBITS
 				fallthrough
 			case int32(fastCrushAndRaise):
-				(*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection = int32(1)
+				ceiling.Fdirection = int32(1)
 			case int32(lowerAndCrush):
 				fallthrough
 			case int32(lowerToFloor):
@@ -24540,13 +24536,13 @@ func T_MoveCeiling(tls *libc.TLS, ceiling uintptr) {
 			}
 		} else { // ( res != pastdest )
 			if res == int32(crushed) {
-				switch (*ceiling_t)(unsafe.Pointer(ceiling)).Ftype1 {
+				switch ceiling.Ftype1 {
 				case int32(silentCrushAndRaise):
 					fallthrough
 				case int32(crushAndRaise):
 					fallthrough
 				case int32(lowerAndCrush):
-					(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = 1 << FRACBITS / 8
+					ceiling.Fspeed = 1 << FRACBITS / 8
 				default:
 					break
 				}
@@ -24627,7 +24623,7 @@ func EV_DoCeiling(tls *libc.TLS, line uintptr, type1 ceiling_e) (r int32) {
 		}
 		(*ceiling_t)(unsafe.Pointer(ceiling)).Ftag = int32((*sector_t)(unsafe.Pointer(sec)).Ftag)
 		(*ceiling_t)(unsafe.Pointer(ceiling)).Ftype1 = type1
-		P_AddActiveCeiling(tls, ceiling)
+		P_AddActiveCeiling(tls, (*ceiling_t)(unsafe.Pointer(ceiling)))
 	}
 	return rtn
 }
@@ -24637,14 +24633,14 @@ func EV_DoCeiling(tls *libc.TLS, line uintptr, type1 ceiling_e) (r int32) {
 //	//
 //	// Add an active ceiling
 //	//
-func P_AddActiveCeiling(tls *libc.TLS, c uintptr) {
+func P_AddActiveCeiling(tls *libc.TLS, c *ceiling_t) {
 	var i int32
 	i = 0
 	for {
 		if !(i < int32(MAXCEILINGS)) {
 			break
 		}
-		if activeceilings[i] == libc.UintptrFromInt32(0) {
+		if activeceilings[i] == nil {
 			activeceilings[i] = c
 			return
 		}
@@ -24660,23 +24656,14 @@ func P_AddActiveCeiling(tls *libc.TLS, c uintptr) {
 //	//
 //	// Remove a ceiling's thinker
 //	//
-func P_RemoveActiveCeiling(tls *libc.TLS, c uintptr) {
-	var i int32
-	i = 0
-	for {
-		if !(i < int32(MAXCEILINGS)) {
-			break
-		}
+func P_RemoveActiveCeiling(tls *libc.TLS, c *ceiling_t) {
+	for i := 0; i < MAXCEILINGS; i++ {
 		if activeceilings[i] == c {
 			(*sector_t)(unsafe.Pointer((*ceiling_t)(unsafe.Pointer(activeceilings[i])).Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
-			P_RemoveThinker(tls, activeceilings[i])
-			activeceilings[i] = libc.UintptrFromInt32(0)
+			P_RemoveThinker(tls, &activeceilings[i].Fthinker)
+			activeceilings[i] = nil
 			break
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -24692,9 +24679,10 @@ func P_ActivateInStasisCeiling(tls *libc.TLS, line uintptr) {
 		if !(i < int32(MAXCEILINGS)) {
 			break
 		}
-		if activeceilings[i] != 0 && (*ceiling_t)(unsafe.Pointer(activeceilings[i])).Ftag == int32((*line_t)(unsafe.Pointer(line)).Ftag) && (*ceiling_t)(unsafe.Pointer(activeceilings[i])).Fdirection == 0 {
-			(*ceiling_t)(unsafe.Pointer(activeceilings[i])).Fdirection = (*ceiling_t)(unsafe.Pointer(activeceilings[i])).Folddirection
-			*(*actionf_p1)(unsafe.Pointer(activeceilings[i] + 16)) = __ccgo_fp(T_MoveCeiling)
+		if activeceilings[i] != nil && activeceilings[i].Ftag == int32((*line_t)(unsafe.Pointer(line)).Ftag) && activeceilings[i].Fdirection == 0 {
+			activeceilings[i].Fdirection = activeceilings[i].Folddirection
+			activeceilings[i].Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveCeiling)
+			//*(*actionf_p1)(unsafe.Pointer(activeceilings[i] + 16)) = __ccgo_fp(T_MoveCeiling)
 		}
 		goto _1
 	_1:
@@ -24717,10 +24705,10 @@ func EV_CeilingCrushStop(tls *libc.TLS, line uintptr) (r int32) {
 		if !(i < int32(MAXCEILINGS)) {
 			break
 		}
-		if activeceilings[i] != 0 && (*ceiling_t)(unsafe.Pointer(activeceilings[i])).Ftag == int32((*line_t)(unsafe.Pointer(line)).Ftag) && (*ceiling_t)(unsafe.Pointer(activeceilings[i])).Fdirection != 0 {
-			(*ceiling_t)(unsafe.Pointer(activeceilings[i])).Folddirection = (*ceiling_t)(unsafe.Pointer(activeceilings[i])).Fdirection
-			*(*actionf_v)(unsafe.Pointer(activeceilings[i] + 16)) = libc.UintptrFromInt32(0)
-			(*ceiling_t)(unsafe.Pointer(activeceilings[i])).Fdirection = 0 // in-stasis
+		if activeceilings[i] != nil && activeceilings[i].Ftag == int32((*line_t)(unsafe.Pointer(line)).Ftag) && activeceilings[i].Fdirection != 0 {
+			activeceilings[i].Folddirection = activeceilings[i].Fdirection
+			activeceilings[i].Fthinker.Ffunction.Facv = 0
+			activeceilings[i].Fdirection = 0 // in-stasis
 			rtn = int32(1)
 		}
 		goto _1
@@ -24759,98 +24747,92 @@ func EV_CeilingCrushStop(tls *libc.TLS, line uintptr) (r int32) {
 //	//
 //	// T_VerticalDoor
 //	//
-func T_VerticalDoor(tls *libc.TLS, door uintptr) {
+func T_VerticalDoor(tls *libc.TLS, door *vldoor_t) {
 	var res result_e
-	var v1, v3 int32
-	var v2, v4 uintptr
-	switch (*vldoor_t)(unsafe.Pointer(door)).Fdirection {
+	switch door.Fdirection {
 	case 0:
 		// WAITING
-		v2 = door + 56
-		*(*int32)(unsafe.Pointer(v2))--
-		v1 = *(*int32)(unsafe.Pointer(v2))
-		if !(v1 != 0) {
-			switch (*vldoor_t)(unsafe.Pointer(door)).Ftype1 {
+		door.Ftopcountdown--
+		if door.Ftopcountdown == 0 {
+			switch door.Ftype1 {
 			case int32(vld_blazeRaise):
-				(*vldoor_t)(unsafe.Pointer(door)).Fdirection = -int32(1) // time to go back down
-				S_StartSound(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector+48, int32(sfx_bdcls))
+				door.Fdirection = -int32(1) // time to go back down
+				S_StartSound(tls, door.Fsector+48, int32(sfx_bdcls))
 			case int32(vld_normal):
-				(*vldoor_t)(unsafe.Pointer(door)).Fdirection = -int32(1) // time to go back down
-				S_StartSound(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector+48, int32(sfx_dorcls))
+				door.Fdirection = -int32(1) // time to go back down
+				S_StartSound(tls, door.Fsector+48, int32(sfx_dorcls))
 			case int32(vld_close30ThenOpen):
-				(*vldoor_t)(unsafe.Pointer(door)).Fdirection = int32(1)
-				S_StartSound(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector+48, int32(sfx_doropn))
+				door.Fdirection = int32(1)
+				S_StartSound(tls, door.Fsector+48, int32(sfx_doropn))
 			default:
 				break
 			}
 		}
 	case int32(2):
 		//  INITIAL WAIT
-		v4 = door + 56
-		*(*int32)(unsafe.Pointer(v4))--
-		v3 = *(*int32)(unsafe.Pointer(v4))
-		if !(v3 != 0) {
-			switch (*vldoor_t)(unsafe.Pointer(door)).Ftype1 {
+		door.Ftopcountdown--
+		if door.Ftopcountdown == 0 {
+			switch door.Ftype1 {
 			case int32(vld_raiseIn5Mins):
-				(*vldoor_t)(unsafe.Pointer(door)).Fdirection = int32(1)
-				(*vldoor_t)(unsafe.Pointer(door)).Ftype1 = int32(vld_normal)
-				S_StartSound(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector+48, int32(sfx_doropn))
+				door.Fdirection = int32(1)
+				door.Ftype1 = int32(vld_normal)
+				S_StartSound(tls, door.Fsector+48, int32(sfx_doropn))
 			default:
 				break
 			}
 		}
 	case -int32(1):
 		// DOWN
-		res = T_MovePlane(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector, (*vldoor_t)(unsafe.Pointer(door)).Fspeed, (*sector_t)(unsafe.Pointer((*vldoor_t)(unsafe.Pointer(door)).Fsector)).Ffloorheight, 0, int32(1), (*vldoor_t)(unsafe.Pointer(door)).Fdirection)
+		res = T_MovePlane(tls, door.Fsector, door.Fspeed, (*sector_t)(unsafe.Pointer(door.Fsector)).Ffloorheight, 0, int32(1), door.Fdirection)
 		if res == int32(pastdest) {
 			switch (*vldoor_t)(unsafe.Pointer(door)).Ftype1 {
 			case int32(vld_blazeRaise):
 				fallthrough
 			case int32(vld_blazeClose):
-				(*sector_t)(unsafe.Pointer((*vldoor_t)(unsafe.Pointer(door)).Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
-				P_RemoveThinker(tls, door) // unlink and free
-				S_StartSound(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector+48, int32(sfx_bdcls))
+				(*sector_t)(unsafe.Pointer(door.Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
+				P_RemoveThinker(tls, &door.Fthinker) // unlink and free
+				S_StartSound(tls, door.Fsector+48, int32(sfx_bdcls))
 			case int32(vld_normal):
 				fallthrough
 			case int32(vld_close):
-				(*sector_t)(unsafe.Pointer((*vldoor_t)(unsafe.Pointer(door)).Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
-				P_RemoveThinker(tls, door) // unlink and free
+				(*sector_t)(unsafe.Pointer(door.Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
+				P_RemoveThinker(tls, &door.Fthinker) // unlink and free
 			case int32(vld_close30ThenOpen):
-				(*vldoor_t)(unsafe.Pointer(door)).Fdirection = 0
-				(*vldoor_t)(unsafe.Pointer(door)).Ftopcountdown = TICRATE * 30
+				door.Fdirection = 0
+				door.Ftopcountdown = TICRATE * 30
 			default:
 				break
 			}
 		} else {
 			if res == int32(crushed) {
-				switch (*vldoor_t)(unsafe.Pointer(door)).Ftype1 {
+				switch door.Ftype1 {
 				case int32(vld_blazeClose):
 					fallthrough
 				case int32(vld_close): // DO NOT GO BACK UP!
 				default:
-					(*vldoor_t)(unsafe.Pointer(door)).Fdirection = int32(1)
-					S_StartSound(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector+48, int32(sfx_doropn))
+					door.Fdirection = int32(1)
+					S_StartSound(tls, door.Fsector+48, int32(sfx_doropn))
 					break
 				}
 			}
 		}
 	case int32(1):
 		// UP
-		res = T_MovePlane(tls, (*vldoor_t)(unsafe.Pointer(door)).Fsector, (*vldoor_t)(unsafe.Pointer(door)).Fspeed, (*vldoor_t)(unsafe.Pointer(door)).Ftopheight, 0, int32(1), (*vldoor_t)(unsafe.Pointer(door)).Fdirection)
+		res = T_MovePlane(tls, door.Fsector, door.Fspeed, door.Ftopheight, 0, int32(1), door.Fdirection)
 		if res == int32(pastdest) {
-			switch (*vldoor_t)(unsafe.Pointer(door)).Ftype1 {
+			switch door.Ftype1 {
 			case int32(vld_blazeRaise):
 				fallthrough
 			case int32(vld_normal):
-				(*vldoor_t)(unsafe.Pointer(door)).Fdirection = 0 // wait at top
-				(*vldoor_t)(unsafe.Pointer(door)).Ftopcountdown = (*vldoor_t)(unsafe.Pointer(door)).Ftopwait
+				door.Fdirection = 0 // wait at top
+				door.Ftopcountdown = door.Ftopwait
 			case int32(vld_close30ThenOpen):
 				fallthrough
 			case int32(vld_blazeOpen):
 				fallthrough
 			case int32(vld_open):
-				(*sector_t)(unsafe.Pointer((*vldoor_t)(unsafe.Pointer(door)).Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
-				P_RemoveThinker(tls, door) // unlink and free
+				(*sector_t)(unsafe.Pointer(door.Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
+				P_RemoveThinker(tls, &door.Fthinker) // unlink and free
 			default:
 				break
 			}
@@ -26974,37 +26956,37 @@ func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, cru
 //	//
 //	// MOVE A FLOOR TO IT'S DESTINATION (UP OR DOWN)
 //	//
-func T_MoveFloor(tls *libc.TLS, floor uintptr) {
+func T_MoveFloor(tls *libc.TLS, floor *floormove_t) {
 	var res result_e
-	res = T_MovePlane(tls, (*floormove_t)(unsafe.Pointer(floor)).Fsector, (*floormove_t)(unsafe.Pointer(floor)).Fspeed, (*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight, (*floormove_t)(unsafe.Pointer(floor)).Fcrush, 0, (*floormove_t)(unsafe.Pointer(floor)).Fdirection)
+	res = T_MovePlane(tls, floor.Fsector, floor.Fspeed, floor.Ffloordestheight, floor.Fcrush, 0, floor.Fdirection)
 	if !(leveltime&7 != 0) {
-		S_StartSound(tls, (*floormove_t)(unsafe.Pointer(floor)).Fsector+48, int32(sfx_stnmov))
+		S_StartSound(tls, floor.Fsector+48, int32(sfx_stnmov))
 	}
 	if res == int32(pastdest) {
-		(*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
-		if (*floormove_t)(unsafe.Pointer(floor)).Fdirection == int32(1) {
-			switch (*floormove_t)(unsafe.Pointer(floor)).Ftype1 {
+		(*sector_t)(unsafe.Pointer(floor.Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
+		if floor.Fdirection == int32(1) {
+			switch floor.Ftype1 {
 			case int32(donutRaise):
-				(*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Fspecial = int16((*floormove_t)(unsafe.Pointer(floor)).Fnewspecial)
-				(*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorpic = (*floormove_t)(unsafe.Pointer(floor)).Ftexture
+				(*sector_t)(unsafe.Pointer(floor.Fsector)).Fspecial = int16(floor.Fnewspecial)
+				(*sector_t)(unsafe.Pointer(floor.Fsector)).Ffloorpic = floor.Ftexture
 				fallthrough
 			default:
 				break
 			}
 		} else {
-			if (*floormove_t)(unsafe.Pointer(floor)).Fdirection == -int32(1) {
-				switch (*floormove_t)(unsafe.Pointer(floor)).Ftype1 {
+			if floor.Fdirection == -int32(1) {
+				switch floor.Ftype1 {
 				case int32(lowerAndChange):
-					(*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Fspecial = int16((*floormove_t)(unsafe.Pointer(floor)).Fnewspecial)
-					(*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorpic = (*floormove_t)(unsafe.Pointer(floor)).Ftexture
+					(*sector_t)(unsafe.Pointer(floor.Fsector)).Fspecial = int16((*floormove_t)(unsafe.Pointer(floor)).Fnewspecial)
+					(*sector_t)(unsafe.Pointer(floor.Fsector)).Ffloorpic = (*floormove_t)(unsafe.Pointer(floor)).Ftexture
 					fallthrough
 				default:
 					break
 				}
 			}
 		}
-		P_RemoveThinker(tls, floor)
-		S_StartSound(tls, (*floormove_t)(unsafe.Pointer(floor)).Fsector+48, int32(sfx_pstop))
+		P_RemoveThinker(tls, &floor.Fthinker)
+		S_StartSound(tls, floor.Fsector+48, int32(sfx_pstop))
 	}
 }
 
@@ -30602,7 +30584,7 @@ func P_RemoveMobj(tls *libc.TLS, mobj uintptr) {
 	// stop any playing sound
 	S_StopSound(tls, mobj)
 	// free block
-	P_RemoveThinker(tls, mobj)
+	P_RemoveThinker(tls, &(*mobj_t)(unsafe.Pointer(mobj)).Fthinker)
 }
 
 // C documentation
@@ -30983,28 +30965,26 @@ func P_SpawnPlayerMissile(tls *libc.TLS, source uintptr, type1 mobjtype_t) {
 //	//
 //	// Move a plat up and down
 //	//
-func T_PlatRaise(tls *libc.TLS, plat uintptr) {
+func T_PlatRaise(tls *libc.TLS, plat *plat_t) {
 	var res result_e
-	var v1 int32
-	var v2 uintptr
-	switch (*plat_t)(unsafe.Pointer(plat)).Fstatus {
+	switch plat.Fstatus {
 	case int32(up):
-		res = T_MovePlane(tls, (*plat_t)(unsafe.Pointer(plat)).Fsector, (*plat_t)(unsafe.Pointer(plat)).Fspeed, (*plat_t)(unsafe.Pointer(plat)).Fhigh, (*plat_t)(unsafe.Pointer(plat)).Fcrush, 0, int32(1))
-		if (*plat_t)(unsafe.Pointer(plat)).Ftype1 == int32(raiseAndChange) || (*plat_t)(unsafe.Pointer(plat)).Ftype1 == int32(raiseToNearestAndChange) {
+		res = T_MovePlane(tls, plat.Fsector, plat.Fspeed, plat.Fhigh, plat.Fcrush, 0, int32(1))
+		if plat.Ftype1 == int32(raiseAndChange) || plat.Ftype1 == int32(raiseToNearestAndChange) {
 			if !(leveltime&7 != 0) {
-				S_StartSound(tls, (*plat_t)(unsafe.Pointer(plat)).Fsector+48, int32(sfx_stnmov))
+				S_StartSound(tls, plat.Fsector+48, int32(sfx_stnmov))
 			}
 		}
-		if res == int32(crushed) && !((*plat_t)(unsafe.Pointer(plat)).Fcrush != 0) {
-			(*plat_t)(unsafe.Pointer(plat)).Fcount = (*plat_t)(unsafe.Pointer(plat)).Fwait
-			(*plat_t)(unsafe.Pointer(plat)).Fstatus = int32(down)
-			S_StartSound(tls, (*plat_t)(unsafe.Pointer(plat)).Fsector+48, int32(sfx_pstart))
+		if res == int32(crushed) && !(plat.Fcrush != 0) {
+			plat.Fcount = plat.Fwait
+			plat.Fstatus = int32(down)
+			S_StartSound(tls, plat.Fsector+48, int32(sfx_pstart))
 		} else {
 			if res == int32(pastdest) {
-				(*plat_t)(unsafe.Pointer(plat)).Fcount = (*plat_t)(unsafe.Pointer(plat)).Fwait
-				(*plat_t)(unsafe.Pointer(plat)).Fstatus = int32(waiting)
-				S_StartSound(tls, (*plat_t)(unsafe.Pointer(plat)).Fsector+48, int32(sfx_pstop))
-				switch (*plat_t)(unsafe.Pointer(plat)).Ftype1 {
+				plat.Fcount = plat.Fwait
+				plat.Fstatus = int32(waiting)
+				S_StartSound(tls, plat.Fsector+48, int32(sfx_pstop))
+				switch plat.Ftype1 {
 				case int32(blazeDWUS):
 					fallthrough
 				case int32(downWaitUpStay):
@@ -31019,23 +30999,21 @@ func T_PlatRaise(tls *libc.TLS, plat uintptr) {
 			}
 		}
 	case int32(down):
-		res = T_MovePlane(tls, (*plat_t)(unsafe.Pointer(plat)).Fsector, (*plat_t)(unsafe.Pointer(plat)).Fspeed, (*plat_t)(unsafe.Pointer(plat)).Flow, 0, 0, -int32(1))
+		res = T_MovePlane(tls, plat.Fsector, plat.Fspeed, plat.Flow, 0, 0, -int32(1))
 		if res == int32(pastdest) {
-			(*plat_t)(unsafe.Pointer(plat)).Fcount = (*plat_t)(unsafe.Pointer(plat)).Fwait
-			(*plat_t)(unsafe.Pointer(plat)).Fstatus = int32(waiting)
-			S_StartSound(tls, (*plat_t)(unsafe.Pointer(plat)).Fsector+48, int32(sfx_pstop))
+			plat.Fcount = (*plat_t)(unsafe.Pointer(plat)).Fwait
+			plat.Fstatus = int32(waiting)
+			S_StartSound(tls, plat.Fsector+48, int32(sfx_pstop))
 		}
 	case int32(waiting):
-		v2 = plat + 48
-		*(*int32)(unsafe.Pointer(v2))--
-		v1 = *(*int32)(unsafe.Pointer(v2))
-		if !(v1 != 0) {
-			if (*sector_t)(unsafe.Pointer((*plat_t)(unsafe.Pointer(plat)).Fsector)).Ffloorheight == (*plat_t)(unsafe.Pointer(plat)).Flow {
-				(*plat_t)(unsafe.Pointer(plat)).Fstatus = int32(up)
+		plat.Fcount--
+		if plat.Fcount == 0 {
+			if (*sector_t)(unsafe.Pointer(plat.Fsector)).Ffloorheight == plat.Flow {
+				plat.Fstatus = int32(up)
 			} else {
-				(*plat_t)(unsafe.Pointer(plat)).Fstatus = int32(down)
+				plat.Fstatus = int32(down)
 			}
-			S_StartSound(tls, (*plat_t)(unsafe.Pointer(plat)).Fsector+48, int32(sfx_pstart))
+			S_StartSound(tls, plat.Fsector+48, int32(sfx_pstart))
 		}
 		fallthrough
 	case int32(in_stasis):
@@ -31133,7 +31111,7 @@ func EV_DoPlat(tls *libc.TLS, line uintptr, type1 plattype_e, amount int32) (r i
 			S_StartSound(tls, sec+48, int32(sfx_pstart))
 			break
 		}
-		P_AddActivePlat(tls, plat)
+		P_AddActivePlat(tls, (*plat_t)(unsafe.Pointer(plat)))
 	}
 	return rtn
 }
@@ -31145,9 +31123,9 @@ func P_ActivateInStasis(tls *libc.TLS, tag int32) {
 		if !(i < int32(MAXPLATS)) {
 			break
 		}
-		if activeplats[i] != 0 && (*plat_t)(unsafe.Pointer(activeplats[i])).Ftag == tag && (*plat_t)(unsafe.Pointer(activeplats[i])).Fstatus == int32(in_stasis) {
-			(*plat_t)(unsafe.Pointer(activeplats[i])).Fstatus = (*plat_t)(unsafe.Pointer(activeplats[i])).Foldstatus
-			*(*actionf_p1)(unsafe.Pointer(activeplats[i] + 16)) = __ccgo_fp(T_PlatRaise)
+		if activeplats[i] != nil && activeplats[i].Ftag == tag && activeplats[i].Fstatus == int32(in_stasis) {
+			activeplats[i].Fstatus = (*plat_t)(unsafe.Pointer(activeplats[i])).Foldstatus
+			activeplats[i].Fthinker.Ffunction.Facv = __ccgo_fp(T_PlatRaise)
 		}
 		goto _1
 	_1:
@@ -31163,10 +31141,10 @@ func EV_StopPlat(tls *libc.TLS, line uintptr) {
 		if !(j < int32(MAXPLATS)) {
 			break
 		}
-		if activeplats[j] != 0 && (*plat_t)(unsafe.Pointer(activeplats[j])).Fstatus != int32(in_stasis) && (*plat_t)(unsafe.Pointer(activeplats[j])).Ftag == int32((*line_t)(unsafe.Pointer(line)).Ftag) {
-			(*plat_t)(unsafe.Pointer(activeplats[j])).Foldstatus = (*plat_t)(unsafe.Pointer(activeplats[j])).Fstatus
-			(*plat_t)(unsafe.Pointer(activeplats[j])).Fstatus = int32(in_stasis)
-			*(*actionf_v)(unsafe.Pointer(activeplats[j] + 16)) = libc.UintptrFromInt32(0)
+		if activeplats[j] != nil && activeplats[j].Fstatus != int32(in_stasis) && activeplats[j].Ftag == int32((*line_t)(unsafe.Pointer(line)).Ftag) {
+			activeplats[j].Foldstatus = (*plat_t)(unsafe.Pointer(activeplats[j])).Fstatus
+			activeplats[j].Fstatus = int32(in_stasis)
+			activeplats[j].Fthinker.Ffunction.Facv = 0
 		}
 		goto _1
 	_1:
@@ -31175,14 +31153,14 @@ func EV_StopPlat(tls *libc.TLS, line uintptr) {
 	}
 }
 
-func P_AddActivePlat(tls *libc.TLS, plat uintptr) {
+func P_AddActivePlat(tls *libc.TLS, plat *plat_t) {
 	var i int32
 	i = 0
 	for {
 		if !(i < int32(MAXPLATS)) {
 			break
 		}
-		if activeplats[i] == libc.UintptrFromInt32(0) {
+		if activeplats[i] == nil {
 			activeplats[i] = plat
 			return
 		}
@@ -31194,7 +31172,7 @@ func P_AddActivePlat(tls *libc.TLS, plat uintptr) {
 	I_Error(tls, __ccgo_ts(24855), 0)
 }
 
-func P_RemoveActivePlat(tls *libc.TLS, plat uintptr) {
+func P_RemoveActivePlat(tls *libc.TLS, plat *plat_t) {
 	var i int32
 	i = 0
 	for {
@@ -31202,9 +31180,9 @@ func P_RemoveActivePlat(tls *libc.TLS, plat uintptr) {
 			break
 		}
 		if plat == activeplats[i] {
-			(*sector_t)(unsafe.Pointer((*plat_t)(unsafe.Pointer(activeplats[i])).Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
-			P_RemoveThinker(tls, activeplats[i])
-			activeplats[i] = libc.UintptrFromInt32(0)
+			(*sector_t)(unsafe.Pointer(activeplats[i].Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
+			P_RemoveThinker(tls, &activeplats[i].Fthinker)
+			activeplats[i] = nil
 			return
 		}
 		goto _1
@@ -33307,7 +33285,7 @@ func P_ArchiveSpecials(tls *libc.TLS) {
 				if !(i < int32(MAXCEILINGS)) {
 					break
 				}
-				if activeceilings[i] == th {
+				if uintptr(unsafe.Pointer(activeceilings[i])) == th {
 					break
 				}
 				goto _2
@@ -33396,7 +33374,7 @@ func P_UnArchiveSpecials(tls *libc.TLS) {
 				*(*actionf_p1)(unsafe.Pointer(ceiling + 16)) = __ccgo_fp(T_MoveCeiling)
 			}
 			P_AddThinker(tls, ceiling)
-			P_AddActiveCeiling(tls, ceiling)
+			P_AddActiveCeiling(tls, (*ceiling_t)(unsafe.Pointer(ceiling)))
 		case int32(tc_door):
 			saveg_read_pad(tls)
 			door = Z_Malloc(tls, int32(64), int32(PU_LEVEL), libc.UintptrFromInt32(0))
@@ -33420,7 +33398,7 @@ func P_UnArchiveSpecials(tls *libc.TLS) {
 				*(*actionf_p1)(unsafe.Pointer(plat + 16)) = __ccgo_fp(T_PlatRaise)
 			}
 			P_AddThinker(tls, plat)
-			P_AddActivePlat(tls, plat)
+			P_AddActivePlat(tls, (*plat_t)(unsafe.Pointer(plat)))
 		case int32(tc_flash):
 			saveg_read_pad(tls)
 			flash = Z_Malloc(tls, int32(56), int32(PU_LEVEL), libc.UintptrFromInt32(0))
@@ -35766,7 +35744,7 @@ func P_SpawnSpecials(tls *libc.TLS) {
 		if !(i < int32(MAXCEILINGS)) {
 			break
 		}
-		activeceilings[i] = libc.UintptrFromInt32(0)
+		activeceilings[i] = nil
 		goto _3
 	_3:
 		;
@@ -35777,7 +35755,7 @@ func P_SpawnSpecials(tls *libc.TLS) {
 		if !(i < int32(MAXPLATS)) {
 			break
 		}
-		activeplats[i] = libc.UintptrFromInt32(0)
+		activeplats[i] = nil
 		goto _4
 	_4:
 		;
@@ -36643,9 +36621,9 @@ func P_AddThinker(tls *libc.TLS, thinker uintptr) {
 //	// Deallocation is lazy -- it will not actually be freed
 //	// until its thinking turn comes up.
 //	//
-func P_RemoveThinker(tls *libc.TLS, thinker uintptr) {
+func P_RemoveThinker(tls *libc.TLS, thinker *thinker_t) {
 	// FIXME: NOP.
-	*(*actionf_v)(unsafe.Pointer(thinker + 16)) = uintptr_negative_one
+	thinker.Ffunction.Facv = uintptr_negative_one
 }
 
 // C documentation
@@ -48478,7 +48456,7 @@ var TRACEANGLE int32
 // CEILINGS
 //
 
-var activeceilings [30]uintptr
+var activeceilings [30]*ceiling_t
 
 //
 // Copyright(C) 1993-1996 Id Software, Inc.
@@ -48518,7 +48496,7 @@ var activeceilings [30]uintptr
 //	Kept as a sample, DOOM2  sounds. Frozen.
 //
 
-var activeplats [30]uintptr
+var activeplats [30]*plat_t
 
 var advancedemo boolean
 
