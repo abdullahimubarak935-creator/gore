@@ -4361,15 +4361,15 @@ func D_StartGameLoop(tls *libc.TLS) {
 	lasttime = GetAdjustedTime(tls) / ticdup
 }
 
-func D_StartNetGame(tls *libc.TLS, settings uintptr, callback netgame_startup_callback_t) {
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Fconsoleplayer = 0
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Fnum_players = int32(1)
-	*(*int32)(unsafe.Pointer(settings + 68)) = player_class
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Fnew_sync = 0
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Fextratics = int32(1)
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Fticdup = int32(1)
-	ticdup = (*net_gamesettings_t)(unsafe.Pointer(settings)).Fticdup
-	new_sync = libc.Uint32FromInt32((*net_gamesettings_t)(unsafe.Pointer(settings)).Fnew_sync)
+func D_StartNetGame(tls *libc.TLS, settings *net_gamesettings_t, callback netgame_startup_callback_t) {
+	settings.Fconsoleplayer = 0
+	settings.Fnum_players = int32(1)
+	settings.Fplayer_classes[0] = player_class
+	settings.Fnew_sync = 0
+	settings.Fextratics = int32(1)
+	settings.Fticdup = int32(1)
+	ticdup = settings.Fticdup
+	new_sync = libc.Uint32FromInt32(settings.Fnew_sync)
 }
 
 func D_InitNetGame(tls *libc.TLS, connect_data uintptr) (r boolean) {
@@ -6220,52 +6220,43 @@ func init() {
 // Load game settings from the specified structure and
 // set global variables.
 
-func LoadGameSettings(tls *libc.TLS, settings uintptr) {
-	var i uint32
-	deathmatch = (*net_gamesettings_t)(unsafe.Pointer(settings)).Fdeathmatch
-	startepisode = (*net_gamesettings_t)(unsafe.Pointer(settings)).Fepisode
-	startmap = (*net_gamesettings_t)(unsafe.Pointer(settings)).Fmap1
-	startskill = (*net_gamesettings_t)(unsafe.Pointer(settings)).Fskill
-	startloadgame = (*net_gamesettings_t)(unsafe.Pointer(settings)).Floadgame
-	lowres_turn = libc.Uint32FromInt32((*net_gamesettings_t)(unsafe.Pointer(settings)).Flowres_turn)
-	nomonsters = libc.Uint32FromInt32((*net_gamesettings_t)(unsafe.Pointer(settings)).Fnomonsters)
-	fastparm = libc.Uint32FromInt32((*net_gamesettings_t)(unsafe.Pointer(settings)).Ffast_monsters)
-	respawnparm = libc.Uint32FromInt32((*net_gamesettings_t)(unsafe.Pointer(settings)).Frespawn_monsters)
-	timelimit = (*net_gamesettings_t)(unsafe.Pointer(settings)).Ftimelimit
-	consoleplayer = (*net_gamesettings_t)(unsafe.Pointer(settings)).Fconsoleplayer
+func LoadGameSettings(tls *libc.TLS, settings *net_gamesettings_t) {
+	deathmatch = settings.Fdeathmatch
+	startepisode = settings.Fepisode
+	startmap = settings.Fmap1
+	startskill = settings.Fskill
+	startloadgame = settings.Floadgame
+	lowres_turn = libc.Uint32FromInt32(settings.Flowres_turn)
+	nomonsters = libc.Uint32FromInt32(settings.Fnomonsters)
+	fastparm = libc.Uint32FromInt32(settings.Ffast_monsters)
+	respawnparm = libc.Uint32FromInt32(settings.Frespawn_monsters)
+	timelimit = settings.Ftimelimit
+	consoleplayer = settings.Fconsoleplayer
 	if lowres_turn != 0 {
 		fprintf_ccgo(os.Stdout, 5423)
 	}
-	i = uint32(0)
-	for {
-		if !(i < uint32(MAXPLAYERS)) {
-			break
-		}
-		playeringame[i] = libc.BoolUint32(i < libc.Uint32FromInt32((*net_gamesettings_t)(unsafe.Pointer(settings)).Fnum_players))
-		goto _1
-	_1:
-		;
-		i++
+	for i := uint32(0); i < MAXPLAYERS; i++ {
+		playeringame[i] = libc.BoolUint32(i < libc.Uint32FromInt32(settings.Fnum_players))
 	}
 }
 
 // Save the game settings from global variables to the specified
 // game settings structure.
 
-func SaveGameSettings(tls *libc.TLS, settings uintptr) {
+func SaveGameSettings(tls *libc.TLS, settings *net_gamesettings_t) {
 	// Fill in game settings structure with appropriate parameters
 	// for the new game
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Fdeathmatch = deathmatch
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Fepisode = startepisode
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Fmap1 = startmap
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Fskill = startskill
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Floadgame = startloadgame
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Fgameversion = gameversion
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Fnomonsters = libc.Int32FromUint32(nomonsters)
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Ffast_monsters = libc.Int32FromUint32(fastparm)
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Frespawn_monsters = libc.Int32FromUint32(respawnparm)
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Ftimelimit = timelimit
-	(*net_gamesettings_t)(unsafe.Pointer(settings)).Flowres_turn = libc.BoolInt32(M_CheckParm(tls, __ccgo_ts(5361)) > 0 && M_CheckParm(tls, __ccgo_ts(5530)) == 0)
+	settings.Fdeathmatch = deathmatch
+	settings.Fepisode = startepisode
+	settings.Fmap1 = startmap
+	settings.Fskill = startskill
+	settings.Floadgame = startloadgame
+	settings.Fgameversion = gameversion
+	settings.Fnomonsters = libc.Int32FromUint32(nomonsters)
+	settings.Ffast_monsters = libc.Int32FromUint32(fastparm)
+	settings.Frespawn_monsters = libc.Int32FromUint32(respawnparm)
+	settings.Ftimelimit = timelimit
+	settings.Flowres_turn = libc.BoolInt32(M_CheckParm(tls, __ccgo_ts(5361)) > 0 && M_CheckParm(tls, __ccgo_ts(5530)) == 0)
 }
 
 func InitConnectData(tls *libc.TLS, connect_data uintptr) {
@@ -6326,16 +6317,16 @@ func D_ConnectNetGame(tls *libc.TLS) {
 //	// Works out player numbers among the net participants
 //	//
 func D_CheckNetGame(tls *libc.TLS) {
-	bp := alloc(144)
+	settings := &net_gamesettings_t{}
 	if netgame != 0 {
 		autostart = 1
 	}
 	D_RegisterLoopCallbacks(tls, uintptr(unsafe.Pointer(&doom_loop_interface)))
-	SaveGameSettings(tls, bp)
-	D_StartNetGame(tls, bp, libc.UintptrFromInt32(0))
-	LoadGameSettings(tls, bp)
+	SaveGameSettings(tls, settings)
+	D_StartNetGame(tls, settings, libc.UintptrFromInt32(0))
+	LoadGameSettings(tls, settings)
 	fprintf_ccgo(os.Stdout, 5563, startskill, deathmatch, startmap, startepisode)
-	fprintf_ccgo(os.Stdout, 5626, consoleplayer+int32(1), (*(*net_gamesettings_t)(unsafe.Pointer(bp))).Fnum_players, (*(*net_gamesettings_t)(unsafe.Pointer(bp))).Fnum_players)
+	fprintf_ccgo(os.Stdout, 5626, consoleplayer+int32(1), settings.Fnum_players, settings.Fnum_players)
 	// Show players here; the server might have specified a time limit
 	if timelimit > 0 && deathmatch != 0 {
 		// Gross hack to work like Vanilla:
