@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/AndreRenaud/gore"
 )
 
 type keyChange struct {
@@ -51,7 +53,7 @@ func (w *webDoomFrontend) DrawFrame(frame *image.RGBA) {
 	}
 }
 
-func (w *webDoomFrontend) GetKey(event *DoomKeyEvent) bool {
+func (w *webDoomFrontend) GetKey(event *gore.DoomKeyEvent) bool {
 	// This is a stub; actual key handling would depend on the platform and input system.
 	keyLock.Lock()
 	defer keyLock.Unlock()
@@ -64,21 +66,21 @@ func (w *webDoomFrontend) GetKey(event *DoomKeyEvent) bool {
 		var thisDoomKey int32
 		switch change.Key {
 		case 38:
-			thisDoomKey = key_up
+			thisDoomKey = gore.KEY_UPARROW1
 		case 40:
-			thisDoomKey = key_down
+			thisDoomKey = gore.KEY_DOWNARROW1
 		case 37:
-			thisDoomKey = key_left
+			thisDoomKey = gore.KEY_LEFTARROW1
 		case 39:
-			thisDoomKey = key_right
+			thisDoomKey = gore.KEY_RIGHTARROW1
 		case 17: // Ctrl
-			thisDoomKey = key_fire
+			thisDoomKey = gore.KEY_FIRE1
 		case 32:
-			thisDoomKey = key_use
+			thisDoomKey = gore.KEY_USE1
 		case 13:
-			thisDoomKey = key_menu_forward
+			thisDoomKey = gore.KEY_ENTER
 		case 27:
-			thisDoomKey = key_menu_activate
+			thisDoomKey = gore.KEY_ESCAPE
 		default:
 			log.Printf("Unknown key %d, ignoring", change.Key)
 			return false
@@ -124,5 +126,5 @@ func main() {
 		}
 	}()
 
-	Run(frontend, 1, 0)
+	gore.Run(frontend, 1, 0)
 }
