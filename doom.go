@@ -42902,18 +42902,18 @@ func STlib_initNum(st *st_number_t, x int32, y int32, pl uintptr, num uintptr, o
 //	//  based on differences from the old number.
 //	// Note: worth the trouble?
 //	//
-func STlib_drawNum(tls *libc.TLS, n uintptr, refresh boolean) {
+func STlib_drawNum(tls *libc.TLS, n *st_number_t, refresh boolean) {
 	var h, neg, num, numdigits, w, x, v1 int32
 	var v2 bool
-	numdigits = (*st_number_t)(unsafe.Pointer(n)).Fwidth
+	numdigits = n.Fwidth
 	num = *(*int32)(unsafe.Pointer((*st_number_t)(unsafe.Pointer(n)).Fnum))
-	w = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_number_t)(unsafe.Pointer(n)).Fp)))).Fwidth)
-	h = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_number_t)(unsafe.Pointer(n)).Fp)))).Fheight)
+	w = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(n.Fp)))).Fwidth)
+	h = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(n.Fp)))).Fheight)
 	// [crispy] redraw only if necessary
-	if (*st_number_t)(unsafe.Pointer(n)).Foldnum == num && !(refresh != 0) {
+	if n.Foldnum == num && !(refresh != 0) {
 		return
 	}
-	(*st_number_t)(unsafe.Pointer(n)).Foldnum = *(*int32)(unsafe.Pointer((*st_number_t)(unsafe.Pointer(n)).Fnum))
+	n.Foldnum = *(*int32)(unsafe.Pointer(n.Fnum))
 	neg = libc.BoolInt32(num < 0)
 	if neg != 0 {
 		if numdigits == int32(2) && num < -int32(9) {
@@ -42926,19 +42926,19 @@ func STlib_drawNum(tls *libc.TLS, n uintptr, refresh boolean) {
 		num = -num
 	}
 	// clear the area
-	x = (*st_number_t)(unsafe.Pointer(n)).Fx - numdigits*w
-	if (*st_number_t)(unsafe.Pointer(n)).Fy-(SCREENHEIGHT-ST_HEIGHT) < 0 {
+	x = n.Fx - numdigits*w
+	if n.Fy-(SCREENHEIGHT-ST_HEIGHT) < 0 {
 		I_Error(tls, __ccgo_ts(27468), 0)
 	}
-	V_CopyRect(tls, x, (*st_number_t)(unsafe.Pointer(n)).Fy-(SCREENHEIGHT-ST_HEIGHT), st_backing_screen, w*numdigits, h, x, (*st_number_t)(unsafe.Pointer(n)).Fy)
+	V_CopyRect(tls, x, n.Fy-(SCREENHEIGHT-ST_HEIGHT), st_backing_screen, w*numdigits, h, x, n.Fy)
 	// if non-number, do not draw it
 	if num == int32(1994) {
 		return
 	}
-	x = (*st_number_t)(unsafe.Pointer(n)).Fx
+	x = n.Fx
 	// in the special case of 0, you draw 0
 	if !(num != 0) {
-		V_DrawPatch(tls, x-w, (*st_number_t)(unsafe.Pointer(n)).Fy, *(*uintptr)(unsafe.Pointer((*st_number_t)(unsafe.Pointer(n)).Fp)))
+		V_DrawPatch(tls, x-w, n.Fy, *(*uintptr)(unsafe.Pointer(n.Fp)))
 	}
 	// draw the new number
 	for {
@@ -42950,20 +42950,20 @@ func STlib_drawNum(tls *libc.TLS, n uintptr, refresh boolean) {
 			break
 		}
 		x -= w
-		V_DrawPatch(tls, x, (*st_number_t)(unsafe.Pointer(n)).Fy, *(*uintptr)(unsafe.Pointer((*st_number_t)(unsafe.Pointer(n)).Fp + uintptr(num%int32(10))*8)))
+		V_DrawPatch(tls, x, n.Fy, *(*uintptr)(unsafe.Pointer(n.Fp + uintptr(num%int32(10))*8)))
 		num /= int32(10)
 	}
 	// draw a minus sign if necessary
 	if neg != 0 {
-		V_DrawPatch(tls, x-int32(8), (*st_number_t)(unsafe.Pointer(n)).Fy, sttminus)
+		V_DrawPatch(tls, x-int32(8), n.Fy, sttminus)
 	}
 }
 
 // C documentation
 //
 //	//
-func STlib_updateNum(tls *libc.TLS, n uintptr, refresh boolean) {
-	if *(*boolean)(unsafe.Pointer((*st_number_t)(unsafe.Pointer(n)).Fon)) != 0 {
+func STlib_updateNum(tls *libc.TLS, n *st_number_t, refresh boolean) {
+	if *(*boolean)(unsafe.Pointer(n.Fon)) != 0 {
 		STlib_drawNum(tls, n, refresh)
 	}
 }
@@ -42976,11 +42976,11 @@ func STlib_initPercent(st *st_percent_t, x int32, y int32, pl uintptr, num uintp
 	st.Fp = percent
 }
 
-func STlib_updatePercent(tls *libc.TLS, per uintptr, refresh int32) {
-	if refresh != 0 && *(*boolean)(unsafe.Pointer((*st_percent_t)(unsafe.Pointer(per)).Fn.Fon)) != 0 {
-		V_DrawPatch(tls, (*st_percent_t)(unsafe.Pointer(per)).Fn.Fx, (*st_percent_t)(unsafe.Pointer(per)).Fn.Fy, (*st_percent_t)(unsafe.Pointer(per)).Fp)
+func STlib_updatePercent(tls *libc.TLS, per *st_percent_t, refresh int32) {
+	if refresh != 0 && *(*boolean)(unsafe.Pointer(per.Fn.Fon)) != 0 {
+		V_DrawPatch(tls, per.Fn.Fx, per.Fn.Fy, per.Fp)
 	}
-	STlib_updateNum(tls, per, libc.Uint32FromInt32(refresh))
+	STlib_updateNum(tls, &per.Fn, libc.Uint32FromInt32(refresh))
 }
 
 func STlib_initMultIcon(st *st_multicon_t, x int32, y int32, il uintptr, inum uintptr, on uintptr) {
@@ -42992,21 +42992,21 @@ func STlib_initMultIcon(st *st_multicon_t, x int32, y int32, il uintptr, inum ui
 	st.Fp = il
 }
 
-func STlib_updateMultIcon(tls *libc.TLS, mi uintptr, refresh boolean) {
+func STlib_updateMultIcon(tls *libc.TLS, mi *st_multicon_t, refresh boolean) {
 	var h, w, x, y int32
-	if *(*boolean)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fon)) != 0 && ((*st_multicon_t)(unsafe.Pointer(mi)).Foldinum != *(*int32)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Finum)) || refresh != 0) && *(*int32)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Finum)) != -int32(1) {
-		if (*st_multicon_t)(unsafe.Pointer(mi)).Foldinum != -int32(1) {
-			x = (*st_multicon_t)(unsafe.Pointer(mi)).Fx - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr((*st_multicon_t)(unsafe.Pointer(mi)).Foldinum)*8)))).Fleftoffset)
-			y = (*st_multicon_t)(unsafe.Pointer(mi)).Fy - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr((*st_multicon_t)(unsafe.Pointer(mi)).Foldinum)*8)))).Ftopoffset)
-			w = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr((*st_multicon_t)(unsafe.Pointer(mi)).Foldinum)*8)))).Fwidth)
-			h = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr((*st_multicon_t)(unsafe.Pointer(mi)).Foldinum)*8)))).Fheight)
+	if *(*boolean)(unsafe.Pointer(mi.Fon)) != 0 && (mi.Foldinum != *(*int32)(unsafe.Pointer(mi.Finum)) || refresh != 0) && *(*int32)(unsafe.Pointer(mi.Finum)) != -int32(1) {
+		if mi.Foldinum != -int32(1) {
+			x = mi.Fx - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr(mi.Foldinum)*8)))).Fleftoffset)
+			y = mi.Fy - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr(mi.Foldinum)*8)))).Ftopoffset)
+			w = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(mi.Fp + uintptr(mi.Foldinum)*8)))).Fwidth)
+			h = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(mi.Fp + uintptr(mi.Foldinum)*8)))).Fheight)
 			if y-(SCREENHEIGHT-ST_HEIGHT) < 0 {
 				I_Error(tls, __ccgo_ts(27493), 0)
 			}
 			V_CopyRect(tls, x, y-(SCREENHEIGHT-ST_HEIGHT), st_backing_screen, w, h, x, y)
 		}
-		V_DrawPatch(tls, (*st_multicon_t)(unsafe.Pointer(mi)).Fx, (*st_multicon_t)(unsafe.Pointer(mi)).Fy, *(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr(*(*int32)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Finum)))*8)))
-		(*st_multicon_t)(unsafe.Pointer(mi)).Foldinum = *(*int32)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Finum))
+		V_DrawPatch(tls, mi.Fx, mi.Fy, *(*uintptr)(unsafe.Pointer(mi.Fp + uintptr(*(*int32)(unsafe.Pointer(mi.Finum)))*8)))
+		mi.Foldinum = *(*int32)(unsafe.Pointer(mi.Finum))
 	}
 }
 
@@ -43919,51 +43919,26 @@ func ST_doPaletteStuff(tls *libc.TLS) {
 }
 
 func ST_drawWidgets(tls *libc.TLS, refresh boolean) {
-	var i int32
 	// used by w_arms[] widgets
 	st_armson = libc.BoolUint32(st_statusbaron != 0 && !(deathmatch != 0))
 	// used by w_frags widget
 	st_fragson = libc.BoolUint32(deathmatch != 0 && st_statusbaron != 0)
-	STlib_updateNum(tls, uintptr(unsafe.Pointer(&w_ready)), refresh)
-	i = 0
-	for {
-		if !(i < int32(4)) {
-			break
-		}
-		STlib_updateNum(tls, uintptr(unsafe.Pointer(&w_ammo))+uintptr(i)*48, refresh)
-		STlib_updateNum(tls, uintptr(unsafe.Pointer(&w_maxammo))+uintptr(i)*48, refresh)
-		goto _1
-	_1:
-		;
-		i++
+	STlib_updateNum(tls, &w_ready, refresh)
+	for i := 0; i < 4; i++ {
+		STlib_updateNum(tls, &w_ammo[i], refresh)
+		STlib_updateNum(tls, &w_maxammo[i], refresh)
 	}
-	STlib_updatePercent(tls, uintptr(unsafe.Pointer(&w_health)), libc.Int32FromUint32(refresh))
-	STlib_updatePercent(tls, uintptr(unsafe.Pointer(&w_armor)), libc.Int32FromUint32(refresh))
+	STlib_updatePercent(tls, &w_health, libc.Int32FromUint32(refresh))
+	STlib_updatePercent(tls, &w_armor, libc.Int32FromUint32(refresh))
 	STlib_updateBinIcon(tls, &w_armsbg, refresh)
-	i = 0
-	for {
-		if !(i < int32(6)) {
-			break
-		}
-		STlib_updateMultIcon(tls, uintptr(unsafe.Pointer(&w_arms))+uintptr(i)*48, refresh)
-		goto _2
-	_2:
-		;
-		i++
+	for i := 0; i < 6; i++ {
+		STlib_updateMultIcon(tls, &w_arms[i], refresh)
 	}
-	STlib_updateMultIcon(tls, uintptr(unsafe.Pointer(&w_faces)), refresh)
-	i = 0
-	for {
-		if !(i < int32(3)) {
-			break
-		}
-		STlib_updateMultIcon(tls, uintptr(unsafe.Pointer(&w_keyboxes))+uintptr(i)*48, refresh)
-		goto _3
-	_3:
-		;
-		i++
+	STlib_updateMultIcon(tls, &w_faces, refresh)
+	for i := 0; i < 3; i++ {
+		STlib_updateMultIcon(tls, &w_keyboxes[i], refresh)
 	}
-	STlib_updateNum(tls, uintptr(unsafe.Pointer(&w_frags)), refresh)
+	STlib_updateNum(tls, &w_frags, refresh)
 }
 
 func ST_doRefresh(tls *libc.TLS) {
