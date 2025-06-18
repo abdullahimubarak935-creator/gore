@@ -2065,7 +2065,6 @@ type intercept_t = struct {
 	Ffrac    fixed_t
 	Fisaline boolean
 	Fd       struct {
-		Fline  [0]uintptr
 		Fthing uintptr
 	}
 }
