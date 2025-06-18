@@ -3602,41 +3602,32 @@ func AM_rotate(tls *libc.TLS, x *fixed_t, y *fixed_t, a angle_t) {
 	*x = tmpx
 }
 
-func AM_drawLineCharacter(tls *libc.TLS, lineguy uintptr, lineguylines int32, scale fixed_t, angle angle_t, color int32, x fixed_t, y fixed_t) {
-	bp := &mline_t{}
-	var i int32
-	i = 0
-	for {
-		if !(i < lineguylines) {
-			break
-		}
-		bp.Fa.Fx = (*(*mline_t)(unsafe.Pointer(lineguy + uintptr(i)*16))).Fa.Fx
-		bp.Fa.Fy = (*(*mline_t)(unsafe.Pointer(lineguy + uintptr(i)*16))).Fa.Fy
+func AM_drawLineCharacter(tls *libc.TLS, lineguy []mline_t, scale fixed_t, angle angle_t, color int32, x fixed_t, y fixed_t) {
+	for i := range lineguy {
+		var bp mline_t
+		bp.Fa.Fx = lineguy[i].Fa.Fx
+		bp.Fa.Fy = lineguy[i].Fa.Fy
 		if scale != 0 {
-			bp.Fa.Fx = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx)
-			bp.Fa.Fy = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy)
+			bp.Fa.Fx = FixedMul(scale, bp.Fa.Fx)
+			bp.Fa.Fy = FixedMul(scale, bp.Fa.Fy)
 		}
 		if angle != 0 {
 			AM_rotate(tls, &bp.Fa.Fx, &bp.Fb.Fy, angle)
 		}
-		(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx += x
-		(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy += y
-		(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fx = (*(*mline_t)(unsafe.Pointer(lineguy + uintptr(i)*16))).Fb.Fx
-		(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy = (*(*mline_t)(unsafe.Pointer(lineguy + uintptr(i)*16))).Fb.Fy
+		bp.Fa.Fx += x
+		bp.Fa.Fy += y
+		bp.Fb.Fx = lineguy[i].Fb.Fx
+		bp.Fb.Fy = lineguy[i].Fb.Fy
 		if scale != 0 {
-			(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fx = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fb.Fx)
-			(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy)
+			bp.Fb.Fx = FixedMul(scale, bp.Fb.Fx)
+			bp.Fb.Fy = FixedMul(scale, bp.Fb.Fy)
 		}
 		if angle != 0 {
 			AM_rotate(tls, &bp.Fb.Fx, &bp.Fb.Fy, angle)
 		}
-		(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fx += x
-		(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy += y
-		AM_drawMline(tls, bp, color)
-		goto _1
-	_1:
-		;
-		i++
+		bp.Fb.Fx += x
+		bp.Fb.Fy += y
+		AM_drawMline(tls, &bp, color)
 	}
 }
 
@@ -3645,9 +3636,11 @@ func AM_drawPlayers(tls *libc.TLS) {
 	their_color = -int32(1)
 	if !(netgame != 0) {
 		if cheating != 0 {
-			AM_drawLineCharacter(tls, uintptr(unsafe.Pointer(&cheat_player_arrow)), libc.Int32FromUint64(libc.Uint64FromInt64(256)/libc.Uint64FromInt64(16)), 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy)
+			lines := unsafe.Slice((*mline_t)(unsafe.Pointer(&cheat_player_arrow)), 256/16)
+			AM_drawLineCharacter(tls, lines, 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy)
 		} else {
-			AM_drawLineCharacter(tls, uintptr(unsafe.Pointer(&player_arrow)), libc.Int32FromUint64(libc.Uint64FromInt64(112)/libc.Uint64FromInt64(16)), 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy)
+			lines := unsafe.Slice((*mline_t)(unsafe.Pointer(&player_arrow)), 112/16)
+			AM_drawLineCharacter(tls, lines, 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy)
 		}
 		return
 	}
@@ -3655,21 +3648,18 @@ func AM_drawPlayers(tls *libc.TLS) {
 		their_color++
 		p := &players[i]
 		if deathmatch != 0 && !(singledemo != 0) && p != plr {
-			goto _1
+			continue
 		}
 		if !(playeringame[i] != 0) {
-			goto _1
+			continue
 		}
 		if p.Fpowers[pw_invisibility] != 0 {
 			color = int32(246)
 		} else {
 			color = their_colors[their_color]
 		}
-		AM_drawLineCharacter(tls, uintptr(unsafe.Pointer(&player_arrow)), libc.Int32FromUint64(libc.Uint64FromInt64(112)/libc.Uint64FromInt64(16)), 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(p)).Fmo)).Fangle, color, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(p)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(p)).Fmo)).Fy)
-		goto _1
-	_1:
-		;
-		i++
+		lines := unsafe.Slice((*mline_t)(unsafe.Pointer(&player_arrow)), 112/16)
+		AM_drawLineCharacter(tls, lines, 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(p)).Fmo)).Fangle, color, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(p)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(p)).Fmo)).Fy)
 	}
 }
 
@@ -3690,7 +3680,8 @@ func AM_drawThings(tls *libc.TLS, colors int32, colorrange int32) {
 		}
 		t = (*(*sector_t)(unsafe.Pointer(sectors + uintptr(i)*128))).Fthinglist
 		for t != 0 {
-			AM_drawLineCharacter(tls, uintptr(unsafe.Pointer(&thintriangle_guy)), libc.Int32FromUint64(libc.Uint64FromInt64(48)/libc.Uint64FromInt64(16)), 16<<FRACBITS, (*mobj_t)(unsafe.Pointer(t)).Fangle, colors+lightlev, (*mobj_t)(unsafe.Pointer(t)).Fx, (*mobj_t)(unsafe.Pointer(t)).Fy)
+			lines := unsafe.Slice((*mline_t)(unsafe.Pointer(&thintriangle_guy)), 48/16)
+			AM_drawLineCharacter(tls, lines, 16<<FRACBITS, (*mobj_t)(unsafe.Pointer(t)).Fangle, colors+lightlev, (*mobj_t)(unsafe.Pointer(t)).Fx, (*mobj_t)(unsafe.Pointer(t)).Fy)
 			t = (*mobj_t)(unsafe.Pointer(t)).Fsnext
 		}
 		goto _1
