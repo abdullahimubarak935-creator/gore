@@ -5,13 +5,24 @@ import (
 	"image"
 	"image/color"
 	"io"
+	"log"
 	"math"
 	"os"
 	"strconv"
+	"time"
 	"unsafe"
 
 	"modernc.org/libc"
 )
+
+type DoomFrontend interface {
+	DrawFrame(img *image.RGBA)
+	SetTitle(title string)
+	GetKey(event *DoomKeyEvent) bool
+}
+
+var dg_frontend DoomFrontend
+var start_time time.Time
 
 type boolean = uint32
 
@@ -6009,8 +6020,6 @@ func D_DoomMain(tls *libc.TLS) {
 	}
 	fprintf_ccgo(os.Stdout, 4992)
 	I_CheckIsScreensaver(tls)
-	I_InitTimer(tls)
-	I_InitJoystick(tls)
 	I_InitSound(tls, 1)
 	I_InitMusic(tls)
 	// Initial netgame startup. Connect to server etc.
@@ -18145,9 +18154,6 @@ var joystick_physical_buttons = [10]int32{
 	9: int32(9),
 }
 
-func I_InitJoystick(tls *libc.TLS) {
-}
-
 func I_BindJoystickVariables(tls *libc.TLS) {
 	bp := alloc(48)
 	var i int32
@@ -20576,24 +20582,6 @@ func I_ConsoleStdout(tls *libc.TLS) (r boolean) {
 }
 
 //
-// I_Init
-//
-/*
-void I_Init (void)
-{
-    I_CheckIsScreensaver();
-    I_InitTimer();
-    I_InitJoystick();
-}
-void I_BindVariables(void)
-{
-    I_BindVideoVariables();
-    I_BindJoystickVariables();
-    I_BindSoundVariables();
-}
-*/
-
-//
 // I_Quit
 //
 
@@ -20802,7 +20790,8 @@ var firsttime = 1
 var basetime = uint32(0)
 
 func I_GetTicks(tls *libc.TLS) (r int32) {
-	return int32(DG_GetTicksMs())
+	return int32(time.Since(start_time).Milliseconds())
+	//return int32(DG_GetTicksMs())
 }
 
 func I_GetTime(tls *libc.TLS) (r int32) {
@@ -20831,16 +20820,7 @@ func I_GetTimeMS(tls *libc.TLS) (r int32) {
 // Sleep for a specified number of ms
 
 func I_Sleep(ms uint32) {
-	DG_SleepMs(ms)
-}
-
-func I_WaitVBL(tls *libc.TLS, count int32) {
-	//I_Sleep((count * 1000) / 70);
-}
-
-func I_InitTimer(tls *libc.TLS) {
-	// initialize timer
-	//SDL_Init(SDL_INIT_TIMER);
+	time.Sleep(time.Duration(ms) * time.Millisecond)
 }
 
 //
@@ -23240,7 +23220,6 @@ func M_QuitResponse(tls *libc.TLS, key int32) {
 		} else {
 			S_StartSound(tls, libc.UintptrFromInt32(0), quitsounds[gametic>>int32(2)&int32(7)])
 		}
-		I_WaitVBL(tls, int32(105))
 	}
 	I_Quit(tls)
 }
@@ -48362,7 +48341,7 @@ type DoomKeyEvent struct {
 func I_GetEvent(tls *libc.TLS) {
 	bp := alloc(32)
 	var event DoomKeyEvent
-	for DG_GetKey(&event) {
+	for dg_frontend.GetKey(&event) {
 		var pressed int32
 		if event.Pressed {
 			pressed = 1
@@ -48451,7 +48430,7 @@ func I_FinishUpdate() {
 		}
 		line_in += uintptr(SCREENWIDTH)
 	}
-	DG_DrawFrame(DG_ScreenBuffer)
+	dg_frontend.DrawFrame(DG_ScreenBuffer)
 }
 
 // C documentation
@@ -48506,7 +48485,7 @@ func I_EndRead(tls *libc.TLS) {
 }
 
 func I_SetWindowTitle(title uintptr) {
-	DG_SetWindowTitle(libc.GoString(title))
+	dg_frontend.SetTitle(libc.GoString(title))
 }
 
 func I_GraphicsCheckCommandLine(tls *libc.TLS) {
@@ -48534,21 +48513,25 @@ func doomgeneric_Create(tls *libc.TLS, argc int32, argv uintptr) {
 	M_FindResponseFile(tls)
 
 	DG_ScreenBuffer = image.NewRGBA(image.Rect(0, 0, SCREENWIDTH, SCREENHEIGHT))
-	DG_Init()
 	D_DoomMain(tls)
 }
 
-func main1(tls *libc.TLS, argc int32, argv uintptr) (r int32) {
+func Run(fg DoomFrontend, argc int32, argv uintptr) {
+	if dg_frontend != nil {
+		log.Printf("Run called twice, ignoring second call")
+	}
+	dg_frontend = fg
+	start_time = time.Now()
+	tls := libc.NewTLS()
 	doomgeneric_Create(tls, argc, argv)
 	for {
 		doomgeneric_Tick(tls)
 	}
-	return 0
 }
 
-func main() {
-	libc.Start(main1)
-}
+//func main() {
+//libc.Start(main1)
+//}
 
 func __ccgo_fp(f interface{}) uintptr {
 	type iface [2]uintptr

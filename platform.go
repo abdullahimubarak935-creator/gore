@@ -22,6 +22,9 @@ var (
 	keyLock    sync.Mutex
 )
 
+type webDoomFrontend struct {
+}
+
 func handleKey(key string, state string) error {
 	keyVal, err := strconv.Atoi(key)
 	if err != nil {
@@ -42,49 +45,13 @@ func handleKey(key string, state string) error {
 	return nil
 }
 
-func DG_Init() {
-	log.Printf("DG_Init called\n")
-	start = time.Now()
-	addr := ":8080"
-
-	mux := http.NewServeMux()
-
-	mux.Handle("GET /stream.mjpg", &streamer)
-	mux.HandleFunc("POST /key/{key}/{state}", func(w http.ResponseWriter, r *http.Request) {
-		key := r.PathValue("key")
-		state := r.PathValue("state")
-		if err := handleKey(key, state); err != nil {
-			http.Error(w, "Invalid key or state value", http.StatusBadRequest)
-			log.Printf("Error handling key event: %v\n", err)
-			return
-		}
-	})
-	mux.Handle("GET /", http.FileServer(http.Dir("./static")))
-
-	go func() {
-		log.Printf("Starting HTTP server on %s\n", addr)
-		if err := http.ListenAndServe(addr, mux); err != nil {
-			log.Fatalf("Failed to start HTTP server: %v\n", err)
-		}
-	}()
-}
-
-func DG_DrawFrame(frame *image.RGBA) {
+func (w *webDoomFrontend) DrawFrame(frame *image.RGBA) {
 	if _, err := streamer.AddImage(frame); err != nil {
 		log.Printf("Error adding image to MJPEG stream: %v\n", err)
 	}
 }
 
-func DG_SleepMs(ms uint32) {
-	time.Sleep(time.Duration(ms) * time.Millisecond)
-}
-
-func DG_GetTicksMs() (r int64) {
-	since := time.Since(start)
-	return since.Milliseconds()
-}
-
-func DG_GetKey(event *DoomKeyEvent) bool {
+func (w *webDoomFrontend) GetKey(event *DoomKeyEvent) bool {
 	// This is a stub; actual key handling would depend on the platform and input system.
 	keyLock.Lock()
 	defer keyLock.Unlock()
@@ -124,7 +91,38 @@ func DG_GetKey(event *DoomKeyEvent) bool {
 	return false
 }
 
-func DG_SetWindowTitle(title string) {
+func (w *webDoomFrontend) SetTitle(title string) {
 	log.Printf("DG_SetWindowTitle called with title: %s\n", title)
 	// This is a stub; actual window title setting would depend on the platform and windowing system.
+}
+
+func main() {
+	frontend := &webDoomFrontend{}
+
+	log.Printf("DG_Init called\n")
+	start = time.Now()
+	addr := ":8080"
+
+	mux := http.NewServeMux()
+
+	mux.Handle("GET /stream.mjpg", &streamer)
+	mux.HandleFunc("POST /key/{key}/{state}", func(w http.ResponseWriter, r *http.Request) {
+		key := r.PathValue("key")
+		state := r.PathValue("state")
+		if err := handleKey(key, state); err != nil {
+			http.Error(w, "Invalid key or state value", http.StatusBadRequest)
+			log.Printf("Error handling key event: %v\n", err)
+			return
+		}
+	})
+	mux.Handle("GET /", http.FileServer(http.Dir("./static")))
+
+	go func() {
+		log.Printf("Starting HTTP server on %s\n", addr)
+		if err := http.ListenAndServe(addr, mux); err != nil {
+			log.Fatalf("Failed to start HTTP server: %v\n", err)
+		}
+	}()
+
+	Run(frontend, 1, 0)
 }
