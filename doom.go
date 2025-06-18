@@ -43019,22 +43019,22 @@ func STlib_initBinIcon(st *st_binicon_t, x int32, y int32, i uintptr, val uintpt
 	st.Fp = i
 }
 
-func STlib_updateBinIcon(tls *libc.TLS, bi uintptr, refresh boolean) {
+func STlib_updateBinIcon(tls *libc.TLS, bi *st_binicon_t, refresh boolean) {
 	var h, w, x, y int32
-	if *(*boolean)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fon)) != 0 && ((*st_binicon_t)(unsafe.Pointer(bi)).Foldval != *(*boolean)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fval)) || refresh != 0) {
-		x = (*st_binicon_t)(unsafe.Pointer(bi)).Fx - int32((*patch_t)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fp)).Fleftoffset)
-		y = (*st_binicon_t)(unsafe.Pointer(bi)).Fy - int32((*patch_t)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fp)).Ftopoffset)
-		w = int32((*patch_t)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fp)).Fwidth)
-		h = int32((*patch_t)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fp)).Fheight)
+	if *(*boolean)(unsafe.Pointer(bi.Fon)) != 0 && (bi.Foldval != *(*boolean)(unsafe.Pointer(bi.Fval)) || refresh != 0) {
+		x = bi.Fx - int32((*patch_t)(unsafe.Pointer(bi.Fp)).Fleftoffset)
+		y = bi.Fy - int32((*patch_t)(unsafe.Pointer(bi.Fp)).Ftopoffset)
+		w = int32((*patch_t)(unsafe.Pointer(bi.Fp)).Fwidth)
+		h = int32((*patch_t)(unsafe.Pointer(bi.Fp)).Fheight)
 		if y-(SCREENHEIGHT-ST_HEIGHT) < 0 {
 			I_Error(tls, __ccgo_ts(27522), 0)
 		}
-		if *(*boolean)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fval)) != 0 {
-			V_DrawPatch(tls, (*st_binicon_t)(unsafe.Pointer(bi)).Fx, (*st_binicon_t)(unsafe.Pointer(bi)).Fy, (*st_binicon_t)(unsafe.Pointer(bi)).Fp)
+		if *(*boolean)(unsafe.Pointer(bi.Fval)) != 0 {
+			V_DrawPatch(tls, bi.Fx, bi.Fy, bi.Fp)
 		} else {
 			V_CopyRect(tls, x, y-(SCREENHEIGHT-ST_HEIGHT), st_backing_screen, w, h, x, y)
 		}
-		(*st_binicon_t)(unsafe.Pointer(bi)).Foldval = *(*boolean)(unsafe.Pointer((*st_binicon_t)(unsafe.Pointer(bi)).Fval))
+		bi.Foldval = *(*boolean)(unsafe.Pointer(bi.Fval))
 	}
 }
 
@@ -43939,7 +43939,7 @@ func ST_drawWidgets(tls *libc.TLS, refresh boolean) {
 	}
 	STlib_updatePercent(tls, uintptr(unsafe.Pointer(&w_health)), libc.Int32FromUint32(refresh))
 	STlib_updatePercent(tls, uintptr(unsafe.Pointer(&w_armor)), libc.Int32FromUint32(refresh))
-	STlib_updateBinIcon(tls, uintptr(unsafe.Pointer(&w_armsbg)), refresh)
+	STlib_updateBinIcon(tls, &w_armsbg, refresh)
 	i = 0
 	for {
 		if !(i < int32(6)) {
