@@ -22573,7 +22573,7 @@ func T_MoveCeiling(tls *libc.TLS, ceiling *ceiling_t) {
 //	// Move a ceiling up/down and all around!
 //	//
 func EV_DoCeiling(tls *libc.TLS, line uintptr, type1 ceiling_e) (r int32) {
-	var ceiling, sec uintptr
+	var sec uintptr
 	var rtn, secnum, v1 int32
 	secnum = -int32(1)
 	rtn = 0
@@ -22601,43 +22601,43 @@ func EV_DoCeiling(tls *libc.TLS, line uintptr, type1 ceiling_e) (r int32) {
 		}
 		// new door thinker
 		rtn = int32(1)
-		ceiling = Z_Malloc(tls, int32(72), int32(PU_LEVSPEC), uintptr(0))
-		P_AddThinker(tls, ceiling)
-		(*sector_t)(unsafe.Pointer(sec)).Fspecialdata = ceiling
-		*(*actionf_p1)(unsafe.Pointer(ceiling + 16)) = __ccgo_fp(T_MoveCeiling)
-		(*ceiling_t)(unsafe.Pointer(ceiling)).Fsector = sec
-		(*ceiling_t)(unsafe.Pointer(ceiling)).Fcrush = 0
+		ceiling := &ceiling_t{}
+		P_AddThinker(tls, (uintptr)(unsafe.Pointer(&ceiling.Fthinker)))
+		(*sector_t)(unsafe.Pointer(sec)).Fspecialdata = (uintptr)(unsafe.Pointer(ceiling))
+		ceiling.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveCeiling)
+		ceiling.Fsector = sec
+		ceiling.Fcrush = 0
 		switch type1 {
 		case int32(fastCrushAndRaise):
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fcrush = 1
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Ftopheight = (*sector_t)(unsafe.Pointer(sec)).Fceilingheight
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fbottomheight = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight + 8*(1<<FRACBITS)
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection = -int32(1)
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = 1 << FRACBITS * 2
+			ceiling.Fcrush = 1
+			ceiling.Ftopheight = (*sector_t)(unsafe.Pointer(sec)).Fceilingheight
+			ceiling.Fbottomheight = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight + 8*(1<<FRACBITS)
+			ceiling.Fdirection = -int32(1)
+			ceiling.Fspeed = 1 << FRACBITS * 2
 		case int32(silentCrushAndRaise):
 			fallthrough
 		case int32(crushAndRaise):
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fcrush = 1
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Ftopheight = (*sector_t)(unsafe.Pointer(sec)).Fceilingheight
+			ceiling.Fcrush = 1
+			ceiling.Ftopheight = (*sector_t)(unsafe.Pointer(sec)).Fceilingheight
 			fallthrough
 		case int32(lowerAndCrush):
 			fallthrough
 		case int32(lowerToFloor):
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fbottomheight = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight
+			ceiling.Fbottomheight = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight
 			if type1 != int32(lowerToFloor) {
-				*(*fixed_t)(unsafe.Pointer(ceiling + 40)) += 8 * (1 << FRACBITS)
+				ceiling.Fbottomheight += 8 * (1 << FRACBITS)
 			}
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection = -int32(1)
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = 1 << FRACBITS
+			ceiling.Fdirection = -int32(1)
+			ceiling.Fspeed = 1 << FRACBITS
 		case int32(raiseToHighest):
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Ftopheight = P_FindHighestCeilingSurrounding(tls, sec)
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fdirection = int32(1)
-			(*ceiling_t)(unsafe.Pointer(ceiling)).Fspeed = 1 << FRACBITS
+			ceiling.Ftopheight = P_FindHighestCeilingSurrounding(tls, sec)
+			ceiling.Fdirection = int32(1)
+			ceiling.Fspeed = 1 << FRACBITS
 			break
 		}
-		(*ceiling_t)(unsafe.Pointer(ceiling)).Ftag = int32((*sector_t)(unsafe.Pointer(sec)).Ftag)
-		(*ceiling_t)(unsafe.Pointer(ceiling)).Ftype1 = type1
-		P_AddActiveCeiling(tls, (*ceiling_t)(unsafe.Pointer(ceiling)))
+		ceiling.Ftag = int32((*sector_t)(unsafe.Pointer(sec)).Ftag)
+		ceiling.Ftype1 = type1
+		P_AddActiveCeiling(tls, ceiling)
 	}
 	return rtn
 }
@@ -22673,7 +22673,7 @@ func P_AddActiveCeiling(tls *libc.TLS, c *ceiling_t) {
 func P_RemoveActiveCeiling(tls *libc.TLS, c *ceiling_t) {
 	for i := 0; i < MAXCEILINGS; i++ {
 		if activeceilings[i] == c {
-			(*sector_t)(unsafe.Pointer((*ceiling_t)(unsafe.Pointer(activeceilings[i])).Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
+			(*sector_t)(unsafe.Pointer(activeceilings[i].Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
 			P_RemoveThinker(tls, &activeceilings[i].Fthinker)
 			activeceilings[i] = nil
 			break
