@@ -6813,8 +6813,8 @@ func init() {
 func F_StartCast(tls *libc.TLS) {
 	wipegamestate = -int32(1) // force a screen wipe
 	castnum = 0
-	caststate = uintptr(unsafe.Pointer(&states)) + uintptr(mobjinfo[castorder[castnum].Ftype1].Fseestate)*40
-	casttics = (*state_t)(unsafe.Pointer(caststate)).Ftics
+	caststate = &states[mobjinfo[castorder[castnum].Ftype1].Fseestate]
+	casttics = caststate.Ftics
 	castdeath = 0
 	finalestage = int32(F_STAGE_CAST)
 	castframes = 0
@@ -6835,7 +6835,7 @@ func F_CastTicker(tls *libc.TLS) {
 	if v1 > 0 {
 		return
 	} // not time to change state yet
-	if (*state_t)(unsafe.Pointer(caststate)).Ftics == -int32(1) || (*state_t)(unsafe.Pointer(caststate)).Fnextstate == int32(S_NULL) {
+	if caststate.Ftics == -int32(1) || caststate.Fnextstate == int32(S_NULL) {
 		// switch from deathstate to next monster
 		castnum++
 		castdeath = 0
@@ -6845,15 +6845,15 @@ func F_CastTicker(tls *libc.TLS) {
 		if mobjinfo[castorder[castnum].Ftype1].Fseesound != 0 {
 			S_StartSound(tls, libc.UintptrFromInt32(0), mobjinfo[castorder[castnum].Ftype1].Fseesound)
 		}
-		caststate = uintptr(unsafe.Pointer(&states)) + uintptr(mobjinfo[castorder[castnum].Ftype1].Fseestate)*40
+		caststate = &states[mobjinfo[castorder[castnum].Ftype1].Fseestate]
 		castframes = 0
 	} else {
 		// just advance to next state in animation
-		if caststate == uintptr(unsafe.Pointer(&states))+uintptr(S_PLAY_ATK1)*40 {
+		if caststate == &states[S_PLAY_ATK1] {
 			goto stopattack
 		} // Oh, gross hack!
-		st = (*state_t)(unsafe.Pointer(caststate)).Fnextstate
-		caststate = uintptr(unsafe.Pointer(&states)) + uintptr(st)*40
+		st = caststate.Fnextstate
+		caststate = &states[st]
 		castframes++
 		// sound hacks....
 		switch st {
@@ -6921,23 +6921,23 @@ func F_CastTicker(tls *libc.TLS) {
 		// go into attack frame
 		castattacking = 1
 		if castonmelee != 0 {
-			caststate = uintptr(unsafe.Pointer(&states)) + uintptr(mobjinfo[castorder[castnum].Ftype1].Fmeleestate)*40
+			caststate = &states[mobjinfo[castorder[castnum].Ftype1].Fmeleestate]
 		} else {
-			caststate = uintptr(unsafe.Pointer(&states)) + uintptr(mobjinfo[castorder[castnum].Ftype1].Fmissilestate)*40
+			caststate = &states[mobjinfo[castorder[castnum].Ftype1].Fmissilestate]
 		}
 		castonmelee ^= int32(1)
-		if caststate == uintptr(unsafe.Pointer(&states))+uintptr(S_NULL)*40 {
+		if caststate == &states[0] {
 			if castonmelee != 0 {
-				caststate = uintptr(unsafe.Pointer(&states)) + uintptr(mobjinfo[castorder[castnum].Ftype1].Fmeleestate)*40
+				caststate = &states[mobjinfo[castorder[castnum].Ftype1].Fmeleestate]
 			} else {
-				caststate = uintptr(unsafe.Pointer(&states)) + uintptr(mobjinfo[castorder[castnum].Ftype1].Fmissilestate)*40
+				caststate = &states[mobjinfo[castorder[castnum].Ftype1].Fmissilestate]
 			}
 		}
 	}
 	if !(castattacking != 0) {
 		goto _2
 	}
-	if !(castframes == int32(24) || caststate == uintptr(unsafe.Pointer(&states))+uintptr(mobjinfo[castorder[castnum].Ftype1].Fseestate)*40) {
+	if !(castframes == int32(24) || caststate == &states[mobjinfo[castorder[castnum].Ftype1].Fseestate]) {
 		goto _3
 	}
 	goto stopattack
@@ -6945,12 +6945,12 @@ stopattack:
 	;
 	castattacking = 0
 	castframes = 0
-	caststate = uintptr(unsafe.Pointer(&states)) + uintptr(mobjinfo[castorder[castnum].Ftype1].Fseestate)*40
+	caststate = &states[mobjinfo[castorder[castnum].Ftype1].Fseestate]
 _3:
 	;
 _2:
 	;
-	casttics = (*state_t)(unsafe.Pointer(caststate)).Ftics
+	casttics = caststate.Ftics
 	if casttics == -int32(1) {
 		casttics = int32(15)
 	}
@@ -6969,8 +6969,8 @@ func F_CastResponder(tls *libc.TLS, ev *event_t) (r boolean) {
 	} // already in dying frames
 	// go into death frame
 	castdeath = 1
-	caststate = uintptr(unsafe.Pointer(&states)) + uintptr(mobjinfo[castorder[castnum].Ftype1].Fdeathstate)*40
-	casttics = (*state_t)(unsafe.Pointer(caststate)).Ftics
+	caststate = &states[mobjinfo[castorder[castnum].Ftype1].Fdeathstate]
+	casttics = caststate.Ftics
 	castframes = 0
 	castattacking = 0
 	if mobjinfo[castorder[castnum].Ftype1].Fdeathsound != 0 {
@@ -7033,8 +7033,8 @@ func F_CastDrawer(tls *libc.TLS) {
 	V_DrawPatch(tls, 0, 0, W_CacheLumpName(tls, __ccgo_ts(13631), int32(PU_CACHE)))
 	F_CastPrint(tls, castorder[castnum].Fname)
 	// draw the current frame in the middle of the screen
-	sprdef = sprites + uintptr((*state_t)(unsafe.Pointer(caststate)).Fsprite)*16
-	sprframe = (*spritedef_t)(unsafe.Pointer(sprdef)).Fspriteframes + uintptr((*state_t)(unsafe.Pointer(caststate)).Fframe&int32(FF_FRAMEMASK1))*28
+	sprdef = sprites + uintptr(caststate.Fsprite)*16
+	sprframe = (*spritedef_t)(unsafe.Pointer(sprdef)).Fspriteframes + uintptr(caststate.Fframe&int32(FF_FRAMEMASK1))*28
 	lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4)))
 	flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20)))
 	patch = W_CacheLumpNum(tls, lump+firstspritelump, int32(PU_CACHE))
@@ -46648,7 +46648,7 @@ var castonmelee int32
 
 var castorder [18]castinfo_t
 
-var caststate uintptr
+var caststate *state_t
 
 var casttics int32
 
