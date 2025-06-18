@@ -26032,22 +26032,19 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 //	//
 //	// T_FireFlicker
 //	//
-func T_FireFlicker(tls *libc.TLS, flick uintptr) {
-	var amount, v1 int32
-	var v2 uintptr
-	v2 = flick + 32
-	*(*int32)(unsafe.Pointer(v2))--
-	v1 = *(*int32)(unsafe.Pointer(v2))
-	if v1 != 0 {
+func T_FireFlicker(tls *libc.TLS, flick *fireflicker_t) {
+	var amount int32
+	flick.Fcount--
+	if flick.Fcount != 0 {
 		return
 	}
 	amount = P_Random(tls) & int32(3) * int32(16)
-	if int32((*sector_t)(unsafe.Pointer((*fireflicker_t)(unsafe.Pointer(flick)).Fsector)).Flightlevel)-amount < (*fireflicker_t)(unsafe.Pointer(flick)).Fminlight {
-		(*sector_t)(unsafe.Pointer((*fireflicker_t)(unsafe.Pointer(flick)).Fsector)).Flightlevel = int16((*fireflicker_t)(unsafe.Pointer(flick)).Fminlight)
+	if int32((*sector_t)(unsafe.Pointer(flick.Fsector)).Flightlevel)-amount < flick.Fminlight {
+		(*sector_t)(unsafe.Pointer(flick.Fsector)).Flightlevel = int16(flick.Fminlight)
 	} else {
-		(*sector_t)(unsafe.Pointer((*fireflicker_t)(unsafe.Pointer(flick)).Fsector)).Flightlevel = int16((*fireflicker_t)(unsafe.Pointer(flick)).Fmaxlight - amount)
+		(*sector_t)(unsafe.Pointer(flick.Fsector)).Flightlevel = int16(flick.Fmaxlight - amount)
 	}
-	(*fireflicker_t)(unsafe.Pointer(flick)).Fcount = int32(4)
+	flick.Fcount = int32(4)
 }
 
 // C documentation
@@ -26056,17 +26053,17 @@ func T_FireFlicker(tls *libc.TLS, flick uintptr) {
 //	// P_SpawnFireFlicker
 //	//
 func P_SpawnFireFlicker(tls *libc.TLS, sector uintptr) {
-	var flick uintptr
 	// Note that we are resetting sector attributes.
 	// Nothing special about it during gameplay.
 	(*sector_t)(unsafe.Pointer(sector)).Fspecial = 0
-	flick = Z_Malloc(tls, int32(48), int32(PU_LEVSPEC), uintptr(0))
-	P_AddThinker(tls, flick)
-	*(*actionf_p1)(unsafe.Pointer(flick + 16)) = __ccgo_fp(T_FireFlicker)
-	(*fireflicker_t)(unsafe.Pointer(flick)).Fsector = sector
-	(*fireflicker_t)(unsafe.Pointer(flick)).Fmaxlight = int32((*sector_t)(unsafe.Pointer(sector)).Flightlevel)
-	(*fireflicker_t)(unsafe.Pointer(flick)).Fminlight = P_FindMinSurroundingLight(tls, sector, int32((*sector_t)(unsafe.Pointer(sector)).Flightlevel)) + int32(16)
-	(*fireflicker_t)(unsafe.Pointer(flick)).Fcount = int32(4)
+	//flick = Z_Malloc(tls, int32(48), int32(PU_LEVSPEC), uintptr(0))
+	flick := &fireflicker_t{}
+	P_AddThinker(tls, uintptr(unsafe.Pointer(&flick.Fthinker)))
+	flick.Fthinker.Ffunction.Facv = __ccgo_fp(T_FireFlicker)
+	flick.Fsector = sector
+	flick.Fmaxlight = int32((*sector_t)(unsafe.Pointer(sector)).Flightlevel)
+	flick.Fminlight = P_FindMinSurroundingLight(tls, sector, int32((*sector_t)(unsafe.Pointer(sector)).Flightlevel)) + int32(16)
+	flick.Fcount = int32(4)
 }
 
 //
