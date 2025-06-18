@@ -28816,12 +28816,12 @@ func P_HitSlideLine(tls *libc.TLS, ld uintptr) {
 //	//
 //	// PTR_SlideTraverse
 //	//
-func PTR_SlideTraverse(tls *libc.TLS, in uintptr) (r boolean) {
+func PTR_SlideTraverse(tls *libc.TLS, in *intercept_t) (r boolean) {
 	var li uintptr
-	if !((*intercept_t)(unsafe.Pointer(in)).Fisaline != 0) {
+	if !(in.Fisaline != 0) {
 		I_Error(tls, __ccgo_ts(24696), 0)
 	}
-	li = *(*uintptr)(unsafe.Pointer(in + 8))
+	li = in.Fd.Fthing
 	if !(int32((*line_t)(unsafe.Pointer(li)).Fflags)&ML_TWOSIDED != 0) {
 		if P_PointOnLineSide(tls, (*mobj_t)(unsafe.Pointer(slidemo)).Fx, (*mobj_t)(unsafe.Pointer(slidemo)).Fy, li) != 0 {
 			// don't hit the back side
@@ -28847,8 +28847,8 @@ func PTR_SlideTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	goto isblocking
 isblocking:
 	;
-	if (*intercept_t)(unsafe.Pointer(in)).Ffrac < bestslidefrac {
-		bestslidefrac = (*intercept_t)(unsafe.Pointer(in)).Ffrac
+	if in.Ffrac < bestslidefrac {
+		bestslidefrac = in.Ffrac
 		bestslideline = li
 	}
 	return 0 // stop
