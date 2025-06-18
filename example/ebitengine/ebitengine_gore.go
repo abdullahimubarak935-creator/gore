@@ -32,6 +32,8 @@ func (g *DoomGame) Update() error {
 		ebiten.KeyRight:   gore.KEY_RIGHTARROW1,
 		ebiten.KeyEnter:   gore.KEY_ENTER,
 		ebiten.KeyControl: gore.KEY_FIRE1,
+		ebiten.KeyY:       'y',
+		ebiten.KeyN:       'n',
 	}
 	g.lock.Lock()
 	defer g.lock.Unlock()
