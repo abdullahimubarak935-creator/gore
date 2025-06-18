@@ -1700,7 +1700,7 @@ type mobj_t = struct {
 	Fmomz         fixed_t
 	Fvalidcount   int32
 	Ftype1        mobjtype_t
-	Finfo         uintptr
+	Finfo         *mobjinfo_t
 	Ftics         int32
 	Fstate        uintptr
 	Fflags        int32
@@ -24118,7 +24118,8 @@ func PIT_VileCheck(tls *libc.TLS, thing uintptr) (r boolean) {
 //	//
 func A_VileChase(tls *libc.TLS, actor uintptr) {
 	var bx, by, xh, xl, yh, yl int32
-	var info, temp uintptr
+	var temp uintptr
+	var info *mobjinfo_t
 	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir != int32(DI_NODIR) {
 		// check for corpses to raise
 		viletryx = (*mobj_t)(unsafe.Pointer(actor)).Fx + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*xspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
@@ -25928,7 +25929,7 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 	// thus kick away unless using the chainsaw.
 	if inflictor != 0 && !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_NOCLIP) != 0) && (!(source != 0) || !((*mobj_t)(unsafe.Pointer(source)).Fplayer != 0) || (*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer)).Freadyweapon != int32(wp_chainsaw)) {
 		ang = R_PointToAngle2(tls, (*mobj_t)(unsafe.Pointer(inflictor)).Fx, (*mobj_t)(unsafe.Pointer(inflictor)).Fy, (*mobj_t)(unsafe.Pointer(target)).Fx, (*mobj_t)(unsafe.Pointer(target)).Fy)
-		thrust = damage * (1 << FRACBITS >> 3) * int32(100) / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fmass
+		thrust = damage * (1 << FRACBITS >> 3) * int32(100) / ((*mobj_t)(unsafe.Pointer(target)).Finfo).Fmass
 		// make fall forwards sometimes
 		if damage < int32(40) && damage > (*mobj_t)(unsafe.Pointer(target)).Fhealth && (*mobj_t)(unsafe.Pointer(target)).Fz-(*mobj_t)(unsafe.Pointer(inflictor)).Fz > 64*(1<<FRACBITS) && P_Random(tls)&int32(1) != 0 {
 			ang += uint32(ANG1803)
@@ -25988,9 +25989,9 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 		P_KillMobj(tls, source, target)
 		return
 	}
-	if P_Random(tls) < (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fpainchance && !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_SKULLFLY) != 0) {
+	if P_Random(tls) < (*mobj_t)(unsafe.Pointer(target)).Finfo.Fpainchance && !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_SKULLFLY) != 0) {
 		*(*int32)(unsafe.Pointer(target + 160)) |= int32(MF_JUSTHIT) // fight back!
-		P_SetMobjState(tls, target, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fpainstate)
+		P_SetMobjState(tls, target, (*mobj_t)(unsafe.Pointer(target)).Finfo.Fpainstate)
 	}
 	(*mobj_t)(unsafe.Pointer(target)).Freactiontime = 0 // we're awake now...
 	if (!((*mobj_t)(unsafe.Pointer(target)).Fthreshold != 0) || (*mobj_t)(unsafe.Pointer(target)).Ftype1 == int32(MT_VILE)) && source != 0 && source != target && (*mobj_t)(unsafe.Pointer(source)).Ftype1 != int32(MT_VILE) {
@@ -25998,8 +25999,8 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 		// chase after this one
 		(*mobj_t)(unsafe.Pointer(target)).Ftarget = source
 		(*mobj_t)(unsafe.Pointer(target)).Fthreshold = int32(BASETHRESHOLD)
-		if (*mobj_t)(unsafe.Pointer(target)).Fstate == uintptr(unsafe.Pointer(&states))+uintptr((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fspawnstate)*40 && (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fseestate != int32(S_NULL) {
-			P_SetMobjState(tls, target, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fseestate)
+		if (*mobj_t)(unsafe.Pointer(target)).Fstate == uintptr(unsafe.Pointer(&states))+uintptr((*mobj_t)(unsafe.Pointer(target)).Finfo.Fspawnstate)*40 && (*mobj_t)(unsafe.Pointer(target)).Finfo.Fseestate != int32(S_NULL) {
+			P_SetMobjState(tls, target, (*mobj_t)(unsafe.Pointer(target)).Finfo.Fseestate)
 		}
 	}
 }
@@ -26512,7 +26513,7 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 	}
 	// check for skulls slamming into things
 	if (*mobj_t)(unsafe.Pointer(tmthing)).Fflags&int32(MF_SKULLFLY) != 0 {
-		damage = (P_Random(tls)%int32(8) + int32(1)) * (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Finfo)).Fdamage
+		damage = (P_Random(tls)%int32(8) + int32(1)) * (*mobj_t)(unsafe.Pointer(tmthing)).Finfo.Fdamage
 		P_DamageMobj(tls, thing, tmthing, tmthing, damage)
 		*(*int32)(unsafe.Pointer(tmthing + 160)) &= ^int32(MF_SKULLFLY)
 		v2 = 0
@@ -26520,7 +26521,7 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 		v1 = v2
 		(*mobj_t)(unsafe.Pointer(tmthing)).Fmomy = v1
 		(*mobj_t)(unsafe.Pointer(tmthing)).Fmomx = v1
-		P_SetMobjState(tls, tmthing, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Finfo)).Fspawnstate)
+		P_SetMobjState(tls, tmthing, (*mobj_t)(unsafe.Pointer(tmthing)).Finfo.Fspawnstate)
 		return 0 // stop moving
 	}
 	// missiles can hit other things
@@ -26551,7 +26552,7 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 			return libc.BoolUint32(!((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SOLID) != 0))
 		}
 		// damage / explode
-		damage = (P_Random(tls)%int32(8) + int32(1)) * (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Finfo)).Fdamage
+		damage = (P_Random(tls)%int32(8) + int32(1)) * (*mobj_t)(unsafe.Pointer(tmthing)).Finfo.Fdamage
 		P_DamageMobj(tls, thing, tmthing, (*mobj_t)(unsafe.Pointer(tmthing)).Ftarget, damage)
 		// don't traverse any more
 		return 0
@@ -28213,8 +28214,8 @@ func P_ExplodeMissile(tls *libc.TLS, mo uintptr) {
 		(*mobj_t)(unsafe.Pointer(mo)).Ftics = int32(1)
 	}
 	*(*int32)(unsafe.Pointer(mo + 160)) &= ^int32(MF_MISSILE)
-	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fdeathsound != 0 {
-		S_StartSound(tls, mo, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fdeathsound)
+	if (*mobj_t)(unsafe.Pointer(mo)).Finfo.Fdeathsound != 0 {
+		S_StartSound(tls, mo, (*mobj_t)(unsafe.Pointer(mo)).Finfo.Fdeathsound)
 	}
 }
 
@@ -28234,7 +28235,7 @@ func P_XYMovement(tls *libc.TLS, mo uintptr) {
 			v1 = v2
 			(*mobj_t)(unsafe.Pointer(mo)).Fmomy = v1
 			(*mobj_t)(unsafe.Pointer(mo)).Fmomx = v1
-			P_SetMobjState(tls, mo, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspawnstate)
+			P_SetMobjState(tls, mo, (*mobj_t)(unsafe.Pointer(mo)).Finfo.Fspawnstate)
 		}
 		return
 	}
@@ -28463,7 +28464,7 @@ func P_NightmareRespawn(tls *libc.TLS, mobj uintptr) {
 	// spawn the new monster
 	mthing = mobj + 204
 	// spawn it
-	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Finfo)).Fflags&int32(MF_SPAWNCEILING) != 0 {
+	if (*mobj_t)(unsafe.Pointer(mobj)).Finfo.Fflags&int32(MF_SPAWNCEILING) != 0 {
 		z = int32(INT_MAX11)
 	} else {
 		z = -1 - 0x7fffffff
@@ -28539,25 +28540,26 @@ func P_MobjThinker(tls *libc.TLS, mobj uintptr) {
 //	// P_SpawnMobj
 //	//
 func P_SpawnMobj(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r uintptr) {
-	var info, mobj, st uintptr
+	var mobj, st uintptr
+	var info *mobjinfo_t
 	mobj = Z_Malloc(tls, int32(224), int32(PU_LEVEL), libc.UintptrFromInt32(0))
 	xmemset(mobj, 0, uint64(224))
-	info = uintptr(unsafe.Pointer(&mobjinfo)) + uintptr(type1)*92
+	info = &mobjinfo[uintptr(type1)]
 	(*mobj_t)(unsafe.Pointer(mobj)).Ftype1 = type1
 	(*mobj_t)(unsafe.Pointer(mobj)).Finfo = info
 	(*mobj_t)(unsafe.Pointer(mobj)).Fx = x
 	(*mobj_t)(unsafe.Pointer(mobj)).Fy = y
-	(*mobj_t)(unsafe.Pointer(mobj)).Fradius = (*mobjinfo_t)(unsafe.Pointer(info)).Fradius
-	(*mobj_t)(unsafe.Pointer(mobj)).Fheight = (*mobjinfo_t)(unsafe.Pointer(info)).Fheight
-	(*mobj_t)(unsafe.Pointer(mobj)).Fflags = (*mobjinfo_t)(unsafe.Pointer(info)).Fflags
-	(*mobj_t)(unsafe.Pointer(mobj)).Fhealth = (*mobjinfo_t)(unsafe.Pointer(info)).Fspawnhealth
+	(*mobj_t)(unsafe.Pointer(mobj)).Fradius = info.Fradius
+	(*mobj_t)(unsafe.Pointer(mobj)).Fheight = info.Fheight
+	(*mobj_t)(unsafe.Pointer(mobj)).Fflags = info.Fflags
+	(*mobj_t)(unsafe.Pointer(mobj)).Fhealth = info.Fspawnhealth
 	if gameskill != int32(sk_nightmare) {
-		(*mobj_t)(unsafe.Pointer(mobj)).Freactiontime = (*mobjinfo_t)(unsafe.Pointer(info)).Freactiontime
+		(*mobj_t)(unsafe.Pointer(mobj)).Freactiontime = info.Freactiontime
 	}
 	(*mobj_t)(unsafe.Pointer(mobj)).Flastlook = P_Random(tls) % int32(MAXPLAYERS)
 	// do not set the state with P_SetMobjState,
 	// because action routines can not be called yet
-	st = uintptr(unsafe.Pointer(&states)) + uintptr((*mobjinfo_t)(unsafe.Pointer(info)).Fspawnstate)*40
+	st = uintptr(unsafe.Pointer(&states)) + uintptr(info.Fspawnstate)*40
 	(*mobj_t)(unsafe.Pointer(mobj)).Fstate = st
 	(*mobj_t)(unsafe.Pointer(mobj)).Ftics = (*state_t)(unsafe.Pointer(st)).Ftics
 	(*mobj_t)(unsafe.Pointer(mobj)).Fsprite = (*state_t)(unsafe.Pointer(st)).Fsprite
@@ -28570,7 +28572,7 @@ func P_SpawnMobj(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_
 		(*mobj_t)(unsafe.Pointer(mobj)).Fz = (*mobj_t)(unsafe.Pointer(mobj)).Ffloorz
 	} else {
 		if z == int32(INT_MAX11) {
-			(*mobj_t)(unsafe.Pointer(mobj)).Fz = (*mobj_t)(unsafe.Pointer(mobj)).Fceilingz - (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Finfo)).Fheight
+			(*mobj_t)(unsafe.Pointer(mobj)).Fz = (*mobj_t)(unsafe.Pointer(mobj)).Fceilingz - (*mobj_t)(unsafe.Pointer(mobj)).Finfo.Fheight
 		} else {
 			(*mobj_t)(unsafe.Pointer(mobj)).Fz = z
 		}
@@ -28908,8 +28910,8 @@ func P_SpawnMissile(tls *libc.TLS, source uintptr, dest uintptr, type1 mobjtype_
 	var dist int32
 	var th uintptr
 	th = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(source)).Fy, (*mobj_t)(unsafe.Pointer(source)).Fz+4*8*(1<<FRACBITS), type1)
-	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fseesound != 0 {
-		S_StartSound(tls, th, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fseesound)
+	if (*mobj_t)(unsafe.Pointer(th)).Finfo.Fseesound != 0 {
+		S_StartSound(tls, th, (*mobj_t)(unsafe.Pointer(th)).Finfo.Fseesound)
 	}
 	(*mobj_t)(unsafe.Pointer(th)).Ftarget = source // where it came from
 	an = R_PointToAngle2(tls, (*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(source)).Fy, (*mobj_t)(unsafe.Pointer(dest)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy)
@@ -28919,10 +28921,10 @@ func P_SpawnMissile(tls *libc.TLS, source uintptr, dest uintptr, type1 mobjtype_
 	}
 	(*mobj_t)(unsafe.Pointer(th)).Fangle = an
 	an >>= uint32(ANGLETOFINESHIFT)
-	(*mobj_t)(unsafe.Pointer(th)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, finecosine[an])
-	(*mobj_t)(unsafe.Pointer(th)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, finesine[an])
+	(*mobj_t)(unsafe.Pointer(th)).Fmomx = FixedMul((*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed, finecosine[an])
+	(*mobj_t)(unsafe.Pointer(th)).Fmomy = FixedMul((*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed, finesine[an])
 	dist = P_AproxDistance(tls, (*mobj_t)(unsafe.Pointer(dest)).Fx-(*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy-(*mobj_t)(unsafe.Pointer(source)).Fy)
-	dist = dist / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed
+	dist = dist / (*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed
 	if dist < int32(1) {
 		dist = int32(1)
 	}
@@ -28960,14 +28962,14 @@ func P_SpawnPlayerMissile(tls *libc.TLS, source uintptr, type1 mobjtype_t) {
 	y = (*mobj_t)(unsafe.Pointer(source)).Fy
 	z = (*mobj_t)(unsafe.Pointer(source)).Fz + 4*8*(1<<FRACBITS)
 	th = P_SpawnMobj(tls, x, y, z, type1)
-	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fseesound != 0 {
-		S_StartSound(tls, th, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fseesound)
+	if (*mobj_t)(unsafe.Pointer(th)).Finfo.Fseesound != 0 {
+		S_StartSound(tls, th, (*mobj_t)(unsafe.Pointer(th)).Finfo.Fseesound)
 	}
 	(*mobj_t)(unsafe.Pointer(th)).Ftarget = source
 	(*mobj_t)(unsafe.Pointer(th)).Fangle = an
-	(*mobj_t)(unsafe.Pointer(th)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, finecosine[an>>int32(ANGLETOFINESHIFT)])
-	(*mobj_t)(unsafe.Pointer(th)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, finesine[an>>int32(ANGLETOFINESHIFT)])
-	(*mobj_t)(unsafe.Pointer(th)).Fmomz = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(th)).Finfo)).Fspeed, slope)
+	(*mobj_t)(unsafe.Pointer(th)).Fmomx = FixedMul((*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed, finecosine[an>>int32(ANGLETOFINESHIFT)])
+	(*mobj_t)(unsafe.Pointer(th)).Fmomy = FixedMul((*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed, finesine[an>>int32(ANGLETOFINESHIFT)])
+	(*mobj_t)(unsafe.Pointer(th)).Fmomz = FixedMul((*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed, slope)
 	P_CheckMissileSpawn(tls, th)
 }
 
@@ -30140,7 +30142,7 @@ func saveg_read_mobj_t(tls *libc.TLS, str uintptr) {
 	// mobjtype_t type;
 	(*mobj_t)(unsafe.Pointer(str)).Ftype1 = saveg_read32(tls)
 	// mobjinfo_t* info;
-	(*mobj_t)(unsafe.Pointer(str)).Finfo = saveg_readp(tls)
+	(*mobj_t)(unsafe.Pointer(str)).Finfo = (*mobjinfo_t)(unsafe.Pointer(saveg_readp(tls)))
 	// int tics;
 	(*mobj_t)(unsafe.Pointer(str)).Ftics = saveg_read32(tls)
 	// state_t* state;
@@ -30219,7 +30221,7 @@ func saveg_write_mobj_t(tls *libc.TLS, str uintptr) {
 	// mobjtype_t type;
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Ftype1)
 	// mobjinfo_t* info;
-	saveg_writep(tls, (*mobj_t)(unsafe.Pointer(str)).Finfo)
+	saveg_writep(tls, (uintptr)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(str)).Finfo)))
 	// int tics;
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Ftics)
 	// state_t* state;
@@ -31248,7 +31250,7 @@ func P_UnArchiveThinkers(tls *libc.TLS) {
 			(*mobj_t)(unsafe.Pointer(mobj)).Ftarget = libc.UintptrFromInt32(0)
 			(*mobj_t)(unsafe.Pointer(mobj)).Ftracer = libc.UintptrFromInt32(0)
 			P_SetThingPosition(tls, mobj)
-			(*mobj_t)(unsafe.Pointer(mobj)).Finfo = uintptr(unsafe.Pointer(&mobjinfo)) + uintptr((*mobj_t)(unsafe.Pointer(mobj)).Ftype1)*92
+			(*mobj_t)(unsafe.Pointer(mobj)).Finfo = &mobjinfo[(*mobj_t)(unsafe.Pointer(mobj)).Ftype1]
 			(*mobj_t)(unsafe.Pointer(mobj)).Ffloorz = (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Ffloorheight
 			(*mobj_t)(unsafe.Pointer(mobj)).Fceilingz = (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Fceilingheight
 			*(*actionf_p1)(unsafe.Pointer(mobj + 16)) = __ccgo_fp(P_MobjThinker)
