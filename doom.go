@@ -21196,7 +21196,7 @@ func M_SelectEndMessage(tls *libc.TLS) (r uintptr) {
 }
 
 func M_QuitDOOM(tls *libc.TLS, choice int32) {
-	snprintf_ccgo(uintptr(unsafe.Pointer(&endstring)), 160, 23010, M_SelectEndMessage(tls))
+	snprintf_ccgo(uintptr(unsafe.Pointer(&endstring)), 160, 23010, libc.GoString(M_SelectEndMessage(tls)))
 	M_StartMessage(tls, uintptr(unsafe.Pointer(&endstring)), __ccgo_fp(M_QuitResponse), 1)
 }
 
