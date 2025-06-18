@@ -2034,8 +2034,6 @@ type player_t = struct {
 	Fdidsecret       boolean
 }
 
-type player_s = player_t
-
 type wbplayerstruct_t = struct {
 	Fin      boolean
 	Fskills  int32
@@ -27892,7 +27890,7 @@ func P_KillMobj(tls *libc.TLS, source uintptr, target uintptr) {
 	if source != 0 && (*mobj_t)(unsafe.Pointer(source)).Fplayer != 0 {
 		// count for intermission
 		if (*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_COUNTKILL) != 0 {
-			(*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer)).Fkillcount++
+			(*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer)).Fkillcount++
 		}
 		if (*mobj_t)(unsafe.Pointer(target)).Fplayer != 0 {
 			*(*int32)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer + 108 + uintptr((int64((*mobj_t)(unsafe.Pointer(target)).Fplayer)-int64(uintptr(unsafe.Pointer(&players))))/328)*4))++
@@ -27910,7 +27908,7 @@ func P_KillMobj(tls *libc.TLS, source uintptr, target uintptr) {
 			*(*int32)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Fplayer + 108 + uintptr((int64((*mobj_t)(unsafe.Pointer(target)).Fplayer)-int64(uintptr(unsafe.Pointer(&players))))/328)*4))++
 		}
 		*(*int32)(unsafe.Pointer(target + 160)) &= ^int32(MF_SOLID)
-		(*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Fplayer)).Fplayerstate = int32(PST_DEAD)
+		(*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Fplayer)).Fplayerstate = int32(PST_DEAD)
 		P_DropWeapon(tls, (*mobj_t)(unsafe.Pointer(target)).Fplayer)
 		if (*mobj_t)(unsafe.Pointer(target)).Fplayer == uintptr(unsafe.Pointer(&players))+uintptr(consoleplayer)*328 && automapactive != 0 {
 			// don't die in auto map,
@@ -27989,7 +27987,7 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 	// Some close combat weapons should not
 	// inflict thrust and push the victim out of reach,
 	// thus kick away unless using the chainsaw.
-	if inflictor != 0 && !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_NOCLIP) != 0) && (!(source != 0) || !((*mobj_t)(unsafe.Pointer(source)).Fplayer != 0) || (*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer)).Freadyweapon != int32(wp_chainsaw)) {
+	if inflictor != 0 && !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_NOCLIP) != 0) && (!(source != 0) || !((*mobj_t)(unsafe.Pointer(source)).Fplayer != 0) || (*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer)).Freadyweapon != int32(wp_chainsaw)) {
 		ang = R_PointToAngle2(tls, (*mobj_t)(unsafe.Pointer(inflictor)).Fx, (*mobj_t)(unsafe.Pointer(inflictor)).Fy, (*mobj_t)(unsafe.Pointer(target)).Fx, (*mobj_t)(unsafe.Pointer(target)).Fy)
 		thrust = damage * (1 << FRACBITS >> 3) * int32(100) / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fmass
 		// make fall forwards sometimes
@@ -30405,7 +30403,7 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 	// check for smooth step up
 	if (*mobj_t)(unsafe.Pointer(mo)).Fplayer != 0 && (*mobj_t)(unsafe.Pointer(mo)).Fz < (*mobj_t)(unsafe.Pointer(mo)).Ffloorz {
 		*(*fixed_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer + 32)) -= (*mobj_t)(unsafe.Pointer(mo)).Ffloorz - (*mobj_t)(unsafe.Pointer(mo)).Fz
-		(*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fdeltaviewheight = (41*(1<<FRACBITS) - (*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fviewheight) >> int32(3)
+		(*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fdeltaviewheight = (41*(1<<FRACBITS) - (*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fviewheight) >> int32(3)
 	}
 	// adjust height
 	*(*fixed_t)(unsafe.Pointer(mo + 32)) += (*mobj_t)(unsafe.Pointer(mo)).Fmomz
@@ -30459,7 +30457,7 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 				// Decrease viewheight for a moment
 				// after hitting the ground (hard),
 				// and utter appropriate sound.
-				(*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fdeltaviewheight = (*mobj_t)(unsafe.Pointer(mo)).Fmomz >> int32(3)
+				(*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fdeltaviewheight = (*mobj_t)(unsafe.Pointer(mo)).Fmomz >> int32(3)
 				S_StartSound(tls, mo, int32(sfx_oof))
 			}
 			(*mobj_t)(unsafe.Pointer(mo)).Fmomz = 0
@@ -32229,11 +32227,11 @@ func saveg_read_mobj_t(tls *libc.TLS, str uintptr) {
 	(*mobj_t)(unsafe.Pointer(str)).Freactiontime = saveg_read32(tls)
 	// int threshold;
 	(*mobj_t)(unsafe.Pointer(str)).Fthreshold = saveg_read32(tls)
-	// struct player_s* player;
+	// player_t* player;
 	pl = saveg_read32(tls)
 	if pl > 0 {
 		(*mobj_t)(unsafe.Pointer(str)).Fplayer = uintptr(unsafe.Pointer(&players)) + uintptr(pl-int32(1))*328
-		(*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(str)).Fplayer)).Fmo = str
+		(*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(str)).Fplayer)).Fmo = str
 	} else {
 		(*mobj_t)(unsafe.Pointer(str)).Fplayer = libc.UintptrFromInt32(0)
 	}
@@ -32308,7 +32306,7 @@ func saveg_write_mobj_t(tls *libc.TLS, str uintptr) {
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Freactiontime)
 	// int threshold;
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Fthreshold)
-	// struct player_s* player;
+	// player_t* player;
 	if (*mobj_t)(unsafe.Pointer(str)).Fplayer != 0 {
 		saveg_write32(tls, int32((int64((*mobj_t)(unsafe.Pointer(str)).Fplayer)-int64(uintptr(unsafe.Pointer(&players))))/328+int64(1)))
 	} else {
@@ -32326,19 +32324,19 @@ func saveg_write_mobj_t(tls *libc.TLS, str uintptr) {
 // ticcmd_t
 //
 
-func saveg_read_ticcmd_t(tls *libc.TLS, str uintptr) {
+func saveg_read_ticcmd_t(tls *libc.TLS, str *ticcmd_t) {
 	// signed char forwardmove;
-	(*ticcmd_t)(unsafe.Pointer(str)).Fforwardmove = libc.Int8FromUint8(saveg_read8(tls))
+	str.Fforwardmove = libc.Int8FromUint8(saveg_read8(tls))
 	// signed char sidemove;
-	(*ticcmd_t)(unsafe.Pointer(str)).Fsidemove = libc.Int8FromUint8(saveg_read8(tls))
+	str.Fsidemove = libc.Int8FromUint8(saveg_read8(tls))
 	// short angleturn;
-	(*ticcmd_t)(unsafe.Pointer(str)).Fangleturn = saveg_read16(tls)
+	str.Fangleturn = saveg_read16(tls)
 	// short consistancy;
-	(*ticcmd_t)(unsafe.Pointer(str)).Fconsistancy = libc.Uint8FromInt16(saveg_read16(tls))
+	str.Fconsistancy = libc.Uint8FromInt16(saveg_read16(tls))
 	// byte chatchar;
-	(*ticcmd_t)(unsafe.Pointer(str)).Fchatchar = saveg_read8(tls)
+	str.Fchatchar = saveg_read8(tls)
 	// byte buttons;
-	(*ticcmd_t)(unsafe.Pointer(str)).Fbuttons = saveg_read8(tls)
+	str.Fbuttons = saveg_read8(tls)
 }
 
 func saveg_write_ticcmd_t(tls *libc.TLS, str uintptr) {
@@ -32360,21 +32358,21 @@ func saveg_write_ticcmd_t(tls *libc.TLS, str uintptr) {
 // pspdef_t
 //
 
-func saveg_read_pspdef_t(tls *libc.TLS, str uintptr) {
+func saveg_read_pspdef_t(tls *libc.TLS, str *pspdef_t) {
 	var state int32
 	// state_t* state;
 	state = saveg_read32(tls)
 	if state > 0 {
-		(*pspdef_t)(unsafe.Pointer(str)).Fstate = uintptr(unsafe.Pointer(&states)) + uintptr(state)*40
+		str.Fstate = uintptr(unsafe.Pointer(&states)) + uintptr(state)*40
 	} else {
-		(*pspdef_t)(unsafe.Pointer(str)).Fstate = libc.UintptrFromInt32(0)
+		str.Fstate = libc.UintptrFromInt32(0)
 	}
 	// int tics;
-	(*pspdef_t)(unsafe.Pointer(str)).Ftics = saveg_read32(tls)
+	str.Ftics = saveg_read32(tls)
 	// fixed_t sx;
-	(*pspdef_t)(unsafe.Pointer(str)).Fsx = saveg_read32(tls)
+	str.Fsx = saveg_read32(tls)
 	// fixed_t sy;
-	(*pspdef_t)(unsafe.Pointer(str)).Fsy = saveg_read32(tls)
+	str.Fsy = saveg_read32(tls)
 }
 
 func saveg_write_pspdef_t(tls *libc.TLS, str uintptr) {
@@ -32396,148 +32394,90 @@ func saveg_write_pspdef_t(tls *libc.TLS, str uintptr) {
 // player_t
 //
 
-func saveg_read_player_t(tls *libc.TLS, str uintptr) {
-	var i int32
+func saveg_read_player_t(tls *libc.TLS, str *player_t) {
 	// mobj_t* mo;
-	(*player_t)(unsafe.Pointer(str)).Fmo = saveg_readp(tls)
+	str.Fmo = saveg_readp(tls)
 	// playerstate_t playerstate;
-	(*player_t)(unsafe.Pointer(str)).Fplayerstate = saveg_read32(tls)
+	str.Fplayerstate = saveg_read32(tls)
 	// ticcmd_t cmd;
-	saveg_read_ticcmd_t(tls, str+12)
+	saveg_read_ticcmd_t(tls, &str.Fcmd)
 	// fixed_t viewz;
-	(*player_t)(unsafe.Pointer(str)).Fviewz = saveg_read32(tls)
+	str.Fviewz = saveg_read32(tls)
 	// fixed_t viewheight;
-	(*player_t)(unsafe.Pointer(str)).Fviewheight = saveg_read32(tls)
+	str.Fviewheight = saveg_read32(tls)
 	// fixed_t deltaviewheight;
-	(*player_t)(unsafe.Pointer(str)).Fdeltaviewheight = saveg_read32(tls)
+	str.Fdeltaviewheight = saveg_read32(tls)
 	// fixed_t bob;
-	(*player_t)(unsafe.Pointer(str)).Fbob = saveg_read32(tls)
+	str.Fbob = saveg_read32(tls)
 	// int health;
-	(*player_t)(unsafe.Pointer(str)).Fhealth = saveg_read32(tls)
+	str.Fhealth = saveg_read32(tls)
 	// int armorpoints;
-	(*player_t)(unsafe.Pointer(str)).Farmorpoints = saveg_read32(tls)
+	str.Farmorpoints = saveg_read32(tls)
 	// int armortype;
-	(*player_t)(unsafe.Pointer(str)).Farmortype = saveg_read32(tls)
+	str.Farmortype = saveg_read32(tls)
 	// int powers[NUMPOWERS];
-	i = 0
-	for {
-		if !(i < int32(NUMPOWERS)) {
-			break
-		}
-		*(*int32)(unsafe.Pointer(str + 56 + uintptr(i)*4)) = saveg_read32(tls)
-		goto _1
-	_1:
-		;
-		i++
+	for i := 0; i < NUMPOWERS; i++ {
+		str.Fpowers[i] = saveg_read32(tls)
 	}
 	// boolean cards[NUMCARDS];
-	i = 0
-	for {
-		if !(i < int32(NUMCARDS)) {
-			break
-		}
-		*(*boolean)(unsafe.Pointer(str + 80 + uintptr(i)*4)) = libc.Uint32FromInt32(saveg_read32(tls))
-		goto _2
-	_2:
-		;
-		i++
+	for i := 0; i < NUMCARDS; i++ {
+		str.Fcards[i] = libc.Uint32FromInt32(saveg_read32(tls))
 	}
 	// boolean backpack;
-	(*player_t)(unsafe.Pointer(str)).Fbackpack = libc.Uint32FromInt32(saveg_read32(tls))
+	str.Fbackpack = libc.Uint32FromInt32(saveg_read32(tls))
 	// int frags[MAXPLAYERS];
-	i = 0
-	for {
-		if !(i < int32(MAXPLAYERS)) {
-			break
-		}
-		*(*int32)(unsafe.Pointer(str + 108 + uintptr(i)*4)) = saveg_read32(tls)
-		goto _3
-	_3:
-		;
-		i++
+	for i := 0; i < MAXPLAYERS; i++ {
+		str.Ffrags[i] = saveg_read32(tls)
 	}
 	// weapontype_t readyweapon;
-	(*player_t)(unsafe.Pointer(str)).Freadyweapon = saveg_read32(tls)
+	str.Freadyweapon = saveg_read32(tls)
 	// weapontype_t pendingweapon;
-	(*player_t)(unsafe.Pointer(str)).Fpendingweapon = saveg_read32(tls)
+	str.Fpendingweapon = saveg_read32(tls)
 	// boolean weaponowned[NUMWEAPONS];
-	i = 0
-	for {
-		if !(i < int32(NUMWEAPONS)) {
-			break
-		}
-		*(*boolean)(unsafe.Pointer(str + 132 + uintptr(i)*4)) = libc.Uint32FromInt32(saveg_read32(tls))
-		goto _4
-	_4:
-		;
-		i++
+	for i := 0; i < NUMWEAPONS; i++ {
+		str.Fweaponowned[i] = libc.Uint32FromInt32(saveg_read32(tls))
 	}
-	// int ammo[NUMAMMO];
-	i = 0
-	for {
-		if !(i < int32(NUMAMMO)) {
-			break
-		}
-		*(*int32)(unsafe.Pointer(str + 168 + uintptr(i)*4)) = saveg_read32(tls)
-		goto _5
-	_5:
-		;
-		i++
+	for i := 0; i < NUMAMMO; i++ {
+		str.Fammo[i] = saveg_read32(tls)
 	}
 	// int maxammo[NUMAMMO];
-	i = 0
-	for {
-		if !(i < int32(NUMAMMO)) {
-			break
-		}
-		*(*int32)(unsafe.Pointer(str + 184 + uintptr(i)*4)) = saveg_read32(tls)
-		goto _6
-	_6:
-		;
-		i++
+	for i := 0; i < NUMAMMO; i++ {
+		str.Fmaxammo[i] = saveg_read32(tls)
 	}
 	// int attackdown;
-	(*player_t)(unsafe.Pointer(str)).Fattackdown = saveg_read32(tls)
+	str.Fattackdown = saveg_read32(tls)
 	// int usedown;
-	(*player_t)(unsafe.Pointer(str)).Fusedown = saveg_read32(tls)
+	str.Fusedown = saveg_read32(tls)
 	// int cheats;
-	(*player_t)(unsafe.Pointer(str)).Fcheats = saveg_read32(tls)
+	str.Fcheats = saveg_read32(tls)
 	// int refire;
-	(*player_t)(unsafe.Pointer(str)).Frefire = saveg_read32(tls)
+	str.Frefire = saveg_read32(tls)
 	// int killcount;
-	(*player_t)(unsafe.Pointer(str)).Fkillcount = saveg_read32(tls)
+	str.Fkillcount = saveg_read32(tls)
 	// int itemcount;
-	(*player_t)(unsafe.Pointer(str)).Fitemcount = saveg_read32(tls)
+	str.Fitemcount = saveg_read32(tls)
 	// int secretcount;
-	(*player_t)(unsafe.Pointer(str)).Fsecretcount = saveg_read32(tls)
+	str.Fsecretcount = saveg_read32(tls)
 	// char* message;
-	(*player_t)(unsafe.Pointer(str)).Fmessage = saveg_readp(tls)
+	str.Fmessage = saveg_readp(tls)
 	// int damagecount;
-	(*player_t)(unsafe.Pointer(str)).Fdamagecount = saveg_read32(tls)
+	str.Fdamagecount = saveg_read32(tls)
 	// int bonuscount;
-	(*player_t)(unsafe.Pointer(str)).Fbonuscount = saveg_read32(tls)
+	str.Fbonuscount = saveg_read32(tls)
 	// mobj_t* attacker;
-	(*player_t)(unsafe.Pointer(str)).Fattacker = saveg_readp(tls)
+	str.Fattacker = saveg_readp(tls)
 	// int extralight;
-	(*player_t)(unsafe.Pointer(str)).Fextralight = saveg_read32(tls)
+	str.Fextralight = saveg_read32(tls)
 	// int fixedcolormap;
-	(*player_t)(unsafe.Pointer(str)).Ffixedcolormap = saveg_read32(tls)
+	str.Ffixedcolormap = saveg_read32(tls)
 	// int colormap;
-	(*player_t)(unsafe.Pointer(str)).Fcolormap = saveg_read32(tls)
+	str.Fcolormap = saveg_read32(tls)
 	// pspdef_t psprites[NUMPSPRITES];
-	i = 0
-	for {
-		if !(i < int32(NUMPSPRITES)) {
-			break
-		}
-		saveg_read_pspdef_t(tls, str+272+uintptr(i)*24)
-		goto _7
-	_7:
-		;
-		i++
+	for i := 0; i < NUMPSPRITES; i++ {
+		saveg_read_pspdef_t(tls, &str.Fpsprites[i])
 	}
 	// boolean didsecret;
-	(*player_t)(unsafe.Pointer(str)).Fdidsecret = libc.Uint32FromInt32(saveg_read32(tls))
+	str.Fdidsecret = libc.Uint32FromInt32(saveg_read32(tls))
 }
 
 func saveg_write_player_t(tls *libc.TLS, str uintptr) {
@@ -33166,25 +33106,16 @@ func P_ArchivePlayers(tls *libc.TLS) {
 //	// P_UnArchivePlayers
 //	//
 func P_UnArchivePlayers(tls *libc.TLS) {
-	var i int32
-	i = 0
-	for {
-		if !(i < int32(MAXPLAYERS)) {
-			break
-		}
-		if !(playeringame[i] != 0) {
-			goto _1
+	for i := 0; i < MAXPLAYERS; i++ {
+		if playeringame[i] == 0 {
+			continue
 		}
 		saveg_read_pad(tls)
-		saveg_read_player_t(tls, uintptr(unsafe.Pointer(&players))+uintptr(i)*328)
+		saveg_read_player_t(tls, &players[i])
 		// will be set when unarc thinker
 		players[i].Fmo = libc.UintptrFromInt32(0)
 		players[i].Fmessage = libc.UintptrFromInt32(0)
 		players[i].Fattacker = libc.UintptrFromInt32(0)
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -36703,7 +36634,7 @@ func EV_Teleport(tls *libc.TLS, line uintptr, side int32, thing uintptr) (r int3
 					(*mobj_t)(unsafe.Pointer(thing)).Fz = (*mobj_t)(unsafe.Pointer(thing)).Ffloorz
 				}
 				if (*mobj_t)(unsafe.Pointer(thing)).Fplayer != 0 {
-					(*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fplayer)).Fviewz = (*mobj_t)(unsafe.Pointer(thing)).Fz + (*player_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fplayer)).Fviewheight
+					(*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fplayer)).Fviewz = (*mobj_t)(unsafe.Pointer(thing)).Fz + (*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fplayer)).Fviewheight
 				}
 				// spawn teleport fog at source and destination
 				fog = P_SpawnMobj(tls, oldx, oldy, oldz, int32(MT_TFOG))
