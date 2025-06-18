@@ -3223,40 +3223,40 @@ func AM_clearFB(tls *libc.TLS, color uint8) {
 //	// faster reject and precalculated slopes.  If the speed is needed,
 //	// use a hash algorithm to handle  the common cases.
 //	//
-func AM_clipMline(tls *libc.TLS, ml uintptr, fl *fline_t) (r boolean) {
+func AM_clipMline(tls *libc.TLS, ml *mline_t, fl *fline_t) (r boolean) {
 	var dx, dy, outcode1, outcode2, outside int32
 	var tmp fpoint_t
 	outcode1 = 0
 	outcode2 = 0
 	// do trivial rejects and outcodes
-	if (*mline_t)(unsafe.Pointer(ml)).Fa.Fy > m_y2 {
+	if ml.Fa.Fy > m_y2 {
 		outcode1 = 8
 	} else {
-		if (*mline_t)(unsafe.Pointer(ml)).Fa.Fy < m_y {
+		if ml.Fa.Fy < m_y {
 			outcode1 = 4
 		}
 	}
-	if (*mline_t)(unsafe.Pointer(ml)).Fb.Fy > m_y2 {
+	if ml.Fb.Fy > m_y2 {
 		outcode2 = 8
 	} else {
-		if (*mline_t)(unsafe.Pointer(ml)).Fb.Fy < m_y {
+		if ml.Fb.Fy < m_y {
 			outcode2 = 4
 		}
 	}
 	if outcode1&outcode2 != 0 {
 		return 0
 	} // trivially outside
-	if (*mline_t)(unsafe.Pointer(ml)).Fa.Fx < m_x {
+	if ml.Fa.Fx < m_x {
 		outcode1 |= 1
 	} else {
-		if (*mline_t)(unsafe.Pointer(ml)).Fa.Fx > m_x2 {
+		if ml.Fa.Fx > m_x2 {
 			outcode1 |= 2
 		}
 	}
-	if (*mline_t)(unsafe.Pointer(ml)).Fb.Fx < m_x {
+	if ml.Fb.Fx < m_x {
 		outcode2 |= 1
 	} else {
-		if (*mline_t)(unsafe.Pointer(ml)).Fb.Fx > m_x2 {
+		if ml.Fb.Fx > m_x2 {
 			outcode2 |= 2
 		}
 	}
@@ -3264,10 +3264,10 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl *fline_t) (r boolean) {
 		return 0
 	} // trivially outside
 	// transform to frame-buffer coordinates.
-	fl.Fa.Fx = f_x + FixedMul((*mline_t)(unsafe.Pointer(ml)).Fa.Fx-m_x, scale_mtof)>>16
-	fl.Fa.Fy = f_y + (f_h - FixedMul((*mline_t)(unsafe.Pointer(ml)).Fa.Fy-m_y, scale_mtof)>>16)
-	fl.Fb.Fx = f_x + FixedMul((*mline_t)(unsafe.Pointer(ml)).Fb.Fx-m_x, scale_mtof)>>16
-	fl.Fb.Fy = f_y + (f_h - FixedMul((*mline_t)(unsafe.Pointer(ml)).Fb.Fy-m_y, scale_mtof)>>16)
+	fl.Fa.Fx = f_x + FixedMul(ml.Fa.Fx-m_x, scale_mtof)>>16
+	fl.Fa.Fy = f_y + (f_h - FixedMul(ml.Fa.Fy-m_y, scale_mtof)>>16)
+	fl.Fb.Fx = f_x + FixedMul(ml.Fb.Fx-m_x, scale_mtof)>>16
+	fl.Fb.Fy = f_y + (f_h - FixedMul(ml.Fb.Fy-m_y, scale_mtof)>>16)
 	outcode1 = 0
 	if fl.Fa.Fy < 0 {
 		outcode1 |= 8
@@ -3463,7 +3463,7 @@ var fuck int32
 //	//
 //	// Clip lines, draw visible part sof lines.
 //	//
-func AM_drawMline(tls *libc.TLS, ml uintptr, color int32) {
+func AM_drawMline(tls *libc.TLS, ml *mline_t, color int32) {
 	if AM_clipMline(tls, ml, &fl) != 0 {
 		AM_drawFline(tls, &fl, color)
 	} // draws it on frame buffer using fb coords
@@ -3477,7 +3477,7 @@ var fl fline_t
 //	// Draws flat (floor/ceiling tile) aligned grid lines.
 //	//
 func AM_drawGrid(tls *libc.TLS, color int32) {
-	bp := alloc(16)
+	bp := &mline_t{}
 	var end, start, x, y fixed_t
 	// Figure out start of vertical gridlines
 	start = m_x
@@ -3486,15 +3486,15 @@ func AM_drawGrid(tls *libc.TLS, color int32) {
 	}
 	end = m_x + m_w
 	// draw vertical gridlines
-	(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy = m_y
-	(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy = m_y + m_h
+	bp.Fa.Fy = m_y
+	bp.Fb.Fy = m_y + m_h
 	x = start
 	for {
 		if !(x < end) {
 			break
 		}
-		(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx = x
-		(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fx = x
+		bp.Fa.Fx = x
+		bp.Fb.Fx = x
 		AM_drawMline(tls, bp, color)
 		goto _1
 	_1:
@@ -3508,15 +3508,15 @@ func AM_drawGrid(tls *libc.TLS, color int32) {
 	}
 	end = m_y + m_h
 	// draw horizontal gridlines
-	(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx = m_x
-	(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fx = m_x + m_w
+	bp.Fa.Fx = m_x
+	bp.Fb.Fx = m_x + m_w
 	y = start
 	for {
 		if !(y < end) {
 			break
 		}
-		(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy = y
-		(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy = y
+		bp.Fa.Fy = y
+		bp.Fb.Fy = y
 		AM_drawMline(tls, bp, color)
 		goto _2
 	_2:
@@ -3547,27 +3547,27 @@ func AM_drawWalls(tls *libc.TLS) {
 				goto _1
 			}
 			if !((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fbacksector != 0) {
-				AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), 256-5*16+lightlev)
+				AM_drawMline(tls, &l, 256-5*16+lightlev)
 			} else {
 				if int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fspecial) == int32(39) {
 					// teleporters
-					AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), 256-5*16+REDRANGE/2)
+					AM_drawMline(tls, &l, 256-5*16+REDRANGE/2)
 				} else {
 					if int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&int32(ML_SECRET) != 0 { // secret door
 						if cheating != 0 {
-							AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), 256-5*16+lightlev)
+							AM_drawMline(tls, &l, 256-5*16+lightlev)
 						} else {
-							AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), 256-5*16+lightlev)
+							AM_drawMline(tls, &l, 256-5*16+lightlev)
 						}
 					} else {
 						if (*sector_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fbacksector)).Ffloorheight != (*sector_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Ffrontsector)).Ffloorheight {
-							AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), 4*16+lightlev) // floor level change
+							AM_drawMline(tls, &l, 4*16+lightlev) // floor level change
 						} else {
 							if (*sector_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fbacksector)).Fceilingheight != (*sector_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Ffrontsector)).Fceilingheight {
-								AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), 256-32+7+lightlev) // ceiling level change
+								AM_drawMline(tls, &l, 256-32+7+lightlev) // ceiling level change
 							} else {
 								if cheating != 0 {
-									AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), 6*16+lightlev)
+									AM_drawMline(tls, &l, 6*16+lightlev)
 								}
 							}
 						}
@@ -3577,7 +3577,7 @@ func AM_drawWalls(tls *libc.TLS) {
 		} else {
 			if plr.Fpowers[pw_allmap] != 0 {
 				if !(int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&ML_DONTDRAW != 0) {
-					AM_drawMline(tls, uintptr(unsafe.Pointer(&l)), 6*16+3)
+					AM_drawMline(tls, &l, 6*16+3)
 				}
 			}
 		}
@@ -3596,29 +3596,28 @@ var l mline_t
 //	// Rotation in 2D.
 //	// Used to rotate player arrow line character.
 //	//
-func AM_rotate(tls *libc.TLS, x uintptr, y uintptr, a angle_t) {
-	var tmpx fixed_t
-	tmpx = FixedMul(*(*fixed_t)(unsafe.Pointer(x)), finecosine[a>>int32(ANGLETOFINESHIFT)]) - FixedMul(*(*fixed_t)(unsafe.Pointer(y)), finesine[a>>int32(ANGLETOFINESHIFT)])
-	*(*fixed_t)(unsafe.Pointer(y)) = FixedMul(*(*fixed_t)(unsafe.Pointer(x)), finesine[a>>int32(ANGLETOFINESHIFT)]) + FixedMul(*(*fixed_t)(unsafe.Pointer(y)), finecosine[a>>int32(ANGLETOFINESHIFT)])
-	*(*fixed_t)(unsafe.Pointer(x)) = tmpx
+func AM_rotate(tls *libc.TLS, x *fixed_t, y *fixed_t, a angle_t) {
+	tmpx := FixedMul(*y, finecosine[a>>int32(ANGLETOFINESHIFT)]) - FixedMul(*y, finesine[a>>int32(ANGLETOFINESHIFT)])
+	*y = FixedMul(*x, finesine[a>>int32(ANGLETOFINESHIFT)]) + FixedMul(*y, finecosine[a>>int32(ANGLETOFINESHIFT)])
+	*x = tmpx
 }
 
 func AM_drawLineCharacter(tls *libc.TLS, lineguy uintptr, lineguylines int32, scale fixed_t, angle angle_t, color int32, x fixed_t, y fixed_t) {
-	bp := alloc(16)
+	bp := &mline_t{}
 	var i int32
 	i = 0
 	for {
 		if !(i < lineguylines) {
 			break
 		}
-		(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx = (*(*mline_t)(unsafe.Pointer(lineguy + uintptr(i)*16))).Fa.Fx
-		(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy = (*(*mline_t)(unsafe.Pointer(lineguy + uintptr(i)*16))).Fa.Fy
+		bp.Fa.Fx = (*(*mline_t)(unsafe.Pointer(lineguy + uintptr(i)*16))).Fa.Fx
+		bp.Fa.Fy = (*(*mline_t)(unsafe.Pointer(lineguy + uintptr(i)*16))).Fa.Fy
 		if scale != 0 {
-			(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx)
-			(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy)
+			bp.Fa.Fx = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx)
+			bp.Fa.Fy = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy)
 		}
 		if angle != 0 {
-			AM_rotate(tls, bp, bp+4, angle)
+			AM_rotate(tls, &bp.Fa.Fx, &bp.Fb.Fy, angle)
 		}
 		(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fx += x
 		(*(*mline_t)(unsafe.Pointer(bp))).Fa.Fy += y
@@ -3629,7 +3628,7 @@ func AM_drawLineCharacter(tls *libc.TLS, lineguy uintptr, lineguylines int32, sc
 			(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy = FixedMul(scale, (*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy)
 		}
 		if angle != 0 {
-			AM_rotate(tls, bp+8, bp+8+4, angle)
+			AM_rotate(tls, &bp.Fb.Fx, &bp.Fb.Fy, angle)
 		}
 		(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fx += x
 		(*(*mline_t)(unsafe.Pointer(bp))).Fb.Fy += y
