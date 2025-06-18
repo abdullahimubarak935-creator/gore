@@ -2700,8 +2700,8 @@ func AM_restoreScaleAndLoc(tls *libc.TLS) {
 		m_x = old_m_x
 		m_y = old_m_y
 	} else {
-		m_x = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx - m_w/int32(2)
-		m_y = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy - m_h/int32(2)
+		m_x = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx - m_w/int32(2)
+		m_y = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy - m_h/int32(2)
 	}
 	m_x2 = m_x + m_w
 	m_y2 = m_y + m_h
@@ -2833,8 +2833,8 @@ func AM_initVariables(tls *libc.TLS) {
 			}
 		}
 	}
-	m_x = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx - m_w/int32(2)
-	m_y = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy - m_h/int32(2)
+	m_x = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx - m_w/int32(2)
+	m_y = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy - m_h/int32(2)
 	AM_changeWindowLoc(tls)
 	// for saving & restoring
 	old_m_x = m_x
@@ -3060,27 +3060,27 @@ func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 												followplayer = libc.BoolInt32(!(followplayer != 0))
 												f_oldloc.Fx = int32(INT_MAX1)
 												if followplayer != 0 {
-													(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts(9)
+													plr.Fmessage = __ccgo_ts(9)
 												} else {
-													(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts(24)
+													plr.Fmessage = __ccgo_ts(24)
 												}
 											} else {
 												if key == key_map_grid {
 													grid = libc.BoolInt32(!(grid != 0))
 													if grid != 0 {
-														(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts(40)
+														plr.Fmessage = __ccgo_ts(40)
 													} else {
-														(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts(48)
+														plr.Fmessage = __ccgo_ts(48)
 													}
 												} else {
 													if key == key_map_mark {
 														M_snprintf(tls, uintptr(unsafe.Pointer(&buffer)), uint64(20), __ccgo_ts(57), libc.VaList(bp+8, __ccgo_ts(63), markpointnum))
-														(*player_t)(unsafe.Pointer(plr)).Fmessage = uintptr(unsafe.Pointer(&buffer))
+														plr.Fmessage = uintptr(unsafe.Pointer(&buffer))
 														AM_addMark(tls)
 													} else {
 														if key == key_map_clearmark {
 															AM_clearMarks(tls)
-															(*player_t)(unsafe.Pointer(plr)).Fmessage = __ccgo_ts(75)
+															plr.Fmessage = __ccgo_ts(75)
 														} else {
 															rc = 0
 														}
@@ -3167,13 +3167,13 @@ func AM_changeWindowScale(tls *libc.TLS) {
 //	//
 //	//
 func AM_doFollowPlayer(tls *libc.TLS) {
-	if f_oldloc.Fx != (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx || f_oldloc.Fy != (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy {
-		m_x = FixedMul(FixedMul((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_w/int32(2)
-		m_y = FixedMul(FixedMul((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_h/int32(2)
+	if f_oldloc.Fx != (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx || f_oldloc.Fy != (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy {
+		m_x = FixedMul(FixedMul((*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_w/int32(2)
+		m_y = FixedMul(FixedMul((*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_h/int32(2)
 		m_x2 = m_x + m_w
 		m_y2 = m_y + m_h
-		f_oldloc.Fx = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx
-		f_oldloc.Fy = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy
+		f_oldloc.Fx = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx
+		f_oldloc.Fy = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy
 		//  m_x = FTOM(MTOF(plr->mo->x - m_w/2));
 		//  m_y = FTOM(MTOF(plr->mo->y - m_h/2));
 		//  m_x = plr->mo->x - m_w/2;
@@ -3633,33 +3633,30 @@ func AM_drawLineCharacter(tls *libc.TLS, lineguy []mline_t, scale fixed_t, angle
 
 func AM_drawPlayers(tls *libc.TLS) {
 	var color, their_color int32
-	their_color = -int32(1)
-	if !(netgame != 0) {
+	their_color = -1
+	if netgame == 0 {
 		if cheating != 0 {
-			lines := unsafe.Slice((*mline_t)(unsafe.Pointer(&cheat_player_arrow)), 256/16)
-			AM_drawLineCharacter(tls, lines, 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy)
+			AM_drawLineCharacter(tls, cheat_player_arrow[:], 0, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy)
 		} else {
-			lines := unsafe.Slice((*mline_t)(unsafe.Pointer(&player_arrow)), 112/16)
-			AM_drawLineCharacter(tls, lines, 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plr)).Fmo)).Fy)
+			AM_drawLineCharacter(tls, player_arrow[:], 0, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy)
 		}
 		return
 	}
 	for i := 0; i < MAXPLAYERS; i++ {
 		their_color++
 		p := &players[i]
-		if deathmatch != 0 && !(singledemo != 0) && p != plr {
+		if deathmatch != 0 && singledemo == 0 && p != plr {
 			continue
 		}
 		if !(playeringame[i] != 0) {
 			continue
 		}
 		if p.Fpowers[pw_invisibility] != 0 {
-			color = int32(246)
+			color = 246
 		} else {
 			color = their_colors[their_color]
 		}
-		lines := unsafe.Slice((*mline_t)(unsafe.Pointer(&player_arrow)), 112/16)
-		AM_drawLineCharacter(tls, lines, 0, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(p)).Fmo)).Fangle, color, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(p)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(p)).Fmo)).Fy)
+		AM_drawLineCharacter(tls, player_arrow[:], 0, (*mobj_t)(unsafe.Pointer(p.Fmo)).Fangle, color, (*mobj_t)(unsafe.Pointer(p.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(p.Fmo)).Fy)
 	}
 }
 
@@ -3671,23 +3668,13 @@ var their_colors = [4]int32{
 }
 
 func AM_drawThings(tls *libc.TLS, colors int32, colorrange int32) {
-	var i int32
 	var t uintptr
-	i = 0
-	for {
-		if !(i < numsectors) {
-			break
-		}
+	for i := int32(0); i < numsectors; i++ {
 		t = (*(*sector_t)(unsafe.Pointer(sectors + uintptr(i)*128))).Fthinglist
 		for t != 0 {
-			lines := unsafe.Slice((*mline_t)(unsafe.Pointer(&thintriangle_guy)), 48/16)
-			AM_drawLineCharacter(tls, lines, 16<<FRACBITS, (*mobj_t)(unsafe.Pointer(t)).Fangle, colors+lightlev, (*mobj_t)(unsafe.Pointer(t)).Fx, (*mobj_t)(unsafe.Pointer(t)).Fy)
+			AM_drawLineCharacter(tls, thintriangle_guy[:], 16<<FRACBITS, (*mobj_t)(unsafe.Pointer(t)).Fangle, colors+lightlev, (*mobj_t)(unsafe.Pointer(t)).Fx, (*mobj_t)(unsafe.Pointer(t)).Fy)
 			t = (*mobj_t)(unsafe.Pointer(t)).Fsnext
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -8276,15 +8263,14 @@ var turbomessage [80]int8
 //	// Can when a player completes a level.
 //	//
 func G_PlayerFinishLevel(tls *libc.TLS, player int32) {
-	var p uintptr
-	p = uintptr(unsafe.Pointer(&players)) + uintptr(player)*328
-	xmemset(p+56, 0, uint64(24))
-	xmemset(p+80, 0, uint64(24))
-	*(*int32)(unsafe.Pointer((*player_t)(unsafe.Pointer(p)).Fmo + 160)) &= ^int32(MF_SHADOW) // cancel invisibility
-	(*player_t)(unsafe.Pointer(p)).Fextralight = 0                                           // cancel gun flashes
-	(*player_t)(unsafe.Pointer(p)).Ffixedcolormap = 0                                        // cancel ir gogles
-	(*player_t)(unsafe.Pointer(p)).Fdamagecount = 0                                          // no palette changes
-	(*player_t)(unsafe.Pointer(p)).Fbonuscount = 0
+	p := &players[player]
+	clear(p.Fpowers[:])
+	clear(p.Fcards[:])
+	*(*int32)(unsafe.Pointer(p.Fmo + 160)) &= ^int32(MF_SHADOW) // cancel invisibility
+	p.Fextralight = 0                                           // cancel gun flashes
+	p.Ffixedcolormap = 0                                        // cancel ir gogles
+	p.Fdamagecount = 0                                          // no palette changes
+	p.Fbonuscount = 0
 }
 
 // C documentation
@@ -8294,42 +8280,31 @@ func G_PlayerFinishLevel(tls *libc.TLS, player int32) {
 //	// Called after a player dies
 //	// almost everything is cleared and initialized
 //	//
-func G_PlayerReborn(tls *libc.TLS, player int32) {
-	bp := alloc(16)
-	var i, itemcount, killcount, secretcount, v1 int32
-	var p uintptr
-	var v2 weapontype_t
-	xmemcpy(bp, uintptr(unsafe.Pointer(&players))+uintptr(player)*328+108, uint64(16))
-	killcount = players[player].Fkillcount
-	itemcount = players[player].Fitemcount
-	secretcount = players[player].Fsecretcount
-	p = uintptr(unsafe.Pointer(&players)) + uintptr(player)*328
-	xmemset(p, 0, uint64(328))
-	xmemcpy(uintptr(unsafe.Pointer(&players))+uintptr(player)*328+108, bp, uint64(16))
-	players[player].Fkillcount = killcount
-	players[player].Fitemcount = itemcount
-	players[player].Fsecretcount = secretcount
-	v1 = 1
-	(*player_t)(unsafe.Pointer(p)).Fattackdown = v1
-	(*player_t)(unsafe.Pointer(p)).Fusedown = v1 // don't do anything immediately
-	(*player_t)(unsafe.Pointer(p)).Fplayerstate = int32(PST_LIVE)
-	(*player_t)(unsafe.Pointer(p)).Fhealth = int32(DEH_DEFAULT_INITIAL_HEALTH) // Use dehacked value
-	v2 = int32(wp_pistol)
-	(*player_t)(unsafe.Pointer(p)).Fpendingweapon = v2
-	(*player_t)(unsafe.Pointer(p)).Freadyweapon = v2
-	*(*boolean)(unsafe.Pointer(p + 132 + uintptr(wp_fist)*4)) = 1
-	*(*boolean)(unsafe.Pointer(p + 132 + uintptr(wp_pistol)*4)) = 1
-	*(*int32)(unsafe.Pointer(p + 168 + uintptr(am_clip)*4)) = int32(DEH_DEFAULT_INITIAL_BULLETS)
-	i = 0
-	for {
-		if !(i < int32(NUMAMMO)) {
-			break
-		}
-		*(*int32)(unsafe.Pointer(p + 184 + uintptr(i)*4)) = maxammo[i]
-		goto _3
-	_3:
-		;
-		i++
+func G_PlayerReborn(player int32) {
+	var itemcount, killcount, secretcount int32
+	var frags [4]int32
+
+	p := &players[player]
+	frags = p.Ffrags
+	killcount = p.Fkillcount
+	itemcount = p.Fitemcount
+	secretcount = p.Fsecretcount
+	*p = player_t{Ffrags: frags} // clear the player structure
+	p.Fkillcount = killcount
+	p.Fitemcount = itemcount
+	p.Fsecretcount = secretcount
+	p.Fattackdown = 1
+	p.Fusedown = 1 // don't do anything immediately
+	p.Fplayerstate = PST_LIVE
+	p.Fhealth = DEH_DEFAULT_INITIAL_HEALTH // Use dehacked value
+	p.Fpendingweapon = wp_pistol
+	p.Freadyweapon = wp_pistol
+
+	p.Fweaponowned[wp_fist] = 1
+	p.Fweaponowned[wp_pistol] = 1
+	p.Fammo[am_clip] = DEH_DEFAULT_INITIAL_BULLETS
+	for i := 0; i < NUMAMMO; i++ {
+		p.Fmaxammo[i] = maxammo[i]
 	}
 }
 
@@ -30706,7 +30681,7 @@ func P_SpawnPlayer(tls *libc.TLS, mthing uintptr) {
 	}
 	p = uintptr(unsafe.Pointer(&players)) + uintptr(int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1)-int32(1))*328
 	if (*player_t)(unsafe.Pointer(p)).Fplayerstate == int32(PST_REBORN) {
-		G_PlayerReborn(tls, int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1)-int32(1))
+		G_PlayerReborn(int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) - int32(1))
 	}
 	x = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx) << int32(FRACBITS)
 	y = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy) << int32(FRACBITS)
