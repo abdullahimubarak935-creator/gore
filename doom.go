@@ -33609,24 +33609,24 @@ func P_LoadSectors(tls *libc.TLS, lump int32) {
 //	// P_LoadNodes
 //	//
 func P_LoadNodes(tls *libc.TLS, lump int32) {
-	var data, mn uintptr
-	numnodes = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(28))
+	var data uintptr
+	numnodes = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(unsafe.Sizeof(mapnode_t{})))
 	nodes = make([]node_t, numnodes)
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
-	mn = data
+	mapnodes := unsafe.Slice((*mapnode_t)(unsafe.Pointer(data)), numnodes)
 	for i := 0; i < int(numnodes); i++ {
 		no := &nodes[i]
-		no.Fx = int32((*mapnode_t)(unsafe.Pointer(mn)).Fx) << int32(FRACBITS)
-		no.Fy = int32((*mapnode_t)(unsafe.Pointer(mn)).Fy) << int32(FRACBITS)
-		no.Fdx = int32((*mapnode_t)(unsafe.Pointer(mn)).Fdx) << int32(FRACBITS)
-		no.Fdy = int32((*mapnode_t)(unsafe.Pointer(mn)).Fdy) << int32(FRACBITS)
+		mn := &mapnodes[i]
+		no.Fx = int32(mn.Fx) << int32(FRACBITS)
+		no.Fy = int32(mn.Fy) << int32(FRACBITS)
+		no.Fdx = int32(mn.Fdx) << int32(FRACBITS)
+		no.Fdy = int32(mn.Fdy) << int32(FRACBITS)
 		for j := 0; j < 2; j++ {
-			no.Fchildren[j] = libc.Uint16FromInt16(libc.Int16FromUint16(*(*uint16)(unsafe.Pointer(mn + 24 + uintptr(j)*2))))
+			no.Fchildren[j] = mn.Fchildren[j]
 			for k := 0; k < 4; k++ {
-				no.Fbbox[j][k] = int32(*(*int16)(unsafe.Pointer(mn + 8 + uintptr(j)*8 + uintptr(k)*2))) << int32(FRACBITS)
+				no.Fbbox[j][k] = int32(mn.Fbbox[j][k]) << int32(FRACBITS)
 			}
 		}
-		mn += 28
 	}
 	W_ReleaseLumpNum(tls, lump)
 }
