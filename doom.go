@@ -20235,13 +20235,12 @@ func I_ShutdownSound(tls *libc.TLS) {
 	}
 }
 
-func I_GetSfxLumpNum(tls *libc.TLS, sfxinfo uintptr) (r int32) {
+func I_GetSfxLumpNum(tls *libc.TLS, sfxinfo *sfxinfo_t) (r int32) {
 	if sound_module != libc.UintptrFromInt32(0) {
-		return (*(*func(*libc.TLS, uintptr) int32)(unsafe.Pointer(&struct{ uintptr }{(*sound_module_t)(unsafe.Pointer(sound_module)).FGetSfxLumpNum})))(tls, sfxinfo)
+		return (*(*func(*libc.TLS, *sfxinfo_t) int32)(unsafe.Pointer(&struct{ uintptr }{(*sound_module_t)(unsafe.Pointer(sound_module)).FGetSfxLumpNum})))(tls, sfxinfo)
 	} else {
 		return 0
 	}
-	return r
 }
 
 func I_UpdateSound(tls *libc.TLS) {
@@ -20280,13 +20279,13 @@ func I_UpdateSoundParams(tls *libc.TLS, channel int32, _vol int32, _sep int32) {
 	}
 }
 
-func I_StartSound(tls *libc.TLS, sfxinfo uintptr, channel int32, _vol int32, _sep int32) (r int32) {
+func I_StartSound(tls *libc.TLS, sfxinfo *sfxinfo_t, channel int32, _vol int32, _sep int32) (r int32) {
 	bp := alloc(16)
 	*(*int32)(unsafe.Pointer(bp)) = _vol
 	*(*int32)(unsafe.Pointer(bp + 4)) = _sep
 	if sound_module != libc.UintptrFromInt32(0) {
 		CheckVolumeSeparation(tls, bp, bp+4)
-		return (*(*func(*libc.TLS, uintptr, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{(*sound_module_t)(unsafe.Pointer(sound_module)).FStartSound})))(tls, sfxinfo, channel, *(*int32)(unsafe.Pointer(bp)), *(*int32)(unsafe.Pointer(bp + 4)))
+		return (*(*func(*libc.TLS, *sfxinfo_t, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{(*sound_module_t)(unsafe.Pointer(sound_module)).FStartSound})))(tls, sfxinfo, channel, *(*int32)(unsafe.Pointer(bp)), *(*int32)(unsafe.Pointer(bp + 4)))
 	} else {
 		return 0
 	}
@@ -44126,7 +44125,7 @@ const NORM_SEP = 128
 // Stereo separation
 
 type channel_t = struct {
-	Fsfxinfo uintptr
+	Fsfxinfo *sfxinfo_t
 	Forigin  uintptr
 	Fhandle  int32
 }
@@ -44174,7 +44173,7 @@ func S_Init(tls *libc.TLS, sfxVolume int32, musicVolume int32) {
 		if !(i < snd_channels) {
 			break
 		}
-		(*(*channel_t)(unsafe.Pointer(channels + uintptr(i)*24))).Fsfxinfo = uintptr(0)
+		(*(*channel_t)(unsafe.Pointer(channels + uintptr(i)*24))).Fsfxinfo = nil
 		goto _1
 	_1:
 		;
@@ -44208,7 +44207,7 @@ func S_StopChannel(tls *libc.TLS, cnum int32) {
 	var c uintptr
 	var i int32
 	c = channels + uintptr(cnum)*24
-	if (*channel_t)(unsafe.Pointer(c)).Fsfxinfo != 0 {
+	if (*channel_t)(unsafe.Pointer(c)).Fsfxinfo != nil {
 		// stop the sound playing
 		if I_SoundIsPlaying(tls, (*channel_t)(unsafe.Pointer(c)).Fhandle) != 0 {
 			I_StopSound(tls, (*channel_t)(unsafe.Pointer(c)).Fhandle)
@@ -44229,7 +44228,7 @@ func S_StopChannel(tls *libc.TLS, cnum int32) {
 		}
 		// degrade usefulness of sound data
 		(*sfxinfo_t)(unsafe.Pointer((*channel_t)(unsafe.Pointer(c)).Fsfxinfo)).Fusefulness--
-		(*channel_t)(unsafe.Pointer(c)).Fsfxinfo = libc.UintptrFromInt32(0)
+		(*channel_t)(unsafe.Pointer(c)).Fsfxinfo = nil
 	}
 }
 
@@ -44249,7 +44248,7 @@ func S_Start(tls *libc.TLS) {
 		if !(cnum < snd_channels) {
 			break
 		}
-		if (*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fsfxinfo != 0 {
+		if (*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fsfxinfo != nil {
 			S_StopChannel(tls, cnum)
 		}
 		goto _1
@@ -44289,7 +44288,7 @@ func S_StopSound(tls *libc.TLS, origin uintptr) {
 		if !(cnum < snd_channels) {
 			break
 		}
-		if (*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fsfxinfo != 0 && (*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Forigin == origin {
+		if (*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fsfxinfo != nil && (*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Forigin == origin {
 			S_StopChannel(tls, cnum)
 			break
 		}
@@ -44305,7 +44304,7 @@ func S_StopSound(tls *libc.TLS, origin uintptr) {
 //   If none available, return -1.  Otherwise channel #.
 //
 
-func S_GetChannel(tls *libc.TLS, origin uintptr, sfxinfo uintptr) (r int32) {
+func S_GetChannel(tls *libc.TLS, origin uintptr, sfxinfo *sfxinfo_t) (r int32) {
 	var c uintptr
 	var cnum int32
 	// Find an open channel
@@ -44314,7 +44313,7 @@ func S_GetChannel(tls *libc.TLS, origin uintptr, sfxinfo uintptr) (r int32) {
 		if !(cnum < snd_channels) {
 			break
 		}
-		if !((*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fsfxinfo != 0) {
+		if !((*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fsfxinfo != nil) {
 			break
 		} else {
 			if origin != 0 && (*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Forigin == origin {
@@ -44335,7 +44334,7 @@ func S_GetChannel(tls *libc.TLS, origin uintptr, sfxinfo uintptr) (r int32) {
 			if !(cnum < snd_channels) {
 				break
 			}
-			if (*sfxinfo_t)(unsafe.Pointer((*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fsfxinfo)).Fpriority >= (*sfxinfo_t)(unsafe.Pointer(sfxinfo)).Fpriority {
+			if (*sfxinfo_t)(unsafe.Pointer((*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fsfxinfo)).Fpriority >= sfxinfo.Fpriority {
 				break
 			}
 			goto _2
@@ -44412,18 +44411,19 @@ func S_AdjustSoundParams(tls *libc.TLS, listener uintptr, source uintptr, vol ui
 
 func S_StartSound(tls *libc.TLS, origin_p uintptr, sfx_id int32) {
 	bp := alloc(32)
-	var cnum, rc, v1 int32
-	var origin, sfx, v2 uintptr
+	var cnum, rc int32
+	var origin uintptr
+	var sfx *sfxinfo_t
 	origin = origin_p
 	*(*int32)(unsafe.Pointer(bp + 4)) = snd_SfxVolume
 	// check for bogus sound #
 	if sfx_id < int32(1) || sfx_id > int32(NUMSFX) {
 		I_Error(tls, __ccgo_ts(27983), sfx_id)
 	}
-	sfx = uintptr(unsafe.Pointer(&S_sfx)) + uintptr(sfx_id)*64
+	sfx = &S_sfx[sfx_id]
 	// Initialize sound parameters
-	if (*sfxinfo_t)(unsafe.Pointer(sfx)).Flink != 0 {
-		*(*int32)(unsafe.Pointer(bp + 4)) += (*sfxinfo_t)(unsafe.Pointer(sfx)).Fvolume
+	if sfx.Flink != 0 {
+		*(*int32)(unsafe.Pointer(bp + 4)) += sfx.Fvolume
 		if *(*int32)(unsafe.Pointer(bp + 4)) < int32(1) {
 			return
 		}
@@ -44452,14 +44452,9 @@ func S_StartSound(tls *libc.TLS, origin_p uintptr, sfx_id int32) {
 		return
 	}
 	// increase the usefulness
-	v2 = sfx + 40
-	v1 = *(*int32)(unsafe.Pointer(v2))
-	*(*int32)(unsafe.Pointer(v2))++
-	if v1 < 0 {
-		(*sfxinfo_t)(unsafe.Pointer(sfx)).Fusefulness = int32(1)
-	}
-	if (*sfxinfo_t)(unsafe.Pointer(sfx)).Flumpnum < 0 {
-		(*sfxinfo_t)(unsafe.Pointer(sfx)).Flumpnum = I_GetSfxLumpNum(tls, sfx)
+	sfx.Fusefulness = max(1, sfx.Fusefulness+1)
+	if sfx.Flumpnum < 0 {
+		sfx.Flumpnum = I_GetSfxLumpNum(tls, sfx)
 	}
 	(*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fhandle = I_StartSound(tls, sfx, cnum, *(*int32)(unsafe.Pointer(bp + 4)), *(*int32)(unsafe.Pointer(bp)))
 }
@@ -44489,7 +44484,8 @@ func S_ResumeSound(tls *libc.TLS) {
 func S_UpdateSounds(tls *libc.TLS, listener uintptr) {
 	bp := alloc(16)
 	var audible, cnum int32
-	var c, sfx uintptr
+	var c uintptr
+	var sfx *sfxinfo_t
 	I_UpdateSound(tls)
 	cnum = 0
 	for {
@@ -44498,7 +44494,7 @@ func S_UpdateSounds(tls *libc.TLS, listener uintptr) {
 		}
 		c = channels + uintptr(cnum)*24
 		sfx = (*channel_t)(unsafe.Pointer(c)).Fsfxinfo
-		if (*channel_t)(unsafe.Pointer(c)).Fsfxinfo != 0 {
+		if sfx != nil {
 			if I_SoundIsPlaying(tls, (*channel_t)(unsafe.Pointer(c)).Fhandle) != 0 {
 				// initialize parameters
 				*(*int32)(unsafe.Pointer(bp)) = snd_SfxVolume
