@@ -2853,7 +2853,7 @@ func AM_initVariables(tls *libc.TLS) {
 	old_m_w = m_w
 	old_m_h = m_h
 	// inform the status bar of the change
-	ST_Responder(tls, uintptr(unsafe.Pointer(&st_notify)))
+	ST_Responder(tls, &st_notify)
 }
 
 var st_notify = event_t{
@@ -2944,7 +2944,7 @@ func AM_LevelInit(tls *libc.TLS) {
 func AM_Stop(tls *libc.TLS) {
 	AM_unloadPics(tls)
 	automapactive = 0
-	ST_Responder(tls, uintptr(unsafe.Pointer(&st_notify1)))
+	ST_Responder(tls, &st_notify1)
 	stopped = 1
 }
 
@@ -3003,20 +3003,20 @@ func AM_maxOutWindowScale(tls *libc.TLS) {
 //	//
 //	// Handle events (user inputs) in automap mode
 //	//
-func AM_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
+func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	bp := alloc(32)
 	var key, rc int32
 	rc = 0
 	if !(automapactive != 0) {
-		if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) && (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_map_toggle {
+		if ev.Ftype1 == int32(ev_keydown) && ev.Fdata1 == key_map_toggle {
 			AM_Start(tls)
 			viewactive = 0
 			rc = 1
 		}
 	} else {
-		if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) {
+		if ev.Ftype1 == int32(ev_keydown) {
 			rc = 1
-			key = (*event_t)(unsafe.Pointer(ev)).Fdata1
+			key = ev.Fdata1
 			if key == key_map_east { // pan right
 				if !(followplayer != 0) {
 					m_paninc.Fx = FixedMul(F_PANINC<<16, scale_ftom)
@@ -3106,14 +3106,14 @@ func AM_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 					}
 				}
 			}
-			if !(deathmatch != 0) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_amap)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
+			if !(deathmatch != 0) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_amap)), int8(ev.Fdata2)) != 0 {
 				rc = 0
 				cheating = (cheating + int32(1)) % int32(3)
 			}
 		} else {
-			if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keyup) {
+			if ev.Ftype1 == int32(ev_keyup) {
 				rc = 0
-				key = (*event_t)(unsafe.Pointer(ev)).Fdata1
+				key = ev.Fdata1
 				if key == key_map_east {
 					if !(followplayer != 0) {
 						m_paninc.Fx = 0
@@ -3801,22 +3801,21 @@ var eventtail int32
 //	// D_PostEvent
 //	// Called by the I/O functions when input is detected
 //	//
-func D_PostEvent(tls *libc.TLS, ev uintptr) {
-	events[eventhead] = *(*event_t)(unsafe.Pointer(ev))
+func D_PostEvent(tls *libc.TLS, ev *event_t) {
+	events[eventhead] = *ev
 	eventhead = (eventhead + int32(1)) % int32(MAXEVENTS)
 }
 
 // Read an event from the queue.
 
-func D_PopEvent(tls *libc.TLS) (r uintptr) {
-	var result uintptr
+func D_PopEvent(tls *libc.TLS) *event_t {
 	// No more events waiting.
 	if eventtail == eventhead {
-		return libc.UintptrFromInt32(0)
+		return nil
 	}
-	result = uintptr(unsafe.Pointer(&events)) + uintptr(eventtail)*20
+	result := &events[eventtail]
 	// Advance to the next event in the queue.
-	eventtail = (eventtail + int32(1)) % int32(MAXEVENTS)
+	eventtail = (eventtail + 1) % MAXEVENTS
 	return result
 }
 
@@ -4879,15 +4878,13 @@ func init() {
 //	// Send all the events of the given timestamp down the responder chain
 //	//
 func D_ProcessEvents(tls *libc.TLS) {
-	var ev, v1 uintptr
 	// IF STORE DEMO, DO NOT ACCEPT INPUT
 	if storedemo != 0 {
 		return
 	}
 	for {
-		v1 = D_PopEvent(tls)
-		ev = v1
-		if !(v1 != libc.UintptrFromInt32(0)) {
+		ev := D_PopEvent(tls)
+		if ev == nil {
 			break
 		}
 		if M_Responder(tls, ev) != 0 {
@@ -6655,7 +6652,7 @@ func F_StartFinale(tls *libc.TLS) {
 	finalecount = uint32(0)
 }
 
-func F_Responder(tls *libc.TLS, event uintptr) (r boolean) {
+func F_Responder(tls *libc.TLS, event *event_t) (r boolean) {
 	if finalestage == int32(F_STAGE_CAST) {
 		return F_CastResponder(tls, event)
 	}
@@ -7026,8 +7023,8 @@ _2:
 // F_CastResponder
 //
 
-func F_CastResponder(tls *libc.TLS, ev uintptr) (r boolean) {
-	if (*event_t)(unsafe.Pointer(ev)).Ftype1 != int32(ev_keydown) {
+func F_CastResponder(tls *libc.TLS, ev *event_t) (r boolean) {
+	if ev.Ftype1 != int32(ev_keydown) {
 		return 0
 	}
 	if castdeath != 0 {
@@ -8069,9 +8066,9 @@ func SetMouseButtons(tls *libc.TLS, buttons_mask uint32) {
 //	// G_Responder
 //	// Get info needed to make ticcmd_ts for the players.
 //	//
-func G_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
+func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	// allow spy mode changes even during the demo
-	if gamestate == int32(GS_LEVEL) && (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) && (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_spy && (singledemo != 0 || !(deathmatch != 0)) {
+	if gamestate == int32(GS_LEVEL) && ev.Ftype1 == int32(ev_keydown) && ev.Fdata1 == key_spy && (singledemo != 0 || !(deathmatch != 0)) {
 		// spy mode
 		for cond := true; cond; cond = !(playeringame[displayplayer] != 0) && displayplayer != consoleplayer {
 			displayplayer++
@@ -8083,7 +8080,7 @@ func G_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	}
 	// any other key pops up menu if in demos
 	if gameaction == int32(ga_nothing) && !(singledemo != 0) && (demoplayback != 0 || gamestate == int32(GS_DEMOSCREEN)) {
-		if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) || (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_mouse) && (*event_t)(unsafe.Pointer(ev)).Fdata1 != 0 || (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_joystick) && (*event_t)(unsafe.Pointer(ev)).Fdata1 != 0 {
+		if ev.Ftype1 == int32(ev_keydown) || ev.Ftype1 == int32(ev_mouse) && ev.Fdata1 != 0 || ev.Ftype1 == int32(ev_joystick) && ev.Fdata1 != 0 {
 			M_StartControlPanel(tls)
 			return 1
 		}
@@ -8105,47 +8102,47 @@ func G_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 			return 1
 		} // finale ate the event
 	}
-	if testcontrols != 0 && (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_mouse) {
+	if testcontrols != 0 && ev.Ftype1 == int32(ev_mouse) {
 		// If we are invoked by setup to test the controls, save the
 		// mouse speed so that we can display it on-screen.
 		// Perform a low pass filter on this so that the thermometer
 		// appears to move smoothly.
-		testcontrols_mousespeed = xabs((*event_t)(unsafe.Pointer(ev)).Fdata2)
+		testcontrols_mousespeed = xabs(ev.Fdata2)
 	}
 	// If the next/previous weapon keys are pressed, set the next_weapon
 	// variable to change weapons when the next ticcmd is generated.
-	if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) && (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_prevweapon {
+	if ev.Ftype1 == int32(ev_keydown) && ev.Fdata1 == key_prevweapon {
 		next_weapon = -int32(1)
 	} else {
-		if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) && (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_nextweapon {
+		if ev.Ftype1 == int32(ev_keydown) && ev.Fdata1 == key_nextweapon {
 			next_weapon = int32(1)
 		}
 	}
-	switch (*event_t)(unsafe.Pointer(ev)).Ftype1 {
+	switch ev.Ftype1 {
 	case int32(ev_keydown):
-		if (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_pause {
+		if ev.Fdata1 == key_pause {
 			sendpause = 1
 		} else {
-			if (*event_t)(unsafe.Pointer(ev)).Fdata1 < int32(NUMKEYS) {
-				gamekeydown[(*event_t)(unsafe.Pointer(ev)).Fdata1] = 1
+			if ev.Fdata1 < int32(NUMKEYS) {
+				gamekeydown[ev.Fdata1] = 1
 			}
 		}
 		return 1 // eat key down events
 	case int32(ev_keyup):
-		if (*event_t)(unsafe.Pointer(ev)).Fdata1 < int32(NUMKEYS) {
-			gamekeydown[(*event_t)(unsafe.Pointer(ev)).Fdata1] = 0
+		if ev.Fdata1 < int32(NUMKEYS) {
+			gamekeydown[ev.Fdata1] = 0
 		}
 		return 0 // always let key up events filter down
 	case int32(ev_mouse):
-		SetMouseButtons(tls, libc.Uint32FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata1))
-		mousex = (*event_t)(unsafe.Pointer(ev)).Fdata2 * (mouseSensitivity + int32(5)) / int32(10)
-		mousey = (*event_t)(unsafe.Pointer(ev)).Fdata3 * (mouseSensitivity + int32(5)) / int32(10)
+		SetMouseButtons(tls, libc.Uint32FromInt32(ev.Fdata1))
+		mousex = ev.Fdata2 * (mouseSensitivity + int32(5)) / int32(10)
+		mousey = ev.Fdata3 * (mouseSensitivity + int32(5)) / int32(10)
 		return 1 // eat events
 	case int32(ev_joystick):
-		SetJoyButtons(tls, libc.Uint32FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata1))
-		joyxmove = (*event_t)(unsafe.Pointer(ev)).Fdata2
-		joyymove = (*event_t)(unsafe.Pointer(ev)).Fdata3
-		joystrafemove = (*event_t)(unsafe.Pointer(ev)).Fdata4
+		SetJoyButtons(tls, libc.Uint32FromInt32(ev.Fdata1))
+		joyxmove = ev.Fdata2
+		joyymove = ev.Fdata3
+		joystrafemove = ev.Fdata4
 		return 1 // eat events
 	default:
 		break
@@ -10224,7 +10221,7 @@ func HU_dequeueChatChar(tls *libc.TLS) (r int8) {
 	return c
 }
 
-func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
+func HU_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	var c uint8
 	var eatkey, v2, v4 boolean
 	var i, numplayers int32
@@ -10242,24 +10239,24 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 		;
 		i++
 	}
-	if (*event_t)(unsafe.Pointer(ev)).Fdata1 == 0x80+0x36 {
+	if ev.Fdata1 == 0x80+0x36 {
 		return 0
 	} else {
-		if (*event_t)(unsafe.Pointer(ev)).Fdata1 == 0x80+0x38 {
-			altdown = libc.BoolUint32((*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown))
+		if ev.Fdata1 == 0x80+0x38 {
+			altdown = libc.BoolUint32(ev.Ftype1 == int32(ev_keydown))
 			return 0
 		}
 	}
-	if (*event_t)(unsafe.Pointer(ev)).Ftype1 != int32(ev_keydown) {
+	if ev.Ftype1 != int32(ev_keydown) {
 		return 0
 	}
 	if !(chat_on != 0) {
-		if (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_message_refresh {
+		if ev.Fdata1 == key_message_refresh {
 			message_on = 1
 			message_counter = 4 * TICRATE
 			eatkey = 1
 		} else {
-			if netgame != 0 && (*event_t)(unsafe.Pointer(ev)).Fdata2 == key_multi_msg {
+			if netgame != 0 && ev.Fdata2 == key_multi_msg {
 				v2 = 1
 				chat_on = v2
 				eatkey = v2
@@ -10272,7 +10269,7 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 						if !(i < int32(MAXPLAYERS)) {
 							break
 						}
-						if (*event_t)(unsafe.Pointer(ev)).Fdata2 == key_multi_msgplayer[i] {
+						if ev.Fdata2 == key_multi_msgplayer[i] {
 							if playeringame[i] != 0 && i != consoleplayer {
 								v4 = 1
 								chat_on = v4
@@ -10314,7 +10311,7 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	} else {
 		// send a macro
 		if altdown != 0 {
-			c = libc.Uint8FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata1 - int32('0'))
+			c = libc.Uint8FromInt32(ev.Fdata1 - int32('0'))
 			if libc.Int32FromUint8(c) > int32(9) {
 				return 0
 			}
@@ -10335,7 +10332,7 @@ func HU_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 			(*player_t)(unsafe.Pointer(plr1)).Fmessage = uintptr(unsafe.Pointer(&lastmessage))
 			eatkey = 1
 		} else {
-			c = libc.Uint8FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata2)
+			c = libc.Uint8FromInt32(ev.Fdata2)
 			eatkey = HUlib_keyInIText(tls, uintptr(unsafe.Pointer(&w_chat)), c)
 			if eatkey != 0 {
 				// static unsigned char buf[20]; // DEBUG
@@ -23437,19 +23434,19 @@ func IsNullKey(tls *libc.TLS, key int32) (r boolean) {
 //	//
 //	// M_Responder
 //	//
-func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
+func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	var ch, i, key, v1 int32
 	// In testcontrols mode, none of the function keys should do anything
 	// - the only key is escape to quit.
 	if testcontrols != 0 {
-		if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_quit) || (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) && ((*event_t)(unsafe.Pointer(ev)).Fdata1 == key_menu_activate || (*event_t)(unsafe.Pointer(ev)).Fdata1 == key_menu_quit) {
+		if ev.Ftype1 == int32(ev_quit) || ev.Ftype1 == int32(ev_keydown) && (ev.Fdata1 == key_menu_activate || ev.Fdata1 == key_menu_quit) {
 			I_Quit(tls)
 			return 1
 		}
 		return 0
 	}
 	// "close" button pressed on window?
-	if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_quit) {
+	if ev.Ftype1 == int32(ev_quit) {
 		// First click on close button = bring up quit confirm message.
 		// Second click on close button = confirm quit
 		if menuactive != 0 && messageToPrint != 0 && messageRoutine == __ccgo_fp(M_QuitResponse) {
@@ -23463,40 +23460,40 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 	// key is the key pressed, ch is the actual character typed
 	ch = 0
 	key = -int32(1)
-	if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_joystick) && joywait < I_GetTime(tls) {
-		if (*event_t)(unsafe.Pointer(ev)).Fdata3 < 0 {
+	if ev.Ftype1 == int32(ev_joystick) && joywait < I_GetTime(tls) {
+		if ev.Fdata3 < 0 {
 			key = key_menu_up
 			joywait = I_GetTime(tls) + int32(5)
 		} else {
-			if (*event_t)(unsafe.Pointer(ev)).Fdata3 > 0 {
+			if ev.Fdata3 > 0 {
 				key = key_menu_down
 				joywait = I_GetTime(tls) + int32(5)
 			}
 		}
-		if (*event_t)(unsafe.Pointer(ev)).Fdata2 < 0 {
+		if ev.Fdata2 < 0 {
 			key = key_menu_left
 			joywait = I_GetTime(tls) + int32(2)
 		} else {
-			if (*event_t)(unsafe.Pointer(ev)).Fdata2 > 0 {
+			if ev.Fdata2 > 0 {
 				key = key_menu_right
 				joywait = I_GetTime(tls) + int32(2)
 			}
 		}
-		if (*event_t)(unsafe.Pointer(ev)).Fdata1&int32(1) != 0 {
+		if ev.Fdata1&int32(1) != 0 {
 			key = key_menu_forward
 			joywait = I_GetTime(tls) + int32(5)
 		}
-		if (*event_t)(unsafe.Pointer(ev)).Fdata1&int32(2) != 0 {
+		if ev.Fdata1&int32(2) != 0 {
 			key = key_menu_back
 			joywait = I_GetTime(tls) + int32(5)
 		}
-		if joybmenu >= 0 && (*event_t)(unsafe.Pointer(ev)).Fdata1&(int32(1)<<joybmenu) != 0 {
+		if joybmenu >= 0 && ev.Fdata1&(int32(1)<<joybmenu) != 0 {
 			key = key_menu_activate
 			joywait = I_GetTime(tls) + int32(5)
 		}
 	} else {
-		if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_mouse) && mousewait < I_GetTime(tls) {
-			mousey1 += (*event_t)(unsafe.Pointer(ev)).Fdata3
+		if ev.Ftype1 == int32(ev_mouse) && mousewait < I_GetTime(tls) {
+			mousey1 += ev.Fdata3
 			if mousey1 < lasty-int32(30) {
 				key = key_menu_down
 				mousewait = I_GetTime(tls) + int32(5)
@@ -23510,7 +23507,7 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 					mousey1 = lasty
 				}
 			}
-			mousex1 += (*event_t)(unsafe.Pointer(ev)).Fdata2
+			mousex1 += ev.Fdata2
 			if mousex1 < lastx-int32(30) {
 				key = key_menu_left
 				mousewait = I_GetTime(tls) + int32(5)
@@ -23524,18 +23521,18 @@ func M_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 					mousex1 = lastx
 				}
 			}
-			if (*event_t)(unsafe.Pointer(ev)).Fdata1&int32(1) != 0 {
+			if ev.Fdata1&int32(1) != 0 {
 				key = key_menu_forward
 				mousewait = I_GetTime(tls) + int32(15)
 			}
-			if (*event_t)(unsafe.Pointer(ev)).Fdata1&int32(2) != 0 {
+			if ev.Fdata1&int32(2) != 0 {
 				key = key_menu_back
 				mousewait = I_GetTime(tls) + int32(15)
 			}
 		} else {
-			if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) {
-				key = (*event_t)(unsafe.Pointer(ev)).Fdata1
-				ch = (*event_t)(unsafe.Pointer(ev)).Fdata2
+			if ev.Ftype1 == int32(ev_keydown) {
+				key = ev.Fdata1
+				ch = ev.Fdata2
 			}
 		}
 	}
@@ -43494,13 +43491,13 @@ func ST_refreshBackground(tls *libc.TLS) {
 //
 //	// Respond to keyboard input events,
 //	//  intercept cheats.
-func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
+func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	bp := alloc(48)
 	var epsd, i, map1, musnum, v6, v7, v8, v9 int32
 	var v10 bool
 	// Filter automap on/off.
-	if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keyup) && libc.Uint32FromInt32((*event_t)(unsafe.Pointer(ev)).Fdata1)&uint32(0xffff0000) == libc.Uint32FromInt32(libc.Int32FromUint8('a')<<24+libc.Int32FromUint8('m')<<16) {
-		switch (*event_t)(unsafe.Pointer(ev)).Fdata1 {
+	if ev.Ftype1 == int32(ev_keyup) && libc.Uint32FromInt32(ev.Fdata1)&uint32(0xffff0000) == libc.Uint32FromInt32(libc.Int32FromUint8('a')<<24+libc.Int32FromUint8('m')<<16) {
+		switch ev.Fdata1 {
 		case libc.Int32FromUint8('a')<<24 + libc.Int32FromUint8('m')<<16 | libc.Int32FromUint8('e')<<8:
 			st_firsttime = 1
 		case libc.Int32FromUint8('a')<<24 + libc.Int32FromUint8('m')<<16 | libc.Int32FromUint8('x')<<8:
@@ -43508,10 +43505,10 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 			break
 		}
 	} else {
-		if (*event_t)(unsafe.Pointer(ev)).Ftype1 == int32(ev_keydown) {
+		if ev.Ftype1 == int32(ev_keydown) {
 			if !(netgame != 0) && gameskill != int32(sk_nightmare) {
 				// 'dqd' cheat for toggleable god mode
-				if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_god)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
+				if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_god)), int8(ev.Fdata2)) != 0 {
 					*(*int32)(unsafe.Pointer(plyr + 208)) ^= int32(CF_GODMODE)
 					if (*player_t)(unsafe.Pointer(plyr)).Fcheats&int32(CF_GODMODE) != 0 {
 						if (*player_t)(unsafe.Pointer(plyr)).Fmo != 0 {
@@ -43523,7 +43520,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27573)
 					}
 				} else {
-					if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_ammonokey)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
+					if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_ammonokey)), int8(ev.Fdata2)) != 0 {
 						(*player_t)(unsafe.Pointer(plyr)).Farmorpoints = int32(DEH_DEFAULT_IDFA_ARMOR)
 						(*player_t)(unsafe.Pointer(plyr)).Farmortype = int32(DEH_DEFAULT_IDFA_ARMOR_CLASS)
 						i = 0
@@ -43550,7 +43547,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 						}
 						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27597)
 					} else {
-						if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_ammo)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
+						if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_ammo)), int8(ev.Fdata2)) != 0 {
 							(*player_t)(unsafe.Pointer(plyr)).Farmorpoints = int32(DEH_DEFAULT_IDKFA_ARMOR)
 							(*player_t)(unsafe.Pointer(plyr)).Farmortype = int32(DEH_DEFAULT_IDKFA_ARMOR_CLASS)
 							i = 0
@@ -43588,7 +43585,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 							}
 							(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27618)
 						} else {
-							if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_mus)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
+							if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_mus)), int8(ev.Fdata2)) != 0 {
 								(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27640)
 								cht_GetParam(tls, uintptr(unsafe.Pointer(&cheat_mus)), bp)
 								// Note: The original v1.9 had a bug that tried to play back
@@ -43621,7 +43618,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 									}
 									v6 = v7
 								}
-								if v10 = v6 == int32(doom) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_noclip)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0; !v10 {
+								if v10 = v6 == int32(doom) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_noclip)), int8(ev.Fdata2)) != 0; !v10 {
 									if gamemission == int32(pack_chex) {
 										v8 = int32(doom)
 									} else {
@@ -43633,7 +43630,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 										v8 = v9
 									}
 								}
-								if v10 || v8 != int32(doom) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_commercial_noclip)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
+								if v10 || v8 != int32(doom) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_commercial_noclip)), int8(ev.Fdata2)) != 0 {
 									// Noclip cheat.
 									// For Doom 1, use the idspipsopd cheat; for all others, use
 									// idclip
@@ -43654,7 +43651,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 					if !(i < int32(6)) {
 						break
 					}
-					if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_powerup))+uintptr(i)*72, int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
+					if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_powerup))+uintptr(i)*72, int8(ev.Fdata2)) != 0 {
 						if !(*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(i)*4)) != 0) {
 							P_GivePower(tls, plyr, i)
 						} else {
@@ -43672,15 +43669,15 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 					i++
 				}
 				// 'behold' power-up menu
-				if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_powerup))+6*72, int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
+				if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_powerup))+6*72, int8(ev.Fdata2)) != 0 {
 					(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27732)
 				} else {
-					if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_choppers)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
+					if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_choppers)), int8(ev.Fdata2)) != 0 {
 						*(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(wp_chainsaw)*4)) = 1
 						*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_invulnerability)*4)) = 1
 						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27778)
 					} else {
-						if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_mypos)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
+						if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_mypos)), int8(ev.Fdata2)) != 0 {
 							M_snprintf(tls, uintptr(unsafe.Pointer(&buf)), uint64(52), __ccgo_ts(27800), libc.VaList(bp+16, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fangle, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy))
 							(*player_t)(unsafe.Pointer(plyr)).Fmessage = uintptr(unsafe.Pointer(&buf))
 						}
@@ -43688,7 +43685,7 @@ func ST_Responder(tls *libc.TLS, ev uintptr) (r boolean) {
 				}
 			}
 			// 'clev' change-level cheat
-			if !(netgame != 0) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_clev)), int8((*event_t)(unsafe.Pointer(ev)).Fdata2)) != 0 {
+			if !(netgame != 0) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_clev)), int8(ev.Fdata2)) != 0 {
 				cht_GetParam(tls, uintptr(unsafe.Pointer(&cheat_clev)), bp+3)
 				if gamemode == int32(commercial) {
 					epsd = int32(1)
@@ -48330,7 +48327,7 @@ type DoomKeyEvent struct {
 }
 
 func I_GetEvent(tls *libc.TLS) {
-	bp := alloc(32)
+	var bp event_t
 	var event DoomKeyEvent
 	for dg_frontend.GetKey(&event) {
 		var pressed int32
@@ -48343,23 +48340,23 @@ func I_GetEvent(tls *libc.TLS) {
 		if event.Pressed {
 			// data1 has the key pressed, data2 has the character
 			// (shift-translated, etc)
-			(*(*event_t)(unsafe.Pointer(bp))).Ftype1 = int32(ev_keydown)
-			(*(*event_t)(unsafe.Pointer(bp))).Fdata1 = int32(event.Key)
-			(*(*event_t)(unsafe.Pointer(bp))).Fdata2 = libc.Int32FromUint8(GetTypedChar(tls, event.Key))
-			if (*(*event_t)(unsafe.Pointer(bp))).Fdata1 != 0 {
-				D_PostEvent(tls, bp)
+			bp.Ftype1 = int32(ev_keydown)
+			bp.Fdata1 = int32(event.Key)
+			bp.Fdata2 = libc.Int32FromUint8(GetTypedChar(tls, event.Key))
+			if bp.Fdata1 != 0 {
+				D_PostEvent(tls, &bp)
 			}
 		} else {
-			(*(*event_t)(unsafe.Pointer(bp))).Ftype1 = int32(ev_keyup)
-			(*(*event_t)(unsafe.Pointer(bp))).Fdata1 = int32(event.Key)
+			bp.Ftype1 = int32(ev_keyup)
+			bp.Fdata1 = int32(event.Key)
 			// data2 is just initialized to zero for ev_keyup.
 			// For ev_keydown it's the shifted Unicode character
 			// that was typed, but if something wants to detect
 			// key releases it should do so based on data1
 			// (key ID), not the printable char.
-			(*(*event_t)(unsafe.Pointer(bp))).Fdata2 = 0
-			if (*(*event_t)(unsafe.Pointer(bp))).Fdata1 != 0 {
-				D_PostEvent(tls, bp)
+			bp.Fdata2 = 0
+			if bp.Fdata1 != 0 {
+				D_PostEvent(tls, &bp)
 			}
 			break
 		}
