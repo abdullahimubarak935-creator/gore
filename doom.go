@@ -33609,49 +33609,23 @@ func P_LoadSectors(tls *libc.TLS, lump int32) {
 //	// P_LoadNodes
 //	//
 func P_LoadNodes(tls *libc.TLS, lump int32) {
-	var data, mn, no uintptr
-	var i, j, k int32
+	var data, mn uintptr
 	numnodes = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(28))
-	nodes = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numnodes)*uint64(52)), int32(PU_LEVEL), uintptr(0))
+	nodes = make([]node_t, numnodes)
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
 	mn = data
-	no = nodes
-	i = 0
-	for {
-		if !(i < numnodes) {
-			break
-		}
-		(*node_t)(unsafe.Pointer(no)).Fx = int32((*mapnode_t)(unsafe.Pointer(mn)).Fx) << int32(FRACBITS)
-		(*node_t)(unsafe.Pointer(no)).Fy = int32((*mapnode_t)(unsafe.Pointer(mn)).Fy) << int32(FRACBITS)
-		(*node_t)(unsafe.Pointer(no)).Fdx = int32((*mapnode_t)(unsafe.Pointer(mn)).Fdx) << int32(FRACBITS)
-		(*node_t)(unsafe.Pointer(no)).Fdy = int32((*mapnode_t)(unsafe.Pointer(mn)).Fdy) << int32(FRACBITS)
-		j = 0
-		for {
-			if !(j < int32(2)) {
-				break
+	for i := 0; i < int(numnodes); i++ {
+		no := &nodes[i]
+		no.Fx = int32((*mapnode_t)(unsafe.Pointer(mn)).Fx) << int32(FRACBITS)
+		no.Fy = int32((*mapnode_t)(unsafe.Pointer(mn)).Fy) << int32(FRACBITS)
+		no.Fdx = int32((*mapnode_t)(unsafe.Pointer(mn)).Fdx) << int32(FRACBITS)
+		no.Fdy = int32((*mapnode_t)(unsafe.Pointer(mn)).Fdy) << int32(FRACBITS)
+		for j := 0; j < 2; j++ {
+			no.Fchildren[j] = libc.Uint16FromInt16(libc.Int16FromUint16(*(*uint16)(unsafe.Pointer(mn + 24 + uintptr(j)*2))))
+			for k := 0; k < 4; k++ {
+				no.Fbbox[j][k] = int32(*(*int16)(unsafe.Pointer(mn + 8 + uintptr(j)*8 + uintptr(k)*2))) << int32(FRACBITS)
 			}
-			*(*uint16)(unsafe.Pointer(no + 48 + uintptr(j)*2)) = libc.Uint16FromInt16(libc.Int16FromUint16(*(*uint16)(unsafe.Pointer(mn + 24 + uintptr(j)*2))))
-			k = 0
-			for {
-				if !(k < int32(4)) {
-					break
-				}
-				*(*fixed_t)(unsafe.Pointer(no + 16 + uintptr(j)*16 + uintptr(k)*4)) = int32(*(*int16)(unsafe.Pointer(mn + 8 + uintptr(j)*8 + uintptr(k)*2))) << int32(FRACBITS)
-				goto _3
-			_3:
-				;
-				k++
-			}
-			goto _2
-		_2:
-			;
-			j++
 		}
-		goto _1
-	_1:
-		;
-		i++
-		no += 52
 		mn += 28
 	}
 	W_ReleaseLumpNum(tls, lump)
@@ -34370,7 +34344,6 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 //	//  if strace crosses the given node successfully.
 //	//
 func P_CrossBSPNode(tls *libc.TLS, bspnum int32) (r boolean) {
-	var bsp uintptr
 	var side int32
 	if bspnum&int32(NF_SUBSECTOR1) != 0 {
 		if bspnum == -int32(1) {
@@ -34379,7 +34352,7 @@ func P_CrossBSPNode(tls *libc.TLS, bspnum int32) (r boolean) {
 			return P_CrossSubsector(tls, bspnum & ^NF_SUBSECTOR1)
 		}
 	}
-	bsp = nodes + uintptr(bspnum)*52
+	bsp := uintptr(unsafe.Pointer(&nodes[bspnum]))
 	// decide which side the start point is on
 	side = P_DivlineSide(tls, strace.Fx, strace.Fy, bsp)
 	if side == int32(2) {
@@ -37379,9 +37352,9 @@ func R_RenderBSPNode(tls *libc.TLS, bspnum int32) {
 		}
 		return
 	}
-	bsp = nodes + uintptr(bspnum)*52
+	bsp = (uintptr)(unsafe.Pointer(&nodes[bspnum]))
 	// Decide which side the view point is on.
-	side = R_PointOnSide(tls, viewx, viewy, bsp)
+	side = R_PointOnSide(tls, viewx, viewy, &nodes[bspnum])
 	// Recursively divide front space.
 	R_RenderBSPNode(tls, libc.Int32FromUint16(*(*uint16)(unsafe.Pointer(bsp + 48 + uintptr(side)*2))))
 	// Possibly divide back space.
@@ -38908,32 +38881,32 @@ func init() {
 //	//  check point against partition plane.
 //	// Returns side 0 (front) or 1 (back).
 //	//
-func R_PointOnSide(tls *libc.TLS, x fixed_t, y fixed_t, node uintptr) (r int32) {
+func R_PointOnSide(tls *libc.TLS, x fixed_t, y fixed_t, node *node_t) (r int32) {
 	var dx, dy, left, right fixed_t
-	if !((*node_t)(unsafe.Pointer(node)).Fdx != 0) {
-		if x <= (*node_t)(unsafe.Pointer(node)).Fx {
-			return libc.BoolInt32((*node_t)(unsafe.Pointer(node)).Fdy > 0)
+	if !(node.Fdx != 0) {
+		if x <= node.Fx {
+			return libc.BoolInt32(node.Fdy > 0)
 		}
-		return libc.BoolInt32((*node_t)(unsafe.Pointer(node)).Fdy < 0)
+		return libc.BoolInt32(node.Fdy < 0)
 	}
-	if !((*node_t)(unsafe.Pointer(node)).Fdy != 0) {
-		if y <= (*node_t)(unsafe.Pointer(node)).Fy {
-			return libc.BoolInt32((*node_t)(unsafe.Pointer(node)).Fdx < 0)
+	if !(node.Fdy != 0) {
+		if y <= node.Fy {
+			return libc.BoolInt32(node.Fdx < 0)
 		}
-		return libc.BoolInt32((*node_t)(unsafe.Pointer(node)).Fdx > 0)
+		return libc.BoolInt32(node.Fdx > 0)
 	}
-	dx = x - (*node_t)(unsafe.Pointer(node)).Fx
-	dy = y - (*node_t)(unsafe.Pointer(node)).Fy
+	dx = x - node.Fx
+	dy = y - node.Fy
 	// Try to quickly decide by looking at sign bits.
-	if libc.Uint32FromInt32((*node_t)(unsafe.Pointer(node)).Fdy^(*node_t)(unsafe.Pointer(node)).Fdx^dx^dy)&uint32(0x80000000) != 0 {
-		if libc.Uint32FromInt32((*node_t)(unsafe.Pointer(node)).Fdy^dx)&uint32(0x80000000) != 0 {
+	if libc.Uint32FromInt32(node.Fdy^node.Fdx^dx^dy)&uint32(0x80000000) != 0 {
+		if libc.Uint32FromInt32(node.Fdy^dx)&uint32(0x80000000) != 0 {
 			// (left is negative)
 			return int32(1)
 		}
 		return 0
 	}
-	left = FixedMul((*node_t)(unsafe.Pointer(node)).Fdy>>int32(FRACBITS), dx)
-	right = FixedMul(dy, (*node_t)(unsafe.Pointer(node)).Fdx>>int32(FRACBITS))
+	left = FixedMul(node.Fdy>>int32(FRACBITS), dx)
+	right = FixedMul(dy, node.Fdx>>int32(FRACBITS))
 	if right < left {
 		// front side
 		return 0
@@ -39404,7 +39377,6 @@ func R_Init(tls *libc.TLS) {
 //	// R_PointInSubsector
 //	//
 func R_PointInSubsector(tls *libc.TLS, x fixed_t, y fixed_t) (r uintptr) {
-	var node uintptr
 	var nodenum, side int32
 	// single subsector is a special case
 	if !(numnodes != 0) {
@@ -39412,9 +39384,9 @@ func R_PointInSubsector(tls *libc.TLS, x fixed_t, y fixed_t) (r uintptr) {
 	}
 	nodenum = numnodes - int32(1)
 	for !(nodenum&NF_SUBSECTOR5 != 0) {
-		node = nodes + uintptr(nodenum)*52
+		node := &nodes[nodenum]
 		side = R_PointOnSide(tls, x, y, node)
-		nodenum = libc.Int32FromUint16(*(*uint16)(unsafe.Pointer(node + 48 + uintptr(side)*2)))
+		nodenum = libc.Int32FromUint16(node.Fchildren[side])
 	}
 	return subsectors + uintptr(nodenum & ^NF_SUBSECTOR5)*16
 }
@@ -49653,7 +49625,7 @@ var netgame boolean
 //	// newend is one past the last valid seg
 var newend uintptr
 
-var nodes uintptr
+var nodes []node_t
 
 var nodrawers boolean
 
