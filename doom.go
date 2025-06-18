@@ -4372,13 +4372,11 @@ func D_StartNetGame(tls *libc.TLS, settings *net_gamesettings_t, callback netgam
 	new_sync = libc.Uint32FromInt32(settings.Fnew_sync)
 }
 
-func D_InitNetGame(tls *libc.TLS, connect_data uintptr) (r boolean) {
-	var result boolean
-	result = 0
+func D_InitNetGame(tls *libc.TLS, connect_data *net_connect_data_t) (r boolean) {
 	// Call D_QuitNetGame on exit:
 	I_AtExit(tls, __ccgo_fp(D_QuitNetGame), 1)
-	player_class = (*net_connect_data_t)(unsafe.Pointer(connect_data)).Fplayer_class
-	return result
+	player_class = connect_data.Fplayer_class
+	return 0
 }
 
 // C documentation
@@ -6259,9 +6257,9 @@ func SaveGameSettings(tls *libc.TLS, settings *net_gamesettings_t) {
 	settings.Flowres_turn = libc.BoolInt32(M_CheckParm(tls, __ccgo_ts(5361)) > 0 && M_CheckParm(tls, __ccgo_ts(5530)) == 0)
 }
 
-func InitConnectData(tls *libc.TLS, connect_data uintptr) {
-	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fmax_players = int32(MAXPLAYERS)
-	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fdrone = 0
+func InitConnectData(tls *libc.TLS, connect_data *net_connect_data_t) {
+	connect_data.Fmax_players = int32(MAXPLAYERS)
+	connect_data.Fdrone = 0
 	//!
 	// @category net
 	//
@@ -6269,7 +6267,7 @@ func InitConnectData(tls *libc.TLS, connect_data uintptr) {
 	//
 	if M_CheckParm(tls, __ccgo_ts(5540)) > 0 {
 		viewangleoffset = int32(ANG901)
-		(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fdrone = 1
+		connect_data.Fdrone = 1
 	}
 	//!
 	// @category net
@@ -6278,26 +6276,26 @@ func InitConnectData(tls *libc.TLS, connect_data uintptr) {
 	//
 	if M_CheckParm(tls, __ccgo_ts(5546)) > 0 {
 		viewangleoffset = libc.Int32FromUint32(ANG2701)
-		(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fdrone = 1
+		connect_data.Fdrone = 1
 	}
 	//
 	// Connect data
 	//
 	// Game type fields:
-	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fgamemode = gamemode
-	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fgamemission = gamemission
+	connect_data.Fgamemode = gamemode
+	connect_data.Fgamemission = gamemission
 	// Are we recording a demo? Possibly set lowres turn mode
-	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Flowres_turn = libc.BoolInt32(M_CheckParm(tls, __ccgo_ts(5361)) > 0 && M_CheckParm(tls, __ccgo_ts(5530)) == 0)
+	connect_data.Flowres_turn = libc.BoolInt32(M_CheckParm(tls, __ccgo_ts(5361)) > 0 && M_CheckParm(tls, __ccgo_ts(5530)) == 0)
 	// Read checksums of our WAD directory and dehacked information
-	W_Checksum(tls, connect_data+24)
+	W_Checksum(tls, uintptr(unsafe.Pointer(&connect_data.Fwad_sha1sum)))
 	// Are we playing with the Freedoom IWAD?
-	(*net_connect_data_t)(unsafe.Pointer(connect_data)).Fis_freedoom = libc.BoolInt32(W_CheckNumForName(tls, __ccgo_ts(2670)) >= 0)
+	connect_data.Fis_freedoom = libc.BoolInt32(W_CheckNumForName(tls, __ccgo_ts(2670)) >= 0)
 }
 
 func D_ConnectNetGame(tls *libc.TLS) {
-	bp := alloc(80)
-	InitConnectData(tls, bp)
-	netgame = D_InitNetGame(tls, bp)
+	connect_data := &net_connect_data_t{}
+	InitConnectData(tls, connect_data)
+	netgame = D_InitNetGame(tls, connect_data)
 	//!
 	// @category net
 	//
