@@ -3223,7 +3223,7 @@ func AM_clearFB(tls *libc.TLS, color uint8) {
 //	// faster reject and precalculated slopes.  If the speed is needed,
 //	// use a hash algorithm to handle  the common cases.
 //	//
-func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
+func AM_clipMline(tls *libc.TLS, ml uintptr, fl *fline_t) (r boolean) {
 	var dx, dy, outcode1, outcode2, outside int32
 	var tmp fpoint_t
 	outcode1 = 0
@@ -3264,37 +3264,37 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 		return 0
 	} // trivially outside
 	// transform to frame-buffer coordinates.
-	(*fline_t)(unsafe.Pointer(fl)).Fa.Fx = f_x + FixedMul((*mline_t)(unsafe.Pointer(ml)).Fa.Fx-m_x, scale_mtof)>>16
-	(*fline_t)(unsafe.Pointer(fl)).Fa.Fy = f_y + (f_h - FixedMul((*mline_t)(unsafe.Pointer(ml)).Fa.Fy-m_y, scale_mtof)>>16)
-	(*fline_t)(unsafe.Pointer(fl)).Fb.Fx = f_x + FixedMul((*mline_t)(unsafe.Pointer(ml)).Fb.Fx-m_x, scale_mtof)>>16
-	(*fline_t)(unsafe.Pointer(fl)).Fb.Fy = f_y + (f_h - FixedMul((*mline_t)(unsafe.Pointer(ml)).Fb.Fy-m_y, scale_mtof)>>16)
+	fl.Fa.Fx = f_x + FixedMul((*mline_t)(unsafe.Pointer(ml)).Fa.Fx-m_x, scale_mtof)>>16
+	fl.Fa.Fy = f_y + (f_h - FixedMul((*mline_t)(unsafe.Pointer(ml)).Fa.Fy-m_y, scale_mtof)>>16)
+	fl.Fb.Fx = f_x + FixedMul((*mline_t)(unsafe.Pointer(ml)).Fb.Fx-m_x, scale_mtof)>>16
+	fl.Fb.Fy = f_y + (f_h - FixedMul((*mline_t)(unsafe.Pointer(ml)).Fb.Fy-m_y, scale_mtof)>>16)
 	outcode1 = 0
-	if (*fline_t)(unsafe.Pointer(fl)).Fa.Fy < 0 {
+	if fl.Fa.Fy < 0 {
 		outcode1 |= 8
 	} else {
-		if (*fline_t)(unsafe.Pointer(fl)).Fa.Fy >= f_h {
+		if fl.Fa.Fy >= f_h {
 			outcode1 |= 4
 		}
 	}
-	if (*fline_t)(unsafe.Pointer(fl)).Fa.Fx < 0 {
+	if fl.Fa.Fx < 0 {
 		outcode1 |= 1
 	} else {
-		if (*fline_t)(unsafe.Pointer(fl)).Fa.Fx >= f_w {
+		if fl.Fa.Fx >= f_w {
 			outcode1 |= 2
 		}
 	}
 	outcode2 = 0
-	if (*fline_t)(unsafe.Pointer(fl)).Fb.Fy < 0 {
+	if fl.Fb.Fy < 0 {
 		outcode2 |= 8
 	} else {
-		if (*fline_t)(unsafe.Pointer(fl)).Fb.Fy >= f_h {
+		if fl.Fb.Fy >= f_h {
 			outcode2 |= 4
 		}
 	}
-	if (*fline_t)(unsafe.Pointer(fl)).Fb.Fx < 0 {
+	if fl.Fb.Fx < 0 {
 		outcode2 |= 1
 	} else {
-		if (*fline_t)(unsafe.Pointer(fl)).Fb.Fx >= f_w {
+		if fl.Fb.Fx >= f_w {
 			outcode2 |= 2
 		}
 	}
@@ -3311,27 +3311,27 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 		}
 		// clip to each side
 		if outside&8 != 0 {
-			dy = (*fline_t)(unsafe.Pointer(fl)).Fa.Fy - (*fline_t)(unsafe.Pointer(fl)).Fb.Fy
-			dx = (*fline_t)(unsafe.Pointer(fl)).Fb.Fx - (*fline_t)(unsafe.Pointer(fl)).Fa.Fx
-			tmp.Fx = (*fline_t)(unsafe.Pointer(fl)).Fa.Fx + dx*(*fline_t)(unsafe.Pointer(fl)).Fa.Fy/dy
+			dy = fl.Fa.Fy - fl.Fb.Fy
+			dx = fl.Fb.Fx - fl.Fa.Fx
+			tmp.Fx = fl.Fa.Fx + dx*fl.Fa.Fy/dy
 			tmp.Fy = 0
 		} else {
 			if outside&4 != 0 {
-				dy = (*fline_t)(unsafe.Pointer(fl)).Fa.Fy - (*fline_t)(unsafe.Pointer(fl)).Fb.Fy
-				dx = (*fline_t)(unsafe.Pointer(fl)).Fb.Fx - (*fline_t)(unsafe.Pointer(fl)).Fa.Fx
-				tmp.Fx = (*fline_t)(unsafe.Pointer(fl)).Fa.Fx + dx*((*fline_t)(unsafe.Pointer(fl)).Fa.Fy-f_h)/dy
+				dy = fl.Fa.Fy - fl.Fb.Fy
+				dx = fl.Fb.Fx - fl.Fa.Fx
+				tmp.Fx = fl.Fa.Fx + dx*(fl.Fa.Fy-f_h)/dy
 				tmp.Fy = f_h - int32(1)
 			} else {
 				if outside&2 != 0 {
-					dy = (*fline_t)(unsafe.Pointer(fl)).Fb.Fy - (*fline_t)(unsafe.Pointer(fl)).Fa.Fy
-					dx = (*fline_t)(unsafe.Pointer(fl)).Fb.Fx - (*fline_t)(unsafe.Pointer(fl)).Fa.Fx
-					tmp.Fy = (*fline_t)(unsafe.Pointer(fl)).Fa.Fy + dy*(f_w-int32(1)-(*fline_t)(unsafe.Pointer(fl)).Fa.Fx)/dx
+					dy = fl.Fb.Fy - fl.Fa.Fy
+					dx = fl.Fb.Fx - fl.Fa.Fx
+					tmp.Fy = fl.Fa.Fy + dy*(f_w-int32(1)-fl.Fa.Fx)/dx
 					tmp.Fx = f_w - int32(1)
 				} else {
 					if outside&1 != 0 {
-						dy = (*fline_t)(unsafe.Pointer(fl)).Fb.Fy - (*fline_t)(unsafe.Pointer(fl)).Fa.Fy
-						dx = (*fline_t)(unsafe.Pointer(fl)).Fb.Fx - (*fline_t)(unsafe.Pointer(fl)).Fa.Fx
-						tmp.Fy = (*fline_t)(unsafe.Pointer(fl)).Fa.Fy + dy*-(*fline_t)(unsafe.Pointer(fl)).Fa.Fx/dx
+						dy = fl.Fb.Fy - fl.Fa.Fy
+						dx = fl.Fb.Fx - fl.Fa.Fx
+						tmp.Fy = fl.Fa.Fy + dy*-fl.Fa.Fx/dx
 						tmp.Fx = 0
 					} else {
 						tmp.Fx = 0
@@ -3341,36 +3341,36 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 			}
 		}
 		if outside == outcode1 {
-			(*fline_t)(unsafe.Pointer(fl)).Fa = tmp
+			fl.Fa = tmp
 			outcode1 = 0
-			if (*fline_t)(unsafe.Pointer(fl)).Fa.Fy < 0 {
+			if fl.Fa.Fy < 0 {
 				outcode1 |= 8
 			} else {
-				if (*fline_t)(unsafe.Pointer(fl)).Fa.Fy >= f_h {
+				if fl.Fa.Fy >= f_h {
 					outcode1 |= 4
 				}
 			}
-			if (*fline_t)(unsafe.Pointer(fl)).Fa.Fx < 0 {
+			if fl.Fa.Fx < 0 {
 				outcode1 |= 1
 			} else {
-				if (*fline_t)(unsafe.Pointer(fl)).Fa.Fx >= f_w {
+				if fl.Fa.Fx >= f_w {
 					outcode1 |= 2
 				}
 			}
 		} else {
-			(*fline_t)(unsafe.Pointer(fl)).Fb = tmp
+			fl.Fb = tmp
 			outcode2 = 0
-			if (*fline_t)(unsafe.Pointer(fl)).Fb.Fy < 0 {
+			if fl.Fb.Fy < 0 {
 				outcode2 |= 8
 			} else {
-				if (*fline_t)(unsafe.Pointer(fl)).Fb.Fy >= f_h {
+				if fl.Fb.Fy >= f_h {
 					outcode2 |= 4
 				}
 			}
-			if (*fline_t)(unsafe.Pointer(fl)).Fb.Fx < 0 {
+			if fl.Fb.Fx < 0 {
 				outcode2 |= 1
 			} else {
-				if (*fline_t)(unsafe.Pointer(fl)).Fb.Fx >= f_w {
+				if fl.Fb.Fx >= f_w {
 					outcode2 |= 2
 				}
 			}
@@ -3387,17 +3387,17 @@ func AM_clipMline(tls *libc.TLS, ml uintptr, fl uintptr) (r boolean) {
 //	//
 //	// Classic Bresenham w/ whatever optimizations needed for speed
 //	//
-func AM_drawFline(tls *libc.TLS, fl uintptr, color int32) {
+func AM_drawFline(tls *libc.TLS, fl *fline_t, color int32) {
 	var ax, ay, d, dx, dy, sx, sy, x, y, v1, v2, v3, v4, v5 int32
 	// For debugging only
-	if (*fline_t)(unsafe.Pointer(fl)).Fa.Fx < 0 || (*fline_t)(unsafe.Pointer(fl)).Fa.Fx >= f_w || (*fline_t)(unsafe.Pointer(fl)).Fa.Fy < 0 || (*fline_t)(unsafe.Pointer(fl)).Fa.Fy >= f_h || (*fline_t)(unsafe.Pointer(fl)).Fb.Fx < 0 || (*fline_t)(unsafe.Pointer(fl)).Fb.Fx >= f_w || (*fline_t)(unsafe.Pointer(fl)).Fb.Fy < 0 || (*fline_t)(unsafe.Pointer(fl)).Fb.Fy >= f_h {
+	if fl.Fa.Fx < 0 || fl.Fa.Fx >= f_w || fl.Fa.Fy < 0 || fl.Fa.Fy >= f_h || fl.Fb.Fx < 0 || fl.Fb.Fx >= f_w || fl.Fb.Fy < 0 || fl.Fb.Fy >= f_h {
 		v1 = fuck
 		fuck++
 
 		fprintf_ccgo(os.Stderr, 93, v1)
 		return
 	}
-	dx = (*fline_t)(unsafe.Pointer(fl)).Fb.Fx - (*fline_t)(unsafe.Pointer(fl)).Fa.Fx
+	dx = fl.Fb.Fx - fl.Fa.Fx
 	if dx < 0 {
 		v2 = -dx
 	} else {
@@ -3410,7 +3410,7 @@ func AM_drawFline(tls *libc.TLS, fl uintptr, color int32) {
 		v3 = int32(1)
 	}
 	sx = v3
-	dy = (*fline_t)(unsafe.Pointer(fl)).Fb.Fy - (*fline_t)(unsafe.Pointer(fl)).Fa.Fy
+	dy = fl.Fb.Fy - fl.Fa.Fy
 	if dy < 0 {
 		v4 = -dy
 	} else {
@@ -3423,13 +3423,13 @@ func AM_drawFline(tls *libc.TLS, fl uintptr, color int32) {
 		v5 = int32(1)
 	}
 	sy = v5
-	x = (*fline_t)(unsafe.Pointer(fl)).Fa.Fx
-	y = (*fline_t)(unsafe.Pointer(fl)).Fa.Fy
+	x = fl.Fa.Fx
+	y = fl.Fa.Fy
 	if ax > ay {
 		d = ay - ax/int32(2)
 		for int32(1) != 0 {
 			*(*uint8)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = libc.Uint8FromInt32(color)
-			if x == (*fline_t)(unsafe.Pointer(fl)).Fb.Fx {
+			if x == fl.Fb.Fx {
 				return
 			}
 			if d >= 0 {
@@ -3443,7 +3443,7 @@ func AM_drawFline(tls *libc.TLS, fl uintptr, color int32) {
 		d = ax - ay/int32(2)
 		for int32(1) != 0 {
 			*(*uint8)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = libc.Uint8FromInt32(color)
-			if y == (*fline_t)(unsafe.Pointer(fl)).Fb.Fy {
+			if y == fl.Fb.Fy {
 				return
 			}
 			if d >= 0 {
@@ -3464,8 +3464,8 @@ var fuck int32
 //	// Clip lines, draw visible part sof lines.
 //	//
 func AM_drawMline(tls *libc.TLS, ml uintptr, color int32) {
-	if AM_clipMline(tls, ml, uintptr(unsafe.Pointer(&fl))) != 0 {
-		AM_drawFline(tls, uintptr(unsafe.Pointer(&fl)), color)
+	if AM_clipMline(tls, ml, &fl) != 0 {
+		AM_drawFline(tls, &fl, color)
 	} // draws it on frame buffer using fb coords
 }
 
