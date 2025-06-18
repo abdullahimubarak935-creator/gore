@@ -2,8 +2,6 @@ module github.com/AndreRenaud/gore
 
 go 1.24.3
 
-replace modernc.org/libc => ../libc
-
 require (
 	github.com/hajimehoshi/ebiten/v2 v2.8.8
 	modernc.org/libc v1.66.0
