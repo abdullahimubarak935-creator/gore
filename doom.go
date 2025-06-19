@@ -26700,37 +26700,38 @@ func P_TryMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 	var ld uintptr
 	var oldside, side, v1 int32
 	var oldx, oldy fixed_t
+	mthing := (*mobj_t)(unsafe.Pointer(thing))
 	floatok = 0
 	if !(P_CheckPosition(tls, thing, x, y) != 0) {
 		return 0
 	} // solid wall or thing
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_NOCLIP) != 0) {
-		if tmceilingz-tmfloorz < (*mobj_t)(unsafe.Pointer(thing)).Fheight {
+	if !(mthing.Fflags&int32(MF_NOCLIP) != 0) {
+		if tmceilingz-tmfloorz < mthing.Fheight {
 			return 0
 		} // doesn't fit
 		floatok = 1
-		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_TELEPORT) != 0) && tmceilingz-(*mobj_t)(unsafe.Pointer(thing)).Fz < (*mobj_t)(unsafe.Pointer(thing)).Fheight {
+		if !(mthing.Fflags&int32(MF_TELEPORT) != 0) && tmceilingz-mthing.Fz < mthing.Fheight {
 			return 0
 		} // mobj must lower itself to fit
-		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_TELEPORT) != 0) && tmfloorz-(*mobj_t)(unsafe.Pointer(thing)).Fz > 24*(1<<FRACBITS) {
+		if !(mthing.Fflags&int32(MF_TELEPORT) != 0) && tmfloorz-mthing.Fz > 24*(1<<FRACBITS) {
 			return 0
 		} // too big a step up
-		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&(int32(MF_DROPOFF)|int32(MF_FLOAT)) != 0) && tmfloorz-tmdropoffz > 24*(1<<FRACBITS) {
+		if !(mthing.Fflags&(int32(MF_DROPOFF)|int32(MF_FLOAT)) != 0) && tmfloorz-tmdropoffz > 24*(1<<FRACBITS) {
 			return 0
 		} // don't stand over a dropoff
 	}
 	// the move is ok,
 	// so link the thing into its new position
 	P_UnsetThingPosition(tls, thing)
-	oldx = (*mobj_t)(unsafe.Pointer(thing)).Fx
-	oldy = (*mobj_t)(unsafe.Pointer(thing)).Fy
-	(*mobj_t)(unsafe.Pointer(thing)).Ffloorz = tmfloorz
-	(*mobj_t)(unsafe.Pointer(thing)).Fceilingz = tmceilingz
-	(*mobj_t)(unsafe.Pointer(thing)).Fx = x
-	(*mobj_t)(unsafe.Pointer(thing)).Fy = y
+	oldx = mthing.Fx
+	oldy = mthing.Fy
+	mthing.Ffloorz = tmfloorz
+	mthing.Fceilingz = tmceilingz
+	mthing.Fx = x
+	mthing.Fy = y
 	P_SetThingPosition(tls, thing)
 	// if any special lines were hit, do the effect
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&(int32(MF_TELEPORT)|int32(MF_NOCLIP)) != 0) {
+	if !(mthing.Fflags&(int32(MF_TELEPORT)|int32(MF_NOCLIP)) != 0) {
 		for {
 			v1 = numspechit
 			numspechit--
@@ -26739,7 +26740,7 @@ func P_TryMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 			}
 			// see if the line was crossed
 			ld = spechit[numspechit]
-			side = P_PointOnLineSide(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy, ld)
+			side = P_PointOnLineSide(tls, mthing.Fx, mthing.Fy, ld)
 			oldside = P_PointOnLineSide(tls, oldx, oldy, ld)
 			if side != oldside {
 				if (*line_t)(unsafe.Pointer(ld)).Fspecial != 0 {
@@ -34080,7 +34081,7 @@ func P_ChangeSwitchTexture(tls *libc.TLS, line uintptr, useAgain int32) {
 			break
 		}
 		if switchlist[i] == texTop {
-			S_StartSound(tls, (*button_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&buttonlist)))).Fsoundorg, sound)
+			S_StartSound(tls, buttonlist[0].Fsoundorg, sound)
 			(*(*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(line + 30)))*24))).Ftoptexture = int16(switchlist[i^int32(1)])
 			if useAgain != 0 {
 				P_StartButton(tls, line, int32(top), switchlist[i], int32(BUTTONTIME))
@@ -34088,7 +34089,7 @@ func P_ChangeSwitchTexture(tls *libc.TLS, line uintptr, useAgain int32) {
 			return
 		} else {
 			if switchlist[i] == texMid {
-				S_StartSound(tls, (*button_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&buttonlist)))).Fsoundorg, sound)
+				S_StartSound(tls, buttonlist[0].Fsoundorg, sound)
 				(*(*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(line + 30)))*24))).Fmidtexture = int16(switchlist[i^int32(1)])
 				if useAgain != 0 {
 					P_StartButton(tls, line, int32(middle), switchlist[i], int32(BUTTONTIME))
@@ -34096,7 +34097,7 @@ func P_ChangeSwitchTexture(tls *libc.TLS, line uintptr, useAgain int32) {
 				return
 			} else {
 				if switchlist[i] == texBot {
-					S_StartSound(tls, (*button_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&buttonlist)))).Fsoundorg, sound)
+					S_StartSound(tls, buttonlist[0].Fsoundorg, sound)
 					(*(*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(line + 30)))*24))).Fbottomtexture = int16(switchlist[i^int32(1)])
 					if useAgain != 0 {
 						P_StartButton(tls, line, int32(bottom), switchlist[i], int32(BUTTONTIME))
