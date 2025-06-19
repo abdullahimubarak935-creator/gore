@@ -18,8 +18,9 @@ const (
 type DoomGame struct {
 	lastFrame *ebiten.Image
 
-	keyEvents []gore.DoomKeyEvent
-	lock      sync.Mutex
+	keyEvents   []gore.DoomKeyEvent
+	lock        sync.Mutex
+	terminating bool
 }
 
 func (g *DoomGame) Update() error {
@@ -50,6 +51,9 @@ func (g *DoomGame) Update() error {
 			event.Key = doomKey
 			g.keyEvents = append(g.keyEvents, event)
 		}
+	}
+	if g.terminating {
+		return ebiten.Termination
 	}
 	return nil
 }
@@ -97,9 +101,11 @@ func main() {
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("Gamepad (Ebitengine Demo)")
 	ebiten.SetFullscreen(true)
-	go gore.Run(game, 1, 0)
+	go func() {
+		gore.Run(game, 1, 0)
+		game.terminating = true
+	}()
 	if err := ebiten.RunGame(game); err != nil {
 		log.Fatal(err)
 	}
-
 }

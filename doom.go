@@ -22,6 +22,7 @@ type DoomFrontend interface {
 }
 
 var dg_frontend DoomFrontend
+var dg_exiting bool
 var start_time time.Time
 
 type boolean = uint32
@@ -5706,7 +5707,7 @@ func D_Endoom(tls *libc.TLS) {
 	}
 	endoom = W_CacheLumpName(tls, __ccgo_ts(3994), int32(PU_STATIC))
 	I_Endoom(tls, endoom)
-	libc.Xexit(tls, 0)
+	dg_exiting = true
 }
 
 // C documentation
@@ -46319,10 +46320,11 @@ func Run(fg DoomFrontend, argc int32, argv uintptr) {
 		log.Printf("Run called twice, ignoring second call")
 	}
 	dg_frontend = fg
+	dg_exiting = false
 	start_time = time.Now()
 	tls := libc.NewTLS()
 	doomgeneric_Create(tls, argc, argv)
-	for {
+	for !dg_exiting {
 		doomgeneric_Tick(tls)
 	}
 }
