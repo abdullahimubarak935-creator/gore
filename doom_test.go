@@ -84,7 +84,7 @@ func (d *doomTestHeadless) GetKey(event *DoomKeyEvent) bool {
 	}
 	now := I_GetTimeMS()
 	delta := now - d.lastEventTick
-	if d.keys[0].ticks < delta {
+	if d.keys[0].ticks <= delta {
 		*event = d.keys[0].event
 		d.t.Logf("Key event: %#v, delta=%d (%d remaining)", *event, delta, len(d.keys)-1)
 		d.keys = d.keys[1:]
@@ -112,5 +112,106 @@ func TestDoomDemo(t *testing.T) {
 		},
 	}
 	defer game.Close()
-	Run(game, nil)
+	Run(game, []string{"-iwad", "doom1.wad"})
+}
+
+func TestLoadSave(t *testing.T) {
+	dg_speed_ratio = 50.0 // Run at 50x speed
+	game := &doomTestHeadless{
+		t:     t,
+		start: time.Now(),
+		keys: []delayedKeyEvent{
+			// Start a new game
+			{DoomKeyEvent{Pressed: true, Key: KEY_ESCAPE}, 5_000},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ESCAPE}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
+			// Move around in the game a bit
+			{DoomKeyEvent{Pressed: true, Key: KEY_UPARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_UPARROW1}, 1000},
+			{DoomKeyEvent{Pressed: true, Key: KEY_LEFTARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_LEFTARROW1}, 1000},
+			// Go to the menu and save
+			{DoomKeyEvent{Pressed: true, Key: KEY_ESCAPE}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ESCAPE}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
+			// Clear the previous name and enter a new one
+			{DoomKeyEvent{Pressed: true, Key: KEY_BACKSPACE1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_BACKSPACE1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_BACKSPACE1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_BACKSPACE1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_BACKSPACE1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_BACKSPACE1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_BACKSPACE1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_BACKSPACE1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_BACKSPACE1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_BACKSPACE1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_BACKSPACE1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_BACKSPACE1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: 't'}, 100},
+			{DoomKeyEvent{Pressed: false, Key: 't'}, 100},
+			{DoomKeyEvent{Pressed: true, Key: 'e'}, 100},
+			{DoomKeyEvent{Pressed: false, Key: 'e'}, 100},
+			{DoomKeyEvent{Pressed: true, Key: 's'}, 100},
+			{DoomKeyEvent{Pressed: false, Key: 's'}, 100},
+			{DoomKeyEvent{Pressed: true, Key: 't'}, 100},
+			{DoomKeyEvent{Pressed: false, Key: 't'}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
+			// Start a new game
+			{DoomKeyEvent{Pressed: true, Key: KEY_ESCAPE}, 1000},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ESCAPE}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_UPARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_UPARROW1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_UPARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_UPARROW1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_UPARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_UPARROW1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
+			// Load the saved game
+			{DoomKeyEvent{Pressed: true, Key: KEY_ESCAPE}, 1000},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ESCAPE}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
+			// Quit
+			{DoomKeyEvent{Pressed: true, Key: KEY_ESCAPE}, 1000},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ESCAPE}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
+			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
+			{DoomKeyEvent{Pressed: true, Key: 'y'}, 100},
+			{DoomKeyEvent{Pressed: false, Key: 'y'}, 100},
+		},
+	}
+	defer game.Close()
+	Run(game, []string{"-iwad", "doom1.wad"})
 }

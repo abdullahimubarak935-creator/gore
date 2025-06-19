@@ -25,4 +25,4 @@ jobs:
         unzip shareware_doom_iwad.zip
         mv DOOM1.WAD doom1.wad
     - name: test
-      run: go test -v .
+      run: ./run_tests.sh
