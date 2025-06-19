@@ -46352,6 +46352,7 @@ func Run(fg DoomFrontend, args []string) {
 	// HACK: This avoid the GC from collecting the argv array
 	// before the program exits, which would cause a crash.
 	log.Printf("done with args %d %#v", argc+1, argv)
+	dg_frontend = nil
 }
 
 func __ccgo_fp(f interface{}) uintptr {
