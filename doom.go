@@ -34945,7 +34945,7 @@ const NF_SUBSECTOR3 = 32768
 //	// R_ClearDrawSegs
 //	//
 func R_ClearDrawSegs(tls *libc.TLS) {
-	ds_p = uintptr(unsafe.Pointer(&drawsegs))
+	ds_index = 0
 }
 
 // C documentation
@@ -37663,8 +37663,8 @@ func R_CheckPlane(tls *libc.TLS, pl *visplane_t, start int32, stop int32) *vispl
 //	//
 func R_DrawPlanes(tls *libc.TLS) {
 	var angle, b1, b2, light, lumpnum, stop, t1, t2, x int32
-	if (int64(ds_p)-int64(uintptr(unsafe.Pointer(&drawsegs))))/64 > int64(MAXDRAWSEGS) {
-		I_Error(tls, __ccgo_ts(26461), (int64(ds_p)-int64(uintptr(unsafe.Pointer(&drawsegs))))/64)
+	if ds_index >= len(drawsegs) {
+		I_Error(tls, __ccgo_ts(26461), ds_index)
 	}
 	if lastvisplane_index >= len(visplanes)-1 {
 		I_Error(tls, __ccgo_ts(26498), lastvisplane_index)
@@ -37779,7 +37779,7 @@ const SHRT_MAX1 = 32767
 //	//
 //	// R_RenderMaskedSegRange
 //	//
-func R_RenderMaskedSegRange(tls *libc.TLS, ds uintptr, x1 int32, x2 int32) {
+func R_RenderMaskedSegRange(tls *libc.TLS, ds *drawseg_t, x1 int32, x2 int32) {
 	var col uintptr
 	var index uint32
 	var lightnum, texnum, v1, v2 int32
@@ -37787,7 +37787,7 @@ func R_RenderMaskedSegRange(tls *libc.TLS, ds uintptr, x1 int32, x2 int32) {
 	// Use different light tables
 	//   for horizontal / vertical / diagonal. Diagonal?
 	// OPTIMIZE: get rid of LIGHTSEGSHIFT globally
-	curline = (*drawseg_t)(unsafe.Pointer(ds)).Fcurline
+	curline = ds.Fcurline
 	frontsector = (*seg_t)(unsafe.Pointer(curline)).Ffrontsector
 	backsector = (*seg_t)(unsafe.Pointer(curline)).Fbacksector
 	texnum = *(*int32)(unsafe.Pointer(texturetranslation + uintptr((*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fsidedef)).Fmidtexture)*4))
@@ -37808,11 +37808,11 @@ func R_RenderMaskedSegRange(tls *libc.TLS, ds uintptr, x1 int32, x2 int32) {
 			walllights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(lightnum)*384
 		}
 	}
-	maskedtexturecol = (*drawseg_t)(unsafe.Pointer(ds)).Fmaskedtexturecol
-	rw_scalestep = (*drawseg_t)(unsafe.Pointer(ds)).Fscalestep
-	spryscale = (*drawseg_t)(unsafe.Pointer(ds)).Fscale1 + (x1-(*drawseg_t)(unsafe.Pointer(ds)).Fx1)*rw_scalestep
-	mfloorclip = (*drawseg_t)(unsafe.Pointer(ds)).Fsprbottomclip
-	mceilingclip = (*drawseg_t)(unsafe.Pointer(ds)).Fsprtopclip
+	maskedtexturecol = ds.Fmaskedtexturecol
+	rw_scalestep = ds.Fscalestep
+	spryscale = ds.Fscale1 + (x1-ds.Fx1)*rw_scalestep
+	mfloorclip = ds.Fsprbottomclip
+	mceilingclip = ds.Fsprtopclip
 	// find positioning
 	if int32((*line_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Flinedef)).Fflags)&int32(ML_DONTPEGBOTTOM) != 0 {
 		if (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight > (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight {
@@ -38030,7 +38030,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	var v10, v7, v8 boolean
 	var v11, v9, p1 uintptr
 	// don't overflow and crash
-	if ds_p == uintptr(unsafe.Pointer(&drawsegs))+256*64 {
+	if ds_index >= len(drawsegs) {
 		return
 	}
 	if start >= viewwidth || start > stop {
@@ -38053,22 +38053,22 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	rw_distance = FixedMul(hyp, sineval)
 	v2 = start
 	rw_x = v2
-	(*drawseg_t)(unsafe.Pointer(ds_p)).Fx1 = v2
-	(*drawseg_t)(unsafe.Pointer(ds_p)).Fx2 = stop
-	(*drawseg_t)(unsafe.Pointer(ds_p)).Fcurline = curline
+	drawsegs[ds_index].Fx1 = v2
+	drawsegs[ds_index].Fx2 = stop
+	drawsegs[ds_index].Fcurline = curline
 	rw_stopx = stop + int32(1)
 	// calculate scale at both ends and step
 	v3 = R_ScaleFromGlobalAngle(tls, viewangle+xtoviewangle[start])
 	rw_scale = v3
-	(*drawseg_t)(unsafe.Pointer(ds_p)).Fscale1 = v3
+	drawsegs[ds_index].Fscale1 = v3
 	if stop > start {
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fscale2 = R_ScaleFromGlobalAngle(tls, viewangle+xtoviewangle[stop])
-		v4 = ((*drawseg_t)(unsafe.Pointer(ds_p)).Fscale2 - rw_scale) / (stop - start)
+		drawsegs[ds_index].Fscale2 = R_ScaleFromGlobalAngle(tls, viewangle+xtoviewangle[stop])
+		v4 = (drawsegs[ds_index].Fscale2 - rw_scale) / (stop - start)
 		rw_scalestep = v4
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fscalestep = v4
+		drawsegs[ds_index].Fscalestep = v4
 	} else {
 		// UNUSED: try to fix the stretched line bug
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fscale2 = (*drawseg_t)(unsafe.Pointer(ds_p)).Fscale1
+		drawsegs[ds_index].Fscale2 = drawsegs[ds_index].Fscale1
 	}
 	// calculate texture boundaries
 	//  and decide if floor / ceiling marks are needed
@@ -38081,7 +38081,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	v5 = v6
 	toptexture = v5
 	midtexture = v5
-	(*drawseg_t)(unsafe.Pointer(ds_p)).Fmaskedtexturecol = libc.UintptrFromInt32(0)
+	drawsegs[ds_index].Fmaskedtexturecol = libc.UintptrFromInt32(0)
 	if !(backsector != 0) {
 		// single sided line
 		midtexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr((*side_t)(unsafe.Pointer(sidedef)).Fmidtexture)*4))
@@ -38098,46 +38098,46 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 			rw_midtexturemid = worldtop
 		}
 		rw_midtexturemid += (*side_t)(unsafe.Pointer(sidedef)).Frowoffset
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette = int32(SIL_BOTH)
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprtopclip = uintptr(unsafe.Pointer(&screenheightarray))
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprbottomclip = uintptr(unsafe.Pointer(&negonearray))
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fbsilheight = int32(INT_MAX15)
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = -1 - 0x7fffffff
+		drawsegs[ds_index].Fsilhouette = int32(SIL_BOTH)
+		drawsegs[ds_index].Fsprtopclip = uintptr(unsafe.Pointer(&screenheightarray))
+		drawsegs[ds_index].Fsprbottomclip = uintptr(unsafe.Pointer(&negonearray))
+		drawsegs[ds_index].Fbsilheight = int32(INT_MAX15)
+		drawsegs[ds_index].Ftsilheight = -1 - 0x7fffffff
 	} else {
 		// two sided line
 		v9 = libc.UintptrFromInt32(0)
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprbottomclip = v9
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprtopclip = v9
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette = 0
+		drawsegs[ds_index].Fsprbottomclip = v9
+		drawsegs[ds_index].Fsprtopclip = v9
+		drawsegs[ds_index].Fsilhouette = 0
 		if (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight > (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight {
-			(*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette = int32(SIL_BOTTOM)
-			(*drawseg_t)(unsafe.Pointer(ds_p)).Fbsilheight = (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight
+			drawsegs[ds_index].Fsilhouette = int32(SIL_BOTTOM)
+			drawsegs[ds_index].Fbsilheight = (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight
 		} else {
 			if (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight > viewz {
-				(*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette = int32(SIL_BOTTOM)
-				(*drawseg_t)(unsafe.Pointer(ds_p)).Fbsilheight = int32(INT_MAX15)
+				drawsegs[ds_index].Fsilhouette = int32(SIL_BOTTOM)
+				drawsegs[ds_index].Fbsilheight = int32(INT_MAX15)
 				// ds_p->sprbottomclip = negonearray;
 			}
 		}
 		if (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight < (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight {
-			*(*int32)(unsafe.Pointer(ds_p + 28)) |= int32(SIL_TOP)
-			(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight
+			drawsegs[ds_index].Fsilhouette |= int32(SIL_TOP)
+			drawsegs[ds_index].Ftsilheight = (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight
 		} else {
 			if (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight < viewz {
-				*(*int32)(unsafe.Pointer(ds_p + 28)) |= int32(SIL_TOP)
-				(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = -1 - 0x7fffffff
+				drawsegs[ds_index].Fsilhouette |= int32(SIL_TOP)
+				drawsegs[ds_index].Ftsilheight = -1 - 0x7fffffff
 				// ds_p->sprtopclip = screenheightarray;
 			}
 		}
 		if (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight <= (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight {
-			(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprbottomclip = uintptr(unsafe.Pointer(&negonearray))
-			(*drawseg_t)(unsafe.Pointer(ds_p)).Fbsilheight = int32(INT_MAX15)
-			*(*int32)(unsafe.Pointer(ds_p + 28)) |= int32(SIL_BOTTOM)
+			drawsegs[ds_index].Fsprbottomclip = uintptr(unsafe.Pointer(&negonearray))
+			drawsegs[ds_index].Fbsilheight = int32(INT_MAX15)
+			drawsegs[ds_index].Fsilhouette |= int32(SIL_BOTTOM)
 		}
 		if (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight >= (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight {
-			(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprtopclip = uintptr(unsafe.Pointer(&screenheightarray))
-			(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = -1 - 0x7fffffff
-			*(*int32)(unsafe.Pointer(ds_p + 28)) |= int32(SIL_TOP)
+			drawsegs[ds_index].Fsprtopclip = uintptr(unsafe.Pointer(&screenheightarray))
+			drawsegs[ds_index].Ftsilheight = -1 - 0x7fffffff
+			drawsegs[ds_index].Fsilhouette |= int32(SIL_TOP)
 		}
 		worldhigh = (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight - viewz
 		worldlow = (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight - viewz
@@ -38194,7 +38194,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 			maskedtexture = 1
 			v11 = lastopening - uintptr(rw_x)*2
 			maskedtexturecol = v11
-			(*drawseg_t)(unsafe.Pointer(ds_p)).Fmaskedtexturecol = v11
+			drawsegs[ds_index].Fmaskedtexturecol = v11
 			lastopening += uintptr(rw_stopx-rw_x) * 2
 		}
 	}
@@ -38278,25 +38278,25 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	}
 	R_RenderSegLoop(tls)
 	// save sprite clipping info
-	if ((*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette&int32(SIL_TOP) != 0 || maskedtexture != 0) && !((*drawseg_t)(unsafe.Pointer(ds_p)).Fsprtopclip != 0) {
+	if (drawsegs[ds_index].Fsilhouette&int32(SIL_TOP) != 0 || maskedtexture != 0) && !(drawsegs[ds_index].Fsprtopclip != 0) {
 		xmemcpy(lastopening, uintptr(unsafe.Pointer(&ceilingclip))+uintptr(start)*2, libc.Uint64FromInt32(int32(2)*(rw_stopx-start)))
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprtopclip = lastopening - uintptr(start)*2
+		drawsegs[ds_index].Fsprtopclip = lastopening - uintptr(start)*2
 		lastopening += uintptr(rw_stopx-start) * 2
 	}
-	if ((*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette&int32(SIL_BOTTOM) != 0 || maskedtexture != 0) && !((*drawseg_t)(unsafe.Pointer(ds_p)).Fsprbottomclip != 0) {
+	if (drawsegs[ds_index].Fsilhouette&int32(SIL_BOTTOM) != 0 || maskedtexture != 0) && !(drawsegs[ds_index].Fsprbottomclip != 0) {
 		xmemcpy(lastopening, uintptr(unsafe.Pointer(&floorclip))+uintptr(start)*2, libc.Uint64FromInt32(int32(2)*(rw_stopx-start)))
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fsprbottomclip = lastopening - uintptr(start)*2
+		drawsegs[ds_index].Fsprbottomclip = lastopening - uintptr(start)*2
 		lastopening += uintptr(rw_stopx-start) * 2
 	}
-	if maskedtexture != 0 && !((*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette&SIL_TOP != 0) {
-		*(*int32)(unsafe.Pointer(ds_p + 28)) |= int32(SIL_TOP)
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Ftsilheight = -1 - 0x7fffffff
+	if maskedtexture != 0 && !(drawsegs[ds_index].Fsilhouette&SIL_TOP != 0) {
+		drawsegs[ds_index].Fsilhouette |= int32(SIL_TOP)
+		drawsegs[ds_index].Ftsilheight = -1 - 0x7fffffff
 	}
-	if maskedtexture != 0 && !((*drawseg_t)(unsafe.Pointer(ds_p)).Fsilhouette&SIL_BOTTOM != 0) {
-		*(*int32)(unsafe.Pointer(ds_p + 28)) |= int32(SIL_BOTTOM)
-		(*drawseg_t)(unsafe.Pointer(ds_p)).Fbsilheight = int32(INT_MAX15)
+	if maskedtexture != 0 && !(drawsegs[ds_index].Fsilhouette&SIL_BOTTOM != 0) {
+		drawsegs[ds_index].Fsilhouette |= int32(SIL_BOTTOM)
+		drawsegs[ds_index].Fbsilheight = int32(INT_MAX15)
 	}
-	ds_p += 64
+	ds_index++
 }
 
 // C documentation
@@ -38989,7 +38989,7 @@ var clipbot [320]int16
 var cliptop [320]int16
 
 func R_DrawSprite(tls *libc.TLS, spr uintptr) {
-	var ds uintptr
+	var ds int
 	var lowscale, scale fixed_t
 	var r1, r2, silhouette, x, v4, v5 int32
 	var v2 int16
@@ -39009,49 +39009,49 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 	// Scan drawsegs from end to start for obscuring segs.
 	// The first drawseg that has a greater scale
 	//  is the clip seg.
-	ds = ds_p - uintptr(1)*64
+	ds = ds_index - 1
 	for {
-		if !(ds >= uintptr(unsafe.Pointer(&drawsegs))) {
+		if !(ds >= 0) {
 			break
 		}
 		// determine if the drawseg obscures the sprite
-		if (*drawseg_t)(unsafe.Pointer(ds)).Fx1 > (*vissprite_t)(unsafe.Pointer(spr)).Fx2 || (*drawseg_t)(unsafe.Pointer(ds)).Fx2 < (*vissprite_t)(unsafe.Pointer(spr)).Fx1 || !((*drawseg_t)(unsafe.Pointer(ds)).Fsilhouette != 0) && !((*drawseg_t)(unsafe.Pointer(ds)).Fmaskedtexturecol != 0) {
+		if drawsegs[ds].Fx1 > (*vissprite_t)(unsafe.Pointer(spr)).Fx2 || drawsegs[ds].Fx2 < (*vissprite_t)(unsafe.Pointer(spr)).Fx1 || !(drawsegs[ds].Fsilhouette != 0) && !(drawsegs[ds].Fmaskedtexturecol != 0) {
 			// does not cover sprite
 			goto _3
 		}
-		if (*drawseg_t)(unsafe.Pointer(ds)).Fx1 < (*vissprite_t)(unsafe.Pointer(spr)).Fx1 {
+		if drawsegs[ds].Fx1 < (*vissprite_t)(unsafe.Pointer(spr)).Fx1 {
 			v4 = (*vissprite_t)(unsafe.Pointer(spr)).Fx1
 		} else {
-			v4 = (*drawseg_t)(unsafe.Pointer(ds)).Fx1
+			v4 = drawsegs[ds].Fx1
 		}
 		r1 = v4
-		if (*drawseg_t)(unsafe.Pointer(ds)).Fx2 > (*vissprite_t)(unsafe.Pointer(spr)).Fx2 {
+		if drawsegs[ds].Fx2 > (*vissprite_t)(unsafe.Pointer(spr)).Fx2 {
 			v5 = (*vissprite_t)(unsafe.Pointer(spr)).Fx2
 		} else {
-			v5 = (*drawseg_t)(unsafe.Pointer(ds)).Fx2
+			v5 = drawsegs[ds].Fx2
 		}
 		r2 = v5
-		if (*drawseg_t)(unsafe.Pointer(ds)).Fscale1 > (*drawseg_t)(unsafe.Pointer(ds)).Fscale2 {
-			lowscale = (*drawseg_t)(unsafe.Pointer(ds)).Fscale2
-			scale = (*drawseg_t)(unsafe.Pointer(ds)).Fscale1
+		if drawsegs[ds].Fscale1 > drawsegs[ds].Fscale2 {
+			lowscale = drawsegs[ds].Fscale2
+			scale = drawsegs[ds].Fscale1
 		} else {
-			lowscale = (*drawseg_t)(unsafe.Pointer(ds)).Fscale1
-			scale = (*drawseg_t)(unsafe.Pointer(ds)).Fscale2
+			lowscale = drawsegs[ds].Fscale1
+			scale = drawsegs[ds].Fscale2
 		}
-		if scale < (*vissprite_t)(unsafe.Pointer(spr)).Fscale || lowscale < (*vissprite_t)(unsafe.Pointer(spr)).Fscale && !(R_PointOnSegSide(tls, (*vissprite_t)(unsafe.Pointer(spr)).Fgx, (*vissprite_t)(unsafe.Pointer(spr)).Fgy, (*drawseg_t)(unsafe.Pointer(ds)).Fcurline) != 0) {
+		if scale < (*vissprite_t)(unsafe.Pointer(spr)).Fscale || lowscale < (*vissprite_t)(unsafe.Pointer(spr)).Fscale && !(R_PointOnSegSide(tls, (*vissprite_t)(unsafe.Pointer(spr)).Fgx, (*vissprite_t)(unsafe.Pointer(spr)).Fgy, drawsegs[ds].Fcurline) != 0) {
 			// masked mid texture?
-			if (*drawseg_t)(unsafe.Pointer(ds)).Fmaskedtexturecol != 0 {
-				R_RenderMaskedSegRange(tls, ds, r1, r2)
+			if drawsegs[ds].Fmaskedtexturecol != 0 {
+				R_RenderMaskedSegRange(tls, &drawsegs[ds], r1, r2)
 			}
 			// seg is behind sprite
 			goto _3
 		}
 		// clip this piece of the sprite
-		silhouette = (*drawseg_t)(unsafe.Pointer(ds)).Fsilhouette
-		if (*vissprite_t)(unsafe.Pointer(spr)).Fgz >= (*drawseg_t)(unsafe.Pointer(ds)).Fbsilheight {
+		silhouette = drawsegs[ds].Fsilhouette
+		if (*vissprite_t)(unsafe.Pointer(spr)).Fgz >= drawsegs[ds].Fbsilheight {
 			silhouette &= ^SIL_BOTTOM
 		}
-		if (*vissprite_t)(unsafe.Pointer(spr)).Fgzt <= (*drawseg_t)(unsafe.Pointer(ds)).Ftsilheight {
+		if (*vissprite_t)(unsafe.Pointer(spr)).Fgzt <= drawsegs[ds].Ftsilheight {
 			silhouette &= ^SIL_TOP
 		}
 		if silhouette == int32(1) {
@@ -39062,7 +39062,7 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 					break
 				}
 				if int32(clipbot[x]) == -int32(2) {
-					clipbot[x] = *(*int16)(unsafe.Pointer((*drawseg_t)(unsafe.Pointer(ds)).Fsprbottomclip + uintptr(x)*2))
+					clipbot[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprbottomclip + uintptr(x)*2))
 				}
 				goto _6
 			_6:
@@ -39078,7 +39078,7 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 						break
 					}
 					if int32(cliptop[x]) == -int32(2) {
-						cliptop[x] = *(*int16)(unsafe.Pointer((*drawseg_t)(unsafe.Pointer(ds)).Fsprtopclip + uintptr(x)*2))
+						cliptop[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprtopclip + uintptr(x)*2))
 					}
 					goto _7
 				_7:
@@ -39094,10 +39094,10 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 							break
 						}
 						if int32(clipbot[x]) == -int32(2) {
-							clipbot[x] = *(*int16)(unsafe.Pointer((*drawseg_t)(unsafe.Pointer(ds)).Fsprbottomclip + uintptr(x)*2))
+							clipbot[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprbottomclip + uintptr(x)*2))
 						}
 						if int32(cliptop[x]) == -int32(2) {
-							cliptop[x] = *(*int16)(unsafe.Pointer((*drawseg_t)(unsafe.Pointer(ds)).Fsprtopclip + uintptr(x)*2))
+							cliptop[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprtopclip + uintptr(x)*2))
 						}
 						goto _8
 					_8:
@@ -39110,7 +39110,7 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 		goto _3
 	_3:
 		;
-		ds -= 64
+		ds -= 1
 	}
 	// all clipping has been performed, so draw the sprite
 	// check for unclipped columns
@@ -39141,7 +39141,7 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 //	// R_DrawMasked
 //	//
 func R_DrawMasked(tls *libc.TLS) {
-	var ds, spr uintptr
+	var spr uintptr
 	R_SortVisSprites(tls)
 	if vissprite_p > uintptr(unsafe.Pointer(&vissprites)) {
 		// draw all vissprites back to front
@@ -39158,18 +39158,18 @@ func R_DrawMasked(tls *libc.TLS) {
 		}
 	}
 	// render any remaining masked mid textures
-	ds = ds_p - uintptr(1)*64
+	ds := ds_index - 1
 	for {
-		if !(ds >= uintptr(unsafe.Pointer(&drawsegs))) {
+		if ds < 0 {
 			break
 		}
-		if (*drawseg_t)(unsafe.Pointer(ds)).Fmaskedtexturecol != 0 {
-			R_RenderMaskedSegRange(tls, ds, (*drawseg_t)(unsafe.Pointer(ds)).Fx1, (*drawseg_t)(unsafe.Pointer(ds)).Fx2)
+		if drawsegs[ds].Fmaskedtexturecol != 0 {
+			R_RenderMaskedSegRange(tls, &drawsegs[ds], drawsegs[ds].Fx1, drawsegs[ds].Fx2)
 		}
 		goto _2
 	_2:
 		;
-		ds -= 64
+		ds -= 1
 	}
 	// draw the psprites on top of everything
 	//  but does not draw on side views
@@ -46959,7 +46959,7 @@ var drone boolean
 
 var ds_colormap uintptr
 
-var ds_p uintptr
+var ds_index int
 
 // C documentation
 //
