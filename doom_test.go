@@ -37,9 +37,10 @@ func (d *doomTestHeadless) GetKey(event *DoomKeyEvent) bool {
 	return false
 }
 
-// Run the demo for 60 seconds, then press Escape, up, enter, y to quit
+// Run the demo at super speed to make sure it all goes ok
 func TestDoomDemo(t *testing.T) {
-	wait := time.Second * 60
+	dg_speed_ratio = 50.0 // Run at 50x speed
+	wait := time.Second * 10
 	game := &doomTestHeadless{
 		t:     t,
 		start: time.Now(),

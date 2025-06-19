@@ -22,6 +22,7 @@ type DoomFrontend interface {
 }
 
 var dg_frontend DoomFrontend
+var dg_speed_ratio float64 = 1.0 // ratio of real time we're going to run at. We adjust this to make testing easier.
 var dg_exiting bool
 var start_time time.Time
 
@@ -18739,7 +18740,7 @@ var firsttime = 1
 var basetime = uint32(0)
 
 func I_GetTicks(tls *libc.TLS) (r int32) {
-	return int32(time.Since(start_time).Milliseconds())
+	return int32(float64(time.Since(start_time).Milliseconds()) * dg_speed_ratio)
 	//return int32(DG_GetTicksMs())
 }
 
@@ -18769,7 +18770,7 @@ func I_GetTimeMS(tls *libc.TLS) (r int32) {
 // Sleep for a specified number of ms
 
 func I_Sleep(ms uint32) {
-	time.Sleep(time.Duration(ms) * time.Millisecond)
+	time.Sleep(time.Duration(float64(ms)/dg_speed_ratio) * time.Millisecond)
 }
 
 //
