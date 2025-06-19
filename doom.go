@@ -38586,29 +38586,29 @@ func R_DrawMaskedColumn(tls *libc.TLS, column uintptr) {
 //	// R_DrawVisSprite
 //	//  mfloorclip and mceilingclip should also be set.
 //	//
-func R_DrawVisSprite(tls *libc.TLS, vis uintptr, x1 int32, x2 int32) {
+func R_DrawVisSprite(tls *libc.TLS, vis *vissprite_t, x1 int32, x2 int32) {
 	var column, patch uintptr
 	var frac fixed_t
 	var texturecolumn int32
-	patch = W_CacheLumpNum(tls, (*vissprite_t)(unsafe.Pointer(vis)).Fpatch+firstspritelump, int32(PU_CACHE))
-	dc_colormap = (*vissprite_t)(unsafe.Pointer(vis)).Fcolormap
+	patch = W_CacheLumpNum(tls, vis.Fpatch+firstspritelump, int32(PU_CACHE))
+	dc_colormap = vis.Fcolormap
 	if !(dc_colormap != 0) {
 		// NULL colormap = shadow draw
 		colfunc = fuzzcolfunc
 	} else {
-		if (*vissprite_t)(unsafe.Pointer(vis)).Fmobjflags&int32(MF_TRANSLATION) != 0 {
+		if vis.Fmobjflags&int32(MF_TRANSLATION) != 0 {
 			colfunc = transcolfunc
-			dc_translation = translationtables - uintptr(256) + uintptr((*vissprite_t)(unsafe.Pointer(vis)).Fmobjflags&int32(MF_TRANSLATION)>>(int32(MF_TRANSSHIFT)-8))
+			dc_translation = translationtables - uintptr(256) + uintptr(vis.Fmobjflags&int32(MF_TRANSLATION)>>(int32(MF_TRANSSHIFT)-8))
 		}
 	}
-	dc_iscale = xabs((*vissprite_t)(unsafe.Pointer(vis)).Fxiscale) >> detailshift
-	dc_texturemid = (*vissprite_t)(unsafe.Pointer(vis)).Ftexturemid
-	frac = (*vissprite_t)(unsafe.Pointer(vis)).Fstartfrac
-	spryscale = (*vissprite_t)(unsafe.Pointer(vis)).Fscale
+	dc_iscale = xabs(vis.Fxiscale) >> detailshift
+	dc_texturemid = vis.Ftexturemid
+	frac = vis.Fstartfrac
+	spryscale = vis.Fscale
 	sprtopscreen = centeryfrac - FixedMul(dc_texturemid, spryscale)
-	dc_x = (*vissprite_t)(unsafe.Pointer(vis)).Fx1
+	dc_x = vis.Fx1
 	for {
-		if !(dc_x <= (*vissprite_t)(unsafe.Pointer(vis)).Fx2) {
+		if !(dc_x <= vis.Fx2) {
 			break
 		}
 		texturecolumn = frac >> int32(FRACBITS)
@@ -38621,7 +38621,7 @@ func R_DrawVisSprite(tls *libc.TLS, vis uintptr, x1 int32, x2 int32) {
 	_1:
 		;
 		dc_x++
-		frac += (*vissprite_t)(unsafe.Pointer(vis)).Fxiscale
+		frac += vis.Fxiscale
 	}
 	colfunc = basecolfunc
 }
@@ -38796,10 +38796,10 @@ func R_AddSprites(tls *libc.TLS, sec uintptr) {
 //	// R_DrawPSprite
 //	//
 func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
-	bp := alloc(112)
 	var flip boolean
 	var lump, x1, x2, v1, v2 int32
-	var sprdef, sprframe, vis uintptr
+	var sprdef, sprframe uintptr
+	var vis *vissprite_t
 	var tx fixed_t
 	// decide which patch to use
 	if libc.Uint32FromInt32((*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fsprite) >= libc.Uint32FromInt32(numsprites) {
@@ -38827,51 +38827,51 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 		return
 	}
 	// store information in a vissprite
-	vis = bp
-	(*vissprite_t)(unsafe.Pointer(vis)).Fmobjflags = 0
-	(*vissprite_t)(unsafe.Pointer(vis)).Ftexturemid = BASEYCENTER<<FRACBITS + 1<<FRACBITS/2 - ((*pspdef_t)(unsafe.Pointer(psp)).Fsy - *(*fixed_t)(unsafe.Pointer(spritetopoffset + uintptr(lump)*4)))
+	vis = &vissprite_t{}
+	vis.Fmobjflags = 0
+	vis.Ftexturemid = BASEYCENTER<<FRACBITS + 1<<FRACBITS/2 - ((*pspdef_t)(unsafe.Pointer(psp)).Fsy - *(*fixed_t)(unsafe.Pointer(spritetopoffset + uintptr(lump)*4)))
 	if x1 < 0 {
 		v1 = 0
 	} else {
 		v1 = x1
 	}
-	(*vissprite_t)(unsafe.Pointer(vis)).Fx1 = v1
+	vis.Fx1 = v1
 	if x2 >= viewwidth {
 		v2 = viewwidth - int32(1)
 	} else {
 		v2 = x2
 	}
-	(*vissprite_t)(unsafe.Pointer(vis)).Fx2 = v2
-	(*vissprite_t)(unsafe.Pointer(vis)).Fscale = pspritescale << detailshift
+	vis.Fx2 = v2
+	vis.Fscale = pspritescale << detailshift
 	if flip != 0 {
-		(*vissprite_t)(unsafe.Pointer(vis)).Fxiscale = -pspriteiscale
-		(*vissprite_t)(unsafe.Pointer(vis)).Fstartfrac = *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4)) - int32(1)
+		vis.Fxiscale = -pspriteiscale
+		vis.Fstartfrac = *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4)) - int32(1)
 	} else {
-		(*vissprite_t)(unsafe.Pointer(vis)).Fxiscale = pspriteiscale
-		(*vissprite_t)(unsafe.Pointer(vis)).Fstartfrac = 0
+		vis.Fxiscale = pspriteiscale
+		vis.Fstartfrac = 0
 	}
-	if (*vissprite_t)(unsafe.Pointer(vis)).Fx1 > x1 {
-		*(*fixed_t)(unsafe.Pointer(vis + 40)) += (*vissprite_t)(unsafe.Pointer(vis)).Fxiscale * ((*vissprite_t)(unsafe.Pointer(vis)).Fx1 - x1)
+	if vis.Fx1 > x1 {
+		vis.Fstartfrac += vis.Fxiscale * fixed_t(vis.Fx1-x1)
 	}
-	(*vissprite_t)(unsafe.Pointer(vis)).Fpatch = lump
+	vis.Fpatch = lump
 	if *(*int32)(unsafe.Pointer(viewplayer + 56 + uintptr(pw_invisibility)*4)) > 4*32 || *(*int32)(unsafe.Pointer(viewplayer + 56 + uintptr(pw_invisibility)*4))&int32(8) != 0 {
 		// shadow draw
-		(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = libc.UintptrFromInt32(0)
+		vis.Fcolormap = libc.UintptrFromInt32(0)
 	} else {
 		if fixedcolormap != 0 {
 			// fixed color
-			(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = fixedcolormap
+			vis.Fcolormap = fixedcolormap
 		} else {
 			if (*state_t)(unsafe.Pointer((*pspdef_t)(unsafe.Pointer(psp)).Fstate)).Fframe&int32(FF_FULLBRIGHT1) != 0 {
 				// full bright
-				(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = colormaps
+				vis.Fcolormap = colormaps
 			} else {
 				// local light
-				(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = *(*uintptr)(unsafe.Pointer(spritelights + uintptr(MAXLIGHTSCALE-1)*8))
+				vis.Fcolormap = *(*uintptr)(unsafe.Pointer(spritelights + uintptr(MAXLIGHTSCALE-1)*8))
 			}
 		}
 	}
-	R_DrawVisSprite(tls, vis, (*vissprite_t)(unsafe.Pointer(vis)).Fx1, (*vissprite_t)(unsafe.Pointer(vis)).Fx2)
+	R_DrawVisSprite(tls, vis, vis.Fx1, vis.Fx2)
 }
 
 // C documentation
@@ -38988,14 +38988,14 @@ func R_SortVisSprites(tls *libc.TLS) {
 var clipbot [320]int16
 var cliptop [320]int16
 
-func R_DrawSprite(tls *libc.TLS, spr uintptr) {
+func R_DrawSprite(tls *libc.TLS, spr *vissprite_t) {
 	var ds int
 	var lowscale, scale fixed_t
 	var r1, r2, silhouette, x, v4, v5 int32
 	var v2 int16
-	x = (*vissprite_t)(unsafe.Pointer(spr)).Fx1
+	x = spr.Fx1
 	for {
-		if !(x <= (*vissprite_t)(unsafe.Pointer(spr)).Fx2) {
+		if !(x <= spr.Fx2) {
 			break
 		}
 		v2 = int16(-2)
@@ -39015,18 +39015,18 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 			break
 		}
 		// determine if the drawseg obscures the sprite
-		if drawsegs[ds].Fx1 > (*vissprite_t)(unsafe.Pointer(spr)).Fx2 || drawsegs[ds].Fx2 < (*vissprite_t)(unsafe.Pointer(spr)).Fx1 || !(drawsegs[ds].Fsilhouette != 0) && !(drawsegs[ds].Fmaskedtexturecol != 0) {
+		if drawsegs[ds].Fx1 > spr.Fx2 || drawsegs[ds].Fx2 < spr.Fx1 || !(drawsegs[ds].Fsilhouette != 0) && !(drawsegs[ds].Fmaskedtexturecol != 0) {
 			// does not cover sprite
 			goto _3
 		}
-		if drawsegs[ds].Fx1 < (*vissprite_t)(unsafe.Pointer(spr)).Fx1 {
-			v4 = (*vissprite_t)(unsafe.Pointer(spr)).Fx1
+		if drawsegs[ds].Fx1 < spr.Fx1 {
+			v4 = spr.Fx1
 		} else {
 			v4 = drawsegs[ds].Fx1
 		}
 		r1 = v4
-		if drawsegs[ds].Fx2 > (*vissprite_t)(unsafe.Pointer(spr)).Fx2 {
-			v5 = (*vissprite_t)(unsafe.Pointer(spr)).Fx2
+		if drawsegs[ds].Fx2 > spr.Fx2 {
+			v5 = spr.Fx2
 		} else {
 			v5 = drawsegs[ds].Fx2
 		}
@@ -39038,7 +39038,7 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 			lowscale = drawsegs[ds].Fscale1
 			scale = drawsegs[ds].Fscale2
 		}
-		if scale < (*vissprite_t)(unsafe.Pointer(spr)).Fscale || lowscale < (*vissprite_t)(unsafe.Pointer(spr)).Fscale && !(R_PointOnSegSide(tls, (*vissprite_t)(unsafe.Pointer(spr)).Fgx, (*vissprite_t)(unsafe.Pointer(spr)).Fgy, drawsegs[ds].Fcurline) != 0) {
+		if scale < spr.Fscale || lowscale < spr.Fscale && !(R_PointOnSegSide(tls, spr.Fgx, spr.Fgy, drawsegs[ds].Fcurline) != 0) {
 			// masked mid texture?
 			if drawsegs[ds].Fmaskedtexturecol != 0 {
 				R_RenderMaskedSegRange(tls, &drawsegs[ds], r1, r2)
@@ -39048,10 +39048,10 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 		}
 		// clip this piece of the sprite
 		silhouette = drawsegs[ds].Fsilhouette
-		if (*vissprite_t)(unsafe.Pointer(spr)).Fgz >= drawsegs[ds].Fbsilheight {
+		if spr.Fgz >= drawsegs[ds].Fbsilheight {
 			silhouette &= ^SIL_BOTTOM
 		}
-		if (*vissprite_t)(unsafe.Pointer(spr)).Fgzt <= drawsegs[ds].Ftsilheight {
+		if spr.Fgzt <= drawsegs[ds].Ftsilheight {
 			silhouette &= ^SIL_TOP
 		}
 		if silhouette == int32(1) {
@@ -39114,9 +39114,9 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 	}
 	// all clipping has been performed, so draw the sprite
 	// check for unclipped columns
-	x = (*vissprite_t)(unsafe.Pointer(spr)).Fx1
+	x = spr.Fx1
 	for {
-		if !(x <= (*vissprite_t)(unsafe.Pointer(spr)).Fx2) {
+		if !(x <= spr.Fx2) {
 			break
 		}
 		if int32(clipbot[x]) == -int32(2) {
@@ -39132,7 +39132,7 @@ func R_DrawSprite(tls *libc.TLS, spr uintptr) {
 	}
 	mfloorclip = uintptr(unsafe.Pointer(&clipbot))
 	mceilingclip = uintptr(unsafe.Pointer(&cliptop))
-	R_DrawVisSprite(tls, spr, (*vissprite_t)(unsafe.Pointer(spr)).Fx1, (*vissprite_t)(unsafe.Pointer(spr)).Fx2)
+	R_DrawVisSprite(tls, spr, spr.Fx1, spr.Fx2)
 }
 
 // C documentation
@@ -39150,7 +39150,7 @@ func R_DrawMasked(tls *libc.TLS) {
 			if !(spr != uintptr(unsafe.Pointer(&vsprsortedhead))) {
 				break
 			}
-			R_DrawSprite(tls, spr)
+			R_DrawSprite(tls, (*vissprite_t)(unsafe.Pointer(spr)))
 			goto _1
 		_1:
 			;
