@@ -35330,12 +35330,12 @@ func R_Subsector(tls *libc.TLS, num int32) {
 	if (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight < viewz {
 		floorplane = R_FindPlane(tls, (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight, int32((*sector_t)(unsafe.Pointer(frontsector)).Ffloorpic), int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel))
 	} else {
-		floorplane = libc.UintptrFromInt32(0)
+		floorplane = nil
 	}
 	if (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight > viewz || int32((*sector_t)(unsafe.Pointer(frontsector)).Fceilingpic) == skyflatnum {
 		ceilingplane = R_FindPlane(tls, (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight, int32((*sector_t)(unsafe.Pointer(frontsector)).Fceilingpic), int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel))
 	} else {
-		ceilingplane = libc.UintptrFromInt32(0)
+		ceilingplane = nil
 	}
 	R_AddSprites(tls, frontsector)
 	for {
@@ -37468,8 +37468,6 @@ func R_RenderPlayerView(tls *libc.TLS, player uintptr) {
 	NetUpdate(tls)
 }
 
-const MAXVISPLANES = 128
-
 // C documentation
 //
 //	//
@@ -37560,7 +37558,7 @@ func R_ClearPlanes(tls *libc.TLS) {
 		;
 		i++
 	}
-	lastvisplane = uintptr(unsafe.Pointer(&visplanes))
+	lastvisplane_index = 0
 	lastopening = uintptr(unsafe.Pointer(&openings))
 	// texture calculation
 	xmemset(uintptr(unsafe.Pointer(&cachedheight)), 0, uint64(800))
@@ -37576,38 +37574,30 @@ func R_ClearPlanes(tls *libc.TLS) {
 //	//
 //	// R_FindPlane
 //	//
-func R_FindPlane(tls *libc.TLS, height fixed_t, picnum int32, lightlevel int32) (r uintptr) {
-	var check uintptr
+func R_FindPlane(tls *libc.TLS, height fixed_t, picnum int32, lightlevel int32) *visplane_t {
 	if picnum == skyflatnum {
 		height = 0 // all skys map together
 		lightlevel = 0
 	}
-	check = uintptr(unsafe.Pointer(&visplanes))
-	for {
-		if !(check < lastvisplane) {
-			break
+	for i := 0; i < lastvisplane_index; i++ {
+		check := &visplanes[i]
+		if height == check.Fheight && picnum == check.Fpicnum && lightlevel == check.Flightlevel {
+			return check
 		}
-		if height == (*visplane_t)(unsafe.Pointer(check)).Fheight && picnum == (*visplane_t)(unsafe.Pointer(check)).Fpicnum && lightlevel == (*visplane_t)(unsafe.Pointer(check)).Flightlevel {
-			break
-		}
-		goto _1
-	_1:
-		;
-		check += 664
 	}
-	if check < lastvisplane {
-		return check
-	}
-	if (int64(lastvisplane)-int64(uintptr(unsafe.Pointer(&visplanes))))/664 == int64(MAXVISPLANES) {
+	if lastvisplane_index >= len(visplanes)-1 {
 		I_Error(tls, __ccgo_ts(26430), 0)
 	}
-	lastvisplane += 664
-	(*visplane_t)(unsafe.Pointer(check)).Fheight = height
-	(*visplane_t)(unsafe.Pointer(check)).Fpicnum = picnum
-	(*visplane_t)(unsafe.Pointer(check)).Flightlevel = lightlevel
-	(*visplane_t)(unsafe.Pointer(check)).Fminx = int32(SCREENWIDTH)
-	(*visplane_t)(unsafe.Pointer(check)).Fmaxx = -int32(1)
-	xmemset(check+21, 0xff, 320)
+	check := &visplanes[lastvisplane_index]
+	check.Fheight = height
+	check.Fpicnum = picnum
+	check.Flightlevel = lightlevel
+	check.Fminx = int32(SCREENWIDTH)
+	check.Fmaxx = -int32(1)
+	for i := 0; i < 320; i++ {
+		check.Ftop[i] = 0xff
+	}
+	lastvisplane_index++
 	return check
 }
 
@@ -37616,21 +37606,20 @@ func R_FindPlane(tls *libc.TLS, height fixed_t, picnum int32, lightlevel int32) 
 //	//
 //	// R_CheckPlane
 //	//
-func R_CheckPlane(tls *libc.TLS, pl uintptr, start int32, stop int32) (r uintptr) {
+func R_CheckPlane(tls *libc.TLS, pl *visplane_t, start int32, stop int32) *visplane_t {
 	var intrh, intrl, unionh, unionl, x int32
-	var v2 uintptr
-	if start < (*visplane_t)(unsafe.Pointer(pl)).Fminx {
-		intrl = (*visplane_t)(unsafe.Pointer(pl)).Fminx
+	if start < pl.Fminx {
+		intrl = pl.Fminx
 		unionl = start
 	} else {
-		unionl = (*visplane_t)(unsafe.Pointer(pl)).Fminx
+		unionl = pl.Fminx
 		intrl = start
 	}
-	if stop > (*visplane_t)(unsafe.Pointer(pl)).Fmaxx {
-		intrh = (*visplane_t)(unsafe.Pointer(pl)).Fmaxx
+	if stop > pl.Fmaxx {
+		intrh = pl.Fmaxx
 		unionh = stop
 	} else {
-		unionh = (*visplane_t)(unsafe.Pointer(pl)).Fmaxx
+		unionh = pl.Fmaxx
 		intrh = stop
 	}
 	x = intrl
@@ -37638,7 +37627,7 @@ func R_CheckPlane(tls *libc.TLS, pl uintptr, start int32, stop int32) (r uintptr
 		if !(x <= intrh) {
 			break
 		}
-		if libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 21 + uintptr(x)))) != int32(0xff) {
+		if pl.Ftop[x] != 0xff {
 			break
 		}
 		goto _1
@@ -37647,22 +37636,23 @@ func R_CheckPlane(tls *libc.TLS, pl uintptr, start int32, stop int32) (r uintptr
 		x++
 	}
 	if x > intrh {
-		(*visplane_t)(unsafe.Pointer(pl)).Fminx = unionl
-		(*visplane_t)(unsafe.Pointer(pl)).Fmaxx = unionh
+		pl.Fminx = unionl
+		pl.Fmaxx = unionh
 		// use the same one
 		return pl
 	}
 	// make a new visplane
-	(*visplane_t)(unsafe.Pointer(lastvisplane)).Fheight = (*visplane_t)(unsafe.Pointer(pl)).Fheight
-	(*visplane_t)(unsafe.Pointer(lastvisplane)).Fpicnum = (*visplane_t)(unsafe.Pointer(pl)).Fpicnum
-	(*visplane_t)(unsafe.Pointer(lastvisplane)).Flightlevel = (*visplane_t)(unsafe.Pointer(pl)).Flightlevel
-	v2 = lastvisplane
-	lastvisplane += 664
-	pl = v2
-	(*visplane_t)(unsafe.Pointer(pl)).Fminx = start
-	(*visplane_t)(unsafe.Pointer(pl)).Fmaxx = stop
-	xmemset(pl+21, 0xff, 320)
-	return pl
+	newPl := &visplanes[lastvisplane_index]
+	newPl.Fheight = pl.Fheight
+	newPl.Fpicnum = pl.Fpicnum
+	newPl.Flightlevel = pl.Flightlevel
+	newPl.Fminx = start
+	newPl.Fmaxx = stop
+	for i := 0; i < 320; i++ {
+		newPl.Ftop[i] = 0xff
+	}
+	lastvisplane_index++
+	return newPl
 }
 
 // C documentation
@@ -37673,26 +37663,22 @@ func R_CheckPlane(tls *libc.TLS, pl uintptr, start int32, stop int32) (r uintptr
 //	//
 func R_DrawPlanes(tls *libc.TLS) {
 	var angle, b1, b2, light, lumpnum, stop, t1, t2, x int32
-	var pl uintptr
 	if (int64(ds_p)-int64(uintptr(unsafe.Pointer(&drawsegs))))/64 > int64(MAXDRAWSEGS) {
 		I_Error(tls, __ccgo_ts(26461), (int64(ds_p)-int64(uintptr(unsafe.Pointer(&drawsegs))))/64)
 	}
-	if (int64(lastvisplane)-int64(uintptr(unsafe.Pointer(&visplanes))))/664 > int64(MAXVISPLANES) {
-		I_Error(tls, __ccgo_ts(26498), (int64(lastvisplane)-int64(uintptr(unsafe.Pointer(&visplanes))))/664)
+	if lastvisplane_index >= len(visplanes)-1 {
+		I_Error(tls, __ccgo_ts(26498), lastvisplane_index)
 	}
 	if (int64(lastopening)-int64(uintptr(unsafe.Pointer(&openings))))/2 > int64(SCREENWIDTH*64) {
 		I_Error(tls, __ccgo_ts(26535), (int64(lastopening)-int64(uintptr(unsafe.Pointer(&openings))))/2)
 	}
-	pl = uintptr(unsafe.Pointer(&visplanes))
-	for {
-		if !(pl < lastvisplane) {
-			break
-		}
-		if (*visplane_t)(unsafe.Pointer(pl)).Fminx > (*visplane_t)(unsafe.Pointer(pl)).Fmaxx {
-			goto _1
+	for i := 0; i < lastvisplane_index; i++ {
+		pl := &visplanes[i]
+		if pl.Fminx > pl.Fmaxx {
+			continue
 		}
 		// sky flat
-		if (*visplane_t)(unsafe.Pointer(pl)).Fpicnum == skyflatnum {
+		if pl.Fpicnum == skyflatnum {
 			dc_iscale = pspriteiscale >> detailshift
 			// Sky is allways drawn full bright,
 			//  i.e. colormaps[0] is used.
@@ -37700,13 +37686,13 @@ func R_DrawPlanes(tls *libc.TLS) {
 			//  by INVUL inverse mapping.
 			dc_colormap = colormaps
 			dc_texturemid = skytexturemid
-			x = (*visplane_t)(unsafe.Pointer(pl)).Fminx
+			x = pl.Fminx
 			for {
-				if !(x <= (*visplane_t)(unsafe.Pointer(pl)).Fmaxx) {
+				if !(x <= pl.Fmaxx) {
 					break
 				}
-				dc_yl = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 21 + uintptr(x))))
-				dc_yh = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 343 + uintptr(x))))
+				dc_yl = libc.Int32FromUint8(pl.Ftop[x])
+				dc_yh = libc.Int32FromUint8(pl.Fbottom[x])
 				if dc_yl <= dc_yh {
 					angle = libc.Int32FromUint32((viewangle + xtoviewangle[x]) >> int32(ANGLETOSKYSHIFT))
 					dc_x = x
@@ -37718,7 +37704,7 @@ func R_DrawPlanes(tls *libc.TLS) {
 				;
 				x++
 			}
-			goto _1
+			continue
 		}
 		// regular flat
 		lumpnum = firstflat + *(*int32)(unsafe.Pointer(flattranslation + uintptr((*visplane_t)(unsafe.Pointer(pl)).Fpicnum)*4))
@@ -37732,18 +37718,32 @@ func R_DrawPlanes(tls *libc.TLS) {
 			light = 0
 		}
 		planezlight = uintptr(unsafe.Pointer(&zlight)) + uintptr(light)*1024
-		*(*uint8)(unsafe.Pointer(pl + 21 + uintptr((*visplane_t)(unsafe.Pointer(pl)).Fmaxx+int32(1)))) = uint8(0xff)
-		*(*uint8)(unsafe.Pointer(pl + 21 + uintptr((*visplane_t)(unsafe.Pointer(pl)).Fminx-int32(1)))) = uint8(0xff)
-		stop = (*visplane_t)(unsafe.Pointer(pl)).Fmaxx + int32(1)
-		x = (*visplane_t)(unsafe.Pointer(pl)).Fminx
+		if int(pl.Fmaxx+1) < len(pl.Ftop) {
+			pl.Ftop[pl.Fmaxx+1] = 0xff
+		}
+		if pl.Fminx-1 >= 0 {
+			pl.Ftop[pl.Fminx-1] = 0xff
+		}
+		stop = pl.Fmaxx + int32(1)
+		x = pl.Fminx
 		for {
 			if !(x <= stop) {
 				break
 			}
-			t1 = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 21 + uintptr(x-int32(1)))))
-			b1 = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 343 + uintptr(x-int32(1)))))
-			t2 = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 21 + uintptr(x))))
-			b2 = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(pl + 343 + uintptr(x))))
+			if x-1 >= 0 {
+				t1 = int32(pl.Ftop[x-1])
+				b1 = int32(pl.Fbottom[x-1])
+			} else {
+				t1 = int32(0xff)
+				b1 = -1
+			}
+			if x < int32(len(pl.Ftop)) {
+				t2 = int32(pl.Ftop[x])
+				b2 = int32(pl.Fbottom[x])
+			} else {
+				t2 = int32(0xff)
+				b2 = -1
+			}
 			for t1 < t2 && t1 <= b1 {
 				R_MapPlane(tls, t1, spanstart[t1], x-int32(1))
 				t1++
@@ -37766,10 +37766,6 @@ func R_DrawPlanes(tls *libc.TLS) {
 			x++
 		}
 		W_ReleaseLumpNum(tls, lumpnum)
-		goto _1
-	_1:
-		;
-		pl += 664
 	}
 }
 
@@ -37903,8 +37899,8 @@ func R_RenderSegLoop(tls *libc.TLS) {
 				bottom = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - int32(1)
 			}
 			if top <= bottom {
-				*(*uint8)(unsafe.Pointer(ceilingplane + 21 + uintptr(rw_x))) = libc.Uint8FromInt32(top)
-				*(*uint8)(unsafe.Pointer(ceilingplane + 343 + uintptr(rw_x))) = libc.Uint8FromInt32(bottom)
+				ceilingplane.Ftop[rw_x] = uint8(top)
+				ceilingplane.Fbottom[rw_x] = uint8(bottom)
 			}
 		}
 		yh = bottomfrac >> int32(HEIGHTBITS)
@@ -37918,8 +37914,8 @@ func R_RenderSegLoop(tls *libc.TLS) {
 				top = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + int32(1)
 			}
 			if top <= bottom {
-				*(*uint8)(unsafe.Pointer(floorplane + 21 + uintptr(rw_x))) = libc.Uint8FromInt32(top)
-				*(*uint8)(unsafe.Pointer(floorplane + 343 + uintptr(rw_x))) = libc.Uint8FromInt32(bottom)
+				floorplane.Ftop[rw_x] = uint8(top)
+				floorplane.Fbottom[rw_x] = uint8(bottom)
 			}
 		}
 		// texturecolumn and lighting are independent of wall tiers
@@ -46685,7 +46681,7 @@ var ceilingclip [320]int16
 //	// so missiles don't explode against sky hack walls
 var ceilingline uintptr
 
-var ceilingplane uintptr
+var ceilingplane *visplane_t
 
 var centerx int32
 
@@ -47064,7 +47060,7 @@ var floatok boolean
 //	//
 var floorclip [320]int16
 
-var floorplane uintptr
+var floorplane *visplane_t
 
 var forwardmove [2]fixed_t
 
@@ -47387,7 +47383,7 @@ var lastspritelump int32
 //	//
 var lasttime int32
 
-var lastvisplane uintptr
+var lastvisplane_index int
 
 var levelTimeCount int32
 

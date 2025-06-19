@@ -70,6 +70,7 @@ func (d *doomTestHeadless) DrawFrame(frame *image.RGBA) {
 		if err != nil {
 			d.t.Fatalf("Error starting ffmpeg: %v", err)
 		}
+		d.t.Logf("Saving output to %s", name)
 	}
 	d.outputFile.Write(frame.Pix)
 }
