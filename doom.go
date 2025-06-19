@@ -26058,8 +26058,8 @@ func P_SpawnFireFlicker(tls *libc.TLS, sector uintptr) {
 	// Note that we are resetting sector attributes.
 	// Nothing special about it during gameplay.
 	(*sector_t)(unsafe.Pointer(sector)).Fspecial = 0
-	//flick = Z_Malloc(tls, int32(48), int32(PU_LEVSPEC), uintptr(0))
-	flick := &fireflicker_t{}
+	mem := Z_Malloc(tls, int32(48), int32(PU_LEVSPEC), uintptr(0))
+	flick := (*fireflicker_t)(unsafe.Pointer(mem))
 	P_AddThinker(tls, uintptr(unsafe.Pointer(&flick.Fthinker)))
 	flick.Fthinker.Ffunction.Facv = __ccgo_fp(T_FireFlicker)
 	flick.Fsector = sector
