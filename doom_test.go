@@ -112,5 +112,5 @@ func TestDoomDemo(t *testing.T) {
 		},
 	}
 	defer game.Close()
-	Run(game, 1, 0)
+	Run(game, nil)
 }

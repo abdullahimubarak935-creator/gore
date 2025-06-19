@@ -3,6 +3,7 @@ package main
 import (
 	"image"
 	"log"
+	"os"
 	"sync"
 
 	"github.com/AndreRenaud/gore"
@@ -102,7 +103,7 @@ func main() {
 	ebiten.SetWindowTitle("Gamepad (Ebitengine Demo)")
 	ebiten.SetFullscreen(true)
 	go func() {
-		gore.Run(game, 1, 0)
+		gore.Run(game, os.Args[1:])
 		game.terminating = true
 	}()
 	if err := ebiten.RunGame(game); err != nil {

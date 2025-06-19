@@ -46319,7 +46319,7 @@ func doomgeneric_Create(tls *libc.TLS, argc int32, argv uintptr) {
 	D_DoomMain(tls)
 }
 
-func Run(fg DoomFrontend, argc int32, argv uintptr) {
+func Run(fg DoomFrontend, args []string) {
 	if dg_frontend != nil {
 		log.Printf("Run called twice, ignoring second call")
 	}
@@ -46327,15 +46327,32 @@ func Run(fg DoomFrontend, argc int32, argv uintptr) {
 	dg_exiting = false
 	start_time = time.Now()
 	tls := libc.NewTLS()
-	doomgeneric_Create(tls, argc, argv)
+
+	// Convert command line arguments to C strings.
+	argc := int32(len(args))
+	argv := make([]uintptr, argc+2, argc+2)
+	for i, arg := range args {
+		argp, err := libc.CString(arg)
+		if err != nil {
+			log.Fatalf("Failed to convert argument %d to C string: %v", i, err)
+		}
+
+		argv[i+1] = argp
+	}
+	arg0, err := libc.CString("doom")
+	if err != nil {
+		log.Fatalf("Failed to convert argument 0 to C string: %v", err)
+	}
+	argv[0] = arg0
+	argv[argc+1] = 0
+	doomgeneric_Create(tls, argc+1, (uintptr)(unsafe.Pointer(&argv[0])))
 	for !dg_exiting {
 		doomgeneric_Tick(tls)
 	}
+	// HACK: This avoid the GC from collecting the argv array
+	// before the program exits, which would cause a crash.
+	log.Printf("done with args %d %#v", argc+1, argv)
 }
-
-//func main() {
-//libc.Start(main1)
-//}
 
 func __ccgo_fp(f interface{}) uintptr {
 	type iface [2]uintptr

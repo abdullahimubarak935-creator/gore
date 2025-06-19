@@ -4,6 +4,7 @@ import (
 	"image"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"sync"
 	"time"
@@ -126,5 +127,5 @@ func main() {
 		}
 	}()
 
-	gore.Run(frontend, 1, 0)
+	gore.Run(frontend, os.Args[1:])
 }
