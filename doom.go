@@ -20086,7 +20086,7 @@ func init() {
 type menuitem_t = struct {
 	Fstatus   int16
 	Fname     [10]int8
-	Froutine  uintptr
+	Froutine  func(tls *libc.TLS, choice int32)
 	FalphaKey int8
 }
 
@@ -20117,43 +20117,39 @@ func init() {
 			Fstatus:   int16(1),
 			Fname:     [10]int8{'M', '_', 'N', 'G', 'A', 'M', 'E'},
 			FalphaKey: int8('n'),
+			Froutine:  M_NewGame,
 		},
 		1: {
 			Fstatus:   int16(1),
 			Fname:     [10]int8{'M', '_', 'O', 'P', 'T', 'I', 'O', 'N'},
 			FalphaKey: int8('o'),
+			Froutine:  M_Options,
 		},
 		2: {
 			Fstatus:   int16(1),
 			Fname:     [10]int8{'M', '_', 'L', 'O', 'A', 'D', 'G'},
 			FalphaKey: int8('l'),
+			Froutine:  M_LoadGame,
 		},
 		3: {
 			Fstatus:   int16(1),
 			Fname:     [10]int8{'M', '_', 'S', 'A', 'V', 'E', 'G'},
 			FalphaKey: int8('s'),
+			Froutine:  M_SaveGame,
 		},
 		4: {
 			Fstatus:   int16(1),
 			Fname:     [10]int8{'M', '_', 'R', 'D', 'T', 'H', 'I', 'S'},
 			FalphaKey: int8('r'),
+			Froutine:  M_ReadThis,
 		},
 		5: {
 			Fstatus:   int16(1),
 			Fname:     [10]int8{'M', '_', 'Q', 'U', 'I', 'T', 'G'},
 			FalphaKey: int8('q'),
+			Froutine:  M_QuitDOOM,
 		},
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&MainMenu)
-	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(M_NewGame)
-	*(*uintptr)(unsafe.Add(p, 48)) = __ccgo_fp(M_Options)
-	*(*uintptr)(unsafe.Add(p, 80)) = __ccgo_fp(M_LoadGame)
-	*(*uintptr)(unsafe.Add(p, 112)) = __ccgo_fp(M_SaveGame)
-	*(*uintptr)(unsafe.Add(p, 144)) = __ccgo_fp(M_ReadThis)
-	*(*uintptr)(unsafe.Add(p, 176)) = __ccgo_fp(M_QuitDOOM)
 }
 
 func init() {
@@ -21646,29 +21642,29 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 		} else {
 			if key == key_menu_left {
 				// Slide slider left
-				if (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine != 0 && int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus) == int32(2) {
+				if (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine != nil && int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus) == int32(2) {
 					S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_stnmov))
-					(*(*func(*libc.TLS, int32))(unsafe.Pointer(&struct{ uintptr }{(*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine})))(tls, 0)
+					(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems+uintptr(itemOn)*32)).Froutine(tls, 0)
 				}
 				return 1
 			} else {
 				if key == key_menu_right {
 					// Slide slider right
-					if (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine != 0 && int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus) == int32(2) {
+					if (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine != nil && int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus) == int32(2) {
 						S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_stnmov))
-						(*(*func(*libc.TLS, int32))(unsafe.Pointer(&struct{ uintptr }{(*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine})))(tls, int32(1))
+						(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems+uintptr(itemOn)*32)).Froutine(tls, int32(1))
 					}
 					return 1
 				} else {
 					if key == key_menu_forward {
 						// Activate menu item
-						if (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine != 0 && (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus != 0 {
+						if (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine != nil && (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus != 0 {
 							(*menu_t)(unsafe.Pointer(currentMenu)).FlastOn = itemOn
 							if int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus) == int32(2) {
-								(*(*func(*libc.TLS, int32))(unsafe.Pointer(&struct{ uintptr }{(*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine})))(tls, int32(1)) // right arrow
+								(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems+uintptr(itemOn)*32)).Froutine(tls, int32(1)) // right arrow
 								S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_stnmov))
 							} else {
-								(*(*func(*libc.TLS, int32))(unsafe.Pointer(&struct{ uintptr }{(*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine})))(tls, int32(itemOn))
+								(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems+uintptr(itemOn)*32)).Froutine(tls, int32(itemOn))
 								S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_pistol))
 							}
 						}
