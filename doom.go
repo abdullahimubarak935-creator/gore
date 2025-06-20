@@ -4925,7 +4925,7 @@ func D_Display(tls *libc.TLS) {
 	}
 	if testcontrols != 0 {
 		// Box showing current mouse speed
-		V_DrawMouseSpeedBox(tls, testcontrols_mousespeed)
+		V_DrawMouseSpeedBox(testcontrols_mousespeed)
 	}
 	menuactivestate = menuactive
 	viewactivestate = viewactive
@@ -5071,7 +5071,7 @@ func D_DoomLoop(tls *libc.TLS) {
 	I_SetGrabMouseCallback(__ccgo_fp(D_GrabMouseCallback))
 	I_InitGraphics(tls)
 	I_EnableLoadingDisk()
-	V_RestoreBuffer(tls)
+	V_RestoreBuffer()
 	R_ExecuteSetViewSize(tls)
 	D_StartGameLoop()
 	if testcontrols != 0 {
@@ -5803,7 +5803,7 @@ func D_DoomMain(tls *libc.TLS) {
 	}
 	// init subsystems
 	fprintf_ccgo(os.Stdout, 4170)
-	V_Init(tls)
+	V_Init()
 	// Load configuration files before initialising other subsystems.
 	fprintf_ccgo(os.Stdout, 4197)
 	M_SetConfigFilenames(tls, __ccgo_ts(4236), __ccgo_ts(4248))
@@ -36767,7 +36767,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 		y++
 	}
 	// Draw screen and bezel; this is done to a separate screen buffer.
-	V_UseBuffer(tls, background_buffer)
+	V_UseBuffer(background_buffer)
 	patch = W_CacheLumpName(tls, __ccgo_ts(26345), int32(PU_CACHE))
 	x = 0
 	for {
@@ -36821,7 +36821,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 	V_DrawPatch(tls, viewwindowx+scaledviewwidth, viewwindowy-int32(8), W_CacheLumpName(tls, __ccgo_ts(26381), int32(PU_CACHE)))
 	V_DrawPatch(tls, viewwindowx-int32(8), viewwindowy+viewheight, W_CacheLumpName(tls, __ccgo_ts(26389), int32(PU_CACHE)))
 	V_DrawPatch(tls, viewwindowx+scaledviewwidth, viewwindowy+viewheight, W_CacheLumpName(tls, __ccgo_ts(26397), int32(PU_CACHE)))
-	V_RestoreBuffer(tls)
+	V_RestoreBuffer()
 }
 
 // C documentation
@@ -41316,12 +41316,12 @@ func init() {
 
 func ST_refreshBackground(tls *libc.TLS) {
 	if st_statusbaron != 0 {
-		V_UseBuffer(tls, st_backing_screen)
+		V_UseBuffer(st_backing_screen)
 		V_DrawPatch(tls, ST_X, 0, sbar)
 		if netgame != 0 {
 			V_DrawPatch(tls, int32(ST_FX), 0, faceback)
 		}
-		V_RestoreBuffer(tls)
+		V_RestoreBuffer()
 		V_CopyRect(tls, ST_X, 0, st_backing_screen, int32(SCREENWIDTH), int32(ST_HEIGHT), ST_X, SCREENHEIGHT-ST_HEIGHT)
 	}
 }
@@ -42867,7 +42867,7 @@ func V_DrawBlock(tls *libc.TLS, x int32, y int32, width int32, height int32, src
 	}
 }
 
-func V_DrawFilledBox(tls *libc.TLS, x int32, y int32, w int32, h int32, c int32) {
+func V_DrawFilledBox(x int32, y int32, w int32, h int32, c int32) {
 	var buf, buf1, v3 uintptr
 	var x1, y1 int32
 	buf = I_VideoBuffer + uintptr(int32(SCREENWIDTH)*y) + uintptr(x)
@@ -42898,7 +42898,7 @@ func V_DrawFilledBox(tls *libc.TLS, x int32, y int32, w int32, h int32, c int32)
 	}
 }
 
-func V_DrawHorizLine(tls *libc.TLS, x int32, y int32, w int32, c int32) {
+func V_DrawHorizLine(x int32, y int32, w int32, c int32) {
 	var buf, v2 uintptr
 	var x1 int32
 	buf = I_VideoBuffer + uintptr(int32(SCREENWIDTH)*y) + uintptr(x)
@@ -42917,7 +42917,7 @@ func V_DrawHorizLine(tls *libc.TLS, x int32, y int32, w int32, c int32) {
 	}
 }
 
-func V_DrawVertLine(tls *libc.TLS, x int32, y int32, h int32, c int32) {
+func V_DrawVertLine(x int32, y int32, h int32, c int32) {
 	var buf uintptr
 	var y1 int32
 	buf = I_VideoBuffer + uintptr(int32(SCREENWIDTH)*y) + uintptr(x)
@@ -42935,11 +42935,11 @@ func V_DrawVertLine(tls *libc.TLS, x int32, y int32, h int32, c int32) {
 	}
 }
 
-func V_DrawBox(tls *libc.TLS, x int32, y int32, w int32, h int32, c int32) {
-	V_DrawHorizLine(tls, x, y, w, c)
-	V_DrawHorizLine(tls, x, y+h-int32(1), w, c)
-	V_DrawVertLine(tls, x, y, h, c)
-	V_DrawVertLine(tls, x+w-int32(1), y, h, c)
+func V_DrawBox(x int32, y int32, w int32, h int32, c int32) {
+	V_DrawHorizLine(x, y, w, c)
+	V_DrawHorizLine(x, y+h-int32(1), w, c)
+	V_DrawVertLine(x, y, h, c)
+	V_DrawVertLine(x+w-int32(1), y, h, c)
 }
 
 // C documentation
@@ -42947,7 +42947,7 @@ func V_DrawBox(tls *libc.TLS, x int32, y int32, w int32, h int32, c int32) {
 //	//
 //	// V_Init
 //	//
-func V_Init(tls *libc.TLS) {
+func V_Init() {
 	// no-op!
 	// There used to be separate screens that could be drawn to; these are
 	// now handled in the upper layers.
@@ -42955,13 +42955,13 @@ func V_Init(tls *libc.TLS) {
 
 // Set the buffer that the code draws to.
 
-func V_UseBuffer(tls *libc.TLS, buffer uintptr) {
+func V_UseBuffer(buffer uintptr) {
 	dest_screen = buffer
 }
 
 // Restore screen buffer to the i_video screen buffer.
 
-func V_RestoreBuffer(tls *libc.TLS) {
+func V_RestoreBuffer() {
 	dest_screen = I_VideoBuffer
 }
 
@@ -43096,7 +43096,7 @@ func V_ScreenShot(tls *libc.TLS, format uintptr) {
 	WritePCXfile(tls, bp, I_VideoBuffer, int32(SCREENWIDTH), int32(SCREENHEIGHT), W_CacheLumpName(tls, __ccgo_ts(1490), int32(PU_CACHE)))
 }
 
-func V_DrawMouseSpeedBox(tls *libc.TLS, speed int32) {
+func V_DrawMouseSpeedBox(speed int32) {
 	var bgcolor, black, bordercolor, box_x, box_y, linelen, original_speed, red, redline_x, white, yellow int32
 	// Get palette indices for colors for widget. These depend on the
 	// palette of the game being played.
@@ -43114,8 +43114,8 @@ func V_DrawMouseSpeedBox(tls *libc.TLS, speed int32) {
 	// Calculate box position
 	box_x = SCREENWIDTH - MOUSE_SPEED_BOX_WIDTH - 10
 	box_y = int32(15)
-	V_DrawFilledBox(tls, box_x, box_y, int32(MOUSE_SPEED_BOX_WIDTH), int32(MOUSE_SPEED_BOX_HEIGHT), bgcolor)
-	V_DrawBox(tls, box_x, box_y, int32(MOUSE_SPEED_BOX_WIDTH), int32(MOUSE_SPEED_BOX_HEIGHT), bordercolor)
+	V_DrawFilledBox(box_x, box_y, int32(MOUSE_SPEED_BOX_WIDTH), int32(MOUSE_SPEED_BOX_HEIGHT), bgcolor)
+	V_DrawBox(box_x, box_y, int32(MOUSE_SPEED_BOX_WIDTH), int32(MOUSE_SPEED_BOX_HEIGHT), bordercolor)
 	// Calculate the position of the red line.  This is 1/3 of the way
 	// along the box.
 	redline_x = MOUSE_SPEED_BOX_WIDTH / 3
@@ -43133,15 +43133,15 @@ func V_DrawMouseSpeedBox(tls *libc.TLS, speed int32) {
 	if linelen > MOUSE_SPEED_BOX_WIDTH-1 {
 		linelen = MOUSE_SPEED_BOX_WIDTH - 1
 	}
-	V_DrawHorizLine(tls, box_x+int32(1), box_y+int32(4), MOUSE_SPEED_BOX_WIDTH-2, black)
+	V_DrawHorizLine(box_x+int32(1), box_y+int32(4), MOUSE_SPEED_BOX_WIDTH-2, black)
 	if linelen < redline_x {
-		V_DrawHorizLine(tls, box_x+int32(1), box_y+MOUSE_SPEED_BOX_HEIGHT/2, linelen, white)
+		V_DrawHorizLine(box_x+int32(1), box_y+MOUSE_SPEED_BOX_HEIGHT/2, linelen, white)
 	} else {
-		V_DrawHorizLine(tls, box_x+int32(1), box_y+MOUSE_SPEED_BOX_HEIGHT/2, redline_x, white)
-		V_DrawHorizLine(tls, box_x+redline_x, box_y+MOUSE_SPEED_BOX_HEIGHT/2, linelen-redline_x, yellow)
+		V_DrawHorizLine(box_x+int32(1), box_y+MOUSE_SPEED_BOX_HEIGHT/2, redline_x, white)
+		V_DrawHorizLine(box_x+redline_x, box_y+MOUSE_SPEED_BOX_HEIGHT/2, linelen-redline_x, yellow)
 	}
 	// Draw red line
-	V_DrawVertLine(tls, box_x+redline_x, box_y+int32(1), MOUSE_SPEED_BOX_HEIGHT-2, red)
+	V_DrawVertLine(box_x+redline_x, box_y+int32(1), MOUSE_SPEED_BOX_HEIGHT-2, red)
 }
 
 const DM_KILLERSX = 10
@@ -44019,7 +44019,7 @@ func WI_End(tls *libc.TLS) {
 	WI_unloadData(tls)
 }
 
-func WI_initNoState(tls *libc.TLS) {
+func WI_initNoState() {
 	state = int32(NoState)
 	acceleratestage = 0
 	cnt = int32(10)
@@ -44055,7 +44055,7 @@ func WI_updateShowNextLoc(tls *libc.TLS) {
 	cnt--
 	v1 = cnt
 	if !(v1 != 0) || acceleratestage != 0 {
-		WI_initNoState(tls)
+		WI_initNoState()
 	} else {
 		snl_pointeron = libc.BoolUint32(cnt&31 < 20)
 	}
@@ -44109,7 +44109,7 @@ func WI_drawNoState(tls *libc.TLS) {
 	WI_drawShowNextLoc(tls)
 }
 
-func WI_fragSum(tls *libc.TLS, playernum int32) (r int32) {
+func WI_fragSum(playernum int32) (r int32) {
 	var frags, i int32
 	frags = 0
 	i = 0
@@ -44196,7 +44196,7 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 					;
 					j++
 				}
-				dm_totals[i] = WI_fragSum(tls, i)
+				dm_totals[i] = WI_fragSum(i)
 			}
 			goto _1
 		_1:
@@ -44241,7 +44241,7 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 					;
 					j++
 				}
-				dm_totals[i] = WI_fragSum(tls, i)
+				dm_totals[i] = WI_fragSum(i)
 				if dm_totals[i] > int32(99) {
 					dm_totals[i] = int32(99)
 				}
@@ -44263,7 +44263,7 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 			if acceleratestage != 0 {
 				S_StartSound(tls, uintptr(0), int32(sfx_slop))
 				if gamemode == int32(commercial) {
-					WI_initNoState(tls)
+					WI_initNoState()
 				} else {
 					WI_initShowNextLoc(tls)
 				}
@@ -44378,7 +44378,7 @@ func WI_initNetgameStats(tls *libc.TLS) {
 		v2 = v3
 		cnt_items[i] = v2
 		cnt_kills[i] = v2
-		dofrags += WI_fragSum(tls, i)
+		dofrags += WI_fragSum(i)
 		goto _1
 	_1:
 		;
@@ -44406,7 +44406,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 			cnt_items[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fsitems * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
 			cnt_secret[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fssecret * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
 			if dofrags != 0 {
-				cnt_frags[i] = WI_fragSum(tls, i)
+				cnt_frags[i] = WI_fragSum(i)
 			}
 			goto _1
 		_1:
@@ -44517,7 +44517,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 							goto _5
 						}
 						*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_frags)) + uintptr(i)*4)) += int32(1)
-						v6 = WI_fragSum(tls, i)
+						v6 = WI_fragSum(i)
 						fsum = v6
 						if cnt_frags[i] >= v6 {
 							cnt_frags[i] = fsum
@@ -44538,7 +44538,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 						if acceleratestage != 0 {
 							S_StartSound(tls, uintptr(0), int32(sfx_sgcock))
 							if gamemode == int32(commercial) {
-								WI_initNoState(tls)
+								WI_initNoState()
 							} else {
 								WI_initShowNextLoc(tls)
 							}
@@ -44692,7 +44692,7 @@ func WI_updateStats(tls *libc.TLS) {
 						if acceleratestage != 0 {
 							S_StartSound(tls, uintptr(0), int32(sfx_sgcock))
 							if gamemode == int32(commercial) {
-								WI_initNoState(tls)
+								WI_initNoState()
 							} else {
 								WI_initShowNextLoc(tls)
 							}
