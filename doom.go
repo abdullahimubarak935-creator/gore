@@ -2286,8 +2286,6 @@ type lumpinfo_t = struct {
 	Fnext     uintptr
 }
 
-type atexit_func_t = uintptr
-
 type netgame_startup_callback_t = uintptr
 
 type loop_interface_t = struct {
@@ -4399,7 +4397,7 @@ func D_StartNetGame(settings *net_gamesettings_t, callback netgame_startup_callb
 
 func D_InitNetGame(tls *libc.TLS, connect_data *net_connect_data_t) (r boolean) {
 	// Call D_QuitNetGame on exit:
-	I_AtExit(tls, __ccgo_fp(D_QuitNetGame), 1)
+	I_AtExit(D_QuitNetGame, 1)
 	player_class = connect_data.Fplayer_class
 	return 0
 }
@@ -4411,7 +4409,7 @@ func D_InitNetGame(tls *libc.TLS, connect_data *net_connect_data_t) (r boolean) 
 //	// Called before quitting to leave a net game
 //	// without hanging the other players
 //	//
-func D_QuitNetGame() {
+func D_QuitNetGame(tls *libc.TLS) {
 }
 
 func GetLowTic() (r int32) {
@@ -5742,7 +5740,7 @@ func D_Endoom(tls *libc.TLS) {
 func D_DoomMain(tls *libc.TLS) {
 	bp := alloc(480)
 	var i, p, scale, v1 int32
-	I_AtExit(tls, __ccgo_fp(D_Endoom), 0)
+	I_AtExit(D_Endoom, 0)
 	// print banner
 	I_PrintBanner(tls, __ccgo_ts(4001))
 	fprintf_ccgo(os.Stdout, 4018)
@@ -5833,7 +5831,7 @@ func D_DoomMain(tls *libc.TLS) {
 	D_BindVariables(tls)
 	M_LoadDefaults(tls)
 	// Save configuration at exit.
-	I_AtExit(tls, __ccgo_fp(M_SaveDefaults), 0)
+	I_AtExit(M_SaveDefaults, 0)
 	// Find main IWAD file and load it.
 	iwadfile = D_FindIWAD(tls, 1<<int32(doom)|1<<int32(doom2)|1<<int32(pack_tnt)|1<<int32(pack_plut)|1<<int32(pack_chex)|1<<int32(pack_hacx), uintptr(unsafe.Pointer(&gamemission)))
 	// None found?
@@ -5914,7 +5912,7 @@ func D_DoomMain(tls *libc.TLS) {
 		}
 		fprintf_ccgo(os.Stdout, 4488, libc.GoString(bp))
 	}
-	I_AtExit(tls, __ccgo_fp(G_CheckDemoStatus), 1)
+	I_AtExit(G_CheckDemoStatus, 1)
 	// Generate the WAD hash table.  Speed things up a bit.
 	W_GenerateHashTable(tls)
 	// Load DEHACKED lumps from WAD files - but only if we give the right
@@ -6111,7 +6109,7 @@ func D_DoomMain(tls *libc.TLS) {
 		storedemo = 1
 	}
 	if M_CheckParmWithArgs(__ccgo_ts(5318), int32(1)) != 0 {
-		I_AtExit(tls, __ccgo_fp(StatDump), 1)
+		I_AtExit(StatDump, 1)
 		fprintf_ccgo(os.Stdout, 5328)
 	}
 	//!
@@ -9420,7 +9418,7 @@ func G_TimeDemo(tls *libc.TLS, name uintptr) {
 = Returns true if a new demo loop action will take place
 ===================
 */
-func G_CheckDemoStatus(tls *libc.TLS) (r boolean) {
+func G_CheckDemoStatus(tls *libc.TLS) {
 	var endtime, realtics int32
 	var fps float32
 	var v1, v2 boolean
@@ -9454,7 +9452,7 @@ func G_CheckDemoStatus(tls *libc.TLS) (r boolean) {
 		} else {
 			D_AdvanceDemo()
 		}
-		return 1
+		return
 	}
 	if demorecording != 0 {
 		v3 = demo_p
@@ -9465,7 +9463,7 @@ func G_CheckDemoStatus(tls *libc.TLS) (r boolean) {
 		demorecording = 0
 		I_Error(tls, __ccgo_ts(14508), demoname)
 	}
-	return 0
+	return
 }
 
 const HU_MAXLINELENGTH = 80
@@ -18382,20 +18380,17 @@ const MIN_RAM = 16
 //
 
 type atexit_listentry_t = struct {
-	Ffunc1        atexit_func_t
+	Ffunc         func(tls *libc.TLS)
 	Frun_on_error boolean
-	Fnext         uintptr
 }
 
-var exit_funcs = libc.UintptrFromInt32(0)
+var exit_funcs []atexit_listentry_t
 
-func I_AtExit(tls *libc.TLS, func1 atexit_func_t, run_on_error boolean) {
-	var entry uintptr
-	entry = libc.Xmalloc(tls, uint64(24))
-	(*atexit_listentry_t)(unsafe.Pointer(entry)).Ffunc1 = func1
-	(*atexit_listentry_t)(unsafe.Pointer(entry)).Frun_on_error = run_on_error
-	(*atexit_listentry_t)(unsafe.Pointer(entry)).Fnext = exit_funcs
-	exit_funcs = entry
+func I_AtExit(func1 func(tls *libc.TLS), run_on_error boolean) {
+	exit_funcs = append(exit_funcs, atexit_listentry_t{
+		Ffunc:         func1,
+		Frun_on_error: run_on_error,
+	})
 }
 
 // Tactile feedback function, probably used for the Logitech Cyberman
@@ -18499,7 +18494,7 @@ func I_PrintStartupBanner(tls *libc.TLS, gamedescription uintptr) {
 // Returns true if stdout is a real console, false if it is a file
 //
 
-func I_ConsoleStdout(tls *libc.TLS) (r boolean) {
+func I_ConsoleStdout() (r boolean) {
 	return uint32(0)
 }
 
@@ -18508,12 +18503,10 @@ func I_ConsoleStdout(tls *libc.TLS) (r boolean) {
 //
 
 func I_Quit(tls *libc.TLS) {
-	var entry uintptr
-	// Run through all exit functions
-	entry = exit_funcs
-	for entry != libc.UintptrFromInt32(0) {
-		(*(*func(*libc.TLS))(unsafe.Pointer(&struct{ uintptr }{(*atexit_listentry_t)(unsafe.Pointer(entry)).Ffunc1})))(tls)
-		entry = (*atexit_listentry_t)(unsafe.Pointer(entry)).Fnext
+	// Run through all exit functions, from last to first
+	for i := len(exit_funcs) - 1; i >= 0; i-- {
+		// Call the exit function.
+		exit_funcs[i].Ffunc(tls)
 	}
 }
 
@@ -18567,7 +18560,6 @@ var errorboxpath_size uint64
 var already_quitting = 0
 
 func I_Error(tls *libc.TLS, error1 uintptr, args ...any) {
-	var entry uintptr
 	var exit_gui_popup boolean
 	if already_quitting != 0 {
 		fprintf_ccgo(os.Stderr, 19278)
@@ -18582,18 +18574,18 @@ func I_Error(tls *libc.TLS, error1 uintptr, args ...any) {
 	fmt.Fprintf(os.Stderr, string(strBytes[:strLen]), args...)
 	fprintf_ccgo(os.Stderr, 19324)
 	// Shutdown. Here might be other errors.
-	entry = exit_funcs
-	for entry != libc.UintptrFromInt32(0) {
-		if (*atexit_listentry_t)(unsafe.Pointer(entry)).Frun_on_error != 0 {
-			(*(*func(*libc.TLS))(unsafe.Pointer(&struct{ uintptr }{(*atexit_listentry_t)(unsafe.Pointer(entry)).Ffunc1})))(tls)
+	for i := len(exit_funcs) - 1; i >= 0; i-- {
+		// Call the exit function.
+
+		if exit_funcs[i].Frun_on_error != 0 {
+			exit_funcs[i].Ffunc(tls)
 		}
-		entry = (*atexit_listentry_t)(unsafe.Pointer(entry)).Fnext
 	}
 	exit_gui_popup = libc.BoolUint32(!(M_ParmExists(__ccgo_ts(19327)) != 0))
 	// Pop up a GUI dialog box to show the error message, if the
 	// game was not run from the console (and the user will
 	// therefore be unable to otherwise see the message).
-	if exit_gui_popup != 0 && !(I_ConsoleStdout(tls) != 0) {
+	if exit_gui_popup != 0 && !(I_ConsoleStdout() != 0) {
 		// TODO: Expose error message somehow?
 	}
 	// abort();
@@ -35737,7 +35729,7 @@ func R_InitTextures(tls *libc.TLS) {
 	// If stdout is a real console, use the classic vanilla "filling
 	// up the box" effect, which uses backspace to "step back" inside
 	// the box.  If stdout is a file, don't draw the box.
-	if I_ConsoleStdout(tls) != 0 {
+	if I_ConsoleStdout() != 0 {
 		fprintf_ccgo(os.Stdout, 26061)
 		i = 0
 		for {
@@ -40751,7 +40743,7 @@ func StatCopy(stats uintptr) {
 	}
 }
 
-func StatDump() {
+func StatDump(tls *libc.TLS) {
 }
 
 type st_number_t = struct {
@@ -42183,7 +42175,7 @@ func S_Init(tls *libc.TLS, sfxVolume int32, musicVolume int32) {
 		;
 		i++
 	}
-	I_AtExit(tls, __ccgo_fp(S_Shutdown), 1)
+	I_AtExit(S_Shutdown, 1)
 }
 
 func S_Shutdown(tls *libc.TLS) {
