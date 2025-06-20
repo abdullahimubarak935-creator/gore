@@ -5089,7 +5089,7 @@ func D_DoomLoop(tls *libc.TLS) {
 	TryRunTics(tls)
 	I_SetWindowTitle(gamedescription)
 	I_GraphicsCheckCommandLine()
-	I_SetGrabMouseCallback(__ccgo_fp(D_GrabMouseCallback))
+	I_SetGrabMouseCallback(D_GrabMouseCallback)
 	I_InitGraphics(tls)
 	I_EnableLoadingDisk()
 	V_RestoreBuffer()
@@ -7422,30 +7422,27 @@ func wipe_ScreenWipe(tls *libc.TLS, wipeno int32, x int32, y int32, width int32,
 		go1 = uint32(1)
 		// wipe_scr = (byte *) Z_Malloc(width*height, PU_STATIC, 0); // DEBUG
 		wipe_scr = I_VideoBuffer
-		(*(*func(*libc.TLS, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{wipes[wipeno*3]})))(tls, width, height, ticks)
+		wipes[wipeno*3](tls, width, height, ticks)
 	}
 	// do a piece of wipe-in
 	V_MarkRect(0, 0, width, height)
-	rc = (*(*func(*libc.TLS, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{wipes[wipeno*3+1]})))(tls, width, height, ticks)
+	rc = wipes[wipeno*3+1](tls, width, height, ticks)
 	//  V_DrawBlock(x, y, 0, width, height, wipe_scr); // DEBUG
 	// final stuff
 	if rc != 0 {
 		go1 = uint32(0)
-		(*(*func(*libc.TLS, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{wipes[wipeno*3+2]})))(tls, width, height, ticks)
+		wipes[wipeno*3+2](tls, width, height, ticks)
 	}
 	return libc.BoolInt32(!(go1 != 0))
 }
 
-var wipes = [6]uintptr{}
-
-func init() {
-	p := unsafe.Pointer(&wipes)
-	*(*uintptr)(unsafe.Add(p, 0)) = __ccgo_fp(wipe_initColorXForm)
-	*(*uintptr)(unsafe.Add(p, 8)) = __ccgo_fp(wipe_doColorXForm)
-	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(wipe_exitColorXForm)
-	*(*uintptr)(unsafe.Add(p, 24)) = __ccgo_fp(wipe_initMelt)
-	*(*uintptr)(unsafe.Add(p, 32)) = __ccgo_fp(wipe_doMelt)
-	*(*uintptr)(unsafe.Add(p, 40)) = __ccgo_fp(wipe_exitMelt)
+var wipes = [6]func(*libc.TLS, int32, int32, int32) int32{
+	wipe_initColorXForm,
+	wipe_doColorXForm,
+	wipe_exitColorXForm,
+	wipe_initMelt,
+	wipe_doMelt,
+	wipe_exitMelt,
 }
 
 const ANG451 = 536870912
@@ -41871,12 +41868,10 @@ func ST_Drawer(tls *libc.TLS, fullscreen boolean, refresh boolean) {
 	}
 }
 
-type load_callback_t = uintptr
-
 // Iterates through all graphics to be loaded or unloaded, along with
 // the variable they use, invoking the specified callback function.
 
-func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
+func ST_loadUnloadGraphics(tls *libc.TLS, callback func(*libc.TLS, uintptr, uintptr)) {
 	bp := alloc(48)
 	var facenum, i, j int32
 	// Load the numbers, tall and short
@@ -41886,9 +41881,9 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 			break
 		}
 		snprintf_ccgo(bp, 9, 27843, i)
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&tallnum))+uintptr(i)*8)
+		callback(tls, bp, uintptr(unsafe.Pointer(&tallnum))+uintptr(i)*8)
 		snprintf_ccgo(bp, 9, 27852, i)
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&shortnum))+uintptr(i)*8)
+		callback(tls, bp, uintptr(unsafe.Pointer(&shortnum))+uintptr(i)*8)
 		goto _1
 	_1:
 		;
@@ -41896,7 +41891,7 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 	}
 	// Load percent key.
 	//Note: why not load STMINUS here, too?
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(27862), uintptr(unsafe.Pointer(&tallpercent)))
+	callback(tls, __ccgo_ts(27862), uintptr(unsafe.Pointer(&tallpercent)))
 	// key cards
 	i = 0
 	for {
@@ -41904,14 +41899,14 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 			break
 		}
 		snprintf_ccgo(bp, 9, 27871, i)
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&keys))+uintptr(i)*8)
+		callback(tls, bp, uintptr(unsafe.Pointer(&keys))+uintptr(i)*8)
 		goto _2
 	_2:
 		;
 		i++
 	}
 	// arms background
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(27880), uintptr(unsafe.Pointer(&armsbg)))
+	callback(tls, __ccgo_ts(27880), uintptr(unsafe.Pointer(&armsbg)))
 	// arms ownership widgets
 	i = 0
 	for {
@@ -41920,7 +41915,7 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 		}
 		snprintf_ccgo(bp, 9, 27887, i+2)
 		// gray #
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&arms))+uintptr(i)*16)
+		callback(tls, bp, uintptr(unsafe.Pointer(&arms))+uintptr(i)*16)
 		// yellow #
 		*(*uintptr)(unsafe.Pointer(uintptr(unsafe.Pointer(&arms)) + uintptr(i)*16 + 1*8)) = shortnum[i+int32(2)]
 		goto _3
@@ -41930,9 +41925,9 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 	}
 	// face backgrounds for different color players
 	snprintf_ccgo(bp, 9, 27896, consoleplayer)
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faceback)))
+	callback(tls, bp, uintptr(unsafe.Pointer(&faceback)))
 	// status bar background bits
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(27903), uintptr(unsafe.Pointer(&sbar)))
+	callback(tls, __ccgo_ts(27903), uintptr(unsafe.Pointer(&sbar)))
 	// face states
 	facenum = 0
 	i = 0
@@ -41946,7 +41941,7 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 				break
 			}
 			snprintf_ccgo(bp, 9, 27909, i, j)
-			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
+			callback(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 			facenum++
 			goto _5
 		_5:
@@ -41954,28 +41949,28 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback load_callback_t) {
 			j++
 		}
 		snprintf_ccgo(bp, 9, 27919, i) // turn right
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
+		callback(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
 		snprintf_ccgo(bp, 9, 27928, i) // turn left
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
+		callback(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
 		snprintf_ccgo(bp, 9, 27937, i) // ouch!
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
+		callback(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
 		snprintf_ccgo(bp, 9, 27947, i) // evil grin ;)
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
+		callback(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
 		snprintf_ccgo(bp, 9, 27956, i) // pissed off
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
+		callback(tls, bp, uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 		facenum++
 		goto _4
 	_4:
 		;
 		i++
 	}
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(27966), uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
+	callback(tls, __ccgo_ts(27966), uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 	facenum++
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(27974), uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
+	callback(tls, __ccgo_ts(27974), uintptr(unsafe.Pointer(&faces))+uintptr(facenum)*8)
 	facenum++
 }
 
@@ -41984,7 +41979,7 @@ func ST_loadCallback(tls *libc.TLS, lumpname uintptr, variable uintptr) {
 }
 
 func ST_loadGraphics(tls *libc.TLS) {
-	ST_loadUnloadGraphics(tls, __ccgo_fp(ST_loadCallback))
+	ST_loadUnloadGraphics(tls, ST_loadCallback)
 }
 
 func ST_loadData(tls *libc.TLS) {
@@ -44748,7 +44743,7 @@ func WI_Ticker(tls *libc.TLS) {
 // Common load/unload function.  Iterates over all the graphics
 // lumps to be loaded/unloaded into memory.
 
-func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
+func WI_loadUnloadData(tls *libc.TLS, callback func(*libc.TLS, uintptr, uintptr)) {
 	bp1 := alloc(48)
 	var a uintptr
 	var i, j int32
@@ -44759,7 +44754,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 				break
 			}
 			snprintf_ccgo(bp1, 9, 28378, i)
-			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, lnames+uintptr(i)*8)
+			callback(tls, bp1, lnames+uintptr(i)*8)
 			goto _1
 		_1:
 			;
@@ -44772,18 +44767,18 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 				break
 			}
 			snprintf_ccgo(bp1, 9, 28389, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, i)
-			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, lnames+uintptr(i)*8)
+			callback(tls, bp1, lnames+uintptr(i)*8)
 			goto _2
 		_2:
 			;
 			i++
 		}
 		// you are here
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28398), uintptr(unsafe.Pointer(&yah)))
+		callback(tls, __ccgo_ts(28398), uintptr(unsafe.Pointer(&yah)))
 		// you are here (alt.)
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28405), uintptr(unsafe.Pointer(&yah))+1*8)
+		callback(tls, __ccgo_ts(28405), uintptr(unsafe.Pointer(&yah))+1*8)
 		// splat
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28412), uintptr(unsafe.Pointer(&splat)))
+		callback(tls, __ccgo_ts(28412), uintptr(unsafe.Pointer(&splat)))
 		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd < int32(3) {
 			j = 0
 			for {
@@ -44800,7 +44795,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 					if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd != int32(1) || j != int32(8) {
 						// animations
 						snprintf_ccgo(bp1, 9, 28420, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, j, i)
-						(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, a+32+uintptr(i)*8)
+						callback(tls, bp1, a+32+uintptr(i)*8)
 					} else {
 						// HACK ALERT!
 						*(*uintptr)(unsafe.Pointer(a + 32 + uintptr(i)*8)) = *(*uintptr)(unsafe.Pointer(anims1[int32(1)] + 4*72 + 32 + uintptr(i)*8))
@@ -44818,7 +44813,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 		}
 	}
 	// More hacks on minus sign.
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28434), uintptr(unsafe.Pointer(&wiminus)))
+	callback(tls, __ccgo_ts(28434), uintptr(unsafe.Pointer(&wiminus)))
 	i = 0
 	for {
 		if !(i < int32(10)) {
@@ -44826,51 +44821,51 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 		}
 		// numbers 0-9
 		snprintf_ccgo(bp1, 9, 28442, i)
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, uintptr(unsafe.Pointer(&num))+uintptr(i)*8)
+		callback(tls, bp1, uintptr(unsafe.Pointer(&num))+uintptr(i)*8)
 		goto _5
 	_5:
 		;
 		i++
 	}
 	// percent sign
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28450), uintptr(unsafe.Pointer(&percent)))
+	callback(tls, __ccgo_ts(28450), uintptr(unsafe.Pointer(&percent)))
 	// "finished"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28457), uintptr(unsafe.Pointer(&finished)))
+	callback(tls, __ccgo_ts(28457), uintptr(unsafe.Pointer(&finished)))
 	// "entering"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28461), uintptr(unsafe.Pointer(&entering)))
+	callback(tls, __ccgo_ts(28461), uintptr(unsafe.Pointer(&entering)))
 	// "kills"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28469), uintptr(unsafe.Pointer(&kills)))
+	callback(tls, __ccgo_ts(28469), uintptr(unsafe.Pointer(&kills)))
 	// "scrt"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28476), uintptr(unsafe.Pointer(&secret)))
+	callback(tls, __ccgo_ts(28476), uintptr(unsafe.Pointer(&secret)))
 	// "secret"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28483), uintptr(unsafe.Pointer(&sp_secret)))
+	callback(tls, __ccgo_ts(28483), uintptr(unsafe.Pointer(&sp_secret)))
 	// french wad uses WIOBJ (?)
 	if W_CheckNumForName(tls, __ccgo_ts(28491)) >= 0 {
 		// "items"
 		if netgame != 0 && !(deathmatch != 0) {
-			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28491), uintptr(unsafe.Pointer(&items)))
+			callback(tls, __ccgo_ts(28491), uintptr(unsafe.Pointer(&items)))
 		} else {
-			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28497), uintptr(unsafe.Pointer(&items)))
+			callback(tls, __ccgo_ts(28497), uintptr(unsafe.Pointer(&items)))
 		}
 	} else {
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28497), uintptr(unsafe.Pointer(&items)))
+		callback(tls, __ccgo_ts(28497), uintptr(unsafe.Pointer(&items)))
 	}
 	// "frgs"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28504), uintptr(unsafe.Pointer(&frags)))
+	callback(tls, __ccgo_ts(28504), uintptr(unsafe.Pointer(&frags)))
 	// ":"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28511), uintptr(unsafe.Pointer(&colon)))
+	callback(tls, __ccgo_ts(28511), uintptr(unsafe.Pointer(&colon)))
 	// "time"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28519), uintptr(unsafe.Pointer(&timepatch)))
+	callback(tls, __ccgo_ts(28519), uintptr(unsafe.Pointer(&timepatch)))
 	// "sucks"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28526), uintptr(unsafe.Pointer(&sucks)))
+	callback(tls, __ccgo_ts(28526), uintptr(unsafe.Pointer(&sucks)))
 	// "par"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28534), uintptr(unsafe.Pointer(&par)))
+	callback(tls, __ccgo_ts(28534), uintptr(unsafe.Pointer(&par)))
 	// "killers" (vertical)
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28540), uintptr(unsafe.Pointer(&killers)))
+	callback(tls, __ccgo_ts(28540), uintptr(unsafe.Pointer(&killers)))
 	// "victims" (horiz)
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28548), uintptr(unsafe.Pointer(&victims)))
+	callback(tls, __ccgo_ts(28548), uintptr(unsafe.Pointer(&victims)))
 	// "total"
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, __ccgo_ts(28556), uintptr(unsafe.Pointer(&total)))
+	callback(tls, __ccgo_ts(28556), uintptr(unsafe.Pointer(&total)))
 	i = 0
 	for {
 		if !(i < int32(MAXPLAYERS)) {
@@ -44878,10 +44873,10 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 		}
 		// "1,2,3,4"
 		snprintf_ccgo(bp1, 9, 28563, i)
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, uintptr(unsafe.Pointer(&p))+uintptr(i)*8)
+		callback(tls, bp1, uintptr(unsafe.Pointer(&p))+uintptr(i)*8)
 		// "1,2,3,4"
 		snprintf_ccgo(bp1, 9, 28570, i+int32(1))
-		(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, uintptr(unsafe.Pointer(&bp))+uintptr(i)*8)
+		callback(tls, bp1, uintptr(unsafe.Pointer(&bp))+uintptr(i)*8)
 		goto _6
 	_6:
 		;
@@ -44898,7 +44893,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 		}
 	}
 	// Draw backdrop and save to a temporary buffer
-	(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp1, uintptr(unsafe.Pointer(&background)))
+	callback(tls, bp1, uintptr(unsafe.Pointer(&background)))
 }
 
 func WI_loadCallback(tls *libc.TLS, name uintptr, variable uintptr) {
@@ -44912,7 +44907,7 @@ func WI_loadData(tls *libc.TLS) {
 	} else {
 		lnames = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt64(8)*libc.Uint64FromInt32(NUMMAPS)), int32(PU_STATIC), libc.UintptrFromInt32(0))
 	}
-	WI_loadUnloadData(tls, __ccgo_fp(WI_loadCallback))
+	WI_loadUnloadData(tls, WI_loadCallback)
 	// These two graphics are special cased because we're sharing
 	// them with the status bar code
 	// your face
@@ -44927,7 +44922,7 @@ func WI_unloadCallback(tls *libc.TLS, name uintptr, variable uintptr) {
 }
 
 func WI_unloadData(tls *libc.TLS) {
-	WI_loadUnloadData(tls, __ccgo_fp(WI_unloadCallback))
+	WI_loadUnloadData(tls, WI_unloadCallback)
 	// We do not free these lumps as they are shared with the status
 	// bar code.
 	// W_ReleaseLumpName("STFST01");
@@ -46231,7 +46226,7 @@ func I_SetWindowTitle(title uintptr) {
 func I_GraphicsCheckCommandLine() {
 }
 
-func I_SetGrabMouseCallback(func1 grabmouse_callback_t) {
+func I_SetGrabMouseCallback(func1 func() boolean) {
 }
 
 func I_EnableLoadingDisk() {
