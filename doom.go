@@ -3726,7 +3726,7 @@ func AM_Drawer(tls *libc.TLS) {
 	}
 	AM_drawCrosshair(6 * 16)
 	AM_drawMarks(tls)
-	V_MarkRect(tls, f_x, f_y, f_w, f_h)
+	V_MarkRect(f_x, f_y, f_w, f_h)
 }
 
 func init() {
@@ -6695,7 +6695,7 @@ func F_TextWrite(tls *libc.TLS) {
 		;
 		y++
 	}
-	V_MarkRect(tls, 0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
+	V_MarkRect(0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
 	// draw some of the text onto the screen
 	cx = int32(10)
 	cy = int32(10)
@@ -7103,7 +7103,7 @@ func F_BunnyScroll(tls *libc.TLS) {
 	var scrolled, stage, x int32
 	p1 = W_CacheLumpName(tls, __ccgo_ts(13640), int32(PU_LEVEL))
 	p2 = W_CacheLumpName(tls, __ccgo_ts(13646), int32(PU_LEVEL))
-	V_MarkRect(tls, 0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
+	V_MarkRect(0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
 	scrolled = int32(320) - (libc.Int32FromUint32(finalecount)-int32(230))/int32(2)
 	if scrolled > int32(320) {
 		scrolled = int32(320)
@@ -7419,7 +7419,7 @@ func wipe_ScreenWipe(tls *libc.TLS, wipeno int32, x int32, y int32, width int32,
 		(*(*func(*libc.TLS, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{wipes[wipeno*3]})))(tls, width, height, ticks)
 	}
 	// do a piece of wipe-in
-	V_MarkRect(tls, 0, 0, width, height)
+	V_MarkRect(0, 0, width, height)
 	rc = (*(*func(*libc.TLS, int32, int32, int32) int32)(unsafe.Pointer(&struct{ uintptr }{wipes[wipeno*3+1]})))(tls, width, height, ticks)
 	//  V_DrawBlock(x, y, 0, width, height, wipe_scr); // DEBUG
 	// final stuff
@@ -18860,7 +18860,7 @@ const BOXBOTTOM = 1
 const BOXLEFT = 2
 const BOXRIGHT = 3
 
-func M_ClearBox(tls *libc.TLS, box uintptr) {
+func M_ClearBox(box uintptr) {
 	var v1, v2 fixed_t
 	v1 = -1 - 0x7fffffff
 	*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXRIGHT)*4)) = v1
@@ -18870,7 +18870,7 @@ func M_ClearBox(tls *libc.TLS, box uintptr) {
 	*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXBOTTOM)*4)) = v2
 }
 
-func M_AddToBox(tls *libc.TLS, box uintptr, x fixed_t, y fixed_t) {
+func M_AddToBox(box uintptr, x fixed_t, y fixed_t) {
 	if x < *(*fixed_t)(unsafe.Pointer(box + uintptr(BOXLEFT)*4)) {
 		*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXLEFT)*4)) = x
 	} else {
@@ -31969,15 +31969,15 @@ func P_GroupLines(tls *libc.TLS) {
 		if !(i < numsectors) {
 			break
 		}
-		M_ClearBox(tls, bp)
+		M_ClearBox(bp)
 		j = 0
 		for {
 			if !(j < (*sector_t)(unsafe.Pointer(sector)).Flinecount) {
 				break
 			}
 			li = *(*uintptr)(unsafe.Pointer((*sector_t)(unsafe.Pointer(sector)).Flines + uintptr(j)*8))
-			M_AddToBox(tls, bp, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fv1)).Fx, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fv1)).Fy)
-			M_AddToBox(tls, bp, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fv2)).Fx, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fv2)).Fy)
+			M_AddToBox(bp, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fv1)).Fx, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fv1)).Fy)
+			M_AddToBox(bp, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fv2)).Fx, (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(li)).Fv2)).Fy)
 			goto _6
 		_6:
 			;
@@ -36890,7 +36890,7 @@ func R_DrawViewBorder(tls *libc.TLS) {
 		i++
 	}
 	// ?
-	V_MarkRect(tls, 0, 0, int32(SCREENWIDTH), SCREENHEIGHT-SBARHEIGHT)
+	V_MarkRect(0, 0, int32(SCREENWIDTH), SCREENHEIGHT-SBARHEIGHT)
 }
 
 const ANG18011 = 2147483648
@@ -42689,26 +42689,15 @@ var dest_screen = libc.UintptrFromInt32(0)
 
 // C documentation
 //
-//	// haleyjd 08/28/10: clipping callback function for patches.
-//	// This is needed for Chocolate Strife, which clips patches to the screen.
-var patchclip_callback = uintptr(0)
-
-func init() {
-	p := unsafe.Pointer(&patchclip_callback)
-	*(*uintptr)(unsafe.Add(p, 0)) = libc.UintptrFromInt32(0)
-}
-
-// C documentation
-//
 //	//
 //	// V_MarkRect
 //	//
-func V_MarkRect(tls *libc.TLS, x int32, y int32, width int32, height int32) {
+func V_MarkRect(x int32, y int32, width int32, height int32) {
 	// If we are temporarily using an alternate screen, do not
 	// affect the update box.
 	if dest_screen == I_VideoBuffer {
-		M_AddToBox(tls, uintptr(unsafe.Pointer(&dirtybox)), x, y)
-		M_AddToBox(tls, uintptr(unsafe.Pointer(&dirtybox)), x+width-int32(1), y+height-int32(1))
+		M_AddToBox(uintptr(unsafe.Pointer(&dirtybox)), x, y)
+		M_AddToBox(uintptr(unsafe.Pointer(&dirtybox)), x+width-int32(1), y+height-int32(1))
 	}
 }
 
@@ -42722,7 +42711,7 @@ func V_CopyRect(tls *libc.TLS, srcx int32, srcy int32, source uintptr, width int
 	if srcx < 0 || srcx+width > int32(SCREENWIDTH) || srcy < 0 || srcy+height > int32(SCREENHEIGHT) || destx < 0 || destx+width > int32(SCREENWIDTH) || desty < 0 || desty+height > int32(SCREENHEIGHT) {
 		I_Error(tls, __ccgo_ts(28088), 0)
 	}
-	V_MarkRect(tls, destx, desty, width, height)
+	V_MarkRect(destx, desty, width, height)
 	src = source + uintptr(int32(SCREENWIDTH)*srcy) + uintptr(srcx)
 	dest = dest_screen + uintptr(int32(SCREENWIDTH)*desty) + uintptr(destx)
 	for {
@@ -42749,16 +42738,10 @@ func V_DrawPatch(tls *libc.TLS, x int32, y int32, patch uintptr) {
 	var column, dest, desttop, source, v3 uintptr
 	y -= int32((*patch_t)(unsafe.Pointer(patch)).Ftopoffset)
 	x -= int32((*patch_t)(unsafe.Pointer(patch)).Fleftoffset)
-	// haleyjd 08/28/10: Strife needs silent error checking here.
-	if patchclip_callback != 0 {
-		if !((*(*func(*libc.TLS, uintptr, int32, int32) boolean)(unsafe.Pointer(&struct{ uintptr }{patchclip_callback})))(tls, patch, x, y) != 0) {
-			return
-		}
-	}
 	if x < 0 || x+int32((*patch_t)(unsafe.Pointer(patch)).Fwidth) > int32(SCREENWIDTH) || y < 0 || y+int32((*patch_t)(unsafe.Pointer(patch)).Fheight) > int32(SCREENHEIGHT) {
 		I_Error(tls, __ccgo_ts(28103), x, y, int32((*patch_t)(unsafe.Pointer(patch)).Fwidth), int32((*patch_t)(unsafe.Pointer(patch)).Fheight), int32((*patch_t)(unsafe.Pointer(patch)).Ftopoffset), int32((*patch_t)(unsafe.Pointer(patch)).Fleftoffset))
 	}
-	V_MarkRect(tls, x, y, int32((*patch_t)(unsafe.Pointer(patch)).Fwidth), int32((*patch_t)(unsafe.Pointer(patch)).Fheight))
+	V_MarkRect(x, y, int32((*patch_t)(unsafe.Pointer(patch)).Fwidth), int32((*patch_t)(unsafe.Pointer(patch)).Fheight))
 	col = 0
 	desttop = dest_screen + uintptr(y*int32(SCREENWIDTH)) + uintptr(x)
 	w = int32((*patch_t)(unsafe.Pointer(patch)).Fwidth)
@@ -42804,16 +42787,10 @@ func V_DrawPatchFlipped(tls *libc.TLS, x int32, y int32, patch uintptr) {
 	var column, dest, desttop, source, v3 uintptr
 	y -= int32((*patch_t)(unsafe.Pointer(patch)).Ftopoffset)
 	x -= int32((*patch_t)(unsafe.Pointer(patch)).Fleftoffset)
-	// haleyjd 08/28/10: Strife needs silent error checking here.
-	if patchclip_callback != 0 {
-		if !((*(*func(*libc.TLS, uintptr, int32, int32) boolean)(unsafe.Pointer(&struct{ uintptr }{patchclip_callback})))(tls, patch, x, y) != 0) {
-			return
-		}
-	}
 	if x < 0 || x+int32((*patch_t)(unsafe.Pointer(patch)).Fwidth) > int32(SCREENWIDTH) || y < 0 || y+int32((*patch_t)(unsafe.Pointer(patch)).Fheight) > int32(SCREENHEIGHT) {
 		I_Error(tls, __ccgo_ts(28187), 0)
 	}
-	V_MarkRect(tls, x, y, int32((*patch_t)(unsafe.Pointer(patch)).Fwidth), int32((*patch_t)(unsafe.Pointer(patch)).Fheight))
+	V_MarkRect(x, y, int32((*patch_t)(unsafe.Pointer(patch)).Fwidth), int32((*patch_t)(unsafe.Pointer(patch)).Fheight))
 	col = 0
 	desttop = dest_screen + uintptr(y*int32(SCREENWIDTH)) + uintptr(x)
 	w = int32((*patch_t)(unsafe.Pointer(patch)).Fwidth)
@@ -42868,7 +42845,7 @@ func V_DrawBlock(tls *libc.TLS, x int32, y int32, width int32, height int32, src
 	if x < 0 || x+width > int32(SCREENWIDTH) || y < 0 || y+height > int32(SCREENHEIGHT) {
 		I_Error(tls, __ccgo_ts(28288), 0)
 	}
-	V_MarkRect(tls, x, y, width, height)
+	V_MarkRect(x, y, width, height)
 	dest = dest_screen + uintptr(y*int32(SCREENWIDTH)) + uintptr(x)
 	for {
 		v1 = height
