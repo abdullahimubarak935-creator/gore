@@ -2662,7 +2662,7 @@ var stopped = 1
 //	//
 //	//
 //	//
-func AM_activateNewScale(tls *libc.TLS) {
+func AM_activateNewScale() {
 	m_x += m_w / int32(2)
 	m_y += m_h / int32(2)
 	m_w = FixedMul(f_w<<16, scale_ftom)
@@ -2678,7 +2678,7 @@ func AM_activateNewScale(tls *libc.TLS) {
 //	//
 //	//
 //	//
-func AM_saveScaleAndLoc(tls *libc.TLS) {
+func AM_saveScaleAndLoc() {
 	old_m_x = m_x
 	old_m_y = m_y
 	old_m_w = m_w
@@ -2690,7 +2690,7 @@ func AM_saveScaleAndLoc(tls *libc.TLS) {
 //	//
 //	//
 //	//
-func AM_restoreScaleAndLoc(tls *libc.TLS) {
+func AM_restoreScaleAndLoc() {
 	m_w = old_m_w
 	m_h = old_m_h
 	if !(followplayer != 0) {
@@ -2712,7 +2712,7 @@ func AM_restoreScaleAndLoc(tls *libc.TLS) {
 //	//
 //	// adds a marker at the current location
 //	//
-func AM_addMark(tls *libc.TLS) {
+func AM_addMark() {
 	markpoints[markpointnum].Fx = m_x + m_w/int32(2)
 	markpoints[markpointnum].Fy = m_y + m_h/int32(2)
 	markpointnum = (markpointnum + int32(1)) % int32(AM_NUMMARKPOINTS)
@@ -2724,7 +2724,7 @@ func AM_addMark(tls *libc.TLS) {
 //	// Determines bounding box of all vertices,
 //	// sets global variables controlling zoom range.
 //	//
-func AM_findMinMaxBoundaries(tls *libc.TLS) {
+func AM_findMinMaxBoundaries() {
 	var a, b, v1, v2 fixed_t
 	var i, v4 int32
 	v1 = INT_MAX1
@@ -2775,7 +2775,7 @@ func AM_findMinMaxBoundaries(tls *libc.TLS) {
 //	//
 //	//
 //	//
-func AM_changeWindowLoc(tls *libc.TLS) {
+func AM_changeWindowLoc() {
 	if m_paninc.Fx != 0 || m_paninc.Fy != 0 {
 		followplayer = 0
 		f_oldloc.Fx = int32(INT_MAX1)
@@ -2832,7 +2832,7 @@ func AM_initVariables(tls *libc.TLS) {
 	}
 	m_x = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx - m_w/int32(2)
 	m_y = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy - m_h/int32(2)
-	AM_changeWindowLoc(tls)
+	AM_changeWindowLoc()
 	// for saving & restoring
 	old_m_x = m_x
 	old_m_y = m_y
@@ -2914,7 +2914,7 @@ func AM_LevelInit(tls *libc.TLS) {
 	f_w = finit_width
 	f_h = finit_height
 	AM_clearMarks(tls)
-	AM_findMinMaxBoundaries(tls)
+	AM_findMinMaxBoundaries()
 	scale_mtof = FixedDiv(min_scale_mtof, int32(libc.Float64FromFloat64(0.7)*float64(1<<FRACBITS)))
 	if scale_mtof > max_scale_mtof {
 		scale_mtof = min_scale_mtof
@@ -2967,10 +2967,10 @@ var lastepisode = -int32(1)
 //	//
 //	// set the window scale to the maximum size
 //	//
-func AM_minOutWindowScale(tls *libc.TLS) {
+func AM_minOutWindowScale() {
 	scale_mtof = min_scale_mtof
 	scale_ftom = FixedDiv(1<<FRACBITS, scale_mtof)
-	AM_activateNewScale(tls)
+	AM_activateNewScale()
 }
 
 // C documentation
@@ -2978,10 +2978,10 @@ func AM_minOutWindowScale(tls *libc.TLS) {
 //	//
 //	// set the window scale to the minimum size
 //	//
-func AM_maxOutWindowScale(tls *libc.TLS) {
+func AM_maxOutWindowScale() {
 	scale_mtof = max_scale_mtof
 	scale_ftom = FixedDiv(1<<FRACBITS, scale_mtof)
-	AM_activateNewScale(tls)
+	AM_activateNewScale()
 }
 
 // C documentation
@@ -3047,10 +3047,10 @@ func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 										if key == key_map_maxzoom {
 											bigstate = libc.BoolInt32(!(bigstate != 0))
 											if bigstate != 0 {
-												AM_saveScaleAndLoc(tls)
-												AM_minOutWindowScale(tls)
+												AM_saveScaleAndLoc()
+												AM_minOutWindowScale()
 											} else {
-												AM_restoreScaleAndLoc(tls)
+												AM_restoreScaleAndLoc()
 											}
 										} else {
 											if key == key_map_follow {
@@ -3073,7 +3073,7 @@ func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 													if key == key_map_mark {
 														M_snprintf(tls, uintptr(unsafe.Pointer(&buffer)), uint64(20), __ccgo_ts(57), libc.VaList(bp+8, __ccgo_ts(63), markpointnum))
 														plr.Fmessage = uintptr(unsafe.Pointer(&buffer))
-														AM_addMark(tls)
+														AM_addMark()
 													} else {
 														if key == key_map_clearmark {
 															AM_clearMarks(tls)
@@ -3092,7 +3092,7 @@ func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 					}
 				}
 			}
-			if !(deathmatch != 0) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_amap)), int8(ev.Fdata2)) != 0 {
+			if !(deathmatch != 0) && cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_amap)), int8(ev.Fdata2)) != 0 {
 				rc = 0
 				cheating = (cheating + int32(1)) % int32(3)
 			}
@@ -3143,17 +3143,17 @@ var buffer [20]int8
 //	//
 //	// Zooming
 //	//
-func AM_changeWindowScale(tls *libc.TLS) {
+func AM_changeWindowScale() {
 	// Change the scaling multipliers
 	scale_mtof = FixedMul(scale_mtof, mtof_zoommul)
 	scale_ftom = FixedDiv(1<<FRACBITS, scale_mtof)
 	if scale_mtof < min_scale_mtof {
-		AM_minOutWindowScale(tls)
+		AM_minOutWindowScale()
 	} else {
 		if scale_mtof > max_scale_mtof {
-			AM_maxOutWindowScale(tls)
+			AM_maxOutWindowScale()
 		} else {
-			AM_activateNewScale(tls)
+			AM_activateNewScale()
 		}
 	}
 }
@@ -3163,7 +3163,7 @@ func AM_changeWindowScale(tls *libc.TLS) {
 //	//
 //	//
 //	//
-func AM_doFollowPlayer(tls *libc.TLS) {
+func AM_doFollowPlayer() {
 	if f_oldloc.Fx != (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx || f_oldloc.Fy != (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy {
 		m_x = FixedMul(FixedMul((*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_w/int32(2)
 		m_y = FixedMul(FixedMul((*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_h/int32(2)
@@ -3183,20 +3183,20 @@ func AM_doFollowPlayer(tls *libc.TLS) {
 //	//
 //	// Updates on Game Tick
 //	//
-func AM_Ticker(tls *libc.TLS) {
+func AM_Ticker() {
 	if !(automapactive != 0) {
 		return
 	}
 	if followplayer != 0 {
-		AM_doFollowPlayer(tls)
+		AM_doFollowPlayer()
 	}
 	// Change the zoom if necessary
 	if ftom_zoommul != 1<<FRACBITS {
-		AM_changeWindowScale(tls)
+		AM_changeWindowScale()
 	}
 	// Change x,y location
 	if m_paninc.Fx != 0 || m_paninc.Fy != 0 {
-		AM_changeWindowLoc(tls)
+		AM_changeWindowLoc()
 	}
 	// Update light level
 	// AM_updateLightLev();
@@ -3207,7 +3207,7 @@ func AM_Ticker(tls *libc.TLS) {
 //	//
 //	// Clear automap frame buffer.
 //	//
-func AM_clearFB(tls *libc.TLS, color uint8) {
+func AM_clearFB(color uint8) {
 	xmemset(fb, color, libc.Uint64FromInt32(f_w*f_h))
 }
 
@@ -3220,7 +3220,7 @@ func AM_clearFB(tls *libc.TLS, color uint8) {
 //	// faster reject and precalculated slopes.  If the speed is needed,
 //	// use a hash algorithm to handle  the common cases.
 //	//
-func AM_clipMline(tls *libc.TLS, ml *mline_t, fl *fline_t) (r boolean) {
+func AM_clipMline(ml *mline_t, fl *fline_t) (r boolean) {
 	var dx, dy, outcode1, outcode2, outside int32
 	var tmp fpoint_t
 	outcode1 = 0
@@ -3384,7 +3384,7 @@ func AM_clipMline(tls *libc.TLS, ml *mline_t, fl *fline_t) (r boolean) {
 //	//
 //	// Classic Bresenham w/ whatever optimizations needed for speed
 //	//
-func AM_drawFline(tls *libc.TLS, fl *fline_t, color int32) {
+func AM_drawFline(fl *fline_t, color int32) {
 	var ax, ay, d, dx, dy, sx, sy, x, y, v1, v2, v3, v4, v5 int32
 	// For debugging only
 	if fl.Fa.Fx < 0 || fl.Fa.Fx >= f_w || fl.Fa.Fy < 0 || fl.Fa.Fy >= f_h || fl.Fb.Fx < 0 || fl.Fb.Fx >= f_w || fl.Fb.Fy < 0 || fl.Fb.Fy >= f_h {
@@ -3460,9 +3460,9 @@ var fuck int32
 //	//
 //	// Clip lines, draw visible part sof lines.
 //	//
-func AM_drawMline(tls *libc.TLS, ml *mline_t, color int32) {
-	if AM_clipMline(tls, ml, &fl) != 0 {
-		AM_drawFline(tls, &fl, color)
+func AM_drawMline(ml *mline_t, color int32) {
+	if AM_clipMline(ml, &fl) != 0 {
+		AM_drawFline(&fl, color)
 	} // draws it on frame buffer using fb coords
 }
 
@@ -3473,7 +3473,7 @@ var fl fline_t
 //	//
 //	// Draws flat (floor/ceiling tile) aligned grid lines.
 //	//
-func AM_drawGrid(tls *libc.TLS, color int32) {
+func AM_drawGrid(color int32) {
 	bp := &mline_t{}
 	var end, start, x, y fixed_t
 	// Figure out start of vertical gridlines
@@ -3492,7 +3492,7 @@ func AM_drawGrid(tls *libc.TLS, color int32) {
 		}
 		bp.Fa.Fx = x
 		bp.Fb.Fx = x
-		AM_drawMline(tls, bp, color)
+		AM_drawMline(bp, color)
 		goto _1
 	_1:
 		;
@@ -3514,7 +3514,7 @@ func AM_drawGrid(tls *libc.TLS, color int32) {
 		}
 		bp.Fa.Fy = y
 		bp.Fb.Fy = y
-		AM_drawMline(tls, bp, color)
+		AM_drawMline(bp, color)
 		goto _2
 	_2:
 		;
@@ -3528,7 +3528,7 @@ func AM_drawGrid(tls *libc.TLS, color int32) {
 //	// Determines visible lines, draws them.
 //	// This is LineDef based, not LineSeg based.
 //	//
-func AM_drawWalls(tls *libc.TLS) {
+func AM_drawWalls() {
 	var i int32
 	i = 0
 	for {
@@ -3544,27 +3544,27 @@ func AM_drawWalls(tls *libc.TLS) {
 				goto _1
 			}
 			if !((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fbacksector != 0) {
-				AM_drawMline(tls, &l, 256-5*16+lightlev)
+				AM_drawMline(&l, 256-5*16+lightlev)
 			} else {
 				if int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fspecial) == int32(39) {
 					// teleporters
-					AM_drawMline(tls, &l, 256-5*16+REDRANGE/2)
+					AM_drawMline(&l, 256-5*16+REDRANGE/2)
 				} else {
 					if int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&int32(ML_SECRET) != 0 { // secret door
 						if cheating != 0 {
-							AM_drawMline(tls, &l, 256-5*16+lightlev)
+							AM_drawMline(&l, 256-5*16+lightlev)
 						} else {
-							AM_drawMline(tls, &l, 256-5*16+lightlev)
+							AM_drawMline(&l, 256-5*16+lightlev)
 						}
 					} else {
 						if (*sector_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fbacksector)).Ffloorheight != (*sector_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Ffrontsector)).Ffloorheight {
-							AM_drawMline(tls, &l, 4*16+lightlev) // floor level change
+							AM_drawMline(&l, 4*16+lightlev) // floor level change
 						} else {
 							if (*sector_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fbacksector)).Fceilingheight != (*sector_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Ffrontsector)).Fceilingheight {
-								AM_drawMline(tls, &l, 256-32+7+lightlev) // ceiling level change
+								AM_drawMline(&l, 256-32+7+lightlev) // ceiling level change
 							} else {
 								if cheating != 0 {
-									AM_drawMline(tls, &l, 6*16+lightlev)
+									AM_drawMline(&l, 6*16+lightlev)
 								}
 							}
 						}
@@ -3574,7 +3574,7 @@ func AM_drawWalls(tls *libc.TLS) {
 		} else {
 			if plr.Fpowers[pw_allmap] != 0 {
 				if !(int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&ML_DONTDRAW != 0) {
-					AM_drawMline(tls, &l, 6*16+3)
+					AM_drawMline(&l, 6*16+3)
 				}
 			}
 		}
@@ -3593,13 +3593,13 @@ var l mline_t
 //	// Rotation in 2D.
 //	// Used to rotate player arrow line character.
 //	//
-func AM_rotate(tls *libc.TLS, x *fixed_t, y *fixed_t, a angle_t) {
+func AM_rotate(x *fixed_t, y *fixed_t, a angle_t) {
 	tmpx := FixedMul(*y, finecosine[a>>int32(ANGLETOFINESHIFT)]) - FixedMul(*y, finesine[a>>int32(ANGLETOFINESHIFT)])
 	*y = FixedMul(*x, finesine[a>>int32(ANGLETOFINESHIFT)]) + FixedMul(*y, finecosine[a>>int32(ANGLETOFINESHIFT)])
 	*x = tmpx
 }
 
-func AM_drawLineCharacter(tls *libc.TLS, lineguy []mline_t, scale fixed_t, angle angle_t, color int32, x fixed_t, y fixed_t) {
+func AM_drawLineCharacter(lineguy []mline_t, scale fixed_t, angle angle_t, color int32, x fixed_t, y fixed_t) {
 	for i := range lineguy {
 		var bp mline_t
 		bp.Fa.Fx = lineguy[i].Fa.Fx
@@ -3609,7 +3609,7 @@ func AM_drawLineCharacter(tls *libc.TLS, lineguy []mline_t, scale fixed_t, angle
 			bp.Fa.Fy = FixedMul(scale, bp.Fa.Fy)
 		}
 		if angle != 0 {
-			AM_rotate(tls, &bp.Fa.Fx, &bp.Fb.Fy, angle)
+			AM_rotate(&bp.Fa.Fx, &bp.Fb.Fy, angle)
 		}
 		bp.Fa.Fx += x
 		bp.Fa.Fy += y
@@ -3620,22 +3620,22 @@ func AM_drawLineCharacter(tls *libc.TLS, lineguy []mline_t, scale fixed_t, angle
 			bp.Fb.Fy = FixedMul(scale, bp.Fb.Fy)
 		}
 		if angle != 0 {
-			AM_rotate(tls, &bp.Fb.Fx, &bp.Fb.Fy, angle)
+			AM_rotate(&bp.Fb.Fx, &bp.Fb.Fy, angle)
 		}
 		bp.Fb.Fx += x
 		bp.Fb.Fy += y
-		AM_drawMline(tls, &bp, color)
+		AM_drawMline(&bp, color)
 	}
 }
 
-func AM_drawPlayers(tls *libc.TLS) {
+func AM_drawPlayers() {
 	var color, their_color int32
 	their_color = -1
 	if netgame == 0 {
 		if cheating != 0 {
-			AM_drawLineCharacter(tls, cheat_player_arrow[:], 0, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy)
+			AM_drawLineCharacter(cheat_player_arrow[:], 0, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy)
 		} else {
-			AM_drawLineCharacter(tls, player_arrow[:], 0, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy)
+			AM_drawLineCharacter(player_arrow[:], 0, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy)
 		}
 		return
 	}
@@ -3653,7 +3653,7 @@ func AM_drawPlayers(tls *libc.TLS) {
 		} else {
 			color = their_colors[their_color]
 		}
-		AM_drawLineCharacter(tls, player_arrow[:], 0, (*mobj_t)(unsafe.Pointer(p.Fmo)).Fangle, color, (*mobj_t)(unsafe.Pointer(p.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(p.Fmo)).Fy)
+		AM_drawLineCharacter(player_arrow[:], 0, (*mobj_t)(unsafe.Pointer(p.Fmo)).Fangle, color, (*mobj_t)(unsafe.Pointer(p.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(p.Fmo)).Fy)
 	}
 }
 
@@ -3664,12 +3664,12 @@ var their_colors = [4]int32{
 	3: 256 - 5*16,
 }
 
-func AM_drawThings(tls *libc.TLS, colors int32, colorrange int32) {
+func AM_drawThings(colors int32, colorrange int32) {
 	var t uintptr
 	for i := int32(0); i < numsectors; i++ {
 		t = (*(*sector_t)(unsafe.Pointer(sectors + uintptr(i)*128))).Fthinglist
 		for t != 0 {
-			AM_drawLineCharacter(tls, thintriangle_guy[:], 16<<FRACBITS, (*mobj_t)(unsafe.Pointer(t)).Fangle, colors+lightlev, (*mobj_t)(unsafe.Pointer(t)).Fx, (*mobj_t)(unsafe.Pointer(t)).Fy)
+			AM_drawLineCharacter(thintriangle_guy[:], 16<<FRACBITS, (*mobj_t)(unsafe.Pointer(t)).Fangle, colors+lightlev, (*mobj_t)(unsafe.Pointer(t)).Fx, (*mobj_t)(unsafe.Pointer(t)).Fy)
 			t = (*mobj_t)(unsafe.Pointer(t)).Fsnext
 		}
 	}
@@ -3700,14 +3700,14 @@ func AM_Drawer(tls *libc.TLS) {
 	if !(automapactive != 0) {
 		return
 	}
-	AM_clearFB(tls, BLACK)
+	AM_clearFB(BLACK)
 	if grid != 0 {
-		AM_drawGrid(tls, 6*16+GRAYSRANGE/2)
+		AM_drawGrid(6*16 + GRAYSRANGE/2)
 	}
-	AM_drawWalls(tls)
-	AM_drawPlayers(tls)
+	AM_drawWalls()
+	AM_drawPlayers()
 	if cheating == int32(2) {
-		AM_drawThings(tls, 7*16, int32(GREENRANGE))
+		AM_drawThings(7*16, int32(GREENRANGE))
 	}
 	AM_drawCrosshair(tls, 6*16)
 	AM_drawMarks(tls)
@@ -8228,7 +8228,7 @@ func G_Ticker(tls *libc.TLS) {
 	case int32(GS_LEVEL):
 		P_Ticker(tls)
 		ST_Ticker(tls)
-		AM_Ticker(tls)
+		AM_Ticker()
 		HU_Ticker(tls)
 	case int32(GS_INTERMISSION):
 		WI_Ticker(tls)
@@ -18882,7 +18882,7 @@ func M_AddToBox(tls *libc.TLS, box uintptr, x fixed_t, y fixed_t) {
 //	// Called in st_stuff module, which handles the input.
 //	// Returns a 1 if the cheat was successful, 0 if failed.
 //	//
-func cht_CheckCheat(tls *libc.TLS, cht uintptr, key int8) (r int32) {
+func cht_CheckCheat(cht uintptr, key int8) (r int32) {
 	var v1 int32
 	// if we make a short sequence on a cheat with parameters, this
 	// will not work in vanilla doom.  behave the same.
@@ -18917,7 +18917,7 @@ func cht_CheckCheat(tls *libc.TLS, cht uintptr, key int8) (r int32) {
 	return 0
 }
 
-func cht_GetParam(tls *libc.TLS, cht uintptr, buffer uintptr) {
+func cht_GetParam(cht uintptr, buffer uintptr) {
 	xmemcpy(buffer, cht+60, libc.Uint64FromInt32((*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars))
 }
 
@@ -25413,7 +25413,7 @@ func P_GiveWeapon(tls *libc.TLS, player uintptr, weapon weapontype_t, dropped bo
 //	// P_GiveBody
 //	// Returns false if the body isn't needed at all
 //	//
-func P_GiveBody(tls *libc.TLS, player uintptr, num int32) (r boolean) {
+func P_GiveBody(player uintptr, num int32) (r boolean) {
 	if (*player_t)(unsafe.Pointer(player)).Fhealth >= int32(MAXHEALTH) {
 		return 0
 	}
@@ -25461,7 +25461,7 @@ func P_GiveCard(tls *libc.TLS, player uintptr, card card_t) {
 //	//
 //	// P_GivePower
 //	//
-func P_GivePower(tls *libc.TLS, player uintptr, power int32) (r boolean) {
+func P_GivePower(player uintptr, power int32) (r boolean) {
 	if power == int32(pw_invulnerability) {
 		*(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) = int32(INVULNTICS)
 		return 1
@@ -25480,7 +25480,7 @@ func P_GivePower(tls *libc.TLS, player uintptr, power int32) (r boolean) {
 		return 1
 	}
 	if power == int32(pw_strength) {
-		P_GiveBody(tls, player, int32(100))
+		P_GiveBody(player, int32(100))
 		*(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) = int32(1)
 		return 1
 	}
@@ -25626,12 +25626,12 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		// medikits, heals
 		fallthrough
 	case int32(SPR_STIM):
-		if !(P_GiveBody(tls, player, int32(10)) != 0) {
+		if !(P_GiveBody(player, int32(10)) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24024)
 	case int32(SPR_MEDI):
-		if !(P_GiveBody(tls, player, int32(25)) != 0) {
+		if !(P_GiveBody(player, int32(25)) != 0) {
 			return
 		}
 		if (*player_t)(unsafe.Pointer(player)).Fhealth < int32(25) {
@@ -25643,13 +25643,13 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		// power ups
 		fallthrough
 	case int32(SPR_PINV):
-		if !(P_GivePower(tls, player, int32(pw_invulnerability)) != 0) {
+		if !(P_GivePower(player, int32(pw_invulnerability)) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24109)
 		sound = int32(sfx_getpow)
 	case int32(SPR_PSTR):
-		if !(P_GivePower(tls, player, int32(pw_strength)) != 0) {
+		if !(P_GivePower(player, int32(pw_strength)) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24126)
@@ -25658,25 +25658,25 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		}
 		sound = int32(sfx_getpow)
 	case int32(SPR_PINS):
-		if !(P_GivePower(tls, player, int32(pw_invisibility)) != 0) {
+		if !(P_GivePower(player, int32(pw_invisibility)) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24135)
 		sound = int32(sfx_getpow)
 	case int32(SPR_SUIT):
-		if !(P_GivePower(tls, player, int32(pw_ironfeet)) != 0) {
+		if !(P_GivePower(player, int32(pw_ironfeet)) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24156)
 		sound = int32(sfx_getpow)
 	case int32(SPR_PMAP):
-		if !(P_GivePower(tls, player, int32(pw_allmap)) != 0) {
+		if !(P_GivePower(player, int32(pw_allmap)) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24181)
 		sound = int32(sfx_getpow)
 	case int32(SPR_PVIS):
-		if !(P_GivePower(tls, player, int32(pw_infrared)) != 0) {
+		if !(P_GivePower(player, int32(pw_infrared)) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24199)
@@ -41347,7 +41347,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 		if ev.Ftype1 == int32(ev_keydown) {
 			if !(netgame != 0) && gameskill != int32(sk_nightmare) {
 				// 'dqd' cheat for toggleable god mode
-				if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_god)), int8(ev.Fdata2)) != 0 {
+				if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_god)), int8(ev.Fdata2)) != 0 {
 					*(*int32)(unsafe.Pointer(plyr + 208)) ^= int32(CF_GODMODE)
 					if (*player_t)(unsafe.Pointer(plyr)).Fcheats&int32(CF_GODMODE) != 0 {
 						if (*player_t)(unsafe.Pointer(plyr)).Fmo != 0 {
@@ -41359,7 +41359,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27573)
 					}
 				} else {
-					if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_ammonokey)), int8(ev.Fdata2)) != 0 {
+					if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_ammonokey)), int8(ev.Fdata2)) != 0 {
 						(*player_t)(unsafe.Pointer(plyr)).Farmorpoints = int32(DEH_DEFAULT_IDFA_ARMOR)
 						(*player_t)(unsafe.Pointer(plyr)).Farmortype = int32(DEH_DEFAULT_IDFA_ARMOR_CLASS)
 						i = 0
@@ -41386,7 +41386,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 						}
 						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27597)
 					} else {
-						if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_ammo)), int8(ev.Fdata2)) != 0 {
+						if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_ammo)), int8(ev.Fdata2)) != 0 {
 							(*player_t)(unsafe.Pointer(plyr)).Farmorpoints = int32(DEH_DEFAULT_IDKFA_ARMOR)
 							(*player_t)(unsafe.Pointer(plyr)).Farmortype = int32(DEH_DEFAULT_IDKFA_ARMOR_CLASS)
 							i = 0
@@ -41424,9 +41424,9 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 							}
 							(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27618)
 						} else {
-							if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_mus)), int8(ev.Fdata2)) != 0 {
+							if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_mus)), int8(ev.Fdata2)) != 0 {
 								(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27640)
-								cht_GetParam(tls, uintptr(unsafe.Pointer(&cheat_mus)), bp)
+								cht_GetParam(uintptr(unsafe.Pointer(&cheat_mus)), bp)
 								// Note: The original v1.9 had a bug that tried to play back
 								// the Doom II music regardless of gamemode.  This was fixed
 								// in the Ultimate Doom executable so that it would work for
@@ -41457,7 +41457,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 									}
 									v6 = v7
 								}
-								if v10 = v6 == int32(doom) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_noclip)), int8(ev.Fdata2)) != 0; !v10 {
+								if v10 = v6 == int32(doom) && cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_noclip)), int8(ev.Fdata2)) != 0; !v10 {
 									if gamemission == int32(pack_chex) {
 										v8 = int32(doom)
 									} else {
@@ -41469,7 +41469,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 										v8 = v9
 									}
 								}
-								if v10 || v8 != int32(doom) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_commercial_noclip)), int8(ev.Fdata2)) != 0 {
+								if v10 || v8 != int32(doom) && cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_commercial_noclip)), int8(ev.Fdata2)) != 0 {
 									// Noclip cheat.
 									// For Doom 1, use the idspipsopd cheat; for all others, use
 									// idclip
@@ -41490,9 +41490,9 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 					if !(i < int32(6)) {
 						break
 					}
-					if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_powerup))+uintptr(i)*72, int8(ev.Fdata2)) != 0 {
+					if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_powerup))+uintptr(i)*72, int8(ev.Fdata2)) != 0 {
 						if !(*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(i)*4)) != 0) {
-							P_GivePower(tls, plyr, i)
+							P_GivePower(plyr, i)
 						} else {
 							if i != int32(pw_strength) {
 								*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(i)*4)) = int32(1)
@@ -41508,15 +41508,15 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 					i++
 				}
 				// 'behold' power-up menu
-				if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_powerup))+6*72, int8(ev.Fdata2)) != 0 {
+				if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_powerup))+6*72, int8(ev.Fdata2)) != 0 {
 					(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27732)
 				} else {
-					if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_choppers)), int8(ev.Fdata2)) != 0 {
+					if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_choppers)), int8(ev.Fdata2)) != 0 {
 						*(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(wp_chainsaw)*4)) = 1
 						*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_invulnerability)*4)) = 1
 						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27778)
 					} else {
-						if cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_mypos)), int8(ev.Fdata2)) != 0 {
+						if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_mypos)), int8(ev.Fdata2)) != 0 {
 							M_snprintf(tls, uintptr(unsafe.Pointer(&buf)), uint64(52), __ccgo_ts(27800), libc.VaList(bp+16, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fangle, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy))
 							(*player_t)(unsafe.Pointer(plyr)).Fmessage = uintptr(unsafe.Pointer(&buf))
 						}
@@ -41524,8 +41524,8 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 				}
 			}
 			// 'clev' change-level cheat
-			if !(netgame != 0) && cht_CheckCheat(tls, uintptr(unsafe.Pointer(&cheat_clev)), int8(ev.Fdata2)) != 0 {
-				cht_GetParam(tls, uintptr(unsafe.Pointer(&cheat_clev)), bp+3)
+			if !(netgame != 0) && cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_clev)), int8(ev.Fdata2)) != 0 {
+				cht_GetParam(uintptr(unsafe.Pointer(&cheat_clev)), bp+3)
 				if gamemode == int32(commercial) {
 					epsd = int32(1)
 					map1 = (int32((*(*[3]int8)(unsafe.Pointer(bp + 3)))[0])-int32('0'))*int32(10) + int32((*(*[3]int8)(unsafe.Pointer(bp + 3)))[int32(1)]) - int32('0')
