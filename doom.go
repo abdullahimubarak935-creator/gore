@@ -124,6 +124,14 @@ func xatoi(nptr uintptr) int32 {
 	return int32(ret)
 }
 
+func xtoupper(c int32) int32 {
+	if c >= 'a' && c <= 'z' {
+		return c - ('a' - 'A')
+	}
+
+	return c
+}
+
 func xmemset(dest uintptr, c uint8, n uint64) {
 	if n != 0 {
 		destSlice := unsafe.Slice((*byte)(unsafe.Pointer(dest)), n)
@@ -6719,7 +6727,7 @@ func F_TextWrite(tls *libc.TLS) {
 			cy += int32(11)
 			goto _3
 		}
-		c = libc.Xtoupper(tls, c) - int32('!')
+		c = xtoupper(c) - int32('!')
 		if c < 0 || c > libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1 {
 			cx += int32(4)
 			goto _3
@@ -7009,7 +7017,7 @@ func F_CastPrint(tls *libc.TLS, text uintptr) {
 		if !(c != 0) {
 			break
 		}
-		c = libc.Xtoupper(tls, c) - int32('!')
+		c = xtoupper(c) - int32('!')
 		if c < 0 || c > libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1 {
 			width += int32(4)
 			continue
@@ -7027,7 +7035,7 @@ func F_CastPrint(tls *libc.TLS, text uintptr) {
 		if !(c != 0) {
 			break
 		}
-		c = libc.Xtoupper(tls, c) - int32('!')
+		c = xtoupper(c) - int32('!')
 		if c < 0 || c > libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1 {
 			cx += int32(4)
 			continue
@@ -7738,7 +7746,7 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 		side += sidemove[speed]
 	}
 	// buttons
-	(*ticcmd_t)(unsafe.Pointer(cmd)).Fchatchar = libc.Uint8FromInt8(HU_dequeueChatChar(tls))
+	(*ticcmd_t)(unsafe.Pointer(cmd)).Fchatchar = libc.Uint8FromInt8(HU_dequeueChatChar())
 	if gamekeydown[key_fire] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebfire)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybfire)*4)) != 0 {
 		p6 = cmd + 5
 		*(*uint8)(unsafe.Pointer(p6)) = uint8(int32(*(*uint8)(unsafe.Pointer(p6))) | int32(BT_ATTACK))
@@ -8041,7 +8049,7 @@ func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 		return 0
 	}
 	if gamestate == int32(GS_LEVEL) {
-		if HU_Responder(tls, ev) != 0 {
+		if HU_Responder(ev) != 0 {
 			return 1
 		} // chat ate the event
 		if ST_Responder(tls, ev) != 0 {
@@ -9488,70 +9496,60 @@ type hu_itext_t = struct {
 	Flaston boolean
 }
 
-func HUlib_clearTextLine(tls *libc.TLS, t uintptr) {
-	(*hu_textline_t)(unsafe.Pointer(t)).Flen1 = 0
-	*(*int8)(unsafe.Pointer(t + 20)) = 0
-	(*hu_textline_t)(unsafe.Pointer(t)).Fneedsupdate = 1
+func HUlib_clearTextLine(t *hu_textline_t) {
+	t.Flen1 = 0
+	t.Fl[0] = 0
+	t.Fneedsupdate = 1
 }
 
-func HUlib_initTextLine(tls *libc.TLS, t uintptr, x int32, y int32, f uintptr, sc int32) {
-	(*hu_textline_t)(unsafe.Pointer(t)).Fx = x
-	(*hu_textline_t)(unsafe.Pointer(t)).Fy = y
-	(*hu_textline_t)(unsafe.Pointer(t)).Ff = f
-	(*hu_textline_t)(unsafe.Pointer(t)).Fsc = sc
-	HUlib_clearTextLine(tls, t)
+func HUlib_initTextLine(t *hu_textline_t, x int32, y int32, f uintptr, sc int32) {
+	t.Fx = x
+	t.Fy = y
+	t.Ff = f
+	t.Fsc = sc
+	HUlib_clearTextLine(t)
 }
 
-func HUlib_addCharToTextLine(tls *libc.TLS, t uintptr, ch int8) (r boolean) {
-	var v1 int32
-	var v2 uintptr
-	if (*hu_textline_t)(unsafe.Pointer(t)).Flen1 == int32(HU_MAXLINELENGTH) {
+func HUlib_addCharToTextLine(t *hu_textline_t, ch int8) boolean {
+	if t.Flen1 == int32(HU_MAXLINELENGTH) {
 		return 0
 	} else {
-		v2 = t + 104
-		v1 = *(*int32)(unsafe.Pointer(v2))
-		*(*int32)(unsafe.Pointer(v2))++
-		*(*int8)(unsafe.Pointer(t + 20 + uintptr(v1))) = ch
-		*(*int8)(unsafe.Pointer(t + 20 + uintptr((*hu_textline_t)(unsafe.Pointer(t)).Flen1))) = 0
-		(*hu_textline_t)(unsafe.Pointer(t)).Fneedsupdate = int32(4)
+		t.Fl[t.Flen1] = ch
+		t.Flen1++
+		t.Fl[t.Flen1] = 0
+		t.Fneedsupdate = int32(4)
 		return 1
 	}
-	return r
 }
 
-func HUlib_delCharFromTextLine(tls *libc.TLS, t uintptr) (r boolean) {
-	var v1 int32
-	var v2 uintptr
-	if !((*hu_textline_t)(unsafe.Pointer(t)).Flen1 != 0) {
+func HUlib_delCharFromTextLine(t *hu_textline_t) boolean {
+	if t.Flen1 == 0 {
 		return 0
 	} else {
-		v2 = t + 104
-		*(*int32)(unsafe.Pointer(v2))--
-		v1 = *(*int32)(unsafe.Pointer(v2))
-		*(*int8)(unsafe.Pointer(t + 20 + uintptr(v1))) = 0
-		(*hu_textline_t)(unsafe.Pointer(t)).Fneedsupdate = int32(4)
+		t.Flen1--
+		t.Fl[t.Flen1] = 0
+		t.Fneedsupdate = int32(4)
 		return 1
 	}
-	return r
 }
 
-func HUlib_drawTextLine(tls *libc.TLS, l uintptr, drawcursor boolean) {
+func HUlib_drawTextLine(tls *libc.TLS, l *hu_textline_t, drawcursor boolean) {
 	var c uint8
 	var i, w, x int32
 	// draw the new stuff
-	x = (*hu_textline_t)(unsafe.Pointer(l)).Fx
+	x = l.Fx
 	i = 0
 	for {
-		if !(i < (*hu_textline_t)(unsafe.Pointer(l)).Flen1) {
+		if !(i < l.Flen1) {
 			break
 		}
-		c = libc.Uint8FromInt32(libc.Xtoupper(tls, int32(*(*int8)(unsafe.Pointer(l + 20 + uintptr(i))))))
-		if libc.Int32FromUint8(c) != int32(' ') && libc.Int32FromUint8(c) >= (*hu_textline_t)(unsafe.Pointer(l)).Fsc && libc.Int32FromUint8(c) <= int32('_') {
-			w = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*hu_textline_t)(unsafe.Pointer(l)).Ff + uintptr(libc.Int32FromUint8(c)-(*hu_textline_t)(unsafe.Pointer(l)).Fsc)*8)))).Fwidth)
+		c = libc.Uint8FromInt32(xtoupper(int32(l.Fl[i])))
+		if libc.Int32FromUint8(c) != int32(' ') && libc.Int32FromUint8(c) >= l.Fsc && libc.Int32FromUint8(c) <= int32('_') {
+			w = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(l.Ff + uintptr(libc.Int32FromUint8(c)-l.Fsc)*8)))).Fwidth)
 			if x+w > int32(SCREENWIDTH) {
 				break
 			}
-			V_DrawPatchDirect(tls, x, (*hu_textline_t)(unsafe.Pointer(l)).Fy, *(*uintptr)(unsafe.Pointer((*hu_textline_t)(unsafe.Pointer(l)).Ff + uintptr(libc.Int32FromUint8(c)-(*hu_textline_t)(unsafe.Pointer(l)).Fsc)*8)))
+			V_DrawPatchDirect(tls, x, l.Fy, *(*uintptr)(unsafe.Pointer(l.Ff + uintptr(libc.Int32FromUint8(c)-l.Fsc)*8)))
 			x += w
 		} else {
 			x += int32(4)
@@ -9565,25 +9563,25 @@ func HUlib_drawTextLine(tls *libc.TLS, l uintptr, drawcursor boolean) {
 		i++
 	}
 	// draw the cursor if requested
-	if drawcursor != 0 && x+int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*hu_textline_t)(unsafe.Pointer(l)).Ff + uintptr(int32('_')-(*hu_textline_t)(unsafe.Pointer(l)).Fsc)*8)))).Fwidth) <= int32(SCREENWIDTH) {
-		V_DrawPatchDirect(tls, x, (*hu_textline_t)(unsafe.Pointer(l)).Fy, *(*uintptr)(unsafe.Pointer((*hu_textline_t)(unsafe.Pointer(l)).Ff + uintptr(int32('_')-(*hu_textline_t)(unsafe.Pointer(l)).Fsc)*8)))
+	if drawcursor != 0 && x+int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(l.Ff + uintptr(int32('_')-l.Fsc)*8)))).Fwidth) <= int32(SCREENWIDTH) {
+		V_DrawPatchDirect(tls, x, l.Fy, *(*uintptr)(unsafe.Pointer(l.Ff + uintptr(int32('_')-l.Fsc)*8)))
 	}
 }
 
 // C documentation
 //
 //	// sorta called by HU_Erase and just better darn get things straight
-func HUlib_eraseTextLine(l uintptr) {
+func HUlib_eraseTextLine(l *hu_textline_t) {
 	var lh, y, yoffset int32
 	// Only erases when NOT in automap and the screen is reduced,
 	// and the text must either need updating or refreshing
 	// (because of a recent change back from the automap)
-	if !(automapactive != 0) && viewwindowx != 0 && (*hu_textline_t)(unsafe.Pointer(l)).Fneedsupdate != 0 {
-		lh = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*hu_textline_t)(unsafe.Pointer(l)).Ff)))).Fheight) + int32(1)
-		y = (*hu_textline_t)(unsafe.Pointer(l)).Fy
+	if !(automapactive != 0) && viewwindowx != 0 && l.Fneedsupdate != 0 {
+		lh = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(l.Ff)))).Fheight) + int32(1)
+		y = l.Fy
 		yoffset = y * SCREENWIDTH
 		for {
-			if !(y < (*hu_textline_t)(unsafe.Pointer(l)).Fy+lh) {
+			if !(y < l.Fy+lh) {
 				break
 			}
 			if y < viewwindowy || y >= viewwindowy+viewheight {
@@ -9600,152 +9598,113 @@ func HUlib_eraseTextLine(l uintptr) {
 			yoffset += int32(SCREENWIDTH)
 		}
 	}
-	if (*hu_textline_t)(unsafe.Pointer(l)).Fneedsupdate != 0 {
-		(*hu_textline_t)(unsafe.Pointer(l)).Fneedsupdate--
+	if l.Fneedsupdate != 0 {
+		l.Fneedsupdate--
 	}
 }
 
-func HUlib_initSText(tls *libc.TLS, s uintptr, x int32, y int32, h int32, font uintptr, startchar int32, on uintptr) {
-	var i int32
-	(*hu_stext_t)(unsafe.Pointer(s)).Fh = h
-	(*hu_stext_t)(unsafe.Pointer(s)).Fon = on
-	(*hu_stext_t)(unsafe.Pointer(s)).Flaston = 1
-	(*hu_stext_t)(unsafe.Pointer(s)).Fcl = 0
-	i = 0
-	for {
-		if !(i < h) {
-			break
-		}
-		HUlib_initTextLine(tls, s+uintptr(i)*112, x, y-i*(int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(font)))).Fheight)+int32(1)), font, startchar)
-		goto _1
-	_1:
-		;
-		i++
+func HUlib_initSText(s *hu_stext_t, x int32, y int32, h int32, font uintptr, startchar int32, on uintptr) {
+	s.Fh = h
+	s.Fon = on
+	s.Flaston = 1
+	s.Fcl = 0
+	for i := int32(0); i < h; i++ {
+		HUlib_initTextLine(&s.Fl[i], x, y-i*(int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(font)))).Fheight)+int32(1)), font, startchar)
 	}
 }
 
-func HUlib_addLineToSText(tls *libc.TLS, s uintptr) {
-	var i, v1 int32
-	var v2 uintptr
+func HUlib_addLineToSText(s *hu_stext_t) {
 	// add a clear line
-	v2 = s + 452
-	*(*int32)(unsafe.Pointer(v2))++
-	v1 = *(*int32)(unsafe.Pointer(v2))
-	if v1 == (*hu_stext_t)(unsafe.Pointer(s)).Fh {
-		(*hu_stext_t)(unsafe.Pointer(s)).Fcl = 0
+	s.Fcl++
+	if s.Fcl == s.Fh {
+		s.Fcl = 0
 	}
-	HUlib_clearTextLine(tls, s+uintptr((*hu_stext_t)(unsafe.Pointer(s)).Fcl)*112)
+	HUlib_clearTextLine(&s.Fl[s.Fcl])
 	// everything needs updating
-	i = 0
-	for {
-		if !(i < (*hu_stext_t)(unsafe.Pointer(s)).Fh) {
-			break
-		}
-		(*(*hu_textline_t)(unsafe.Pointer(s + uintptr(i)*112))).Fneedsupdate = int32(4)
-		goto _3
-	_3:
-		;
-		i++
+	for i := int32(0); i < s.Fh; i++ {
+		s.Fl[i].Fneedsupdate = int32(4) // needs updating
 	}
 }
 
-func HUlib_addMessageToSText(tls *libc.TLS, s uintptr, prefix uintptr, msg uintptr) {
+func HUlib_addMessageToSText(s *hu_stext_t, prefix uintptr, msg uintptr) {
 	var v1, v2 uintptr
-	HUlib_addLineToSText(tls, s)
+	HUlib_addLineToSText(s)
 	if prefix != 0 {
 		for *(*int8)(unsafe.Pointer(prefix)) != 0 {
 			v1 = prefix
 			prefix++
-			HUlib_addCharToTextLine(tls, s+uintptr((*hu_stext_t)(unsafe.Pointer(s)).Fcl)*112, *(*int8)(unsafe.Pointer(v1)))
+			HUlib_addCharToTextLine(&s.Fl[s.Fcl], *(*int8)(unsafe.Pointer(v1)))
 		}
 	}
 	for *(*int8)(unsafe.Pointer(msg)) != 0 {
 		v2 = msg
 		msg++
-		HUlib_addCharToTextLine(tls, s+uintptr((*hu_stext_t)(unsafe.Pointer(s)).Fcl)*112, *(*int8)(unsafe.Pointer(v2)))
+		HUlib_addCharToTextLine(&s.Fl[s.Fcl], *(*int8)(unsafe.Pointer(v2)))
 	}
 }
 
-func HUlib_drawSText(tls *libc.TLS, s uintptr) {
-	var i, idx int32
-	var l uintptr
-	if !(*(*boolean)(unsafe.Pointer((*hu_stext_t)(unsafe.Pointer(s)).Fon)) != 0) {
+func HUlib_drawSText(tls *libc.TLS, s *hu_stext_t) {
+	var idx int32
+	if !(*(*boolean)(unsafe.Pointer(s.Fon)) != 0) {
 		return
 	} // if not on, don't draw
 	// draw everything
-	i = 0
-	for {
-		if !(i < (*hu_stext_t)(unsafe.Pointer(s)).Fh) {
-			break
-		}
-		idx = (*hu_stext_t)(unsafe.Pointer(s)).Fcl - i
+	for i := int32(0); i < s.Fh; i++ {
+		idx = s.Fcl - i
 		if idx < 0 {
-			idx += (*hu_stext_t)(unsafe.Pointer(s)).Fh
+			idx += s.Fh
 		} // handle queue of lines
-		l = s + uintptr(idx)*112
+		l := &s.Fl[idx]
 		// need a decision made here on whether to skip the draw
 		HUlib_drawTextLine(tls, l, 0) // no cursor, please
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
-func HUlib_eraseSText(s uintptr) {
-	var i int32
-	i = 0
-	for {
-		if !(i < (*hu_stext_t)(unsafe.Pointer(s)).Fh) {
-			break
+func HUlib_eraseSText(s *hu_stext_t) {
+	for i := int32(0); i < s.Fh; i++ {
+		if s.Flaston != 0 && !(*(*boolean)(unsafe.Pointer(s.Fon)) != 0) {
+			s.Fl[i].Fneedsupdate = int32(4)
 		}
-		if (*hu_stext_t)(unsafe.Pointer(s)).Flaston != 0 && !(*(*boolean)(unsafe.Pointer((*hu_stext_t)(unsafe.Pointer(s)).Fon)) != 0) {
-			(*(*hu_textline_t)(unsafe.Pointer(s + uintptr(i)*112))).Fneedsupdate = int32(4)
-		}
-		HUlib_eraseTextLine(s + uintptr(i)*112)
-		goto _1
-	_1:
-		;
-		i++
+		HUlib_eraseTextLine(&s.Fl[i])
 	}
-	(*hu_stext_t)(unsafe.Pointer(s)).Flaston = *(*boolean)(unsafe.Pointer((*hu_stext_t)(unsafe.Pointer(s)).Fon))
+	s.Flaston = *(*boolean)(unsafe.Pointer(s.Fon))
 }
 
-func HUlib_initIText(tls *libc.TLS, it uintptr, x int32, y int32, font uintptr, startchar int32, on uintptr) {
-	(*hu_itext_t)(unsafe.Pointer(it)).Flm = 0 // default left margin is start of text
-	(*hu_itext_t)(unsafe.Pointer(it)).Fon = on
-	(*hu_itext_t)(unsafe.Pointer(it)).Flaston = 1
-	HUlib_initTextLine(tls, it, x, y, font, startchar)
+func HUlib_initIText(it *hu_itext_t, x int32, y int32, font uintptr, startchar int32, on uintptr) {
+	it.Flm = 0 // default left margin is start of text
+	it.Fon = on
+	it.Flaston = 1
+	HUlib_initTextLine(&it.Fl, x, y, font, startchar)
 }
 
 // C documentation
 //
 //	// The following deletion routines adhere to the left margin restriction
-func HUlib_delCharFromIText(tls *libc.TLS, it uintptr) {
-	if (*hu_itext_t)(unsafe.Pointer(it)).Fl.Flen1 != (*hu_itext_t)(unsafe.Pointer(it)).Flm {
-		HUlib_delCharFromTextLine(tls, it)
+func HUlib_delCharFromIText(it *hu_itext_t) {
+	if it.Fl.Flen1 != it.Flm {
+		HUlib_delCharFromTextLine(&it.Fl)
 	}
 }
 
 // C documentation
 //
 //	// Resets left margin as well
-func HUlib_resetIText(tls *libc.TLS, it uintptr) {
-	(*hu_itext_t)(unsafe.Pointer(it)).Flm = 0
-	HUlib_clearTextLine(tls, it)
+func HUlib_resetIText(it *hu_itext_t) {
+	it.Flm = 0
+	HUlib_clearTextLine(&it.Fl)
 }
 
 // C documentation
 //
 //	// wrapper function for handling general keyed input.
 //	// returns true if it ate the key
-func HUlib_keyInIText(tls *libc.TLS, it uintptr, ch uint8) (r boolean) {
-	ch = libc.Uint8FromInt32(libc.Xtoupper(tls, libc.Int32FromUint8(ch)))
+func HUlib_keyInIText(it *hu_itext_t, ch uint8) (r boolean) {
+	ch = libc.Uint8FromInt32(xtoupper(libc.Int32FromUint8(ch)))
 	if libc.Int32FromUint8(ch) >= int32(' ') && libc.Int32FromUint8(ch) <= int32('_') {
-		HUlib_addCharToTextLine(tls, it, libc.Int8FromUint8(ch))
+		HUlib_addCharToTextLine(&it.Fl, libc.Int8FromUint8(ch))
 	} else {
 		if libc.Int32FromUint8(ch) == int32(KEY_BACKSPACE1) {
-			HUlib_delCharFromIText(tls, it)
+			HUlib_delCharFromIText(it)
 		} else {
 			if libc.Int32FromUint8(ch) != int32(KEY_ENTER) {
 				return 0
@@ -9755,21 +9714,19 @@ func HUlib_keyInIText(tls *libc.TLS, it uintptr, ch uint8) (r boolean) {
 	return 1 // ate the key
 }
 
-func HUlib_drawIText(tls *libc.TLS, it uintptr) {
-	var l uintptr
-	l = it
-	if !(*(*boolean)(unsafe.Pointer((*hu_itext_t)(unsafe.Pointer(it)).Fon)) != 0) {
+func HUlib_drawIText(tls *libc.TLS, it *hu_itext_t) {
+	if !(*(*boolean)(unsafe.Pointer(it.Fon)) != 0) {
 		return
 	}
-	HUlib_drawTextLine(tls, l, 1) // draw the line w/ cursor
+	HUlib_drawTextLine(tls, &it.Fl, 1) // draw the line w/ cursor
 }
 
-func HUlib_eraseIText(it uintptr) {
-	if (*hu_itext_t)(unsafe.Pointer(it)).Flaston != 0 && !(*(*boolean)(unsafe.Pointer((*hu_itext_t)(unsafe.Pointer(it)).Fon)) != 0) {
-		(*hu_itext_t)(unsafe.Pointer(it)).Fl.Fneedsupdate = int32(4)
+func HUlib_eraseIText(it *hu_itext_t) {
+	if it.Flaston != 0 && !(*(*boolean)(unsafe.Pointer(it.Fon)) != 0) {
+		it.Fl.Fneedsupdate = int32(4)
 	}
-	HUlib_eraseTextLine(it)
-	(*hu_itext_t)(unsafe.Pointer(it)).Flaston = *(*boolean)(unsafe.Pointer((*hu_itext_t)(unsafe.Pointer(it)).Fon))
+	HUlib_eraseTextLine(&it.Fl)
+	it.Flaston = *(*boolean)(unsafe.Pointer(it.Fon))
 }
 
 const HU_TITLEX = 0
@@ -9986,7 +9943,7 @@ func HU_Init(tls *libc.TLS) {
 	}
 }
 
-func HU_Stop(tls *libc.TLS) {
+func HU_Stop() {
 	headsupactive = 0
 }
 
@@ -9994,7 +9951,7 @@ func HU_Start(tls *libc.TLS) {
 	var i, v1, v2 int32
 	var s, v3 uintptr
 	if headsupactive != 0 {
-		HU_Stop(tls)
+		HU_Stop()
 	}
 	plr1 = uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328
 	message_on = 0
@@ -10002,9 +9959,9 @@ func HU_Start(tls *libc.TLS) {
 	message_nottobefuckedwith = 0
 	chat_on = 0
 	// create the message widget
-	HUlib_initSText(tls, uintptr(unsafe.Pointer(&w_message)), HU_MSGX, HU_MSGY, int32(HU_MSGHEIGHT), uintptr(unsafe.Pointer(&hu_font)), int32('!'), uintptr(unsafe.Pointer(&message_on)))
+	HUlib_initSText(&w_message, HU_MSGX, HU_MSGY, int32(HU_MSGHEIGHT), uintptr(unsafe.Pointer(&hu_font)), int32('!'), uintptr(unsafe.Pointer(&message_on)))
 	// create the map title widget
-	HUlib_initTextLine(tls, uintptr(unsafe.Pointer(&w_title)), HU_TITLEX, int32(167)-int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight), uintptr(unsafe.Pointer(&hu_font)), int32('!'))
+	HUlib_initTextLine(&w_title, HU_TITLEX, int32(167)-int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight), uintptr(unsafe.Pointer(&hu_font)), int32('!'))
 	if gamemission == int32(pack_chex) {
 		v1 = int32(doom)
 	} else {
@@ -10038,17 +9995,17 @@ func HU_Start(tls *libc.TLS) {
 	for *(*int8)(unsafe.Pointer(s)) != 0 {
 		v3 = s
 		s++
-		HUlib_addCharToTextLine(tls, uintptr(unsafe.Pointer(&w_title)), *(*int8)(unsafe.Pointer(v3)))
+		HUlib_addCharToTextLine(&w_title, *(*int8)(unsafe.Pointer(v3)))
 	}
 	// create the chat widget
-	HUlib_initIText(tls, uintptr(unsafe.Pointer(&w_chat)), HU_MSGX, HU_MSGY+int32(HU_MSGHEIGHT)*(int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight)+int32(1)), uintptr(unsafe.Pointer(&hu_font)), int32('!'), uintptr(unsafe.Pointer(&chat_on)))
+	HUlib_initIText(&w_chat, HU_MSGX, HU_MSGY+int32(HU_MSGHEIGHT)*(int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight)+int32(1)), uintptr(unsafe.Pointer(&hu_font)), int32('!'), uintptr(unsafe.Pointer(&chat_on)))
 	// create the inputbuffer widgets
 	i = 0
 	for {
 		if !(i < int32(MAXPLAYERS)) {
 			break
 		}
-		HUlib_initIText(tls, uintptr(unsafe.Pointer(&w_inputbuffer))+uintptr(i)*136, 0, 0, uintptr(0), 0, uintptr(unsafe.Pointer(&always_off)))
+		HUlib_initIText(&w_inputbuffer[i], 0, 0, uintptr(0), 0, uintptr(unsafe.Pointer(&always_off)))
 		goto _4
 	_4:
 		;
@@ -10058,17 +10015,17 @@ func HU_Start(tls *libc.TLS) {
 }
 
 func HU_Drawer(tls *libc.TLS) {
-	HUlib_drawSText(tls, uintptr(unsafe.Pointer(&w_message)))
-	HUlib_drawIText(tls, uintptr(unsafe.Pointer(&w_chat)))
+	HUlib_drawSText(tls, &w_message)
+	HUlib_drawIText(tls, &w_chat)
 	if automapactive != 0 {
-		HUlib_drawTextLine(tls, uintptr(unsafe.Pointer(&w_title)), 0)
+		HUlib_drawTextLine(tls, &w_title, 0)
 	}
 }
 
 func HU_Erase() {
-	HUlib_eraseSText(uintptr(unsafe.Pointer(&w_message)))
-	HUlib_eraseIText(uintptr(unsafe.Pointer(&w_chat)))
-	HUlib_eraseTextLine(uintptr(unsafe.Pointer(&w_title)))
+	HUlib_eraseSText(&w_message)
+	HUlib_eraseIText(&w_chat)
+	HUlib_eraseTextLine(&w_title)
 }
 
 func HU_Ticker(tls *libc.TLS) {
@@ -10087,7 +10044,7 @@ func HU_Ticker(tls *libc.TLS) {
 	if showMessages != 0 || message_dontfuckwithme != 0 {
 		// display message if necessary
 		if (*player_t)(unsafe.Pointer(plr1)).Fmessage != 0 && !(message_nottobefuckedwith != 0) || (*player_t)(unsafe.Pointer(plr1)).Fmessage != 0 && message_dontfuckwithme != 0 {
-			HUlib_addMessageToSText(tls, uintptr(unsafe.Pointer(&w_message)), uintptr(0), (*player_t)(unsafe.Pointer(plr1)).Fmessage)
+			HUlib_addMessageToSText(&w_message, uintptr(0), (*player_t)(unsafe.Pointer(plr1)).Fmessage)
 			(*player_t)(unsafe.Pointer(plr1)).Fmessage = uintptr(0)
 			message_on = 1
 			message_counter = 4 * TICRATE
@@ -10113,10 +10070,10 @@ func HU_Ticker(tls *libc.TLS) {
 				if int32(c) <= int32(HU_BROADCAST) {
 					chat_dest[i] = c
 				} else {
-					rc = libc.Int32FromUint32(HUlib_keyInIText(tls, uintptr(unsafe.Pointer(&w_inputbuffer))+uintptr(i)*136, libc.Uint8FromInt8(c)))
+					rc = libc.Int32FromUint32(HUlib_keyInIText(&w_inputbuffer[i], libc.Uint8FromInt8(c)))
 					if rc != 0 && int32(c) == int32(KEY_ENTER) {
 						if w_inputbuffer[i].Fl.Flen1 != 0 && (int32(chat_dest[i]) == consoleplayer+int32(1) || int32(chat_dest[i]) == int32(HU_BROADCAST)) {
-							HUlib_addMessageToSText(tls, uintptr(unsafe.Pointer(&w_message)), player_names[i], uintptr(unsafe.Pointer(&w_inputbuffer))+uintptr(i)*136+20)
+							HUlib_addMessageToSText(&w_message, player_names[i], uintptr(unsafe.Pointer(&w_inputbuffer))+uintptr(i)*136+20)
 							message_nottobefuckedwith = 1
 							message_on = 1
 							message_counter = 4 * TICRATE
@@ -10126,7 +10083,7 @@ func HU_Ticker(tls *libc.TLS) {
 								S_StartSound(tls, uintptr(0), int32(sfx_tink))
 							}
 						}
-						HUlib_resetIText(tls, uintptr(unsafe.Pointer(&w_inputbuffer))+uintptr(i)*136)
+						HUlib_resetIText(&w_inputbuffer[i])
 					}
 				}
 				players[i].Fcmd.Fchatchar = uint8(0)
@@ -10143,7 +10100,7 @@ var chatchars [128]int8
 var head = int32(0)
 var tail = int32(0)
 
-func HU_queueChatChar(tls *libc.TLS, c int8) {
+func HU_queueChatChar(c int8) {
 	if (head+int32(1))&(QUEUESIZE-1) == tail {
 		(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17504)
 	} else {
@@ -10152,7 +10109,7 @@ func HU_queueChatChar(tls *libc.TLS, c int8) {
 	}
 }
 
-func HU_dequeueChatChar(tls *libc.TLS) (r int8) {
+func HU_dequeueChatChar() (r int8) {
 	var c int8
 	if head != tail {
 		c = chatchars[tail]
@@ -10163,7 +10120,7 @@ func HU_dequeueChatChar(tls *libc.TLS) (r int8) {
 	return c
 }
 
-func HU_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
+func HU_Responder(ev *event_t) (r boolean) {
 	var c uint8
 	var eatkey, v2, v4 boolean
 	var i, numplayers int32
@@ -10202,8 +10159,8 @@ func HU_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 				v2 = 1
 				chat_on = v2
 				eatkey = v2
-				HUlib_resetIText(tls, uintptr(unsafe.Pointer(&w_chat)))
-				HU_queueChatChar(tls, int8(HU_BROADCAST))
+				HUlib_resetIText(&w_chat)
+				HU_queueChatChar(int8(HU_BROADCAST))
 			} else {
 				if netgame != 0 && numplayers > int32(2) {
 					i = 0
@@ -10216,8 +10173,8 @@ func HU_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 								v4 = 1
 								chat_on = v4
 								eatkey = v4
-								HUlib_resetIText(tls, uintptr(unsafe.Pointer(&w_chat)))
-								HU_queueChatChar(tls, int8(i+int32(1)))
+								HUlib_resetIText(&w_chat)
+								HU_queueChatChar(int8(i + int32(1)))
 								break
 							} else {
 								if i == consoleplayer {
@@ -10260,14 +10217,14 @@ func HU_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			// fprintf(stderr, "got here\n");
 			macromessage = chat_macros[c]
 			// kill last message with a '\n'
-			HU_queueChatChar(tls, int8(KEY_ENTER)) // DEBUG!!!
+			HU_queueChatChar(int8(KEY_ENTER)) // DEBUG!!!
 			// send the macro message
 			for *(*int8)(unsafe.Pointer(macromessage)) != 0 {
 				v5 = macromessage
 				macromessage++
-				HU_queueChatChar(tls, *(*int8)(unsafe.Pointer(v5)))
+				HU_queueChatChar(*(*int8)(unsafe.Pointer(v5)))
 			}
-			HU_queueChatChar(tls, int8(KEY_ENTER))
+			HU_queueChatChar(int8(KEY_ENTER))
 			// leave chat mode and notify that it was sent
 			chat_on = 0
 			M_StringCopy(uintptr(unsafe.Pointer(&lastmessage)), chat_macros[c], uint64(81))
@@ -10275,10 +10232,10 @@ func HU_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			eatkey = 1
 		} else {
 			c = libc.Uint8FromInt32(ev.Fdata2)
-			eatkey = HUlib_keyInIText(tls, uintptr(unsafe.Pointer(&w_chat)), c)
+			eatkey = HUlib_keyInIText(&w_chat, c)
 			if eatkey != 0 {
 				// static unsigned char buf[20]; // DEBUG
-				HU_queueChatChar(tls, libc.Int8FromUint8(c))
+				HU_queueChatChar(libc.Int8FromUint8(c))
 				// M_snprintf(buf, sizeof(buf), "KEY: %d => %d", ev->data1, c);
 				//        plr->message = buf;
 			}
@@ -21309,7 +21266,7 @@ func M_StringWidth(tls *libc.TLS, string1 uintptr) (r int32) {
 		if !(i < xstrlen(string1)) {
 			break
 		}
-		c = libc.Xtoupper(tls, int32(*(*int8)(unsafe.Pointer(string1 + uintptr(i))))) - int32('!')
+		c = xtoupper(int32(*(*int8)(unsafe.Pointer(string1 + uintptr(i))))) - int32('!')
 		if c < 0 || c >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1 {
 			w += int32(4)
 		} else {
@@ -21372,7 +21329,7 @@ func M_WriteText(tls *libc.TLS, x int32, y int32, string1 uintptr) {
 			cy += int32(12)
 			continue
 		}
-		c = libc.Xtoupper(tls, c) - int32('!')
+		c = xtoupper(c) - int32('!')
 		if c < 0 || c >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1 {
 			cx += int32(4)
 			continue
@@ -21533,7 +21490,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			if vanilla_keyboard_mapping != 0 {
 				ch = key
 			}
-			ch = libc.Xtoupper(tls, ch)
+			ch = xtoupper(ch)
 			if ch != int32(' ') && (ch-int32('!') < 0 || ch-int32('!') >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1) {
 				break
 			}
@@ -22094,7 +22051,7 @@ func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
 		length++
 		v2 = src
 		src++
-		*(*int8)(unsafe.Pointer(dest + uintptr(v1))) = int8(libc.Xtoupper(tls, int32(*(*int8)(unsafe.Pointer(v2)))))
+		*(*int8)(unsafe.Pointer(dest + uintptr(v1))) = int8(xtoupper(int32(*(*int8)(unsafe.Pointer(v2)))))
 	}
 }
 
@@ -45211,7 +45168,7 @@ func W_LumpNameHash(tls *libc.TLS, s uintptr) (r uint32) {
 		if !(i < uint32(8) && int32(*(*int8)(unsafe.Pointer(s + uintptr(i)))) != int32('\000')) {
 			break
 		}
-		result = result<<int32(5) ^ result ^ libc.Uint32FromInt32(libc.Xtoupper(tls, int32(*(*int8)(unsafe.Pointer(s + uintptr(i))))))
+		result = result<<int32(5) ^ result ^ libc.Uint32FromInt32(xtoupper(int32(*(*int8)(unsafe.Pointer(s + uintptr(i))))))
 		goto _1
 	_1:
 		;
