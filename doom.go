@@ -222,7 +222,7 @@ const VDOORWAIT = 150
 
 type va_list = uintptr
 
-type sha1_context_t = struct {
+type sha1_context_t struct {
 	Fh0      uint32
 	Fh1      uint32
 	Fh2      uint32
@@ -357,7 +357,7 @@ const ev_mouse = 2
 const ev_joystick = 3
 const ev_quit = 4
 
-type event_t = struct {
+type event_t struct {
 	Ftype1 evtype_t
 	Fdata1 int32
 	Fdata2 int32
@@ -377,7 +377,7 @@ const BTS_SAVEGAME = 2
 const BTS_SAVEMASK = 28
 const BTS_SAVESHIFT = 2
 
-type cheatseq_t = struct {
+type cheatseq_t struct {
 	Fsequence         [25]int8
 	Fsequence_len     uint64
 	Fparameter_chars  int32
@@ -396,21 +396,19 @@ type actionf_p1 = uintptr
 
 type actionf_p2 = uintptr
 
-type actionf_t = struct {
+type actionf_t struct {
 	Facv actionf_v
 }
 
-type think_t = struct {
+type think_t struct {
 	Facv actionf_v
 }
 
-type thinker_t = struct {
+type thinker_t struct {
 	Fprev     uintptr
 	Fnext     uintptr
 	Ffunction think_t
 }
-
-type thinker_s = thinker_t
 
 const ML_THINGS = 1
 const ML_LINEDEFS = 2
@@ -423,12 +421,12 @@ const ML_SECTORS = 8
 const ML_REJECT = 9
 const ML_BLOCKMAP = 10
 
-type mapvertex_t = struct {
+type mapvertex_t struct {
 	Fx int16
 	Fy int16
 }
 
-type mapsidedef_t = struct {
+type mapsidedef_t struct {
 	Ftextureoffset int16
 	Frowoffset     int16
 	Ftoptexture    [8]int8
@@ -437,7 +435,7 @@ type mapsidedef_t = struct {
 	Fsector        int16
 }
 
-type maplinedef_t = struct {
+type maplinedef_t struct {
 	Fv1      int16
 	Fv2      int16
 	Fflags   int16
@@ -446,7 +444,7 @@ type maplinedef_t = struct {
 	Fsidenum [2]int16
 }
 
-type mapsector_t = struct {
+type mapsector_t struct {
 	Ffloorheight   int16
 	Fceilingheight int16
 	Ffloorpic      [8]int8
@@ -456,12 +454,12 @@ type mapsector_t = struct {
 	Ftag           int16
 }
 
-type mapsubsector_t = struct {
+type mapsubsector_t struct {
 	Fnumsegs  int16
 	Ffirstseg int16
 }
 
-type mapseg_t = struct {
+type mapseg_t struct {
 	Fv1      int16
 	Fv2      int16
 	Fangle   int16
@@ -470,7 +468,7 @@ type mapseg_t = struct {
 	Foffset  int16
 }
 
-type mapnode_t = struct {
+type mapnode_t struct {
 	Fx        int16
 	Fy        int16
 	Fdx       int16
@@ -479,7 +477,7 @@ type mapnode_t = struct {
 	Fchildren [2]uint16
 }
 
-type mapthing_t = struct {
+type mapthing_t struct {
 	Fx       int16
 	Fy       int16
 	Fangle   int16
@@ -1591,7 +1589,7 @@ const S_TECH2LAMP2 = 964
 const S_TECH2LAMP3 = 965
 const S_TECH2LAMP4 = 966
 
-type state_t = struct {
+type state_t struct {
 	Fsprite    spritenum_t
 	Fframe     int32
 	Ftics      int32
@@ -1649,7 +1647,7 @@ const MT_CHAINGUN = 73
 const MT_SHOTGUN = 77
 const NUMMOBJTYPES = 137
 
-type mobjinfo_t = struct {
+type mobjinfo_t struct {
 	Fdoomednum    int32
 	Fspawnstate   int32
 	Fspawnhealth  int32
@@ -1703,7 +1701,7 @@ const MF_NOTDMATCH = 33554432
 const MF_TRANSLATION = 201326592
 const MF_TRANSSHIFT = 26
 
-type mobj_t = struct {
+type mobj_t struct {
 	Fthinker      thinker_t
 	Fx            fixed_t
 	Fy            fixed_t
@@ -1741,9 +1739,7 @@ type mobj_t = struct {
 	Ftracer       uintptr
 }
 
-type mobj_s = mobj_t
-
-type screen_mode_t = struct {
+type screen_mode_t struct {
 	Fwidth        int32
 	Fheight       int32
 	FInitMode     uintptr
@@ -1753,11 +1749,11 @@ type screen_mode_t = struct {
 
 type grabmouse_callback_t = uintptr
 
-//type color = struct {
+//type color struct {
 //F__ccgo0 uint32
 //}
 
-type patch_t = struct {
+type patch_t struct {
 	Fwidth      int16
 	Fheight     int16
 	Fleftoffset int16
@@ -1765,17 +1761,17 @@ type patch_t = struct {
 	Fcolumnofs  [8]int32
 }
 
-type column_t = struct {
+type column_t struct {
 	Ftopdelta uint8
 	Flength   uint8
 }
 
-type vertex_t = struct {
+type vertex_t struct {
 	Fx fixed_t
 	Fy fixed_t
 }
 
-type line_s = struct {
+type line_s struct {
 	Fv1          uintptr
 	Fv2          uintptr
 	Fdx          fixed_t
@@ -1797,14 +1793,14 @@ const ST_VERTICAL = 1
 const ST_POSITIVE = 2
 const ST_NEGATIVE = 3
 
-type degenmobj_t = struct {
+type degenmobj_t struct {
 	Fthinker thinker_t
 	Fx       fixed_t
 	Fy       fixed_t
 	Fz       fixed_t
 }
 
-type sector_t = struct {
+type sector_t struct {
 	Ffloorheight    fixed_t
 	Fceilingheight  fixed_t
 	Ffloorpic       int16
@@ -1823,7 +1819,7 @@ type sector_t = struct {
 	Flines          uintptr
 }
 
-type side_t = struct {
+type side_t struct {
 	Ftextureoffset fixed_t
 	Frowoffset     fixed_t
 	Ftoptexture    int16
@@ -1834,7 +1830,7 @@ type side_t = struct {
 
 type slopetype_t = int32
 
-type line_t = struct {
+type line_t struct {
 	Fv1          uintptr
 	Fv2          uintptr
 	Fdx          fixed_t
@@ -1851,15 +1847,13 @@ type line_t = struct {
 	Fspecialdata uintptr
 }
 
-type subsector_t = struct {
+type subsector_t struct {
 	Fsector    uintptr
 	Fnumlines  int16
 	Ffirstline int16
 }
 
-type subsector_s = subsector_t
-
-type seg_t = struct {
+type seg_t struct {
 	Fv1          uintptr
 	Fv2          uintptr
 	Foffset      fixed_t
@@ -1870,7 +1864,7 @@ type seg_t = struct {
 	Fbacksector  uintptr
 }
 
-type node_t = struct {
+type node_t struct {
 	Fx        fixed_t
 	Fy        fixed_t
 	Fdx       fixed_t
@@ -1881,7 +1875,7 @@ type node_t = struct {
 
 type lighttable_t = uint8
 
-type drawseg_t = struct {
+type drawseg_t struct {
 	Fcurline          uintptr
 	Fx1               int32
 	Fx2               int32
@@ -1896,7 +1890,7 @@ type drawseg_t = struct {
 	Fmaskedtexturecol uintptr
 }
 
-type vissprite_t = struct {
+type vissprite_t struct {
 	Fprev       uintptr
 	Fnext       uintptr
 	Fx1         int32
@@ -1914,20 +1908,18 @@ type vissprite_t = struct {
 	Fmobjflags  int32
 }
 
-type vissprite_s = vissprite_t
-
-type spriteframe_t = struct {
+type spriteframe_t struct {
 	Frotate boolean
 	Flump   [8]int16
 	Fflip   [8]uint8
 }
 
-type spritedef_t = struct {
+type spritedef_t struct {
 	Fnumframes    int32
 	Fspriteframes uintptr
 }
 
-type visplane_t = struct {
+type visplane_t struct {
 	Fheight     fixed_t
 	Fpicnum     int32
 	Flightlevel int32
@@ -1941,7 +1933,7 @@ type visplane_t = struct {
 	Fpad4       uint8
 }
 
-type weaponinfo_t = struct {
+type weaponinfo_t struct {
 	Fammo       ammotype_t
 	Fupstate    int32
 	Fdownstate  int32
@@ -1954,14 +1946,14 @@ const ps_weapon = 0
 const ps_flash = 1
 const NUMPSPRITES = 2
 
-type pspdef_t = struct {
+type pspdef_t struct {
 	Fstate uintptr
 	Ftics  int32
 	Fsx    fixed_t
 	Fsy    fixed_t
 }
 
-type ticcmd_t = struct {
+type ticcmd_t struct {
 	Fforwardmove int8
 	Fsidemove    int8
 	Fangleturn   int16
@@ -1974,7 +1966,7 @@ type ticcmd_t = struct {
 	Farti        uint8
 }
 
-type net_connect_data_t = struct {
+type net_connect_data_t struct {
 	Fgamemode     int32
 	Fgamemission  int32
 	Flowres_turn  int32
@@ -1986,7 +1978,7 @@ type net_connect_data_t = struct {
 	Fplayer_class int32
 }
 
-type net_gamesettings_t = struct {
+type net_gamesettings_t struct {
 	Fticdup           int32
 	Fextratics        int32
 	Fdeathmatch       int32
@@ -2017,7 +2009,7 @@ const CF_NOCLIP = 1
 const CF_GODMODE = 2
 const CF_NOMOMENTUM = 4
 
-type player_t = struct {
+type player_t struct {
 	Fmo              uintptr
 	Fplayerstate     playerstate_t
 	Fcmd             ticcmd_t
@@ -2055,7 +2047,7 @@ type player_t = struct {
 	Fdidsecret       boolean
 }
 
-type wbplayerstruct_t = struct {
+type wbplayerstruct_t struct {
 	Fin      boolean
 	Fskills  int32
 	Fsitems  int32
@@ -2065,7 +2057,7 @@ type wbplayerstruct_t = struct {
 	Fscore   int32
 }
 
-type wbstartstruct_t = struct {
+type wbstartstruct_t struct {
 	Fepsd      int32
 	Fdidsecret boolean
 	Flast      int32
@@ -2079,14 +2071,14 @@ type wbstartstruct_t = struct {
 	Fplyr      [4]wbplayerstruct_t
 }
 
-type divline_t = struct {
+type divline_t struct {
 	Fx  fixed_t
 	Fy  fixed_t
 	Fdx fixed_t
 	Fdy fixed_t
 }
 
-type intercept_t = struct {
+type intercept_t struct {
 	Ffrac    fixed_t
 	Fisaline boolean
 	Fd       struct {
@@ -2096,7 +2088,7 @@ type intercept_t = struct {
 
 type traverser_t = uintptr
 
-type fireflicker_t = struct {
+type fireflicker_t struct {
 	Fthinker  thinker_t
 	Fsector   uintptr
 	Fcount    int32
@@ -2104,7 +2096,7 @@ type fireflicker_t = struct {
 	Fminlight int32
 }
 
-type lightflash_t = struct {
+type lightflash_t struct {
 	Fthinker  thinker_t
 	Fsector   uintptr
 	Fcount    int32
@@ -2114,7 +2106,7 @@ type lightflash_t = struct {
 	Fmintime  int32
 }
 
-type strobe_t = struct {
+type strobe_t struct {
 	Fthinker    thinker_t
 	Fsector     uintptr
 	Fcount      int32
@@ -2124,7 +2116,7 @@ type strobe_t = struct {
 	Fbrighttime int32
 }
 
-type glow_t = struct {
+type glow_t struct {
 	Fthinker   thinker_t
 	Fsector    uintptr
 	Fminlight  int32
@@ -2132,7 +2124,7 @@ type glow_t = struct {
 	Fdirection int32
 }
 
-type switchlist_t = struct {
+type switchlist_t struct {
 	Fname1   [9]int8
 	Fname2   [9]int8
 	Fepisode int16
@@ -2144,7 +2136,7 @@ const top = 0
 const middle = 1
 const bottom = 2
 
-type button_t = struct {
+type button_t struct {
 	Fline     uintptr
 	Fwhere    bwhere_e
 	Fbtexture int32
@@ -2167,7 +2159,7 @@ const raiseAndChange = 2
 const raiseToNearestAndChange = 3
 const blazeDWUS = 4
 
-type plat_t = struct {
+type plat_t struct {
 	Fthinker   thinker_t
 	Fsector    uintptr
 	Fspeed     fixed_t
@@ -2193,7 +2185,7 @@ const vld_blazeRaise = 5
 const vld_blazeOpen = 6
 const vld_blazeClose = 7
 
-type vldoor_t = struct {
+type vldoor_t struct {
 	Fthinker      thinker_t
 	Ftype1        vldoor_e
 	Fsector       uintptr
@@ -2213,7 +2205,7 @@ const crushAndRaise = 3
 const fastCrushAndRaise = 4
 const silentCrushAndRaise = 5
 
-type ceiling_t = struct {
+type ceiling_t struct {
 	Fthinker      thinker_t
 	Ftype1        ceiling_e
 	Fsector       uintptr
@@ -2247,7 +2239,7 @@ type stair_e = int32
 const build8 = 0
 const turbo16 = 1
 
-type floormove_t = struct {
+type floormove_t struct {
 	Fthinker         thinker_t
 	Ftype1           floor_e
 	Fcrush           boolean
@@ -2265,19 +2257,19 @@ const ok = 0
 const crushed = 1
 const pastdest = 2
 
-type wad_file_t = struct {
+type wad_file_t struct {
 	Ffile_class uintptr
 	Fmapped     uintptr
 	Flength     uint32
 }
 
-type wad_file_class_t = struct {
+type wad_file_class_t struct {
 	FOpenFile  uintptr
 	FCloseFile uintptr
 	FRead      uintptr
 }
 
-type lumpinfo_t = struct {
+type lumpinfo_t struct {
 	Fname     [8]int8
 	Fwad_file uintptr
 	Fposition int32
@@ -2288,7 +2280,7 @@ type lumpinfo_t = struct {
 
 type netgame_startup_callback_t = uintptr
 
-type loop_interface_t = struct {
+type loop_interface_t struct {
 	FProcessEvents func(tls *libc.TLS)
 	FBuildTiccmd   func(*libc.TLS, uintptr, int32)
 	FRunTic        func(*libc.TLS, uintptr, uintptr)
@@ -2314,22 +2306,22 @@ type loop_interface_t = struct {
 
 // the following is crap
 
-type fpoint_t = struct {
+type fpoint_t struct {
 	Fx int32
 	Fy int32
 }
 
-type fline_t = struct {
+type fline_t struct {
 	Fa fpoint_t
 	Fb fpoint_t
 }
 
-type mpoint_t = struct {
+type mpoint_t struct {
 	Fx fixed_t
 	Fy fixed_t
 }
 
-type mline_t = struct {
+type mline_t struct {
 	Fa mpoint_t
 	Fb mpoint_t
 }
@@ -3865,7 +3857,7 @@ func init() {
 
 const MAX_IWAD_DIRS = 128
 
-type iwad_t = struct {
+type iwad_t struct {
 	Fname        uintptr
 	Fmission     GameMission_t
 	Fmode        GameMode_t
@@ -4239,7 +4231,7 @@ func D_SuggestGameName(mission GameMission_t, mode GameMode_t) (r uintptr) {
 
 // The complete set of data for a particular tic.
 
-type ticcmd_set_t = struct {
+type ticcmd_set_t struct {
 	Fcmds   [8]ticcmd_t
 	Fingame [8]boolean
 }
@@ -4642,7 +4634,7 @@ const HU_MSGY = 0
 const NUM_VIRTUAL_BUTTONS = 10
 const SAVESTRINGSIZE = 24
 
-type sfxinfo_t = struct {
+type sfxinfo_t struct {
 	Ftagname     uintptr
 	Fname        [9]int8
 	Fpriority    int32
@@ -4655,7 +4647,7 @@ type sfxinfo_t = struct {
 	Fdriver_data uintptr
 }
 
-type musicinfo_t = struct {
+type musicinfo_t struct {
 	Fname    uintptr
 	Flumpnum int32
 	Fdata    uintptr
@@ -4669,7 +4661,7 @@ const SNDDEVICE_SB = 3
 const SNDDEVICE_GUS = 5
 const SNDDEVICE_GENMIDI = 8
 
-type sound_module_t = struct {
+type sound_module_t struct {
 	Fsound_devices     uintptr
 	Fnum_sound_devices int32
 	FInit              uintptr
@@ -4683,7 +4675,7 @@ type sound_module_t = struct {
 	FCacheSounds       uintptr
 }
 
-type music_module_t = struct {
+type music_module_t struct {
 	Fsound_devices     uintptr
 	Fnum_sound_devices int32
 	FInit              uintptr
@@ -6370,7 +6362,7 @@ const F_STAGE_TEXT = 0
 const F_STAGE_ARTSCREEN = 1
 const F_STAGE_CAST = 2
 
-type textscreen_t = struct {
+type textscreen_t struct {
 	Fmission    GameMission_t
 	Fepisode    int32
 	Flevel      int32
@@ -6747,7 +6739,7 @@ func F_TextWrite(tls *libc.TLS) {
 //	// Casting by id Software.
 //	//   in order of appearance
 //	//
-type castinfo_t = struct {
+type castinfo_t struct {
 	Fname  uintptr
 	Ftype1 mobjtype_t
 }
@@ -9463,7 +9455,7 @@ func G_CheckDemoStatus(tls *libc.TLS) {
 const HU_MAXLINELENGTH = 80
 const KEY_BACKSPACE1 = 127
 
-type hu_textline_t = struct {
+type hu_textline_t struct {
 	Fx           int32
 	Fy           int32
 	Ff           uintptr
@@ -9473,7 +9465,7 @@ type hu_textline_t = struct {
 	Fneedsupdate int32
 }
 
-type hu_stext_t = struct {
+type hu_stext_t struct {
 	Fl      [4]hu_textline_t
 	Fh      int32
 	Fcl     int32
@@ -9481,7 +9473,7 @@ type hu_stext_t = struct {
 	Flaston boolean
 }
 
-type hu_itext_t = struct {
+type hu_itext_t struct {
 	Fl      hu_textline_t
 	Flm     int32
 	Fon     uintptr
@@ -18373,7 +18365,7 @@ const MIN_RAM = 16
 // prior to really call the function in question.
 //
 
-type atexit_listentry_t = struct {
+type atexit_listentry_t struct {
 	Ffunc         func(tls *libc.TLS)
 	Frun_on_error boolean
 }
@@ -18900,7 +18892,7 @@ const DEFAULT_STRING = 2
 const DEFAULT_FLOAT = 3
 const DEFAULT_KEY = 4
 
-type default_t = struct {
+type default_t struct {
 	Fname                uintptr
 	Flocation            uintptr
 	Ftype1               default_type_t
@@ -18909,7 +18901,7 @@ type default_t = struct {
 	Fbound               boolean
 }
 
-type default_collection_t = struct {
+type default_collection_t struct {
 	Fdefaults    uintptr
 	Fnumdefaults int32
 	Ffilename    uintptr
@@ -20083,14 +20075,14 @@ func init() {
 //	//
 //	// MENU TYPEDEFS
 //	//
-type menuitem_t = struct {
+type menuitem_t struct {
 	Fstatus   int16
 	Fname     [10]int8
 	Froutine  func(tls *libc.TLS, choice int32)
 	FalphaKey int8
 }
 
-type menu_t = struct {
+type menu_t struct {
 	Fnumitems  int16
 	FprevMenu  uintptr
 	Fmenuitems uintptr
@@ -23240,7 +23232,7 @@ func P_RecursiveSound(tls *libc.TLS, sec uintptr, soundblocks int32) {
 func P_NoiseAlert(tls *libc.TLS, target uintptr, emmiter uintptr) {
 	soundtarget = target
 	validcount++
-	P_RecursiveSound(tls, (*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(emmiter)).Fsubsector)).Fsector, 0)
+	P_RecursiveSound(tls, (*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(emmiter)).Fsubsector)).Fsector, 0)
 }
 
 // C documentation
@@ -23285,7 +23277,7 @@ func P_CheckMissileRange(tls *libc.TLS, actor uintptr) (r boolean) {
 		return 0
 	} // do not attack yet
 	// OPTIMIZE: get this from a global checksight
-	dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(actor)).Fx-(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy-(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy) - 64*(1<<FRACBITS)
+	dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(actor)).Fx-(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy-(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy) - 64*(1<<FRACBITS)
 	if !((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fmeleestate != 0) {
 		dist -= 128 * (1 << FRACBITS)
 	} // no melee attack, so fire more
@@ -23424,8 +23416,8 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 	}
 	olddir = (*mobj_t)(unsafe.Pointer(actor)).Fmovedir
 	turnaround = opposite[olddir]
-	deltax = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - (*mobj_t)(unsafe.Pointer(actor)).Fx
-	deltay = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - (*mobj_t)(unsafe.Pointer(actor)).Fy
+	deltax = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - (*mobj_t)(unsafe.Pointer(actor)).Fx
+	deltay = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - (*mobj_t)(unsafe.Pointer(actor)).Fy
 	if deltax > 10*(1<<FRACBITS) {
 		d[int32(1)] = int32(DI_EAST)
 	} else {
@@ -23629,7 +23621,7 @@ func A_Look(tls *libc.TLS, actor uintptr) {
 	var sound int32
 	var targ uintptr
 	(*mobj_t)(unsafe.Pointer(actor)).Fthreshold = 0 // any shot will wake up
-	targ = (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Fsubsector)).Fsector)).Fsoundtarget
+	targ = (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Fsubsector)).Fsector)).Fsoundtarget
 	if targ != 0 && (*mobj_t)(unsafe.Pointer(targ)).Fflags&int32(MF_SHOOTABLE) != 0 {
 		(*mobj_t)(unsafe.Pointer(actor)).Ftarget = targ
 		if (*mobj_t)(unsafe.Pointer(actor)).Fflags&int32(MF_AMBUSH) != 0 {
@@ -23688,7 +23680,7 @@ func A_Chase(tls *libc.TLS, actor uintptr) {
 	}
 	// modify target threshold
 	if (*mobj_t)(unsafe.Pointer(actor)).Fthreshold != 0 {
-		if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fhealth <= 0 {
+		if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fhealth <= 0 {
 			(*mobj_t)(unsafe.Pointer(actor)).Fthreshold = 0
 		} else {
 			(*mobj_t)(unsafe.Pointer(actor)).Fthreshold--
@@ -23706,7 +23698,7 @@ func A_Chase(tls *libc.TLS, actor uintptr) {
 			}
 		}
 	}
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || !((*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || !((*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fflags&int32(MF_SHOOTABLE) != 0) {
 		// look for a new target
 		if P_LookForPlayers(tls, actor, 1) != 0 {
 			return
@@ -23775,8 +23767,8 @@ func A_FaceTarget(tls *libc.TLS, actor uintptr) {
 		return
 	}
 	*(*int32)(unsafe.Pointer(actor + 160)) &= ^int32(MF_AMBUSH)
-	(*mobj_t)(unsafe.Pointer(actor)).Fangle = R_PointToAngle2((*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy, (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy)
-	if (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fflags&int32(MF_SHADOW) != 0 {
+	(*mobj_t)(unsafe.Pointer(actor)).Fangle = R_PointToAngle2((*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy, (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy)
+	if (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fflags&int32(MF_SHADOW) != 0 {
 		*(*angle_t)(unsafe.Pointer(actor + 56)) += libc.Uint32FromInt32((P_Random() - P_Random()) << int32(21))
 	}
 }
@@ -23844,7 +23836,7 @@ func A_CPosRefire(tls *libc.TLS, actor uintptr) {
 	if P_Random() < int32(40) {
 		return
 	}
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fhealth <= 0 || !(P_CheckSight(tls, actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
+	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fhealth <= 0 || !(P_CheckSight(tls, actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
 		P_SetMobjState(tls, actor, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fseestate)
 	}
 }
@@ -23855,7 +23847,7 @@ func A_SpidRefire(tls *libc.TLS, actor uintptr) {
 	if P_Random() < int32(10) {
 		return
 	}
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fhealth <= 0 || !(P_CheckSight(tls, actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
+	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fhealth <= 0 || !(P_CheckSight(tls, actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
 		P_SetMobjState(tls, actor, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fseestate)
 	}
 }
@@ -24179,7 +24171,7 @@ func A_VileTarget(tls *libc.TLS, actor uintptr) {
 		return
 	}
 	A_FaceTarget(tls, actor)
-	fog = P_SpawnMobj(tls, (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fz, int32(MT_FIRE))
+	fog = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fz, int32(MT_FIRE))
 	(*mobj_t)(unsafe.Pointer(actor)).Ftracer = fog
 	(*mobj_t)(unsafe.Pointer(fog)).Ftarget = actor
 	(*mobj_t)(unsafe.Pointer(fog)).Ftracer = (*mobj_t)(unsafe.Pointer(actor)).Ftarget
@@ -24203,15 +24195,15 @@ func A_VileAttack(tls *libc.TLS, actor uintptr) {
 	}
 	S_StartSound(tls, actor, int32(sfx_barexp))
 	P_DamageMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, int32(20))
-	(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fmomz = 1000 * (1 << FRACBITS) / (*mobjinfo_t)(unsafe.Pointer((*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Finfo)).Fmass
+	(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fmomz = 1000 * (1 << FRACBITS) / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Finfo)).Fmass
 	an = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(actor)).Fangle >> int32(ANGLETOFINESHIFT))
 	fire = (*mobj_t)(unsafe.Pointer(actor)).Ftracer
 	if !(fire != 0) {
 		return
 	}
 	// move the fire between the vile and the player
-	(*mobj_t)(unsafe.Pointer(fire)).Fx = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - FixedMul(24*(1<<FRACBITS), finecosine[an])
-	(*mobj_t)(unsafe.Pointer(fire)).Fy = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - FixedMul(24*(1<<FRACBITS), finesine[an])
+	(*mobj_t)(unsafe.Pointer(fire)).Fx = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - FixedMul(24*(1<<FRACBITS), finecosine[an])
+	(*mobj_t)(unsafe.Pointer(fire)).Fy = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - FixedMul(24*(1<<FRACBITS), finesine[an])
 	P_RadiusAttack(tls, fire, actor, int32(70))
 }
 
@@ -25898,7 +25890,7 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 	// player specific
 	if player != 0 {
 		// end of game hell hack
-		if int32((*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Fsubsector)).Fsector)).Fspecial) == int32(11) && damage >= (*mobj_t)(unsafe.Pointer(target)).Fhealth {
+		if int32((*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Fsubsector)).Fsector)).Fspecial) == int32(11) && damage >= (*mobj_t)(unsafe.Pointer(target)).Fhealth {
 			damage = (*mobj_t)(unsafe.Pointer(target)).Fhealth - int32(1)
 		}
 		// Below certain threshold,
@@ -26489,7 +26481,7 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 		if (*mobj_t)(unsafe.Pointer(tmthing)).Fz+(*mobj_t)(unsafe.Pointer(tmthing)).Fheight < (*mobj_t)(unsafe.Pointer(thing)).Fz {
 			return 1
 		} // underneath
-		if (*mobj_t)(unsafe.Pointer(tmthing)).Ftarget != 0 && ((*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Ftarget)).Ftype1 == (*mobj_t)(unsafe.Pointer(thing)).Ftype1 || (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Ftarget)).Ftype1 == int32(MT_KNIGHT) && (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_BRUISER) || (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Ftarget)).Ftype1 == int32(MT_BRUISER) && (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_KNIGHT)) {
+		if (*mobj_t)(unsafe.Pointer(tmthing)).Ftarget != 0 && ((*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Ftarget)).Ftype1 == (*mobj_t)(unsafe.Pointer(thing)).Ftype1 || (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Ftarget)).Ftype1 == int32(MT_KNIGHT) && (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_BRUISER) || (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Ftarget)).Ftype1 == int32(MT_BRUISER) && (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_KNIGHT)) {
 			// Don't hit same species as originator.
 			if thing == (*mobj_t)(unsafe.Pointer(tmthing)).Ftarget {
 				return 1
@@ -27591,22 +27583,22 @@ func P_UnsetThingPosition(thing uintptr) {
 		// inert things don't need to be in blockmap?
 		// unlink from subsector
 		if (*mobj_t)(unsafe.Pointer(thing)).Fsnext != 0 {
-			(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fsnext)).Fsprev = (*mobj_t)(unsafe.Pointer(thing)).Fsprev
+			(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fsnext)).Fsprev = (*mobj_t)(unsafe.Pointer(thing)).Fsprev
 		}
 		if (*mobj_t)(unsafe.Pointer(thing)).Fsprev != 0 {
-			(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fsprev)).Fsnext = (*mobj_t)(unsafe.Pointer(thing)).Fsnext
+			(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fsprev)).Fsnext = (*mobj_t)(unsafe.Pointer(thing)).Fsnext
 		} else {
-			(*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fsubsector)).Fsector)).Fthinglist = (*mobj_t)(unsafe.Pointer(thing)).Fsnext
+			(*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fsubsector)).Fsector)).Fthinglist = (*mobj_t)(unsafe.Pointer(thing)).Fsnext
 		}
 	}
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_NOBLOCKMAP) != 0) {
 		// inert things don't need to be in blockmap
 		// unlink from block map
 		if (*mobj_t)(unsafe.Pointer(thing)).Fbnext != 0 {
-			(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fbnext)).Fbprev = (*mobj_t)(unsafe.Pointer(thing)).Fbprev
+			(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fbnext)).Fbprev = (*mobj_t)(unsafe.Pointer(thing)).Fbprev
 		}
 		if (*mobj_t)(unsafe.Pointer(thing)).Fbprev != 0 {
-			(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fbprev)).Fbnext = (*mobj_t)(unsafe.Pointer(thing)).Fbnext
+			(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fbprev)).Fbnext = (*mobj_t)(unsafe.Pointer(thing)).Fbnext
 		} else {
 			blockx = ((*mobj_t)(unsafe.Pointer(thing)).Fx - bmaporgx) >> (FRACBITS + 7)
 			blocky = ((*mobj_t)(unsafe.Pointer(thing)).Fy - bmaporgy) >> (FRACBITS + 7)
@@ -27875,7 +27867,7 @@ func P_TraverseIntercepts(tls *libc.TLS, func1 traverser_t, maxfrac fixed_t) (r 
 // implementation of Intercepts Overrun emulation in PrBoom-plus
 // which this is based on.
 
-type intercepts_overrun_t = struct {
+type intercepts_overrun_t struct {
 	Flen1        int32
 	Faddr        uintptr
 	Fint16_array boolean
@@ -28268,7 +28260,7 @@ func P_XYMovement(tls *libc.TLS, mo uintptr) {
 		// do not stop sliding
 		//  if halfway off a step with some momentum
 		if (*mobj_t)(unsafe.Pointer(mo)).Fmomx > 1<<FRACBITS/4 || (*mobj_t)(unsafe.Pointer(mo)).Fmomx < -(1<<FRACBITS)/4 || (*mobj_t)(unsafe.Pointer(mo)).Fmomy > 1<<FRACBITS/4 || (*mobj_t)(unsafe.Pointer(mo)).Fmomy < -(1<<FRACBITS)/4 {
-			if (*mobj_t)(unsafe.Pointer(mo)).Ffloorz != (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fsubsector)).Fsector)).Ffloorheight {
+			if (*mobj_t)(unsafe.Pointer(mo)).Ffloorz != (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fsubsector)).Fsector)).Ffloorheight {
 				return
 			}
 		}
@@ -28304,8 +28296,8 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 	if (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_FLOAT) != 0 && (*mobj_t)(unsafe.Pointer(mo)).Ftarget != 0 {
 		// float down towards target if too close
 		if !((*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_SKULLFLY) != 0) && !((*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_INFLOAT) != 0) {
-			dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(mo)).Fx-(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(mo)).Fy-(*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fy)
-			delta = (*mobj_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fz + (*mobj_t)(unsafe.Pointer(mo)).Fheight>>1 - (*mobj_t)(unsafe.Pointer(mo)).Fz
+			dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(mo)).Fx-(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(mo)).Fy-(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fy)
+			delta = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fz + (*mobj_t)(unsafe.Pointer(mo)).Fheight>>1 - (*mobj_t)(unsafe.Pointer(mo)).Fz
 			if delta < 0 && dist < -(delta*int32(3)) {
 				*(*fixed_t)(unsafe.Pointer(mo + 32)) -= 1 << FRACBITS * 4
 			} else {
@@ -28411,7 +28403,7 @@ func P_NightmareRespawn(tls *libc.TLS, mobj uintptr) {
 	} // no respwan
 	// spawn a teleport fog at old spot
 	// because of removal of the body?
-	mo = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(mobj)).Fx, (*mobj_t)(unsafe.Pointer(mobj)).Fy, (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Ffloorheight, int32(MT_TFOG))
+	mo = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(mobj)).Fx, (*mobj_t)(unsafe.Pointer(mobj)).Fy, (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Ffloorheight, int32(MT_TFOG))
 	// initiate teleport sound
 	S_StartSound(tls, mo, int32(sfx_telept))
 	// spawn a teleport fog at the new spot
@@ -28523,8 +28515,8 @@ func P_SpawnMobj(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_
 	(*mobj_t)(unsafe.Pointer(mobj)).Fframe = (*state_t)(unsafe.Pointer(st)).Fframe
 	// set subsector and/or block links
 	P_SetThingPosition(mobj)
-	(*mobj_t)(unsafe.Pointer(mobj)).Ffloorz = (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Ffloorheight
-	(*mobj_t)(unsafe.Pointer(mobj)).Fceilingz = (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Fceilingheight
+	(*mobj_t)(unsafe.Pointer(mobj)).Ffloorz = (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Ffloorheight
+	(*mobj_t)(unsafe.Pointer(mobj)).Fceilingz = (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Fceilingheight
 	if z == -1-0x7fffffff {
 		(*mobj_t)(unsafe.Pointer(mobj)).Fz = (*mobj_t)(unsafe.Pointer(mobj)).Ffloorz
 	} else {
@@ -30033,18 +30025,18 @@ func saveg_write_actionf_t(tls *libc.TLS, str uintptr) {
 //
 
 func saveg_read_thinker_t(tls *libc.TLS, str uintptr) {
-	// struct thinker_s* prev;
+	// struct thinker_t* prev;
 	(*thinker_t)(unsafe.Pointer(str)).Fprev = saveg_readp(tls)
-	// struct thinker_s* next;
+	// struct thinker_t* next;
 	(*thinker_t)(unsafe.Pointer(str)).Fnext = saveg_readp(tls)
 	// think_t function;
 	saveg_read_actionf_t(tls, str+16)
 }
 
 func saveg_write_thinker_t(tls *libc.TLS, str uintptr) {
-	// struct thinker_s* prev;
+	// struct thinker_t* prev;
 	saveg_writep(tls, (*thinker_t)(unsafe.Pointer(str)).Fprev)
-	// struct thinker_s* next;
+	// struct thinker_t* next;
 	saveg_writep(tls, (*thinker_t)(unsafe.Pointer(str)).Fnext)
 	// think_t function;
 	saveg_write_actionf_t(tls, str+16)
@@ -30064,9 +30056,9 @@ func saveg_read_mobj_t(tls *libc.TLS, str uintptr) {
 	(*mobj_t)(unsafe.Pointer(str)).Fy = saveg_read32(tls)
 	// fixed_t z;
 	(*mobj_t)(unsafe.Pointer(str)).Fz = saveg_read32(tls)
-	// struct mobj_s* snext;
+	// struct mobj_t* snext;
 	(*mobj_t)(unsafe.Pointer(str)).Fsnext = saveg_readp(tls)
-	// struct mobj_s* sprev;
+	// struct mobj_t* sprev;
 	(*mobj_t)(unsafe.Pointer(str)).Fsprev = saveg_readp(tls)
 	// angle_t angle;
 	(*mobj_t)(unsafe.Pointer(str)).Fangle = libc.Uint32FromInt32(saveg_read32(tls))
@@ -30074,11 +30066,11 @@ func saveg_read_mobj_t(tls *libc.TLS, str uintptr) {
 	(*mobj_t)(unsafe.Pointer(str)).Fsprite = saveg_read32(tls)
 	// int frame;
 	(*mobj_t)(unsafe.Pointer(str)).Fframe = saveg_read32(tls)
-	// struct mobj_s* bnext;
+	// struct mobj_t* bnext;
 	(*mobj_t)(unsafe.Pointer(str)).Fbnext = saveg_readp(tls)
-	// struct mobj_s* bprev;
+	// struct mobj_t* bprev;
 	(*mobj_t)(unsafe.Pointer(str)).Fbprev = saveg_readp(tls)
-	// struct subsector_s* subsector;
+	// struct subsector_t* subsector;
 	(*mobj_t)(unsafe.Pointer(str)).Fsubsector = saveg_readp(tls)
 	// fixed_t floorz;
 	(*mobj_t)(unsafe.Pointer(str)).Ffloorz = saveg_read32(tls)
@@ -30112,7 +30104,7 @@ func saveg_read_mobj_t(tls *libc.TLS, str uintptr) {
 	(*mobj_t)(unsafe.Pointer(str)).Fmovedir = saveg_read32(tls)
 	// int movecount;
 	(*mobj_t)(unsafe.Pointer(str)).Fmovecount = saveg_read32(tls)
-	// struct mobj_s* target;
+	// struct mobj_t* target;
 	(*mobj_t)(unsafe.Pointer(str)).Ftarget = saveg_readp(tls)
 	// int reactiontime;
 	(*mobj_t)(unsafe.Pointer(str)).Freactiontime = saveg_read32(tls)
@@ -30130,7 +30122,7 @@ func saveg_read_mobj_t(tls *libc.TLS, str uintptr) {
 	(*mobj_t)(unsafe.Pointer(str)).Flastlook = saveg_read32(tls)
 	// mapthing_t spawnpoint;
 	saveg_read_mapthing_t(tls, str+204)
-	// struct mobj_s* tracer;
+	// struct mobj_t* tracer;
 	(*mobj_t)(unsafe.Pointer(str)).Ftracer = saveg_readp(tls)
 }
 
@@ -30143,9 +30135,9 @@ func saveg_write_mobj_t(tls *libc.TLS, str uintptr) {
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Fy)
 	// fixed_t z;
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Fz)
-	// struct mobj_s* snext;
+	// struct mobj_t* snext;
 	saveg_writep(tls, (*mobj_t)(unsafe.Pointer(str)).Fsnext)
-	// struct mobj_s* sprev;
+	// struct mobj_t* sprev;
 	saveg_writep(tls, (*mobj_t)(unsafe.Pointer(str)).Fsprev)
 	// angle_t angle;
 	saveg_write32(tls, libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(str)).Fangle))
@@ -30153,11 +30145,11 @@ func saveg_write_mobj_t(tls *libc.TLS, str uintptr) {
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Fsprite)
 	// int frame;
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Fframe)
-	// struct mobj_s* bnext;
+	// struct mobj_t* bnext;
 	saveg_writep(tls, (*mobj_t)(unsafe.Pointer(str)).Fbnext)
-	// struct mobj_s* bprev;
+	// struct mobj_t* bprev;
 	saveg_writep(tls, (*mobj_t)(unsafe.Pointer(str)).Fbprev)
-	// struct subsector_s* subsector;
+	// struct subsector_t* subsector;
 	saveg_writep(tls, (*mobj_t)(unsafe.Pointer(str)).Fsubsector)
 	// fixed_t floorz;
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Ffloorz)
@@ -30191,7 +30183,7 @@ func saveg_write_mobj_t(tls *libc.TLS, str uintptr) {
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Fmovedir)
 	// int movecount;
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Fmovecount)
-	// struct mobj_s* target;
+	// struct mobj_t* target;
 	saveg_writep(tls, (*mobj_t)(unsafe.Pointer(str)).Ftarget)
 	// int reactiontime;
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Freactiontime)
@@ -30207,7 +30199,7 @@ func saveg_write_mobj_t(tls *libc.TLS, str uintptr) {
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Flastlook)
 	// mapthing_t spawnpoint;
 	saveg_write_mapthing_t(tls, str+204)
-	// struct mobj_s* tracer;
+	// struct mobj_t* tracer;
 	saveg_writep(tls, (*mobj_t)(unsafe.Pointer(str)).Ftracer)
 }
 
@@ -31208,8 +31200,8 @@ func P_UnArchiveThinkers(tls *libc.TLS) {
 			(*mobj_t)(unsafe.Pointer(mobj)).Ftracer = libc.UintptrFromInt32(0)
 			P_SetThingPosition(mobj)
 			(*mobj_t)(unsafe.Pointer(mobj)).Finfo = &mobjinfo[(*mobj_t)(unsafe.Pointer(mobj)).Ftype1]
-			(*mobj_t)(unsafe.Pointer(mobj)).Ffloorz = (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Ffloorheight
-			(*mobj_t)(unsafe.Pointer(mobj)).Fceilingz = (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Fceilingheight
+			(*mobj_t)(unsafe.Pointer(mobj)).Ffloorz = (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Ffloorheight
+			(*mobj_t)(unsafe.Pointer(mobj)).Fceilingz = (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector)).Fsector)).Fceilingheight
 			*(*actionf_p1)(unsafe.Pointer(mobj + 16)) = __ccgo_fp(P_MobjThinker)
 			P_AddThinker(tls, mobj)
 		default:
@@ -32353,8 +32345,8 @@ func P_CheckSight(tls *libc.TLS, t1 uintptr, t2 uintptr) (r boolean) {
 	var bitnum, bytenum, pnum, s1, s2 int32
 	// First check for trivial rejection.
 	// Determine subsector entries in REJECT table.
-	s1 = int32((int64((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(t1)).Fsubsector)).Fsector) - int64(sectors)) / 128)
-	s2 = int32((int64((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(t2)).Fsubsector)).Fsector) - int64(sectors)) / 128)
+	s1 = int32((int64((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(t1)).Fsubsector)).Fsector) - int64(sectors)) / 128)
+	s2 = int32((int64((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(t2)).Fsubsector)).Fsector) - int64(sectors)) / 128)
 	pnum = s1*numsectors + s2
 	bytenum = pnum >> int32(3)
 	bitnum = int32(1) << (pnum & int32(7))
@@ -32432,7 +32424,7 @@ const MAX_ADJOINING_SECTORS = 20
 //	// Animating textures and planes
 //	// There is another anim_t used in wi_stuff, unrelated.
 //	//
-type anim_t = struct {
+type anim_t struct {
 	Fistexture boolean
 	Fpicnum    int32
 	Fbasepic   int32
@@ -32445,7 +32437,7 @@ type anim_t = struct {
 //	//
 //	//      source animation definition
 //	//
-type animdef_t = struct {
+type animdef_t struct {
 	Fistexture int32
 	Fendname   [9]int8
 	Fstartname [9]int8
@@ -33305,7 +33297,7 @@ func P_ShootSpecialLine(tls *libc.TLS, thing uintptr, line uintptr) {
 //	//
 func P_PlayerInSpecialSector(tls *libc.TLS, player uintptr) {
 	var sector uintptr
-	sector = (*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fsubsector)).Fsector
+	sector = (*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fsubsector)).Fsector
 	// Falling, not all the way down yet?
 	if (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fz != (*sector_t)(unsafe.Pointer(sector)).Ffloorheight {
 		return
@@ -34479,7 +34471,7 @@ func EV_Teleport(tls *libc.TLS, line uintptr, side int32, thing uintptr) (r int3
 				if (*mobj_t)(unsafe.Pointer(m)).Ftype1 != int32(MT_TELEPORTMAN) {
 					goto _2
 				}
-				sector = (*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(m)).Fsubsector)).Fsector
+				sector = (*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(m)).Fsubsector)).Fsector
 				// wrong sector
 				if (int64(sector)-int64(sectors))/128 != int64(i) {
 					goto _2
@@ -34551,7 +34543,7 @@ func P_InitThinkers(tls *libc.TLS) {
 //	// Adds a new thinker at the end of the list.
 //	//
 func P_AddThinker(tls *libc.TLS, thinker uintptr) {
-	(*thinker_s)(unsafe.Pointer(thinkercap.Fprev)).Fnext = thinker
+	(*thinker_t)(unsafe.Pointer(thinkercap.Fprev)).Fnext = thinker
 	(*thinker_t)(unsafe.Pointer(thinker)).Fnext = uintptr(unsafe.Pointer(&thinkercap))
 	(*thinker_t)(unsafe.Pointer(thinker)).Fprev = thinkercap.Fprev
 	thinkercap.Fprev = thinker
@@ -34580,8 +34572,8 @@ func P_RunThinkers(tls *libc.TLS) {
 	for currentthinker != uintptr(unsafe.Pointer(&thinkercap)) {
 		if *(*actionf_v)(unsafe.Pointer(currentthinker + 16)) == uintptr_negative_one {
 			// time to remove it
-			(*thinker_s)(unsafe.Pointer((*thinker_t)(unsafe.Pointer(currentthinker)).Fnext)).Fprev = (*thinker_t)(unsafe.Pointer(currentthinker)).Fprev
-			(*thinker_s)(unsafe.Pointer((*thinker_t)(unsafe.Pointer(currentthinker)).Fprev)).Fnext = (*thinker_t)(unsafe.Pointer(currentthinker)).Fnext
+			(*thinker_t)(unsafe.Pointer((*thinker_t)(unsafe.Pointer(currentthinker)).Fnext)).Fprev = (*thinker_t)(unsafe.Pointer(currentthinker)).Fprev
+			(*thinker_t)(unsafe.Pointer((*thinker_t)(unsafe.Pointer(currentthinker)).Fprev)).Fnext = (*thinker_t)(unsafe.Pointer(currentthinker)).Fnext
 			Z_Free(tls, currentthinker)
 		} else {
 			if *(*actionf_p1)(unsafe.Pointer(currentthinker + 16)) != 0 {
@@ -34804,7 +34796,7 @@ func P_PlayerThink(tls *libc.TLS, player uintptr) {
 		P_MovePlayer(tls, player)
 	}
 	P_CalcHeight(tls, player)
-	if (*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fsubsector)).Fsector)).Fspecial != 0 {
+	if (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fsubsector)).Fsector)).Fspecial != 0 {
 		P_PlayerInSpecialSector(tls, player)
 	}
 	// Check for weapon change.
@@ -34909,7 +34901,7 @@ func R_ClearDrawSegs(tls *libc.TLS) {
 //	// Clips the given range of columns
 //	// and includes it in the new clip list.
 //	//
-type cliprange_t = struct {
+type cliprange_t struct {
 	Ffirst int32
 	Flast  int32
 }
@@ -35370,7 +35362,7 @@ func R_RenderBSPNode(tls *libc.TLS, bspnum int32) {
 //	// into the rectangular texture space using origin
 //	// and possibly other attributes.
 //	//
-type mappatch_t = struct {
+type mappatch_t struct {
 	Foriginx  int16
 	Foriginy  int16
 	Fpatch    int16
@@ -35385,7 +35377,7 @@ type mappatch_t = struct {
 //	// A DOOM wall texture is a list of patches
 //	// which are to be combined in a predefined order.
 //	//
-type maptexture_t = struct {
+type maptexture_t struct {
 	Fname       [8]int8
 	Fmasked     int32
 	Fwidth      int16
@@ -35400,7 +35392,7 @@ type maptexture_t = struct {
 //	// A single patch from a texture definition,
 //	//  basically a rectangular area within
 //	//  the texture rectangle.
-type texpatch_t = struct {
+type texpatch_t struct {
 	Foriginx int16
 	Foriginy int16
 	Fpatch   int32
@@ -35410,7 +35402,7 @@ type texpatch_t = struct {
 //  which is composed of one or more mappatch_t structures
 //  that arrange graphic patches.
 
-type texture_t = struct {
+type texture_t struct {
 	Fname       [8]int8
 	Fwidth      int16
 	Fheight     int16
@@ -38837,7 +38829,7 @@ func R_DrawPlayerSprites(tls *libc.TLS) {
 	var i, lightnum int32
 	var psp uintptr
 	// get light level
-	lightnum = int32((*sector_t)(unsafe.Pointer((*subsector_s)(unsafe.Pointer((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(viewplayer)).Fmo)).Fsubsector)).Fsector)).Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
+	lightnum = int32((*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(viewplayer)).Fmo)).Fsubsector)).Fsector)).Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
 	if lightnum < 0 {
 		spritelights = uintptr(unsafe.Pointer(&scalelight))
 	} else {
@@ -38921,11 +38913,11 @@ func R_SortVisSprites(tls *libc.TLS) {
 			;
 			ds = (*vissprite_t)(unsafe.Pointer(ds)).Fnext
 		}
-		(*vissprite_s)(unsafe.Pointer((*vissprite_t)(unsafe.Pointer(best)).Fnext)).Fprev = (*vissprite_t)(unsafe.Pointer(best)).Fprev
-		(*vissprite_s)(unsafe.Pointer((*vissprite_t)(unsafe.Pointer(best)).Fprev)).Fnext = (*vissprite_t)(unsafe.Pointer(best)).Fnext
+		(*vissprite_t)(unsafe.Pointer((*vissprite_t)(unsafe.Pointer(best)).Fnext)).Fprev = (*vissprite_t)(unsafe.Pointer(best)).Fprev
+		(*vissprite_t)(unsafe.Pointer((*vissprite_t)(unsafe.Pointer(best)).Fprev)).Fnext = (*vissprite_t)(unsafe.Pointer(best)).Fnext
 		(*vissprite_t)(unsafe.Pointer(best)).Fnext = uintptr(unsafe.Pointer(&vsprsortedhead))
 		(*vissprite_t)(unsafe.Pointer(best)).Fprev = vsprsortedhead.Fprev
-		(*vissprite_s)(unsafe.Pointer(vsprsortedhead.Fprev)).Fnext = best
+		(*vissprite_t)(unsafe.Pointer(vsprsortedhead.Fprev)).Fnext = best
 		vsprsortedhead.Fprev = best
 		goto _4
 	_4:
@@ -40736,7 +40728,7 @@ func StatCopy(stats uintptr) {
 func StatDump(tls *libc.TLS) {
 }
 
-type st_number_t = struct {
+type st_number_t struct {
 	Fx      int32
 	Fy      int32
 	Fwidth  int32
@@ -40747,12 +40739,12 @@ type st_number_t = struct {
 	Fdata   int32
 }
 
-type st_percent_t = struct {
+type st_percent_t struct {
 	Fn st_number_t
 	Fp uintptr
 }
 
-type st_multicon_t = struct {
+type st_multicon_t struct {
 	Fx       int32
 	Fy       int32
 	Foldinum int32
@@ -40762,7 +40754,7 @@ type st_multicon_t = struct {
 	Fdata    int32
 }
 
-type st_binicon_t = struct {
+type st_binicon_t struct {
 	Fx      int32
 	Fy      int32
 	Foldval boolean
@@ -42092,7 +42084,7 @@ const NORM_SEP = 128
 
 // Stereo separation
 
-type channel_t = struct {
+type channel_t struct {
 	Fsfxinfo *sfxinfo_t
 	Forigin  uintptr
 	Fhandle  int32
@@ -42898,7 +42890,7 @@ func V_RestoreBuffer() {
 // SCREEN SHOTS
 //
 
-type pcx_t = struct {
+type pcx_t struct {
 	Fmanufacturer   int8
 	Fversion        int8
 	Fencoding       int8
@@ -43126,7 +43118,7 @@ const ANIM_ALWAYS = 0
 const ANIM_RANDOM = 1
 const ANIM_LEVEL = 2
 
-type point_t = struct {
+type point_t struct {
 	Fx int32
 	Fy int32
 }
@@ -43137,7 +43129,7 @@ type point_t = struct {
 //	// Animation.
 //	// There is another anim_t used in p_spec.
 //	//
-type anim_t1 = struct {
+type anim_t1 struct {
 	Ftype1     animenum_t
 	Fperiod    int32
 	Fnanims    int32
@@ -45120,13 +45112,13 @@ func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
 	return modifiedgame
 }
 
-type wadinfo_t = struct {
+type wadinfo_t struct {
 	Fidentification [4]int8
 	Fnumlumps       int32
 	Finfotableofs   int32
 }
 
-type filelump_t = struct {
+type filelump_t struct {
 	Ffilepos int32
 	Fsize    int32
 	Fname    [8]int8
@@ -45564,7 +45556,7 @@ const ZONEID = 1919505
 //  because it will get overwritten automatically if needed.
 //
 
-type memblock_t = struct {
+type memblock_t struct {
 	Fsize int32
 	Fuser uintptr
 	Ftag  int32
@@ -45603,9 +45595,7 @@ type memblock_t = struct {
 //  because it will get overwritten automatically if needed.
 //
 
-type memblock_s = memblock_t
-
-type memzone_t = struct {
+type memzone_t struct {
 	Fsize      int32
 	Fblocklist memblock_t
 	Frover     uintptr
@@ -45662,7 +45652,7 @@ func Z_Free(tls *libc.TLS, ptr uintptr) {
 		// merge with previous free block
 		*(*int32)(unsafe.Pointer(other)) += (*memblock_t)(unsafe.Pointer(block)).Fsize
 		(*memblock_t)(unsafe.Pointer(other)).Fnext = (*memblock_t)(unsafe.Pointer(block)).Fnext
-		(*memblock_s)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(other)).Fnext)).Fprev = other
+		(*memblock_t)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(other)).Fnext)).Fprev = other
 		if block == (*memzone_t)(unsafe.Pointer(mainzone)).Frover {
 			(*memzone_t)(unsafe.Pointer(mainzone)).Frover = other
 		}
@@ -45673,7 +45663,7 @@ func Z_Free(tls *libc.TLS, ptr uintptr) {
 		// merge the next free block onto the end
 		*(*int32)(unsafe.Pointer(block)) += (*memblock_t)(unsafe.Pointer(other)).Fsize
 		(*memblock_t)(unsafe.Pointer(block)).Fnext = (*memblock_t)(unsafe.Pointer(other)).Fnext
-		(*memblock_s)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(block)).Fnext)).Fprev = block
+		(*memblock_t)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(block)).Fnext)).Fprev = block
 		if other == (*memzone_t)(unsafe.Pointer(mainzone)).Frover {
 			(*memzone_t)(unsafe.Pointer(mainzone)).Frover = block
 		}
@@ -45698,7 +45688,7 @@ func Z_Malloc(tls *libc.TLS, size int32, tag int32, user uintptr) (r uintptr) {
 	// if there is a free block behind the rover,
 	//  back up over them
 	base = (*memzone_t)(unsafe.Pointer(mainzone)).Frover
-	if (*memblock_s)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(base)).Fprev)).Ftag == int32(PU_FREE) {
+	if (*memblock_t)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(base)).Fprev)).Ftag == int32(PU_FREE) {
 		base = (*memblock_t)(unsafe.Pointer(base)).Fprev
 	}
 	rover = base
@@ -45737,7 +45727,7 @@ func Z_Malloc(tls *libc.TLS, size int32, tag int32, user uintptr) (r uintptr) {
 		(*memblock_t)(unsafe.Pointer(newblock)).Fuser = libc.UintptrFromInt32(0)
 		(*memblock_t)(unsafe.Pointer(newblock)).Fprev = base
 		(*memblock_t)(unsafe.Pointer(newblock)).Fnext = (*memblock_t)(unsafe.Pointer(base)).Fnext
-		(*memblock_s)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(newblock)).Fnext)).Fprev = newblock
+		(*memblock_t)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(newblock)).Fnext)).Fprev = newblock
 		(*memblock_t)(unsafe.Pointer(base)).Fnext = newblock
 		(*memblock_t)(unsafe.Pointer(base)).Fsize = size
 	}
@@ -45800,10 +45790,10 @@ func Z_CheckHeap(tls *libc.TLS) {
 		if block+uintptr((*memblock_t)(unsafe.Pointer(block)).Fsize) != (*memblock_t)(unsafe.Pointer(block)).Fnext {
 			I_Error(tls, __ccgo_ts(29436), 0)
 		}
-		if (*memblock_s)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(block)).Fnext)).Fprev != block {
+		if (*memblock_t)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(block)).Fnext)).Fprev != block {
 			I_Error(tls, __ccgo_ts(29491), 0)
 		}
-		if (*memblock_t)(unsafe.Pointer(block)).Ftag == int32(PU_FREE) && (*memblock_s)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(block)).Fnext)).Ftag == int32(PU_FREE) {
+		if (*memblock_t)(unsafe.Pointer(block)).Ftag == int32(PU_FREE) && (*memblock_t)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(block)).Fnext)).Ftag == int32(PU_FREE) {
 			I_Error(tls, __ccgo_ts(29546), 0)
 		}
 		goto _1
@@ -45845,7 +45835,7 @@ func Z_ChangeUser(tls *libc.TLS, ptr uintptr, user uintptr) {
 // prior to really call the function in question.
 //
 
-type stdc_wad_file_t = struct {
+type stdc_wad_file_t struct {
 	Fwad     wad_file_t
 	Ffstream uintptr
 }
