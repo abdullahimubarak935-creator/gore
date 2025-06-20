@@ -2886,7 +2886,7 @@ func AM_unloadPics(tls *libc.TLS) {
 	}
 }
 
-func AM_clearMarks(tls *libc.TLS) {
+func AM_clearMarks() {
 	var i int32
 	i = 0
 	for {
@@ -2908,12 +2908,12 @@ func AM_clearMarks(tls *libc.TLS) {
 //	// should be called at the start of every level
 //	// right now, i figure it out myself
 //	//
-func AM_LevelInit(tls *libc.TLS) {
+func AM_LevelInit() {
 	f_y = 0
 	f_x = 0
 	f_w = finit_width
 	f_h = finit_height
-	AM_clearMarks(tls)
+	AM_clearMarks()
 	AM_findMinMaxBoundaries()
 	scale_mtof = FixedDiv(min_scale_mtof, int32(libc.Float64FromFloat64(0.7)*float64(1<<FRACBITS)))
 	if scale_mtof > max_scale_mtof {
@@ -2950,7 +2950,7 @@ func AM_Start(tls *libc.TLS) {
 	}
 	stopped = 0
 	if lastlevel != gamemap || lastepisode != gameepisode {
-		AM_LevelInit(tls)
+		AM_LevelInit()
 		lastlevel = gamemap
 		lastepisode = gameepisode
 	}
@@ -3076,7 +3076,7 @@ func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 														AM_addMark()
 													} else {
 														if key == key_map_clearmark {
-															AM_clearMarks(tls)
+															AM_clearMarks()
 															plr.Fmessage = __ccgo_ts(75)
 														} else {
 															rc = 0
@@ -3692,7 +3692,7 @@ func AM_drawMarks(tls *libc.TLS) {
 	}
 }
 
-func AM_drawCrosshair(tls *libc.TLS, color int32) {
+func AM_drawCrosshair(color int32) {
 	*(*uint8)(unsafe.Pointer(fb + uintptr(f_w*(f_h+int32(1))/int32(2)))) = libc.Uint8FromInt32(color) // single point for now
 }
 
@@ -3709,7 +3709,7 @@ func AM_Drawer(tls *libc.TLS) {
 	if cheating == int32(2) {
 		AM_drawThings(7*16, int32(GREENRANGE))
 	}
-	AM_drawCrosshair(tls, 6*16)
+	AM_drawCrosshair(6 * 16)
 	AM_drawMarks(tls)
 	V_MarkRect(tls, f_x, f_y, f_w, f_h)
 }
@@ -3751,14 +3751,14 @@ var eventtail int32
 //	// D_PostEvent
 //	// Called by the I/O functions when input is detected
 //	//
-func D_PostEvent(tls *libc.TLS, ev *event_t) {
+func D_PostEvent(ev *event_t) {
 	events[eventhead] = *ev
 	eventhead = (eventhead + int32(1)) % int32(MAXEVENTS)
 }
 
 // Read an event from the queue.
 
-func D_PopEvent(tls *libc.TLS) *event_t {
+func D_PopEvent() *event_t {
 	// No more events waiting.
 	if eventtail == eventhead {
 		return nil
@@ -3945,7 +3945,7 @@ var iwad_dirs_built = 0
 var iwad_dirs [128]uintptr
 var num_iwad_dirs = int32(0)
 
-func AddIWADDir(tls *libc.TLS, dir uintptr) {
+func AddIWADDir(dir uintptr) {
 	if num_iwad_dirs < int32(MAX_IWAD_DIRS) {
 		iwad_dirs[num_iwad_dirs] = dir
 		num_iwad_dirs++
@@ -3960,7 +3960,7 @@ func AddIWADDir(tls *libc.TLS, dir uintptr) {
 // Returns true if the specified path is a path to a file
 // of the specified name.
 
-func DirIsFile(tls *libc.TLS, path uintptr, filename uintptr) (r boolean) {
+func DirIsFile(path uintptr, filename uintptr) (r boolean) {
 	var filename_len, path_len uint64
 	path_len = xstrlen(path)
 	filename_len = xstrlen(filename)
@@ -3976,7 +3976,7 @@ func CheckDirectoryHasIWAD(tls *libc.TLS, dir uintptr, iwadname uintptr) (r uint
 	var filename uintptr
 	// As a special case, the "directory" may refer directly to an
 	// IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
-	if DirIsFile(tls, dir, iwadname) != 0 && M_FileExists(tls, dir) != 0 {
+	if DirIsFile(dir, iwadname) != 0 && M_FileExists(tls, dir) != 0 {
 		return xstrdup(dir)
 	}
 	// Construct the full path to the IWAD if it is located in
@@ -4060,8 +4060,8 @@ func IdentifyIWADByName(tls *libc.TLS, name uintptr, mask int32) (r GameMission_
 // Build a list of IWAD files
 //
 
-func BuildIWADDirList(tls *libc.TLS) {
-	AddIWADDir(tls, __ccgo_ts(1250))
+func BuildIWADDirList() {
+	AddIWADDir(__ccgo_ts(1250))
 	// Don't run this function again.
 	iwad_dirs_built = 1
 }
@@ -4078,7 +4078,7 @@ func D_FindWADByName(tls *libc.TLS, name uintptr) (r uintptr) {
 	if M_FileExists(tls, name) != 0 {
 		return name
 	}
-	BuildIWADDirList(tls)
+	BuildIWADDirList()
 	// Search through all IWAD paths for a file with the given name.
 	i = 0
 	for {
@@ -4088,7 +4088,7 @@ func D_FindWADByName(tls *libc.TLS, name uintptr) (r uintptr) {
 		// As a special case, if this is in DOOMWADDIR or DOOMWADPATH,
 		// the "directory" may actually refer directly to an IWAD
 		// file.
-		if DirIsFile(tls, iwad_dirs[i], name) != 0 && M_FileExists(tls, iwad_dirs[i]) != 0 {
+		if DirIsFile(iwad_dirs[i], name) != 0 && M_FileExists(tls, iwad_dirs[i]) != 0 {
 			return xstrdup(iwad_dirs[i])
 		}
 		// Construct a string for the full path
@@ -4153,7 +4153,7 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
 		// Search through the list and look for an IWAD
 		fprintf_ccgo(os.Stdout, 1307)
 		result = libc.UintptrFromInt32(0)
-		BuildIWADDirList(tls)
+		BuildIWADDirList()
 		i = 0
 		for {
 			if !(result == libc.UintptrFromInt32(0) && i < num_iwad_dirs) {
@@ -4173,7 +4173,7 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
 // Get the IWAD name used for savegames.
 //
 
-func D_SaveGameIWADName(tls *libc.TLS, gamemission GameMission_t) (r uintptr) {
+func D_SaveGameIWADName(gamemission GameMission_t) (r uintptr) {
 	var i uint64
 	// Determine the IWAD name to use for savegames.
 	// This determines the directory the savegame files get put into.
@@ -4198,7 +4198,7 @@ func D_SaveGameIWADName(tls *libc.TLS, gamemission GameMission_t) (r uintptr) {
 	return __ccgo_ts(1353)
 }
 
-func D_SuggestGameName(tls *libc.TLS, mission GameMission_t, mode GameMode_t) (r uintptr) {
+func D_SuggestGameName(mission GameMission_t, mode GameMode_t) (r uintptr) {
 	var i int32
 	i = 0
 	for {
@@ -4272,7 +4272,7 @@ var player_class int32
 
 // 35 fps clock adjusted by offsetms milliseconds
 
-func GetAdjustedTime(tls *libc.TLS) (r int32) {
+func GetAdjustedTime() (r int32) {
 	var time_ms int32
 	time_ms = I_GetTimeMS()
 	if new_sync != 0 {
@@ -4327,7 +4327,7 @@ func NetUpdate(tls *libc.TLS) {
 		return
 	}
 	// check time
-	nowtime = GetAdjustedTime(tls) / ticdup
+	nowtime = GetAdjustedTime() / ticdup
 	newtics = nowtime - lasttime
 	lasttime = nowtime
 	if skiptics <= newtics {
@@ -4359,11 +4359,11 @@ func NetUpdate(tls *libc.TLS) {
 // Called after the screen is set but before the game starts running.
 //
 
-func D_StartGameLoop(tls *libc.TLS) {
-	lasttime = GetAdjustedTime(tls) / ticdup
+func D_StartGameLoop() {
+	lasttime = GetAdjustedTime() / ticdup
 }
 
-func D_StartNetGame(tls *libc.TLS, settings *net_gamesettings_t, callback netgame_startup_callback_t) {
+func D_StartNetGame(settings *net_gamesettings_t, callback netgame_startup_callback_t) {
 	settings.Fconsoleplayer = 0
 	settings.Fnum_players = int32(1)
 	settings.Fplayer_classes[0] = player_class
@@ -4388,10 +4388,10 @@ func D_InitNetGame(tls *libc.TLS, connect_data *net_connect_data_t) (r boolean) 
 //	// Called before quitting to leave a net game
 //	// without hanging the other players
 //	//
-func D_QuitNetGame(tls *libc.TLS) {
+func D_QuitNetGame() {
 }
 
-func GetLowTic(tls *libc.TLS) (r int32) {
+func GetLowTic() (r int32) {
 	var lowtic int32
 	lowtic = maketic
 	return lowtic
@@ -4401,7 +4401,7 @@ var frameon int32
 var frameskip [4]int32
 var oldnettics int32
 
-func OldNetSync(tls *libc.TLS) {
+func OldNetSync() {
 	var i uint32
 	var keyplayer int32
 	keyplayer = -int32(1)
@@ -4444,7 +4444,7 @@ func OldNetSync(tls *libc.TLS) {
 
 // Returns true if there are players in the game:
 
-func PlayersInGame(tls *libc.TLS) (r boolean) {
+func PlayersInGame() (r boolean) {
 	var i uint32
 	var result boolean
 	result = 0
@@ -4474,7 +4474,7 @@ func PlayersInGame(tls *libc.TLS) (r boolean) {
 // When using ticdup, certain values must be cleared out when running
 // the duplicate ticcmds.
 
-func TicdupSquash(tls *libc.TLS, set uintptr) {
+func TicdupSquash(set uintptr) {
 	var cmd uintptr
 	var i uint32
 	i = uint32(0)
@@ -4497,7 +4497,7 @@ func TicdupSquash(tls *libc.TLS, set uintptr) {
 // When running in single player mode, clear all the ingame[] array
 // except the local player.
 
-func SinglePlayerClear(tls *libc.TLS, set uintptr) {
+func SinglePlayerClear(set uintptr) {
 	var i uint32
 	i = uint32(0)
 	for {
@@ -4532,7 +4532,7 @@ func TryRunTics(tls *libc.TLS) {
 	} else {
 		NetUpdate(tls)
 	}
-	lowtic = GetLowTic(tls)
+	lowtic = GetLowTic()
 	availabletics = lowtic - gametic/ticdup
 	// decide how many tics to run
 	if new_sync != 0 {
@@ -4552,16 +4552,16 @@ func TryRunTics(tls *libc.TLS) {
 			counts = int32(1)
 		}
 		if net_client_connected != 0 {
-			OldNetSync(tls)
+			OldNetSync()
 		}
 	}
 	if counts < int32(1) {
 		counts = int32(1)
 	}
 	// wait for new tics if needed
-	for !(PlayersInGame(tls) != 0) || lowtic < gametic/ticdup+counts {
+	for !(PlayersInGame() != 0) || lowtic < gametic/ticdup+counts {
 		NetUpdate(tls)
-		lowtic = GetLowTic(tls)
+		lowtic = GetLowTic()
 		if lowtic < gametic/ticdup {
 			I_Error(tls, __ccgo_ts(1446), 0)
 		}
@@ -4579,12 +4579,12 @@ func TryRunTics(tls *libc.TLS) {
 		if !(v1 != 0) {
 			break
 		}
-		if !(PlayersInGame(tls) != 0) {
+		if !(PlayersInGame() != 0) {
 			return
 		}
 		set = uintptr(unsafe.Pointer(&ticdata)) + uintptr(gametic/ticdup%int32(BACKUPTICS))*160
 		if !(net_client_connected != 0) {
-			SinglePlayerClear(tls, set)
+			SinglePlayerClear(set)
 		}
 		i = 0
 		for {
@@ -4598,7 +4598,7 @@ func TryRunTics(tls *libc.TLS) {
 			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*loop_interface_t)(unsafe.Pointer(loop_interface)).FRunTic})))(tls, set, set+128)
 			gametic++
 			// modify command for duplicated tics
-			TicdupSquash(tls, set)
+			TicdupSquash(set)
 			goto _2
 		_2:
 			;
@@ -4610,7 +4610,7 @@ func TryRunTics(tls *libc.TLS) {
 
 var oldentertics int32
 
-func D_RegisterLoopCallbacks(tls *libc.TLS, i uintptr) {
+func D_RegisterLoopCallbacks(i uintptr) {
 	loop_interface = i
 }
 
@@ -4831,7 +4831,7 @@ func D_ProcessEvents(tls *libc.TLS) {
 		return
 	}
 	for {
-		ev := D_PopEvent(tls)
+		ev := D_PopEvent()
 		if ev == nil {
 			break
 		}
@@ -5030,7 +5030,7 @@ func D_BindVariables(tls *libc.TLS) {
 // Called to determine whether to grab the mouse pointer
 //
 
-func D_GrabMouseCallback(tls *libc.TLS) (r boolean) {
+func D_GrabMouseCallback() (r boolean) {
 	// Drone players don't need mouse focus
 	if drone != 0 {
 		return 0
@@ -5073,7 +5073,7 @@ func D_DoomLoop(tls *libc.TLS) {
 	I_EnableLoadingDisk(tls)
 	V_RestoreBuffer(tls)
 	R_ExecuteSetViewSize(tls)
-	D_StartGameLoop(tls)
+	D_StartGameLoop()
 	if testcontrols != 0 {
 		wipegamestate = gamestate
 	}
@@ -5086,12 +5086,12 @@ func D_DoomLoop(tls *libc.TLS) {
 //	// D_PageTicker
 //	// Handles timing for warped projection
 //	//
-func D_PageTicker(tls *libc.TLS) {
+func D_PageTicker() {
 	var v1 int32
 	pagetic--
 	v1 = pagetic
 	if v1 < 0 {
-		D_AdvanceDemo(tls)
+		D_AdvanceDemo()
 	}
 }
 
@@ -5110,7 +5110,7 @@ func D_PageDrawer(tls *libc.TLS) {
 //	// D_AdvanceDemo
 //	// Called after each demo or intro demosequence finishes
 //	//
-func D_AdvanceDemo(tls *libc.TLS) {
+func D_AdvanceDemo() {
 	advancedemo = 1
 }
 
@@ -5195,10 +5195,10 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 //	//
 //	// D_StartTitle
 //	//
-func D_StartTitle(tls *libc.TLS) {
+func D_StartTitle() {
 	gameaction = int32(ga_nothing)
 	demosequence = -int32(1)
-	D_AdvanceDemo(tls)
+	D_AdvanceDemo()
 }
 
 // Strings for dehacked replacements of the startup banner
@@ -5514,7 +5514,7 @@ var copyright_banners = [3]uintptr{
 
 // Prints a message only if it has been modified by dehacked.
 
-func PrintDehackedBanners(tls *libc.TLS) {
+func PrintDehackedBanners() {
 	var deh_s uintptr
 	var i uint64
 	i = uint64(0)
@@ -5678,7 +5678,7 @@ func InitGameVersion(tls *libc.TLS) {
 	}
 }
 
-func PrintGameVersion(tls *libc.TLS) {
+func PrintGameVersion() {
 	var i int32
 	i = 0
 	for {
@@ -5899,7 +5899,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Set the gamedescription string. This is only possible now that
 	// we've finished loading Dehacked patches.
 	D_SetGameDescription(tls)
-	savegamedir = M_GetSaveGameDir(tls, D_SaveGameIWADName(tls, gamemission))
+	savegamedir = M_GetSaveGameDir(tls, D_SaveGameIWADName(gamemission))
 	// Check for -file in shareware
 	if modifiedgame != 0 {
 		// These are the lumps that will be checked in IWAD,
@@ -5955,7 +5955,7 @@ func D_DoomMain(tls *libc.TLS) {
 		fprintf_ccgo(os.Stdout, 4615)
 	}
 	I_PrintStartupBanner(tls, gamedescription)
-	PrintDehackedBanners(tls)
+	PrintDehackedBanners()
 	// Freedoom's IWADs are Boom-compatible, which means they usually
 	// don't work in Vanilla (though FreeDM is okay). Show a warning
 	// message and give a link to the website.
@@ -6076,7 +6076,7 @@ func D_DoomMain(tls *libc.TLS) {
 	S_Init(tls, sfxVolume*int32(8), musicVolume*int32(8))
 	fprintf_ccgo(os.Stdout, 5199)
 	D_CheckNetGame(tls)
-	PrintGameVersion(tls)
+	PrintGameVersion()
 	fprintf_ccgo(os.Stdout, 5246)
 	HU_Init(tls)
 	fprintf_ccgo(os.Stdout, 5285)
@@ -6124,13 +6124,13 @@ func D_DoomMain(tls *libc.TLS) {
 		if autostart != 0 || netgame != 0 {
 			G_InitNew(tls, startskill, startepisode, startmap)
 		} else {
-			D_StartTitle(tls)
+			D_StartTitle()
 		} // start up intro loop
 	}
 	D_DoomLoop(tls)
 }
 
-func D_GameMissionString(tls *libc.TLS, mission GameMission_t) (r uintptr) {
+func D_GameMissionString(mission GameMission_t) (r uintptr) {
 	switch mission {
 	case int32(none):
 		fallthrough
@@ -6220,7 +6220,7 @@ func init() {
 // Load game settings from the specified structure and
 // set global variables.
 
-func LoadGameSettings(tls *libc.TLS, settings *net_gamesettings_t) {
+func LoadGameSettings(settings *net_gamesettings_t) {
 	deathmatch = settings.Fdeathmatch
 	startepisode = settings.Fepisode
 	startmap = settings.Fmap1
@@ -6321,10 +6321,10 @@ func D_CheckNetGame(tls *libc.TLS) {
 	if netgame != 0 {
 		autostart = 1
 	}
-	D_RegisterLoopCallbacks(tls, uintptr(unsafe.Pointer(&doom_loop_interface)))
+	D_RegisterLoopCallbacks(uintptr(unsafe.Pointer(&doom_loop_interface)))
 	SaveGameSettings(tls, settings)
-	D_StartNetGame(tls, settings, libc.UintptrFromInt32(0))
-	LoadGameSettings(tls, settings)
+	D_StartNetGame(settings, libc.UintptrFromInt32(0))
+	LoadGameSettings(settings)
 	fprintf_ccgo(os.Stdout, 5563, startskill, deathmatch, startmap, startepisode)
 	fprintf_ccgo(os.Stdout, 5626, consoleplayer+int32(1), settings.Fnum_players, settings.Fnum_players)
 	// Show players here; the server might have specified a time limit
@@ -8235,7 +8235,7 @@ func G_Ticker(tls *libc.TLS) {
 	case int32(GS_FINALE):
 		F_Ticker(tls)
 	case int32(GS_DEMOSCREEN):
-		D_PageTicker(tls)
+		D_PageTicker()
 		break
 	}
 }
@@ -9429,7 +9429,7 @@ func G_CheckDemoStatus(tls *libc.TLS) (r boolean) {
 		if singledemo != 0 {
 			I_Quit(tls)
 		} else {
-			D_AdvanceDemo(tls)
+			D_AdvanceDemo()
 		}
 		return 1
 	}
@@ -21091,7 +21091,7 @@ func M_EndGameResponse(tls *libc.TLS, key int32) {
 	}
 	(*menu_t)(unsafe.Pointer(currentMenu)).FlastOn = itemOn
 	M_ClearMenus(tls)
-	D_StartTitle(tls)
+	D_StartTitle()
 }
 
 func M_EndGame(tls *libc.TLS, choice int32) {
@@ -45592,7 +45592,7 @@ func W_CheckCorrectIWAD(tls *libc.TLS, mission GameMission_t) {
 		if mission != unique_lumps[i].Fmission {
 			lumpnum = W_CheckNumForName(tls, unique_lumps[i].Flumpname)
 			if lumpnum >= 0 {
-				I_Error(tls, __ccgo_ts(28935), D_SuggestGameName(tls, unique_lumps[i].Fmission, int32(indetermined)), __ccgo_ts(29063), D_GameMissionString(tls, mission), __ccgo_ts(29063), D_GameMissionString(tls, unique_lumps[i].Fmission))
+				I_Error(tls, __ccgo_ts(28935), D_SuggestGameName(unique_lumps[i].Fmission, int32(indetermined)), __ccgo_ts(29063), D_GameMissionString(mission), __ccgo_ts(29063), D_GameMissionString(unique_lumps[i].Fmission))
 			}
 		}
 		goto _1
@@ -46155,7 +46155,7 @@ func I_GetEvent(tls *libc.TLS) {
 			bp.Fdata1 = int32(event.Key)
 			bp.Fdata2 = libc.Int32FromUint8(GetTypedChar(tls, event.Key))
 			if bp.Fdata1 != 0 {
-				D_PostEvent(tls, &bp)
+				D_PostEvent(&bp)
 			}
 		} else {
 			bp.Ftype1 = int32(ev_keyup)
@@ -46167,7 +46167,7 @@ func I_GetEvent(tls *libc.TLS) {
 			// (key ID), not the printable char.
 			bp.Fdata2 = 0
 			if bp.Fdata1 != 0 {
-				D_PostEvent(tls, &bp)
+				D_PostEvent(&bp)
 			}
 			break
 		}
