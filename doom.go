@@ -2289,10 +2289,10 @@ type lumpinfo_t = struct {
 type netgame_startup_callback_t = uintptr
 
 type loop_interface_t = struct {
-	FProcessEvents uintptr
-	FBuildTiccmd   uintptr
-	FRunTic        uintptr
-	FRunMenu       uintptr
+	FProcessEvents func(tls *libc.TLS)
+	FBuildTiccmd   func(*libc.TLS, uintptr, int32)
+	FRunTic        func(*libc.TLS, uintptr, uintptr)
+	FRunMenu       func(tls *libc.TLS)
 }
 
 // For use if I do walls with outsides/insides
@@ -4277,7 +4277,7 @@ var new_sync = uint32(1)
 
 // Callback functions for loop code.
 
-var loop_interface = libc.UintptrFromInt32(0)
+var loop_interface *loop_interface_t
 
 // Current players in the multiplayer game.
 // This is distinct from playeringame[] used by the game code, which may
@@ -4309,9 +4309,9 @@ func BuildNewTic(tls *libc.TLS) (r boolean) {
 	var gameticdiv int32
 	gameticdiv = gametic / ticdup
 	I_StartTic(tls)
-	(*(*func(*libc.TLS))(unsafe.Pointer(&struct{ uintptr }{(*loop_interface_t)(unsafe.Pointer(loop_interface)).FProcessEvents})))(tls)
+	loop_interface.FProcessEvents(tls)
 	// Always run the menu
-	(*(*func(*libc.TLS))(unsafe.Pointer(&struct{ uintptr }{(*loop_interface_t)(unsafe.Pointer(loop_interface)).FRunMenu})))(tls)
+	loop_interface.FRunMenu(tls)
 	if drone != 0 {
 		// In drone mode, do not generate any ticcmds.
 		return 0
@@ -4333,7 +4333,7 @@ func BuildNewTic(tls *libc.TLS) (r boolean) {
 	}
 	//printf ("mk:%i ",maketic);
 	xmemset(bp, 0, uint64(16))
-	(*(*func(*libc.TLS, uintptr, int32))(unsafe.Pointer(&struct{ uintptr }{(*loop_interface_t)(unsafe.Pointer(loop_interface)).FBuildTiccmd})))(tls, bp, maketic)
+	loop_interface.FBuildTiccmd(tls, bp, maketic)
 	*(*ticcmd_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&ticdata)) + uintptr(maketic%int32(BACKUPTICS))*160 + uintptr(localplayer)*16)) = *(*ticcmd_t)(unsafe.Pointer(bp))
 	*(*boolean)(unsafe.Pointer(uintptr(unsafe.Pointer(&ticdata)) + uintptr(maketic%int32(BACKUPTICS))*160 + 128 + uintptr(localplayer)*4)) = 1
 	maketic++
@@ -4616,7 +4616,7 @@ func TryRunTics(tls *libc.TLS) {
 				I_Error(tls, __ccgo_ts(1475), 0)
 			}
 			xmemcpy(uintptr(unsafe.Pointer(&local_playeringame)), set+128, uint64(32))
-			(*(*func(*libc.TLS, uintptr, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*loop_interface_t)(unsafe.Pointer(loop_interface)).FRunTic})))(tls, set, set+128)
+			loop_interface.FRunTic(tls, set, set+128)
 			gametic++
 			// modify command for duplicated tics
 			TicdupSquash(set)
@@ -4631,7 +4631,7 @@ func TryRunTics(tls *libc.TLS) {
 
 var oldentertics int32
 
-func D_RegisterLoopCallbacks(i uintptr) {
+func D_RegisterLoopCallbacks(i *loop_interface_t) {
 	loop_interface = i
 }
 
@@ -6228,14 +6228,11 @@ func RunTic(tls *libc.TLS, cmds uintptr, ingame uintptr) {
 	G_Ticker(tls)
 }
 
-var doom_loop_interface = loop_interface_t{}
-
-func init() {
-	p := unsafe.Pointer(&doom_loop_interface)
-	*(*uintptr)(unsafe.Add(p, 0)) = __ccgo_fp(D_ProcessEvents)
-	*(*uintptr)(unsafe.Add(p, 8)) = __ccgo_fp(G_BuildTiccmd)
-	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(RunTic)
-	*(*uintptr)(unsafe.Add(p, 24)) = __ccgo_fp(M_Ticker)
+var doom_loop_interface = loop_interface_t{
+	D_ProcessEvents,
+	G_BuildTiccmd,
+	RunTic,
+	M_Ticker,
 }
 
 // Load game settings from the specified structure and
@@ -6342,7 +6339,7 @@ func D_CheckNetGame(tls *libc.TLS) {
 	if netgame != 0 {
 		autostart = 1
 	}
-	D_RegisterLoopCallbacks(uintptr(unsafe.Pointer(&doom_loop_interface)))
+	D_RegisterLoopCallbacks(&doom_loop_interface)
 	SaveGameSettings(tls, settings)
 	D_StartNetGame(settings, libc.UintptrFromInt32(0))
 	LoadGameSettings(settings)
