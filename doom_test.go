@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"image"
 	"io"
+	"math/rand"
 	"os"
 	"os/exec"
+	"sync"
 	"testing"
 	"time"
 )
@@ -21,6 +23,7 @@ type doomTestHeadless struct {
 	keys          []delayedKeyEvent
 	lastEventTick int32
 	outputFile    io.WriteCloser
+	lock          sync.Mutex
 }
 
 func (d *doomTestHeadless) Close() {
@@ -83,6 +86,8 @@ func (d *doomTestHeadless) GetKey(event *DoomKeyEvent) bool {
 	if len(d.keys) == 0 {
 		return false
 	}
+	d.lock.Lock()
+	defer d.lock.Unlock()
 	now := I_GetTimeMS()
 	delta := now - d.lastEventTick
 	if d.keys[0].ticks <= delta {
@@ -93,6 +98,39 @@ func (d *doomTestHeadless) GetKey(event *DoomKeyEvent) bool {
 		return true
 	}
 	return false
+}
+
+// InsertKey simulates an immediate key press and release event in the game.
+func (d *doomTestHeadless) InsertKey(Key uint8) {
+	d.lock.Lock()
+	defer d.lock.Unlock()
+	d.keys = append(d.keys, delayedKeyEvent{
+		event: DoomKeyEvent{
+			Pressed: true,
+			Key:     Key,
+		},
+		ticks: 0, // Insert immediately
+	},
+		delayedKeyEvent{
+			event: DoomKeyEvent{
+				Pressed: false,
+				Key:     Key,
+			},
+			ticks: 2, // Release after 1 tick
+		},
+	)
+}
+
+func (d *doomTestHeadless) InsertKeyChange(Key uint8, pressed bool) {
+	d.lock.Lock()
+	defer d.lock.Unlock()
+	d.keys = append(d.keys, delayedKeyEvent{
+		event: DoomKeyEvent{
+			Pressed: pressed,
+			Key:     Key,
+		},
+		ticks: 0, // Insert immediately
+	})
 }
 
 // Run the demo at super speed to make sure it all goes ok
@@ -214,5 +252,55 @@ func TestLoadSave(t *testing.T) {
 		},
 	}
 	defer game.Close()
+	Run(game, []string{"-iwad", "doom1.wad"})
+}
+
+func TestDoomRandom(t *testing.T) {
+	dg_speed_ratio = 50.0 // Run at 50x speed
+	game := &doomTestHeadless{
+		t:     t,
+		start: time.Now(),
+		keys:  nil,
+	}
+	defer game.Close()
+	go func() {
+		// Let things get settled
+		time.Sleep(50 * time.Millisecond)
+		// Start a game
+		game.InsertKey(KEY_ESCAPE) // Open menu
+		time.Sleep(10 * time.Millisecond)
+		game.InsertKey(KEY_ENTER)
+		time.Sleep(10 * time.Millisecond)
+		game.InsertKey(KEY_ENTER)
+		time.Sleep(10 * time.Millisecond)
+		game.InsertKey(KEY_ENTER) // Start new game
+
+		time.Sleep(100 * time.Millisecond)
+		keys := []uint8{
+			KEY_UPARROW1, KEY_DOWNARROW1, KEY_LEFTARROW1,
+			KEY_RIGHTARROW1, KEY_FIRE1, KEY_USE1,
+		}
+		// Press shift to run
+		game.InsertKeyChange(0x80+0x36, true)
+		// Do 10 seconds of random movement
+		for i := 0; i < 1000; i++ {
+			change := rand.Intn(len(keys))
+			key := keys[change]
+			game.InsertKeyChange(key, true)
+			time.Sleep(10 * time.Millisecond)
+			game.InsertKeyChange(key, false)
+			time.Sleep(1 * time.Millisecond)
+		}
+
+		// Exit
+		game.InsertKey(KEY_ESCAPE) // Open menu
+		time.Sleep(10 * time.Millisecond)
+		game.InsertKey(KEY_UPARROW1) // Go to quit
+		time.Sleep(10 * time.Millisecond)
+		game.InsertKey(KEY_ENTER) // Confirm quit
+		time.Sleep(10 * time.Millisecond)
+		game.InsertKey('y') // Confirm exit
+		time.Sleep(10 * time.Millisecond)
+	}()
 	Run(game, []string{"-iwad", "doom1.wad"})
 }
