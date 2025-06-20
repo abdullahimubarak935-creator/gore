@@ -66,6 +66,21 @@ func xstrcmp(s1, s2 uintptr) int32 {
 	}
 }
 
+func xstrncpy(dest, src uintptr, n uint64) (r uintptr) {
+	r = dest
+	for c := *(*int8)(unsafe.Pointer(src)); c != 0 && n > 0; n-- {
+		*(*int8)(unsafe.Pointer(dest)) = c
+		dest++
+		src++
+		c = *(*int8)(unsafe.Pointer(src))
+	}
+	for ; uintptr(n) > 0; n-- {
+		*(*int8)(unsafe.Pointer(dest)) = 0
+		dest++
+	}
+	return r
+}
+
 func xstrncasecmp(s1, s2 uintptr, n uint64) int32 {
 	for n > 0 {
 		ch1 := *(*byte)(unsafe.Pointer(s1))
@@ -5877,17 +5892,17 @@ func D_DoomMain(tls *libc.TLS) {
 		// With Vanilla you have to specify the file without extension,
 		// but make that optional.
 		if M_StringEndsWith(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(4476)) != 0 {
-			M_StringCopy(tls, bp, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uint64(256))
+			M_StringCopy(bp, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uint64(256))
 		} else {
 			snprintf_ccgo(bp, 256, 4481, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		}
 		if D_AddFile(tls, bp) != 0 {
-			M_StringCopy(tls, bp+256, lumpinfo+uintptr(numlumps-uint32(1))*40, uint64(9))
+			M_StringCopy(bp+256, lumpinfo+uintptr(numlumps-uint32(1))*40, uint64(9))
 		} else {
 			// If file failed to load, still continue trying to play
 			// the demo in the same way as Vanilla Doom.  This makes
 			// tricks like "-playdemo demo1" possible.
-			M_StringCopy(tls, bp+256, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uint64(9))
+			M_StringCopy(bp+256, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uint64(9))
 		}
 		fprintf_ccgo(os.Stdout, 4488, libc.GoString(bp))
 	}
@@ -6117,7 +6132,7 @@ func D_DoomMain(tls *libc.TLS) {
 		return
 	}
 	if startloadgame >= 0 {
-		M_StringCopy(tls, bp, P_SaveGameFile(tls, startloadgame), uint64(256))
+		M_StringCopy(bp, P_SaveGameFile(tls, startloadgame), uint64(256))
 		G_LoadGame(tls, bp)
 	}
 	if gameaction != int32(ga_loadgame) {
@@ -6169,7 +6184,7 @@ func PlayerQuitGame(tls *libc.TLS, player uintptr) {
 	player_num = libc.Uint32FromInt64((int64(player) - int64(uintptr(unsafe.Pointer(&players)))) / 328)
 	// Do this the same way as Vanilla Doom does, to allow dehacked
 	// replacements of this message
-	M_StringCopy(tls, uintptr(unsafe.Pointer(&exitmsg)), __ccgo_ts(5400), uint64(80))
+	M_StringCopy(uintptr(unsafe.Pointer(&exitmsg)), __ccgo_ts(5400), uint64(80))
 	p1 = uintptr(unsafe.Pointer(&exitmsg)) + 7
 	*(*int8)(unsafe.Pointer(p1)) = int8(uint32(*(*int8)(unsafe.Pointer(p1))) + player_num)
 	playeringame[player_num] = 0
@@ -8205,7 +8220,7 @@ func G_Ticker(tls *libc.TLS) {
 					}
 				case int32(BTS_SAVEGAME):
 					if !(savedescription[0] != 0) {
-						M_StringCopy(tls, uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(13798), uint64(32))
+						M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(13798), uint64(32))
 					}
 					savegameslot = libc.Int32FromUint8(players[i].Fcmd.Fbuttons) & int32(BTS_SAVEMASK) >> int32(BTS_SAVESHIFT)
 					gameaction = int32(ga_savegame)
@@ -8765,7 +8780,7 @@ func G_DoWorldDone(tls *libc.TLS) {
 }
 
 func G_LoadGame(tls *libc.TLS, name uintptr) {
-	M_StringCopy(tls, uintptr(unsafe.Pointer(&savename)), name, uint64(256))
+	M_StringCopy(uintptr(unsafe.Pointer(&savename)), name, uint64(256))
 	gameaction = int32(ga_loadgame)
 }
 
@@ -8810,7 +8825,7 @@ func G_DoLoadGame(tls *libc.TLS) {
 //	//
 func G_SaveGame(tls *libc.TLS, slot int32, description uintptr) {
 	savegameslot = slot
-	M_StringCopy(tls, uintptr(unsafe.Pointer(&savedescription)), description, uint64(32))
+	M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), description, uint64(32))
 	sendsave = 1
 }
 
@@ -8858,7 +8873,7 @@ func G_DoSaveGame(tls *libc.TLS) {
 	libc.Xremove(tls, savegame_file)
 	libc.Xrename(tls, temp_savegame_file, savegame_file)
 	gameaction = int32(ga_nothing)
-	M_StringCopy(tls, uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(14092), uint64(32))
+	M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(14092), uint64(32))
 	players[consoleplayer].Fmessage = __ccgo_ts(14093)
 	// draw the pattern into the back screen
 	R_FillBackScreen(tls)
@@ -10255,7 +10270,7 @@ func HU_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			HU_queueChatChar(tls, int8(KEY_ENTER))
 			// leave chat mode and notify that it was sent
 			chat_on = 0
-			M_StringCopy(tls, uintptr(unsafe.Pointer(&lastmessage)), chat_macros[c], uint64(81))
+			M_StringCopy(uintptr(unsafe.Pointer(&lastmessage)), chat_macros[c], uint64(81))
 			(*player_t)(unsafe.Pointer(plr1)).Fmessage = uintptr(unsafe.Pointer(&lastmessage))
 			eatkey = 1
 		} else {
@@ -10270,7 +10285,7 @@ func HU_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			if libc.Int32FromUint8(c) == int32(KEY_ENTER) {
 				chat_on = 0
 				if w_chat.Fl.Flen1 != 0 {
-					M_StringCopy(tls, uintptr(unsafe.Pointer(&lastmessage)), uintptr(unsafe.Pointer(&w_chat))+20, uint64(81))
+					M_StringCopy(uintptr(unsafe.Pointer(&lastmessage)), uintptr(unsafe.Pointer(&w_chat))+20, uint64(81))
 					(*player_t)(unsafe.Pointer(plr1)).Fmessage = uintptr(unsafe.Pointer(&lastmessage))
 				}
 			} else {
@@ -20642,10 +20657,10 @@ func M_ReadSaveStrings(tls *libc.TLS) {
 		if !(i < int32(load_end)) {
 			break
 		}
-		M_StringCopy(tls, bp, P_SaveGameFile(tls, i), uint64(256))
+		M_StringCopy(bp, P_SaveGameFile(tls, i), uint64(256))
 		handle = libc.Xfopen(tls, bp, __ccgo_ts(13884))
 		if handle == libc.UintptrFromInt32(0) {
-			M_StringCopy(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24, __ccgo_ts(22118), uint64(SAVESTRINGSIZE))
+			M_StringCopy(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24, __ccgo_ts(22118), uint64(SAVESTRINGSIZE))
 			LoadMenu[i].Fstatus = 0
 			goto _1
 		}
@@ -20711,7 +20726,7 @@ func M_DrawSaveLoadBorder(tls *libc.TLS, x int32, y int32) {
 //	//
 func M_LoadSelect(tls *libc.TLS, choice int32) {
 	bp := alloc(256)
-	M_StringCopy(tls, bp, P_SaveGameFile(tls, choice), uint64(256))
+	M_StringCopy(bp, P_SaveGameFile(tls, choice), uint64(256))
 	G_LoadGame(tls, bp)
 	M_ClearMenus(tls)
 }
@@ -20779,7 +20794,7 @@ func M_SaveSelect(tls *libc.TLS, choice int32) {
 	// we are going to be intercepting all chars
 	saveStringEnter = int32(1)
 	saveSlot = choice
-	M_StringCopy(tls, uintptr(unsafe.Pointer(&saveOldString)), uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, uint64(SAVESTRINGSIZE))
+	M_StringCopy(uintptr(unsafe.Pointer(&saveOldString)), uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, uint64(SAVESTRINGSIZE))
 	if !(xstrcmp(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, __ccgo_ts(22118)) != 0) {
 		*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(choice)*24)) = 0
 	}
@@ -21502,7 +21517,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			}
 		case int32(KEY_ESCAPE):
 			saveStringEnter = 0
-			M_StringCopy(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24, uintptr(unsafe.Pointer(&saveOldString)), uint64(SAVESTRINGSIZE))
+			M_StringCopy(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24, uintptr(unsafe.Pointer(&saveOldString)), uint64(SAVESTRINGSIZE))
 		case int32(KEY_ENTER):
 			saveStringEnter = 0
 			if *(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(saveSlot)*24)) != 0 {
@@ -21829,7 +21844,7 @@ func M_Drawer(tls *libc.TLS) {
 					break
 				}
 				if int32(*(*int8)(unsafe.Pointer(messageString + uintptr(libc.Uint32FromInt32(start)+i)))) == int32('\n') {
-					M_StringCopy(tls, bp, messageString+uintptr(start), uint64(80))
+					M_StringCopy(bp, messageString+uintptr(start), uint64(80))
 					if uint64(i) < uint64(80) {
 						(*(*[80]int8)(unsafe.Pointer(bp)))[i] = int8('\000')
 					}
@@ -21843,7 +21858,7 @@ func M_Drawer(tls *libc.TLS) {
 				i++
 			}
 			if !(foundnewline != 0) {
-				M_StringCopy(tls, bp, messageString+uintptr(start), uint64(80))
+				M_StringCopy(bp, messageString+uintptr(start), uint64(80))
 				start = int32(uint64(start) + xstrlen(bp))
 			}
 			x = int16(SCREENWIDTH/2 - M_StringWidth(tls, bp)/int32(2))
@@ -22086,11 +22101,11 @@ func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
 // Safe string copy function that works like OpenBSD's strlcpy().
 // Returns true if the string was not truncated.
 
-func M_StringCopy(tls *libc.TLS, dest uintptr, src uintptr, dest_size uint64) (r boolean) {
+func M_StringCopy(dest uintptr, src uintptr, dest_size uint64) (r boolean) {
 	var len1 uint64
 	if dest_size >= uint64(1) {
 		*(*int8)(unsafe.Pointer(dest + uintptr(dest_size-uint64(1)))) = int8('\000')
-		libc.Xstrncpy(tls, dest, src, dest_size-uint64(1))
+		xstrncpy(dest, src, dest_size-uint64(1))
 	} else {
 		return 0
 	}
@@ -22107,7 +22122,7 @@ func M_StringConcat(tls *libc.TLS, dest uintptr, src uintptr, dest_size uint64) 
 	if offset > dest_size {
 		offset = dest_size
 	}
-	return M_StringCopy(tls, dest+uintptr(offset), src, dest_size-offset)
+	return M_StringCopy(dest+uintptr(offset), src, dest_size-offset)
 }
 
 // Returns true if 's' ends with the specified suffix.
@@ -22139,7 +22154,7 @@ func M_StringJoin(tls *libc.TLS, s uintptr, va uintptr) (r uintptr) {
 		I_Error(tls, __ccgo_ts(23298), 0)
 		return libc.UintptrFromInt32(0)
 	}
-	M_StringCopy(tls, result, s, result_len)
+	M_StringCopy(result, s, result_len)
 	args = va
 	for {
 		v = libc.VaUintptr(&args)
@@ -35724,7 +35739,7 @@ func R_InitTextures(tls *libc.TLS) {
 		if !(i < nummappatches) {
 			break
 		}
-		M_StringCopy(tls, bp, name_p+uintptr(i*int32(8)), uint64(9))
+		M_StringCopy(bp, name_p+uintptr(i*int32(8)), uint64(9))
 		*(*int32)(unsafe.Pointer(patchlookup + uintptr(i)*4)) = W_CheckNumForName(tls, bp)
 		goto _1
 	_1:
@@ -39178,7 +39193,7 @@ func R_DrawMasked(tls *libc.TLS) {
 	}
 }
 
-func SHA1_Init(tls *libc.TLS, hd uintptr) {
+func SHA1_Init(hd uintptr) {
 	(*sha1_context_t)(unsafe.Pointer(hd)).Fh0 = uint32(0x67452301)
 	(*sha1_context_t)(unsafe.Pointer(hd)).Fh1 = uint32(0xefcdab89)
 	(*sha1_context_t)(unsafe.Pointer(hd)).Fh2 = uint32(0x98badcfe)
@@ -39193,7 +39208,7 @@ func SHA1_Init(tls *libc.TLS, hd uintptr) {
 //	/****************
 //	 * Transform the message X which consists of 16 32-bit-words
 //	 */
-func Transform(tls *libc.TLS, hd uintptr, data uintptr) {
+func Transform(hd uintptr, data uintptr) {
 	bp := alloc(64)
 	var a, b, c, d, e, tm, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, v32, v33, v34, v35, v36, v37, v38, v39, v40, v41, v42, v43, v44, v45, v46, v47, v48, v49, v50, v51, v52, v53, v54, v55, v56, v57, v58, v59, v6, v60, v61, v62, v63, v64, v65, v66, v67, v68, v69, v7, v8, v9 uint32
 	var i int32
@@ -39593,12 +39608,12 @@ func Transform(tls *libc.TLS, hd uintptr, data uintptr) {
 //	/* Update the message digest with the contents
 //	 * of INBUF with length INLEN.
 //	 */
-func SHA1_Update(tls *libc.TLS, hd uintptr, inbuf uintptr, inlen uint64) {
+func SHA1_Update(hd uintptr, inbuf uintptr, inlen uint64) {
 	var v2, v6 int32
 	var v3, v4, v7, v8 uintptr
 	if (*sha1_context_t)(unsafe.Pointer(hd)).Fcount == int32(64) {
 		/* flush the buffer */
-		Transform(tls, hd, hd+24)
+		Transform(hd, hd+24)
 		(*sha1_context_t)(unsafe.Pointer(hd)).Fcount = 0
 		(*sha1_context_t)(unsafe.Pointer(hd)).Fnblocks++
 	}
@@ -39621,13 +39636,13 @@ func SHA1_Update(tls *libc.TLS, hd uintptr, inbuf uintptr, inlen uint64) {
 			;
 			inlen--
 		}
-		SHA1_Update(tls, hd, libc.UintptrFromInt32(0), uint64(0))
+		SHA1_Update(hd, libc.UintptrFromInt32(0), uint64(0))
 		if !(inlen != 0) {
 			return
 		}
 	}
 	for inlen >= uint64(64) {
-		Transform(tls, hd, inbuf)
+		Transform(hd, inbuf)
 		(*sha1_context_t)(unsafe.Pointer(hd)).Fcount = 0
 		(*sha1_context_t)(unsafe.Pointer(hd)).Fnblocks++
 		inlen -= uint64(64)
@@ -39657,11 +39672,11 @@ func SHA1_Update(tls *libc.TLS, hd uintptr, inbuf uintptr, inlen uint64) {
  * Returns: 20 bytes representing the digest.
  */
 
-func SHA1_Final(tls *libc.TLS, digest uintptr, hd uintptr) {
+func SHA1_Final(digest uintptr, hd uintptr) {
 	var lsb, msb, t uint32
 	var p, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v2, v20, v21, v22, v23, v24, v25, v26, v27, v28, v4, v6, v8, v9 uintptr
 	var v1, v3, v5, v7 int32
-	SHA1_Update(tls, hd, libc.UintptrFromInt32(0), uint64(0)) /* flush */
+	SHA1_Update(hd, libc.UintptrFromInt32(0), uint64(0)) /* flush */
 	t = (*sha1_context_t)(unsafe.Pointer(hd)).Fnblocks
 	/* multiply by 64 to make a byte count */
 	lsb = t << int32(6)
@@ -39701,8 +39716,8 @@ func SHA1_Final(tls *libc.TLS, digest uintptr, hd uintptr) {
 			*(*int32)(unsafe.Pointer(v8))++
 			*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v7))) = uint8(0)
 		}
-		SHA1_Update(tls, hd, libc.UintptrFromInt32(0), uint64(0)) /* flush */
-		xmemset(hd+24, 0, uint64(56))                             /* fill next block with zeroes */
+		SHA1_Update(hd, libc.UintptrFromInt32(0), uint64(0)) /* flush */
+		xmemset(hd+24, 0, uint64(56))                        /* fill next block with zeroes */
 	}
 	/* append the 64 bit count */
 	*(*uint8)(unsafe.Pointer(hd + 24 + 56)) = uint8(msb >> int32(24))
@@ -39713,7 +39728,7 @@ func SHA1_Final(tls *libc.TLS, digest uintptr, hd uintptr) {
 	*(*uint8)(unsafe.Pointer(hd + 24 + 61)) = uint8(lsb >> int32(16))
 	*(*uint8)(unsafe.Pointer(hd + 24 + 62)) = uint8(lsb >> int32(8))
 	*(*uint8)(unsafe.Pointer(hd + 24 + 63)) = uint8(lsb)
-	Transform(tls, hd, hd+24)
+	Transform(hd, hd+24)
 	p = hd + 24
 	v9 = p
 	p++
@@ -39778,17 +39793,17 @@ func SHA1_Final(tls *libc.TLS, digest uintptr, hd uintptr) {
 	xmemcpy(digest, hd+24, uint64(20))
 }
 
-func SHA1_UpdateInt32(tls *libc.TLS, context uintptr, val uint32) {
+func SHA1_UpdateInt32(context uintptr, val uint32) {
 	bp := alloc(16)
 	(*(*[4]uint8)(unsafe.Pointer(bp)))[0] = uint8(val >> int32(24) & uint32(0xff))
 	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(1)] = uint8(val >> int32(16) & uint32(0xff))
 	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(2)] = uint8(val >> int32(8) & uint32(0xff))
 	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(3)] = uint8(val & uint32(0xff))
-	SHA1_Update(tls, context, bp, uint64(4))
+	SHA1_Update(context, bp, uint64(4))
 }
 
-func SHA1_UpdateString(tls *libc.TLS, context uintptr, str uintptr) {
-	SHA1_Update(tls, context, str, xstrlen(str)+uint64(1))
+func SHA1_UpdateString(context uintptr, str uintptr) {
+	SHA1_Update(context, str, xstrlen(str)+uint64(1))
 }
 
 func init() {
@@ -44948,10 +44963,10 @@ func WI_loadUnloadData(tls *libc.TLS, callback load_callback_t) {
 	}
 	// Background image
 	if gamemode == int32(commercial) {
-		M_StringCopy(tls, bp1, __ccgo_ts(1951), uint64(9))
+		M_StringCopy(bp1, __ccgo_ts(1951), uint64(9))
 	} else {
 		if gamemode == int32(retail) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd == int32(3) {
-			M_StringCopy(tls, bp1, __ccgo_ts(1951), uint64(9))
+			M_StringCopy(bp1, __ccgo_ts(1951), uint64(9))
 		} else {
 			snprintf_ccgo(bp1, 9, 28577, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)
 		}
@@ -45081,17 +45096,17 @@ func GetFileNumber(tls *libc.TLS, handle uintptr) (r int32) {
 
 func ChecksumAddLump(tls *libc.TLS, sha1_context uintptr, lump uintptr) {
 	bp := alloc(16)
-	M_StringCopy(tls, bp, lump, uint64(9))
-	SHA1_UpdateString(tls, sha1_context, bp)
-	SHA1_UpdateInt32(tls, sha1_context, libc.Uint32FromInt32(GetFileNumber(tls, (*lumpinfo_t)(unsafe.Pointer(lump)).Fwad_file)))
-	SHA1_UpdateInt32(tls, sha1_context, libc.Uint32FromInt32((*lumpinfo_t)(unsafe.Pointer(lump)).Fposition))
-	SHA1_UpdateInt32(tls, sha1_context, libc.Uint32FromInt32((*lumpinfo_t)(unsafe.Pointer(lump)).Fsize))
+	M_StringCopy(bp, lump, uint64(9))
+	SHA1_UpdateString(sha1_context, bp)
+	SHA1_UpdateInt32(sha1_context, libc.Uint32FromInt32(GetFileNumber(tls, (*lumpinfo_t)(unsafe.Pointer(lump)).Fwad_file)))
+	SHA1_UpdateInt32(sha1_context, libc.Uint32FromInt32((*lumpinfo_t)(unsafe.Pointer(lump)).Fposition))
+	SHA1_UpdateInt32(sha1_context, libc.Uint32FromInt32((*lumpinfo_t)(unsafe.Pointer(lump)).Fsize))
 }
 
 func W_Checksum(tls *libc.TLS, digest uintptr) {
 	bp := alloc(96)
 	var i uint32
-	SHA1_Init(tls, bp)
+	SHA1_Init(bp)
 	num_open_wadfiles = 0
 	// Go through each entry in the WAD directory, adding information
 	// about each entry to the SHA1 hash.
@@ -45106,7 +45121,7 @@ func W_Checksum(tls *libc.TLS, digest uintptr) {
 		;
 		i++
 	}
-	SHA1_Final(tls, digest, bp)
+	SHA1_Final(digest, bp)
 }
 
 /*
@@ -45337,7 +45352,7 @@ func W_AddFile(tls *libc.TLS, filename uintptr) (r uintptr) {
 		(*lumpinfo_t)(unsafe.Pointer(lump_p)).Fposition = (*filelump_t)(unsafe.Pointer(filerover)).Ffilepos
 		(*lumpinfo_t)(unsafe.Pointer(lump_p)).Fsize = (*filelump_t)(unsafe.Pointer(filerover)).Fsize
 		(*lumpinfo_t)(unsafe.Pointer(lump_p)).Fcache = libc.UintptrFromInt32(0)
-		libc.Xstrncpy(tls, lump_p, filerover+8, uint64(8))
+		xstrncpy(lump_p, filerover+8, uint64(8))
 		lump_p += 40
 		filerover += 16
 		goto _1
