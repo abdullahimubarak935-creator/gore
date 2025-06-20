@@ -4140,7 +4140,7 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
 	//
 	// @arg <file>
 	//
-	iwadparm = M_CheckParmWithArgs(tls, __ccgo_ts(1275), int32(1))
+	iwadparm = M_CheckParmWithArgs(__ccgo_ts(1275), int32(1))
 	if iwadparm != 0 {
 		// Search through IWAD dirs for an IWAD with the given name.
 		iwadfile = *(*uintptr)(unsafe.Pointer(myargv + uintptr(iwadparm+int32(1))*8))
@@ -4906,7 +4906,7 @@ func D_Display(tls *libc.TLS) {
 	}
 	// clean up border stuff
 	if gamestate != oldgamestate1 && gamestate != int32(GS_LEVEL) {
-		I_SetPalette(tls, W_CacheLumpName(tls, __ccgo_ts(1490), int32(PU_CACHE)))
+		I_SetPalette(W_CacheLumpName(tls, __ccgo_ts(1490), int32(PU_CACHE)))
 	}
 	// see if the border needs to be initially drawn
 	if gamestate == int32(GS_LEVEL) && oldgamestate1 != int32(GS_LEVEL) {
@@ -4987,7 +4987,7 @@ func D_BindVariables(tls *libc.TLS) {
 	bp := alloc(32)
 	var i int32
 	M_ApplyPlatformDefaults(tls)
-	I_BindVideoVariables(tls)
+	I_BindVideoVariables()
 	I_BindJoystickVariables(tls)
 	I_BindSoundVariables(tls)
 	M_BindBaseControls(tls)
@@ -5067,10 +5067,10 @@ func D_DoomLoop(tls *libc.TLS) {
 	main_loop_started = 1
 	TryRunTics(tls)
 	I_SetWindowTitle(gamedescription)
-	I_GraphicsCheckCommandLine(tls)
-	I_SetGrabMouseCallback(tls, __ccgo_fp(D_GrabMouseCallback))
+	I_GraphicsCheckCommandLine()
+	I_SetGrabMouseCallback(__ccgo_fp(D_GrabMouseCallback))
 	I_InitGraphics(tls)
-	I_EnableLoadingDisk(tls)
+	I_EnableLoadingDisk()
 	V_RestoreBuffer(tls)
 	R_ExecuteSetViewSize(tls)
 	D_StartGameLoop()
@@ -5398,7 +5398,7 @@ func D_IdentifyVersion(tls *libc.TLS) {
 		// detecting it based on the filename. Valid values are: "doom2",
 		// "tnt" and "plutonia".
 		//
-		p = M_CheckParmWithArgs(tls, __ccgo_ts(2664), int32(1))
+		p = M_CheckParmWithArgs(__ccgo_ts(2664), int32(1))
 		if p > 0 {
 			SetMissionForPackName(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		}
@@ -5602,7 +5602,7 @@ func InitGameVersion(tls *libc.TLS) {
 	// Emulate a specific version of Doom.  Valid values are "1.9",
 	// "ultimate", "final", "final2", "hacx" and "chex".
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts(3857), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(3857), int32(1))
 	if p != 0 {
 		i = 0
 		for {
@@ -5703,7 +5703,7 @@ func D_Endoom(tls *libc.TLS) {
 	// Don't show ENDOOM if we have it disabled, or we're running
 	// in screensaver or control test mode. Only show it once the
 	// game has actually started.
-	if !(show_endoom != 0) || !(main_loop_started != 0) || screensaver_mode != 0 || M_CheckParm(tls, __ccgo_ts(3980)) > 0 {
+	if !(show_endoom != 0) || !(main_loop_started != 0) || screensaver_mode != 0 || M_CheckParm(__ccgo_ts(3980)) > 0 {
 		return
 	}
 	endoom = W_CacheLumpName(tls, __ccgo_ts(3994), int32(PU_STATIC))
@@ -5729,34 +5729,34 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Disable monsters.
 	//
-	nomonsters = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts(4064)))
+	nomonsters = libc.Uint32FromInt32(M_CheckParm(__ccgo_ts(4064)))
 	//!
 	// @vanilla
 	//
 	// Monsters respawn after being killed.
 	//
-	respawnparm = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts(4076)))
+	respawnparm = libc.Uint32FromInt32(M_CheckParm(__ccgo_ts(4076)))
 	//!
 	// @vanilla
 	//
 	// Monsters move faster.
 	//
-	fastparm = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts(4085)))
+	fastparm = libc.Uint32FromInt32(M_CheckParm(__ccgo_ts(4085)))
 	//!
 	// @vanilla
 	//
 	// Developer mode.  F1 saves a screenshot in the current working
 	// directory.
 	//
-	devparm = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts(4091)))
-	I_DisplayFPSDots(tls, devparm)
+	devparm = libc.Uint32FromInt32(M_CheckParm(__ccgo_ts(4091)))
+	I_DisplayFPSDots(devparm)
 	//!
 	// @category net
 	// @vanilla
 	//
 	// Start a deathmatch game.
 	//
-	if M_CheckParm(tls, __ccgo_ts(4100)) != 0 {
+	if M_CheckParm(__ccgo_ts(4100)) != 0 {
 		deathmatch = int32(1)
 	}
 	//!
@@ -5766,7 +5766,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Start a deathmatch 2.0 game.  Weapons do not stay in place and
 	// all items respawn after 30 seconds.
 	//
-	if M_CheckParm(tls, __ccgo_ts(4112)) != 0 {
+	if M_CheckParm(__ccgo_ts(4112)) != 0 {
 		deathmatch = int32(2)
 	}
 	if devparm != 0 {
@@ -5782,7 +5782,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Turbo mode.  The player's speed is multiplied by x%.  If unspecified,
 	// x defaults to 200.  Values are rounded up to 10 and down to 400.
 	//
-	v1 = M_CheckParm(tls, __ccgo_ts(4144))
+	v1 = M_CheckParm(__ccgo_ts(4144))
 	p = v1
 	if v1 != 0 {
 		scale = int32(200)
@@ -5861,7 +5861,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Play back the demo named demo.lmp.
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts(4456), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(4456), int32(1))
 	if !(p != 0) {
 		//!
 		// @arg <demo>
@@ -5871,7 +5871,7 @@ func D_DoomMain(tls *libc.TLS) {
 		// Play back the demo named demo.lmp, determining the framerate
 		// of the screen.
 		//
-		p = M_CheckParmWithArgs(tls, __ccgo_ts(4466), int32(1))
+		p = M_CheckParmWithArgs(__ccgo_ts(4466), int32(1))
 	}
 	if p != 0 {
 		// With Vanilla you have to specify the file without extension,
@@ -5964,7 +5964,7 @@ func D_DoomMain(tls *libc.TLS) {
 		I_PrintDivider(tls)
 	}
 	fprintf_ccgo(os.Stdout, 4992)
-	I_CheckIsScreensaver(tls)
+	I_CheckIsScreensaver()
 	I_InitSound(tls, 1)
 	I_InitMusic(tls)
 	// Initial netgame startup. Connect to server etc.
@@ -5981,7 +5981,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Set the game skill, 1-5 (1: easiest, 5: hardest).  A skill of
 	// 0 disables all monsters.
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts(5027), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(5027), int32(1))
 	if p != 0 {
 		startskill = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('1')
 		autostart = 1
@@ -5992,7 +5992,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Start playing on episode n (1-4)
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts(5034), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(5034), int32(1))
 	if p != 0 {
 		startepisode = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('0')
 		startmap = int32(1)
@@ -6006,7 +6006,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// For multiplayer games: exit each level after n minutes.
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts(5043), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(5043), int32(1))
 	if p != 0 {
 		timelimit = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 	}
@@ -6016,7 +6016,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Austin Virtual Gaming: end levels after 20 minutes.
 	//
-	p = M_CheckParm(tls, __ccgo_ts(5050))
+	p = M_CheckParm(__ccgo_ts(5050))
 	if p != 0 {
 		timelimit = int32(20)
 	}
@@ -6027,7 +6027,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Start a game immediately, warping to ExMy (Doom 1) or MAPxy
 	// (Doom 2)
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts(5055), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(5055), int32(1))
 	if p != 0 {
 		if gamemode == int32(commercial) {
 			startmap = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
@@ -6043,7 +6043,7 @@ func D_DoomMain(tls *libc.TLS) {
 	}
 	// Undocumented:
 	// Invoked by setup to test the controls.
-	p = M_CheckParm(tls, __ccgo_ts(3980))
+	p = M_CheckParm(__ccgo_ts(3980))
 	if p > 0 {
 		startepisode = int32(1)
 		startmap = int32(1)
@@ -6059,7 +6059,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Load the game in slot s.
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts(5061), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(5061), int32(1))
 	if p != 0 {
 		startloadgame = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 	} else {
@@ -6087,7 +6087,7 @@ func D_DoomMain(tls *libc.TLS) {
 	if gamemode == int32(commercial) && W_CheckNumForName(tls, __ccgo_ts(5312)) < 0 {
 		storedemo = 1
 	}
-	if M_CheckParmWithArgs(tls, __ccgo_ts(5318), int32(1)) != 0 {
+	if M_CheckParmWithArgs(__ccgo_ts(5318), int32(1)) != 0 {
 		I_AtExit(tls, __ccgo_fp(StatDump), 1)
 		fprintf_ccgo(os.Stdout, 5328)
 	}
@@ -6098,19 +6098,19 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Record a demo named x.lmp.
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts(5361), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(5361), int32(1))
 	if p != 0 {
 		G_RecordDemo(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		autostart = 1
 	}
-	p = M_CheckParmWithArgs(tls, __ccgo_ts(4456), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(4456), int32(1))
 	if p != 0 {
 		singledemo = 1 // quit after one demo
 		G_DeferedPlayDemo(tls, bp+256)
 		D_DoomLoop(tls)
 		return
 	}
-	p = M_CheckParmWithArgs(tls, __ccgo_ts(4466), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(4466), int32(1))
 	if p != 0 {
 		G_TimeDemo(tls, bp+256)
 		D_DoomLoop(tls)
@@ -6256,7 +6256,7 @@ func SaveGameSettings(tls *libc.TLS, settings *net_gamesettings_t) {
 	settings.Ffast_monsters = libc.Int32FromUint32(fastparm)
 	settings.Frespawn_monsters = libc.Int32FromUint32(respawnparm)
 	settings.Ftimelimit = timelimit
-	settings.Flowres_turn = libc.BoolInt32(M_CheckParm(tls, __ccgo_ts(5361)) > 0 && M_CheckParm(tls, __ccgo_ts(5530)) == 0)
+	settings.Flowres_turn = libc.BoolInt32(M_CheckParm(__ccgo_ts(5361)) > 0 && M_CheckParm(__ccgo_ts(5530)) == 0)
 }
 
 func InitConnectData(tls *libc.TLS, connect_data *net_connect_data_t) {
@@ -6267,7 +6267,7 @@ func InitConnectData(tls *libc.TLS, connect_data *net_connect_data_t) {
 	//
 	// Run as the left screen in three screen mode.
 	//
-	if M_CheckParm(tls, __ccgo_ts(5540)) > 0 {
+	if M_CheckParm(__ccgo_ts(5540)) > 0 {
 		viewangleoffset = int32(ANG901)
 		connect_data.Fdrone = 1
 	}
@@ -6276,7 +6276,7 @@ func InitConnectData(tls *libc.TLS, connect_data *net_connect_data_t) {
 	//
 	// Run as the right screen in three screen mode.
 	//
-	if M_CheckParm(tls, __ccgo_ts(5546)) > 0 {
+	if M_CheckParm(__ccgo_ts(5546)) > 0 {
 		viewangleoffset = libc.Int32FromUint32(ANG2701)
 		connect_data.Fdrone = 1
 	}
@@ -6287,7 +6287,7 @@ func InitConnectData(tls *libc.TLS, connect_data *net_connect_data_t) {
 	connect_data.Fgamemode = gamemode
 	connect_data.Fgamemission = gamemission
 	// Are we recording a demo? Possibly set lowres turn mode
-	connect_data.Flowres_turn = libc.BoolInt32(M_CheckParm(tls, __ccgo_ts(5361)) > 0 && M_CheckParm(tls, __ccgo_ts(5530)) == 0)
+	connect_data.Flowres_turn = libc.BoolInt32(M_CheckParm(__ccgo_ts(5361)) > 0 && M_CheckParm(__ccgo_ts(5530)) == 0)
 	// Read checksums of our WAD directory and dehacked information
 	W_Checksum(tls, uintptr(unsafe.Pointer(&connect_data.Fwad_sha1sum)))
 	// Are we playing with the Freedoom IWAD?
@@ -6305,7 +6305,7 @@ func D_ConnectNetGame(tls *libc.TLS) {
 	// player.  This can also be used to play back single player netgame
 	// demos.
 	//
-	if M_CheckParm(tls, __ccgo_ts(5553)) > 0 {
+	if M_CheckParm(__ccgo_ts(5553)) > 0 {
 		netgame = 1
 	}
 }
@@ -6330,7 +6330,7 @@ func D_CheckNetGame(tls *libc.TLS) {
 	// Show players here; the server might have specified a time limit
 	if timelimit > 0 && deathmatch != 0 {
 		// Gross hack to work like Vanilla:
-		if timelimit == int32(20) && M_CheckParm(tls, __ccgo_ts(5050)) != 0 {
+		if timelimit == int32(20) && M_CheckParm(__ccgo_ts(5050)) != 0 {
 			fprintf_ccgo(os.Stdout, 5654)
 		} else {
 			fprintf_ccgo(os.Stdout, 5711, timelimit)
@@ -8720,7 +8720,7 @@ func G_DoCompleted(tls *libc.TLS) {
 	gamestate = int32(GS_INTERMISSION)
 	viewactive = 0
 	automapactive = 0
-	StatCopy(tls, uintptr(unsafe.Pointer(&wminfo)))
+	StatCopy(uintptr(unsafe.Pointer(&wminfo)))
 	WI_Start(tls, uintptr(unsafe.Pointer(&wminfo)))
 }
 
@@ -9168,7 +9168,7 @@ func G_RecordDemo(tls *libc.TLS, name uintptr) {
 	//
 	// Specify the demo buffer size (KiB)
 	//
-	i = M_CheckParmWithArgs(tls, __ccgo_ts(14110), int32(1))
+	i = M_CheckParmWithArgs(__ccgo_ts(14110), int32(1))
 	if i != 0 {
 		maxsize = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))) * int32(1024)
 	}
@@ -9207,7 +9207,7 @@ func G_BeginRecording(tls *libc.TLS) {
 	//
 	// Record a high resolution "Doom 1.91" demo.
 	//
-	longtics = libc.BoolUint32(M_CheckParm(tls, __ccgo_ts(5530)) != 0)
+	longtics = libc.BoolUint32(M_CheckParm(__ccgo_ts(5530)) != 0)
 	// If not recording a longtics demo, record in low res
 	lowres_turn = libc.BoolUint32(!(longtics != 0))
 	demo_p = demobuffer
@@ -9357,7 +9357,7 @@ func G_DoPlayDemo(tls *libc.TLS) {
 		;
 		i++
 	}
-	if playeringame[int32(1)] != 0 || M_CheckParm(tls, __ccgo_ts(5553)) > 0 || M_CheckParm(tls, __ccgo_ts(14449)) > 0 {
+	if playeringame[int32(1)] != 0 || M_CheckParm(__ccgo_ts(5553)) > 0 || M_CheckParm(__ccgo_ts(14449)) > 0 {
 		netgame = 1
 		netdemo = 1
 	}
@@ -9381,7 +9381,7 @@ func G_TimeDemo(tls *libc.TLS, name uintptr) {
 	//
 	// Disable rendering the screen entirely.
 	//
-	nodrawers = libc.Uint32FromInt32(M_CheckParm(tls, __ccgo_ts(14458)))
+	nodrawers = libc.Uint32FromInt32(M_CheckParm(__ccgo_ts(14458)))
 	timingdemo = 1
 	singletics = 1
 	defdemoname = name
@@ -18213,19 +18213,19 @@ func I_InitSound(tls *libc.TLS, use_sfx_prefix boolean) {
 	//
 	// Disable all sound output.
 	//
-	nosound = libc.BoolUint32(M_CheckParm(tls, __ccgo_ts(18674)) > 0)
+	nosound = libc.BoolUint32(M_CheckParm(__ccgo_ts(18674)) > 0)
 	//!
 	// @vanilla
 	//
 	// Disable sound effects.
 	//
-	nosfx = libc.BoolUint32(M_CheckParm(tls, __ccgo_ts(18683)) > 0)
+	nosfx = libc.BoolUint32(M_CheckParm(__ccgo_ts(18683)) > 0)
 	//!
 	// @vanilla
 	//
 	// Disable music.
 	//
-	nomusic = libc.BoolUint32(M_CheckParm(tls, __ccgo_ts(18690)) > 0)
+	nomusic = libc.BoolUint32(M_CheckParm(__ccgo_ts(18690)) > 0)
 	// Initialize the sound and music subsystems.
 	if !(nosound != 0) && !(screensaver_mode != 0) {
 		// This is kind of a hack. If native MIDI is enabled, set up
@@ -18467,7 +18467,7 @@ func I_ZoneBase(tls *libc.TLS, size uintptr) (r uintptr) {
 	//
 	// Specify the heap size, in MiB (default 16).
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts(18874), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(18874), int32(1))
 	if p > 0 {
 		default_ram = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		min_ram = default_ram
@@ -18617,7 +18617,7 @@ func I_Error(tls *libc.TLS, error1 uintptr, args ...any) {
 		}
 		entry = (*atexit_listentry_t)(unsafe.Pointer(entry)).Fnext
 	}
-	exit_gui_popup = libc.BoolUint32(!(M_ParmExists(tls, __ccgo_ts(19327)) != 0))
+	exit_gui_popup = libc.BoolUint32(!(M_ParmExists(__ccgo_ts(19327)) != 0))
 	// Pop up a GUI dialog box to show the error message, if the
 	// game was not run from the console (and the user will
 	// therefore be unable to otherwise see the message).
@@ -18687,7 +18687,7 @@ func I_GetMemoryValue(tls *libc.TLS, offset uint32, value uintptr, size int32) (
 		// emulation.  Supported versions are: dos622, dos71, dosbox.
 		// The default is to emulate DOS 7.1 (Windows 98).
 		//
-		p = M_CheckParmWithArgs(tls, __ccgo_ts(19334), int32(1))
+		p = M_CheckParmWithArgs(__ccgo_ts(19334), int32(1))
 		if p > 0 {
 			if !(xstrcasecmp(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19342)) != 0) {
 				dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dos622))
@@ -18781,7 +18781,7 @@ func I_Sleep(ms uint32) {
 // or 0 if not present
 //
 
-func M_CheckParmWithArgs(tls *libc.TLS, check uintptr, num_args int32) (r int32) {
+func M_CheckParmWithArgs(check uintptr, num_args int32) (r int32) {
 	var i int32
 	i = int32(1)
 	for {
@@ -18806,12 +18806,12 @@ func M_CheckParmWithArgs(tls *libc.TLS, check uintptr, num_args int32) (r int32)
 // line arguments, false if not.
 //
 
-func M_ParmExists(tls *libc.TLS, check uintptr) (r boolean) {
-	return libc.BoolUint32(M_CheckParm(tls, check) != 0)
+func M_ParmExists(check uintptr) (r boolean) {
+	return libc.BoolUint32(M_CheckParm(check) != 0)
 }
 
-func M_CheckParm(tls *libc.TLS, check uintptr) (r int32) {
-	return M_CheckParmWithArgs(tls, check, 0)
+func M_CheckParm(check uintptr) (r int32) {
+	return M_CheckParmWithArgs(check, 0)
 }
 
 func LoadResponseFile(tls *libc.TLS, argv_index int32) {
@@ -19736,7 +19736,7 @@ func M_LoadDefaults(tls *libc.TLS) {
 	// Load main configuration from the specified file, instead of the
 	// default.
 	//
-	i = M_CheckParmWithArgs(tls, __ccgo_ts(21869), int32(1))
+	i = M_CheckParmWithArgs(__ccgo_ts(21869), int32(1))
 	if i != 0 {
 		doom_defaults.Ffilename = *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))
 		fprintf_ccgo(os.Stdout, 21877, libc.GoString(doom_defaults.Ffilename))
@@ -19750,7 +19750,7 @@ func M_LoadDefaults(tls *libc.TLS) {
 	// Load additional configuration from the specified file, instead of
 	// the default.
 	//
-	i = M_CheckParmWithArgs(tls, __ccgo_ts(21917), int32(1))
+	i = M_CheckParmWithArgs(__ccgo_ts(21917), int32(1))
 	if i != 0 {
 		extra_defaults.Ffilename = *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))
 		fprintf_ccgo(os.Stdout, 21930, libc.GoString(extra_defaults.Ffilename))
@@ -21636,7 +21636,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 																usegamma = 0
 															}
 															players[consoleplayer].Fmessage = uintptr(unsafe.Pointer(&gammamsg)) + uintptr(usegamma)*26
-															I_SetPalette(tls, W_CacheLumpName(tls, __ccgo_ts(1490), int32(PU_CACHE)))
+															I_SetPalette(W_CacheLumpName(tls, __ccgo_ts(1490), int32(PU_CACHE)))
 															return 1
 														}
 													}
@@ -27389,7 +27389,7 @@ func SpechitOverrun(tls *libc.TLS, ld uintptr) {
 		//
 		// Use the specified magic value when emulating spechit overruns.
 		//
-		p = M_CheckParmWithArgs(tls, __ccgo_ts(24727), int32(1))
+		p = M_CheckParmWithArgs(__ccgo_ts(24727), int32(1))
 		if p > 0 {
 			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uintptr(unsafe.Pointer(&baseaddr)))
 		} else {
@@ -32015,7 +32015,7 @@ func P_GroupLines(tls *libc.TLS) {
 // Pad the REJECT lump with extra data when the lump is too small,
 // to simulate a REJECT buffer overflow in Vanilla Doom.
 
-func PadRejectArray(tls *libc.TLS, array uintptr, len1 uint32) {
+func PadRejectArray(array uintptr, len1 uint32) {
 	var byte_num, i uint32
 	var padvalue uint8
 	var dest uintptr
@@ -32046,7 +32046,7 @@ func PadRejectArray(tls *libc.TLS, array uintptr, len1 uint32) {
 	if uint64(len1) > uint64(16) {
 		fprintf_ccgo(os.Stderr, 25149, len1, 16)
 		// Pad remaining space with 0 (or 0xff, if specified on command line).
-		if M_CheckParm(tls, __ccgo_ts(25206)) != 0 {
+		if M_CheckParm(__ccgo_ts(25206)) != 0 {
 			padvalue = 0xff
 		} else {
 			padvalue = 0x00
@@ -32068,7 +32068,7 @@ func P_LoadReject(tls *libc.TLS, lumpnum int32) {
 	} else {
 		rejectmatrix = Z_Malloc(tls, minlength, int32(PU_LEVEL), uintptr(unsafe.Pointer(&rejectmatrix)))
 		W_ReadLump(tls, libc.Uint32FromInt32(lumpnum), rejectmatrix)
-		PadRejectArray(tls, rejectmatrix+uintptr(lumplen), libc.Uint32FromInt32(minlength-lumplen))
+		PadRejectArray(rejectmatrix+uintptr(lumplen), libc.Uint32FromInt32(minlength-lumplen))
 	}
 }
 
@@ -33509,7 +33509,7 @@ func DonutOverrun(tls *libc.TLS, s3_floorheight uintptr, s3_floorpic uintptr, li
 		// In Vanilla Doom this can differ depending on the operating
 		// system.  The default (if this option is not specified) is to
 		// emulate the behavior when running under Windows 98.
-		p = M_CheckParmWithArgs(tls, __ccgo_ts(25431), int32(2))
+		p = M_CheckParmWithArgs(__ccgo_ts(25431), int32(2))
 		if p > 0 {
 			// Dump of needed memory: (fixed_t)0000:0000 and (short)0000:0008
 			//
@@ -40772,14 +40772,14 @@ const MAX_CAPTURES = 32
 var captured_stats [32]wbstartstruct_t
 var num_captured_stats = int32(0)
 
-func StatCopy(tls *libc.TLS, stats uintptr) {
-	if M_ParmExists(tls, __ccgo_ts(5318)) != 0 && num_captured_stats < int32(MAX_CAPTURES) {
+func StatCopy(stats uintptr) {
+	if M_ParmExists(__ccgo_ts(5318)) != 0 && num_captured_stats < int32(MAX_CAPTURES) {
 		xmemcpy(uintptr(unsafe.Pointer(&captured_stats))+uintptr(num_captured_stats)*200, stats, uint64(200))
 		num_captured_stats++
 	}
 }
 
-func StatDump(tls *libc.TLS) {
+func StatDump() {
 }
 
 type st_number_t = struct {
@@ -41854,7 +41854,7 @@ func ST_doPaletteStuff(tls *libc.TLS) {
 	if palette != st_palette {
 		st_palette = palette
 		pal = W_CacheLumpNum(tls, lu_palette, int32(PU_CACHE)) + uintptr(palette*int32(768))
-		I_SetPalette(tls, pal)
+		I_SetPalette(pal)
 	}
 }
 
@@ -42111,7 +42111,7 @@ func ST_Stop(tls *libc.TLS) {
 	if st_stopped != 0 {
 		return
 	}
-	I_SetPalette(tls, W_CacheLumpNum(tls, lu_palette, int32(PU_CACHE)))
+	I_SetPalette(W_CacheLumpNum(tls, lu_palette, int32(PU_CACHE)))
 	st_stopped = 1
 }
 
@@ -43100,12 +43100,12 @@ func V_DrawMouseSpeedBox(tls *libc.TLS, speed int32) {
 	var bgcolor, black, bordercolor, box_x, box_y, linelen, original_speed, red, redline_x, white, yellow int32
 	// Get palette indices for colors for widget. These depend on the
 	// palette of the game being played.
-	bgcolor = I_GetPaletteIndex(tls, int32(0x77), int32(0x77), int32(0x77))
-	bordercolor = I_GetPaletteIndex(tls, int32(0x55), int32(0x55), int32(0x55))
-	red = I_GetPaletteIndex(tls, int32(0xff), 0x00, 0x00)
-	black = I_GetPaletteIndex(tls, 0x00, 0x00, 0x00)
-	yellow = I_GetPaletteIndex(tls, int32(0xff), int32(0xff), 0x00)
-	white = I_GetPaletteIndex(tls, int32(0xff), int32(0xff), int32(0xff))
+	bgcolor = I_GetPaletteIndex(int32(0x77), int32(0x77), int32(0x77))
+	bordercolor = I_GetPaletteIndex(int32(0x55), int32(0x55), int32(0x55))
+	red = I_GetPaletteIndex(int32(0xff), 0x00, 0x00)
+	black = I_GetPaletteIndex(0x00, 0x00, 0x00)
+	yellow = I_GetPaletteIndex(int32(0xff), int32(0xff), 0x00)
+	white = I_GetPaletteIndex(int32(0xff), int32(0xff), int32(0xff))
 	// If the mouse is turned off or acceleration is turned off, don't
 	// draw the box at all.
 	if !(usemouse != 0) || math.Abs(float64(mouse_acceleration-1)) < float64(0.01) {
@@ -45126,7 +45126,7 @@ func W_OpenFile(tls *libc.TLS, path uintptr) (r uintptr) {
 	// Use the OS's virtual memory subsystem to map WAD files
 	// directly into memory.
 	//
-	if !(M_CheckParm(tls, __ccgo_ts(28593)) != 0) {
+	if !(M_CheckParm(__ccgo_ts(28593)) != 0) {
 		return (*(*func(*libc.TLS, uintptr) uintptr)(unsafe.Pointer(&struct{ uintptr }{stdc_wad_file.FOpenFile})))(tls, path)
 	}
 	// Try all classes in order until we find one that works
@@ -45171,7 +45171,7 @@ func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
 	//
 	// Load the specified PWAD files.
 	//
-	p = M_CheckParmWithArgs(tls, __ccgo_ts(28599), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(28599), int32(1))
 	if p != 0 {
 		// the parms after p are wadfile/lump names,
 		// until end of parms or another - preceded parm
@@ -45442,12 +45442,12 @@ func W_ReadLump(tls *libc.TLS, lump uint32, dest uintptr) {
 		I_Error(tls, __ccgo_ts(28766), lump)
 	}
 	l = lumpinfo + uintptr(lump)*40
-	I_BeginRead(tls)
+	I_BeginRead()
 	c = libc.Int32FromUint64(W_Read(tls, (*lumpinfo_t)(unsafe.Pointer(l)).Fwad_file, libc.Uint32FromInt32((*lumpinfo_t)(unsafe.Pointer(l)).Fposition), dest, libc.Uint64FromInt32((*lumpinfo_t)(unsafe.Pointer(l)).Fsize)))
 	if c < (*lumpinfo_t)(unsafe.Pointer(l)).Fsize {
 		I_Error(tls, __ccgo_ts(28793), c, (*lumpinfo_t)(unsafe.Pointer(l)).Fsize, lump)
 	}
-	I_EndRead(tls)
+	I_EndRead()
 }
 
 //
@@ -46245,7 +46245,7 @@ func I_ReadScreen(tls *libc.TLS, scr uintptr) {
 // I_SetPalette
 //
 
-func I_SetPalette(tls *libc.TLS, palette uintptr) {
+func I_SetPalette(palette uintptr) {
 	for i := range 256 {
 		colors[i].R = *(*uint8)(unsafe.Pointer(palette))
 		colors[i].G = *(*uint8)(unsafe.Pointer(palette + 1))
@@ -46256,7 +46256,7 @@ func I_SetPalette(tls *libc.TLS, palette uintptr) {
 
 // Given an RGB value, find the closest matching palette index.
 
-func I_GetPaletteIndex(tls *libc.TLS, r int32, g int32, b int32) (r1 int32) {
+func I_GetPaletteIndex(r int32, g int32, b int32) (r1 int32) {
 	var best, best_diff, diff int32
 	fprintf_ccgo(os.Stdout, 30076)
 	best = 0
@@ -46277,32 +46277,32 @@ func I_GetPaletteIndex(tls *libc.TLS, r int32, g int32, b int32) (r1 int32) {
 	return best
 }
 
-func I_BeginRead(tls *libc.TLS) {
+func I_BeginRead() {
 }
 
-func I_EndRead(tls *libc.TLS) {
+func I_EndRead() {
 }
 
 func I_SetWindowTitle(title uintptr) {
 	dg_frontend.SetTitle(libc.GoString(title))
 }
 
-func I_GraphicsCheckCommandLine(tls *libc.TLS) {
+func I_GraphicsCheckCommandLine() {
 }
 
-func I_SetGrabMouseCallback(tls *libc.TLS, func1 grabmouse_callback_t) {
+func I_SetGrabMouseCallback(func1 grabmouse_callback_t) {
 }
 
-func I_EnableLoadingDisk(tls *libc.TLS) {
+func I_EnableLoadingDisk() {
 }
 
-func I_BindVideoVariables(tls *libc.TLS) {
+func I_BindVideoVariables() {
 }
 
-func I_DisplayFPSDots(tls *libc.TLS, dots_on boolean) {
+func I_DisplayFPSDots(dots_on boolean) {
 }
 
-func I_CheckIsScreensaver(tls *libc.TLS) {
+func I_CheckIsScreensaver() {
 }
 
 func doomgeneric_Create(tls *libc.TLS, argc int32, argv uintptr) {
