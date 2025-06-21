@@ -2574,8 +2574,8 @@ func init() {
 	}
 }
 
-var cheating = int32(0)
-var grid = int32(0)
+var cheating int32 = 0
+var grid int32 = 0
 
 var finit_width = int32(SCREENWIDTH)
 var finit_height = int32(SCREENHEIGHT) - 32
@@ -2656,9 +2656,9 @@ var plr *player_t // the player represented by an arrow
 
 var marknums [10]uintptr    // numbers used for marking by the automap
 var markpoints [10]mpoint_t // where the points are
-var markpointnum = int32(0) // next point to be assigned
+var markpointnum int32 = 0  // next point to be assigned
 
-var followplayer = int32(1) // specifies whether to follow the player around
+var followplayer int32 = 1 // specifies whether to follow the player around
 
 func init() {
 	cheat_amap = cheatseq_t{
@@ -2668,7 +2668,7 @@ func init() {
 	}
 }
 
-var stopped = 1
+var stopped int32 = 1
 
 // C documentation
 //
@@ -2676,12 +2676,12 @@ var stopped = 1
 //	//
 //	//
 func AM_activateNewScale() {
-	m_x += m_w / int32(2)
-	m_y += m_h / int32(2)
+	m_x += m_w / 2
+	m_y += m_h / 2
 	m_w = FixedMul(f_w<<16, scale_ftom)
 	m_h = FixedMul(f_h<<16, scale_ftom)
-	m_x -= m_w / int32(2)
-	m_y -= m_h / int32(2)
+	m_x -= m_w / 2
+	m_y -= m_h / 2
 	m_x2 = m_x + m_w
 	m_y2 = m_y + m_h
 }
@@ -2728,7 +2728,7 @@ func AM_restoreScaleAndLoc() {
 func AM_addMark() {
 	markpoints[markpointnum].Fx = m_x + m_w/int32(2)
 	markpoints[markpointnum].Fy = m_y + m_h/int32(2)
-	markpointnum = (markpointnum + int32(1)) % int32(AM_NUMMARKPOINTS)
+	markpointnum = (markpointnum + 1) % AM_NUMMARKPOINTS
 }
 
 // C documentation
@@ -2870,7 +2870,7 @@ func AM_loadPics(tls *libc.TLS) {
 	var i int32
 	i = 0
 	for {
-		if !(i < int32(10)) {
+		if !(i < 10) {
 			break
 		}
 		snprintf_ccgo(bp, 9, 0, i)
@@ -2887,7 +2887,7 @@ func AM_unloadPics(tls *libc.TLS) {
 	var i int32
 	i = 0
 	for {
-		if !(i < int32(10)) {
+		if !(i < 10) {
 			break
 		}
 		snprintf_ccgo(bp, 9, 0, i)
@@ -3107,7 +3107,7 @@ func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			}
 			if !(deathmatch != 0) && cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_amap)), int8(ev.Fdata2)) != 0 {
 				rc = 0
-				cheating = (cheating + int32(1)) % int32(3)
+				cheating = (cheating + 1) % 3
 			}
 		} else {
 			if ev.Ftype1 == ev_keyup {
@@ -3330,13 +3330,13 @@ func AM_clipMline(ml *mline_t, fl *fline_t) (r boolean) {
 				dy = fl.Fa.Fy - fl.Fb.Fy
 				dx = fl.Fb.Fx - fl.Fa.Fx
 				tmp.Fx = fl.Fa.Fx + dx*(fl.Fa.Fy-f_h)/dy
-				tmp.Fy = f_h - int32(1)
+				tmp.Fy = f_h - 1
 			} else {
 				if outside&2 != 0 {
 					dy = fl.Fb.Fy - fl.Fa.Fy
 					dx = fl.Fb.Fx - fl.Fa.Fx
 					tmp.Fy = fl.Fa.Fy + dy*(f_w-1-fl.Fa.Fx)/dx
-					tmp.Fx = f_w - int32(1)
+					tmp.Fx = f_w - 1
 				} else {
 					if outside&1 != 0 {
 						dy = fl.Fb.Fy - fl.Fa.Fy
@@ -3413,11 +3413,11 @@ func AM_drawFline(fl *fline_t, color int32) {
 	} else {
 		v2 = dx
 	}
-	ax = int32(2) * v2
+	ax = 2 * v2
 	if dx < 0 {
 		v3 = -1
 	} else {
-		v3 = int32(1)
+		v3 = 1
 	}
 	sx = v3
 	dy = fl.Fb.Fy - fl.Fa.Fy
@@ -3426,18 +3426,18 @@ func AM_drawFline(fl *fline_t, color int32) {
 	} else {
 		v4 = dy
 	}
-	ay = int32(2) * v4
+	ay = 2 * v4
 	if dy < 0 {
 		v5 = -1
 	} else {
-		v5 = int32(1)
+		v5 = 1
 	}
 	sy = v5
 	x = fl.Fa.Fx
 	y = fl.Fa.Fy
 	if ax > ay {
 		d = ay - ax/int32(2)
-		for int32(1) != 0 {
+		for 1 != 0 {
 			*(*uint8)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = libc.Uint8FromInt32(color)
 			if x == fl.Fb.Fx {
 				return
@@ -3451,7 +3451,7 @@ func AM_drawFline(fl *fline_t, color int32) {
 		}
 	} else {
 		d = ax - ay/int32(2)
-		for int32(1) != 0 {
+		for 1 != 0 {
 			*(*uint8)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = libc.Uint8FromInt32(color)
 			if y == fl.Fb.Fy {
 				return
@@ -3559,7 +3559,7 @@ func AM_drawWalls() {
 			if !((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fbacksector != 0) {
 				AM_drawMline(&l, 256-5*16+lightlev)
 			} else {
-				if int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fspecial) == int32(39) {
+				if int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fspecial) == 39 {
 					// teleporters
 					AM_drawMline(&l, 256-5*16+REDRANGE/2)
 				} else {
@@ -3694,8 +3694,8 @@ func AM_drawMarks(tls *libc.TLS) {
 		if markpoints[i].Fx != -1 {
 			//      w = SHORT(marknums[i]->width);
 			//      h = SHORT(marknums[i]->height);
-			w = int32(5) // because something's wrong with the wad, i guess
-			h = int32(6) // because something's wrong with the wad, i guess
+			w = 5 // because something's wrong with the wad, i guess
+			h = 6 // because something's wrong with the wad, i guess
 			fx = f_x + FixedMul(markpoints[i].Fx-m_x, scale_mtof)>>16
 			fy = f_y + (f_h - FixedMul(markpoints[i].Fy-m_y, scale_mtof)>>16)
 			if fx >= f_x && fx <= f_w-w && fy >= f_y && fy <= f_h-h {
@@ -3719,7 +3719,7 @@ func AM_Drawer(tls *libc.TLS) {
 	}
 	AM_drawWalls()
 	AM_drawPlayers()
-	if cheating == int32(2) {
+	if cheating == 2 {
 		AM_drawThings(7*16, int32(GREENRANGE))
 	}
 	AM_drawCrosshair(6 * 16)
@@ -3766,7 +3766,7 @@ var eventtail int32
 //	//
 func D_PostEvent(ev *event_t) {
 	events[eventhead] = *ev
-	eventhead = (eventhead + int32(1)) % int32(MAXEVENTS)
+	eventhead = (eventhead + 1) % int32(MAXEVENTS)
 }
 
 // Read an event from the queue.
@@ -3954,9 +3954,9 @@ var iwads = [14]iwad_t{
 //
 // "128 IWAD search directories should be enough for anybody".
 
-var iwad_dirs_built = 0
+var iwad_dirs_built int32 = 0
 var iwad_dirs [128]uintptr
-var num_iwad_dirs = int32(0)
+var num_iwad_dirs int32 = 0
 
 func AddIWADDir(dir uintptr) {
 	if num_iwad_dirs < int32(MAX_IWAD_DIRS) {
@@ -4018,7 +4018,7 @@ func SearchDirectoryForIWAD(tls *libc.TLS, dir uintptr, mask int32, mission uint
 		if !(i < libc.Uint64FromInt64(336)/libc.Uint64FromInt64(24)) {
 			break
 		}
-		if int32(1)<<iwads[i].Fmission&mask == 0 {
+		if 1<<iwads[i].Fmission&mask == 0 {
 			goto _1
 		}
 		filename = CheckDirectoryHasIWAD(tls, dir, iwads[i].Fname)
@@ -4053,7 +4053,7 @@ func IdentifyIWADByName(tls *libc.TLS, name uintptr, mask int32) (r GameMission_
 		}
 		// Check if the filename is this IWAD name.
 		// Only use supported missions:
-		if int32(1)<<iwads[i].Fmission&mask == 0 {
+		if 1<<iwads[i].Fmission&mask == 0 {
 			goto _1
 		}
 		// Check if it ends in this IWAD name.
@@ -4153,7 +4153,7 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
 	//
 	// @arg <file>
 	//
-	iwadparm = M_CheckParmWithArgs(__ccgo_ts(1275), int32(1))
+	iwadparm = M_CheckParmWithArgs(__ccgo_ts(1275), 1)
 	if iwadparm != 0 {
 		// Search through IWAD dirs for an IWAD with the given name.
 		iwadfile = *(*uintptr)(unsafe.Pointer(myargv + uintptr(iwadparm+int32(1))*8))
@@ -4261,11 +4261,11 @@ var localplayer int32
 
 // Used for original sync code.
 
-var skiptics = int32(0)
+var skiptics int32 = 0
 
 // Use new client syncronisation code
 
-var new_sync = uint32(1)
+var new_sync uint32 = 1
 
 // Callback functions for loop code.
 
@@ -4293,7 +4293,7 @@ func GetAdjustedTime() (r int32) {
 		// using the new sync mode.
 		time_ms += offsetms / (1 << FRACBITS)
 	}
-	return time_ms * int32(TICRATE) / int32(1000)
+	return time_ms * int32(TICRATE) / 1000
 }
 
 func BuildNewTic(tls *libc.TLS) (r boolean) {
@@ -4311,15 +4311,15 @@ func BuildNewTic(tls *libc.TLS) (r boolean) {
 	if new_sync != 0 {
 		// If playing single player, do not allow tics to buffer
 		// up very far
-		if !(net_client_connected != 0) && maketic-gameticdiv > int32(2) {
+		if !(net_client_connected != 0) && maketic-gameticdiv > 2 {
 			return 0
 		}
 		// Never go more than ~200ms ahead
-		if maketic-gameticdiv > int32(8) {
+		if maketic-gameticdiv > 8 {
 			return 0
 		}
 	} else {
-		if maketic-gameticdiv >= int32(5) {
+		if maketic-gameticdiv >= 5 {
 			return 0
 		}
 	}
@@ -4378,11 +4378,11 @@ func D_StartGameLoop() {
 
 func D_StartNetGame(settings *net_gamesettings_t, callback netgame_startup_callback_t) {
 	settings.Fconsoleplayer = 0
-	settings.Fnum_players = int32(1)
+	settings.Fnum_players = 1
 	settings.Fplayer_classes[0] = player_class
 	settings.Fnew_sync = 0
-	settings.Fextratics = int32(1)
-	settings.Fticdup = int32(1)
+	settings.Fextratics = 1
+	settings.Fticdup = 1
 	ticdup = settings.Fticdup
 	new_sync = libc.Uint32FromInt32(settings.Fnew_sync)
 }
@@ -4449,7 +4449,7 @@ func OldNetSync() {
 		frameskip[frameon&int32(3)] = libc.BoolInt32(oldnettics > recvtic)
 		oldnettics = maketic
 		if frameskip[0] != 0 && frameskip[int32(1)] != 0 && frameskip[int32(2)] != 0 && frameskip[int32(3)] != 0 {
-			skiptics = int32(1)
+			skiptics = 1
 			// printf ("+");
 		}
 	}
@@ -4553,7 +4553,7 @@ func TryRunTics(tls *libc.TLS) {
 	} else {
 		// decide how many tics to run
 		if realtics < availabletics-1 {
-			counts = realtics + int32(1)
+			counts = realtics + 1
 		} else {
 			if realtics < availabletics {
 				counts = realtics
@@ -4561,15 +4561,15 @@ func TryRunTics(tls *libc.TLS) {
 				counts = availabletics
 			}
 		}
-		if counts < int32(1) {
-			counts = int32(1)
+		if counts < 1 {
+			counts = 1
 		}
 		if net_client_connected != 0 {
 			OldNetSync()
 		}
 	}
-	if counts < int32(1) {
-		counts = int32(1)
+	if counts < 1 {
+		counts = 1
 	}
 	// wait for new tics if needed
 	for !(PlayersInGame() != 0) || lowtic < gametic/ticdup+counts {
@@ -4829,7 +4829,7 @@ const StatCount = 0
 const ShowNextLoc = 1
 
 func init() {
-	show_endoom = int32(1)
+	show_endoom = 1
 }
 
 // C documentation
@@ -4871,7 +4871,7 @@ func D_Display(tls *libc.TLS) {
 	if setsizeneeded != 0 {
 		R_ExecuteSetViewSize(tls)
 		oldgamestate1 = -1 // force background redraw
-		borderdrawcount = int32(3)
+		borderdrawcount = 3
 	}
 	// save the current screen if about to wipe
 	if gamestate != wipegamestate {
@@ -4892,14 +4892,14 @@ func D_Display(tls *libc.TLS) {
 		if automapactive != 0 {
 			AM_Drawer(tls)
 		}
-		if wipe != 0 || viewheight != int32(200) && fullscreen != 0 {
+		if wipe != 0 || viewheight != 200 && fullscreen != 0 {
 			redrawsbar = 1
 		}
 		if inhelpscreensstate != 0 && !(inhelpscreens != 0) {
 			redrawsbar = 1
 		} // just put away the help screen
-		ST_Drawer(tls, libc.BoolUint32(viewheight == int32(200)), redrawsbar)
-		fullscreen = libc.BoolUint32(viewheight == int32(200))
+		ST_Drawer(tls, libc.BoolUint32(viewheight == 200), redrawsbar)
+		fullscreen = libc.BoolUint32(viewheight == 200)
 	case int32(GS_INTERMISSION):
 		WI_Drawer(tls)
 	case int32(GS_FINALE):
@@ -4927,9 +4927,9 @@ func D_Display(tls *libc.TLS) {
 		R_FillBackScreen(tls) // draw the pattern into the back screen
 	}
 	// see if the border needs to be updated to the screen
-	if gamestate == int32(GS_LEVEL) && !(automapactive != 0) && scaledviewwidth != int32(320) {
+	if gamestate == int32(GS_LEVEL) && !(automapactive != 0) && scaledviewwidth != 320 {
 		if menuactive != 0 || menuactivestate != 0 || !(viewactivestate != 0) {
-			borderdrawcount = int32(3)
+			borderdrawcount = 3
 		}
 		if borderdrawcount != 0 {
 			R_DrawViewBorder(tls) // erase old menu stuff
@@ -4949,9 +4949,9 @@ func D_Display(tls *libc.TLS) {
 	// draw pause pic
 	if paused != 0 {
 		if automapactive != 0 {
-			y = int32(4)
+			y = 4
 		} else {
-			y = viewwindowy + int32(4)
+			y = viewwindowy + 4
 		}
 		V_DrawPatchDirect(tls, viewwindowx+(scaledviewwidth-int32(68))/int32(2), y, W_CacheLumpName(tls, __ccgo_ts(1498), int32(PU_CACHE)))
 	}
@@ -4965,7 +4965,7 @@ func D_Display(tls *libc.TLS) {
 	}
 	// wipe update
 	wipe_EndScreen(tls, 0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
-	wipestart = I_GetTime(tls) - int32(1)
+	wipestart = I_GetTime(tls) - 1
 	for cond := true; cond; cond = !(done != 0) {
 		for cond := true; cond; cond = tics <= 0 {
 			nowtime = I_GetTime(tls)
@@ -5025,7 +5025,7 @@ func D_BindVariables(tls *libc.TLS) {
 	// Multiplayer chat macros
 	i = 0
 	for {
-		if !(i < int32(10)) {
+		if !(i < 10) {
 			break
 		}
 		M_snprintf(tls, bp, uint64(12), __ccgo_ts(1654), libc.VaList(bp+24, i))
@@ -5147,16 +5147,16 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 	// However! There is an alternate version of Final Doom that
 	// includes a fixed executable.
 	if gameversion == int32(exe_ultimate) || gameversion == int32(exe_final) {
-		demosequence = (demosequence + int32(1)) % int32(7)
+		demosequence = (demosequence + 1) % 7
 	} else {
-		demosequence = (demosequence + int32(1)) % int32(6)
+		demosequence = (demosequence + 1) % 6
 	}
 	switch demosequence {
 	case 0:
 		if gamemode == int32(commercial) {
 			pagetic = TICRATE * 11
 		} else {
-			pagetic = int32(170)
+			pagetic = 170
 		}
 		gamestate = int32(GS_DEMOSCREEN)
 		pagename = __ccgo_ts(1896)
@@ -5165,34 +5165,34 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 		} else {
 			S_StartMusic(tls, int32(mus_intro))
 		}
-	case int32(1):
+	case 1:
 		G_DeferedPlayDemo(tls, __ccgo_ts(1905))
-	case int32(2):
-		pagetic = int32(200)
+	case 2:
+		pagetic = 200
 		gamestate = int32(GS_DEMOSCREEN)
 		pagename = __ccgo_ts(1911)
-	case int32(3):
+	case 3:
 		G_DeferedPlayDemo(tls, __ccgo_ts(1918))
-	case int32(4):
+	case 4:
 		gamestate = int32(GS_DEMOSCREEN)
 		if gamemode == int32(commercial) {
 			pagetic = TICRATE * 11
 			pagename = __ccgo_ts(1896)
 			S_StartMusic(tls, int32(mus_dm2ttl))
 		} else {
-			pagetic = int32(200)
+			pagetic = 200
 			if gamemode == int32(retail) {
 				pagename = __ccgo_ts(1911)
 			} else {
 				pagename = __ccgo_ts(1924)
 			}
 		}
-	case int32(5):
+	case 5:
 		G_DeferedPlayDemo(tls, __ccgo_ts(1930))
 		break
 		// THE DEFINITIVE DOOM Special Edition demo
 		fallthrough
-	case int32(6):
+	case 6:
 		G_DeferedPlayDemo(tls, __ccgo_ts(1936))
 		break
 	}
@@ -5411,7 +5411,7 @@ func D_IdentifyVersion(tls *libc.TLS) {
 		// detecting it based on the filename. Valid values are: "doom2",
 		// "tnt" and "plutonia".
 		//
-		p = M_CheckParmWithArgs(__ccgo_ts(2664), int32(1))
+		p = M_CheckParmWithArgs(__ccgo_ts(2664), 1)
 		if p > 0 {
 			SetMissionForPackName(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		}
@@ -5615,7 +5615,7 @@ func InitGameVersion(tls *libc.TLS) {
 	// Emulate a specific version of Doom.  Valid values are "1.9",
 	// "ultimate", "final", "final2", "hacx" and "chex".
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(3857), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(3857), 1)
 	if p != 0 {
 		i = 0
 		for {
@@ -5770,7 +5770,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Start a deathmatch game.
 	//
 	if M_CheckParm(__ccgo_ts(4100)) != 0 {
-		deathmatch = int32(1)
+		deathmatch = 1
 	}
 	//!
 	// @category net
@@ -5780,7 +5780,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// all items respawn after 30 seconds.
 	//
 	if M_CheckParm(__ccgo_ts(4112)) != 0 {
-		deathmatch = int32(2)
+		deathmatch = 2
 	}
 	if devparm != 0 {
 		fprintf_ccgo(os.Stdout, 4122)
@@ -5798,21 +5798,21 @@ func D_DoomMain(tls *libc.TLS) {
 	v1 = M_CheckParm(__ccgo_ts(4144))
 	p = v1
 	if v1 != 0 {
-		scale = int32(200)
+		scale = 200
 		if p < myargc-1 {
 			scale = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		}
-		if scale < int32(10) {
-			scale = int32(10)
+		if scale < 10 {
+			scale = 10
 		}
-		if scale > int32(400) {
-			scale = int32(400)
+		if scale > 400 {
+			scale = 400
 		}
 		fprintf_ccgo(os.Stdout, 4151, scale)
-		forwardmove[0] = forwardmove[0] * scale / int32(100)
-		forwardmove[int32(1)] = forwardmove[int32(1)] * scale / int32(100)
-		sidemove[0] = sidemove[0] * scale / int32(100)
-		sidemove[int32(1)] = sidemove[int32(1)] * scale / int32(100)
+		forwardmove[0] = forwardmove[0] * scale / 100
+		forwardmove[int32(1)] = forwardmove[int32(1)] * scale / 100
+		sidemove[0] = sidemove[0] * scale / 100
+		sidemove[int32(1)] = sidemove[int32(1)] * scale / 100
 	}
 	// init subsystems
 	fprintf_ccgo(os.Stdout, 4170)
@@ -5874,7 +5874,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Play back the demo named demo.lmp.
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(4456), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(4456), 1)
 	if !(p != 0) {
 		//!
 		// @arg <demo>
@@ -5884,7 +5884,7 @@ func D_DoomMain(tls *libc.TLS) {
 		// Play back the demo named demo.lmp, determining the framerate
 		// of the screen.
 		//
-		p = M_CheckParmWithArgs(__ccgo_ts(4466), int32(1))
+		p = M_CheckParmWithArgs(__ccgo_ts(4466), 1)
 	}
 	if p != 0 {
 		// With Vanilla you have to specify the file without extension,
@@ -5950,7 +5950,7 @@ func D_DoomMain(tls *libc.TLS) {
 		if gamemode == int32(registered) {
 			i = 0
 			for {
-				if !(i < int32(23)) {
+				if !(i < 23) {
 					break
 				}
 				if W_CheckNumForName(tls, bp+265+uintptr(i)*8) < 0 {
@@ -5984,8 +5984,8 @@ func D_DoomMain(tls *libc.TLS) {
 	D_ConnectNetGame(tls)
 	// get skill / episode / map from parms
 	startskill = int32(sk_medium)
-	startepisode = int32(1)
-	startmap = int32(1)
+	startepisode = 1
+	startmap = 1
 	autostart = 0
 	//!
 	// @arg <skill>
@@ -5994,7 +5994,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Set the game skill, 1-5 (1: easiest, 5: hardest).  A skill of
 	// 0 disables all monsters.
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(5027), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(5027), 1)
 	if p != 0 {
 		startskill = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('1')
 		autostart = 1
@@ -6005,10 +6005,10 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Start playing on episode n (1-4)
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(5034), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(5034), 1)
 	if p != 0 {
 		startepisode = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('0')
-		startmap = int32(1)
+		startmap = 1
 		autostart = 1
 	}
 	timelimit = 0
@@ -6019,7 +6019,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// For multiplayer games: exit each level after n minutes.
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(5043), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(5043), 1)
 	if p != 0 {
 		timelimit = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 	}
@@ -6031,7 +6031,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	p = M_CheckParm(__ccgo_ts(5050))
 	if p != 0 {
-		timelimit = int32(20)
+		timelimit = 20
 	}
 	//!
 	// @arg [<x> <y> | <xy>]
@@ -6040,7 +6040,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Start a game immediately, warping to ExMy (Doom 1) or MAPxy
 	// (Doom 2)
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(5055), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(5055), 1)
 	if p != 0 {
 		if gamemode == int32(commercial) {
 			startmap = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
@@ -6049,7 +6049,7 @@ func D_DoomMain(tls *libc.TLS) {
 			if p+int32(2) < myargc {
 				startmap = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(2))*8))))) - int32('0')
 			} else {
-				startmap = int32(1)
+				startmap = 1
 			}
 		}
 		autostart = 1
@@ -6058,8 +6058,8 @@ func D_DoomMain(tls *libc.TLS) {
 	// Invoked by setup to test the controls.
 	p = M_CheckParm(__ccgo_ts(3980))
 	if p > 0 {
-		startepisode = int32(1)
-		startmap = int32(1)
+		startepisode = 1
+		startmap = 1
 		autostart = 1
 		testcontrols = 1
 	}
@@ -6072,7 +6072,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Load the game in slot s.
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(5061), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(5061), 1)
 	if p != 0 {
 		startloadgame = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 	} else {
@@ -6100,7 +6100,7 @@ func D_DoomMain(tls *libc.TLS) {
 	if gamemode == int32(commercial) && W_CheckNumForName(tls, __ccgo_ts(5312)) < 0 {
 		storedemo = 1
 	}
-	if M_CheckParmWithArgs(__ccgo_ts(5318), int32(1)) != 0 {
+	if M_CheckParmWithArgs(__ccgo_ts(5318), 1) != 0 {
 		I_AtExit(StatDump, 1)
 		fprintf_ccgo(os.Stdout, 5328)
 	}
@@ -6111,19 +6111,19 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	// Record a demo named x.lmp.
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(5361), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(5361), 1)
 	if p != 0 {
 		G_RecordDemo(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		autostart = 1
 	}
-	p = M_CheckParmWithArgs(__ccgo_ts(4456), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(4456), 1)
 	if p != 0 {
 		singledemo = 1 // quit after one demo
 		G_DeferedPlayDemo(tls, bp+256)
 		D_DoomLoop(tls)
 		return
 	}
-	p = M_CheckParmWithArgs(__ccgo_ts(4466), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(4466), 1)
 	if p != 0 {
 		G_TimeDemo(tls, bp+256)
 		D_DoomLoop(tls)
@@ -6340,11 +6340,11 @@ func D_CheckNetGame(tls *libc.TLS) {
 	// Show players here; the server might have specified a time limit
 	if timelimit > 0 && deathmatch != 0 {
 		// Gross hack to work like Vanilla:
-		if timelimit == int32(20) && M_CheckParm(__ccgo_ts(5050)) != 0 {
+		if timelimit == 20 && M_CheckParm(__ccgo_ts(5050)) != 0 {
 			fprintf_ccgo(os.Stdout, 5654)
 		} else {
 			fprintf_ccgo(os.Stdout, 5711, timelimit)
-			if timelimit > int32(1) {
+			if timelimit > 1 {
 				fprintf_ccgo(os.Stdout, 5743)
 			}
 			fprintf_ccgo(os.Stdout, 5745)
@@ -6372,152 +6372,152 @@ type textscreen_t struct {
 
 var textscreens = [22]textscreen_t{
 	0: {
-		Fepisode:    int32(1),
-		Flevel:      int32(8),
+		Fepisode:    1,
+		Flevel:      8,
 		Fbackground: __ccgo_ts(5748),
 		Ftext:       __ccgo_ts(5757),
 	},
 	1: {
-		Fepisode:    int32(2),
-		Flevel:      int32(8),
+		Fepisode:    2,
+		Flevel:      8,
 		Fbackground: __ccgo_ts(6198),
 		Ftext:       __ccgo_ts(6206),
 	},
 	2: {
-		Fepisode:    int32(3),
-		Flevel:      int32(8),
+		Fepisode:    3,
+		Flevel:      8,
 		Fbackground: __ccgo_ts(6673),
 		Ftext:       __ccgo_ts(6681),
 	},
 	3: {
-		Fepisode:    int32(4),
-		Flevel:      int32(8),
+		Fepisode:    4,
+		Flevel:      8,
 		Fbackground: __ccgo_ts(7174),
 		Ftext:       __ccgo_ts(7182),
 	},
 	4: {
 		Fmission:    int32(doom2),
-		Fepisode:    int32(1),
-		Flevel:      int32(6),
+		Fepisode:    1,
+		Flevel:      6,
 		Fbackground: __ccgo_ts(7686),
 		Ftext:       __ccgo_ts(7694),
 	},
 	5: {
 		Fmission:    int32(doom2),
-		Fepisode:    int32(1),
-		Flevel:      int32(11),
+		Fepisode:    1,
+		Flevel:      11,
 		Fbackground: __ccgo_ts(8100),
 		Ftext:       __ccgo_ts(8108),
 	},
 	6: {
 		Fmission:    int32(doom2),
-		Fepisode:    int32(1),
-		Flevel:      int32(20),
+		Fepisode:    1,
+		Flevel:      20,
 		Fbackground: __ccgo_ts(8726),
 		Ftext:       __ccgo_ts(8734),
 	},
 	7: {
 		Fmission:    int32(doom2),
-		Fepisode:    int32(1),
-		Flevel:      int32(30),
+		Fepisode:    1,
+		Flevel:      30,
 		Fbackground: __ccgo_ts(9047),
 		Ftext:       __ccgo_ts(9055),
 	},
 	8: {
 		Fmission:    int32(doom2),
-		Fepisode:    int32(1),
-		Flevel:      int32(15),
+		Fepisode:    1,
+		Flevel:      15,
 		Fbackground: __ccgo_ts(9550),
 		Ftext:       __ccgo_ts(9558),
 	},
 	9: {
 		Fmission:    int32(doom2),
-		Fepisode:    int32(1),
-		Flevel:      int32(31),
+		Fepisode:    1,
+		Flevel:      31,
 		Fbackground: __ccgo_ts(9723),
 		Ftext:       __ccgo_ts(9731),
 	},
 	10: {
 		Fmission:    int32(pack_tnt),
-		Fepisode:    int32(1),
-		Flevel:      int32(6),
+		Fepisode:    1,
+		Flevel:      6,
 		Fbackground: __ccgo_ts(7686),
 		Ftext:       __ccgo_ts(9824),
 	},
 	11: {
 		Fmission:    int32(pack_tnt),
-		Fepisode:    int32(1),
-		Flevel:      int32(11),
+		Fepisode:    1,
+		Flevel:      11,
 		Fbackground: __ccgo_ts(8100),
 		Ftext:       __ccgo_ts(10214),
 	},
 	12: {
 		Fmission:    int32(pack_tnt),
-		Fepisode:    int32(1),
-		Flevel:      int32(20),
+		Fepisode:    1,
+		Flevel:      20,
 		Fbackground: __ccgo_ts(8726),
 		Ftext:       __ccgo_ts(10525),
 	},
 	13: {
 		Fmission:    int32(pack_tnt),
-		Fepisode:    int32(1),
-		Flevel:      int32(30),
+		Fepisode:    1,
+		Flevel:      30,
 		Fbackground: __ccgo_ts(9047),
 		Ftext:       __ccgo_ts(10835),
 	},
 	14: {
 		Fmission:    int32(pack_tnt),
-		Fepisode:    int32(1),
-		Flevel:      int32(15),
+		Fepisode:    1,
+		Flevel:      15,
 		Fbackground: __ccgo_ts(9550),
 		Ftext:       __ccgo_ts(11221),
 	},
 	15: {
 		Fmission:    int32(pack_tnt),
-		Fepisode:    int32(1),
-		Flevel:      int32(31),
+		Fepisode:    1,
+		Flevel:      31,
 		Fbackground: __ccgo_ts(9723),
 		Ftext:       __ccgo_ts(11395),
 	},
 	16: {
 		Fmission:    int32(pack_plut),
-		Fepisode:    int32(1),
-		Flevel:      int32(6),
+		Fepisode:    1,
+		Flevel:      6,
 		Fbackground: __ccgo_ts(7686),
 		Ftext:       __ccgo_ts(11749),
 	},
 	17: {
 		Fmission:    int32(pack_plut),
-		Fepisode:    int32(1),
-		Flevel:      int32(11),
+		Fepisode:    1,
+		Flevel:      11,
 		Fbackground: __ccgo_ts(8100),
 		Ftext:       __ccgo_ts(12183),
 	},
 	18: {
 		Fmission:    int32(pack_plut),
-		Fepisode:    int32(1),
-		Flevel:      int32(20),
+		Fepisode:    1,
+		Flevel:      20,
 		Fbackground: __ccgo_ts(8726),
 		Ftext:       __ccgo_ts(12377),
 	},
 	19: {
 		Fmission:    int32(pack_plut),
-		Fepisode:    int32(1),
-		Flevel:      int32(30),
+		Fepisode:    1,
+		Flevel:      30,
 		Fbackground: __ccgo_ts(9047),
 		Ftext:       __ccgo_ts(12706),
 	},
 	20: {
 		Fmission:    int32(pack_plut),
-		Fepisode:    int32(1),
-		Flevel:      int32(15),
+		Fepisode:    1,
+		Flevel:      15,
 		Fbackground: __ccgo_ts(9550),
 		Ftext:       __ccgo_ts(13167),
 	},
 	21: {
 		Fmission:    int32(pack_plut),
-		Fepisode:    int32(1),
-		Flevel:      int32(31),
+		Fepisode:    1,
+		Flevel:      31,
 		Fbackground: __ccgo_ts(9723),
 		Ftext:       __ccgo_ts(13327),
 	},
@@ -6561,7 +6561,7 @@ func F_StartFinale(tls *libc.TLS) {
 		screen = uintptr(unsafe.Pointer(&textscreens)) + uintptr(i)*32
 		// Hack for Chex Quest
 		if gameversion == int32(exe_chex) && (*textscreen_t)(unsafe.Pointer(screen)).Fmission == int32(doom) {
-			(*textscreen_t)(unsafe.Pointer(screen)).Flevel = int32(5)
+			(*textscreen_t)(unsafe.Pointer(screen)).Flevel = 5
 		}
 		if gamemission == int32(pack_chex) {
 			v4 = int32(doom)
@@ -6632,7 +6632,7 @@ func F_Ticker(tls *libc.TLS) {
 			i++
 		}
 		if i < uint64(MAXPLAYERS) {
-			if gamemap == int32(30) {
+			if gamemap == 30 {
 				F_StartCast(tls)
 			} else {
 				gameaction = int32(ga_worlddone)
@@ -6652,7 +6652,7 @@ func F_Ticker(tls *libc.TLS) {
 		finalecount = uint32(0)
 		finalestage = int32(F_STAGE_ARTSCREEN)
 		wipegamestate = -1 // force a wipe
-		if gameepisode == int32(3) {
+		if gameepisode == 3 {
 			S_StartMusic(tls, int32(mus_bunny))
 		}
 	}
@@ -6692,10 +6692,10 @@ func F_TextWrite(tls *libc.TLS) {
 	}
 	V_MarkRect(0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
 	// draw some of the text onto the screen
-	cx = int32(10)
-	cy = int32(10)
+	cx = 10
+	cy = 10
 	ch = finaletext
-	count = (libc.Int32FromUint32(finalecount) - int32(10)) / int32(TEXTSPEED)
+	count = (libc.Int32FromUint32(finalecount) - 10) / int32(TEXTSPEED)
 	if count < 0 {
 		count = 0
 	}
@@ -6710,13 +6710,13 @@ func F_TextWrite(tls *libc.TLS) {
 			break
 		}
 		if c == int32('\n') {
-			cx = int32(10)
-			cy += int32(11)
+			cx = 10
+			cy += 11
 			goto _3
 		}
 		c = xtoupper(c) - int32('!')
 		if c < 0 || c > libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1 {
-			cx += int32(4)
+			cx += 4
 			goto _3
 		}
 		w = int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
@@ -6929,7 +6929,7 @@ func F_CastTicker(tls *libc.TLS) {
 			S_StartSound(tls, libc.UintptrFromInt32(0), sfx)
 		}
 	}
-	if castframes == int32(12) {
+	if castframes == 12 {
 		// go into attack frame
 		castattacking = 1
 		if castonmelee != 0 {
@@ -6937,7 +6937,7 @@ func F_CastTicker(tls *libc.TLS) {
 		} else {
 			caststate = &states[mobjinfo[castorder[castnum].Ftype1].Fmissilestate]
 		}
-		castonmelee ^= int32(1)
+		castonmelee ^= 1
 		if caststate == &states[0] {
 			if castonmelee != 0 {
 				caststate = &states[mobjinfo[castorder[castnum].Ftype1].Fmeleestate]
@@ -6949,7 +6949,7 @@ func F_CastTicker(tls *libc.TLS) {
 	if !(castattacking != 0) {
 		goto _2
 	}
-	if !(castframes == int32(24) || caststate == &states[mobjinfo[castorder[castnum].Ftype1].Fseestate]) {
+	if !(castframes == 24 || caststate == &states[mobjinfo[castorder[castnum].Ftype1].Fseestate]) {
 		goto _3
 	}
 	goto stopattack
@@ -6964,7 +6964,7 @@ _2:
 	;
 	casttics = caststate.Ftics
 	if casttics == -1 {
-		casttics = int32(15)
+		casttics = 15
 	}
 }
 
@@ -7006,14 +7006,14 @@ func F_CastPrint(tls *libc.TLS, text uintptr) {
 		}
 		c = xtoupper(c) - int32('!')
 		if c < 0 || c > libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1 {
-			width += int32(4)
+			width += 4
 			continue
 		}
 		w = int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
 		width += w
 	}
 	// draw it
-	cx = int32(160) - width/int32(2)
+	cx = 160 - width/int32(2)
 	ch = text
 	for ch != 0 {
 		v2 = ch
@@ -7024,11 +7024,11 @@ func F_CastPrint(tls *libc.TLS, text uintptr) {
 		}
 		c = xtoupper(c) - int32('!')
 		if c < 0 || c > libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1 {
-			cx += int32(4)
+			cx += 4
 			continue
 		}
 		w = int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
-		V_DrawPatch(tls, cx, int32(180), hu_font[c])
+		V_DrawPatch(tls, cx, 180, hu_font[c])
 		cx += w
 	}
 }
@@ -7051,9 +7051,9 @@ func F_CastDrawer(tls *libc.TLS) {
 	flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20)))
 	patch = W_CacheLumpNum(tls, lump+firstspritelump, int32(PU_CACHE))
 	if flip != 0 {
-		V_DrawPatchFlipped(tls, int32(160), int32(170), patch)
+		V_DrawPatchFlipped(tls, 160, 170, patch)
 	} else {
-		V_DrawPatch(tls, int32(160), int32(170), patch)
+		V_DrawPatch(tls, 160, 170, patch)
 	}
 }
 
@@ -7099,9 +7099,9 @@ func F_BunnyScroll(tls *libc.TLS) {
 	p1 = W_CacheLumpName(tls, __ccgo_ts(13640), int32(PU_LEVEL))
 	p2 = W_CacheLumpName(tls, __ccgo_ts(13646), int32(PU_LEVEL))
 	V_MarkRect(0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
-	scrolled = int32(320) - (libc.Int32FromUint32(finalecount)-int32(230))/int32(2)
-	if scrolled > int32(320) {
-		scrolled = int32(320)
+	scrolled = 320 - (libc.Int32FromUint32(finalecount)-int32(230))/int32(2)
+	if scrolled > 320 {
+		scrolled = 320
 	}
 	if scrolled < 0 {
 		scrolled = 0
@@ -7111,7 +7111,7 @@ func F_BunnyScroll(tls *libc.TLS) {
 		if !(x < int32(SCREENWIDTH)) {
 			break
 		}
-		if x+scrolled < int32(320) {
+		if x+scrolled < 320 {
 			F_DrawPatchCol(tls, x, p1, x+scrolled)
 		} else {
 			F_DrawPatchCol(tls, x, p2, x+scrolled-int32(320))
@@ -7130,8 +7130,8 @@ func F_BunnyScroll(tls *libc.TLS) {
 		return
 	}
 	stage = libc.Int32FromUint32((finalecount - uint32(1180)) / uint32(5))
-	if stage > int32(6) {
-		stage = int32(6)
+	if stage > 6 {
+		stage = 6
 	}
 	if stage > laststage {
 		S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_pistol))
@@ -7145,19 +7145,19 @@ var laststage int32
 
 func F_ArtScreenDrawer(tls *libc.TLS) {
 	var lumpname uintptr
-	if gameepisode == int32(3) {
+	if gameepisode == 3 {
 		F_BunnyScroll(tls)
 	} else {
 		switch gameepisode {
-		case int32(1):
+		case 1:
 			if gamemode == int32(retail) {
 				lumpname = __ccgo_ts(1911)
 			} else {
 				lumpname = __ccgo_ts(1924)
 			}
-		case int32(2):
+		case 2:
 			lumpname = __ccgo_ts(13663)
-		case int32(4):
+		case 4:
 			lumpname = __ccgo_ts(13672)
 		default:
 			return
@@ -7283,13 +7283,13 @@ func wipe_initMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r1 in
 	// setup initial column positions
 	// (y<0 => not ready to scroll yet)
 	y = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(width)*uint64(4)), int32(PU_STATIC), uintptr(0))
-	*(*int32)(unsafe.Pointer(y)) = -(M_Random() % int32(16))
-	i = int32(1)
+	*(*int32)(unsafe.Pointer(y)) = -(M_Random() % 16)
+	i = 1
 	for {
 		if !(i < width) {
 			break
 		}
-		r = M_Random()%int32(3) - int32(1)
+		r = M_Random()%int32(3) - 1
 		*(*int32)(unsafe.Pointer(y + uintptr(i)*4)) = *(*int32)(unsafe.Pointer(y + uintptr(i-1)*4)) + r
 		if *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) > 0 {
 			*(*int32)(unsafe.Pointer(y + uintptr(i)*4)) = 0
@@ -7311,7 +7311,7 @@ func wipe_doMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r int32
 	var done boolean
 	var dy, i, idx, j, v1, v3 int32
 	done = 1
-	width /= int32(2)
+	width /= 2
 	for {
 		v1 = ticks
 		ticks--
@@ -7328,10 +7328,10 @@ func wipe_doMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r int32
 				done = 0
 			} else {
 				if *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) < height {
-					if *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) < int32(16) {
-						v3 = *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) + int32(1)
+					if *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) < 16 {
+						v3 = *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) + 1
 					} else {
-						v3 = int32(8)
+						v3 = 8
 					}
 					dy = v3
 					if *(*int32)(unsafe.Pointer(y + uintptr(i)*4))+dy >= height {
@@ -7481,9 +7481,9 @@ func init() {
 
 func init() {
 	angleturn = [3]fixed_t{
-		0: int32(640),
-		1: int32(1280),
-		2: int32(320),
+		0: 640,
+		1: 1280,
+		2: 320,
 	}
 }
 
@@ -7502,7 +7502,7 @@ var weapon_keys = [8]uintptr{
 
 // Set to -1 or +1 to switch to the previous or next weapon.
 
-var next_weapon = int32(0)
+var next_weapon int32 = 0
 
 // Used for prev/next weapon keys.
 
@@ -7568,11 +7568,11 @@ var savegameslot int32
 var savedescription [32]int8
 
 func init() {
-	vanilla_savegame_limit = int32(1)
+	vanilla_savegame_limit = 1
 }
 
 func init() {
-	vanilla_demo_limit = int32(1)
+	vanilla_demo_limit = 1
 }
 
 func WeaponSelectable(tls *libc.TLS, weapon weapontype_t) (r boolean) {
@@ -7671,7 +7671,7 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 		turnheld = 0
 	}
 	if turnheld < int32(SLOWTURNTICS) {
-		tspeed = int32(2)
+		tspeed = 2
 	} else {
 		tspeed = speed
 	}
@@ -7781,12 +7781,12 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 	}
 	if dclick_use != 0 {
 		// forward double click
-		if *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebforward)*4)) != dclickstate && dclicktime > int32(1) {
+		if *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebforward)*4)) != dclickstate && dclicktime > 1 {
 			dclickstate = *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebforward)*4))
 			if dclickstate != 0 {
 				dclicks++
 			}
-			if dclicks == int32(2) {
+			if dclicks == 2 {
 				p13 = cmd + 5
 				*(*uint8)(unsafe.Pointer(p13)) = uint8(int32(*(*uint8)(unsafe.Pointer(p13))) | int32(BT_USE))
 				dclicks = 0
@@ -7795,19 +7795,19 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 			}
 		} else {
 			dclicktime += ticdup
-			if dclicktime > int32(20) {
+			if dclicktime > 20 {
 				dclicks = 0
 				dclickstate = uint32(0)
 			}
 		}
 		// strafe double click
 		bstrafe = libc.BoolUint32(*(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
-		if bstrafe != dclickstate2 && dclicktime2 > int32(1) {
+		if bstrafe != dclickstate2 && dclicktime2 > 1 {
 			dclickstate2 = bstrafe
 			if dclickstate2 != 0 {
 				dclicks2++
 			}
-			if dclicks2 == int32(2) {
+			if dclicks2 == 2 {
 				p14 = cmd + 5
 				*(*uint8)(unsafe.Pointer(p14)) = uint8(int32(*(*uint8)(unsafe.Pointer(p14))) | int32(BT_USE))
 				dclicks2 = 0
@@ -7816,7 +7816,7 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 			}
 		} else {
 			dclicktime2 += ticdup
-			if dclicktime2 > int32(20) {
+			if dclicktime2 > 20 {
 				dclicks2 = 0
 				dclickstate2 = uint32(0)
 			}
@@ -7824,7 +7824,7 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 	}
 	forward += mousey
 	if strafe != 0 {
-		side += mousex * int32(2)
+		side += mousex * 2
 	} else {
 		p15 = cmd + 2
 		*(*int16)(unsafe.Pointer(p15)) = int16(int32(*(*int16)(unsafe.Pointer(p15))) - mousex*0x8)
@@ -7868,7 +7868,7 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 		desired_angleturn = int16(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) + int32(carry))
 		// round angleturn to the nearest 256 unit boundary
 		// for recording demos with single byte values for turn
-		(*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn = int16((int32(desired_angleturn) + int32(128)) & int32(0xff00))
+		(*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn = int16((int32(desired_angleturn) + 128) & int32(0xff00))
 		// Carry forward the error from the reduced resolution to the
 		// next tic, so that successive small movements can accumulate.
 		carry = int16(int32(desired_angleturn) - int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn))
@@ -7895,10 +7895,10 @@ func G_DoLoadLevel(tls *libc.TLS) {
 	// The "Sky never changes in Doom II" bug was fixed in
 	// the id Anthology version of doom2.exe for Final Doom.
 	if gamemode == int32(commercial) && (gameversion == int32(exe_final2) || gameversion == int32(exe_chex)) {
-		if gamemap < int32(12) {
+		if gamemap < 12 {
 			skytexturename = __ccgo_ts(13686)
 		} else {
-			if gamemap < int32(21) {
+			if gamemap < 21 {
 				skytexturename = __ccgo_ts(13691)
 			} else {
 				skytexturename = __ccgo_ts(13696)
@@ -7967,7 +7967,7 @@ func SetJoyButtons(tls *libc.TLS, buttons_mask uint32) {
 				next_weapon = -1
 			} else {
 				if i == joybnextweapon {
-					next_weapon = int32(1)
+					next_weapon = 1
 				}
 			}
 		}
@@ -7994,7 +7994,7 @@ func SetMouseButtons(tls *libc.TLS, buttons_mask uint32) {
 				next_weapon = -1
 			} else {
 				if i == mousebnextweapon {
-					next_weapon = int32(1)
+					next_weapon = 1
 				}
 			}
 		}
@@ -8061,7 +8061,7 @@ func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 		next_weapon = -1
 	} else {
 		if ev.Ftype1 == ev_keydown && ev.Fdata1 == key_nextweapon {
-			next_weapon = int32(1)
+			next_weapon = 1
 		}
 	}
 	switch ev.Ftype1 {
@@ -8081,8 +8081,8 @@ func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 		return 0 // always let key up events filter down
 	case ev_mouse:
 		SetMouseButtons(tls, libc.Uint32FromInt32(ev.Fdata1))
-		mousex = ev.Fdata2 * (mouseSensitivity + int32(5)) / int32(10)
-		mousey = ev.Fdata3 * (mouseSensitivity + int32(5)) / int32(10)
+		mousex = ev.Fdata2 * (mouseSensitivity + 5) / 10
+		mousey = ev.Fdata3 * (mouseSensitivity + 5) / 10
 		return 1 // eat events
 	case ev_joystick:
 		SetJoyButtons(tls, libc.Uint32FromInt32(ev.Fdata1))
@@ -8353,27 +8353,27 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 	// This calculation overflows in Vanilla Doom, but here we deliberately
 	// avoid integer overflow as it is undefined behavior, so the value of
 	// 'an' will always be positive.
-	an = ANG451 >> ANGLETOFINESHIFT * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / int32(45))
+	an = ANG451 >> ANGLETOFINESHIFT * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / 45)
 	switch an {
-	case int32(4096): // -4096:
+	case 4096: // -4096:
 		xa = finetangent[int32(2048)] // finecosine[-4096]
 		ya = finetangent[0]           // finesine[-4096]
-	case int32(5120): // -3072:
+	case 5120: // -3072:
 		xa = finetangent[int32(3072)] // finecosine[-3072]
 		ya = finetangent[int32(1024)] // finesine[-3072]
-	case int32(6144): // -2048:
+	case 6144: // -2048:
 		xa = finesine[0]              // finecosine[-2048]
 		ya = finetangent[int32(2048)] // finesine[-2048]
-	case int32(7168): // -1024:
+	case 7168: // -1024:
 		xa = finesine[int32(1024)]    // finecosine[-1024]
 		ya = finetangent[int32(3072)] // finesine[-1024]
 	case 0:
 		fallthrough
-	case int32(1024):
+	case 1024:
 		fallthrough
-	case int32(2048):
+	case 2048:
 		fallthrough
-	case int32(3072):
+	case 3072:
 		xa = finecosine[an]
 		ya = finesine[an]
 	default:
@@ -8384,7 +8384,7 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 		break
 	}
 	mo = P_SpawnMobj(tls, x+int32(20)*xa, y+int32(20)*ya, (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer(ss)).Fsector)).Ffloorheight, int32(MT_TFOG))
-	if players[consoleplayer].Fviewz != int32(1) {
+	if players[consoleplayer].Fviewz != 1 {
 		S_StartSound(tls, mo, int32(sfx_telept))
 	} // don't start sound on first frame
 	return 1
@@ -8400,17 +8400,17 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 func G_DeathMatchSpawnPlayer(tls *libc.TLS, playernum int32) {
 	var i, j, selections int32
 	selections = int32((int64(deathmatch_p) - int64(uintptr(unsafe.Pointer(&deathmatchstarts)))) / 10)
-	if selections < int32(4) {
+	if selections < 4 {
 		I_Error(tls, __ccgo_ts(13841), selections)
 	}
 	j = 0
 	for {
-		if !(j < int32(20)) {
+		if !(j < 20) {
 			break
 		}
 		i = P_Random() % selections
 		if G_CheckSpot(tls, playernum, uintptr(unsafe.Pointer(&deathmatchstarts))+uintptr(i)*10) != 0 {
-			deathmatchstarts[i].Ftype1 = int16(playernum + int32(1))
+			deathmatchstarts[i].Ftype1 = int16(playernum + 1)
 			P_SpawnPlayer(tls, uintptr(unsafe.Pointer(&deathmatchstarts))+uintptr(i)*10)
 			return
 		}
@@ -8453,9 +8453,9 @@ func G_DoReborn(tls *libc.TLS, playernum int32) {
 				break
 			}
 			if G_CheckSpot(tls, playernum, uintptr(unsafe.Pointer(&playerstarts))+uintptr(i)*10) != 0 {
-				playerstarts[i].Ftype1 = int16(playernum + int32(1)) // fake as other player
+				playerstarts[i].Ftype1 = int16(playernum + 1) // fake as other player
 				P_SpawnPlayer(tls, uintptr(unsafe.Pointer(&playerstarts))+uintptr(i)*10)
-				playerstarts[i].Ftype1 = int16(i + int32(1)) // restore
+				playerstarts[i].Ftype1 = int16(i + 1) // restore
 				return
 			}
 			// he's going to be inside something.  Too bad.
@@ -8476,75 +8476,75 @@ func init() {
 	pars = [4][10]int32{
 		0: {},
 		1: {
-			1: int32(30),
-			2: int32(75),
-			3: int32(120),
-			4: int32(90),
-			5: int32(165),
-			6: int32(180),
-			7: int32(180),
-			8: int32(30),
-			9: int32(165),
+			1: 30,
+			2: 75,
+			3: 120,
+			4: 90,
+			5: 165,
+			6: 180,
+			7: 180,
+			8: 30,
+			9: 165,
 		},
 		2: {
-			1: int32(90),
-			2: int32(90),
-			3: int32(90),
-			4: int32(120),
-			5: int32(90),
-			6: int32(360),
-			7: int32(240),
-			8: int32(30),
-			9: int32(170),
+			1: 90,
+			2: 90,
+			3: 90,
+			4: 120,
+			5: 90,
+			6: 360,
+			7: 240,
+			8: 30,
+			9: 170,
 		},
 		3: {
-			1: int32(90),
-			2: int32(45),
-			3: int32(90),
-			4: int32(150),
-			5: int32(90),
-			6: int32(90),
-			7: int32(165),
-			8: int32(30),
-			9: int32(135),
+			1: 90,
+			2: 45,
+			3: 90,
+			4: 150,
+			5: 90,
+			6: 90,
+			7: 165,
+			8: 30,
+			9: 135,
 		},
 	}
 }
 
 func init() {
 	cpars = [32]int32{
-		0:  int32(30),
-		1:  int32(90),
-		2:  int32(120),
-		3:  int32(120),
-		4:  int32(90),
-		5:  int32(150),
-		6:  int32(120),
-		7:  int32(120),
-		8:  int32(270),
-		9:  int32(90),
-		10: int32(210),
-		11: int32(150),
-		12: int32(150),
-		13: int32(150),
-		14: int32(210),
-		15: int32(150),
-		16: int32(420),
-		17: int32(150),
-		18: int32(210),
-		19: int32(150),
-		20: int32(240),
-		21: int32(150),
-		22: int32(180),
-		23: int32(150),
-		24: int32(150),
-		25: int32(300),
-		26: int32(330),
-		27: int32(420),
-		28: int32(300),
-		29: int32(180),
-		30: int32(120),
-		31: int32(30),
+		0:  30,
+		1:  90,
+		2:  120,
+		3:  120,
+		4:  90,
+		5:  150,
+		6:  120,
+		7:  120,
+		8:  270,
+		9:  90,
+		10: 210,
+		11: 150,
+		12: 150,
+		13: 150,
+		14: 210,
+		15: 150,
+		16: 420,
+		17: 150,
+		18: 210,
+		19: 150,
+		20: 240,
+		21: 150,
+		22: 180,
+		23: 150,
+		24: 150,
+		25: 300,
+		26: 330,
+		27: 420,
+		28: 300,
+		29: 180,
+		30: 120,
+		31: 30,
 	}
 }
 
@@ -8588,15 +8588,15 @@ func G_DoCompleted(tls *libc.TLS) {
 	if gamemode != int32(commercial) {
 		// Chex Quest ends after 5 levels, rather than 8.
 		if gameversion == int32(exe_chex) {
-			if gamemap == int32(5) {
+			if gamemap == 5 {
 				gameaction = int32(ga_victory)
 				return
 			}
 		} else {
 			switch gamemap {
-			case int32(8):
+			case 8:
 				goto _2
-			case int32(9):
+			case 9:
 				goto _3
 			}
 			goto _4
@@ -8626,12 +8626,12 @@ func G_DoCompleted(tls *libc.TLS) {
 		}
 	}
 	//#if 0  Hmmm - why?
-	if gamemap == int32(8) && gamemode != int32(commercial) {
+	if gamemap == 8 && gamemode != int32(commercial) {
 		// victory
 		gameaction = int32(ga_victory)
 		return
 	}
-	if gamemap == int32(9) && gamemode != int32(commercial) {
+	if gamemap == 9 && gamemode != int32(commercial) {
 		// exit secret level
 		i = 0
 		for {
@@ -8647,43 +8647,43 @@ func G_DoCompleted(tls *libc.TLS) {
 	}
 	//#endif
 	wminfo.Fdidsecret = players[consoleplayer].Fdidsecret
-	wminfo.Fepsd = gameepisode - int32(1)
-	wminfo.Flast = gamemap - int32(1)
+	wminfo.Fepsd = gameepisode - 1
+	wminfo.Flast = gamemap - 1
 	// wminfo.next is 0 biased, unlike gamemap
 	if gamemode == int32(commercial) {
 		if secretexit != 0 {
 			switch gamemap {
-			case int32(15):
-				wminfo.Fnext = int32(30)
-			case int32(31):
-				wminfo.Fnext = int32(31)
+			case 15:
+				wminfo.Fnext = 30
+			case 31:
+				wminfo.Fnext = 31
 				break
 			}
 		} else {
 			switch gamemap {
-			case int32(31):
+			case 31:
 				fallthrough
-			case int32(32):
-				wminfo.Fnext = int32(15)
+			case 32:
+				wminfo.Fnext = 15
 			default:
 				wminfo.Fnext = gamemap
 			}
 		}
 	} else {
 		if secretexit != 0 {
-			wminfo.Fnext = int32(8)
+			wminfo.Fnext = 8
 		} else {
-			if gamemap == int32(9) {
+			if gamemap == 9 {
 				// returning from secret level
 				switch gameepisode {
-				case int32(1):
-					wminfo.Fnext = int32(3)
-				case int32(2):
-					wminfo.Fnext = int32(5)
-				case int32(3):
-					wminfo.Fnext = int32(6)
-				case int32(4):
-					wminfo.Fnext = int32(2)
+				case 1:
+					wminfo.Fnext = 3
+				case 2:
+					wminfo.Fnext = 5
+				case 3:
+					wminfo.Fnext = 6
+				case 4:
+					wminfo.Fnext = 2
 					break
 				}
 			} else {
@@ -8701,7 +8701,7 @@ func G_DoCompleted(tls *libc.TLS) {
 	if gamemode == int32(commercial) {
 		wminfo.Fpartime = int32(TICRATE) * cpars[gamemap-1]
 	} else {
-		if gameepisode < int32(4) {
+		if gameepisode < 4 {
 			wminfo.Fpartime = int32(TICRATE) * *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&pars)) + uintptr(gameepisode)*40 + uintptr(gamemap)*4))
 		} else {
 			wminfo.Fpartime = int32(TICRATE) * cpars[gamemap]
@@ -8743,20 +8743,20 @@ func G_WorldDone(tls *libc.TLS) {
 	}
 	if gamemode == int32(commercial) {
 		switch gamemap {
-		case int32(15):
+		case 15:
 			fallthrough
-		case int32(31):
+		case 31:
 			if !(secretexit != 0) {
 				break
 			}
 			fallthrough
-		case int32(6):
+		case 6:
 			fallthrough
-		case int32(11):
+		case 11:
 			fallthrough
-		case int32(20):
+		case 20:
 			fallthrough
-		case int32(30):
+		case 30:
 			F_StartFinale(tls)
 			break
 		}
@@ -8765,7 +8765,7 @@ func G_WorldDone(tls *libc.TLS) {
 
 func G_DoWorldDone(tls *libc.TLS) {
 	gamestate = int32(GS_LEVEL)
-	gamemap = wminfo.Fnext + int32(1)
+	gamemap = wminfo.Fnext + 1
 	G_DoLoadLevel(tls)
 	gameaction = int32(ga_nothing)
 	viewactive = 1
@@ -8936,24 +8936,24 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 	}
 	if gameversion >= int32(exe_ultimate) {
 		if episode == 0 {
-			episode = int32(4)
+			episode = 4
 		}
 	} else {
-		if episode < int32(1) {
-			episode = int32(1)
+		if episode < 1 {
+			episode = 1
 		}
-		if episode > int32(3) {
-			episode = int32(3)
+		if episode > 3 {
+			episode = 3
 		}
 	}
-	if episode > int32(1) && gamemode == int32(shareware) {
-		episode = int32(1)
+	if episode > 1 && gamemode == int32(shareware) {
+		episode = 1
 	}
-	if map1 < int32(1) {
-		map1 = int32(1)
+	if map1 < 1 {
+		map1 = 1
 	}
-	if map1 > int32(9) && gamemode != int32(commercial) {
-		map1 = int32(9)
+	if map1 > 9 && gamemode != int32(commercial) {
+		map1 = 9
 	}
 	M_ClearRandom()
 	if skill == int32(sk_nightmare) || respawnparm != 0 {
@@ -8967,7 +8967,7 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 			if !(i <= int32(S_SARG_PAIN2)) {
 				break
 			}
-			states[i].Ftics >>= int32(1)
+			states[i].Ftics >>= 1
 			goto _1
 		_1:
 			;
@@ -8983,7 +8983,7 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 				if !(i <= int32(S_SARG_PAIN2)) {
 					break
 				}
-				states[i].Ftics <<= int32(1)
+				states[i].Ftics <<= 1
 				goto _2
 			_2:
 				;
@@ -9025,10 +9025,10 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 	// restore from a saved game.  This was fixed before the Doom
 	// source release, but this IS the way Vanilla DOS Doom behaves.
 	if gamemode == int32(commercial) {
-		if gamemap < int32(12) {
+		if gamemap < 12 {
 			skytexturename = __ccgo_ts(13686)
 		} else {
-			if gamemap < int32(21) {
+			if gamemap < 21 {
 				skytexturename = __ccgo_ts(13691)
 			} else {
 				skytexturename = __ccgo_ts(13696)
@@ -9038,13 +9038,13 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 		switch gameepisode {
 		default:
 			fallthrough
-		case int32(1):
+		case 1:
 			skytexturename = __ccgo_ts(13686)
-		case int32(2):
+		case 2:
 			skytexturename = __ccgo_ts(13691)
-		case int32(3):
+		case 3:
 			skytexturename = __ccgo_ts(13696)
-		case int32(4): // Special Edition sky
+		case 4: // Special Edition sky
 			skytexturename = __ccgo_ts(14105)
 			break
 		}
@@ -9083,7 +9083,7 @@ func G_ReadDemoTiccmd(tls *libc.TLS, cmd uintptr) {
 	} else {
 		v6 = demo_p
 		demo_p++
-		(*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn = int16(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v6))) << int32(8))
+		(*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn = int16(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v6))) << 8)
 	}
 	v7 = demo_p
 	demo_p++
@@ -9098,7 +9098,7 @@ func IncreaseDemoBuffer(tls *libc.TLS) {
 	// Find the current size
 	current_length = int32(int64(demoend) - int64(demobuffer))
 	// Generate a new buffer twice the size
-	new_length = current_length * int32(2)
+	new_length = current_length * 2
 	new_demobuffer = Z_Malloc(tls, new_length, int32(PU_STATIC), uintptr(0))
 	new_demop = new_demobuffer + uintptr(int64(demo_p)-int64(demobuffer))
 	// Copy over the old data
@@ -9129,11 +9129,11 @@ func G_WriteDemoTiccmd(tls *libc.TLS, cmd uintptr) {
 		*(*uint8)(unsafe.Pointer(v3)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) & 0xff)
 		v4 = demo_p
 		demo_p++
-		*(*uint8)(unsafe.Pointer(v4)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) >> int32(8) & int32(0xff))
+		*(*uint8)(unsafe.Pointer(v4)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) >> 8 & int32(0xff))
 	} else {
 		v5 = demo_p
 		demo_p++
-		*(*uint8)(unsafe.Pointer(v5)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) >> int32(8))
+		*(*uint8)(unsafe.Pointer(v5)) = libc.Uint8FromInt32(int32((*ticcmd_t)(unsafe.Pointer(cmd)).Fangleturn) >> 8)
 	}
 	v6 = demo_p
 	demo_p++
@@ -9175,9 +9175,9 @@ func G_RecordDemo(tls *libc.TLS, name uintptr) {
 	//
 	// Specify the demo buffer size (KiB)
 	//
-	i = M_CheckParmWithArgs(__ccgo_ts(14110), int32(1))
+	i = M_CheckParmWithArgs(__ccgo_ts(14110), 1)
 	if i != 0 {
-		maxsize = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))) * int32(1024)
+		maxsize = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))) * 1024
 	}
 	demobuffer = Z_Malloc(tls, maxsize, int32(PU_STATIC), libc.UintptrFromInt32(0))
 	demoend = demobuffer + uintptr(maxsize)
@@ -9193,15 +9193,15 @@ func G_VanillaVersionCode(tls *libc.TLS) (r int32) {
 		I_Error(tls, __ccgo_ts(14119), 0)
 		fallthrough
 	case int32(exe_doom_1_666):
-		return int32(106)
+		return 106
 	case int32(exe_doom_1_7):
-		return int32(107)
+		return 107
 	case int32(exe_doom_1_8):
-		return int32(108)
+		return 108
 	case int32(exe_doom_1_9):
 		fallthrough
 	default: // All other versions are variants on v1.9:
-		return int32(109)
+		return 109
 	}
 	return r
 }
@@ -9277,24 +9277,24 @@ func G_DeferedPlayDemo(tls *libc.TLS, name uintptr) {
 func DemoVersionDescription(tls *libc.TLS, version int32) (r uintptr) {
 	bp := alloc(32)
 	switch version {
-	case int32(104):
+	case 104:
 		return __ccgo_ts(14158)
-	case int32(105):
+	case 105:
 		return __ccgo_ts(14163)
-	case int32(106):
+	case 106:
 		return __ccgo_ts(14168)
-	case int32(107):
+	case 107:
 		return __ccgo_ts(14180)
-	case int32(108):
+	case 108:
 		return __ccgo_ts(14191)
-	case int32(109):
+	case 109:
 		return __ccgo_ts(14196)
 	default:
 		break
 	}
 	// Unknown version.  Perhaps this is a pre-v1.4 IWAD?  If the version
 	// byte is in the range 0-4 then it can be a v1.0-v1.2 demo.
-	if version >= 0 && version <= int32(4) {
+	if version >= 0 && version <= 4 {
 		return __ccgo_ts(14201)
 	} else {
 		M_snprintf(tls, uintptr(unsafe.Pointer(&resultbuf)), uint64(16), __ccgo_ts(14216), libc.VaList(bp+8, version/int32(100), version%int32(100)))
@@ -9501,7 +9501,7 @@ func HUlib_addCharToTextLine(t *hu_textline_t, ch int8) boolean {
 		t.Fl[t.Flen1] = ch
 		t.Flen1++
 		t.Fl[t.Flen1] = 0
-		t.Fneedsupdate = int32(4)
+		t.Fneedsupdate = 4
 		return 1
 	}
 }
@@ -9512,7 +9512,7 @@ func HUlib_delCharFromTextLine(t *hu_textline_t) boolean {
 	} else {
 		t.Flen1--
 		t.Fl[t.Flen1] = 0
-		t.Fneedsupdate = int32(4)
+		t.Fneedsupdate = 4
 		return 1
 	}
 }
@@ -9536,7 +9536,7 @@ func HUlib_drawTextLine(tls *libc.TLS, l *hu_textline_t, drawcursor boolean) {
 			V_DrawPatchDirect(tls, x, l.Fy, *(*uintptr)(unsafe.Pointer(l.Ff + uintptr(libc.Int32FromUint8(c)-l.Fsc)*8)))
 			x += w
 		} else {
-			x += int32(4)
+			x += 4
 			if x >= int32(SCREENWIDTH) {
 				break
 			}
@@ -9561,7 +9561,7 @@ func HUlib_eraseTextLine(l *hu_textline_t) {
 	// and the text must either need updating or refreshing
 	// (because of a recent change back from the automap)
 	if !(automapactive != 0) && viewwindowx != 0 && l.Fneedsupdate != 0 {
-		lh = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(l.Ff)))).Fheight) + int32(1)
+		lh = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(l.Ff)))).Fheight) + 1
 		y = l.Fy
 		yoffset = y * SCREENWIDTH
 		for {
@@ -9606,7 +9606,7 @@ func HUlib_addLineToSText(s *hu_stext_t) {
 	HUlib_clearTextLine(&s.Fl[s.Fcl])
 	// everything needs updating
 	for i := int32(0); i < s.Fh; i++ {
-		s.Fl[i].Fneedsupdate = int32(4) // needs updating
+		s.Fl[i].Fneedsupdate = 4 // needs updating
 	}
 }
 
@@ -9647,7 +9647,7 @@ func HUlib_drawSText(tls *libc.TLS, s *hu_stext_t) {
 func HUlib_eraseSText(s *hu_stext_t) {
 	for i := int32(0); i < s.Fh; i++ {
 		if s.Flaston != 0 && !(*(*boolean)(unsafe.Pointer(s.Fon)) != 0) {
-			s.Fl[i].Fneedsupdate = int32(4)
+			s.Fl[i].Fneedsupdate = 4
 		}
 		HUlib_eraseTextLine(&s.Fl[i])
 	}
@@ -9707,7 +9707,7 @@ func HUlib_drawIText(tls *libc.TLS, it *hu_itext_t) {
 
 func HUlib_eraseIText(it *hu_itext_t) {
 	if it.Flaston != 0 && !(*(*boolean)(unsafe.Pointer(it.Fon)) != 0) {
-		it.Fl.Fneedsupdate = int32(4)
+		it.Fl.Fneedsupdate = 4
 	}
 	HUlib_eraseTextLine(&it.Fl)
 	it.Flaston = *(*boolean)(unsafe.Pointer(it.Fon))
@@ -9945,7 +9945,7 @@ func HU_Start(tls *libc.TLS) {
 	// create the message widget
 	HUlib_initSText(&w_message, HU_MSGX, HU_MSGY, int32(HU_MSGHEIGHT), uintptr(unsafe.Pointer(&hu_font)), int32('!'), uintptr(unsafe.Pointer(&message_on)))
 	// create the map title widget
-	HUlib_initTextLine(&w_title, HU_TITLEX, int32(167)-int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight), uintptr(unsafe.Pointer(&hu_font)), int32('!'))
+	HUlib_initTextLine(&w_title, HU_TITLEX, 167-int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight), uintptr(unsafe.Pointer(&hu_font)), int32('!'))
 	if gamemission == int32(pack_chex) {
 		v1 = int32(doom)
 	} else {
@@ -10081,15 +10081,15 @@ func HU_Ticker(tls *libc.TLS) {
 }
 
 var chatchars [128]int8
-var head = int32(0)
-var tail = int32(0)
+var head = 0
+var tail = 0
 
 func HU_queueChatChar(c int8) {
-	if (head+int32(1))&(QUEUESIZE-1) == tail {
+	if (head+1)&(QUEUESIZE-1) == tail {
 		(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17504)
 	} else {
 		chatchars[head] = c
-		head = (head + int32(1)) & (QUEUESIZE - 1)
+		head = (head + 1) & (QUEUESIZE - 1)
 	}
 }
 
@@ -10097,7 +10097,7 @@ func HU_dequeueChatChar() (r int8) {
 	var c int8
 	if head != tail {
 		c = chatchars[tail]
-		tail = (tail + int32(1)) & (QUEUESIZE - 1)
+		tail = (tail + 1) & (QUEUESIZE - 1)
 	} else {
 		c = 0
 	}
@@ -10146,7 +10146,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 				HUlib_resetIText(&w_chat)
 				HU_queueChatChar(int8(HU_BROADCAST))
 			} else {
-				if netgame != 0 && numplayers > int32(2) {
+				if netgame != 0 && numplayers > 2 {
 					i = 0
 					for {
 						if !(i < int32(MAXPLAYERS)) {
@@ -10158,21 +10158,21 @@ func HU_Responder(ev *event_t) (r boolean) {
 								chat_on = v4
 								eatkey = v4
 								HUlib_resetIText(&w_chat)
-								HU_queueChatChar(int8(i + int32(1)))
+								HU_queueChatChar(int8(i + 1))
 								break
 							} else {
 								if i == consoleplayer {
 									num_nobrainers++
-									if num_nobrainers < int32(3) {
+									if num_nobrainers < 3 {
 										(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17521)
 									} else {
-										if num_nobrainers < int32(6) {
+										if num_nobrainers < 6 {
 											(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17544)
 										} else {
-											if num_nobrainers < int32(9) {
+											if num_nobrainers < 9 {
 												(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17557)
 											} else {
-												if num_nobrainers < int32(32) {
+												if num_nobrainers < 32 {
 													(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17576)
 												} else {
 													(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17594)
@@ -10195,7 +10195,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 		// send a macro
 		if altdown != 0 {
 			c = libc.Uint8FromInt32(ev.Fdata1 - int32('0'))
-			if libc.Int32FromUint8(c) > int32(9) {
+			if libc.Int32FromUint8(c) > 9 {
 				return 0
 			}
 			// fprintf(stderr, "got here\n");
@@ -10396,910 +10396,910 @@ func init() {
 		},
 		1: {
 			Fsprite: int32(SPR_SHTG),
-			Fframe:  int32(4),
+			Fframe:  4,
 			Faction: *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light0)})),
 		},
 		2: {
 			Fsprite:    int32(SPR_PUNG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_WeaponReady)})),
 			Fnextstate: int32(S_PUNCH),
 		},
 		3: {
 			Fsprite:    int32(SPR_PUNG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Lower)})),
 			Fnextstate: int32(S_PUNCHDOWN),
 		},
 		4: {
 			Fsprite:    int32(SPR_PUNG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Raise)})),
 			Fnextstate: int32(S_PUNCHUP),
 		},
 		5: {
 			Fsprite:    int32(SPR_PUNG),
-			Fframe:     int32(1),
-			Ftics:      int32(4),
+			Fframe:     1,
+			Ftics:      4,
 			Fnextstate: int32(S_PUNCH2),
 		},
 		6: {
 			Fsprite:    int32(SPR_PUNG),
-			Fframe:     int32(2),
-			Ftics:      int32(4),
+			Fframe:     2,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Punch)})),
 			Fnextstate: int32(S_PUNCH3),
 		},
 		7: {
 			Fsprite:    int32(SPR_PUNG),
-			Fframe:     int32(3),
-			Ftics:      int32(5),
+			Fframe:     3,
+			Ftics:      5,
 			Fnextstate: int32(S_PUNCH4),
 		},
 		8: {
 			Fsprite:    int32(SPR_PUNG),
-			Fframe:     int32(2),
-			Ftics:      int32(4),
+			Fframe:     2,
+			Ftics:      4,
 			Fnextstate: int32(S_PUNCH5),
 		},
 		9: {
 			Fsprite:    int32(SPR_PUNG),
-			Fframe:     int32(1),
-			Ftics:      int32(5),
+			Fframe:     1,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_ReFire)})),
 			Fnextstate: int32(S_PUNCH),
 		},
 		10: {
 			Fsprite:    int32(SPR_PISG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_WeaponReady)})),
 			Fnextstate: int32(S_PISTOL),
 		},
 		11: {
 			Fsprite:    int32(SPR_PISG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Lower)})),
 			Fnextstate: int32(S_PISTOLDOWN),
 		},
 		12: {
 			Fsprite:    int32(SPR_PISG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Raise)})),
 			Fnextstate: int32(S_PISTOLUP),
 		},
 		13: {
 			Fsprite:    int32(SPR_PISG),
-			Ftics:      int32(4),
+			Ftics:      4,
 			Fnextstate: int32(S_PISTOL2),
 		},
 		14: {
 			Fsprite:    int32(SPR_PISG),
-			Fframe:     int32(1),
-			Ftics:      int32(6),
+			Fframe:     1,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FirePistol)})),
 			Fnextstate: int32(S_PISTOL3),
 		},
 		15: {
 			Fsprite:    int32(SPR_PISG),
-			Fframe:     int32(2),
-			Ftics:      int32(4),
+			Fframe:     2,
+			Ftics:      4,
 			Fnextstate: int32(S_PISTOL4),
 		},
 		16: {
 			Fsprite:    int32(SPR_PISG),
-			Fframe:     int32(1),
-			Ftics:      int32(5),
+			Fframe:     1,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_ReFire)})),
 			Fnextstate: int32(S_PISTOL),
 		},
 		17: {
 			Fsprite:    int32(SPR_PISF),
-			Fframe:     int32(32768),
-			Ftics:      int32(7),
+			Fframe:     32768,
+			Ftics:      7,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light1)})),
 			Fnextstate: int32(S_LIGHTDONE),
 		},
 		18: {
 			Fsprite:    int32(SPR_SHTG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_WeaponReady)})),
 			Fnextstate: int32(S_SGUN),
 		},
 		19: {
 			Fsprite:    int32(SPR_SHTG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Lower)})),
 			Fnextstate: int32(S_SGUNDOWN),
 		},
 		20: {
 			Fsprite:    int32(SPR_SHTG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Raise)})),
 			Fnextstate: int32(S_SGUNUP),
 		},
 		21: {
 			Fsprite:    int32(SPR_SHTG),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Fnextstate: int32(S_SGUN2),
 		},
 		22: {
 			Fsprite:    int32(SPR_SHTG),
-			Ftics:      int32(7),
+			Ftics:      7,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FireShotgun)})),
 			Fnextstate: int32(S_SGUN3),
 		},
 		23: {
 			Fsprite:    int32(SPR_SHTG),
-			Fframe:     int32(1),
-			Ftics:      int32(5),
+			Fframe:     1,
+			Ftics:      5,
 			Fnextstate: int32(S_SGUN4),
 		},
 		24: {
 			Fsprite:    int32(SPR_SHTG),
-			Fframe:     int32(2),
-			Ftics:      int32(5),
+			Fframe:     2,
+			Ftics:      5,
 			Fnextstate: int32(S_SGUN5),
 		},
 		25: {
 			Fsprite:    int32(SPR_SHTG),
-			Fframe:     int32(3),
-			Ftics:      int32(4),
+			Fframe:     3,
+			Ftics:      4,
 			Fnextstate: int32(S_SGUN6),
 		},
 		26: {
 			Fsprite:    int32(SPR_SHTG),
-			Fframe:     int32(2),
-			Ftics:      int32(5),
+			Fframe:     2,
+			Ftics:      5,
 			Fnextstate: int32(S_SGUN7),
 		},
 		27: {
 			Fsprite:    int32(SPR_SHTG),
-			Fframe:     int32(1),
-			Ftics:      int32(5),
+			Fframe:     1,
+			Ftics:      5,
 			Fnextstate: int32(S_SGUN8),
 		},
 		28: {
 			Fsprite:    int32(SPR_SHTG),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Fnextstate: int32(S_SGUN9),
 		},
 		29: {
 			Fsprite:    int32(SPR_SHTG),
-			Ftics:      int32(7),
+			Ftics:      7,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_ReFire)})),
 			Fnextstate: int32(S_SGUN),
 		},
 		30: {
 			Fsprite:    int32(SPR_SHTF),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light1)})),
 			Fnextstate: int32(S_SGUNFLASH2),
 		},
 		31: {
 			Fsprite:    int32(SPR_SHTF),
-			Fframe:     int32(32769),
-			Ftics:      int32(3),
+			Fframe:     32769,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light2)})),
 			Fnextstate: int32(S_LIGHTDONE),
 		},
 		32: {
 			Fsprite:    int32(SPR_SHT2),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_WeaponReady)})),
 			Fnextstate: int32(S_DSGUN),
 		},
 		33: {
 			Fsprite:    int32(SPR_SHT2),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Lower)})),
 			Fnextstate: int32(S_DSGUNDOWN),
 		},
 		34: {
 			Fsprite:    int32(SPR_SHT2),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Raise)})),
 			Fnextstate: int32(S_DSGUNUP),
 		},
 		35: {
 			Fsprite:    int32(SPR_SHT2),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Fnextstate: int32(S_DSGUN2),
 		},
 		36: {
 			Fsprite:    int32(SPR_SHT2),
-			Ftics:      int32(7),
+			Ftics:      7,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FireShotgun2)})),
 			Fnextstate: int32(S_DSGUN3),
 		},
 		37: {
 			Fsprite:    int32(SPR_SHT2),
-			Fframe:     int32(1),
-			Ftics:      int32(7),
+			Fframe:     1,
+			Ftics:      7,
 			Fnextstate: int32(S_DSGUN4),
 		},
 		38: {
 			Fsprite:    int32(SPR_SHT2),
-			Fframe:     int32(2),
-			Ftics:      int32(7),
+			Fframe:     2,
+			Ftics:      7,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_CheckReload)})),
 			Fnextstate: int32(S_DSGUN5),
 		},
 		39: {
 			Fsprite:    int32(SPR_SHT2),
-			Fframe:     int32(3),
-			Ftics:      int32(7),
+			Fframe:     3,
+			Ftics:      7,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_OpenShotgun2)})),
 			Fnextstate: int32(S_DSGUN6),
 		},
 		40: {
 			Fsprite:    int32(SPR_SHT2),
-			Fframe:     int32(4),
-			Ftics:      int32(7),
+			Fframe:     4,
+			Ftics:      7,
 			Fnextstate: int32(S_DSGUN7),
 		},
 		41: {
 			Fsprite:    int32(SPR_SHT2),
-			Fframe:     int32(5),
-			Ftics:      int32(7),
+			Fframe:     5,
+			Ftics:      7,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_LoadShotgun2)})),
 			Fnextstate: int32(S_DSGUN8),
 		},
 		42: {
 			Fsprite:    int32(SPR_SHT2),
-			Fframe:     int32(6),
-			Ftics:      int32(6),
+			Fframe:     6,
+			Ftics:      6,
 			Fnextstate: int32(S_DSGUN9),
 		},
 		43: {
 			Fsprite:    int32(SPR_SHT2),
-			Fframe:     int32(7),
-			Ftics:      int32(6),
+			Fframe:     7,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_CloseShotgun2)})),
 			Fnextstate: int32(S_DSGUN10),
 		},
 		44: {
 			Fsprite:    int32(SPR_SHT2),
-			Ftics:      int32(5),
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_ReFire)})),
 			Fnextstate: int32(S_DSGUN),
 		},
 		45: {
 			Fsprite:    int32(SPR_SHT2),
-			Fframe:     int32(1),
-			Ftics:      int32(7),
+			Fframe:     1,
+			Ftics:      7,
 			Fnextstate: int32(S_DSNR2),
 		},
 		46: {
 			Fsprite:    int32(SPR_SHT2),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Fnextstate: int32(S_DSGUNDOWN),
 		},
 		47: {
 			Fsprite:    int32(SPR_SHT2),
-			Fframe:     int32(32776),
-			Ftics:      int32(5),
+			Fframe:     32776,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light1)})),
 			Fnextstate: int32(S_DSGUNFLASH2),
 		},
 		48: {
 			Fsprite:    int32(SPR_SHT2),
-			Fframe:     int32(32777),
-			Ftics:      int32(4),
+			Fframe:     32777,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light2)})),
 			Fnextstate: int32(S_LIGHTDONE),
 		},
 		49: {
 			Fsprite:    int32(SPR_CHGG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_WeaponReady)})),
 			Fnextstate: int32(S_CHAIN),
 		},
 		50: {
 			Fsprite:    int32(SPR_CHGG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Lower)})),
 			Fnextstate: int32(S_CHAINDOWN),
 		},
 		51: {
 			Fsprite:    int32(SPR_CHGG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Raise)})),
 			Fnextstate: int32(S_CHAINUP),
 		},
 		52: {
 			Fsprite:    int32(SPR_CHGG),
-			Ftics:      int32(4),
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FireCGun)})),
 			Fnextstate: int32(S_CHAIN2),
 		},
 		53: {
 			Fsprite:    int32(SPR_CHGG),
-			Fframe:     int32(1),
-			Ftics:      int32(4),
+			Fframe:     1,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FireCGun)})),
 			Fnextstate: int32(S_CHAIN3),
 		},
 		54: {
 			Fsprite:    int32(SPR_CHGG),
-			Fframe:     int32(1),
+			Fframe:     1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_ReFire)})),
 			Fnextstate: int32(S_CHAIN),
 		},
 		55: {
 			Fsprite:    int32(SPR_CHGF),
-			Fframe:     int32(32768),
-			Ftics:      int32(5),
+			Fframe:     32768,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light1)})),
 			Fnextstate: int32(S_LIGHTDONE),
 		},
 		56: {
 			Fsprite:    int32(SPR_CHGF),
-			Fframe:     int32(32769),
-			Ftics:      int32(5),
+			Fframe:     32769,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light2)})),
 			Fnextstate: int32(S_LIGHTDONE),
 		},
 		57: {
 			Fsprite:    int32(SPR_MISG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_WeaponReady)})),
 			Fnextstate: int32(S_MISSILE),
 		},
 		58: {
 			Fsprite:    int32(SPR_MISG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Lower)})),
 			Fnextstate: int32(S_MISSILEDOWN),
 		},
 		59: {
 			Fsprite:    int32(SPR_MISG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Raise)})),
 			Fnextstate: int32(S_MISSILEUP),
 		},
 		60: {
 			Fsprite:    int32(SPR_MISG),
-			Fframe:     int32(1),
-			Ftics:      int32(8),
+			Fframe:     1,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_GunFlash)})),
 			Fnextstate: int32(S_MISSILE2),
 		},
 		61: {
 			Fsprite:    int32(SPR_MISG),
-			Fframe:     int32(1),
-			Ftics:      int32(12),
+			Fframe:     1,
+			Ftics:      12,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FireMissile)})),
 			Fnextstate: int32(S_MISSILE3),
 		},
 		62: {
 			Fsprite:    int32(SPR_MISG),
-			Fframe:     int32(1),
+			Fframe:     1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_ReFire)})),
 			Fnextstate: int32(S_MISSILE),
 		},
 		63: {
 			Fsprite:    int32(SPR_MISF),
-			Fframe:     int32(32768),
-			Ftics:      int32(3),
+			Fframe:     32768,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light1)})),
 			Fnextstate: int32(S_MISSILEFLASH2),
 		},
 		64: {
 			Fsprite:    int32(SPR_MISF),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_MISSILEFLASH3),
 		},
 		65: {
 			Fsprite:    int32(SPR_MISF),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light2)})),
 			Fnextstate: int32(S_MISSILEFLASH4),
 		},
 		66: {
 			Fsprite:    int32(SPR_MISF),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light2)})),
 			Fnextstate: int32(S_LIGHTDONE),
 		},
 		67: {
 			Fsprite:    int32(SPR_SAWG),
-			Fframe:     int32(2),
-			Ftics:      int32(4),
+			Fframe:     2,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_WeaponReady)})),
 			Fnextstate: int32(S_SAWB),
 		},
 		68: {
 			Fsprite:    int32(SPR_SAWG),
-			Fframe:     int32(3),
-			Ftics:      int32(4),
+			Fframe:     3,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_WeaponReady)})),
 			Fnextstate: int32(S_SAW),
 		},
 		69: {
 			Fsprite:    int32(SPR_SAWG),
-			Fframe:     int32(2),
-			Ftics:      int32(1),
+			Fframe:     2,
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Lower)})),
 			Fnextstate: int32(S_SAWDOWN),
 		},
 		70: {
 			Fsprite:    int32(SPR_SAWG),
-			Fframe:     int32(2),
-			Ftics:      int32(1),
+			Fframe:     2,
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Raise)})),
 			Fnextstate: int32(S_SAWUP),
 		},
 		71: {
 			Fsprite:    int32(SPR_SAWG),
-			Ftics:      int32(4),
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Saw)})),
 			Fnextstate: int32(S_SAW2),
 		},
 		72: {
 			Fsprite:    int32(SPR_SAWG),
-			Fframe:     int32(1),
-			Ftics:      int32(4),
+			Fframe:     1,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Saw)})),
 			Fnextstate: int32(S_SAW3),
 		},
 		73: {
 			Fsprite:    int32(SPR_SAWG),
-			Fframe:     int32(1),
+			Fframe:     1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_ReFire)})),
 			Fnextstate: int32(S_SAW),
 		},
 		74: {
 			Fsprite:    int32(SPR_PLSG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_WeaponReady)})),
 			Fnextstate: int32(S_PLASMA),
 		},
 		75: {
 			Fsprite:    int32(SPR_PLSG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Lower)})),
 			Fnextstate: int32(S_PLASMADOWN),
 		},
 		76: {
 			Fsprite:    int32(SPR_PLSG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Raise)})),
 			Fnextstate: int32(S_PLASMAUP),
 		},
 		77: {
 			Fsprite:    int32(SPR_PLSG),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FirePlasma)})),
 			Fnextstate: int32(S_PLASMA2),
 		},
 		78: {
 			Fsprite:    int32(SPR_PLSG),
-			Fframe:     int32(1),
-			Ftics:      int32(20),
+			Fframe:     1,
+			Ftics:      20,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_ReFire)})),
 			Fnextstate: int32(S_PLASMA),
 		},
 		79: {
 			Fsprite:    int32(SPR_PLSF),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light1)})),
 			Fnextstate: int32(S_LIGHTDONE),
 		},
 		80: {
 			Fsprite:    int32(SPR_PLSF),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light1)})),
 			Fnextstate: int32(S_LIGHTDONE),
 		},
 		81: {
 			Fsprite:    int32(SPR_BFGG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_WeaponReady)})),
 			Fnextstate: int32(S_BFG),
 		},
 		82: {
 			Fsprite:    int32(SPR_BFGG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Lower)})),
 			Fnextstate: int32(S_BFGDOWN),
 		},
 		83: {
 			Fsprite:    int32(SPR_BFGG),
-			Ftics:      int32(1),
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Raise)})),
 			Fnextstate: int32(S_BFGUP),
 		},
 		84: {
 			Fsprite:    int32(SPR_BFGG),
-			Ftics:      int32(20),
+			Ftics:      20,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BFGsound)})),
 			Fnextstate: int32(S_BFG2),
 		},
 		85: {
 			Fsprite:    int32(SPR_BFGG),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_GunFlash)})),
 			Fnextstate: int32(S_BFG3),
 		},
 		86: {
 			Fsprite:    int32(SPR_BFGG),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FireBFG)})),
 			Fnextstate: int32(S_BFG4),
 		},
 		87: {
 			Fsprite:    int32(SPR_BFGG),
-			Fframe:     int32(1),
-			Ftics:      int32(20),
+			Fframe:     1,
+			Ftics:      20,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_ReFire)})),
 			Fnextstate: int32(S_BFG),
 		},
 		88: {
 			Fsprite:    int32(SPR_BFGF),
-			Fframe:     int32(32768),
-			Ftics:      int32(11),
+			Fframe:     32768,
+			Ftics:      11,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light1)})),
 			Fnextstate: int32(S_BFGFLASH2),
 		},
 		89: {
 			Fsprite:    int32(SPR_BFGF),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Light2)})),
 			Fnextstate: int32(S_LIGHTDONE),
 		},
 		90: {
 			Fsprite:    int32(SPR_BLUD),
-			Fframe:     int32(2),
-			Ftics:      int32(8),
+			Fframe:     2,
+			Ftics:      8,
 			Fnextstate: int32(S_BLOOD2),
 		},
 		91: {
 			Fsprite:    int32(SPR_BLUD),
-			Fframe:     int32(1),
-			Ftics:      int32(8),
+			Fframe:     1,
+			Ftics:      8,
 			Fnextstate: int32(S_BLOOD3),
 		},
 		92: {
 			Fsprite: int32(SPR_BLUD),
-			Ftics:   int32(8),
+			Ftics:   8,
 		},
 		93: {
 			Fsprite:    int32(SPR_PUFF),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_PUFF2),
 		},
 		94: {
 			Fsprite:    int32(SPR_PUFF),
-			Fframe:     int32(1),
-			Ftics:      int32(4),
+			Fframe:     1,
+			Ftics:      4,
 			Fnextstate: int32(S_PUFF3),
 		},
 		95: {
 			Fsprite:    int32(SPR_PUFF),
-			Fframe:     int32(2),
-			Ftics:      int32(4),
+			Fframe:     2,
+			Ftics:      4,
 			Fnextstate: int32(S_PUFF4),
 		},
 		96: {
 			Fsprite: int32(SPR_PUFF),
-			Fframe:  int32(3),
-			Ftics:   int32(4),
+			Fframe:  3,
+			Ftics:   4,
 		},
 		97: {
 			Fsprite:    int32(SPR_BAL1),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_TBALL2),
 		},
 		98: {
 			Fsprite:    int32(SPR_BAL1),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_TBALL1),
 		},
 		99: {
 			Fsprite:    int32(SPR_BAL1),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_TBALLX2),
 		},
 		100: {
 			Fsprite:    int32(SPR_BAL1),
-			Fframe:     int32(32771),
-			Ftics:      int32(6),
+			Fframe:     32771,
+			Ftics:      6,
 			Fnextstate: int32(S_TBALLX3),
 		},
 		101: {
 			Fsprite: int32(SPR_BAL1),
-			Fframe:  int32(32772),
-			Ftics:   int32(6),
+			Fframe:  32772,
+			Ftics:   6,
 		},
 		102: {
 			Fsprite:    int32(SPR_BAL2),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_RBALL2),
 		},
 		103: {
 			Fsprite:    int32(SPR_BAL2),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_RBALL1),
 		},
 		104: {
 			Fsprite:    int32(SPR_BAL2),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_RBALLX2),
 		},
 		105: {
 			Fsprite:    int32(SPR_BAL2),
-			Fframe:     int32(32771),
-			Ftics:      int32(6),
+			Fframe:     32771,
+			Ftics:      6,
 			Fnextstate: int32(S_RBALLX3),
 		},
 		106: {
 			Fsprite: int32(SPR_BAL2),
-			Fframe:  int32(32772),
-			Ftics:   int32(6),
+			Fframe:  32772,
+			Ftics:   6,
 		},
 		107: {
 			Fsprite:    int32(SPR_PLSS),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_PLASBALL2),
 		},
 		108: {
 			Fsprite:    int32(SPR_PLSS),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_PLASBALL),
 		},
 		109: {
 			Fsprite:    int32(SPR_PLSE),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_PLASEXP2),
 		},
 		110: {
 			Fsprite:    int32(SPR_PLSE),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_PLASEXP3),
 		},
 		111: {
 			Fsprite:    int32(SPR_PLSE),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Fnextstate: int32(S_PLASEXP4),
 		},
 		112: {
 			Fsprite:    int32(SPR_PLSE),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Fnextstate: int32(S_PLASEXP5),
 		},
 		113: {
 			Fsprite: int32(SPR_PLSE),
-			Fframe:  int32(32772),
-			Ftics:   int32(4),
+			Fframe:  32772,
+			Ftics:   4,
 		},
 		114: {
 			Fsprite:    int32(SPR_MISL),
-			Fframe:     int32(32768),
-			Ftics:      int32(1),
+			Fframe:     32768,
+			Ftics:      1,
 			Fnextstate: int32(S_ROCKET),
 		},
 		115: {
 			Fsprite:    int32(SPR_BFS1),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_BFGSHOT2),
 		},
 		116: {
 			Fsprite:    int32(SPR_BFS1),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_BFGSHOT),
 		},
 		117: {
 			Fsprite:    int32(SPR_BFE1),
-			Fframe:     int32(32768),
-			Ftics:      int32(8),
+			Fframe:     32768,
+			Ftics:      8,
 			Fnextstate: int32(S_BFGLAND2),
 		},
 		118: {
 			Fsprite:    int32(SPR_BFE1),
-			Fframe:     int32(32769),
-			Ftics:      int32(8),
+			Fframe:     32769,
+			Ftics:      8,
 			Fnextstate: int32(S_BFGLAND3),
 		},
 		119: {
 			Fsprite:    int32(SPR_BFE1),
-			Fframe:     int32(32770),
-			Ftics:      int32(8),
+			Fframe:     32770,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BFGSpray)})),
 			Fnextstate: int32(S_BFGLAND4),
 		},
 		120: {
 			Fsprite:    int32(SPR_BFE1),
-			Fframe:     int32(32771),
-			Ftics:      int32(8),
+			Fframe:     32771,
+			Ftics:      8,
 			Fnextstate: int32(S_BFGLAND5),
 		},
 		121: {
 			Fsprite:    int32(SPR_BFE1),
-			Fframe:     int32(32772),
-			Ftics:      int32(8),
+			Fframe:     32772,
+			Ftics:      8,
 			Fnextstate: int32(S_BFGLAND6),
 		},
 		122: {
 			Fsprite: int32(SPR_BFE1),
-			Fframe:  int32(32773),
-			Ftics:   int32(8),
+			Fframe:  32773,
+			Ftics:   8,
 		},
 		123: {
 			Fsprite:    int32(SPR_BFE2),
-			Fframe:     int32(32768),
-			Ftics:      int32(8),
+			Fframe:     32768,
+			Ftics:      8,
 			Fnextstate: int32(S_BFGEXP2),
 		},
 		124: {
 			Fsprite:    int32(SPR_BFE2),
-			Fframe:     int32(32769),
-			Ftics:      int32(8),
+			Fframe:     32769,
+			Ftics:      8,
 			Fnextstate: int32(S_BFGEXP3),
 		},
 		125: {
 			Fsprite:    int32(SPR_BFE2),
-			Fframe:     int32(32770),
-			Ftics:      int32(8),
+			Fframe:     32770,
+			Ftics:      8,
 			Fnextstate: int32(S_BFGEXP4),
 		},
 		126: {
 			Fsprite: int32(SPR_BFE2),
-			Fframe:  int32(32771),
-			Ftics:   int32(8),
+			Fframe:  32771,
+			Ftics:   8,
 		},
 		127: {
 			Fsprite:    int32(SPR_MISL),
-			Fframe:     int32(32769),
-			Ftics:      int32(8),
+			Fframe:     32769,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Explode)})),
 			Fnextstate: int32(S_EXPLODE2),
 		},
 		128: {
 			Fsprite:    int32(SPR_MISL),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_EXPLODE3),
 		},
 		129: {
 			Fsprite: int32(SPR_MISL),
-			Fframe:  int32(32771),
-			Ftics:   int32(4),
+			Fframe:  32771,
+			Ftics:   4,
 		},
 		130: {
 			Fsprite:    int32(SPR_TFOG),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_TFOG01),
 		},
 		131: {
 			Fsprite:    int32(SPR_TFOG),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_TFOG02),
 		},
 		132: {
 			Fsprite:    int32(SPR_TFOG),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_TFOG2),
 		},
 		133: {
 			Fsprite:    int32(SPR_TFOG),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_TFOG3),
 		},
 		134: {
 			Fsprite:    int32(SPR_TFOG),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_TFOG4),
 		},
 		135: {
 			Fsprite:    int32(SPR_TFOG),
-			Fframe:     int32(32771),
-			Ftics:      int32(6),
+			Fframe:     32771,
+			Ftics:      6,
 			Fnextstate: int32(S_TFOG5),
 		},
 		136: {
 			Fsprite:    int32(SPR_TFOG),
-			Fframe:     int32(32772),
-			Ftics:      int32(6),
+			Fframe:     32772,
+			Ftics:      6,
 			Fnextstate: int32(S_TFOG6),
 		},
 		137: {
 			Fsprite:    int32(SPR_TFOG),
-			Fframe:     int32(32773),
-			Ftics:      int32(6),
+			Fframe:     32773,
+			Ftics:      6,
 			Fnextstate: int32(S_TFOG7),
 		},
 		138: {
 			Fsprite:    int32(SPR_TFOG),
-			Fframe:     int32(32774),
-			Ftics:      int32(6),
+			Fframe:     32774,
+			Ftics:      6,
 			Fnextstate: int32(S_TFOG8),
 		},
 		139: {
 			Fsprite:    int32(SPR_TFOG),
-			Fframe:     int32(32775),
-			Ftics:      int32(6),
+			Fframe:     32775,
+			Ftics:      6,
 			Fnextstate: int32(S_TFOG9),
 		},
 		140: {
 			Fsprite:    int32(SPR_TFOG),
-			Fframe:     int32(32776),
-			Ftics:      int32(6),
+			Fframe:     32776,
+			Ftics:      6,
 			Fnextstate: int32(S_TFOG10),
 		},
 		141: {
 			Fsprite: int32(SPR_TFOG),
-			Fframe:  int32(32777),
-			Ftics:   int32(6),
+			Fframe:  32777,
+			Ftics:   6,
 		},
 		142: {
 			Fsprite:    int32(SPR_IFOG),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_IFOG01),
 		},
 		143: {
 			Fsprite:    int32(SPR_IFOG),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_IFOG02),
 		},
 		144: {
 			Fsprite:    int32(SPR_IFOG),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_IFOG2),
 		},
 		145: {
 			Fsprite:    int32(SPR_IFOG),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_IFOG3),
 		},
 		146: {
 			Fsprite:    int32(SPR_IFOG),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_IFOG4),
 		},
 		147: {
 			Fsprite:    int32(SPR_IFOG),
-			Fframe:     int32(32771),
-			Ftics:      int32(6),
+			Fframe:     32771,
+			Ftics:      6,
 			Fnextstate: int32(S_IFOG5),
 		},
 		148: {
 			Fsprite: int32(SPR_IFOG),
-			Fframe:  int32(32772),
-			Ftics:   int32(6),
+			Fframe:  32772,
+			Ftics:   6,
 		},
 		149: {
 			Fsprite: int32(SPR_PLAY),
@@ -11307,3916 +11307,3916 @@ func init() {
 		},
 		150: {
 			Fsprite:    int32(SPR_PLAY),
-			Ftics:      int32(4),
+			Ftics:      4,
 			Fnextstate: int32(S_PLAY_RUN2),
 		},
 		151: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(1),
-			Ftics:      int32(4),
+			Fframe:     1,
+			Ftics:      4,
 			Fnextstate: int32(S_PLAY_RUN3),
 		},
 		152: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(2),
-			Ftics:      int32(4),
+			Fframe:     2,
+			Ftics:      4,
 			Fnextstate: int32(S_PLAY_RUN4),
 		},
 		153: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(3),
-			Ftics:      int32(4),
+			Fframe:     3,
+			Ftics:      4,
 			Fnextstate: int32(S_PLAY_RUN1),
 		},
 		154: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(4),
-			Ftics:      int32(12),
+			Fframe:     4,
+			Ftics:      12,
 			Fnextstate: int32(S_PLAY),
 		},
 		155: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(32773),
-			Ftics:      int32(6),
+			Fframe:     32773,
+			Ftics:      6,
 			Fnextstate: int32(S_PLAY_ATK1),
 		},
 		156: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(6),
-			Ftics:      int32(4),
+			Fframe:     6,
+			Ftics:      4,
 			Fnextstate: int32(S_PLAY_PAIN2),
 		},
 		157: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(6),
-			Ftics:      int32(4),
+			Fframe:     6,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_PLAY),
 		},
 		158: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(7),
-			Ftics:      int32(10),
+			Fframe:     7,
+			Ftics:      10,
 			Fnextstate: int32(S_PLAY_DIE2),
 		},
 		159: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(8),
-			Ftics:      int32(10),
+			Fframe:     8,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_PlayerScream)})),
 			Fnextstate: int32(S_PLAY_DIE3),
 		},
 		160: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(9),
-			Ftics:      int32(10),
+			Fframe:     9,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_PLAY_DIE4),
 		},
 		161: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(10),
-			Ftics:      int32(10),
+			Fframe:     10,
+			Ftics:      10,
 			Fnextstate: int32(S_PLAY_DIE5),
 		},
 		162: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(11),
-			Ftics:      int32(10),
+			Fframe:     11,
+			Ftics:      10,
 			Fnextstate: int32(S_PLAY_DIE6),
 		},
 		163: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(12),
-			Ftics:      int32(10),
+			Fframe:     12,
+			Ftics:      10,
 			Fnextstate: int32(S_PLAY_DIE7),
 		},
 		164: {
 			Fsprite: int32(SPR_PLAY),
-			Fframe:  int32(13),
+			Fframe:  13,
 			Ftics:   -1,
 		},
 		165: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(14),
-			Ftics:      int32(5),
+			Fframe:     14,
+			Ftics:      5,
 			Fnextstate: int32(S_PLAY_XDIE2),
 		},
 		166: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(15),
-			Ftics:      int32(5),
+			Fframe:     15,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_XScream)})),
 			Fnextstate: int32(S_PLAY_XDIE3),
 		},
 		167: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(16),
-			Ftics:      int32(5),
+			Fframe:     16,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_PLAY_XDIE4),
 		},
 		168: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(17),
-			Ftics:      int32(5),
+			Fframe:     17,
+			Ftics:      5,
 			Fnextstate: int32(S_PLAY_XDIE5),
 		},
 		169: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(18),
-			Ftics:      int32(5),
+			Fframe:     18,
+			Ftics:      5,
 			Fnextstate: int32(S_PLAY_XDIE6),
 		},
 		170: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(19),
-			Ftics:      int32(5),
+			Fframe:     19,
+			Ftics:      5,
 			Fnextstate: int32(S_PLAY_XDIE7),
 		},
 		171: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(20),
-			Ftics:      int32(5),
+			Fframe:     20,
+			Ftics:      5,
 			Fnextstate: int32(S_PLAY_XDIE8),
 		},
 		172: {
 			Fsprite:    int32(SPR_PLAY),
-			Fframe:     int32(21),
-			Ftics:      int32(5),
+			Fframe:     21,
+			Ftics:      5,
 			Fnextstate: int32(S_PLAY_XDIE9),
 		},
 		173: {
 			Fsprite: int32(SPR_PLAY),
-			Fframe:  int32(22),
+			Fframe:  22,
 			Ftics:   -1,
 		},
 		174: {
 			Fsprite:    int32(SPR_POSS),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_POSS_STND2),
 		},
 		175: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_POSS_STND),
 		},
 		176: {
 			Fsprite:    int32(SPR_POSS),
-			Ftics:      int32(4),
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_POSS_RUN2),
 		},
 		177: {
 			Fsprite:    int32(SPR_POSS),
-			Ftics:      int32(4),
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_POSS_RUN3),
 		},
 		178: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(1),
-			Ftics:      int32(4),
+			Fframe:     1,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_POSS_RUN4),
 		},
 		179: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(1),
-			Ftics:      int32(4),
+			Fframe:     1,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_POSS_RUN5),
 		},
 		180: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(2),
-			Ftics:      int32(4),
+			Fframe:     2,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_POSS_RUN6),
 		},
 		181: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(2),
-			Ftics:      int32(4),
+			Fframe:     2,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_POSS_RUN7),
 		},
 		182: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(3),
-			Ftics:      int32(4),
+			Fframe:     3,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_POSS_RUN8),
 		},
 		183: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(3),
-			Ftics:      int32(4),
+			Fframe:     3,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_POSS_RUN1),
 		},
 		184: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(4),
-			Ftics:      int32(10),
+			Fframe:     4,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_POSS_ATK2),
 		},
 		185: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(5),
-			Ftics:      int32(8),
+			Fframe:     5,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_PosAttack)})),
 			Fnextstate: int32(S_POSS_ATK3),
 		},
 		186: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(4),
-			Ftics:      int32(8),
+			Fframe:     4,
+			Ftics:      8,
 			Fnextstate: int32(S_POSS_RUN1),
 		},
 		187: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(6),
-			Ftics:      int32(3),
+			Fframe:     6,
+			Ftics:      3,
 			Fnextstate: int32(S_POSS_PAIN2),
 		},
 		188: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(6),
-			Ftics:      int32(3),
+			Fframe:     6,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_POSS_RUN1),
 		},
 		189: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(7),
-			Ftics:      int32(5),
+			Fframe:     7,
+			Ftics:      5,
 			Fnextstate: int32(S_POSS_DIE2),
 		},
 		190: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(8),
-			Ftics:      int32(5),
+			Fframe:     8,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_POSS_DIE3),
 		},
 		191: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(9),
-			Ftics:      int32(5),
+			Fframe:     9,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_POSS_DIE4),
 		},
 		192: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(10),
-			Ftics:      int32(5),
+			Fframe:     10,
+			Ftics:      5,
 			Fnextstate: int32(S_POSS_DIE5),
 		},
 		193: {
 			Fsprite: int32(SPR_POSS),
-			Fframe:  int32(11),
+			Fframe:  11,
 			Ftics:   -1,
 		},
 		194: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(12),
-			Ftics:      int32(5),
+			Fframe:     12,
+			Ftics:      5,
 			Fnextstate: int32(S_POSS_XDIE2),
 		},
 		195: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(13),
-			Ftics:      int32(5),
+			Fframe:     13,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_XScream)})),
 			Fnextstate: int32(S_POSS_XDIE3),
 		},
 		196: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(14),
-			Ftics:      int32(5),
+			Fframe:     14,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_POSS_XDIE4),
 		},
 		197: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(15),
-			Ftics:      int32(5),
+			Fframe:     15,
+			Ftics:      5,
 			Fnextstate: int32(S_POSS_XDIE5),
 		},
 		198: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(16),
-			Ftics:      int32(5),
+			Fframe:     16,
+			Ftics:      5,
 			Fnextstate: int32(S_POSS_XDIE6),
 		},
 		199: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(17),
-			Ftics:      int32(5),
+			Fframe:     17,
+			Ftics:      5,
 			Fnextstate: int32(S_POSS_XDIE7),
 		},
 		200: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(18),
-			Ftics:      int32(5),
+			Fframe:     18,
+			Ftics:      5,
 			Fnextstate: int32(S_POSS_XDIE8),
 		},
 		201: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(19),
-			Ftics:      int32(5),
+			Fframe:     19,
+			Ftics:      5,
 			Fnextstate: int32(S_POSS_XDIE9),
 		},
 		202: {
 			Fsprite: int32(SPR_POSS),
-			Fframe:  int32(20),
+			Fframe:  20,
 			Ftics:   -1,
 		},
 		203: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(10),
-			Ftics:      int32(5),
+			Fframe:     10,
+			Ftics:      5,
 			Fnextstate: int32(S_POSS_RAISE2),
 		},
 		204: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(9),
-			Ftics:      int32(5),
+			Fframe:     9,
+			Ftics:      5,
 			Fnextstate: int32(S_POSS_RAISE3),
 		},
 		205: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(8),
-			Ftics:      int32(5),
+			Fframe:     8,
+			Ftics:      5,
 			Fnextstate: int32(S_POSS_RAISE4),
 		},
 		206: {
 			Fsprite:    int32(SPR_POSS),
-			Fframe:     int32(7),
-			Ftics:      int32(5),
+			Fframe:     7,
+			Ftics:      5,
 			Fnextstate: int32(S_POSS_RUN1),
 		},
 		207: {
 			Fsprite:    int32(SPR_SPOS),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_SPOS_STND2),
 		},
 		208: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_SPOS_STND),
 		},
 		209: {
 			Fsprite:    int32(SPR_SPOS),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPOS_RUN2),
 		},
 		210: {
 			Fsprite:    int32(SPR_SPOS),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPOS_RUN3),
 		},
 		211: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPOS_RUN4),
 		},
 		212: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPOS_RUN5),
 		},
 		213: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPOS_RUN6),
 		},
 		214: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPOS_RUN7),
 		},
 		215: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPOS_RUN8),
 		},
 		216: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPOS_RUN1),
 		},
 		217: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(4),
-			Ftics:      int32(10),
+			Fframe:     4,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SPOS_ATK2),
 		},
 		218: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(32773),
-			Ftics:      int32(10),
+			Fframe:     32773,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SPosAttack)})),
 			Fnextstate: int32(S_SPOS_ATK3),
 		},
 		219: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(4),
-			Ftics:      int32(10),
+			Fframe:     4,
+			Ftics:      10,
 			Fnextstate: int32(S_SPOS_RUN1),
 		},
 		220: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(6),
-			Ftics:      int32(3),
+			Fframe:     6,
+			Ftics:      3,
 			Fnextstate: int32(S_SPOS_PAIN2),
 		},
 		221: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(6),
-			Ftics:      int32(3),
+			Fframe:     6,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_SPOS_RUN1),
 		},
 		222: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(7),
-			Ftics:      int32(5),
+			Fframe:     7,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_DIE2),
 		},
 		223: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(8),
-			Ftics:      int32(5),
+			Fframe:     8,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_SPOS_DIE3),
 		},
 		224: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(9),
-			Ftics:      int32(5),
+			Fframe:     9,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_SPOS_DIE4),
 		},
 		225: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(10),
-			Ftics:      int32(5),
+			Fframe:     10,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_DIE5),
 		},
 		226: {
 			Fsprite: int32(SPR_SPOS),
-			Fframe:  int32(11),
+			Fframe:  11,
 			Ftics:   -1,
 		},
 		227: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(12),
-			Ftics:      int32(5),
+			Fframe:     12,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_XDIE2),
 		},
 		228: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(13),
-			Ftics:      int32(5),
+			Fframe:     13,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_XScream)})),
 			Fnextstate: int32(S_SPOS_XDIE3),
 		},
 		229: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(14),
-			Ftics:      int32(5),
+			Fframe:     14,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_SPOS_XDIE4),
 		},
 		230: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(15),
-			Ftics:      int32(5),
+			Fframe:     15,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_XDIE5),
 		},
 		231: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(16),
-			Ftics:      int32(5),
+			Fframe:     16,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_XDIE6),
 		},
 		232: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(17),
-			Ftics:      int32(5),
+			Fframe:     17,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_XDIE7),
 		},
 		233: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(18),
-			Ftics:      int32(5),
+			Fframe:     18,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_XDIE8),
 		},
 		234: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(19),
-			Ftics:      int32(5),
+			Fframe:     19,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_XDIE9),
 		},
 		235: {
 			Fsprite: int32(SPR_SPOS),
-			Fframe:  int32(20),
+			Fframe:  20,
 			Ftics:   -1,
 		},
 		236: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(11),
-			Ftics:      int32(5),
+			Fframe:     11,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_RAISE2),
 		},
 		237: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(10),
-			Ftics:      int32(5),
+			Fframe:     10,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_RAISE3),
 		},
 		238: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(9),
-			Ftics:      int32(5),
+			Fframe:     9,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_RAISE4),
 		},
 		239: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(8),
-			Ftics:      int32(5),
+			Fframe:     8,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_RAISE5),
 		},
 		240: {
 			Fsprite:    int32(SPR_SPOS),
-			Fframe:     int32(7),
-			Ftics:      int32(5),
+			Fframe:     7,
+			Ftics:      5,
 			Fnextstate: int32(S_SPOS_RUN1),
 		},
 		241: {
 			Fsprite:    int32(SPR_VILE),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_VILE_STND2),
 		},
 		242: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_VILE_STND),
 		},
 		243: {
 			Fsprite:    int32(SPR_VILE),
-			Ftics:      int32(2),
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileChase)})),
 			Fnextstate: int32(S_VILE_RUN2),
 		},
 		244: {
 			Fsprite:    int32(SPR_VILE),
-			Ftics:      int32(2),
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileChase)})),
 			Fnextstate: int32(S_VILE_RUN3),
 		},
 		245: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(1),
-			Ftics:      int32(2),
+			Fframe:     1,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileChase)})),
 			Fnextstate: int32(S_VILE_RUN4),
 		},
 		246: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(1),
-			Ftics:      int32(2),
+			Fframe:     1,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileChase)})),
 			Fnextstate: int32(S_VILE_RUN5),
 		},
 		247: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(2),
-			Ftics:      int32(2),
+			Fframe:     2,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileChase)})),
 			Fnextstate: int32(S_VILE_RUN6),
 		},
 		248: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(2),
-			Ftics:      int32(2),
+			Fframe:     2,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileChase)})),
 			Fnextstate: int32(S_VILE_RUN7),
 		},
 		249: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(3),
-			Ftics:      int32(2),
+			Fframe:     3,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileChase)})),
 			Fnextstate: int32(S_VILE_RUN8),
 		},
 		250: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(3),
-			Ftics:      int32(2),
+			Fframe:     3,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileChase)})),
 			Fnextstate: int32(S_VILE_RUN9),
 		},
 		251: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(4),
-			Ftics:      int32(2),
+			Fframe:     4,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileChase)})),
 			Fnextstate: int32(S_VILE_RUN10),
 		},
 		252: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(4),
-			Ftics:      int32(2),
+			Fframe:     4,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileChase)})),
 			Fnextstate: int32(S_VILE_RUN11),
 		},
 		253: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(5),
-			Ftics:      int32(2),
+			Fframe:     5,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileChase)})),
 			Fnextstate: int32(S_VILE_RUN12),
 		},
 		254: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(5),
-			Ftics:      int32(2),
+			Fframe:     5,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileChase)})),
 			Fnextstate: int32(S_VILE_RUN1),
 		},
 		255: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32774),
+			Fframe:     32774,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileStart)})),
 			Fnextstate: int32(S_VILE_ATK2),
 		},
 		256: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32774),
-			Ftics:      int32(10),
+			Fframe:     32774,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_VILE_ATK3),
 		},
 		257: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32775),
-			Ftics:      int32(8),
+			Fframe:     32775,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileTarget)})),
 			Fnextstate: int32(S_VILE_ATK4),
 		},
 		258: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32776),
-			Ftics:      int32(8),
+			Fframe:     32776,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_VILE_ATK5),
 		},
 		259: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32777),
-			Ftics:      int32(8),
+			Fframe:     32777,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_VILE_ATK6),
 		},
 		260: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32778),
-			Ftics:      int32(8),
+			Fframe:     32778,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_VILE_ATK7),
 		},
 		261: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32779),
-			Ftics:      int32(8),
+			Fframe:     32779,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_VILE_ATK8),
 		},
 		262: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32780),
-			Ftics:      int32(8),
+			Fframe:     32780,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_VILE_ATK9),
 		},
 		263: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32781),
-			Ftics:      int32(8),
+			Fframe:     32781,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_VILE_ATK10),
 		},
 		264: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32782),
-			Ftics:      int32(8),
+			Fframe:     32782,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_VileAttack)})),
 			Fnextstate: int32(S_VILE_ATK11),
 		},
 		265: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32783),
-			Ftics:      int32(20),
+			Fframe:     32783,
+			Ftics:      20,
 			Fnextstate: int32(S_VILE_RUN1),
 		},
 		266: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32794),
-			Ftics:      int32(10),
+			Fframe:     32794,
+			Ftics:      10,
 			Fnextstate: int32(S_VILE_HEAL2),
 		},
 		267: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32795),
-			Ftics:      int32(10),
+			Fframe:     32795,
+			Ftics:      10,
 			Fnextstate: int32(S_VILE_HEAL3),
 		},
 		268: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(32796),
-			Ftics:      int32(10),
+			Fframe:     32796,
+			Ftics:      10,
 			Fnextstate: int32(S_VILE_RUN1),
 		},
 		269: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(16),
-			Ftics:      int32(5),
+			Fframe:     16,
+			Ftics:      5,
 			Fnextstate: int32(S_VILE_PAIN2),
 		},
 		270: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(16),
-			Ftics:      int32(5),
+			Fframe:     16,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_VILE_RUN1),
 		},
 		271: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(16),
-			Ftics:      int32(7),
+			Fframe:     16,
+			Ftics:      7,
 			Fnextstate: int32(S_VILE_DIE2),
 		},
 		272: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(17),
-			Ftics:      int32(7),
+			Fframe:     17,
+			Ftics:      7,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_VILE_DIE3),
 		},
 		273: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(18),
-			Ftics:      int32(7),
+			Fframe:     18,
+			Ftics:      7,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_VILE_DIE4),
 		},
 		274: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(19),
-			Ftics:      int32(7),
+			Fframe:     19,
+			Ftics:      7,
 			Fnextstate: int32(S_VILE_DIE5),
 		},
 		275: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(20),
-			Ftics:      int32(7),
+			Fframe:     20,
+			Ftics:      7,
 			Fnextstate: int32(S_VILE_DIE6),
 		},
 		276: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(21),
-			Ftics:      int32(7),
+			Fframe:     21,
+			Ftics:      7,
 			Fnextstate: int32(S_VILE_DIE7),
 		},
 		277: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(22),
-			Ftics:      int32(7),
+			Fframe:     22,
+			Ftics:      7,
 			Fnextstate: int32(S_VILE_DIE8),
 		},
 		278: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(23),
-			Ftics:      int32(5),
+			Fframe:     23,
+			Ftics:      5,
 			Fnextstate: int32(S_VILE_DIE9),
 		},
 		279: {
 			Fsprite:    int32(SPR_VILE),
-			Fframe:     int32(24),
-			Ftics:      int32(5),
+			Fframe:     24,
+			Ftics:      5,
 			Fnextstate: int32(S_VILE_DIE10),
 		},
 		280: {
 			Fsprite: int32(SPR_VILE),
-			Fframe:  int32(25),
+			Fframe:  25,
 			Ftics:   -1,
 		},
 		281: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32768),
-			Ftics:      int32(2),
+			Fframe:     32768,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_StartFire)})),
 			Fnextstate: int32(S_FIRE2),
 		},
 		282: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32769),
-			Ftics:      int32(2),
+			Fframe:     32769,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE3),
 		},
 		283: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32768),
-			Ftics:      int32(2),
+			Fframe:     32768,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE4),
 		},
 		284: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32769),
-			Ftics:      int32(2),
+			Fframe:     32769,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE5),
 		},
 		285: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32770),
-			Ftics:      int32(2),
+			Fframe:     32770,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FireCrackle)})),
 			Fnextstate: int32(S_FIRE6),
 		},
 		286: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32769),
-			Ftics:      int32(2),
+			Fframe:     32769,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE7),
 		},
 		287: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32770),
-			Ftics:      int32(2),
+			Fframe:     32770,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE8),
 		},
 		288: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32769),
-			Ftics:      int32(2),
+			Fframe:     32769,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE9),
 		},
 		289: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32770),
-			Ftics:      int32(2),
+			Fframe:     32770,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE10),
 		},
 		290: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32771),
-			Ftics:      int32(2),
+			Fframe:     32771,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE11),
 		},
 		291: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32770),
-			Ftics:      int32(2),
+			Fframe:     32770,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE12),
 		},
 		292: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32771),
-			Ftics:      int32(2),
+			Fframe:     32771,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE13),
 		},
 		293: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32770),
-			Ftics:      int32(2),
+			Fframe:     32770,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE14),
 		},
 		294: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32771),
-			Ftics:      int32(2),
+			Fframe:     32771,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE15),
 		},
 		295: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32772),
-			Ftics:      int32(2),
+			Fframe:     32772,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE16),
 		},
 		296: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32771),
-			Ftics:      int32(2),
+			Fframe:     32771,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE17),
 		},
 		297: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32772),
-			Ftics:      int32(2),
+			Fframe:     32772,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE18),
 		},
 		298: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32771),
-			Ftics:      int32(2),
+			Fframe:     32771,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE19),
 		},
 		299: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32772),
-			Ftics:      int32(2),
+			Fframe:     32772,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FireCrackle)})),
 			Fnextstate: int32(S_FIRE20),
 		},
 		300: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32773),
-			Ftics:      int32(2),
+			Fframe:     32773,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE21),
 		},
 		301: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32772),
-			Ftics:      int32(2),
+			Fframe:     32772,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE22),
 		},
 		302: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32773),
-			Ftics:      int32(2),
+			Fframe:     32773,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE23),
 		},
 		303: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32772),
-			Ftics:      int32(2),
+			Fframe:     32772,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE24),
 		},
 		304: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32773),
-			Ftics:      int32(2),
+			Fframe:     32773,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE25),
 		},
 		305: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32774),
-			Ftics:      int32(2),
+			Fframe:     32774,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE26),
 		},
 		306: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32775),
-			Ftics:      int32(2),
+			Fframe:     32775,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE27),
 		},
 		307: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32774),
-			Ftics:      int32(2),
+			Fframe:     32774,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE28),
 		},
 		308: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32775),
-			Ftics:      int32(2),
+			Fframe:     32775,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE29),
 		},
 		309: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32774),
-			Ftics:      int32(2),
+			Fframe:     32774,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_FIRE30),
 		},
 		310: {
 			Fsprite: int32(SPR_FIRE),
-			Fframe:  int32(32775),
-			Ftics:   int32(2),
+			Fframe:  32775,
+			Ftics:   2,
 			Faction: *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 		},
 		311: {
 			Fsprite:    int32(SPR_PUFF),
-			Fframe:     int32(1),
-			Ftics:      int32(4),
+			Fframe:     1,
+			Ftics:      4,
 			Fnextstate: int32(S_SMOKE2),
 		},
 		312: {
 			Fsprite:    int32(SPR_PUFF),
-			Fframe:     int32(2),
-			Ftics:      int32(4),
+			Fframe:     2,
+			Ftics:      4,
 			Fnextstate: int32(S_SMOKE3),
 		},
 		313: {
 			Fsprite:    int32(SPR_PUFF),
-			Fframe:     int32(1),
-			Ftics:      int32(4),
+			Fframe:     1,
+			Ftics:      4,
 			Fnextstate: int32(S_SMOKE4),
 		},
 		314: {
 			Fsprite:    int32(SPR_PUFF),
-			Fframe:     int32(2),
-			Ftics:      int32(4),
+			Fframe:     2,
+			Ftics:      4,
 			Fnextstate: int32(S_SMOKE5),
 		},
 		315: {
 			Fsprite: int32(SPR_PUFF),
-			Fframe:  int32(3),
-			Ftics:   int32(4),
+			Fframe:  3,
+			Ftics:   4,
 		},
 		316: {
 			Fsprite:    int32(SPR_FATB),
-			Fframe:     int32(32768),
-			Ftics:      int32(2),
+			Fframe:     32768,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Tracer)})),
 			Fnextstate: int32(S_TRACER2),
 		},
 		317: {
 			Fsprite:    int32(SPR_FATB),
-			Fframe:     int32(32769),
-			Ftics:      int32(2),
+			Fframe:     32769,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Tracer)})),
 			Fnextstate: int32(S_TRACER),
 		},
 		318: {
 			Fsprite:    int32(SPR_FBXP),
-			Fframe:     int32(32768),
-			Ftics:      int32(8),
+			Fframe:     32768,
+			Ftics:      8,
 			Fnextstate: int32(S_TRACEEXP2),
 		},
 		319: {
 			Fsprite:    int32(SPR_FBXP),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_TRACEEXP3),
 		},
 		320: {
 			Fsprite: int32(SPR_FBXP),
-			Fframe:  int32(32770),
-			Ftics:   int32(4),
+			Fframe:  32770,
+			Ftics:   4,
 		},
 		321: {
 			Fsprite:    int32(SPR_SKEL),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_SKEL_STND2),
 		},
 		322: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_SKEL_STND),
 		},
 		323: {
 			Fsprite:    int32(SPR_SKEL),
-			Ftics:      int32(2),
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKEL_RUN2),
 		},
 		324: {
 			Fsprite:    int32(SPR_SKEL),
-			Ftics:      int32(2),
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKEL_RUN3),
 		},
 		325: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(1),
-			Ftics:      int32(2),
+			Fframe:     1,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKEL_RUN4),
 		},
 		326: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(1),
-			Ftics:      int32(2),
+			Fframe:     1,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKEL_RUN5),
 		},
 		327: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(2),
-			Ftics:      int32(2),
+			Fframe:     2,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKEL_RUN6),
 		},
 		328: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(2),
-			Ftics:      int32(2),
+			Fframe:     2,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKEL_RUN7),
 		},
 		329: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(3),
-			Ftics:      int32(2),
+			Fframe:     3,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKEL_RUN8),
 		},
 		330: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(3),
-			Ftics:      int32(2),
+			Fframe:     3,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKEL_RUN9),
 		},
 		331: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(4),
-			Ftics:      int32(2),
+			Fframe:     4,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKEL_RUN10),
 		},
 		332: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(4),
-			Ftics:      int32(2),
+			Fframe:     4,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKEL_RUN11),
 		},
 		333: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(5),
-			Ftics:      int32(2),
+			Fframe:     5,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKEL_RUN12),
 		},
 		334: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(5),
-			Ftics:      int32(2),
+			Fframe:     5,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKEL_RUN1),
 		},
 		335: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(6),
+			Fframe:     6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SKEL_FIST2),
 		},
 		336: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(6),
-			Ftics:      int32(6),
+			Fframe:     6,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SkelWhoosh)})),
 			Fnextstate: int32(S_SKEL_FIST3),
 		},
 		337: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(7),
-			Ftics:      int32(6),
+			Fframe:     7,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SKEL_FIST4),
 		},
 		338: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(8),
-			Ftics:      int32(6),
+			Fframe:     8,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SkelFist)})),
 			Fnextstate: int32(S_SKEL_RUN1),
 		},
 		339: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(32777),
+			Fframe:     32777,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SKEL_MISS2),
 		},
 		340: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(32777),
-			Ftics:      int32(10),
+			Fframe:     32777,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SKEL_MISS3),
 		},
 		341: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(10),
-			Ftics:      int32(10),
+			Fframe:     10,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SkelMissile)})),
 			Fnextstate: int32(S_SKEL_MISS4),
 		},
 		342: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(10),
-			Ftics:      int32(10),
+			Fframe:     10,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SKEL_RUN1),
 		},
 		343: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(11),
-			Ftics:      int32(5),
+			Fframe:     11,
+			Ftics:      5,
 			Fnextstate: int32(S_SKEL_PAIN2),
 		},
 		344: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(11),
-			Ftics:      int32(5),
+			Fframe:     11,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_SKEL_RUN1),
 		},
 		345: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(11),
-			Ftics:      int32(7),
+			Fframe:     11,
+			Ftics:      7,
 			Fnextstate: int32(S_SKEL_DIE2),
 		},
 		346: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(12),
-			Ftics:      int32(7),
+			Fframe:     12,
+			Ftics:      7,
 			Fnextstate: int32(S_SKEL_DIE3),
 		},
 		347: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(13),
-			Ftics:      int32(7),
+			Fframe:     13,
+			Ftics:      7,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_SKEL_DIE4),
 		},
 		348: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(14),
-			Ftics:      int32(7),
+			Fframe:     14,
+			Ftics:      7,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_SKEL_DIE5),
 		},
 		349: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(15),
-			Ftics:      int32(7),
+			Fframe:     15,
+			Ftics:      7,
 			Fnextstate: int32(S_SKEL_DIE6),
 		},
 		350: {
 			Fsprite: int32(SPR_SKEL),
-			Fframe:  int32(16),
+			Fframe:  16,
 			Ftics:   -1,
 		},
 		351: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(16),
-			Ftics:      int32(5),
+			Fframe:     16,
+			Ftics:      5,
 			Fnextstate: int32(S_SKEL_RAISE2),
 		},
 		352: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(15),
-			Ftics:      int32(5),
+			Fframe:     15,
+			Ftics:      5,
 			Fnextstate: int32(S_SKEL_RAISE3),
 		},
 		353: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(14),
-			Ftics:      int32(5),
+			Fframe:     14,
+			Ftics:      5,
 			Fnextstate: int32(S_SKEL_RAISE4),
 		},
 		354: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(13),
-			Ftics:      int32(5),
+			Fframe:     13,
+			Ftics:      5,
 			Fnextstate: int32(S_SKEL_RAISE5),
 		},
 		355: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(12),
-			Ftics:      int32(5),
+			Fframe:     12,
+			Ftics:      5,
 			Fnextstate: int32(S_SKEL_RAISE6),
 		},
 		356: {
 			Fsprite:    int32(SPR_SKEL),
-			Fframe:     int32(11),
-			Ftics:      int32(5),
+			Fframe:     11,
+			Ftics:      5,
 			Fnextstate: int32(S_SKEL_RUN1),
 		},
 		357: {
 			Fsprite:    int32(SPR_MANF),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_FATSHOT2),
 		},
 		358: {
 			Fsprite:    int32(SPR_MANF),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_FATSHOT1),
 		},
 		359: {
 			Fsprite:    int32(SPR_MISL),
-			Fframe:     int32(32769),
-			Ftics:      int32(8),
+			Fframe:     32769,
+			Ftics:      8,
 			Fnextstate: int32(S_FATSHOTX2),
 		},
 		360: {
 			Fsprite:    int32(SPR_MISL),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_FATSHOTX3),
 		},
 		361: {
 			Fsprite: int32(SPR_MISL),
-			Fframe:  int32(32771),
-			Ftics:   int32(4),
+			Fframe:  32771,
+			Ftics:   4,
 		},
 		362: {
 			Fsprite:    int32(SPR_FATT),
-			Ftics:      int32(15),
+			Ftics:      15,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_FATT_STND2),
 		},
 		363: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(1),
-			Ftics:      int32(15),
+			Fframe:     1,
+			Ftics:      15,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_FATT_STND),
 		},
 		364: {
 			Fsprite:    int32(SPR_FATT),
-			Ftics:      int32(4),
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_FATT_RUN2),
 		},
 		365: {
 			Fsprite:    int32(SPR_FATT),
-			Ftics:      int32(4),
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_FATT_RUN3),
 		},
 		366: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(1),
-			Ftics:      int32(4),
+			Fframe:     1,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_FATT_RUN4),
 		},
 		367: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(1),
-			Ftics:      int32(4),
+			Fframe:     1,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_FATT_RUN5),
 		},
 		368: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(2),
-			Ftics:      int32(4),
+			Fframe:     2,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_FATT_RUN6),
 		},
 		369: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(2),
-			Ftics:      int32(4),
+			Fframe:     2,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_FATT_RUN7),
 		},
 		370: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(3),
-			Ftics:      int32(4),
+			Fframe:     3,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_FATT_RUN8),
 		},
 		371: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(3),
-			Ftics:      int32(4),
+			Fframe:     3,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_FATT_RUN9),
 		},
 		372: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(4),
-			Ftics:      int32(4),
+			Fframe:     4,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_FATT_RUN10),
 		},
 		373: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(4),
-			Ftics:      int32(4),
+			Fframe:     4,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_FATT_RUN11),
 		},
 		374: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(5),
-			Ftics:      int32(4),
+			Fframe:     5,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_FATT_RUN12),
 		},
 		375: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(5),
-			Ftics:      int32(4),
+			Fframe:     5,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_FATT_RUN1),
 		},
 		376: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(6),
-			Ftics:      int32(20),
+			Fframe:     6,
+			Ftics:      20,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FatRaise)})),
 			Fnextstate: int32(S_FATT_ATK2),
 		},
 		377: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(32775),
-			Ftics:      int32(10),
+			Fframe:     32775,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FatAttack1)})),
 			Fnextstate: int32(S_FATT_ATK3),
 		},
 		378: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(8),
-			Ftics:      int32(5),
+			Fframe:     8,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_FATT_ATK4),
 		},
 		379: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(6),
-			Ftics:      int32(5),
+			Fframe:     6,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_FATT_ATK5),
 		},
 		380: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(32775),
-			Ftics:      int32(10),
+			Fframe:     32775,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FatAttack2)})),
 			Fnextstate: int32(S_FATT_ATK6),
 		},
 		381: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(8),
-			Ftics:      int32(5),
+			Fframe:     8,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_FATT_ATK7),
 		},
 		382: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(6),
-			Ftics:      int32(5),
+			Fframe:     6,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_FATT_ATK8),
 		},
 		383: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(32775),
-			Ftics:      int32(10),
+			Fframe:     32775,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FatAttack3)})),
 			Fnextstate: int32(S_FATT_ATK9),
 		},
 		384: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(8),
-			Ftics:      int32(5),
+			Fframe:     8,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_FATT_ATK10),
 		},
 		385: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(6),
-			Ftics:      int32(5),
+			Fframe:     6,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_FATT_RUN1),
 		},
 		386: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(9),
-			Ftics:      int32(3),
+			Fframe:     9,
+			Ftics:      3,
 			Fnextstate: int32(S_FATT_PAIN2),
 		},
 		387: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(9),
-			Ftics:      int32(3),
+			Fframe:     9,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_FATT_RUN1),
 		},
 		388: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(10),
-			Ftics:      int32(6),
+			Fframe:     10,
+			Ftics:      6,
 			Fnextstate: int32(S_FATT_DIE2),
 		},
 		389: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(11),
-			Ftics:      int32(6),
+			Fframe:     11,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_FATT_DIE3),
 		},
 		390: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(12),
-			Ftics:      int32(6),
+			Fframe:     12,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_FATT_DIE4),
 		},
 		391: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(13),
-			Ftics:      int32(6),
+			Fframe:     13,
+			Ftics:      6,
 			Fnextstate: int32(S_FATT_DIE5),
 		},
 		392: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(14),
-			Ftics:      int32(6),
+			Fframe:     14,
+			Ftics:      6,
 			Fnextstate: int32(S_FATT_DIE6),
 		},
 		393: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(15),
-			Ftics:      int32(6),
+			Fframe:     15,
+			Ftics:      6,
 			Fnextstate: int32(S_FATT_DIE7),
 		},
 		394: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(16),
-			Ftics:      int32(6),
+			Fframe:     16,
+			Ftics:      6,
 			Fnextstate: int32(S_FATT_DIE8),
 		},
 		395: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(17),
-			Ftics:      int32(6),
+			Fframe:     17,
+			Ftics:      6,
 			Fnextstate: int32(S_FATT_DIE9),
 		},
 		396: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(18),
-			Ftics:      int32(6),
+			Fframe:     18,
+			Ftics:      6,
 			Fnextstate: int32(S_FATT_DIE10),
 		},
 		397: {
 			Fsprite: int32(SPR_FATT),
-			Fframe:  int32(19),
+			Fframe:  19,
 			Ftics:   -1,
 			Faction: *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BossDeath)})),
 		},
 		398: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(17),
-			Ftics:      int32(5),
+			Fframe:     17,
+			Ftics:      5,
 			Fnextstate: int32(S_FATT_RAISE2),
 		},
 		399: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(16),
-			Ftics:      int32(5),
+			Fframe:     16,
+			Ftics:      5,
 			Fnextstate: int32(S_FATT_RAISE3),
 		},
 		400: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(15),
-			Ftics:      int32(5),
+			Fframe:     15,
+			Ftics:      5,
 			Fnextstate: int32(S_FATT_RAISE4),
 		},
 		401: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(14),
-			Ftics:      int32(5),
+			Fframe:     14,
+			Ftics:      5,
 			Fnextstate: int32(S_FATT_RAISE5),
 		},
 		402: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(13),
-			Ftics:      int32(5),
+			Fframe:     13,
+			Ftics:      5,
 			Fnextstate: int32(S_FATT_RAISE6),
 		},
 		403: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(12),
-			Ftics:      int32(5),
+			Fframe:     12,
+			Ftics:      5,
 			Fnextstate: int32(S_FATT_RAISE7),
 		},
 		404: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(11),
-			Ftics:      int32(5),
+			Fframe:     11,
+			Ftics:      5,
 			Fnextstate: int32(S_FATT_RAISE8),
 		},
 		405: {
 			Fsprite:    int32(SPR_FATT),
-			Fframe:     int32(10),
-			Ftics:      int32(5),
+			Fframe:     10,
+			Ftics:      5,
 			Fnextstate: int32(S_FATT_RUN1),
 		},
 		406: {
 			Fsprite:    int32(SPR_CPOS),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_CPOS_STND2),
 		},
 		407: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_CPOS_STND),
 		},
 		408: {
 			Fsprite:    int32(SPR_CPOS),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CPOS_RUN2),
 		},
 		409: {
 			Fsprite:    int32(SPR_CPOS),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CPOS_RUN3),
 		},
 		410: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CPOS_RUN4),
 		},
 		411: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CPOS_RUN5),
 		},
 		412: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CPOS_RUN6),
 		},
 		413: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CPOS_RUN7),
 		},
 		414: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CPOS_RUN8),
 		},
 		415: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CPOS_RUN1),
 		},
 		416: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(4),
-			Ftics:      int32(10),
+			Fframe:     4,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_CPOS_ATK2),
 		},
 		417: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(32773),
-			Ftics:      int32(4),
+			Fframe:     32773,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_CPosAttack)})),
 			Fnextstate: int32(S_CPOS_ATK3),
 		},
 		418: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(32772),
-			Ftics:      int32(4),
+			Fframe:     32772,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_CPosAttack)})),
 			Fnextstate: int32(S_CPOS_ATK4),
 		},
 		419: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(5),
-			Ftics:      int32(1),
+			Fframe:     5,
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_CPosRefire)})),
 			Fnextstate: int32(S_CPOS_ATK2),
 		},
 		420: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(6),
-			Ftics:      int32(3),
+			Fframe:     6,
+			Ftics:      3,
 			Fnextstate: int32(S_CPOS_PAIN2),
 		},
 		421: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(6),
-			Ftics:      int32(3),
+			Fframe:     6,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_CPOS_RUN1),
 		},
 		422: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(7),
-			Ftics:      int32(5),
+			Fframe:     7,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_DIE2),
 		},
 		423: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(8),
-			Ftics:      int32(5),
+			Fframe:     8,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_CPOS_DIE3),
 		},
 		424: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(9),
-			Ftics:      int32(5),
+			Fframe:     9,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_CPOS_DIE4),
 		},
 		425: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(10),
-			Ftics:      int32(5),
+			Fframe:     10,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_DIE5),
 		},
 		426: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(11),
-			Ftics:      int32(5),
+			Fframe:     11,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_DIE6),
 		},
 		427: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(12),
-			Ftics:      int32(5),
+			Fframe:     12,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_DIE7),
 		},
 		428: {
 			Fsprite: int32(SPR_CPOS),
-			Fframe:  int32(13),
+			Fframe:  13,
 			Ftics:   -1,
 		},
 		429: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(14),
-			Ftics:      int32(5),
+			Fframe:     14,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_XDIE2),
 		},
 		430: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(15),
-			Ftics:      int32(5),
+			Fframe:     15,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_XScream)})),
 			Fnextstate: int32(S_CPOS_XDIE3),
 		},
 		431: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(16),
-			Ftics:      int32(5),
+			Fframe:     16,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_CPOS_XDIE4),
 		},
 		432: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(17),
-			Ftics:      int32(5),
+			Fframe:     17,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_XDIE5),
 		},
 		433: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(18),
-			Ftics:      int32(5),
+			Fframe:     18,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_XDIE6),
 		},
 		434: {
 			Fsprite: int32(SPR_CPOS),
-			Fframe:  int32(19),
+			Fframe:  19,
 			Ftics:   -1,
 		},
 		435: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(13),
-			Ftics:      int32(5),
+			Fframe:     13,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_RAISE2),
 		},
 		436: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(12),
-			Ftics:      int32(5),
+			Fframe:     12,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_RAISE3),
 		},
 		437: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(11),
-			Ftics:      int32(5),
+			Fframe:     11,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_RAISE4),
 		},
 		438: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(10),
-			Ftics:      int32(5),
+			Fframe:     10,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_RAISE5),
 		},
 		439: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(9),
-			Ftics:      int32(5),
+			Fframe:     9,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_RAISE6),
 		},
 		440: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(8),
-			Ftics:      int32(5),
+			Fframe:     8,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_RAISE7),
 		},
 		441: {
 			Fsprite:    int32(SPR_CPOS),
-			Fframe:     int32(7),
-			Ftics:      int32(5),
+			Fframe:     7,
+			Ftics:      5,
 			Fnextstate: int32(S_CPOS_RUN1),
 		},
 		442: {
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_TROO_STND2),
 		},
 		443: {
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_TROO_STND),
 		},
 		444: {
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_TROO_RUN2),
 		},
 		445: {
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_TROO_RUN3),
 		},
 		446: {
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_TROO_RUN4),
 		},
 		447: {
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_TROO_RUN5),
 		},
 		448: {
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_TROO_RUN6),
 		},
 		449: {
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_TROO_RUN7),
 		},
 		450: {
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_TROO_RUN8),
 		},
 		451: {
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_TROO_RUN1),
 		},
 		452: {
-			Fframe:     int32(4),
-			Ftics:      int32(8),
+			Fframe:     4,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_TROO_ATK2),
 		},
 		453: {
-			Fframe:     int32(5),
-			Ftics:      int32(8),
+			Fframe:     5,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_TROO_ATK3),
 		},
 		454: {
-			Fframe:     int32(6),
-			Ftics:      int32(6),
+			Fframe:     6,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_TroopAttack)})),
 			Fnextstate: int32(S_TROO_RUN1),
 		},
 		455: {
-			Fframe:     int32(7),
-			Ftics:      int32(2),
+			Fframe:     7,
+			Ftics:      2,
 			Fnextstate: int32(S_TROO_PAIN2),
 		},
 		456: {
-			Fframe:     int32(7),
-			Ftics:      int32(2),
+			Fframe:     7,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_TROO_RUN1),
 		},
 		457: {
-			Fframe:     int32(8),
-			Ftics:      int32(8),
+			Fframe:     8,
+			Ftics:      8,
 			Fnextstate: int32(S_TROO_DIE2),
 		},
 		458: {
-			Fframe:     int32(9),
-			Ftics:      int32(8),
+			Fframe:     9,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_TROO_DIE3),
 		},
 		459: {
-			Fframe:     int32(10),
-			Ftics:      int32(6),
+			Fframe:     10,
+			Ftics:      6,
 			Fnextstate: int32(S_TROO_DIE4),
 		},
 		460: {
-			Fframe:     int32(11),
-			Ftics:      int32(6),
+			Fframe:     11,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_TROO_DIE5),
 		},
 		461: {
-			Fframe: int32(12),
+			Fframe: 12,
 			Ftics:  -1,
 		},
 		462: {
-			Fframe:     int32(13),
-			Ftics:      int32(5),
+			Fframe:     13,
+			Ftics:      5,
 			Fnextstate: int32(S_TROO_XDIE2),
 		},
 		463: {
-			Fframe:     int32(14),
-			Ftics:      int32(5),
+			Fframe:     14,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_XScream)})),
 			Fnextstate: int32(S_TROO_XDIE3),
 		},
 		464: {
-			Fframe:     int32(15),
-			Ftics:      int32(5),
+			Fframe:     15,
+			Ftics:      5,
 			Fnextstate: int32(S_TROO_XDIE4),
 		},
 		465: {
-			Fframe:     int32(16),
-			Ftics:      int32(5),
+			Fframe:     16,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_TROO_XDIE5),
 		},
 		466: {
-			Fframe:     int32(17),
-			Ftics:      int32(5),
+			Fframe:     17,
+			Ftics:      5,
 			Fnextstate: int32(S_TROO_XDIE6),
 		},
 		467: {
-			Fframe:     int32(18),
-			Ftics:      int32(5),
+			Fframe:     18,
+			Ftics:      5,
 			Fnextstate: int32(S_TROO_XDIE7),
 		},
 		468: {
-			Fframe:     int32(19),
-			Ftics:      int32(5),
+			Fframe:     19,
+			Ftics:      5,
 			Fnextstate: int32(S_TROO_XDIE8),
 		},
 		469: {
-			Fframe: int32(20),
+			Fframe: 20,
 			Ftics:  -1,
 		},
 		470: {
-			Fframe:     int32(12),
-			Ftics:      int32(8),
+			Fframe:     12,
+			Ftics:      8,
 			Fnextstate: int32(S_TROO_RAISE2),
 		},
 		471: {
-			Fframe:     int32(11),
-			Ftics:      int32(8),
+			Fframe:     11,
+			Ftics:      8,
 			Fnextstate: int32(S_TROO_RAISE3),
 		},
 		472: {
-			Fframe:     int32(10),
-			Ftics:      int32(6),
+			Fframe:     10,
+			Ftics:      6,
 			Fnextstate: int32(S_TROO_RAISE4),
 		},
 		473: {
-			Fframe:     int32(9),
-			Ftics:      int32(6),
+			Fframe:     9,
+			Ftics:      6,
 			Fnextstate: int32(S_TROO_RAISE5),
 		},
 		474: {
-			Fframe:     int32(8),
-			Ftics:      int32(6),
+			Fframe:     8,
+			Ftics:      6,
 			Fnextstate: int32(S_TROO_RUN1),
 		},
 		475: {
 			Fsprite:    int32(SPR_SARG),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_SARG_STND2),
 		},
 		476: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_SARG_STND),
 		},
 		477: {
 			Fsprite:    int32(SPR_SARG),
-			Ftics:      int32(2),
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SARG_RUN2),
 		},
 		478: {
 			Fsprite:    int32(SPR_SARG),
-			Ftics:      int32(2),
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SARG_RUN3),
 		},
 		479: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(1),
-			Ftics:      int32(2),
+			Fframe:     1,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SARG_RUN4),
 		},
 		480: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(1),
-			Ftics:      int32(2),
+			Fframe:     1,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SARG_RUN5),
 		},
 		481: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(2),
-			Ftics:      int32(2),
+			Fframe:     2,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SARG_RUN6),
 		},
 		482: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(2),
-			Ftics:      int32(2),
+			Fframe:     2,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SARG_RUN7),
 		},
 		483: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(3),
-			Ftics:      int32(2),
+			Fframe:     3,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SARG_RUN8),
 		},
 		484: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(3),
-			Ftics:      int32(2),
+			Fframe:     3,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SARG_RUN1),
 		},
 		485: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(4),
-			Ftics:      int32(8),
+			Fframe:     4,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SARG_ATK2),
 		},
 		486: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(5),
-			Ftics:      int32(8),
+			Fframe:     5,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SARG_ATK3),
 		},
 		487: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(6),
-			Ftics:      int32(8),
+			Fframe:     6,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SargAttack)})),
 			Fnextstate: int32(S_SARG_RUN1),
 		},
 		488: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(7),
-			Ftics:      int32(2),
+			Fframe:     7,
+			Ftics:      2,
 			Fnextstate: int32(S_SARG_PAIN2),
 		},
 		489: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(7),
-			Ftics:      int32(2),
+			Fframe:     7,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_SARG_RUN1),
 		},
 		490: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(8),
-			Ftics:      int32(8),
+			Fframe:     8,
+			Ftics:      8,
 			Fnextstate: int32(S_SARG_DIE2),
 		},
 		491: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(9),
-			Ftics:      int32(8),
+			Fframe:     9,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_SARG_DIE3),
 		},
 		492: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(10),
-			Ftics:      int32(4),
+			Fframe:     10,
+			Ftics:      4,
 			Fnextstate: int32(S_SARG_DIE4),
 		},
 		493: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(11),
-			Ftics:      int32(4),
+			Fframe:     11,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_SARG_DIE5),
 		},
 		494: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(12),
-			Ftics:      int32(4),
+			Fframe:     12,
+			Ftics:      4,
 			Fnextstate: int32(S_SARG_DIE6),
 		},
 		495: {
 			Fsprite: int32(SPR_SARG),
-			Fframe:  int32(13),
+			Fframe:  13,
 			Ftics:   -1,
 		},
 		496: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(13),
-			Ftics:      int32(5),
+			Fframe:     13,
+			Ftics:      5,
 			Fnextstate: int32(S_SARG_RAISE2),
 		},
 		497: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(12),
-			Ftics:      int32(5),
+			Fframe:     12,
+			Ftics:      5,
 			Fnextstate: int32(S_SARG_RAISE3),
 		},
 		498: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(11),
-			Ftics:      int32(5),
+			Fframe:     11,
+			Ftics:      5,
 			Fnextstate: int32(S_SARG_RAISE4),
 		},
 		499: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(10),
-			Ftics:      int32(5),
+			Fframe:     10,
+			Ftics:      5,
 			Fnextstate: int32(S_SARG_RAISE5),
 		},
 		500: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(9),
-			Ftics:      int32(5),
+			Fframe:     9,
+			Ftics:      5,
 			Fnextstate: int32(S_SARG_RAISE6),
 		},
 		501: {
 			Fsprite:    int32(SPR_SARG),
-			Fframe:     int32(8),
-			Ftics:      int32(5),
+			Fframe:     8,
+			Ftics:      5,
 			Fnextstate: int32(S_SARG_RUN1),
 		},
 		502: {
 			Fsprite:    int32(SPR_HEAD),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_HEAD_STND),
 		},
 		503: {
 			Fsprite:    int32(SPR_HEAD),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_HEAD_RUN1),
 		},
 		504: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(1),
-			Ftics:      int32(5),
+			Fframe:     1,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_HEAD_ATK2),
 		},
 		505: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(2),
-			Ftics:      int32(5),
+			Fframe:     2,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_HEAD_ATK3),
 		},
 		506: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(32771),
-			Ftics:      int32(5),
+			Fframe:     32771,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_HeadAttack)})),
 			Fnextstate: int32(S_HEAD_RUN1),
 		},
 		507: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(4),
-			Ftics:      int32(3),
+			Fframe:     4,
+			Ftics:      3,
 			Fnextstate: int32(S_HEAD_PAIN2),
 		},
 		508: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(4),
-			Ftics:      int32(3),
+			Fframe:     4,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_HEAD_PAIN3),
 		},
 		509: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(5),
-			Ftics:      int32(6),
+			Fframe:     5,
+			Ftics:      6,
 			Fnextstate: int32(S_HEAD_RUN1),
 		},
 		510: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(6),
-			Ftics:      int32(8),
+			Fframe:     6,
+			Ftics:      8,
 			Fnextstate: int32(S_HEAD_DIE2),
 		},
 		511: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(7),
-			Ftics:      int32(8),
+			Fframe:     7,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_HEAD_DIE3),
 		},
 		512: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(8),
-			Ftics:      int32(8),
+			Fframe:     8,
+			Ftics:      8,
 			Fnextstate: int32(S_HEAD_DIE4),
 		},
 		513: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(9),
-			Ftics:      int32(8),
+			Fframe:     9,
+			Ftics:      8,
 			Fnextstate: int32(S_HEAD_DIE5),
 		},
 		514: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(10),
-			Ftics:      int32(8),
+			Fframe:     10,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_HEAD_DIE6),
 		},
 		515: {
 			Fsprite: int32(SPR_HEAD),
-			Fframe:  int32(11),
+			Fframe:  11,
 			Ftics:   -1,
 		},
 		516: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(11),
-			Ftics:      int32(8),
+			Fframe:     11,
+			Ftics:      8,
 			Fnextstate: int32(S_HEAD_RAISE2),
 		},
 		517: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(10),
-			Ftics:      int32(8),
+			Fframe:     10,
+			Ftics:      8,
 			Fnextstate: int32(S_HEAD_RAISE3),
 		},
 		518: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(9),
-			Ftics:      int32(8),
+			Fframe:     9,
+			Ftics:      8,
 			Fnextstate: int32(S_HEAD_RAISE4),
 		},
 		519: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(8),
-			Ftics:      int32(8),
+			Fframe:     8,
+			Ftics:      8,
 			Fnextstate: int32(S_HEAD_RAISE5),
 		},
 		520: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(7),
-			Ftics:      int32(8),
+			Fframe:     7,
+			Ftics:      8,
 			Fnextstate: int32(S_HEAD_RAISE6),
 		},
 		521: {
 			Fsprite:    int32(SPR_HEAD),
-			Fframe:     int32(6),
-			Ftics:      int32(8),
+			Fframe:     6,
+			Ftics:      8,
 			Fnextstate: int32(S_HEAD_RUN1),
 		},
 		522: {
 			Fsprite:    int32(SPR_BAL7),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_BRBALL2),
 		},
 		523: {
 			Fsprite:    int32(SPR_BAL7),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_BRBALL1),
 		},
 		524: {
 			Fsprite:    int32(SPR_BAL7),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_BRBALLX2),
 		},
 		525: {
 			Fsprite:    int32(SPR_BAL7),
-			Fframe:     int32(32771),
-			Ftics:      int32(6),
+			Fframe:     32771,
+			Ftics:      6,
 			Fnextstate: int32(S_BRBALLX3),
 		},
 		526: {
 			Fsprite: int32(SPR_BAL7),
-			Fframe:  int32(32772),
-			Ftics:   int32(6),
+			Fframe:  32772,
+			Ftics:   6,
 		},
 		527: {
 			Fsprite:    int32(SPR_BOSS),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_BOSS_STND2),
 		},
 		528: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_BOSS_STND),
 		},
 		529: {
 			Fsprite:    int32(SPR_BOSS),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOSS_RUN2),
 		},
 		530: {
 			Fsprite:    int32(SPR_BOSS),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOSS_RUN3),
 		},
 		531: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOSS_RUN4),
 		},
 		532: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOSS_RUN5),
 		},
 		533: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOSS_RUN6),
 		},
 		534: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOSS_RUN7),
 		},
 		535: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOSS_RUN8),
 		},
 		536: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOSS_RUN1),
 		},
 		537: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(4),
-			Ftics:      int32(8),
+			Fframe:     4,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_BOSS_ATK2),
 		},
 		538: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(5),
-			Ftics:      int32(8),
+			Fframe:     5,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_BOSS_ATK3),
 		},
 		539: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(6),
-			Ftics:      int32(8),
+			Fframe:     6,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BruisAttack)})),
 			Fnextstate: int32(S_BOSS_RUN1),
 		},
 		540: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(7),
-			Ftics:      int32(2),
+			Fframe:     7,
+			Ftics:      2,
 			Fnextstate: int32(S_BOSS_PAIN2),
 		},
 		541: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(7),
-			Ftics:      int32(2),
+			Fframe:     7,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_BOSS_RUN1),
 		},
 		542: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(8),
-			Ftics:      int32(8),
+			Fframe:     8,
+			Ftics:      8,
 			Fnextstate: int32(S_BOSS_DIE2),
 		},
 		543: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(9),
-			Ftics:      int32(8),
+			Fframe:     9,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_BOSS_DIE3),
 		},
 		544: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(10),
-			Ftics:      int32(8),
+			Fframe:     10,
+			Ftics:      8,
 			Fnextstate: int32(S_BOSS_DIE4),
 		},
 		545: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(11),
-			Ftics:      int32(8),
+			Fframe:     11,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_BOSS_DIE5),
 		},
 		546: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(12),
-			Ftics:      int32(8),
+			Fframe:     12,
+			Ftics:      8,
 			Fnextstate: int32(S_BOSS_DIE6),
 		},
 		547: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(13),
-			Ftics:      int32(8),
+			Fframe:     13,
+			Ftics:      8,
 			Fnextstate: int32(S_BOSS_DIE7),
 		},
 		548: {
 			Fsprite: int32(SPR_BOSS),
-			Fframe:  int32(14),
+			Fframe:  14,
 			Ftics:   -1,
 			Faction: *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BossDeath)})),
 		},
 		549: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(14),
-			Ftics:      int32(8),
+			Fframe:     14,
+			Ftics:      8,
 			Fnextstate: int32(S_BOSS_RAISE2),
 		},
 		550: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(13),
-			Ftics:      int32(8),
+			Fframe:     13,
+			Ftics:      8,
 			Fnextstate: int32(S_BOSS_RAISE3),
 		},
 		551: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(12),
-			Ftics:      int32(8),
+			Fframe:     12,
+			Ftics:      8,
 			Fnextstate: int32(S_BOSS_RAISE4),
 		},
 		552: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(11),
-			Ftics:      int32(8),
+			Fframe:     11,
+			Ftics:      8,
 			Fnextstate: int32(S_BOSS_RAISE5),
 		},
 		553: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(10),
-			Ftics:      int32(8),
+			Fframe:     10,
+			Ftics:      8,
 			Fnextstate: int32(S_BOSS_RAISE6),
 		},
 		554: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(9),
-			Ftics:      int32(8),
+			Fframe:     9,
+			Ftics:      8,
 			Fnextstate: int32(S_BOSS_RAISE7),
 		},
 		555: {
 			Fsprite:    int32(SPR_BOSS),
-			Fframe:     int32(8),
-			Ftics:      int32(8),
+			Fframe:     8,
+			Ftics:      8,
 			Fnextstate: int32(S_BOSS_RUN1),
 		},
 		556: {
 			Fsprite:    int32(SPR_BOS2),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_BOS2_STND2),
 		},
 		557: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_BOS2_STND),
 		},
 		558: {
 			Fsprite:    int32(SPR_BOS2),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOS2_RUN2),
 		},
 		559: {
 			Fsprite:    int32(SPR_BOS2),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOS2_RUN3),
 		},
 		560: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOS2_RUN4),
 		},
 		561: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOS2_RUN5),
 		},
 		562: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOS2_RUN6),
 		},
 		563: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOS2_RUN7),
 		},
 		564: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOS2_RUN8),
 		},
 		565: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BOS2_RUN1),
 		},
 		566: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(4),
-			Ftics:      int32(8),
+			Fframe:     4,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_BOS2_ATK2),
 		},
 		567: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(5),
-			Ftics:      int32(8),
+			Fframe:     5,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_BOS2_ATK3),
 		},
 		568: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(6),
-			Ftics:      int32(8),
+			Fframe:     6,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BruisAttack)})),
 			Fnextstate: int32(S_BOS2_RUN1),
 		},
 		569: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(7),
-			Ftics:      int32(2),
+			Fframe:     7,
+			Ftics:      2,
 			Fnextstate: int32(S_BOS2_PAIN2),
 		},
 		570: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(7),
-			Ftics:      int32(2),
+			Fframe:     7,
+			Ftics:      2,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_BOS2_RUN1),
 		},
 		571: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(8),
-			Ftics:      int32(8),
+			Fframe:     8,
+			Ftics:      8,
 			Fnextstate: int32(S_BOS2_DIE2),
 		},
 		572: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(9),
-			Ftics:      int32(8),
+			Fframe:     9,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_BOS2_DIE3),
 		},
 		573: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(10),
-			Ftics:      int32(8),
+			Fframe:     10,
+			Ftics:      8,
 			Fnextstate: int32(S_BOS2_DIE4),
 		},
 		574: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(11),
-			Ftics:      int32(8),
+			Fframe:     11,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_BOS2_DIE5),
 		},
 		575: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(12),
-			Ftics:      int32(8),
+			Fframe:     12,
+			Ftics:      8,
 			Fnextstate: int32(S_BOS2_DIE6),
 		},
 		576: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(13),
-			Ftics:      int32(8),
+			Fframe:     13,
+			Ftics:      8,
 			Fnextstate: int32(S_BOS2_DIE7),
 		},
 		577: {
 			Fsprite: int32(SPR_BOS2),
-			Fframe:  int32(14),
+			Fframe:  14,
 			Ftics:   -1,
 		},
 		578: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(14),
-			Ftics:      int32(8),
+			Fframe:     14,
+			Ftics:      8,
 			Fnextstate: int32(S_BOS2_RAISE2),
 		},
 		579: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(13),
-			Ftics:      int32(8),
+			Fframe:     13,
+			Ftics:      8,
 			Fnextstate: int32(S_BOS2_RAISE3),
 		},
 		580: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(12),
-			Ftics:      int32(8),
+			Fframe:     12,
+			Ftics:      8,
 			Fnextstate: int32(S_BOS2_RAISE4),
 		},
 		581: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(11),
-			Ftics:      int32(8),
+			Fframe:     11,
+			Ftics:      8,
 			Fnextstate: int32(S_BOS2_RAISE5),
 		},
 		582: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(10),
-			Ftics:      int32(8),
+			Fframe:     10,
+			Ftics:      8,
 			Fnextstate: int32(S_BOS2_RAISE6),
 		},
 		583: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(9),
-			Ftics:      int32(8),
+			Fframe:     9,
+			Ftics:      8,
 			Fnextstate: int32(S_BOS2_RAISE7),
 		},
 		584: {
 			Fsprite:    int32(SPR_BOS2),
-			Fframe:     int32(8),
-			Ftics:      int32(8),
+			Fframe:     8,
+			Ftics:      8,
 			Fnextstate: int32(S_BOS2_RUN1),
 		},
 		585: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32768),
-			Ftics:      int32(10),
+			Fframe:     32768,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_SKULL_STND2),
 		},
 		586: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32769),
-			Ftics:      int32(10),
+			Fframe:     32769,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_SKULL_STND),
 		},
 		587: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKULL_RUN2),
 		},
 		588: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SKULL_RUN1),
 		},
 		589: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32770),
-			Ftics:      int32(10),
+			Fframe:     32770,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SKULL_ATK2),
 		},
 		590: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SkullAttack)})),
 			Fnextstate: int32(S_SKULL_ATK3),
 		},
 		591: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Fnextstate: int32(S_SKULL_ATK4),
 		},
 		592: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Fnextstate: int32(S_SKULL_ATK3),
 		},
 		593: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32772),
-			Ftics:      int32(3),
+			Fframe:     32772,
+			Ftics:      3,
 			Fnextstate: int32(S_SKULL_PAIN2),
 		},
 		594: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32772),
-			Ftics:      int32(3),
+			Fframe:     32772,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_SKULL_RUN1),
 		},
 		595: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32773),
-			Ftics:      int32(6),
+			Fframe:     32773,
+			Ftics:      6,
 			Fnextstate: int32(S_SKULL_DIE2),
 		},
 		596: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32774),
-			Ftics:      int32(6),
+			Fframe:     32774,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_SKULL_DIE3),
 		},
 		597: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32775),
-			Ftics:      int32(6),
+			Fframe:     32775,
+			Ftics:      6,
 			Fnextstate: int32(S_SKULL_DIE4),
 		},
 		598: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(32776),
-			Ftics:      int32(6),
+			Fframe:     32776,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_SKULL_DIE5),
 		},
 		599: {
 			Fsprite:    int32(SPR_SKUL),
-			Fframe:     int32(9),
-			Ftics:      int32(6),
+			Fframe:     9,
+			Ftics:      6,
 			Fnextstate: int32(S_SKULL_DIE6),
 		},
 		600: {
 			Fsprite: int32(SPR_SKUL),
-			Fframe:  int32(10),
-			Ftics:   int32(6),
+			Fframe:  10,
+			Ftics:   6,
 		},
 		601: {
 			Fsprite:    int32(SPR_SPID),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_SPID_STND2),
 		},
 		602: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_SPID_STND),
 		},
 		603: {
 			Fsprite:    int32(SPR_SPID),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Metal)})),
 			Fnextstate: int32(S_SPID_RUN2),
 		},
 		604: {
 			Fsprite:    int32(SPR_SPID),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPID_RUN3),
 		},
 		605: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPID_RUN4),
 		},
 		606: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPID_RUN5),
 		},
 		607: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Metal)})),
 			Fnextstate: int32(S_SPID_RUN6),
 		},
 		608: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPID_RUN7),
 		},
 		609: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPID_RUN8),
 		},
 		610: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPID_RUN9),
 		},
 		611: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(4),
-			Ftics:      int32(3),
+			Fframe:     4,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Metal)})),
 			Fnextstate: int32(S_SPID_RUN10),
 		},
 		612: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(4),
-			Ftics:      int32(3),
+			Fframe:     4,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPID_RUN11),
 		},
 		613: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(5),
-			Ftics:      int32(3),
+			Fframe:     5,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPID_RUN12),
 		},
 		614: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(5),
-			Ftics:      int32(3),
+			Fframe:     5,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SPID_RUN1),
 		},
 		615: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(32768),
-			Ftics:      int32(20),
+			Fframe:     32768,
+			Ftics:      20,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SPID_ATK2),
 		},
 		616: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(32774),
-			Ftics:      int32(4),
+			Fframe:     32774,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SPosAttack)})),
 			Fnextstate: int32(S_SPID_ATK3),
 		},
 		617: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(32775),
-			Ftics:      int32(4),
+			Fframe:     32775,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SPosAttack)})),
 			Fnextstate: int32(S_SPID_ATK4),
 		},
 		618: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(32775),
-			Ftics:      int32(1),
+			Fframe:     32775,
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SpidRefire)})),
 			Fnextstate: int32(S_SPID_ATK2),
 		},
 		619: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(8),
-			Ftics:      int32(3),
+			Fframe:     8,
+			Ftics:      3,
 			Fnextstate: int32(S_SPID_PAIN2),
 		},
 		620: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(8),
-			Ftics:      int32(3),
+			Fframe:     8,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_SPID_RUN1),
 		},
 		621: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(9),
-			Ftics:      int32(20),
+			Fframe:     9,
+			Ftics:      20,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_SPID_DIE2),
 		},
 		622: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(10),
-			Ftics:      int32(10),
+			Fframe:     10,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_SPID_DIE3),
 		},
 		623: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(11),
-			Ftics:      int32(10),
+			Fframe:     11,
+			Ftics:      10,
 			Fnextstate: int32(S_SPID_DIE4),
 		},
 		624: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(12),
-			Ftics:      int32(10),
+			Fframe:     12,
+			Ftics:      10,
 			Fnextstate: int32(S_SPID_DIE5),
 		},
 		625: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(13),
-			Ftics:      int32(10),
+			Fframe:     13,
+			Ftics:      10,
 			Fnextstate: int32(S_SPID_DIE6),
 		},
 		626: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(14),
-			Ftics:      int32(10),
+			Fframe:     14,
+			Ftics:      10,
 			Fnextstate: int32(S_SPID_DIE7),
 		},
 		627: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(15),
-			Ftics:      int32(10),
+			Fframe:     15,
+			Ftics:      10,
 			Fnextstate: int32(S_SPID_DIE8),
 		},
 		628: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(16),
-			Ftics:      int32(10),
+			Fframe:     16,
+			Ftics:      10,
 			Fnextstate: int32(S_SPID_DIE9),
 		},
 		629: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(17),
-			Ftics:      int32(10),
+			Fframe:     17,
+			Ftics:      10,
 			Fnextstate: int32(S_SPID_DIE10),
 		},
 		630: {
 			Fsprite:    int32(SPR_SPID),
-			Fframe:     int32(18),
-			Ftics:      int32(30),
+			Fframe:     18,
+			Ftics:      30,
 			Fnextstate: int32(S_SPID_DIE11),
 		},
 		631: {
 			Fsprite: int32(SPR_SPID),
-			Fframe:  int32(18),
+			Fframe:  18,
 			Ftics:   -1,
 			Faction: *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BossDeath)})),
 		},
 		632: {
 			Fsprite:    int32(SPR_BSPI),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_BSPI_STND2),
 		},
 		633: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_BSPI_STND),
 		},
 		634: {
 			Fsprite:    int32(SPR_BSPI),
-			Ftics:      int32(20),
+			Ftics:      20,
 			Fnextstate: int32(S_BSPI_RUN1),
 		},
 		635: {
 			Fsprite:    int32(SPR_BSPI),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BabyMetal)})),
 			Fnextstate: int32(S_BSPI_RUN2),
 		},
 		636: {
 			Fsprite:    int32(SPR_BSPI),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BSPI_RUN3),
 		},
 		637: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BSPI_RUN4),
 		},
 		638: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BSPI_RUN5),
 		},
 		639: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BSPI_RUN6),
 		},
 		640: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BSPI_RUN7),
 		},
 		641: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BabyMetal)})),
 			Fnextstate: int32(S_BSPI_RUN8),
 		},
 		642: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BSPI_RUN9),
 		},
 		643: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(4),
-			Ftics:      int32(3),
+			Fframe:     4,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BSPI_RUN10),
 		},
 		644: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(4),
-			Ftics:      int32(3),
+			Fframe:     4,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BSPI_RUN11),
 		},
 		645: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(5),
-			Ftics:      int32(3),
+			Fframe:     5,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BSPI_RUN12),
 		},
 		646: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(5),
-			Ftics:      int32(3),
+			Fframe:     5,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_BSPI_RUN1),
 		},
 		647: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(32768),
-			Ftics:      int32(20),
+			Fframe:     32768,
+			Ftics:      20,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_BSPI_ATK2),
 		},
 		648: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(32774),
-			Ftics:      int32(4),
+			Fframe:     32774,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BspiAttack)})),
 			Fnextstate: int32(S_BSPI_ATK3),
 		},
 		649: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(32775),
-			Ftics:      int32(4),
+			Fframe:     32775,
+			Ftics:      4,
 			Fnextstate: int32(S_BSPI_ATK4),
 		},
 		650: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(32775),
-			Ftics:      int32(1),
+			Fframe:     32775,
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SpidRefire)})),
 			Fnextstate: int32(S_BSPI_ATK2),
 		},
 		651: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(8),
-			Ftics:      int32(3),
+			Fframe:     8,
+			Ftics:      3,
 			Fnextstate: int32(S_BSPI_PAIN2),
 		},
 		652: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(8),
-			Ftics:      int32(3),
+			Fframe:     8,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_BSPI_RUN1),
 		},
 		653: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(9),
-			Ftics:      int32(20),
+			Fframe:     9,
+			Ftics:      20,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_BSPI_DIE2),
 		},
 		654: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(10),
-			Ftics:      int32(7),
+			Fframe:     10,
+			Ftics:      7,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_BSPI_DIE3),
 		},
 		655: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(11),
-			Ftics:      int32(7),
+			Fframe:     11,
+			Ftics:      7,
 			Fnextstate: int32(S_BSPI_DIE4),
 		},
 		656: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(12),
-			Ftics:      int32(7),
+			Fframe:     12,
+			Ftics:      7,
 			Fnextstate: int32(S_BSPI_DIE5),
 		},
 		657: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(13),
-			Ftics:      int32(7),
+			Fframe:     13,
+			Ftics:      7,
 			Fnextstate: int32(S_BSPI_DIE6),
 		},
 		658: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(14),
-			Ftics:      int32(7),
+			Fframe:     14,
+			Ftics:      7,
 			Fnextstate: int32(S_BSPI_DIE7),
 		},
 		659: {
 			Fsprite: int32(SPR_BSPI),
-			Fframe:  int32(15),
+			Fframe:  15,
 			Ftics:   -1,
 			Faction: *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BossDeath)})),
 		},
 		660: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(15),
-			Ftics:      int32(5),
+			Fframe:     15,
+			Ftics:      5,
 			Fnextstate: int32(S_BSPI_RAISE2),
 		},
 		661: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(14),
-			Ftics:      int32(5),
+			Fframe:     14,
+			Ftics:      5,
 			Fnextstate: int32(S_BSPI_RAISE3),
 		},
 		662: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(13),
-			Ftics:      int32(5),
+			Fframe:     13,
+			Ftics:      5,
 			Fnextstate: int32(S_BSPI_RAISE4),
 		},
 		663: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(12),
-			Ftics:      int32(5),
+			Fframe:     12,
+			Ftics:      5,
 			Fnextstate: int32(S_BSPI_RAISE5),
 		},
 		664: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(11),
-			Ftics:      int32(5),
+			Fframe:     11,
+			Ftics:      5,
 			Fnextstate: int32(S_BSPI_RAISE6),
 		},
 		665: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(10),
-			Ftics:      int32(5),
+			Fframe:     10,
+			Ftics:      5,
 			Fnextstate: int32(S_BSPI_RAISE7),
 		},
 		666: {
 			Fsprite:    int32(SPR_BSPI),
-			Fframe:     int32(9),
-			Ftics:      int32(5),
+			Fframe:     9,
+			Ftics:      5,
 			Fnextstate: int32(S_BSPI_RUN1),
 		},
 		667: {
 			Fsprite:    int32(SPR_APLS),
-			Fframe:     int32(32768),
-			Ftics:      int32(5),
+			Fframe:     32768,
+			Ftics:      5,
 			Fnextstate: int32(S_ARACH_PLAZ2),
 		},
 		668: {
 			Fsprite:    int32(SPR_APLS),
-			Fframe:     int32(32769),
-			Ftics:      int32(5),
+			Fframe:     32769,
+			Ftics:      5,
 			Fnextstate: int32(S_ARACH_PLAZ),
 		},
 		669: {
 			Fsprite:    int32(SPR_APBX),
-			Fframe:     int32(32768),
-			Ftics:      int32(5),
+			Fframe:     32768,
+			Ftics:      5,
 			Fnextstate: int32(S_ARACH_PLEX2),
 		},
 		670: {
 			Fsprite:    int32(SPR_APBX),
-			Fframe:     int32(32769),
-			Ftics:      int32(5),
+			Fframe:     32769,
+			Ftics:      5,
 			Fnextstate: int32(S_ARACH_PLEX3),
 		},
 		671: {
 			Fsprite:    int32(SPR_APBX),
-			Fframe:     int32(32770),
-			Ftics:      int32(5),
+			Fframe:     32770,
+			Ftics:      5,
 			Fnextstate: int32(S_ARACH_PLEX4),
 		},
 		672: {
 			Fsprite:    int32(SPR_APBX),
-			Fframe:     int32(32771),
-			Ftics:      int32(5),
+			Fframe:     32771,
+			Ftics:      5,
 			Fnextstate: int32(S_ARACH_PLEX5),
 		},
 		673: {
 			Fsprite: int32(SPR_APBX),
-			Fframe:  int32(32772),
-			Ftics:   int32(5),
+			Fframe:  32772,
+			Ftics:   5,
 		},
 		674: {
 			Fsprite:    int32(SPR_CYBR),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_CYBER_STND2),
 		},
 		675: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_CYBER_STND),
 		},
 		676: {
 			Fsprite:    int32(SPR_CYBR),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Hoof)})),
 			Fnextstate: int32(S_CYBER_RUN2),
 		},
 		677: {
 			Fsprite:    int32(SPR_CYBR),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CYBER_RUN3),
 		},
 		678: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CYBER_RUN4),
 		},
 		679: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CYBER_RUN5),
 		},
 		680: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CYBER_RUN6),
 		},
 		681: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CYBER_RUN7),
 		},
 		682: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Metal)})),
 			Fnextstate: int32(S_CYBER_RUN8),
 		},
 		683: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_CYBER_RUN1),
 		},
 		684: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(4),
-			Ftics:      int32(6),
+			Fframe:     4,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_CYBER_ATK2),
 		},
 		685: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(5),
-			Ftics:      int32(12),
+			Fframe:     5,
+			Ftics:      12,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_CyberAttack)})),
 			Fnextstate: int32(S_CYBER_ATK3),
 		},
 		686: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(4),
-			Ftics:      int32(12),
+			Fframe:     4,
+			Ftics:      12,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_CYBER_ATK4),
 		},
 		687: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(5),
-			Ftics:      int32(12),
+			Fframe:     5,
+			Ftics:      12,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_CyberAttack)})),
 			Fnextstate: int32(S_CYBER_ATK5),
 		},
 		688: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(4),
-			Ftics:      int32(12),
+			Fframe:     4,
+			Ftics:      12,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_CYBER_ATK6),
 		},
 		689: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(5),
-			Ftics:      int32(12),
+			Fframe:     5,
+			Ftics:      12,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_CyberAttack)})),
 			Fnextstate: int32(S_CYBER_RUN1),
 		},
 		690: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(6),
-			Ftics:      int32(10),
+			Fframe:     6,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_CYBER_RUN1),
 		},
 		691: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(7),
-			Ftics:      int32(10),
+			Fframe:     7,
+			Ftics:      10,
 			Fnextstate: int32(S_CYBER_DIE2),
 		},
 		692: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(8),
-			Ftics:      int32(10),
+			Fframe:     8,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_CYBER_DIE3),
 		},
 		693: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(9),
-			Ftics:      int32(10),
+			Fframe:     9,
+			Ftics:      10,
 			Fnextstate: int32(S_CYBER_DIE4),
 		},
 		694: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(10),
-			Ftics:      int32(10),
+			Fframe:     10,
+			Ftics:      10,
 			Fnextstate: int32(S_CYBER_DIE5),
 		},
 		695: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(11),
-			Ftics:      int32(10),
+			Fframe:     11,
+			Ftics:      10,
 			Fnextstate: int32(S_CYBER_DIE6),
 		},
 		696: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(12),
-			Ftics:      int32(10),
+			Fframe:     12,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_CYBER_DIE7),
 		},
 		697: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(13),
-			Ftics:      int32(10),
+			Fframe:     13,
+			Ftics:      10,
 			Fnextstate: int32(S_CYBER_DIE8),
 		},
 		698: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(14),
-			Ftics:      int32(10),
+			Fframe:     14,
+			Ftics:      10,
 			Fnextstate: int32(S_CYBER_DIE9),
 		},
 		699: {
 			Fsprite:    int32(SPR_CYBR),
-			Fframe:     int32(15),
-			Ftics:      int32(30),
+			Fframe:     15,
+			Ftics:      30,
 			Fnextstate: int32(S_CYBER_DIE10),
 		},
 		700: {
 			Fsprite: int32(SPR_CYBR),
-			Fframe:  int32(15),
+			Fframe:  15,
 			Ftics:   -1,
 			Faction: *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BossDeath)})),
 		},
 		701: {
 			Fsprite:    int32(SPR_PAIN),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_PAIN_STND),
 		},
 		702: {
 			Fsprite:    int32(SPR_PAIN),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_PAIN_RUN2),
 		},
 		703: {
 			Fsprite:    int32(SPR_PAIN),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_PAIN_RUN3),
 		},
 		704: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_PAIN_RUN4),
 		},
 		705: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_PAIN_RUN5),
 		},
 		706: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_PAIN_RUN6),
 		},
 		707: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_PAIN_RUN1),
 		},
 		708: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(3),
-			Ftics:      int32(5),
+			Fframe:     3,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_PAIN_ATK2),
 		},
 		709: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(4),
-			Ftics:      int32(5),
+			Fframe:     4,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_PAIN_ATK3),
 		},
 		710: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(32773),
-			Ftics:      int32(5),
+			Fframe:     32773,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_PAIN_ATK4),
 		},
 		711: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(32773),
+			Fframe:     32773,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_PainAttack)})),
 			Fnextstate: int32(S_PAIN_RUN1),
 		},
 		712: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(6),
-			Ftics:      int32(6),
+			Fframe:     6,
+			Ftics:      6,
 			Fnextstate: int32(S_PAIN_PAIN2),
 		},
 		713: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(6),
-			Ftics:      int32(6),
+			Fframe:     6,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_PAIN_RUN1),
 		},
 		714: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(32775),
-			Ftics:      int32(8),
+			Fframe:     32775,
+			Ftics:      8,
 			Fnextstate: int32(S_PAIN_DIE2),
 		},
 		715: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(32776),
-			Ftics:      int32(8),
+			Fframe:     32776,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_PAIN_DIE3),
 		},
 		716: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(32777),
-			Ftics:      int32(8),
+			Fframe:     32777,
+			Ftics:      8,
 			Fnextstate: int32(S_PAIN_DIE4),
 		},
 		717: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(32778),
-			Ftics:      int32(8),
+			Fframe:     32778,
+			Ftics:      8,
 			Fnextstate: int32(S_PAIN_DIE5),
 		},
 		718: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(32779),
-			Ftics:      int32(8),
+			Fframe:     32779,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_PainDie)})),
 			Fnextstate: int32(S_PAIN_DIE6),
 		},
 		719: {
 			Fsprite: int32(SPR_PAIN),
-			Fframe:  int32(32780),
-			Ftics:   int32(8),
+			Fframe:  32780,
+			Ftics:   8,
 		},
 		720: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(12),
-			Ftics:      int32(8),
+			Fframe:     12,
+			Ftics:      8,
 			Fnextstate: int32(S_PAIN_RAISE2),
 		},
 		721: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(11),
-			Ftics:      int32(8),
+			Fframe:     11,
+			Ftics:      8,
 			Fnextstate: int32(S_PAIN_RAISE3),
 		},
 		722: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(10),
-			Ftics:      int32(8),
+			Fframe:     10,
+			Ftics:      8,
 			Fnextstate: int32(S_PAIN_RAISE4),
 		},
 		723: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(9),
-			Ftics:      int32(8),
+			Fframe:     9,
+			Ftics:      8,
 			Fnextstate: int32(S_PAIN_RAISE5),
 		},
 		724: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(8),
-			Ftics:      int32(8),
+			Fframe:     8,
+			Ftics:      8,
 			Fnextstate: int32(S_PAIN_RAISE6),
 		},
 		725: {
 			Fsprite:    int32(SPR_PAIN),
-			Fframe:     int32(7),
-			Ftics:      int32(8),
+			Fframe:     7,
+			Ftics:      8,
 			Fnextstate: int32(S_PAIN_RUN1),
 		},
 		726: {
 			Fsprite:    int32(SPR_SSWV),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_SSWV_STND2),
 		},
 		727: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(1),
-			Ftics:      int32(10),
+			Fframe:     1,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_SSWV_STND),
 		},
 		728: {
 			Fsprite:    int32(SPR_SSWV),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SSWV_RUN2),
 		},
 		729: {
 			Fsprite:    int32(SPR_SSWV),
-			Ftics:      int32(3),
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SSWV_RUN3),
 		},
 		730: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SSWV_RUN4),
 		},
 		731: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(1),
-			Ftics:      int32(3),
+			Fframe:     1,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SSWV_RUN5),
 		},
 		732: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SSWV_RUN6),
 		},
 		733: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(2),
-			Ftics:      int32(3),
+			Fframe:     2,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SSWV_RUN7),
 		},
 		734: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SSWV_RUN8),
 		},
 		735: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(3),
-			Ftics:      int32(3),
+			Fframe:     3,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Chase)})),
 			Fnextstate: int32(S_SSWV_RUN1),
 		},
 		736: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(4),
-			Ftics:      int32(10),
+			Fframe:     4,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SSWV_ATK2),
 		},
 		737: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(5),
-			Ftics:      int32(10),
+			Fframe:     5,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SSWV_ATK3),
 		},
 		738: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(32774),
-			Ftics:      int32(4),
+			Fframe:     32774,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_CPosAttack)})),
 			Fnextstate: int32(S_SSWV_ATK4),
 		},
 		739: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(5),
-			Ftics:      int32(6),
+			Fframe:     5,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_FaceTarget)})),
 			Fnextstate: int32(S_SSWV_ATK5),
 		},
 		740: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(32774),
-			Ftics:      int32(4),
+			Fframe:     32774,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_CPosAttack)})),
 			Fnextstate: int32(S_SSWV_ATK6),
 		},
 		741: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(5),
-			Ftics:      int32(1),
+			Fframe:     5,
+			Ftics:      1,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_CPosRefire)})),
 			Fnextstate: int32(S_SSWV_ATK2),
 		},
 		742: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(7),
-			Ftics:      int32(3),
+			Fframe:     7,
+			Ftics:      3,
 			Fnextstate: int32(S_SSWV_PAIN2),
 		},
 		743: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(7),
-			Ftics:      int32(3),
+			Fframe:     7,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_SSWV_RUN1),
 		},
 		744: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(8),
-			Ftics:      int32(5),
+			Fframe:     8,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_DIE2),
 		},
 		745: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(9),
-			Ftics:      int32(5),
+			Fframe:     9,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_SSWV_DIE3),
 		},
 		746: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(10),
-			Ftics:      int32(5),
+			Fframe:     10,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_SSWV_DIE4),
 		},
 		747: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(11),
-			Ftics:      int32(5),
+			Fframe:     11,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_DIE5),
 		},
 		748: {
 			Fsprite: int32(SPR_SSWV),
-			Fframe:  int32(12),
+			Fframe:  12,
 			Ftics:   -1,
 		},
 		749: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(13),
-			Ftics:      int32(5),
+			Fframe:     13,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_XDIE2),
 		},
 		750: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(14),
-			Ftics:      int32(5),
+			Fframe:     14,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_XScream)})),
 			Fnextstate: int32(S_SSWV_XDIE3),
 		},
 		751: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(15),
-			Ftics:      int32(5),
+			Fframe:     15,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fall)})),
 			Fnextstate: int32(S_SSWV_XDIE4),
 		},
 		752: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(16),
-			Ftics:      int32(5),
+			Fframe:     16,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_XDIE5),
 		},
 		753: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(17),
-			Ftics:      int32(5),
+			Fframe:     17,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_XDIE6),
 		},
 		754: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(18),
-			Ftics:      int32(5),
+			Fframe:     18,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_XDIE7),
 		},
 		755: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(19),
-			Ftics:      int32(5),
+			Fframe:     19,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_XDIE8),
 		},
 		756: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(20),
-			Ftics:      int32(5),
+			Fframe:     20,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_XDIE9),
 		},
 		757: {
 			Fsprite: int32(SPR_SSWV),
-			Fframe:  int32(21),
+			Fframe:  21,
 			Ftics:   -1,
 		},
 		758: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(12),
-			Ftics:      int32(5),
+			Fframe:     12,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_RAISE2),
 		},
 		759: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(11),
-			Ftics:      int32(5),
+			Fframe:     11,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_RAISE3),
 		},
 		760: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(10),
-			Ftics:      int32(5),
+			Fframe:     10,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_RAISE4),
 		},
 		761: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(9),
-			Ftics:      int32(5),
+			Fframe:     9,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_RAISE5),
 		},
 		762: {
 			Fsprite:    int32(SPR_SSWV),
-			Fframe:     int32(8),
-			Ftics:      int32(5),
+			Fframe:     8,
+			Ftics:      5,
 			Fnextstate: int32(S_SSWV_RUN1),
 		},
 		763: {
@@ -15226,86 +15226,86 @@ func init() {
 		},
 		764: {
 			Fsprite:    int32(SPR_KEEN),
-			Ftics:      int32(6),
+			Ftics:      6,
 			Fnextstate: int32(S_COMMKEEN2),
 		},
 		765: {
 			Fsprite:    int32(SPR_KEEN),
-			Fframe:     int32(1),
-			Ftics:      int32(6),
+			Fframe:     1,
+			Ftics:      6,
 			Fnextstate: int32(S_COMMKEEN3),
 		},
 		766: {
 			Fsprite:    int32(SPR_KEEN),
-			Fframe:     int32(2),
-			Ftics:      int32(6),
+			Fframe:     2,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_COMMKEEN4),
 		},
 		767: {
 			Fsprite:    int32(SPR_KEEN),
-			Fframe:     int32(3),
-			Ftics:      int32(6),
+			Fframe:     3,
+			Ftics:      6,
 			Fnextstate: int32(S_COMMKEEN5),
 		},
 		768: {
 			Fsprite:    int32(SPR_KEEN),
-			Fframe:     int32(4),
-			Ftics:      int32(6),
+			Fframe:     4,
+			Ftics:      6,
 			Fnextstate: int32(S_COMMKEEN6),
 		},
 		769: {
 			Fsprite:    int32(SPR_KEEN),
-			Fframe:     int32(5),
-			Ftics:      int32(6),
+			Fframe:     5,
+			Ftics:      6,
 			Fnextstate: int32(S_COMMKEEN7),
 		},
 		770: {
 			Fsprite:    int32(SPR_KEEN),
-			Fframe:     int32(6),
-			Ftics:      int32(6),
+			Fframe:     6,
+			Ftics:      6,
 			Fnextstate: int32(S_COMMKEEN8),
 		},
 		771: {
 			Fsprite:    int32(SPR_KEEN),
-			Fframe:     int32(7),
-			Ftics:      int32(6),
+			Fframe:     7,
+			Ftics:      6,
 			Fnextstate: int32(S_COMMKEEN9),
 		},
 		772: {
 			Fsprite:    int32(SPR_KEEN),
-			Fframe:     int32(8),
-			Ftics:      int32(6),
+			Fframe:     8,
+			Ftics:      6,
 			Fnextstate: int32(S_COMMKEEN10),
 		},
 		773: {
 			Fsprite:    int32(SPR_KEEN),
-			Fframe:     int32(9),
-			Ftics:      int32(6),
+			Fframe:     9,
+			Ftics:      6,
 			Fnextstate: int32(S_COMMKEEN11),
 		},
 		774: {
 			Fsprite:    int32(SPR_KEEN),
-			Fframe:     int32(10),
-			Ftics:      int32(6),
+			Fframe:     10,
+			Ftics:      6,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_KeenDie)})),
 			Fnextstate: int32(S_COMMKEEN12),
 		},
 		775: {
 			Fsprite: int32(SPR_KEEN),
-			Fframe:  int32(11),
+			Fframe:  11,
 			Ftics:   -1,
 		},
 		776: {
 			Fsprite:    int32(SPR_KEEN),
-			Fframe:     int32(12),
-			Ftics:      int32(4),
+			Fframe:     12,
+			Ftics:      4,
 			Fnextstate: int32(S_KEENPAIN2),
 		},
 		777: {
 			Fsprite:    int32(SPR_KEEN),
-			Fframe:     int32(12),
-			Ftics:      int32(8),
+			Fframe:     12,
+			Ftics:      8,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Pain)})),
 			Fnextstate: int32(S_KEENSTND),
 		},
@@ -15315,25 +15315,25 @@ func init() {
 		},
 		779: {
 			Fsprite:    int32(SPR_BBRN),
-			Fframe:     int32(1),
-			Ftics:      int32(36),
+			Fframe:     1,
+			Ftics:      36,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BrainPain)})),
 			Fnextstate: int32(S_BRAIN),
 		},
 		780: {
 			Fsprite:    int32(SPR_BBRN),
-			Ftics:      int32(100),
+			Ftics:      100,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BrainScream)})),
 			Fnextstate: int32(S_BRAIN_DIE2),
 		},
 		781: {
 			Fsprite:    int32(SPR_BBRN),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Fnextstate: int32(S_BRAIN_DIE3),
 		},
 		782: {
 			Fsprite:    int32(SPR_BBRN),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Fnextstate: int32(S_BRAIN_DIE4),
 		},
 		783: {
@@ -15343,339 +15343,339 @@ func init() {
 		},
 		784: {
 			Fsprite:    int32(SPR_SSWV),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Look)})),
 			Fnextstate: int32(S_BRAINEYE),
 		},
 		785: {
 			Fsprite:    int32(SPR_SSWV),
-			Ftics:      int32(181),
+			Ftics:      181,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BrainAwake)})),
 			Fnextstate: int32(S_BRAINEYE1),
 		},
 		786: {
 			Fsprite:    int32(SPR_SSWV),
-			Ftics:      int32(150),
+			Ftics:      150,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BrainSpit)})),
 			Fnextstate: int32(S_BRAINEYE1),
 		},
 		787: {
 			Fsprite:    int32(SPR_BOSF),
-			Fframe:     int32(32768),
-			Ftics:      int32(3),
+			Fframe:     32768,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SpawnSound)})),
 			Fnextstate: int32(S_SPAWN2),
 		},
 		788: {
 			Fsprite:    int32(SPR_BOSF),
-			Fframe:     int32(32769),
-			Ftics:      int32(3),
+			Fframe:     32769,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SpawnFly)})),
 			Fnextstate: int32(S_SPAWN3),
 		},
 		789: {
 			Fsprite:    int32(SPR_BOSF),
-			Fframe:     int32(32770),
-			Ftics:      int32(3),
+			Fframe:     32770,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SpawnFly)})),
 			Fnextstate: int32(S_SPAWN4),
 		},
 		790: {
 			Fsprite:    int32(SPR_BOSF),
-			Fframe:     int32(32771),
-			Ftics:      int32(3),
+			Fframe:     32771,
+			Ftics:      3,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_SpawnFly)})),
 			Fnextstate: int32(S_SPAWN1),
 		},
 		791: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_SPAWNFIRE2),
 		},
 		792: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_SPAWNFIRE3),
 		},
 		793: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_SPAWNFIRE4),
 		},
 		794: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_SPAWNFIRE5),
 		},
 		795: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32772),
-			Ftics:      int32(4),
+			Fframe:     32772,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_SPAWNFIRE6),
 		},
 		796: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32773),
-			Ftics:      int32(4),
+			Fframe:     32773,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_SPAWNFIRE7),
 		},
 		797: {
 			Fsprite:    int32(SPR_FIRE),
-			Fframe:     int32(32774),
-			Ftics:      int32(4),
+			Fframe:     32774,
+			Ftics:      4,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 			Fnextstate: int32(S_SPAWNFIRE8),
 		},
 		798: {
 			Fsprite: int32(SPR_FIRE),
-			Fframe:  int32(32775),
-			Ftics:   int32(4),
+			Fframe:  32775,
+			Ftics:   4,
 			Faction: *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Fire)})),
 		},
 		799: {
 			Fsprite:    int32(SPR_MISL),
-			Fframe:     int32(32769),
-			Ftics:      int32(10),
+			Fframe:     32769,
+			Ftics:      10,
 			Fnextstate: int32(S_BRAINEXPLODE2),
 		},
 		800: {
 			Fsprite:    int32(SPR_MISL),
-			Fframe:     int32(32770),
-			Ftics:      int32(10),
+			Fframe:     32770,
+			Ftics:      10,
 			Fnextstate: int32(S_BRAINEXPLODE3),
 		},
 		801: {
 			Fsprite: int32(SPR_MISL),
-			Fframe:  int32(32771),
-			Ftics:   int32(10),
+			Fframe:  32771,
+			Ftics:   10,
 			Faction: *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_BrainExplode)})),
 		},
 		802: {
 			Fsprite:    int32(SPR_ARM1),
-			Ftics:      int32(6),
+			Ftics:      6,
 			Fnextstate: int32(S_ARM1A),
 		},
 		803: {
 			Fsprite:    int32(SPR_ARM1),
-			Fframe:     int32(32769),
-			Ftics:      int32(7),
+			Fframe:     32769,
+			Ftics:      7,
 			Fnextstate: int32(S_ARM1),
 		},
 		804: {
 			Fsprite:    int32(SPR_ARM2),
-			Ftics:      int32(6),
+			Ftics:      6,
 			Fnextstate: int32(S_ARM2A),
 		},
 		805: {
 			Fsprite:    int32(SPR_ARM2),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_ARM2),
 		},
 		806: {
 			Fsprite:    int32(SPR_BAR1),
-			Ftics:      int32(6),
+			Ftics:      6,
 			Fnextstate: int32(S_BAR2),
 		},
 		807: {
 			Fsprite:    int32(SPR_BAR1),
-			Fframe:     int32(1),
-			Ftics:      int32(6),
+			Fframe:     1,
+			Ftics:      6,
 			Fnextstate: int32(S_BAR1),
 		},
 		808: {
 			Fsprite:    int32(SPR_BEXP),
-			Fframe:     int32(32768),
-			Ftics:      int32(5),
+			Fframe:     32768,
+			Ftics:      5,
 			Fnextstate: int32(S_BEXP2),
 		},
 		809: {
 			Fsprite:    int32(SPR_BEXP),
-			Fframe:     int32(32769),
-			Ftics:      int32(5),
+			Fframe:     32769,
+			Ftics:      5,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Scream)})),
 			Fnextstate: int32(S_BEXP3),
 		},
 		810: {
 			Fsprite:    int32(SPR_BEXP),
-			Fframe:     int32(32770),
-			Ftics:      int32(5),
+			Fframe:     32770,
+			Ftics:      5,
 			Fnextstate: int32(S_BEXP4),
 		},
 		811: {
 			Fsprite:    int32(SPR_BEXP),
-			Fframe:     int32(32771),
-			Ftics:      int32(10),
+			Fframe:     32771,
+			Ftics:      10,
 			Faction:    *(*actionf_t)(unsafe.Pointer(&struct{ f actionf_v }{f: __ccgo_fp(A_Explode)})),
 			Fnextstate: int32(S_BEXP5),
 		},
 		812: {
 			Fsprite: int32(SPR_BEXP),
-			Fframe:  int32(32772),
-			Ftics:   int32(10),
+			Fframe:  32772,
+			Ftics:   10,
 		},
 		813: {
 			Fsprite:    int32(SPR_FCAN),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_BBAR2),
 		},
 		814: {
 			Fsprite:    int32(SPR_FCAN),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_BBAR3),
 		},
 		815: {
 			Fsprite:    int32(SPR_FCAN),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Fnextstate: int32(S_BBAR1),
 		},
 		816: {
 			Fsprite:    int32(SPR_BON1),
-			Ftics:      int32(6),
+			Ftics:      6,
 			Fnextstate: int32(S_BON1A),
 		},
 		817: {
 			Fsprite:    int32(SPR_BON1),
-			Fframe:     int32(1),
-			Ftics:      int32(6),
+			Fframe:     1,
+			Ftics:      6,
 			Fnextstate: int32(S_BON1B),
 		},
 		818: {
 			Fsprite:    int32(SPR_BON1),
-			Fframe:     int32(2),
-			Ftics:      int32(6),
+			Fframe:     2,
+			Ftics:      6,
 			Fnextstate: int32(S_BON1C),
 		},
 		819: {
 			Fsprite:    int32(SPR_BON1),
-			Fframe:     int32(3),
-			Ftics:      int32(6),
+			Fframe:     3,
+			Ftics:      6,
 			Fnextstate: int32(S_BON1D),
 		},
 		820: {
 			Fsprite:    int32(SPR_BON1),
-			Fframe:     int32(2),
-			Ftics:      int32(6),
+			Fframe:     2,
+			Ftics:      6,
 			Fnextstate: int32(S_BON1E),
 		},
 		821: {
 			Fsprite:    int32(SPR_BON1),
-			Fframe:     int32(1),
-			Ftics:      int32(6),
+			Fframe:     1,
+			Ftics:      6,
 			Fnextstate: int32(S_BON1),
 		},
 		822: {
 			Fsprite:    int32(SPR_BON2),
-			Ftics:      int32(6),
+			Ftics:      6,
 			Fnextstate: int32(S_BON2A),
 		},
 		823: {
 			Fsprite:    int32(SPR_BON2),
-			Fframe:     int32(1),
-			Ftics:      int32(6),
+			Fframe:     1,
+			Ftics:      6,
 			Fnextstate: int32(S_BON2B),
 		},
 		824: {
 			Fsprite:    int32(SPR_BON2),
-			Fframe:     int32(2),
-			Ftics:      int32(6),
+			Fframe:     2,
+			Ftics:      6,
 			Fnextstate: int32(S_BON2C),
 		},
 		825: {
 			Fsprite:    int32(SPR_BON2),
-			Fframe:     int32(3),
-			Ftics:      int32(6),
+			Fframe:     3,
+			Ftics:      6,
 			Fnextstate: int32(S_BON2D),
 		},
 		826: {
 			Fsprite:    int32(SPR_BON2),
-			Fframe:     int32(2),
-			Ftics:      int32(6),
+			Fframe:     2,
+			Ftics:      6,
 			Fnextstate: int32(S_BON2E),
 		},
 		827: {
 			Fsprite:    int32(SPR_BON2),
-			Fframe:     int32(1),
-			Ftics:      int32(6),
+			Fframe:     1,
+			Ftics:      6,
 			Fnextstate: int32(S_BON2),
 		},
 		828: {
 			Fsprite:    int32(SPR_BKEY),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Fnextstate: int32(S_BKEY2),
 		},
 		829: {
 			Fsprite:    int32(SPR_BKEY),
-			Fframe:     int32(32769),
-			Ftics:      int32(10),
+			Fframe:     32769,
+			Ftics:      10,
 			Fnextstate: int32(S_BKEY),
 		},
 		830: {
 			Fsprite:    int32(SPR_RKEY),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Fnextstate: int32(S_RKEY2),
 		},
 		831: {
 			Fsprite:    int32(SPR_RKEY),
-			Fframe:     int32(32769),
-			Ftics:      int32(10),
+			Fframe:     32769,
+			Ftics:      10,
 			Fnextstate: int32(S_RKEY),
 		},
 		832: {
 			Fsprite:    int32(SPR_YKEY),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Fnextstate: int32(S_YKEY2),
 		},
 		833: {
 			Fsprite:    int32(SPR_YKEY),
-			Fframe:     int32(32769),
-			Ftics:      int32(10),
+			Fframe:     32769,
+			Ftics:      10,
 			Fnextstate: int32(S_YKEY),
 		},
 		834: {
 			Fsprite:    int32(SPR_BSKU),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Fnextstate: int32(S_BSKULL2),
 		},
 		835: {
 			Fsprite:    int32(SPR_BSKU),
-			Fframe:     int32(32769),
-			Ftics:      int32(10),
+			Fframe:     32769,
+			Ftics:      10,
 			Fnextstate: int32(S_BSKULL),
 		},
 		836: {
 			Fsprite:    int32(SPR_RSKU),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Fnextstate: int32(S_RSKULL2),
 		},
 		837: {
 			Fsprite:    int32(SPR_RSKU),
-			Fframe:     int32(32769),
-			Ftics:      int32(10),
+			Fframe:     32769,
+			Ftics:      10,
 			Fnextstate: int32(S_RSKULL),
 		},
 		838: {
 			Fsprite:    int32(SPR_YSKU),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Fnextstate: int32(S_YSKULL2),
 		},
 		839: {
 			Fsprite:    int32(SPR_YSKU),
-			Fframe:     int32(32769),
-			Ftics:      int32(10),
+			Fframe:     32769,
+			Ftics:      10,
 			Fnextstate: int32(S_YSKULL),
 		},
 		840: {
@@ -15688,168 +15688,168 @@ func init() {
 		},
 		842: {
 			Fsprite:    int32(SPR_SOUL),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_SOUL2),
 		},
 		843: {
 			Fsprite:    int32(SPR_SOUL),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_SOUL3),
 		},
 		844: {
 			Fsprite:    int32(SPR_SOUL),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_SOUL4),
 		},
 		845: {
 			Fsprite:    int32(SPR_SOUL),
-			Fframe:     int32(32771),
-			Ftics:      int32(6),
+			Fframe:     32771,
+			Ftics:      6,
 			Fnextstate: int32(S_SOUL5),
 		},
 		846: {
 			Fsprite:    int32(SPR_SOUL),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_SOUL6),
 		},
 		847: {
 			Fsprite:    int32(SPR_SOUL),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_SOUL),
 		},
 		848: {
 			Fsprite:    int32(SPR_PINV),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_PINV2),
 		},
 		849: {
 			Fsprite:    int32(SPR_PINV),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_PINV3),
 		},
 		850: {
 			Fsprite:    int32(SPR_PINV),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_PINV4),
 		},
 		851: {
 			Fsprite:    int32(SPR_PINV),
-			Fframe:     int32(32771),
-			Ftics:      int32(6),
+			Fframe:     32771,
+			Ftics:      6,
 			Fnextstate: int32(S_PINV),
 		},
 		852: {
 			Fsprite: int32(SPR_PSTR),
-			Fframe:  int32(32768),
+			Fframe:  32768,
 			Ftics:   -1,
 		},
 		853: {
 			Fsprite:    int32(SPR_PINS),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_PINS2),
 		},
 		854: {
 			Fsprite:    int32(SPR_PINS),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_PINS3),
 		},
 		855: {
 			Fsprite:    int32(SPR_PINS),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_PINS4),
 		},
 		856: {
 			Fsprite:    int32(SPR_PINS),
-			Fframe:     int32(32771),
-			Ftics:      int32(6),
+			Fframe:     32771,
+			Ftics:      6,
 			Fnextstate: int32(S_PINS),
 		},
 		857: {
 			Fsprite:    int32(SPR_MEGA),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_MEGA2),
 		},
 		858: {
 			Fsprite:    int32(SPR_MEGA),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_MEGA3),
 		},
 		859: {
 			Fsprite:    int32(SPR_MEGA),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_MEGA4),
 		},
 		860: {
 			Fsprite:    int32(SPR_MEGA),
-			Fframe:     int32(32771),
-			Ftics:      int32(6),
+			Fframe:     32771,
+			Ftics:      6,
 			Fnextstate: int32(S_MEGA),
 		},
 		861: {
 			Fsprite: int32(SPR_SUIT),
-			Fframe:  int32(32768),
+			Fframe:  32768,
 			Ftics:   -1,
 		},
 		862: {
 			Fsprite:    int32(SPR_PMAP),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_PMAP2),
 		},
 		863: {
 			Fsprite:    int32(SPR_PMAP),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_PMAP3),
 		},
 		864: {
 			Fsprite:    int32(SPR_PMAP),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_PMAP4),
 		},
 		865: {
 			Fsprite:    int32(SPR_PMAP),
-			Fframe:     int32(32771),
-			Ftics:      int32(6),
+			Fframe:     32771,
+			Ftics:      6,
 			Fnextstate: int32(S_PMAP5),
 		},
 		866: {
 			Fsprite:    int32(SPR_PMAP),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_PMAP6),
 		},
 		867: {
 			Fsprite:    int32(SPR_PMAP),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_PMAP),
 		},
 		868: {
 			Fsprite:    int32(SPR_PVIS),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_PVIS2),
 		},
 		869: {
 			Fsprite:    int32(SPR_PVIS),
-			Fframe:     int32(1),
-			Ftics:      int32(6),
+			Fframe:     1,
+			Ftics:      6,
 			Fnextstate: int32(S_PVIS),
 		},
 		870: {
@@ -15918,7 +15918,7 @@ func init() {
 		},
 		886: {
 			Fsprite: int32(SPR_COLU),
-			Fframe:  int32(32768),
+			Fframe:  32768,
 			Ftics:   -1,
 		},
 		887: {
@@ -15927,35 +15927,35 @@ func init() {
 		},
 		888: {
 			Fsprite:    int32(SPR_GOR1),
-			Ftics:      int32(10),
+			Ftics:      10,
 			Fnextstate: int32(S_BLOODYTWITCH2),
 		},
 		889: {
 			Fsprite:    int32(SPR_GOR1),
-			Fframe:     int32(1),
-			Ftics:      int32(15),
+			Fframe:     1,
+			Ftics:      15,
 			Fnextstate: int32(S_BLOODYTWITCH3),
 		},
 		890: {
 			Fsprite:    int32(SPR_GOR1),
-			Fframe:     int32(2),
-			Ftics:      int32(8),
+			Fframe:     2,
+			Ftics:      8,
 			Fnextstate: int32(S_BLOODYTWITCH4),
 		},
 		891: {
 			Fsprite:    int32(SPR_GOR1),
-			Fframe:     int32(1),
-			Ftics:      int32(6),
+			Fframe:     1,
+			Ftics:      6,
 			Fnextstate: int32(S_BLOODYTWITCH),
 		},
 		892: {
 			Fsprite: int32(SPR_PLAY),
-			Fframe:  int32(13),
+			Fframe:  13,
 			Ftics:   -1,
 		},
 		893: {
 			Fsprite: int32(SPR_PLAY),
-			Fframe:  int32(18),
+			Fframe:  18,
 			Ftics:   -1,
 		},
 		894: {
@@ -15972,14 +15972,14 @@ func init() {
 		},
 		897: {
 			Fsprite:    int32(SPR_POL3),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_HEADCANDLES2),
 		},
 		898: {
 			Fsprite:    int32(SPR_POL3),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_HEADCANDLES),
 		},
 		899: {
@@ -15988,13 +15988,13 @@ func init() {
 		},
 		900: {
 			Fsprite:    int32(SPR_POL6),
-			Ftics:      int32(6),
+			Ftics:      6,
 			Fnextstate: int32(S_LIVESTICK2),
 		},
 		901: {
 			Fsprite:    int32(SPR_POL6),
-			Fframe:     int32(1),
-			Ftics:      int32(8),
+			Fframe:     1,
+			Ftics:      8,
 			Fnextstate: int32(S_LIVESTICK),
 		},
 		902: {
@@ -16035,12 +16035,12 @@ func init() {
 		},
 		911: {
 			Fsprite: int32(SPR_CAND),
-			Fframe:  int32(32768),
+			Fframe:  32768,
 			Ftics:   -1,
 		},
 		912: {
 			Fsprite: int32(SPR_CBRA),
-			Fframe:  int32(32768),
+			Fframe:  32768,
 			Ftics:   -1,
 		},
 		913: {
@@ -16061,199 +16061,199 @@ func init() {
 		},
 		917: {
 			Fsprite:    int32(SPR_CEYE),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_EVILEYE2),
 		},
 		918: {
 			Fsprite:    int32(SPR_CEYE),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_EVILEYE3),
 		},
 		919: {
 			Fsprite:    int32(SPR_CEYE),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_EVILEYE4),
 		},
 		920: {
 			Fsprite:    int32(SPR_CEYE),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_EVILEYE),
 		},
 		921: {
 			Fsprite:    int32(SPR_FSKU),
-			Fframe:     int32(32768),
-			Ftics:      int32(6),
+			Fframe:     32768,
+			Ftics:      6,
 			Fnextstate: int32(S_FLOATSKULL2),
 		},
 		922: {
 			Fsprite:    int32(SPR_FSKU),
-			Fframe:     int32(32769),
-			Ftics:      int32(6),
+			Fframe:     32769,
+			Ftics:      6,
 			Fnextstate: int32(S_FLOATSKULL3),
 		},
 		923: {
 			Fsprite:    int32(SPR_FSKU),
-			Fframe:     int32(32770),
-			Ftics:      int32(6),
+			Fframe:     32770,
+			Ftics:      6,
 			Fnextstate: int32(S_FLOATSKULL),
 		},
 		924: {
 			Fsprite:    int32(SPR_COL5),
-			Ftics:      int32(14),
+			Ftics:      14,
 			Fnextstate: int32(S_HEARTCOL2),
 		},
 		925: {
 			Fsprite:    int32(SPR_COL5),
-			Fframe:     int32(1),
-			Ftics:      int32(14),
+			Fframe:     1,
+			Ftics:      14,
 			Fnextstate: int32(S_HEARTCOL),
 		},
 		926: {
 			Fsprite:    int32(SPR_TBLU),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_BLUETORCH2),
 		},
 		927: {
 			Fsprite:    int32(SPR_TBLU),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_BLUETORCH3),
 		},
 		928: {
 			Fsprite:    int32(SPR_TBLU),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Fnextstate: int32(S_BLUETORCH4),
 		},
 		929: {
 			Fsprite:    int32(SPR_TBLU),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Fnextstate: int32(S_BLUETORCH),
 		},
 		930: {
 			Fsprite:    int32(SPR_TGRN),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_GREENTORCH2),
 		},
 		931: {
 			Fsprite:    int32(SPR_TGRN),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_GREENTORCH3),
 		},
 		932: {
 			Fsprite:    int32(SPR_TGRN),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Fnextstate: int32(S_GREENTORCH4),
 		},
 		933: {
 			Fsprite:    int32(SPR_TGRN),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Fnextstate: int32(S_GREENTORCH),
 		},
 		934: {
 			Fsprite:    int32(SPR_TRED),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_REDTORCH2),
 		},
 		935: {
 			Fsprite:    int32(SPR_TRED),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_REDTORCH3),
 		},
 		936: {
 			Fsprite:    int32(SPR_TRED),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Fnextstate: int32(S_REDTORCH4),
 		},
 		937: {
 			Fsprite:    int32(SPR_TRED),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Fnextstate: int32(S_REDTORCH),
 		},
 		938: {
 			Fsprite:    int32(SPR_SMBT),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_BTORCHSHRT2),
 		},
 		939: {
 			Fsprite:    int32(SPR_SMBT),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_BTORCHSHRT3),
 		},
 		940: {
 			Fsprite:    int32(SPR_SMBT),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Fnextstate: int32(S_BTORCHSHRT4),
 		},
 		941: {
 			Fsprite:    int32(SPR_SMBT),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Fnextstate: int32(S_BTORCHSHRT),
 		},
 		942: {
 			Fsprite:    int32(SPR_SMGT),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_GTORCHSHRT2),
 		},
 		943: {
 			Fsprite:    int32(SPR_SMGT),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_GTORCHSHRT3),
 		},
 		944: {
 			Fsprite:    int32(SPR_SMGT),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Fnextstate: int32(S_GTORCHSHRT4),
 		},
 		945: {
 			Fsprite:    int32(SPR_SMGT),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Fnextstate: int32(S_GTORCHSHRT),
 		},
 		946: {
 			Fsprite:    int32(SPR_SMRT),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_RTORCHSHRT2),
 		},
 		947: {
 			Fsprite:    int32(SPR_SMRT),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_RTORCHSHRT3),
 		},
 		948: {
 			Fsprite:    int32(SPR_SMRT),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Fnextstate: int32(S_RTORCHSHRT4),
 		},
 		949: {
 			Fsprite:    int32(SPR_SMRT),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Fnextstate: int32(S_RTORCHSHRT),
 		},
 		950: {
@@ -16294,50 +16294,50 @@ func init() {
 		},
 		959: {
 			Fsprite:    int32(SPR_TLMP),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_TECHLAMP2),
 		},
 		960: {
 			Fsprite:    int32(SPR_TLMP),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_TECHLAMP3),
 		},
 		961: {
 			Fsprite:    int32(SPR_TLMP),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Fnextstate: int32(S_TECHLAMP4),
 		},
 		962: {
 			Fsprite:    int32(SPR_TLMP),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Fnextstate: int32(S_TECHLAMP),
 		},
 		963: {
 			Fsprite:    int32(SPR_TLP2),
-			Fframe:     int32(32768),
-			Ftics:      int32(4),
+			Fframe:     32768,
+			Ftics:      4,
 			Fnextstate: int32(S_TECH2LAMP2),
 		},
 		964: {
 			Fsprite:    int32(SPR_TLP2),
-			Fframe:     int32(32769),
-			Ftics:      int32(4),
+			Fframe:     32769,
+			Ftics:      4,
 			Fnextstate: int32(S_TECH2LAMP3),
 		},
 		965: {
 			Fsprite:    int32(SPR_TLP2),
-			Fframe:     int32(32770),
-			Ftics:      int32(4),
+			Fframe:     32770,
+			Ftics:      4,
 			Fnextstate: int32(S_TECH2LAMP4),
 		},
 		966: {
 			Fsprite:    int32(SPR_TLP2),
-			Fframe:     int32(32771),
-			Ftics:      int32(4),
+			Fframe:     32771,
+			Ftics:      4,
 			Fnextstate: int32(S_TECH2LAMP),
 		},
 	}
@@ -16348,10 +16348,10 @@ func init() {
 		0: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_PLAY),
-			Fspawnhealth:  int32(100),
+			Fspawnhealth:  100,
 			Fseestate:     int32(S_PLAY_RUN1),
 			Fpainstate:    int32(S_PLAY_PAIN),
-			Fpainchance:   int32(255),
+			Fpainchance:   255,
 			Fpainsound:    int32(sfx_plpain),
 			Fmissilestate: int32(S_PLAY_ATK1),
 			Fdeathstate:   int32(S_PLAY_DIE1),
@@ -16359,102 +16359,102 @@ func init() {
 			Fdeathsound:   int32(sfx_pldeth),
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_DROPOFF) | int32(MF_PICKUP) | int32(MF_NOTDMATCH),
 		},
 		1: {
-			Fdoomednum:    int32(3004),
+			Fdoomednum:    3004,
 			Fspawnstate:   int32(S_POSS_STND),
-			Fspawnhealth:  int32(20),
+			Fspawnhealth:  20,
 			Fseestate:     int32(S_POSS_RUN1),
 			Fseesound:     int32(sfx_posit1),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fattacksound:  int32(sfx_pistol),
 			Fpainstate:    int32(S_POSS_PAIN),
-			Fpainchance:   int32(200),
+			Fpainchance:   200,
 			Fpainsound:    int32(sfx_popain),
 			Fmissilestate: int32(S_POSS_ATK1),
 			Fdeathstate:   int32(S_POSS_DIE1),
 			Fxdeathstate:  int32(S_POSS_XDIE1),
 			Fdeathsound:   int32(sfx_podth1),
-			Fspeed:        int32(8),
+			Fspeed:        8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Factivesound:  int32(sfx_posact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_POSS_RAISE1),
 		},
 		2: {
-			Fdoomednum:    int32(9),
+			Fdoomednum:    9,
 			Fspawnstate:   int32(S_SPOS_STND),
-			Fspawnhealth:  int32(30),
+			Fspawnhealth:  30,
 			Fseestate:     int32(S_SPOS_RUN1),
 			Fseesound:     int32(sfx_posit2),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_SPOS_PAIN),
-			Fpainchance:   int32(170),
+			Fpainchance:   170,
 			Fpainsound:    int32(sfx_popain),
 			Fmissilestate: int32(S_SPOS_ATK1),
 			Fdeathstate:   int32(S_SPOS_DIE1),
 			Fxdeathstate:  int32(S_SPOS_XDIE1),
 			Fdeathsound:   int32(sfx_podth2),
-			Fspeed:        int32(8),
+			Fspeed:        8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Factivesound:  int32(sfx_posact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_SPOS_RAISE1),
 		},
 		3: {
-			Fdoomednum:    int32(64),
+			Fdoomednum:    64,
 			Fspawnstate:   int32(S_VILE_STND),
-			Fspawnhealth:  int32(700),
+			Fspawnhealth:  700,
 			Fseestate:     int32(S_VILE_RUN1),
 			Fseesound:     int32(sfx_vilsit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_VILE_PAIN),
-			Fpainchance:   int32(10),
+			Fpainchance:   10,
 			Fpainsound:    int32(sfx_vipain),
 			Fmissilestate: int32(S_VILE_ATK1),
 			Fdeathstate:   int32(S_VILE_DIE1),
 			Fdeathsound:   int32(sfx_vildth),
-			Fspeed:        int32(15),
+			Fspeed:        15,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(500),
+			Fmass:         500,
 			Factivesound:  int32(sfx_vilact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 		},
 		4: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_FIRE1),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
 		5: {
-			Fdoomednum:    int32(66),
+			Fdoomednum:    66,
 			Fspawnstate:   int32(S_SKEL_STND),
-			Fspawnhealth:  int32(300),
+			Fspawnhealth:  300,
 			Fseestate:     int32(S_SKEL_RUN1),
 			Fseesound:     int32(sfx_skesit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_SKEL_PAIN),
-			Fpainchance:   int32(100),
+			Fpainchance:   100,
 			Fpainsound:    int32(sfx_popain),
 			Fmeleestate:   int32(S_SKEL_FIST1),
 			Fmissilestate: int32(S_SKEL_MISS1),
 			Fdeathstate:   int32(S_SKEL_DIE1),
 			Fdeathsound:   int32(sfx_skedth),
-			Fspeed:        int32(10),
+			Fspeed:        10,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(500),
+			Fmass:         500,
 			Factivesound:  int32(sfx_skeact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_SKEL_RAISE1),
@@ -16462,45 +16462,45 @@ func init() {
 		6: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_TRACER),
-			Fspawnhealth:  int32(1000),
+			Fspawnhealth:  1000,
 			Fseesound:     int32(sfx_skeatk),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fdeathstate:   int32(S_TRACEEXP1),
 			Fdeathsound:   int32(sfx_barexp),
 			Fspeed:        10 * (1 << FRACBITS),
 			Fradius:       11 * (1 << FRACBITS),
 			Fheight:       8 * (1 << FRACBITS),
-			Fmass:         int32(100),
-			Fdamage:       int32(10),
+			Fmass:         100,
+			Fdamage:       10,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
 		},
 		7: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_SMOKE1),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
 		8: {
-			Fdoomednum:    int32(67),
+			Fdoomednum:    67,
 			Fspawnstate:   int32(S_FATT_STND),
-			Fspawnhealth:  int32(600),
+			Fspawnhealth:  600,
 			Fseestate:     int32(S_FATT_RUN1),
 			Fseesound:     int32(sfx_mansit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_FATT_PAIN),
-			Fpainchance:   int32(80),
+			Fpainchance:   80,
 			Fpainsound:    int32(sfx_mnpain),
 			Fmissilestate: int32(S_FATT_ATK1),
 			Fdeathstate:   int32(S_FATT_DIE1),
 			Fdeathsound:   int32(sfx_mandth),
-			Fspeed:        int32(8),
+			Fspeed:        8,
 			Fradius:       48 * (1 << FRACBITS),
 			Fheight:       64 * (1 << FRACBITS),
-			Fmass:         int32(1000),
+			Fmass:         1000,
 			Factivesound:  int32(sfx_posact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_FATT_RAISE1),
@@ -16508,146 +16508,146 @@ func init() {
 		9: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_FATSHOT1),
-			Fspawnhealth:  int32(1000),
+			Fspawnhealth:  1000,
 			Fseesound:     int32(sfx_firsht),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fdeathstate:   int32(S_FATSHOTX1),
 			Fdeathsound:   int32(sfx_firxpl),
 			Fspeed:        20 * (1 << FRACBITS),
 			Fradius:       6 * (1 << FRACBITS),
 			Fheight:       8 * (1 << FRACBITS),
-			Fmass:         int32(100),
-			Fdamage:       int32(8),
+			Fmass:         100,
+			Fdamage:       8,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
 		},
 		10: {
-			Fdoomednum:    int32(65),
+			Fdoomednum:    65,
 			Fspawnstate:   int32(S_CPOS_STND),
-			Fspawnhealth:  int32(70),
+			Fspawnhealth:  70,
 			Fseestate:     int32(S_CPOS_RUN1),
 			Fseesound:     int32(sfx_posit2),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_CPOS_PAIN),
-			Fpainchance:   int32(170),
+			Fpainchance:   170,
 			Fpainsound:    int32(sfx_popain),
 			Fmissilestate: int32(S_CPOS_ATK1),
 			Fdeathstate:   int32(S_CPOS_DIE1),
 			Fxdeathstate:  int32(S_CPOS_XDIE1),
 			Fdeathsound:   int32(sfx_podth2),
-			Fspeed:        int32(8),
+			Fspeed:        8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Factivesound:  int32(sfx_posact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_CPOS_RAISE1),
 		},
 		11: {
-			Fdoomednum:    int32(3001),
+			Fdoomednum:    3001,
 			Fspawnstate:   int32(S_TROO_STND),
-			Fspawnhealth:  int32(60),
+			Fspawnhealth:  60,
 			Fseestate:     int32(S_TROO_RUN1),
 			Fseesound:     int32(sfx_bgsit1),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_TROO_PAIN),
-			Fpainchance:   int32(200),
+			Fpainchance:   200,
 			Fpainsound:    int32(sfx_popain),
 			Fmeleestate:   int32(S_TROO_ATK1),
 			Fmissilestate: int32(S_TROO_ATK1),
 			Fdeathstate:   int32(S_TROO_DIE1),
 			Fxdeathstate:  int32(S_TROO_XDIE1),
 			Fdeathsound:   int32(sfx_bgdth1),
-			Fspeed:        int32(8),
+			Fspeed:        8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Factivesound:  int32(sfx_bgact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_TROO_RAISE1),
 		},
 		12: {
-			Fdoomednum:    int32(3002),
+			Fdoomednum:    3002,
 			Fspawnstate:   int32(S_SARG_STND),
-			Fspawnhealth:  int32(150),
+			Fspawnhealth:  150,
 			Fseestate:     int32(S_SARG_RUN1),
 			Fseesound:     int32(sfx_sgtsit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fattacksound:  int32(sfx_sgtatk),
 			Fpainstate:    int32(S_SARG_PAIN),
-			Fpainchance:   int32(180),
+			Fpainchance:   180,
 			Fpainsound:    int32(sfx_dmpain),
 			Fmeleestate:   int32(S_SARG_ATK1),
 			Fdeathstate:   int32(S_SARG_DIE1),
 			Fdeathsound:   int32(sfx_sgtdth),
-			Fspeed:        int32(10),
+			Fspeed:        10,
 			Fradius:       30 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(400),
+			Fmass:         400,
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_SARG_RAISE1),
 		},
 		13: {
-			Fdoomednum:    int32(58),
+			Fdoomednum:    58,
 			Fspawnstate:   int32(S_SARG_STND),
-			Fspawnhealth:  int32(150),
+			Fspawnhealth:  150,
 			Fseestate:     int32(S_SARG_RUN1),
 			Fseesound:     int32(sfx_sgtsit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fattacksound:  int32(sfx_sgtatk),
 			Fpainstate:    int32(S_SARG_PAIN),
-			Fpainchance:   int32(180),
+			Fpainchance:   180,
 			Fpainsound:    int32(sfx_dmpain),
 			Fmeleestate:   int32(S_SARG_ATK1),
 			Fdeathstate:   int32(S_SARG_DIE1),
 			Fdeathsound:   int32(sfx_sgtdth),
-			Fspeed:        int32(10),
+			Fspeed:        10,
 			Fradius:       30 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(400),
+			Fmass:         400,
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_SHADOW) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_SARG_RAISE1),
 		},
 		14: {
-			Fdoomednum:    int32(3005),
+			Fdoomednum:    3005,
 			Fspawnstate:   int32(S_HEAD_STND),
-			Fspawnhealth:  int32(400),
+			Fspawnhealth:  400,
 			Fseestate:     int32(S_HEAD_RUN1),
 			Fseesound:     int32(sfx_cacsit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_HEAD_PAIN),
-			Fpainchance:   int32(128),
+			Fpainchance:   128,
 			Fpainsound:    int32(sfx_dmpain),
 			Fmissilestate: int32(S_HEAD_ATK1),
 			Fdeathstate:   int32(S_HEAD_DIE1),
 			Fdeathsound:   int32(sfx_cacdth),
-			Fspeed:        int32(8),
+			Fspeed:        8,
 			Fradius:       31 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(400),
+			Fmass:         400,
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_FLOAT) | int32(MF_NOGRAVITY) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_HEAD_RAISE1),
 		},
 		15: {
-			Fdoomednum:    int32(3003),
+			Fdoomednum:    3003,
 			Fspawnstate:   int32(S_BOSS_STND),
-			Fspawnhealth:  int32(1000),
+			Fspawnhealth:  1000,
 			Fseestate:     int32(S_BOSS_RUN1),
 			Fseesound:     int32(sfx_brssit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_BOSS_PAIN),
-			Fpainchance:   int32(50),
+			Fpainchance:   50,
 			Fpainsound:    int32(sfx_dmpain),
 			Fmeleestate:   int32(S_BOSS_ATK1),
 			Fmissilestate: int32(S_BOSS_ATK1),
 			Fdeathstate:   int32(S_BOSS_DIE1),
 			Fdeathsound:   int32(sfx_brsdth),
-			Fspeed:        int32(8),
+			Fspeed:        8,
 			Fradius:       24 * (1 << FRACBITS),
 			Fheight:       64 * (1 << FRACBITS),
-			Fmass:         int32(1000),
+			Fmass:         1000,
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_BOSS_RAISE1),
@@ -16655,1327 +16655,1327 @@ func init() {
 		16: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_BRBALL1),
-			Fspawnhealth:  int32(1000),
+			Fspawnhealth:  1000,
 			Fseesound:     int32(sfx_firsht),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fdeathstate:   int32(S_BRBALLX1),
 			Fdeathsound:   int32(sfx_firxpl),
 			Fspeed:        15 * (1 << FRACBITS),
 			Fradius:       6 * (1 << FRACBITS),
 			Fheight:       8 * (1 << FRACBITS),
-			Fmass:         int32(100),
-			Fdamage:       int32(8),
+			Fmass:         100,
+			Fdamage:       8,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
 		},
 		17: {
-			Fdoomednum:    int32(69),
+			Fdoomednum:    69,
 			Fspawnstate:   int32(S_BOS2_STND),
-			Fspawnhealth:  int32(500),
+			Fspawnhealth:  500,
 			Fseestate:     int32(S_BOS2_RUN1),
 			Fseesound:     int32(sfx_kntsit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_BOS2_PAIN),
-			Fpainchance:   int32(50),
+			Fpainchance:   50,
 			Fpainsound:    int32(sfx_dmpain),
 			Fmeleestate:   int32(S_BOS2_ATK1),
 			Fmissilestate: int32(S_BOS2_ATK1),
 			Fdeathstate:   int32(S_BOS2_DIE1),
 			Fdeathsound:   int32(sfx_kntdth),
-			Fspeed:        int32(8),
+			Fspeed:        8,
 			Fradius:       24 * (1 << FRACBITS),
 			Fheight:       64 * (1 << FRACBITS),
-			Fmass:         int32(1000),
+			Fmass:         1000,
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_BOS2_RAISE1),
 		},
 		18: {
-			Fdoomednum:    int32(3006),
+			Fdoomednum:    3006,
 			Fspawnstate:   int32(S_SKULL_STND),
-			Fspawnhealth:  int32(100),
+			Fspawnhealth:  100,
 			Fseestate:     int32(S_SKULL_RUN1),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fattacksound:  int32(sfx_sklatk),
 			Fpainstate:    int32(S_SKULL_PAIN),
-			Fpainchance:   int32(256),
+			Fpainchance:   256,
 			Fpainsound:    int32(sfx_dmpain),
 			Fmissilestate: int32(S_SKULL_ATK1),
 			Fdeathstate:   int32(S_SKULL_DIE1),
 			Fdeathsound:   int32(sfx_firxpl),
-			Fspeed:        int32(8),
+			Fspeed:        8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(50),
-			Fdamage:       int32(3),
+			Fmass:         50,
+			Fdamage:       3,
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_FLOAT) | int32(MF_NOGRAVITY),
 		},
 		19: {
-			Fdoomednum:    int32(7),
+			Fdoomednum:    7,
 			Fspawnstate:   int32(S_SPID_STND),
-			Fspawnhealth:  int32(3000),
+			Fspawnhealth:  3000,
 			Fseestate:     int32(S_SPID_RUN1),
 			Fseesound:     int32(sfx_spisit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fattacksound:  int32(sfx_shotgn),
 			Fpainstate:    int32(S_SPID_PAIN),
-			Fpainchance:   int32(40),
+			Fpainchance:   40,
 			Fpainsound:    int32(sfx_dmpain),
 			Fmissilestate: int32(S_SPID_ATK1),
 			Fdeathstate:   int32(S_SPID_DIE1),
 			Fdeathsound:   int32(sfx_spidth),
-			Fspeed:        int32(12),
+			Fspeed:        12,
 			Fradius:       128 * (1 << FRACBITS),
 			Fheight:       100 * (1 << FRACBITS),
-			Fmass:         int32(1000),
+			Fmass:         1000,
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 		},
 		20: {
-			Fdoomednum:    int32(68),
+			Fdoomednum:    68,
 			Fspawnstate:   int32(S_BSPI_STND),
-			Fspawnhealth:  int32(500),
+			Fspawnhealth:  500,
 			Fseestate:     int32(S_BSPI_SIGHT),
 			Fseesound:     int32(sfx_bspsit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_BSPI_PAIN),
-			Fpainchance:   int32(128),
+			Fpainchance:   128,
 			Fpainsound:    int32(sfx_dmpain),
 			Fmissilestate: int32(S_BSPI_ATK1),
 			Fdeathstate:   int32(S_BSPI_DIE1),
 			Fdeathsound:   int32(sfx_bspdth),
-			Fspeed:        int32(12),
+			Fspeed:        12,
 			Fradius:       64 * (1 << FRACBITS),
 			Fheight:       64 * (1 << FRACBITS),
-			Fmass:         int32(600),
+			Fmass:         600,
 			Factivesound:  int32(sfx_bspact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_BSPI_RAISE1),
 		},
 		21: {
-			Fdoomednum:    int32(16),
+			Fdoomednum:    16,
 			Fspawnstate:   int32(S_CYBER_STND),
-			Fspawnhealth:  int32(4000),
+			Fspawnhealth:  4000,
 			Fseestate:     int32(S_CYBER_RUN1),
 			Fseesound:     int32(sfx_cybsit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_CYBER_PAIN),
-			Fpainchance:   int32(20),
+			Fpainchance:   20,
 			Fpainsound:    int32(sfx_dmpain),
 			Fmissilestate: int32(S_CYBER_ATK1),
 			Fdeathstate:   int32(S_CYBER_DIE1),
 			Fdeathsound:   int32(sfx_cybdth),
-			Fspeed:        int32(16),
+			Fspeed:        16,
 			Fradius:       40 * (1 << FRACBITS),
 			Fheight:       110 * (1 << FRACBITS),
-			Fmass:         int32(1000),
+			Fmass:         1000,
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 		},
 		22: {
-			Fdoomednum:    int32(71),
+			Fdoomednum:    71,
 			Fspawnstate:   int32(S_PAIN_STND),
-			Fspawnhealth:  int32(400),
+			Fspawnhealth:  400,
 			Fseestate:     int32(S_PAIN_RUN1),
 			Fseesound:     int32(sfx_pesit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_PAIN_PAIN),
-			Fpainchance:   int32(128),
+			Fpainchance:   128,
 			Fpainsound:    int32(sfx_pepain),
 			Fmissilestate: int32(S_PAIN_ATK1),
 			Fdeathstate:   int32(S_PAIN_DIE1),
 			Fdeathsound:   int32(sfx_pedth),
-			Fspeed:        int32(8),
+			Fspeed:        8,
 			Fradius:       31 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(400),
+			Fmass:         400,
 			Factivesound:  int32(sfx_dmact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_FLOAT) | int32(MF_NOGRAVITY) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_PAIN_RAISE1),
 		},
 		23: {
-			Fdoomednum:    int32(84),
+			Fdoomednum:    84,
 			Fspawnstate:   int32(S_SSWV_STND),
-			Fspawnhealth:  int32(50),
+			Fspawnhealth:  50,
 			Fseestate:     int32(S_SSWV_RUN1),
 			Fseesound:     int32(sfx_sssit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fpainstate:    int32(S_SSWV_PAIN),
-			Fpainchance:   int32(170),
+			Fpainchance:   170,
 			Fpainsound:    int32(sfx_popain),
 			Fmissilestate: int32(S_SSWV_ATK1),
 			Fdeathstate:   int32(S_SSWV_DIE1),
 			Fxdeathstate:  int32(S_SSWV_XDIE1),
 			Fdeathsound:   int32(sfx_ssdth),
-			Fspeed:        int32(8),
+			Fspeed:        8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Factivesound:  int32(sfx_posact),
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 			Fraisestate:   int32(S_SSWV_RAISE1),
 		},
 		24: {
-			Fdoomednum:    int32(72),
+			Fdoomednum:    72,
 			Fspawnstate:   int32(S_KEENSTND),
-			Fspawnhealth:  int32(100),
-			Freactiontime: int32(8),
+			Fspawnhealth:  100,
+			Freactiontime: 8,
 			Fpainstate:    int32(S_KEENPAIN),
-			Fpainchance:   int32(256),
+			Fpainchance:   256,
 			Fpainsound:    int32(sfx_keenpn),
 			Fdeathstate:   int32(S_COMMKEEN),
 			Fdeathsound:   int32(sfx_keendt),
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       72 * (1 << FRACBITS),
-			Fmass:         int32(10000000),
+			Fmass:         10000000,
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
 		},
 		25: {
-			Fdoomednum:    int32(88),
+			Fdoomednum:    88,
 			Fspawnstate:   int32(S_BRAIN),
-			Fspawnhealth:  int32(250),
-			Freactiontime: int32(8),
+			Fspawnhealth:  250,
+			Freactiontime: 8,
 			Fpainstate:    int32(S_BRAIN_PAIN),
-			Fpainchance:   int32(255),
+			Fpainchance:   255,
 			Fpainsound:    int32(sfx_bospn),
 			Fdeathstate:   int32(S_BRAIN_DIE1),
 			Fdeathsound:   int32(sfx_bosdth),
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(10000000),
+			Fmass:         10000000,
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE),
 		},
 		26: {
-			Fdoomednum:    int32(89),
+			Fdoomednum:    89,
 			Fspawnstate:   int32(S_BRAINEYE),
-			Fspawnhealth:  int32(1000),
+			Fspawnhealth:  1000,
 			Fseestate:     int32(S_BRAINEYESEE),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       32 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOSECTOR),
 		},
 		27: {
-			Fdoomednum:    int32(87),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fdoomednum:    87,
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       32 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOSECTOR),
 		},
 		28: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_SPAWN1),
-			Fspawnhealth:  int32(1000),
+			Fspawnhealth:  1000,
 			Fseesound:     int32(sfx_bospit),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fdeathsound:   int32(sfx_firxpl),
 			Fspeed:        10 * (1 << FRACBITS),
 			Fradius:       6 * (1 << FRACBITS),
 			Fheight:       32 * (1 << FRACBITS),
-			Fmass:         int32(100),
-			Fdamage:       int32(3),
+			Fmass:         100,
+			Fdamage:       3,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY) | int32(MF_NOCLIP),
 		},
 		29: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_SPAWNFIRE1),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
 		30: {
-			Fdoomednum:    int32(2035),
+			Fdoomednum:    2035,
 			Fspawnstate:   int32(S_BAR1),
-			Fspawnhealth:  int32(20),
-			Freactiontime: int32(8),
+			Fspawnhealth:  20,
+			Freactiontime: 8,
 			Fdeathstate:   int32(S_BEXP),
 			Fdeathsound:   int32(sfx_barexp),
 			Fradius:       10 * (1 << FRACBITS),
 			Fheight:       42 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_NOBLOOD),
 		},
 		31: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_TBALL1),
-			Fspawnhealth:  int32(1000),
+			Fspawnhealth:  1000,
 			Fseesound:     int32(sfx_firsht),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fdeathstate:   int32(S_TBALLX1),
 			Fdeathsound:   int32(sfx_firxpl),
 			Fspeed:        10 * (1 << FRACBITS),
 			Fradius:       6 * (1 << FRACBITS),
 			Fheight:       8 * (1 << FRACBITS),
-			Fmass:         int32(100),
-			Fdamage:       int32(3),
+			Fmass:         100,
+			Fdamage:       3,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
 		},
 		32: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_RBALL1),
-			Fspawnhealth:  int32(1000),
+			Fspawnhealth:  1000,
 			Fseesound:     int32(sfx_firsht),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fdeathstate:   int32(S_RBALLX1),
 			Fdeathsound:   int32(sfx_firxpl),
 			Fspeed:        10 * (1 << FRACBITS),
 			Fradius:       6 * (1 << FRACBITS),
 			Fheight:       8 * (1 << FRACBITS),
-			Fmass:         int32(100),
-			Fdamage:       int32(5),
+			Fmass:         100,
+			Fdamage:       5,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
 		},
 		33: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_ROCKET),
-			Fspawnhealth:  int32(1000),
+			Fspawnhealth:  1000,
 			Fseesound:     int32(sfx_rlaunc),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fdeathstate:   int32(S_EXPLODE1),
 			Fdeathsound:   int32(sfx_barexp),
 			Fspeed:        20 * (1 << FRACBITS),
 			Fradius:       11 * (1 << FRACBITS),
 			Fheight:       8 * (1 << FRACBITS),
-			Fmass:         int32(100),
-			Fdamage:       int32(20),
+			Fmass:         100,
+			Fdamage:       20,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
 		},
 		34: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_PLASBALL),
-			Fspawnhealth:  int32(1000),
+			Fspawnhealth:  1000,
 			Fseesound:     int32(sfx_plasma),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fdeathstate:   int32(S_PLASEXP),
 			Fdeathsound:   int32(sfx_firxpl),
 			Fspeed:        25 * (1 << FRACBITS),
 			Fradius:       13 * (1 << FRACBITS),
 			Fheight:       8 * (1 << FRACBITS),
-			Fmass:         int32(100),
-			Fdamage:       int32(5),
+			Fmass:         100,
+			Fdamage:       5,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
 		},
 		35: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_BFGSHOT),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fdeathstate:   int32(S_BFGLAND),
 			Fdeathsound:   int32(sfx_rxplod),
 			Fspeed:        25 * (1 << FRACBITS),
 			Fradius:       13 * (1 << FRACBITS),
 			Fheight:       8 * (1 << FRACBITS),
-			Fmass:         int32(100),
-			Fdamage:       int32(100),
+			Fmass:         100,
+			Fdamage:       100,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
 		},
 		36: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_ARACH_PLAZ),
-			Fspawnhealth:  int32(1000),
+			Fspawnhealth:  1000,
 			Fseesound:     int32(sfx_plasma),
-			Freactiontime: int32(8),
+			Freactiontime: 8,
 			Fdeathstate:   int32(S_ARACH_PLEX),
 			Fdeathsound:   int32(sfx_firxpl),
 			Fspeed:        25 * (1 << FRACBITS),
 			Fradius:       13 * (1 << FRACBITS),
 			Fheight:       8 * (1 << FRACBITS),
-			Fmass:         int32(100),
-			Fdamage:       int32(5),
+			Fmass:         100,
+			Fdamage:       5,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
 		},
 		37: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_PUFF1),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
 		38: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_BLOOD1),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP),
 		},
 		39: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_TFOG),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
 		40: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_IFOG),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
 		41: {
-			Fdoomednum:    int32(14),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fdoomednum:    14,
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOSECTOR),
 		},
 		42: {
 			Fdoomednum:    -1,
 			Fspawnstate:   int32(S_BFGEXP),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
 		},
 		43: {
-			Fdoomednum:    int32(2018),
+			Fdoomednum:    2018,
 			Fspawnstate:   int32(S_ARM1),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		44: {
-			Fdoomednum:    int32(2019),
+			Fdoomednum:    2019,
 			Fspawnstate:   int32(S_ARM2),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		45: {
-			Fdoomednum:    int32(2014),
+			Fdoomednum:    2014,
 			Fspawnstate:   int32(S_BON1),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
 		46: {
-			Fdoomednum:    int32(2015),
+			Fdoomednum:    2015,
 			Fspawnstate:   int32(S_BON2),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
 		47: {
-			Fdoomednum:    int32(5),
+			Fdoomednum:    5,
 			Fspawnstate:   int32(S_BKEY),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
 		},
 		48: {
-			Fdoomednum:    int32(13),
+			Fdoomednum:    13,
 			Fspawnstate:   int32(S_RKEY),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
 		},
 		49: {
-			Fdoomednum:    int32(6),
+			Fdoomednum:    6,
 			Fspawnstate:   int32(S_YKEY),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
 		},
 		50: {
-			Fdoomednum:    int32(39),
+			Fdoomednum:    39,
 			Fspawnstate:   int32(S_YSKULL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
 		},
 		51: {
-			Fdoomednum:    int32(38),
+			Fdoomednum:    38,
 			Fspawnstate:   int32(S_RSKULL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
 		},
 		52: {
-			Fdoomednum:    int32(40),
+			Fdoomednum:    40,
 			Fspawnstate:   int32(S_BSKULL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
 		},
 		53: {
-			Fdoomednum:    int32(2011),
+			Fdoomednum:    2011,
 			Fspawnstate:   int32(S_STIM),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		54: {
-			Fdoomednum:    int32(2012),
+			Fdoomednum:    2012,
 			Fspawnstate:   int32(S_MEDI),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		55: {
-			Fdoomednum:    int32(2013),
+			Fdoomednum:    2013,
 			Fspawnstate:   int32(S_SOUL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
 		56: {
-			Fdoomednum:    int32(2022),
+			Fdoomednum:    2022,
 			Fspawnstate:   int32(S_PINV),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
 		57: {
-			Fdoomednum:    int32(2023),
+			Fdoomednum:    2023,
 			Fspawnstate:   int32(S_PSTR),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
 		58: {
-			Fdoomednum:    int32(2024),
+			Fdoomednum:    2024,
 			Fspawnstate:   int32(S_PINS),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
 		59: {
-			Fdoomednum:    int32(2025),
+			Fdoomednum:    2025,
 			Fspawnstate:   int32(S_SUIT),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		60: {
-			Fdoomednum:    int32(2026),
+			Fdoomednum:    2026,
 			Fspawnstate:   int32(S_PMAP),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
 		61: {
-			Fdoomednum:    int32(2045),
+			Fdoomednum:    2045,
 			Fspawnstate:   int32(S_PVIS),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
 		62: {
-			Fdoomednum:    int32(83),
+			Fdoomednum:    83,
 			Fspawnstate:   int32(S_MEGA),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
 		},
 		63: {
-			Fdoomednum:    int32(2007),
+			Fdoomednum:    2007,
 			Fspawnstate:   int32(S_CLIP),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		64: {
-			Fdoomednum:    int32(2048),
+			Fdoomednum:    2048,
 			Fspawnstate:   int32(S_AMMO),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		65: {
-			Fdoomednum:    int32(2010),
+			Fdoomednum:    2010,
 			Fspawnstate:   int32(S_ROCK),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		66: {
-			Fdoomednum:    int32(2046),
+			Fdoomednum:    2046,
 			Fspawnstate:   int32(S_BROK),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		67: {
-			Fdoomednum:    int32(2047),
+			Fdoomednum:    2047,
 			Fspawnstate:   int32(S_CELL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		68: {
-			Fdoomednum:    int32(17),
+			Fdoomednum:    17,
 			Fspawnstate:   int32(S_CELP),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		69: {
-			Fdoomednum:    int32(2008),
+			Fdoomednum:    2008,
 			Fspawnstate:   int32(S_SHEL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		70: {
-			Fdoomednum:    int32(2049),
+			Fdoomednum:    2049,
 			Fspawnstate:   int32(S_SBOX),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		71: {
-			Fdoomednum:    int32(8),
+			Fdoomednum:    8,
 			Fspawnstate:   int32(S_BPAK),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		72: {
-			Fdoomednum:    int32(2006),
+			Fdoomednum:    2006,
 			Fspawnstate:   int32(S_BFUG),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		73: {
-			Fdoomednum:    int32(2002),
+			Fdoomednum:    2002,
 			Fspawnstate:   int32(S_MGUN),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		74: {
-			Fdoomednum:    int32(2005),
+			Fdoomednum:    2005,
 			Fspawnstate:   int32(S_CSAW),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		75: {
-			Fdoomednum:    int32(2003),
+			Fdoomednum:    2003,
 			Fspawnstate:   int32(S_LAUN),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		76: {
-			Fdoomednum:    int32(2004),
+			Fdoomednum:    2004,
 			Fspawnstate:   int32(S_PLAS),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		77: {
-			Fdoomednum:    int32(2001),
+			Fdoomednum:    2001,
 			Fspawnstate:   int32(S_SHOT),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		78: {
-			Fdoomednum:    int32(82),
+			Fdoomednum:    82,
 			Fspawnstate:   int32(S_SHOT2),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPECIAL),
 		},
 		79: {
-			Fdoomednum:    int32(85),
+			Fdoomednum:    85,
 			Fspawnstate:   int32(S_TECHLAMP),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		80: {
-			Fdoomednum:    int32(86),
+			Fdoomednum:    86,
 			Fspawnstate:   int32(S_TECH2LAMP),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		81: {
-			Fdoomednum:    int32(2028),
+			Fdoomednum:    2028,
 			Fspawnstate:   int32(S_COLU),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		82: {
-			Fdoomednum:    int32(30),
+			Fdoomednum:    30,
 			Fspawnstate:   int32(S_TALLGRNCOL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		83: {
-			Fdoomednum:    int32(31),
+			Fdoomednum:    31,
 			Fspawnstate:   int32(S_SHRTGRNCOL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		84: {
-			Fdoomednum:    int32(32),
+			Fdoomednum:    32,
 			Fspawnstate:   int32(S_TALLREDCOL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		85: {
-			Fdoomednum:    int32(33),
+			Fdoomednum:    33,
 			Fspawnstate:   int32(S_SHRTREDCOL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		86: {
-			Fdoomednum:    int32(37),
+			Fdoomednum:    37,
 			Fspawnstate:   int32(S_SKULLCOL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		87: {
-			Fdoomednum:    int32(36),
+			Fdoomednum:    36,
 			Fspawnstate:   int32(S_HEARTCOL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		88: {
-			Fdoomednum:    int32(41),
+			Fdoomednum:    41,
 			Fspawnstate:   int32(S_EVILEYE),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		89: {
-			Fdoomednum:    int32(42),
+			Fdoomednum:    42,
 			Fspawnstate:   int32(S_FLOATSKULL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		90: {
-			Fdoomednum:    int32(43),
+			Fdoomednum:    43,
 			Fspawnstate:   int32(S_TORCHTREE),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		91: {
-			Fdoomednum:    int32(44),
+			Fdoomednum:    44,
 			Fspawnstate:   int32(S_BLUETORCH),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		92: {
-			Fdoomednum:    int32(45),
+			Fdoomednum:    45,
 			Fspawnstate:   int32(S_GREENTORCH),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		93: {
-			Fdoomednum:    int32(46),
+			Fdoomednum:    46,
 			Fspawnstate:   int32(S_REDTORCH),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		94: {
-			Fdoomednum:    int32(55),
+			Fdoomednum:    55,
 			Fspawnstate:   int32(S_BTORCHSHRT),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		95: {
-			Fdoomednum:    int32(56),
+			Fdoomednum:    56,
 			Fspawnstate:   int32(S_GTORCHSHRT),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		96: {
-			Fdoomednum:    int32(57),
+			Fdoomednum:    57,
 			Fspawnstate:   int32(S_RTORCHSHRT),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		97: {
-			Fdoomednum:    int32(47),
+			Fdoomednum:    47,
 			Fspawnstate:   int32(S_STALAGTITE),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		98: {
-			Fdoomednum:    int32(48),
+			Fdoomednum:    48,
 			Fspawnstate:   int32(S_TECHPILLAR),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		99: {
-			Fdoomednum:    int32(34),
+			Fdoomednum:    34,
 			Fspawnstate:   int32(S_CANDLESTIK),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 		},
 		100: {
-			Fdoomednum:    int32(35),
+			Fdoomednum:    35,
 			Fspawnstate:   int32(S_CANDELABRA),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		101: {
-			Fdoomednum:    int32(49),
+			Fdoomednum:    49,
 			Fspawnstate:   int32(S_BLOODYTWITCH),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       68 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		102: {
-			Fdoomednum:    int32(50),
+			Fdoomednum:    50,
 			Fspawnstate:   int32(S_MEAT2),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       84 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		103: {
-			Fdoomednum:    int32(51),
+			Fdoomednum:    51,
 			Fspawnstate:   int32(S_MEAT3),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       84 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		104: {
-			Fdoomednum:    int32(52),
+			Fdoomednum:    52,
 			Fspawnstate:   int32(S_MEAT4),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       68 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		105: {
-			Fdoomednum:    int32(53),
+			Fdoomednum:    53,
 			Fspawnstate:   int32(S_MEAT5),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       52 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		106: {
-			Fdoomednum:    int32(59),
+			Fdoomednum:    59,
 			Fspawnstate:   int32(S_MEAT2),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       84 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		107: {
-			Fdoomednum:    int32(60),
+			Fdoomednum:    60,
 			Fspawnstate:   int32(S_MEAT4),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       68 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		108: {
-			Fdoomednum:    int32(61),
+			Fdoomednum:    61,
 			Fspawnstate:   int32(S_MEAT3),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       52 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		109: {
-			Fdoomednum:    int32(62),
+			Fdoomednum:    62,
 			Fspawnstate:   int32(S_MEAT5),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       52 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		110: {
-			Fdoomednum:    int32(63),
+			Fdoomednum:    63,
 			Fspawnstate:   int32(S_BLOODYTWITCH),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       68 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		111: {
-			Fdoomednum:    int32(22),
+			Fdoomednum:    22,
 			Fspawnstate:   int32(S_HEAD_DIE6),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 		},
 		112: {
-			Fdoomednum:    int32(15),
+			Fdoomednum:    15,
 			Fspawnstate:   int32(S_PLAY_DIE7),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 		},
 		113: {
-			Fdoomednum:    int32(18),
+			Fdoomednum:    18,
 			Fspawnstate:   int32(S_POSS_DIE5),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 		},
 		114: {
-			Fdoomednum:    int32(21),
+			Fdoomednum:    21,
 			Fspawnstate:   int32(S_SARG_DIE6),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 		},
 		115: {
-			Fdoomednum:    int32(23),
+			Fdoomednum:    23,
 			Fspawnstate:   int32(S_SKULL_DIE6),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 		},
 		116: {
-			Fdoomednum:    int32(20),
+			Fdoomednum:    20,
 			Fspawnstate:   int32(S_TROO_DIE5),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 		},
 		117: {
-			Fdoomednum:    int32(19),
+			Fdoomednum:    19,
 			Fspawnstate:   int32(S_SPOS_DIE5),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 		},
 		118: {
-			Fdoomednum:    int32(10),
+			Fdoomednum:    10,
 			Fspawnstate:   int32(S_PLAY_XDIE9),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 		},
 		119: {
-			Fdoomednum:    int32(12),
+			Fdoomednum:    12,
 			Fspawnstate:   int32(S_PLAY_XDIE9),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 		},
 		120: {
-			Fdoomednum:    int32(28),
+			Fdoomednum:    28,
 			Fspawnstate:   int32(S_HEADSONSTICK),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		121: {
-			Fdoomednum:    int32(24),
+			Fdoomednum:    24,
 			Fspawnstate:   int32(S_GIBS),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 		},
 		122: {
-			Fdoomednum:    int32(27),
+			Fdoomednum:    27,
 			Fspawnstate:   int32(S_HEADONASTICK),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		123: {
-			Fdoomednum:    int32(29),
+			Fdoomednum:    29,
 			Fspawnstate:   int32(S_HEADCANDLES),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		124: {
-			Fdoomednum:    int32(25),
+			Fdoomednum:    25,
 			Fspawnstate:   int32(S_DEADSTICK),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		125: {
-			Fdoomednum:    int32(26),
+			Fdoomednum:    26,
 			Fspawnstate:   int32(S_LIVESTICK),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		126: {
-			Fdoomednum:    int32(54),
+			Fdoomednum:    54,
 			Fspawnstate:   int32(S_BIGTREE),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       32 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		127: {
-			Fdoomednum:    int32(70),
+			Fdoomednum:    70,
 			Fspawnstate:   int32(S_BBAR1),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID),
 		},
 		128: {
-			Fdoomednum:    int32(73),
+			Fdoomednum:    73,
 			Fspawnstate:   int32(S_HANGNOGUTS),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       88 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		129: {
-			Fdoomednum:    int32(74),
+			Fdoomednum:    74,
 			Fspawnstate:   int32(S_HANGBNOBRAIN),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       88 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		130: {
-			Fdoomednum:    int32(75),
+			Fdoomednum:    75,
 			Fspawnstate:   int32(S_HANGTLOOKDN),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       64 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		131: {
-			Fdoomednum:    int32(76),
+			Fdoomednum:    76,
 			Fspawnstate:   int32(S_HANGTSKULL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       64 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		132: {
-			Fdoomednum:    int32(77),
+			Fdoomednum:    77,
 			Fspawnstate:   int32(S_HANGTLOOKUP),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       64 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		133: {
-			Fdoomednum:    int32(78),
+			Fdoomednum:    78,
 			Fspawnstate:   int32(S_HANGTNOBRAIN),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       64 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
 		},
 		134: {
-			Fdoomednum:    int32(79),
+			Fdoomednum:    79,
 			Fspawnstate:   int32(S_COLONGIBS),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP),
 		},
 		135: {
-			Fdoomednum:    int32(80),
+			Fdoomednum:    80,
 			Fspawnstate:   int32(S_SMALLPOOL),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP),
 		},
 		136: {
-			Fdoomednum:    int32(81),
+			Fdoomednum:    81,
 			Fspawnstate:   int32(S_BRAINSTEM),
-			Fspawnhealth:  int32(1000),
-			Freactiontime: int32(8),
+			Fspawnhealth:  1000,
+			Freactiontime: 8,
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
-			Fmass:         int32(100),
+			Fmass:         100,
 			Fflags:        int32(MF_NOBLOCKMAP),
 		},
 	}
@@ -17995,7 +17995,7 @@ func I_Endoom(tls *libc.TLS, endoom_data uintptr) {
 
 // Standard default.cfg Joystick enable/disable
 
-var usejoystick = int32(0)
+var usejoystick = 0
 
 // Joystick to use, as an SDL joystick index:
 
@@ -18004,34 +18004,34 @@ var joystick_index = -1
 // Which joystick axis to use for horizontal movement, and whether to
 // invert the direction:
 
-var joystick_x_axis = int32(0)
-var joystick_x_invert = int32(0)
+var joystick_x_axis = 0
+var joystick_x_invert = 0
 
 // Which joystick axis to use for vertical movement, and whether to
 // invert the direction:
 
-var joystick_y_axis = int32(1)
-var joystick_y_invert = int32(0)
+var joystick_y_axis int32 = 1
+var joystick_y_invert int32 = 0
 
 // Which joystick axis to use for strafing?
 
 var joystick_strafe_axis = -1
-var joystick_strafe_invert = int32(0)
+var joystick_strafe_invert = 0
 
 // C documentation
 //
 //	// Virtual to physical button joystick button mapping. By default this
 //	// is a straight mapping.
 var joystick_physical_buttons = [10]int32{
-	1: int32(1),
-	2: int32(2),
-	3: int32(3),
-	4: int32(4),
-	5: int32(5),
-	6: int32(6),
-	7: int32(7),
-	8: int32(8),
-	9: int32(9),
+	1: 1,
+	2: 2,
+	3: 3,
+	4: 4,
+	5: 5,
+	6: 6,
+	7: 7,
+	8: 8,
+	9: 9,
 }
 
 func I_BindJoystickVariables(tls *libc.TLS) {
@@ -18063,7 +18063,7 @@ func I_BindJoystickVariables(tls *libc.TLS) {
 // a line at a time for when pitch != SCREENWIDTH (!native_surface)
 
 func init() {
-	snd_samplerate = int32(44100)
+	snd_samplerate = 44100
 }
 
 func init() {
@@ -18071,7 +18071,7 @@ func init() {
 }
 
 func init() {
-	snd_maxslicetime_ms = int32(28)
+	snd_maxslicetime_ms = 28
 }
 
 func init() {
@@ -18095,10 +18095,10 @@ func init() {
 // so that the config file can be shared between chocolate
 // doom and doom.exe
 
-var snd_sbport = int32(0)
-var snd_sbirq = int32(0)
-var snd_sbdma = int32(0)
-var snd_mport = int32(0)
+var snd_sbport = 0
+var snd_sbirq = 0
+var snd_sbdma = 0
+var snd_mport = 0
 
 // Compiled-in sound modules:
 
@@ -18229,15 +18229,15 @@ func CheckVolumeSeparation(tls *libc.TLS, vol uintptr, sep uintptr) {
 	if *(*int32)(unsafe.Pointer(sep)) < 0 {
 		*(*int32)(unsafe.Pointer(sep)) = 0
 	} else {
-		if *(*int32)(unsafe.Pointer(sep)) > int32(254) {
-			*(*int32)(unsafe.Pointer(sep)) = int32(254)
+		if *(*int32)(unsafe.Pointer(sep)) > 254 {
+			*(*int32)(unsafe.Pointer(sep)) = 254
 		}
 	}
 	if *(*int32)(unsafe.Pointer(vol)) < 0 {
 		*(*int32)(unsafe.Pointer(vol)) = 0
 	} else {
-		if *(*int32)(unsafe.Pointer(vol)) > int32(127) {
-			*(*int32)(unsafe.Pointer(vol)) = int32(127)
+		if *(*int32)(unsafe.Pointer(vol)) > 127 {
+			*(*int32)(unsafe.Pointer(vol)) = 127
 		}
 	}
 }
@@ -18401,12 +18401,12 @@ func AutoAllocMemory(tls *libc.TLS, size uintptr, default_ram int32, min_ram int
 			I_Error(tls, __ccgo_ts(18832), default_ram)
 		}
 		// Try to allocate the zone memory.
-		*(*int32)(unsafe.Pointer(size)) = default_ram * int32(1024) * int32(1024)
+		*(*int32)(unsafe.Pointer(size)) = default_ram * 1024 * 1024
 		zonemem = libc.Xmalloc(tls, libc.Uint64FromInt32(*(*int32)(unsafe.Pointer(size))))
 		// Failed to allocate?  Reduce zone size until we reach a size
 		// that is acceptable.
 		if zonemem == libc.UintptrFromInt32(0) {
-			default_ram -= int32(1)
+			default_ram -= 1
 		}
 	}
 	return zonemem
@@ -18420,7 +18420,7 @@ func I_ZoneBase(tls *libc.TLS, size uintptr) (r uintptr) {
 	//
 	// Specify the heap size, in MiB (default 16).
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(18874), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(18874), 1)
 	if p > 0 {
 		default_ram = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		min_ram = default_ram
@@ -18454,7 +18454,7 @@ func I_PrintDivider(tls *libc.TLS) {
 	var i int32
 	i = 0
 	for {
-		if !(i < int32(75)) {
+		if !(i < 75) {
 			break
 		}
 		libc.Xputchar(tls, int32('='))
@@ -18637,7 +18637,7 @@ func I_GetMemoryValue(tls *libc.TLS, offset uint32, value uintptr, size int32) (
 		// emulation.  Supported versions are: dos622, dos71, dosbox.
 		// The default is to emulate DOS 7.1 (Windows 98).
 		//
-		p = M_CheckParmWithArgs(__ccgo_ts(19334), int32(1))
+		p = M_CheckParmWithArgs(__ccgo_ts(19334), 1)
 		if p > 0 {
 			if !(xstrcasecmp(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19342)) != 0) {
 				dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dos622))
@@ -18672,13 +18672,13 @@ func I_GetMemoryValue(tls *libc.TLS, offset uint32, value uintptr, size int32) (
 		}
 	}
 	switch size {
-	case int32(1):
+	case 1:
 		*(*uint8)(unsafe.Pointer(value)) = *(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))
 		return 1
-	case int32(2):
+	case 2:
 		*(*uint16)(unsafe.Pointer(value)) = libc.Uint16FromInt32(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8))
 		return 1
-	case int32(4):
+	case 4:
 		*(*uint32)(unsafe.Pointer(value)) = libc.Uint32FromInt32(libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(2)))))<<int32(16) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(3)))))<<int32(24))
 		return 1
 	}
@@ -18733,7 +18733,7 @@ func I_Sleep(ms uint32) {
 
 func M_CheckParmWithArgs(check uintptr, num_args int32) (r int32) {
 	var i int32
-	i = int32(1)
+	i = 1
 	for {
 		if !(i < myargc-num_args) {
 			break
@@ -18773,7 +18773,7 @@ func LoadResponseFile(tls *libc.TLS, argv_index int32) {
 
 func M_FindResponseFile(tls *libc.TLS) {
 	var i int32
-	i = int32(1)
+	i = 1
 	for {
 		if !(i < myargc) {
 			break
@@ -19686,7 +19686,7 @@ func M_LoadDefaults(tls *libc.TLS) {
 	// Load main configuration from the specified file, instead of the
 	// default.
 	//
-	i = M_CheckParmWithArgs(__ccgo_ts(21869), int32(1))
+	i = M_CheckParmWithArgs(__ccgo_ts(21869), 1)
 	if i != 0 {
 		doom_defaults.Ffilename = *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))
 		fprintf_ccgo(os.Stdout, 21877, libc.GoString(doom_defaults.Ffilename))
@@ -19700,7 +19700,7 @@ func M_LoadDefaults(tls *libc.TLS) {
 	// Load additional configuration from the specified file, instead of
 	// the default.
 	//
-	i = M_CheckParmWithArgs(__ccgo_ts(21917), int32(1))
+	i = M_CheckParmWithArgs(__ccgo_ts(21917), 1)
 	if i != 0 {
 		extra_defaults.Ffilename = *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))
 		fprintf_ccgo(os.Stdout, 21930, libc.GoString(extra_defaults.Ffilename))
@@ -19834,8 +19834,8 @@ func init() {
 	key_invend = 0x80 + 0x4f
 	key_invuse = int32(KEY_ENTER)
 	key_invdrop = int32(KEY_BACKSPACE3)
-	mousebstrafe = int32(1)
-	mousebforward = int32(2)
+	mousebstrafe = 1
+	mousebforward = 2
 	mousebjump = -1
 	mousebstrafeleft = -1
 	mousebstraferight = -1
@@ -19890,16 +19890,16 @@ func init() {
 	key_menu_gamma = 0x80 + 0x57
 	key_menu_incscreen = int32(KEY_EQUALS1)
 	key_menu_decscreen = int32(KEY_MINUS1)
-	joybstrafe = int32(1)
-	joybuse = int32(3)
-	joybspeed = int32(2)
+	joybstrafe = 1
+	joybuse = 3
+	joybspeed = 2
 	joybstrafeleft = -1
 	joybstraferight = -1
 	joybjump = -1
 	joybprevweapon = -1
 	joybnextweapon = -1
 	joybmenu = -1
-	dclick_use = int32(1)
+	dclick_use = 1
 }
 
 //
@@ -20056,9 +20056,9 @@ func FixedDiv(a fixed_t, b fixed_t) (r fixed_t) {
 const LINEHEIGHT = 16
 
 func init() {
-	mouseSensitivity = int32(5)
-	showMessages = int32(1)
-	screenblocks = int32(10)
+	mouseSensitivity = 5
+	showMessages = 1
+	screenblocks = 10
 	gammamsg = [5][26]int8{
 		0: {'G', 'a', 'm', 'm', 'a', ' ', 'c', 'o', 'r', 'r', 'e', 'c', 't', 'i', 'o', 'n', ' ', 'O', 'F', 'F'},
 		1: {'G', 'a', 'm', 'm', 'a', ' ', 'c', 'o', 'r', 'r', 'e', 'c', 't', 'i', 'o', 'n', ' ', 'l', 'e', 'v', 'e', 'l', ' ', '1'},
@@ -20106,37 +20106,37 @@ const main_end = 6
 func init() {
 	MainMenu = [6]menuitem_t{
 		0: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'N', 'G', 'A', 'M', 'E'},
 			FalphaKey: int8('n'),
 			Froutine:  M_NewGame,
 		},
 		1: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'O', 'P', 'T', 'I', 'O', 'N'},
 			FalphaKey: int8('o'),
 			Froutine:  M_Options,
 		},
 		2: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'L', 'O', 'A', 'D', 'G'},
 			FalphaKey: int8('l'),
 			Froutine:  M_LoadGame,
 		},
 		3: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'S', 'A', 'V', 'E', 'G'},
 			FalphaKey: int8('s'),
 			Froutine:  M_SaveGame,
 		},
 		4: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'R', 'D', 'T', 'H', 'I', 'S'},
 			FalphaKey: int8('r'),
 			Froutine:  M_ReadThis,
 		},
 		5: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'Q', 'U', 'I', 'T', 'G'},
 			FalphaKey: int8('q'),
 			Froutine:  M_QuitDOOM,
@@ -20148,8 +20148,8 @@ func init() {
 	MainDef = menu_t{
 		Fnumitems:  int16(main_end),
 		Fmenuitems: uintptr(unsafe.Pointer(&MainMenu)),
-		Fx:         int16(97),
-		Fy:         int16(64),
+		Fx:         97,
+		Fy:         64,
 	}
 }
 
@@ -20163,22 +20163,22 @@ const ep_end = 4
 func init() {
 	EpisodeMenu = [4]menuitem_t{
 		0: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'E', 'P', 'I', '1'},
 			FalphaKey: int8('k'),
 		},
 		1: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'E', 'P', 'I', '2'},
 			FalphaKey: int8('t'),
 		},
 		2: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'E', 'P', 'I', '3'},
 			FalphaKey: int8('i'),
 		},
 		3: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'E', 'P', 'I', '4'},
 			FalphaKey: int8('t'),
 		},
@@ -20198,8 +20198,8 @@ func init() {
 		Fnumitems:  int16(ep_end),
 		FprevMenu:  uintptr(unsafe.Pointer(&MainDef)),
 		Fmenuitems: uintptr(unsafe.Pointer(&EpisodeMenu)),
-		Fx:         int16(48),
-		Fy:         int16(63),
+		Fx:         48,
+		Fy:         63,
 	}
 }
 
@@ -20215,27 +20215,27 @@ const newg_end = 5
 func init() {
 	NewGameMenu = [5]menuitem_t{
 		0: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'J', 'K', 'I', 'L', 'L'},
 			FalphaKey: int8('i'),
 		},
 		1: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'R', 'O', 'U', 'G', 'H'},
 			FalphaKey: int8('h'),
 		},
 		2: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'H', 'U', 'R', 'T'},
 			FalphaKey: int8('h'),
 		},
 		3: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'U', 'L', 'T', 'R', 'A'},
 			FalphaKey: int8('u'),
 		},
 		4: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'N', 'M', 'A', 'R', 'E'},
 			FalphaKey: int8('n'),
 		},
@@ -20256,8 +20256,8 @@ func init() {
 		Fnumitems:  int16(newg_end),
 		FprevMenu:  uintptr(unsafe.Pointer(&EpiDef)),
 		Fmenuitems: uintptr(unsafe.Pointer(&NewGameMenu)),
-		Fx:         int16(48),
-		Fy:         int16(63),
+		Fx:         48,
+		Fy:         63,
 		FlastOn:    int16(hurtme),
 	}
 }
@@ -20276,22 +20276,22 @@ const opt_end = 8
 func init() {
 	OptionsMenu = [8]menuitem_t{
 		0: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'E', 'N', 'D', 'G', 'A', 'M'},
 			FalphaKey: int8('e'),
 		},
 		1: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'M', 'E', 'S', 'S', 'G'},
 			FalphaKey: int8('m'),
 		},
 		2: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'D', 'E', 'T', 'A', 'I', 'L'},
 			FalphaKey: int8('g'),
 		},
 		3: {
-			Fstatus:   int16(2),
+			Fstatus:   2,
 			Fname:     [10]int8{'M', '_', 'S', 'C', 'R', 'N', 'S', 'Z'},
 			FalphaKey: int8('s'),
 		},
@@ -20300,7 +20300,7 @@ func init() {
 			Fname:   [10]int8{},
 		},
 		5: {
-			Fstatus:   int16(2),
+			Fstatus:   2,
 			Fname:     [10]int8{'M', '_', 'M', 'S', 'E', 'N', 'S'},
 			FalphaKey: int8('m'),
 		},
@@ -20309,7 +20309,7 @@ func init() {
 			Fname:   [10]int8{},
 		},
 		7: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'S', 'V', 'O', 'L'},
 			FalphaKey: int8('s'),
 		},
@@ -20331,8 +20331,8 @@ func init() {
 		Fnumitems:  int16(opt_end),
 		FprevMenu:  uintptr(unsafe.Pointer(&MainDef)),
 		Fmenuitems: uintptr(unsafe.Pointer(&OptionsMenu)),
-		Fx:         int16(60),
-		Fy:         int16(37),
+		Fx:         60,
+		Fy:         37,
 	}
 }
 
@@ -20346,7 +20346,7 @@ const read1_end = 1
 func init() {
 	ReadMenu1 = [1]menuitem_t{
 		0: {
-			Fstatus: int16(1),
+			Fstatus: 1,
 			Fname:   [10]int8{},
 		},
 	}
@@ -20362,8 +20362,8 @@ func init() {
 		Fnumitems:  int16(read1_end),
 		FprevMenu:  uintptr(unsafe.Pointer(&MainDef)),
 		Fmenuitems: uintptr(unsafe.Pointer(&ReadMenu1)),
-		Fx:         int16(280),
-		Fy:         int16(185),
+		Fx:         280,
+		Fy:         185,
 	}
 }
 
@@ -20377,7 +20377,7 @@ const read2_end = 1
 func init() {
 	ReadMenu2 = [1]menuitem_t{
 		0: {
-			Fstatus: int16(1),
+			Fstatus: 1,
 			Fname:   [10]int8{},
 		},
 	}
@@ -20393,8 +20393,8 @@ func init() {
 		Fnumitems:  int16(read2_end),
 		FprevMenu:  uintptr(unsafe.Pointer(&ReadDef1)),
 		Fmenuitems: uintptr(unsafe.Pointer(&ReadMenu2)),
-		Fx:         int16(330),
-		Fy:         int16(175),
+		Fx:         330,
+		Fy:         175,
 	}
 }
 
@@ -20410,7 +20410,7 @@ const sound_end = 4
 func init() {
 	SoundMenu = [4]menuitem_t{
 		0: {
-			Fstatus:   int16(2),
+			Fstatus:   2,
 			Fname:     [10]int8{'M', '_', 'S', 'F', 'X', 'V', 'O', 'L'},
 			FalphaKey: int8('s'),
 		},
@@ -20419,7 +20419,7 @@ func init() {
 			Fname:   [10]int8{},
 		},
 		2: {
-			Fstatus:   int16(2),
+			Fstatus:   2,
 			Fname:     [10]int8{'M', '_', 'M', 'U', 'S', 'V', 'O', 'L'},
 			FalphaKey: int8('m'),
 		},
@@ -20441,8 +20441,8 @@ func init() {
 		Fnumitems:  int16(sound_end),
 		FprevMenu:  uintptr(unsafe.Pointer(&OptionsDef)),
 		Fmenuitems: uintptr(unsafe.Pointer(&SoundMenu)),
-		Fx:         int16(80),
-		Fy:         int16(64),
+		Fx:         80,
+		Fy:         64,
 	}
 }
 
@@ -20456,32 +20456,32 @@ const load_end = 6
 func init() {
 	LoadMenu = [6]menuitem_t{
 		0: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('1'),
 		},
 		1: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('2'),
 		},
 		2: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('3'),
 		},
 		3: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('4'),
 		},
 		4: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('5'),
 		},
 		5: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('6'),
 		},
@@ -20503,8 +20503,8 @@ func init() {
 		Fnumitems:  int16(load_end),
 		FprevMenu:  uintptr(unsafe.Pointer(&MainDef)),
 		Fmenuitems: uintptr(unsafe.Pointer(&LoadMenu)),
-		Fx:         int16(80),
-		Fy:         int16(54),
+		Fx:         80,
+		Fy:         54,
 	}
 }
 
@@ -20516,32 +20516,32 @@ func init() {
 func init() {
 	SaveMenu = [6]menuitem_t{
 		0: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('1'),
 		},
 		1: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('2'),
 		},
 		2: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('3'),
 		},
 		3: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('4'),
 		},
 		4: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('5'),
 		},
 		5: {
-			Fstatus:   int16(1),
+			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('6'),
 		},
@@ -20563,8 +20563,8 @@ func init() {
 		Fnumitems:  int16(load_end),
 		FprevMenu:  uintptr(unsafe.Pointer(&MainDef)),
 		Fmenuitems: uintptr(unsafe.Pointer(&SaveMenu)),
-		Fx:         int16(80),
-		Fy:         int16(54),
+		Fx:         80,
+		Fy:         54,
 	}
 }
 
@@ -20597,7 +20597,7 @@ func M_ReadSaveStrings(tls *libc.TLS) {
 		}
 		libc.Xfread(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24, uint64(1), uint64(SAVESTRINGSIZE), handle)
 		libc.Xfclose(tls, handle)
-		LoadMenu[i].Fstatus = int16(1)
+		LoadMenu[i].Fstatus = 1
 		goto _1
 	_1:
 		;
@@ -20612,7 +20612,7 @@ func M_ReadSaveStrings(tls *libc.TLS) {
 //	//
 func M_DrawLoad(tls *libc.TLS) {
 	var i int32
-	V_DrawPatchDirect(tls, int32(72), int32(28), W_CacheLumpName(tls, __ccgo_ts(22129), int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, 72, 28, W_CacheLumpName(tls, __ccgo_ts(22129), int32(PU_CACHE)))
 	i = 0
 	for {
 		if !(i < int32(load_end)) {
@@ -20637,11 +20637,11 @@ func M_DrawSaveLoadBorder(tls *libc.TLS, x int32, y int32) {
 	V_DrawPatchDirect(tls, x-int32(8), y+int32(7), W_CacheLumpName(tls, __ccgo_ts(22137), int32(PU_CACHE)))
 	i = 0
 	for {
-		if !(i < int32(24)) {
+		if !(i < 24) {
 			break
 		}
 		V_DrawPatchDirect(tls, x, y+int32(7), W_CacheLumpName(tls, __ccgo_ts(22146), int32(PU_CACHE)))
-		x += int32(8)
+		x += 8
 		goto _1
 	_1:
 		;
@@ -20683,7 +20683,7 @@ func M_LoadGame(tls *libc.TLS, choice int32) {
 //	//
 func M_DrawSave(tls *libc.TLS) {
 	var i int32
-	V_DrawPatchDirect(tls, int32(72), int32(28), W_CacheLumpName(tls, __ccgo_ts(22217), int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, 72, 28, W_CacheLumpName(tls, __ccgo_ts(22217), int32(PU_CACHE)))
 	i = 0
 	for {
 		if !(i < int32(load_end)) {
@@ -20723,7 +20723,7 @@ func M_DoSave(tls *libc.TLS, slot int32) {
 //	//
 func M_SaveSelect(tls *libc.TLS, choice int32) {
 	// we are going to be intercepting all chars
-	saveStringEnter = int32(1)
+	saveStringEnter = 1
 	saveSlot = choice
 	M_StringCopy(uintptr(unsafe.Pointer(&saveOldString)), uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, uint64(SAVESTRINGSIZE))
 	if !(xstrcmp(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, __ccgo_ts(22118)) != 0) {
@@ -20810,8 +20810,8 @@ func M_DrawReadThis1(tls *libc.TLS) {
 	var lumpname uintptr
 	var skullx, skully int32
 	lumpname = __ccgo_ts(1911)
-	skullx = int32(330)
-	skully = int32(175)
+	skullx = 330
+	skully = 175
 	inhelpscreens = 1
 	// Different versions of Doom 1.9 work differently
 	switch gameversion {
@@ -20827,14 +20827,14 @@ func M_DrawReadThis1(tls *libc.TLS) {
 		if gamemode == int32(commercial) {
 			// Doom 2
 			lumpname = __ccgo_ts(22501)
-			skullx = int32(330)
-			skully = int32(165)
+			skullx = 330
+			skully = 165
 		} else {
 			// Doom 1
 			// HELP2 is the first screen shown in Doom 1
 			lumpname = __ccgo_ts(1924)
-			skullx = int32(280)
-			skully = int32(185)
+			skullx = 280
+			skully = 185
 		}
 	case int32(exe_ultimate):
 		fallthrough
@@ -20876,9 +20876,9 @@ func M_DrawReadThis2(tls *libc.TLS) {
 //	// Change Sfx & Music volumes
 //	//
 func M_DrawSound(tls *libc.TLS) {
-	V_DrawPatchDirect(tls, int32(60), int32(38), W_CacheLumpName(tls, __ccgo_ts(22535), int32(PU_CACHE)))
-	M_DrawThermo(tls, int32(SoundDef.Fx), int32(SoundDef.Fy)+LINEHEIGHT*(int32(sfx_vol)+1), int32(16), sfxVolume)
-	M_DrawThermo(tls, int32(SoundDef.Fx), int32(SoundDef.Fy)+LINEHEIGHT*(int32(music_vol)+1), int32(16), musicVolume)
+	V_DrawPatchDirect(tls, 60, 38, W_CacheLumpName(tls, __ccgo_ts(22535), int32(PU_CACHE)))
+	M_DrawThermo(tls, int32(SoundDef.Fx), int32(SoundDef.Fy)+LINEHEIGHT*(int32(sfx_vol)+1), 16, sfxVolume)
+	M_DrawThermo(tls, int32(SoundDef.Fx), int32(SoundDef.Fy)+LINEHEIGHT*(int32(music_vol)+1), 16, musicVolume)
 }
 
 func M_Sound(tls *libc.TLS, choice int32) {
@@ -20891,8 +20891,8 @@ func M_SfxVol(tls *libc.TLS, choice int32) {
 		if sfxVolume != 0 {
 			sfxVolume--
 		}
-	case int32(1):
-		if sfxVolume < int32(15) {
+	case 1:
+		if sfxVolume < 15 {
 			sfxVolume++
 		}
 		break
@@ -20906,8 +20906,8 @@ func M_MusicVol(tls *libc.TLS, choice int32) {
 		if musicVolume != 0 {
 			musicVolume--
 		}
-	case int32(1):
-		if musicVolume < int32(15) {
+	case 1:
+		if musicVolume < 15 {
 			musicVolume++
 		}
 		break
@@ -20921,7 +20921,7 @@ func M_MusicVol(tls *libc.TLS, choice int32) {
 //	// M_DrawMainMenu
 //	//
 func M_DrawMainMenu(tls *libc.TLS) {
-	V_DrawPatchDirect(tls, int32(94), int32(2), W_CacheLumpName(tls, __ccgo_ts(22542), int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, 94, 2, W_CacheLumpName(tls, __ccgo_ts(22542), int32(PU_CACHE)))
 }
 
 // C documentation
@@ -20930,8 +20930,8 @@ func M_DrawMainMenu(tls *libc.TLS) {
 //	// M_NewGame
 //	//
 func M_DrawNewGame(tls *libc.TLS) {
-	V_DrawPatchDirect(tls, int32(96), int32(14), W_CacheLumpName(tls, __ccgo_ts(22549), int32(PU_CACHE)))
-	V_DrawPatchDirect(tls, int32(54), int32(38), W_CacheLumpName(tls, __ccgo_ts(22556), int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, 96, 14, W_CacheLumpName(tls, __ccgo_ts(22549), int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, 54, 38, W_CacheLumpName(tls, __ccgo_ts(22556), int32(PU_CACHE)))
 }
 
 func M_NewGame(tls *libc.TLS, choice int32) {
@@ -20948,14 +20948,14 @@ func M_NewGame(tls *libc.TLS, choice int32) {
 }
 
 func M_DrawEpisode(tls *libc.TLS) {
-	V_DrawPatchDirect(tls, int32(54), int32(38), W_CacheLumpName(tls, __ccgo_ts(22630), int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, 54, 38, W_CacheLumpName(tls, __ccgo_ts(22630), int32(PU_CACHE)))
 }
 
 func M_VerifyNightmare(tls *libc.TLS, key int32) {
 	if key != key_menu_confirm {
 		return
 	}
-	G_DeferedInitNew(tls, int32(nightmare), epi+int32(1), int32(1))
+	G_DeferedInitNew(tls, int32(nightmare), epi+int32(1), 1)
 	M_ClearMenus(tls)
 }
 
@@ -20964,7 +20964,7 @@ func M_ChooseSkill(tls *libc.TLS, choice int32) {
 		M_StartMessage(tls, __ccgo_ts(22639), __ccgo_fp(M_VerifyNightmare), 1)
 		return
 	}
-	G_DeferedInitNew(tls, choice, epi+int32(1), int32(1))
+	G_DeferedInitNew(tls, choice, epi+int32(1), 1)
 	M_ClearMenus(tls)
 }
 
@@ -20975,7 +20975,7 @@ func M_Episode(tls *libc.TLS, choice int32) {
 		return
 	}
 	// Yet another hack...
-	if gamemode == int32(registered) && choice > int32(2) {
+	if gamemode == int32(registered) && choice > 2 {
 		fprintf_ccgo(os.Stderr, 22803)
 		choice = 0
 	}
@@ -20998,11 +20998,11 @@ var msgNames = [2]uintptr{
 }
 
 func M_DrawOptions(tls *libc.TLS) {
-	V_DrawPatchDirect(tls, int32(108), int32(15), W_CacheLumpName(tls, __ccgo_ts(22883), int32(PU_CACHE)))
+	V_DrawPatchDirect(tls, 108, 15, W_CacheLumpName(tls, __ccgo_ts(22883), int32(PU_CACHE)))
 	V_DrawPatchDirect(tls, int32(OptionsDef.Fx)+int32(175), int32(OptionsDef.Fy)+LINEHEIGHT*int32(detail), W_CacheLumpName(tls, detailNames[detailLevel], int32(PU_CACHE)))
 	V_DrawPatchDirect(tls, int32(OptionsDef.Fx)+int32(120), int32(OptionsDef.Fy)+LINEHEIGHT*int32(messages), W_CacheLumpName(tls, msgNames[showMessages], int32(PU_CACHE)))
-	M_DrawThermo(tls, int32(OptionsDef.Fx), int32(OptionsDef.Fy)+LINEHEIGHT*(int32(mousesens)+1), int32(10), mouseSensitivity)
-	M_DrawThermo(tls, int32(OptionsDef.Fx), int32(OptionsDef.Fy)+LINEHEIGHT*(int32(scrnsize)+1), int32(9), screenSize)
+	M_DrawThermo(tls, int32(OptionsDef.Fx), int32(OptionsDef.Fy)+LINEHEIGHT*(int32(mousesens)+1), 10, mouseSensitivity)
+	M_DrawThermo(tls, int32(OptionsDef.Fx), int32(OptionsDef.Fy)+LINEHEIGHT*(int32(scrnsize)+1), 9, screenSize)
 }
 
 func M_Options(tls *libc.TLS, choice int32) {
@@ -21017,7 +21017,7 @@ func M_Options(tls *libc.TLS, choice int32) {
 func M_ChangeMessages(tls *libc.TLS, choice int32) {
 	// warning: unused parameter `int choice'
 	choice = 0
-	showMessages = int32(1) - showMessages
+	showMessages = 1 - showMessages
 	if !(showMessages != 0) {
 		players[consoleplayer].Fmessage = __ccgo_ts(22892)
 	} else {
@@ -21154,8 +21154,8 @@ func M_ChangeSensitivity(tls *libc.TLS, choice int32) {
 		if mouseSensitivity != 0 {
 			mouseSensitivity--
 		}
-	case int32(1):
-		if mouseSensitivity < int32(9) {
+	case 1:
+		if mouseSensitivity < 9 {
 			mouseSensitivity++
 		}
 		break
@@ -21164,7 +21164,7 @@ func M_ChangeSensitivity(tls *libc.TLS, choice int32) {
 
 func M_ChangeDetail(choice int32) {
 	choice = 0
-	detailLevel = int32(1) - detailLevel
+	detailLevel = 1 - detailLevel
 	R_SetViewSize(screenblocks, detailLevel)
 	if !(detailLevel != 0) {
 		players[consoleplayer].Fmessage = __ccgo_ts(23040)
@@ -21180,8 +21180,8 @@ func M_SizeDisplay(choice int32) {
 			screenblocks--
 			screenSize--
 		}
-	case int32(1):
-		if screenSize < int32(8) {
+	case 1:
+		if screenSize < 8 {
 			screenblocks++
 			screenSize++
 		}
@@ -21199,14 +21199,14 @@ func M_DrawThermo(tls *libc.TLS, x int32, y int32, thermWidth int32, thermDot in
 	var i, xx int32
 	xx = x
 	V_DrawPatchDirect(tls, xx, y, W_CacheLumpName(tls, __ccgo_ts(23063), int32(PU_CACHE)))
-	xx += int32(8)
+	xx += 8
 	i = 0
 	for {
 		if !(i < thermWidth) {
 			break
 		}
 		V_DrawPatchDirect(tls, xx, y, W_CacheLumpName(tls, __ccgo_ts(23072), int32(PU_CACHE)))
-		xx += int32(8)
+		xx += 8
 		goto _1
 	_1:
 		;
@@ -21218,7 +21218,7 @@ func M_DrawThermo(tls *libc.TLS, x int32, y int32, thermWidth int32, thermDot in
 
 func M_StartMessage(tls *libc.TLS, string1 uintptr, routine uintptr, input boolean) {
 	messageLastMenuActive = libc.Int32FromUint32(menuactive)
-	messageToPrint = int32(1)
+	messageToPrint = 1
 	messageString = string1
 	messageRoutine = routine
 	messageNeedsInput = input
@@ -21242,7 +21242,7 @@ func M_StringWidth(tls *libc.TLS, string1 uintptr) (r int32) {
 		}
 		c = xtoupper(int32(*(*int8)(unsafe.Pointer(string1 + uintptr(i))))) - int32('!')
 		if c < 0 || c >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1 {
-			w += int32(4)
+			w += 4
 		} else {
 			w += int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
 		}
@@ -21291,7 +21291,7 @@ func M_WriteText(tls *libc.TLS, x int32, y int32, string1 uintptr) {
 	ch = string1
 	cx = x
 	cy = y
-	for int32(1) != 0 {
+	for 1 != 0 {
 		v1 = ch
 		ch++
 		c = int32(*(*int8)(unsafe.Pointer(v1)))
@@ -21300,12 +21300,12 @@ func M_WriteText(tls *libc.TLS, x int32, y int32, string1 uintptr) {
 		}
 		if c == int32('\n') {
 			cx = x
-			cy += int32(12)
+			cy += 12
 			continue
 		}
 		c = xtoupper(c) - int32('!')
 		if c < 0 || c >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1 {
-			cx += int32(4)
+			cx += 4
 			continue
 		}
 		w = int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
@@ -21362,71 +21362,71 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	if ev.Ftype1 == ev_joystick && joywait < I_GetTime(tls) {
 		if ev.Fdata3 < 0 {
 			key = key_menu_up
-			joywait = I_GetTime(tls) + int32(5)
+			joywait = I_GetTime(tls) + 5
 		} else {
 			if ev.Fdata3 > 0 {
 				key = key_menu_down
-				joywait = I_GetTime(tls) + int32(5)
+				joywait = I_GetTime(tls) + 5
 			}
 		}
 		if ev.Fdata2 < 0 {
 			key = key_menu_left
-			joywait = I_GetTime(tls) + int32(2)
+			joywait = I_GetTime(tls) + 2
 		} else {
 			if ev.Fdata2 > 0 {
 				key = key_menu_right
-				joywait = I_GetTime(tls) + int32(2)
+				joywait = I_GetTime(tls) + 2
 			}
 		}
 		if ev.Fdata1&int32(1) != 0 {
 			key = key_menu_forward
-			joywait = I_GetTime(tls) + int32(5)
+			joywait = I_GetTime(tls) + 5
 		}
 		if ev.Fdata1&int32(2) != 0 {
 			key = key_menu_back
-			joywait = I_GetTime(tls) + int32(5)
+			joywait = I_GetTime(tls) + 5
 		}
 		if joybmenu >= 0 && ev.Fdata1&(int32(1)<<joybmenu) != 0 {
 			key = key_menu_activate
-			joywait = I_GetTime(tls) + int32(5)
+			joywait = I_GetTime(tls) + 5
 		}
 	} else {
 		if ev.Ftype1 == ev_mouse && mousewait < I_GetTime(tls) {
 			mousey1 += ev.Fdata3
 			if mousey1 < lasty-int32(30) {
 				key = key_menu_down
-				mousewait = I_GetTime(tls) + int32(5)
-				lasty -= int32(30)
+				mousewait = I_GetTime(tls) + 5
+				lasty -= 30
 				mousey1 = lasty
 			} else {
 				if mousey1 > lasty+int32(30) {
 					key = key_menu_up
-					mousewait = I_GetTime(tls) + int32(5)
-					lasty += int32(30)
+					mousewait = I_GetTime(tls) + 5
+					lasty += 30
 					mousey1 = lasty
 				}
 			}
 			mousex1 += ev.Fdata2
 			if mousex1 < lastx-int32(30) {
 				key = key_menu_left
-				mousewait = I_GetTime(tls) + int32(5)
-				lastx -= int32(30)
+				mousewait = I_GetTime(tls) + 5
+				lastx -= 30
 				mousex1 = lastx
 			} else {
 				if mousex1 > lastx+int32(30) {
 					key = key_menu_right
-					mousewait = I_GetTime(tls) + int32(5)
-					lastx += int32(30)
+					mousewait = I_GetTime(tls) + 5
+					lastx += 30
 					mousex1 = lastx
 				}
 			}
 			if ev.Fdata1&int32(1) != 0 {
 				key = key_menu_forward
-				mousewait = I_GetTime(tls) + int32(15)
+				mousewait = I_GetTime(tls) + 15
 			}
 			if ev.Fdata1&int32(2) != 0 {
 				key = key_menu_back
-				mousewait = I_GetTime(tls) + int32(15)
+				mousewait = I_GetTime(tls) + 15
 			}
 		} else {
 			if ev.Ftype1 == ev_keydown {
@@ -21468,7 +21468,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			if ch != int32(' ') && (ch-int32('!') < 0 || ch-int32('!') >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1) {
 				break
 			}
-			if ch >= int32(32) && ch <= int32(127) && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24) < (SAVESTRINGSIZE-2)*8 {
+			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24) < (SAVESTRINGSIZE-2)*8 {
 				v1 = saveCharIndex
 				saveCharIndex++
 				*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(saveSlot)*24 + uintptr(v1))) = int8(ch)
@@ -21578,7 +21578,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 													} else {
 														if key == key_menu_gamma { // gamma toggle
 															usegamma++
-															if usegamma > int32(4) {
+															if usegamma > 4 {
 																usegamma = 0
 															}
 															players[consoleplayer].Fmessage = uintptr(unsafe.Pointer(&gammamsg)) + uintptr(usegamma)*26
@@ -21624,7 +21624,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			// Move back up to previous item
 			for cond := true; cond; cond = int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus) == -1 {
 				if !(itemOn != 0) {
-					itemOn = int16(int32((*menu_t)(unsafe.Pointer(currentMenu)).Fnumitems) - int32(1))
+					itemOn = int16(int32((*menu_t)(unsafe.Pointer(currentMenu)).Fnumitems) - 1)
 				} else {
 					itemOn--
 				}
@@ -21634,7 +21634,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 		} else {
 			if key == key_menu_left {
 				// Slide slider left
-				if (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine != nil && int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus) == int32(2) {
+				if (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine != nil && int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus) == 2 {
 					S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_stnmov))
 					(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems+uintptr(itemOn)*32)).Froutine(tls, 0)
 				}
@@ -21642,9 +21642,9 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			} else {
 				if key == key_menu_right {
 					// Slide slider right
-					if (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine != nil && int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus) == int32(2) {
+					if (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine != nil && int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus) == 2 {
 						S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_stnmov))
-						(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems+uintptr(itemOn)*32)).Froutine(tls, int32(1))
+						(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems+uintptr(itemOn)*32)).Froutine(tls, 1)
 					}
 					return 1
 				} else {
@@ -21652,8 +21652,8 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 						// Activate menu item
 						if (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Froutine != nil && (*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus != 0 {
 							(*menu_t)(unsafe.Pointer(currentMenu)).FlastOn = itemOn
-							if int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus) == int32(2) {
-								(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems+uintptr(itemOn)*32)).Froutine(tls, int32(1)) // right arrow
+							if int32((*(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems + uintptr(itemOn)*32))).Fstatus) == 2 {
+								(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems+uintptr(itemOn)*32)).Froutine(tls, 1) // right arrow
 								S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_stnmov))
 							} else {
 								(*menuitem_t)(unsafe.Pointer((*menu_t)(unsafe.Pointer(currentMenu)).Fmenuitems+uintptr(itemOn)*32)).Froutine(tls, int32(itemOn))
@@ -21680,7 +21680,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 								return 1
 							} else {
 								if ch != 0 || IsNullKey(tls, key) != 0 {
-									i = int32(itemOn) + int32(1)
+									i = int32(itemOn) + 1
 									for {
 										if !(i < int32((*menu_t)(unsafe.Pointer(currentMenu)).Fnumitems)) {
 											break
@@ -21779,7 +21779,7 @@ func M_Drawer(tls *libc.TLS) {
 					if uint64(i) < uint64(80) {
 						(*(*[80]int8)(unsafe.Pointer(bp)))[i] = int8('\000')
 					}
-					foundnewline = int32(1)
+					foundnewline = 1
 					start = int32(uint32(start) + (i + libc.Uint32FromInt32(1)))
 					break
 				}
@@ -21867,7 +21867,7 @@ func M_Ticker(tls *libc.TLS) {
 	v1 = skullAnimCounter
 	if int32(v1) <= 0 {
 		whichSkull = int16(int32(whichSkull) ^ 1)
-		skullAnimCounter = int16(8)
+		skullAnimCounter = 8
 	}
 }
 
@@ -21882,8 +21882,8 @@ func M_Init(tls *libc.TLS) {
 	menuactive = uint32(0)
 	itemOn = (*menu_t)(unsafe.Pointer(currentMenu)).FlastOn
 	whichSkull = 0
-	skullAnimCounter = int16(10)
-	screenSize = screenblocks - int32(3)
+	skullAnimCounter = 10
+	screenSize = screenblocks - 3
 	messageToPrint = 0
 	messageString = libc.UintptrFromInt32(0)
 	messageLastMenuActive = libc.Int32FromUint32(menuactive)
@@ -21957,7 +21957,7 @@ func M_FileLength(tls *libc.TLS, handle uintptr) (r int64) {
 	// save the current position in the file
 	savedpos = libc.Xftell(tls, handle)
 	// jump to the end and find the length
-	libc.Xfseek(tls, handle, 0, int32(2))
+	libc.Xfseek(tls, handle, 0, 2)
 	length = libc.Xftell(tls, handle)
 	// go back to the old location
 	libc.Xfseek(tls, handle, savedpos, 0)
@@ -21998,7 +21998,7 @@ func M_TempFile(tls *libc.TLS, s uintptr) (r uintptr) {
 
 func M_StrToInt(tls *libc.TLS, str uintptr, result uintptr) (r boolean) {
 	bp := alloc(16)
-	return libc.BoolUint32(libc.Xsscanf(tls, str, __ccgo_ts(23144), libc.VaList(bp+8, result)) == int32(1) || libc.Xsscanf(tls, str, __ccgo_ts(23150), libc.VaList(bp+8, result)) == int32(1) || libc.Xsscanf(tls, str, __ccgo_ts(23156), libc.VaList(bp+8, result)) == int32(1) || libc.Xsscanf(tls, str, __ccgo_ts(23161), libc.VaList(bp+8, result)) == int32(1))
+	return libc.BoolUint32(libc.Xsscanf(tls, str, __ccgo_ts(23144), libc.VaList(bp+8, result)) == 1 || libc.Xsscanf(tls, str, __ccgo_ts(23150), libc.VaList(bp+8, result)) == 1 || libc.Xsscanf(tls, str, __ccgo_ts(23156), libc.VaList(bp+8, result)) == 1 || libc.Xsscanf(tls, str, __ccgo_ts(23161), libc.VaList(bp+8, result)) == 1)
 }
 
 func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
@@ -22017,7 +22017,7 @@ func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
 	length = 0
 	xmemset(dest, 0, uint64(8))
 	for int32(*(*int8)(unsafe.Pointer(src))) != int32('\000') && int32(*(*int8)(unsafe.Pointer(src))) != int32('.') {
-		if length >= int32(8) {
+		if length >= 8 {
 			fprintf_ccgo(os.Stdout, 23165, libc.GoString(filename), libc.GoString(dest))
 			break
 		}
@@ -22417,12 +22417,12 @@ var rndtable = [256]uint8{
 //
 //	// Which one is deterministic?
 func P_Random() (r int32) {
-	prndindex = (prndindex + int32(1)) & int32(0xff)
+	prndindex = (prndindex + 1) & int32(0xff)
 	return libc.Int32FromUint8(rndtable[prndindex])
 }
 
 func M_Random() (r int32) {
-	rndindex = (rndindex + int32(1)) & int32(0xff)
+	rndindex = (rndindex + 1) & int32(0xff)
 	return libc.Int32FromUint8(rndtable[rndindex])
 }
 
@@ -22442,9 +22442,9 @@ func T_MoveCeiling(tls *libc.TLS, ceiling *ceiling_t) {
 	switch ceiling.Fdirection {
 	case 0:
 		// IN STASIS
-	case int32(1):
+	case 1:
 		// UP
-		res = T_MovePlane(tls, ceiling.Fsector, ceiling.Fspeed, ceiling.Ftopheight, 0, int32(1), ceiling.Fdirection)
+		res = T_MovePlane(tls, ceiling.Fsector, ceiling.Fspeed, ceiling.Ftopheight, 0, 1, ceiling.Fdirection)
 		if !(leveltime&7 != 0) {
 			switch ceiling.Ftype1 {
 			case int32(silentCrushAndRaise):
@@ -22471,7 +22471,7 @@ func T_MoveCeiling(tls *libc.TLS, ceiling *ceiling_t) {
 		}
 	case -1:
 		// DOWN
-		res = T_MovePlane(tls, ceiling.Fsector, ceiling.Fspeed, ceiling.Fbottomheight, ceiling.Fcrush, int32(1), ceiling.Fdirection)
+		res = T_MovePlane(tls, ceiling.Fsector, ceiling.Fspeed, ceiling.Fbottomheight, ceiling.Fcrush, 1, ceiling.Fdirection)
 		if !(leveltime&7 != 0) {
 			switch ceiling.Ftype1 {
 			case int32(silentCrushAndRaise):
@@ -22488,7 +22488,7 @@ func T_MoveCeiling(tls *libc.TLS, ceiling *ceiling_t) {
 				ceiling.Fspeed = 1 << FRACBITS
 				fallthrough
 			case int32(fastCrushAndRaise):
-				ceiling.Fdirection = int32(1)
+				ceiling.Fdirection = 1
 			case int32(lowerAndCrush):
 				fallthrough
 			case int32(lowerToFloor):
@@ -22548,7 +22548,7 @@ func EV_DoCeiling(tls *libc.TLS, line uintptr, type1 ceiling_e) (r int32) {
 			continue
 		}
 		// new door thinker
-		rtn = int32(1)
+		rtn = 1
 		ceiling := &ceiling_t{}
 		P_AddThinker(tls, (uintptr)(unsafe.Pointer(&ceiling.Fthinker)))
 		(*sector_t)(unsafe.Pointer(sec)).Fspecialdata = (uintptr)(unsafe.Pointer(ceiling))
@@ -22579,7 +22579,7 @@ func EV_DoCeiling(tls *libc.TLS, line uintptr, type1 ceiling_e) (r int32) {
 			ceiling.Fspeed = 1 << FRACBITS
 		case int32(raiseToHighest):
 			ceiling.Ftopheight = P_FindHighestCeilingSurrounding(tls, sec)
-			ceiling.Fdirection = int32(1)
+			ceiling.Fdirection = 1
 			ceiling.Fspeed = 1 << FRACBITS
 			break
 		}
@@ -22671,7 +22671,7 @@ func EV_CeilingCrushStop(tls *libc.TLS, line uintptr) (r int32) {
 			activeceilings[i].Folddirection = activeceilings[i].Fdirection
 			activeceilings[i].Fthinker.Ffunction.Facv = 0
 			activeceilings[i].Fdirection = 0 // in-stasis
-			rtn = int32(1)
+			rtn = 1
 		}
 		goto _1
 	_1:
@@ -22724,19 +22724,19 @@ func T_VerticalDoor(tls *libc.TLS, door *vldoor_t) {
 				door.Fdirection = -1 // time to go back down
 				S_StartSound(tls, door.Fsector+48, int32(sfx_dorcls))
 			case int32(vld_close30ThenOpen):
-				door.Fdirection = int32(1)
+				door.Fdirection = 1
 				S_StartSound(tls, door.Fsector+48, int32(sfx_doropn))
 			default:
 				break
 			}
 		}
-	case int32(2):
+	case 2:
 		//  INITIAL WAIT
 		door.Ftopcountdown--
 		if door.Ftopcountdown == 0 {
 			switch door.Ftype1 {
 			case int32(vld_raiseIn5Mins):
-				door.Fdirection = int32(1)
+				door.Fdirection = 1
 				door.Ftype1 = int32(vld_normal)
 				S_StartSound(tls, door.Fsector+48, int32(sfx_doropn))
 			default:
@@ -22745,7 +22745,7 @@ func T_VerticalDoor(tls *libc.TLS, door *vldoor_t) {
 		}
 	case -1:
 		// DOWN
-		res = T_MovePlane(tls, door.Fsector, door.Fspeed, (*sector_t)(unsafe.Pointer(door.Fsector)).Ffloorheight, 0, int32(1), door.Fdirection)
+		res = T_MovePlane(tls, door.Fsector, door.Fspeed, (*sector_t)(unsafe.Pointer(door.Fsector)).Ffloorheight, 0, 1, door.Fdirection)
 		if res == int32(pastdest) {
 			switch (*vldoor_t)(unsafe.Pointer(door)).Ftype1 {
 			case int32(vld_blazeRaise):
@@ -22772,15 +22772,15 @@ func T_VerticalDoor(tls *libc.TLS, door *vldoor_t) {
 					fallthrough
 				case int32(vld_close): // DO NOT GO BACK UP!
 				default:
-					door.Fdirection = int32(1)
+					door.Fdirection = 1
 					S_StartSound(tls, door.Fsector+48, int32(sfx_doropn))
 					break
 				}
 			}
 		}
-	case int32(1):
+	case 1:
 		// UP
-		res = T_MovePlane(tls, door.Fsector, door.Fspeed, door.Ftopheight, 0, int32(1), door.Fdirection)
+		res = T_MovePlane(tls, door.Fsector, door.Fspeed, door.Ftopheight, 0, 1, door.Fdirection)
 		if res == int32(pastdest) {
 			switch door.Ftype1 {
 			case int32(vld_blazeRaise):
@@ -22815,9 +22815,9 @@ func EV_DoLockedDoor(tls *libc.TLS, line uintptr, type1 vldoor_e, thing uintptr)
 		return 0
 	}
 	switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
-	case int32(99): // Blue Lock
+	case 99: // Blue Lock
 		fallthrough
-	case int32(133):
+	case 133:
 		if !(p != 0) {
 			return 0
 		}
@@ -22826,9 +22826,9 @@ func EV_DoLockedDoor(tls *libc.TLS, line uintptr, type1 vldoor_e, thing uintptr)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return 0
 		}
-	case int32(134): // Red Lock
+	case 134: // Red Lock
 		fallthrough
-	case int32(135):
+	case 135:
 		if !(p != 0) {
 			return 0
 		}
@@ -22837,9 +22837,9 @@ func EV_DoLockedDoor(tls *libc.TLS, line uintptr, type1 vldoor_e, thing uintptr)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return 0
 		}
-	case int32(136): // Yellow Lock
+	case 136: // Yellow Lock
 		fallthrough
-	case int32(137):
+	case 137:
 		if !(p != 0) {
 			return 0
 		}
@@ -22869,8 +22869,8 @@ func EV_DoDoor(tls *libc.TLS, line uintptr, type1 vldoor_e) (r int32) {
 			continue
 		}
 		// new door thinker
-		rtn = int32(1)
-		door = Z_Malloc(tls, int32(64), int32(PU_LEVSPEC), uintptr(0))
+		rtn = 1
+		door = Z_Malloc(tls, 64, int32(PU_LEVSPEC), uintptr(0))
 		P_AddThinker(tls, door)
 		(*sector_t)(unsafe.Pointer(sec)).Fspecialdata = door
 		*(*actionf_p1)(unsafe.Pointer(door + 16)) = __ccgo_fp(T_VerticalDoor)
@@ -22897,7 +22897,7 @@ func EV_DoDoor(tls *libc.TLS, line uintptr, type1 vldoor_e) (r int32) {
 		case int32(vld_blazeRaise):
 			fallthrough
 		case int32(vld_blazeOpen):
-			(*vldoor_t)(unsafe.Pointer(door)).Fdirection = int32(1)
+			(*vldoor_t)(unsafe.Pointer(door)).Fdirection = 1
 			(*vldoor_t)(unsafe.Pointer(door)).Ftopheight = P_FindLowestCeilingSurrounding(tls, sec)
 			*(*fixed_t)(unsafe.Pointer(door + 40)) -= 4 * (1 << FRACBITS)
 			(*vldoor_t)(unsafe.Pointer(door)).Fspeed = 1 << FRACBITS * 2 * 4
@@ -22907,7 +22907,7 @@ func EV_DoDoor(tls *libc.TLS, line uintptr, type1 vldoor_e) (r int32) {
 		case int32(vld_normal):
 			fallthrough
 		case int32(vld_open):
-			(*vldoor_t)(unsafe.Pointer(door)).Fdirection = int32(1)
+			(*vldoor_t)(unsafe.Pointer(door)).Fdirection = 1
 			(*vldoor_t)(unsafe.Pointer(door)).Ftopheight = P_FindLowestCeilingSurrounding(tls, sec)
 			*(*fixed_t)(unsafe.Pointer(door + 40)) -= 4 * (1 << FRACBITS)
 			if (*vldoor_t)(unsafe.Pointer(door)).Ftopheight != (*sector_t)(unsafe.Pointer(sec)).Fceilingheight {
@@ -22932,9 +22932,9 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 	//	Check for locks
 	player = (*mobj_t)(unsafe.Pointer(thing)).Fplayer
 	switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
-	case int32(26): // Blue Lock
+	case 26: // Blue Lock
 		fallthrough
-	case int32(32):
+	case 32:
 		if !(player != 0) {
 			return
 		}
@@ -22943,9 +22943,9 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return
 		}
-	case int32(27): // Yellow Lock
+	case 27: // Yellow Lock
 		fallthrough
-	case int32(34):
+	case 34:
 		if !(player != 0) {
 			return
 		}
@@ -22954,9 +22954,9 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return
 		}
-	case int32(28): // Red Lock
+	case 28: // Red Lock
 		fallthrough
-	case int32(33):
+	case 33:
 		if !(player != 0) {
 			return
 		}
@@ -22972,17 +22972,17 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 	if (*sector_t)(unsafe.Pointer(sec)).Fspecialdata != 0 {
 		door = (*sector_t)(unsafe.Pointer(sec)).Fspecialdata
 		switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
-		case int32(1): // ONLY FOR "RAISE" DOORS, NOT "OPEN"s
+		case 1: // ONLY FOR "RAISE" DOORS, NOT "OPEN"s
 			fallthrough
-		case int32(26):
+		case 26:
 			fallthrough
-		case int32(27):
+		case 27:
 			fallthrough
-		case int32(28):
+		case 28:
 			fallthrough
-		case int32(117):
+		case 117:
 			if (*vldoor_t)(unsafe.Pointer(door)).Fdirection == -1 {
-				(*vldoor_t)(unsafe.Pointer(door)).Fdirection = int32(1)
+				(*vldoor_t)(unsafe.Pointer(door)).Fdirection = 1
 			} else {
 				if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != 0) {
 					return
@@ -23010,49 +23010,49 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 	}
 	// for proper sound
 	switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
-	case int32(117): // BLAZING DOOR RAISE
+	case 117: // BLAZING DOOR RAISE
 		fallthrough
-	case int32(118): // BLAZING DOOR OPEN
+	case 118: // BLAZING DOOR OPEN
 		S_StartSound(tls, sec+48, int32(sfx_bdopn))
-	case int32(1): // NORMAL DOOR SOUND
+	case 1: // NORMAL DOOR SOUND
 		fallthrough
-	case int32(31):
+	case 31:
 		S_StartSound(tls, sec+48, int32(sfx_doropn))
 	default: // LOCKED DOOR SOUND
 		S_StartSound(tls, sec+48, int32(sfx_doropn))
 		break
 	}
 	// new door thinker
-	door = Z_Malloc(tls, int32(64), int32(PU_LEVSPEC), uintptr(0))
+	door = Z_Malloc(tls, 64, int32(PU_LEVSPEC), uintptr(0))
 	P_AddThinker(tls, door)
 	(*sector_t)(unsafe.Pointer(sec)).Fspecialdata = door
 	*(*actionf_p1)(unsafe.Pointer(door + 16)) = __ccgo_fp(T_VerticalDoor)
 	(*vldoor_t)(unsafe.Pointer(door)).Fsector = sec
-	(*vldoor_t)(unsafe.Pointer(door)).Fdirection = int32(1)
+	(*vldoor_t)(unsafe.Pointer(door)).Fdirection = 1
 	(*vldoor_t)(unsafe.Pointer(door)).Fspeed = 1 << FRACBITS * 2
 	(*vldoor_t)(unsafe.Pointer(door)).Ftopwait = int32(VDOORWAIT)
 	switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
-	case int32(1):
+	case 1:
 		fallthrough
-	case int32(26):
+	case 26:
 		fallthrough
-	case int32(27):
+	case 27:
 		fallthrough
-	case int32(28):
+	case 28:
 		(*vldoor_t)(unsafe.Pointer(door)).Ftype1 = int32(vld_normal)
-	case int32(31):
+	case 31:
 		fallthrough
-	case int32(32):
+	case 32:
 		fallthrough
-	case int32(33):
+	case 33:
 		fallthrough
-	case int32(34):
+	case 34:
 		(*vldoor_t)(unsafe.Pointer(door)).Ftype1 = int32(vld_open)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(117): // blazing door raise
+	case 117: // blazing door raise
 		(*vldoor_t)(unsafe.Pointer(door)).Ftype1 = int32(vld_blazeRaise)
 		(*vldoor_t)(unsafe.Pointer(door)).Fspeed = 1 << FRACBITS * 2 * 4
-	case int32(118): // blazing door open
+	case 118: // blazing door open
 		(*vldoor_t)(unsafe.Pointer(door)).Ftype1 = int32(vld_blazeOpen)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
 		(*vldoor_t)(unsafe.Pointer(door)).Fspeed = 1 << FRACBITS * 2 * 4
@@ -23070,7 +23070,7 @@ func EV_VerticalDoor(tls *libc.TLS, line uintptr, thing uintptr) {
 //	//
 func P_SpawnDoorCloseIn30(tls *libc.TLS, sec uintptr) {
 	var door uintptr
-	door = Z_Malloc(tls, int32(64), int32(PU_LEVSPEC), uintptr(0))
+	door = Z_Malloc(tls, 64, int32(PU_LEVSPEC), uintptr(0))
 	P_AddThinker(tls, door)
 	(*sector_t)(unsafe.Pointer(sec)).Fspecialdata = door
 	(*sector_t)(unsafe.Pointer(sec)).Fspecial = 0
@@ -23089,13 +23089,13 @@ func P_SpawnDoorCloseIn30(tls *libc.TLS, sec uintptr) {
 //	//
 func P_SpawnDoorRaiseIn5Mins(tls *libc.TLS, sec uintptr, secnum int32) {
 	var door uintptr
-	door = Z_Malloc(tls, int32(64), int32(PU_LEVSPEC), uintptr(0))
+	door = Z_Malloc(tls, 64, int32(PU_LEVSPEC), uintptr(0))
 	P_AddThinker(tls, door)
 	(*sector_t)(unsafe.Pointer(sec)).Fspecialdata = door
 	(*sector_t)(unsafe.Pointer(sec)).Fspecial = 0
 	*(*actionf_p1)(unsafe.Pointer(door + 16)) = __ccgo_fp(T_VerticalDoor)
 	(*vldoor_t)(unsafe.Pointer(door)).Fsector = sec
-	(*vldoor_t)(unsafe.Pointer(door)).Fdirection = int32(2)
+	(*vldoor_t)(unsafe.Pointer(door)).Fdirection = 2
 	(*vldoor_t)(unsafe.Pointer(door)).Ftype1 = int32(vld_raiseIn5Mins)
 	(*vldoor_t)(unsafe.Pointer(door)).Fspeed = 1 << FRACBITS * 2
 	(*vldoor_t)(unsafe.Pointer(door)).Ftopheight = P_FindLowestCeilingSurrounding(tls, sec)
@@ -23188,7 +23188,7 @@ func P_RecursiveSound(tls *libc.TLS, sec uintptr, soundblocks int32) {
 		return // already flooded
 	}
 	(*sector_t)(unsafe.Pointer(sec)).Fvalidcount = validcount
-	(*sector_t)(unsafe.Pointer(sec)).Fsoundtraversed = soundblocks + int32(1)
+	(*sector_t)(unsafe.Pointer(sec)).Fsoundtraversed = soundblocks + 1
 	(*sector_t)(unsafe.Pointer(sec)).Fsoundtarget = soundtarget
 	i = 0
 	for {
@@ -23210,7 +23210,7 @@ func P_RecursiveSound(tls *libc.TLS, sec uintptr, soundblocks int32) {
 		}
 		if int32((*line_t)(unsafe.Pointer(check)).Fflags)&int32(ML_SOUNDBLOCK) != 0 {
 			if !(soundblocks != 0) {
-				P_RecursiveSound(tls, other, int32(1))
+				P_RecursiveSound(tls, other, 1)
 			}
 		} else {
 			P_RecursiveSound(tls, other, soundblocks)
@@ -23281,26 +23281,26 @@ func P_CheckMissileRange(tls *libc.TLS, actor uintptr) (r boolean) {
 	if !((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fmeleestate != 0) {
 		dist -= 128 * (1 << FRACBITS)
 	} // no melee attack, so fire more
-	dist >>= int32(16)
+	dist >>= 16
 	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_VILE) {
 		if dist > 14*64 {
 			return 0
 		} // too far away
 	}
 	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_UNDEAD) {
-		if dist < int32(196) {
+		if dist < 196 {
 			return 0
 		} // close for fist attack
-		dist >>= int32(1)
+		dist >>= 1
 	}
 	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_CYBORG) || (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_SPIDER) || (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_SKULL) {
-		dist >>= int32(1)
+		dist >>= 1
 	}
-	if dist > int32(200) {
-		dist = int32(200)
+	if dist > 200 {
+		dist = 200
 	}
-	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_CYBORG) && dist > int32(160) {
-		dist = int32(160)
+	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_CYBORG) && dist > 160 {
+		dist = 160
 	}
 	if P_Random() < dist {
 		return 0
@@ -23311,19 +23311,19 @@ func P_CheckMissileRange(tls *libc.TLS, actor uintptr) (r boolean) {
 func init() {
 	xspeed = [8]fixed_t{
 		0: 1 << FRACBITS,
-		1: int32(47000),
+		1: 47000,
 		3: -int32(47000),
 		4: -(1 << FRACBITS),
 		5: -int32(47000),
-		7: int32(47000),
+		7: 47000,
 	}
 }
 
 func init() {
 	yspeed = [8]fixed_t{
-		1: int32(47000),
+		1: 47000,
 		2: 1 << FRACBITS,
-		3: int32(47000),
+		3: 47000,
 		5: -int32(47000),
 		6: -(1 << FRACBITS),
 		7: -int32(47000),
@@ -23402,7 +23402,7 @@ func P_TryWalk(tls *libc.TLS, actor uintptr) (r boolean) {
 	if !(P_Move(tls, actor) != 0) {
 		return 0
 	}
-	(*mobj_t)(unsafe.Pointer(actor)).Fmovecount = P_Random() & int32(15)
+	(*mobj_t)(unsafe.Pointer(actor)).Fmovecount = P_Random() & 15
 	return 1
 }
 
@@ -23444,7 +23444,7 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 		}
 	}
 	// try other directions
-	if P_Random() > int32(200) || xabs(deltay) > xabs(deltax) {
+	if P_Random() > 200 || xabs(deltay) > xabs(deltax) {
 		tdir = d[int32(1)]
 		d[int32(1)] = d[int32(2)]
 		d[int32(2)] = tdir
@@ -23534,14 +23534,14 @@ func P_LookForPlayers(tls *libc.TLS, actor uintptr, allaround boolean) (r boolea
 	var dist fixed_t
 	var player uintptr
 	c = 0
-	stop = ((*mobj_t)(unsafe.Pointer(actor)).Flastlook - int32(1)) & int32(3)
+	stop = ((*mobj_t)(unsafe.Pointer(actor)).Flastlook - 1) & 3
 	for {
 		if !(playeringame[(*mobj_t)(unsafe.Pointer(actor)).Flastlook] != 0) {
 			goto _1
 		}
 		v2 = c
 		c++
-		if v2 == int32(2) || (*mobj_t)(unsafe.Pointer(actor)).Flastlook == stop {
+		if v2 == 2 || (*mobj_t)(unsafe.Pointer(actor)).Flastlook == stop {
 			// done looking
 			return 0
 		}
@@ -23567,7 +23567,7 @@ func P_LookForPlayers(tls *libc.TLS, actor uintptr, allaround boolean) (r boolea
 		goto _1
 	_1:
 		;
-		(*mobj_t)(unsafe.Pointer(actor)).Flastlook = ((*mobj_t)(unsafe.Pointer(actor)).Flastlook + int32(1)) & int32(3)
+		(*mobj_t)(unsafe.Pointer(actor)).Flastlook = ((*mobj_t)(unsafe.Pointer(actor)).Flastlook + 1) & 3
 	}
 	return 0
 }
@@ -23603,7 +23603,7 @@ func A_KeenDie(tls *libc.TLS, mo uintptr) {
 		;
 		th = (*thinker_t)(unsafe.Pointer(th)).Fnext
 	}
-	(*(*line_t)(unsafe.Pointer(bp))).Ftag = int16(666)
+	(*(*line_t)(unsafe.Pointer(bp))).Ftag = 666
 	EV_DoDoor(tls, bp, int32(vld_open))
 }
 
@@ -23687,7 +23687,7 @@ func A_Chase(tls *libc.TLS, actor uintptr) {
 		}
 	}
 	// turn towards movement direction if not there yet
-	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir < int32(8) {
+	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir < 8 {
 		*(*angle_t)(unsafe.Pointer(actor + 56)) &= 7 << 29
 		delta = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(actor)).Fangle - libc.Uint32FromInt32((*mobj_t)(unsafe.Pointer(actor)).Fmovedir<<29))
 		if delta > 0 {
@@ -23752,7 +23752,7 @@ nomissile:
 		P_NewChaseDir(tls, actor)
 	}
 	// make active sound
-	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Factivesound != 0 && P_Random() < int32(3) {
+	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Factivesound != 0 && P_Random() < 3 {
 		S_StartSound(tls, actor, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Factivesound)
 	}
 }
@@ -23769,7 +23769,7 @@ func A_FaceTarget(tls *libc.TLS, actor uintptr) {
 	*(*int32)(unsafe.Pointer(actor + 160)) &= ^int32(MF_AMBUSH)
 	(*mobj_t)(unsafe.Pointer(actor)).Fangle = R_PointToAngle2((*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy, (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy)
 	if (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fflags&int32(MF_SHADOW) != 0 {
-		*(*angle_t)(unsafe.Pointer(actor + 56)) += libc.Uint32FromInt32((P_Random() - P_Random()) << int32(21))
+		*(*angle_t)(unsafe.Pointer(actor + 56)) += libc.Uint32FromInt32((P_Random() - P_Random()) << 21)
 	}
 }
 
@@ -23787,8 +23787,8 @@ func A_PosAttack(tls *libc.TLS, actor uintptr) {
 	angle = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(actor)).Fangle)
 	slope = P_AimLineAttack(tls, actor, libc.Uint32FromInt32(angle), 32*64*(1<<FRACBITS))
 	S_StartSound(tls, actor, int32(sfx_pistol))
-	angle += (P_Random() - P_Random()) << int32(20)
-	damage = (P_Random()%int32(5) + int32(1)) * int32(3)
+	angle += (P_Random() - P_Random()) << 20
+	damage = (P_Random()%int32(5) + 1) * 3
 	P_LineAttack(tls, actor, libc.Uint32FromInt32(angle), 32*64*(1<<FRACBITS), slope, damage)
 }
 
@@ -23803,11 +23803,11 @@ func A_SPosAttack(tls *libc.TLS, actor uintptr) {
 	slope = P_AimLineAttack(tls, actor, libc.Uint32FromInt32(bangle), 32*64*(1<<FRACBITS))
 	i = 0
 	for {
-		if !(i < int32(3)) {
+		if !(i < 3) {
 			break
 		}
 		angle = bangle + (P_Random()-P_Random())<<int32(20)
-		damage = (P_Random()%int32(5) + int32(1)) * int32(3)
+		damage = (P_Random()%int32(5) + 1) * 3
 		P_LineAttack(tls, actor, libc.Uint32FromInt32(angle), 32*64*(1<<FRACBITS), slope, damage)
 		goto _1
 	_1:
@@ -23826,14 +23826,14 @@ func A_CPosAttack(tls *libc.TLS, actor uintptr) {
 	bangle = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(actor)).Fangle)
 	slope = P_AimLineAttack(tls, actor, libc.Uint32FromInt32(bangle), 32*64*(1<<FRACBITS))
 	angle = bangle + (P_Random()-P_Random())<<int32(20)
-	damage = (P_Random()%int32(5) + int32(1)) * int32(3)
+	damage = (P_Random()%int32(5) + 1) * 3
 	P_LineAttack(tls, actor, libc.Uint32FromInt32(angle), 32*64*(1<<FRACBITS), slope, damage)
 }
 
 func A_CPosRefire(tls *libc.TLS, actor uintptr) {
 	// keep firing unless target got out of sight
 	A_FaceTarget(tls, actor)
-	if P_Random() < int32(40) {
+	if P_Random() < 40 {
 		return
 	}
 	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fhealth <= 0 || !(P_CheckSight(tls, actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
@@ -23844,7 +23844,7 @@ func A_CPosRefire(tls *libc.TLS, actor uintptr) {
 func A_SpidRefire(tls *libc.TLS, actor uintptr) {
 	// keep firing unless target got out of sight
 	A_FaceTarget(tls, actor)
-	if P_Random() < int32(10) {
+	if P_Random() < 10 {
 		return
 	}
 	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fhealth <= 0 || !(P_CheckSight(tls, actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
@@ -23874,7 +23874,7 @@ func A_TroopAttack(tls *libc.TLS, actor uintptr) {
 	A_FaceTarget(tls, actor)
 	if P_CheckMeleeRange(tls, actor) != 0 {
 		S_StartSound(tls, actor, int32(sfx_claw))
-		damage = (P_Random()%int32(8) + int32(1)) * int32(3)
+		damage = (P_Random()%int32(8) + 1) * 3
 		P_DamageMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, damage)
 		return
 	}
@@ -23889,7 +23889,7 @@ func A_SargAttack(tls *libc.TLS, actor uintptr) {
 	}
 	A_FaceTarget(tls, actor)
 	if P_CheckMeleeRange(tls, actor) != 0 {
-		damage = (P_Random()%int32(10) + int32(1)) * int32(4)
+		damage = (P_Random()%int32(10) + 1) * 4
 		P_DamageMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, damage)
 	}
 }
@@ -23901,7 +23901,7 @@ func A_HeadAttack(tls *libc.TLS, actor uintptr) {
 	}
 	A_FaceTarget(tls, actor)
 	if P_CheckMeleeRange(tls, actor) != 0 {
-		damage = (P_Random()%int32(6) + int32(1)) * int32(10)
+		damage = (P_Random()%int32(6) + 1) * 10
 		P_DamageMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, damage)
 		return
 	}
@@ -23924,7 +23924,7 @@ func A_BruisAttack(tls *libc.TLS, actor uintptr) {
 	}
 	if P_CheckMeleeRange(tls, actor) != 0 {
 		S_StartSound(tls, actor, int32(sfx_claw))
-		damage = (P_Random()%int32(8) + int32(1)) * int32(10)
+		damage = (P_Random()%int32(8) + 1) * 10
 		P_DamageMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, damage)
 		return
 	}
@@ -23966,9 +23966,9 @@ func A_Tracer(tls *libc.TLS, actor uintptr) {
 	P_SpawnPuff(tls, (*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy, (*mobj_t)(unsafe.Pointer(actor)).Fz)
 	th = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fmomx, (*mobj_t)(unsafe.Pointer(actor)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fmomy, (*mobj_t)(unsafe.Pointer(actor)).Fz, int32(MT_SMOKE))
 	(*mobj_t)(unsafe.Pointer(th)).Fmomz = 1 << FRACBITS
-	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & int32(3)
-	if (*mobj_t)(unsafe.Pointer(th)).Ftics < int32(1) {
-		(*mobj_t)(unsafe.Pointer(th)).Ftics = int32(1)
+	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & 3
+	if (*mobj_t)(unsafe.Pointer(th)).Ftics < 1 {
+		(*mobj_t)(unsafe.Pointer(th)).Ftics = 1
 	}
 	// adjust direction
 	dest = (*mobj_t)(unsafe.Pointer(actor)).Ftracer
@@ -23996,8 +23996,8 @@ func A_Tracer(tls *libc.TLS, actor uintptr) {
 	// change slope
 	dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(dest)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fy)
 	dist = dist / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed
-	if dist < int32(1) {
-		dist = int32(1)
+	if dist < 1 {
+		dist = 1
 	}
 	slope = ((*mobj_t)(unsafe.Pointer(dest)).Fz + 40*(1<<FRACBITS) - (*mobj_t)(unsafe.Pointer(actor)).Fz) / dist
 	if slope < (*mobj_t)(unsafe.Pointer(actor)).Fmomz {
@@ -24022,7 +24022,7 @@ func A_SkelFist(tls *libc.TLS, actor uintptr) {
 	}
 	A_FaceTarget(tls, actor)
 	if P_CheckMeleeRange(tls, actor) != 0 {
-		damage = (P_Random()%int32(10) + int32(1)) * int32(6)
+		damage = (P_Random()%int32(10) + 1) * 6
 		S_StartSound(tls, actor, int32(sfx_skepch))
 		P_DamageMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, damage)
 	}
@@ -24049,9 +24049,9 @@ func PIT_VileCheck(tls *libc.TLS, thing uintptr) (r boolean) {
 	v1 = 0
 	(*mobj_t)(unsafe.Pointer(corpsehit)).Fmomy = v1
 	(*mobj_t)(unsafe.Pointer(corpsehit)).Fmomx = v1
-	*(*fixed_t)(unsafe.Pointer(corpsehit + 108)) <<= int32(2)
+	*(*fixed_t)(unsafe.Pointer(corpsehit + 108)) <<= 2
 	check = P_CheckPosition(tls, corpsehit, (*mobj_t)(unsafe.Pointer(corpsehit)).Fx, (*mobj_t)(unsafe.Pointer(corpsehit)).Fy)
-	*(*fixed_t)(unsafe.Pointer(corpsehit + 108)) >>= int32(2)
+	*(*fixed_t)(unsafe.Pointer(corpsehit + 108)) >>= 2
 	if !(check != 0) {
 		return 1
 	} // doesn't fit here
@@ -24099,7 +24099,7 @@ func A_VileChase(tls *libc.TLS, actor uintptr) {
 					S_StartSound(tls, corpsehit, int32(sfx_slop))
 					info = (*mobj_t)(unsafe.Pointer(corpsehit)).Finfo
 					P_SetMobjState(tls, corpsehit, (*mobjinfo_t)(unsafe.Pointer(info)).Fraisestate)
-					*(*fixed_t)(unsafe.Pointer(corpsehit + 108)) <<= int32(2)
+					*(*fixed_t)(unsafe.Pointer(corpsehit + 108)) <<= 2
 					(*mobj_t)(unsafe.Pointer(corpsehit)).Fflags = (*mobjinfo_t)(unsafe.Pointer(info)).Fflags
 					(*mobj_t)(unsafe.Pointer(corpsehit)).Fhealth = (*mobjinfo_t)(unsafe.Pointer(info)).Fspawnhealth
 					(*mobj_t)(unsafe.Pointer(corpsehit)).Ftarget = libc.UintptrFromInt32(0)
@@ -24194,7 +24194,7 @@ func A_VileAttack(tls *libc.TLS, actor uintptr) {
 		return
 	}
 	S_StartSound(tls, actor, int32(sfx_barexp))
-	P_DamageMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, int32(20))
+	P_DamageMobj(tls, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, 20)
 	(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fmomz = 1000 * (1 << FRACBITS) / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Finfo)).Fmass
 	an = libc.Int32FromUint32((*mobj_t)(unsafe.Pointer(actor)).Fangle >> int32(ANGLETOFINESHIFT))
 	fire = (*mobj_t)(unsafe.Pointer(actor)).Ftracer
@@ -24204,7 +24204,7 @@ func A_VileAttack(tls *libc.TLS, actor uintptr) {
 	// move the fire between the vile and the player
 	(*mobj_t)(unsafe.Pointer(fire)).Fx = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - FixedMul(24*(1<<FRACBITS), finecosine[an])
 	(*mobj_t)(unsafe.Pointer(fire)).Fy = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - FixedMul(24*(1<<FRACBITS), finesine[an])
-	P_RadiusAttack(tls, fire, actor, int32(70))
+	P_RadiusAttack(tls, fire, actor, 70)
 }
 
 //
@@ -24287,8 +24287,8 @@ func A_SkullAttack(tls *libc.TLS, actor uintptr) {
 	(*mobj_t)(unsafe.Pointer(actor)).Fmomy = FixedMul(20*(1<<FRACBITS), finesine[an])
 	dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(dest)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fy)
 	dist = dist / (20 * (1 << FRACBITS))
-	if dist < int32(1) {
-		dist = int32(1)
+	if dist < 1 {
+		dist = 1
 	}
 	(*mobj_t)(unsafe.Pointer(actor)).Fmomz = ((*mobj_t)(unsafe.Pointer(dest)).Fz + (*mobj_t)(unsafe.Pointer(dest)).Fheight>>1 - (*mobj_t)(unsafe.Pointer(actor)).Fz) / dist
 }
@@ -24315,12 +24315,12 @@ func A_PainShootSkull(tls *libc.TLS, actor uintptr, angle angle_t) {
 	}
 	// if there are allready 20 skulls on the level,
 	// don't spit another one
-	if count > int32(20) {
+	if count > 20 {
 		return
 	}
 	// okay, there's playe for another one
 	an = angle >> int32(ANGLETOFINESHIFT)
-	prestep = 4*(1<<FRACBITS) + int32(3)*((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fradius+mobjinfo[int32(MT_SKULL)].Fradius)/int32(2)
+	prestep = 4*(1<<FRACBITS) + 3*((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fradius+mobjinfo[int32(MT_SKULL)].Fradius)/int32(2)
 	x = (*mobj_t)(unsafe.Pointer(actor)).Fx + FixedMul(prestep, finecosine[an])
 	y = (*mobj_t)(unsafe.Pointer(actor)).Fy + FixedMul(prestep, finesine[an])
 	z = (*mobj_t)(unsafe.Pointer(actor)).Fz + 8*(1<<FRACBITS)
@@ -24328,7 +24328,7 @@ func A_PainShootSkull(tls *libc.TLS, actor uintptr, angle angle_t) {
 	// Check for movements.
 	if !(P_TryMove(tls, newmobj, (*mobj_t)(unsafe.Pointer(newmobj)).Fx, (*mobj_t)(unsafe.Pointer(newmobj)).Fy) != 0) {
 		// kill it immediately
-		P_DamageMobj(tls, newmobj, actor, actor, int32(10000))
+		P_DamageMobj(tls, newmobj, actor, actor, 10000)
 		return
 	}
 	(*mobj_t)(unsafe.Pointer(newmobj)).Ftarget = (*mobj_t)(unsafe.Pointer(actor)).Ftarget
@@ -24407,7 +24407,7 @@ func A_Fall(tls *libc.TLS, actor uintptr) {
 //	// A_Explode
 //	//
 func A_Explode(tls *libc.TLS, thingy uintptr) {
-	P_RadiusAttack(tls, thingy, (*mobj_t)(unsafe.Pointer(thingy)).Ftarget, int32(128))
+	P_RadiusAttack(tls, thingy, (*mobj_t)(unsafe.Pointer(thingy)).Ftarget, 128)
 }
 
 // Check whether the death of the specified monster type is allowed
@@ -24418,11 +24418,11 @@ func A_Explode(tls *libc.TLS, thingy uintptr) {
 
 func CheckBossEnd(tls *libc.TLS, motype mobjtype_t) (r boolean) {
 	if gameversion < int32(exe_ultimate) {
-		if gamemap != int32(8) {
+		if gamemap != 8 {
 			return 0
 		}
 		// Baron death on later episodes is nothing special.
-		if motype == int32(MT_BRUISER) && gameepisode != int32(1) {
+		if motype == int32(MT_BRUISER) && gameepisode != 1 {
 			return 0
 		}
 		return 1
@@ -24432,16 +24432,16 @@ func CheckBossEnd(tls *libc.TLS, motype mobjtype_t) (r boolean) {
 		// episode 4 support.  Now bosses only trigger on their
 		// specific episode.
 		switch gameepisode {
-		case int32(1):
-			return libc.BoolUint32(gamemap == int32(8) && motype == int32(MT_BRUISER))
-		case int32(2):
-			return libc.BoolUint32(gamemap == int32(8) && motype == int32(MT_CYBORG))
-		case int32(3):
-			return libc.BoolUint32(gamemap == int32(8) && motype == int32(MT_SPIDER))
-		case int32(4):
-			return libc.BoolUint32(gamemap == int32(6) && motype == int32(MT_CYBORG) || gamemap == int32(8) && motype == int32(MT_SPIDER))
+		case 1:
+			return libc.BoolUint32(gamemap == 8 && motype == int32(MT_BRUISER))
+		case 2:
+			return libc.BoolUint32(gamemap == 8 && motype == int32(MT_CYBORG))
+		case 3:
+			return libc.BoolUint32(gamemap == 8 && motype == int32(MT_SPIDER))
+		case 4:
+			return libc.BoolUint32(gamemap == 6 && motype == int32(MT_CYBORG) || gamemap == 8 && motype == int32(MT_SPIDER))
 		default:
-			return libc.BoolUint32(gamemap == int32(8))
+			return libc.BoolUint32(gamemap == 8)
 		}
 	}
 	return r
@@ -24459,7 +24459,7 @@ func A_BossDeath(tls *libc.TLS, mo uintptr) {
 	var i int32
 	var mo2, th uintptr
 	if gamemode == int32(commercial) {
-		if gamemap != int32(7) {
+		if gamemap != 7 {
 			return
 		}
 		if (*mobj_t)(unsafe.Pointer(mo)).Ftype1 != int32(MT_FATSO) && (*mobj_t)(unsafe.Pointer(mo)).Ftype1 != int32(MT_BABY) {
@@ -24509,32 +24509,32 @@ func A_BossDeath(tls *libc.TLS, mo uintptr) {
 	}
 	// victory!
 	if gamemode == int32(commercial) {
-		if gamemap == int32(7) {
+		if gamemap == 7 {
 			if (*mobj_t)(unsafe.Pointer(mo)).Ftype1 == int32(MT_FATSO) {
-				(*(*line_t)(unsafe.Pointer(bp))).Ftag = int16(666)
+				(*(*line_t)(unsafe.Pointer(bp))).Ftag = 666
 				EV_DoFloor(tls, bp, int32(lowerFloorToLowest))
 				return
 			}
 			if (*mobj_t)(unsafe.Pointer(mo)).Ftype1 == int32(MT_BABY) {
-				(*(*line_t)(unsafe.Pointer(bp))).Ftag = int16(667)
+				(*(*line_t)(unsafe.Pointer(bp))).Ftag = 667
 				EV_DoFloor(tls, bp, int32(raiseToTexture))
 				return
 			}
 		}
 	} else {
 		switch gameepisode {
-		case int32(1):
-			(*(*line_t)(unsafe.Pointer(bp))).Ftag = int16(666)
+		case 1:
+			(*(*line_t)(unsafe.Pointer(bp))).Ftag = 666
 			EV_DoFloor(tls, bp, int32(lowerFloorToLowest))
 			return
-		case int32(4):
+		case 4:
 			switch gamemap {
-			case int32(6):
-				(*(*line_t)(unsafe.Pointer(bp))).Ftag = int16(666)
+			case 6:
+				(*(*line_t)(unsafe.Pointer(bp))).Ftag = 666
 				EV_DoDoor(tls, bp, int32(vld_blazeOpen))
 				return
-			case int32(8):
-				(*(*line_t)(unsafe.Pointer(bp))).Ftag = int16(666)
+			case 8:
+				(*(*line_t)(unsafe.Pointer(bp))).Ftag = 666
 				EV_DoFloor(tls, bp, int32(lowerFloorToLowest))
 				return
 				break
@@ -24612,13 +24612,13 @@ func A_BrainScream(tls *libc.TLS, mo uintptr) {
 			break
 		}
 		y = (*mobj_t)(unsafe.Pointer(mo)).Fy - 320*(1<<FRACBITS)
-		z = int32(128) + P_Random()*int32(2)*(1<<FRACBITS)
+		z = 128 + P_Random()*int32(2)*(1<<FRACBITS)
 		th = P_SpawnMobj(tls, x, y, z, int32(MT_ROCKET))
-		(*mobj_t)(unsafe.Pointer(th)).Fmomz = P_Random() * int32(512)
+		(*mobj_t)(unsafe.Pointer(th)).Fmomz = P_Random() * 512
 		P_SetMobjState(tls, th, int32(S_BRAINEXPLODE1))
-		*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & int32(7)
-		if (*mobj_t)(unsafe.Pointer(th)).Ftics < int32(1) {
-			(*mobj_t)(unsafe.Pointer(th)).Ftics = int32(1)
+		*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & 7
+		if (*mobj_t)(unsafe.Pointer(th)).Ftics < 1 {
+			(*mobj_t)(unsafe.Pointer(th)).Ftics = 1
 		}
 		goto _1
 	_1:
@@ -24633,13 +24633,13 @@ func A_BrainExplode(tls *libc.TLS, mo uintptr) {
 	var x, y, z int32
 	x = (*mobj_t)(unsafe.Pointer(mo)).Fx + (P_Random()-P_Random())*int32(2048)
 	y = (*mobj_t)(unsafe.Pointer(mo)).Fy
-	z = int32(128) + P_Random()*int32(2)*(1<<FRACBITS)
+	z = 128 + P_Random()*int32(2)*(1<<FRACBITS)
 	th = P_SpawnMobj(tls, x, y, z, int32(MT_ROCKET))
-	(*mobj_t)(unsafe.Pointer(th)).Fmomz = P_Random() * int32(512)
+	(*mobj_t)(unsafe.Pointer(th)).Fmomz = P_Random() * 512
 	P_SetMobjState(tls, th, int32(S_BRAINEXPLODE1))
-	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & int32(7)
-	if (*mobj_t)(unsafe.Pointer(th)).Ftics < int32(1) {
-		(*mobj_t)(unsafe.Pointer(th)).Ftics = int32(1)
+	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & 7
+	if (*mobj_t)(unsafe.Pointer(th)).Ftics < 1 {
+		(*mobj_t)(unsafe.Pointer(th)).Ftics = 1
 	}
 }
 
@@ -24649,13 +24649,13 @@ func A_BrainDie(tls *libc.TLS, mo uintptr) {
 
 func A_BrainSpit(tls *libc.TLS, mo uintptr) {
 	var newmobj, targ uintptr
-	easy ^= int32(1)
+	easy ^= 1
 	if gameskill <= int32(sk_easy) && !(easy != 0) {
 		return
 	}
 	// shoot a cube at current target
 	targ = braintargets[braintargeton]
-	braintargeton = (braintargeton + int32(1)) % numbraintargets
+	braintargeton = (braintargeton + 1) % numbraintargets
 	// spawn brain missile
 	newmobj = P_SpawnMissile(tls, mo, targ, int32(MT_SPAWNSHOT))
 	(*mobj_t)(unsafe.Pointer(newmobj)).Ftarget = targ
@@ -24691,34 +24691,34 @@ func A_SpawnFly(tls *libc.TLS, mo uintptr) {
 	r = P_Random()
 	// Probability distribution (kind of :),
 	// decreasing likelihood.
-	if r < int32(50) {
+	if r < 50 {
 		type1 = int32(MT_TROOP)
 	} else {
-		if r < int32(90) {
+		if r < 90 {
 			type1 = int32(MT_SERGEANT)
 		} else {
-			if r < int32(120) {
+			if r < 120 {
 				type1 = int32(MT_SHADOWS)
 			} else {
-				if r < int32(130) {
+				if r < 130 {
 					type1 = int32(MT_PAIN)
 				} else {
-					if r < int32(160) {
+					if r < 160 {
 						type1 = int32(MT_HEAD)
 					} else {
-						if r < int32(162) {
+						if r < 162 {
 							type1 = int32(MT_VILE)
 						} else {
-							if r < int32(172) {
+							if r < 172 {
 								type1 = int32(MT_UNDEAD)
 							} else {
-								if r < int32(192) {
+								if r < 192 {
 									type1 = int32(MT_BABY)
 								} else {
-									if r < int32(222) {
+									if r < 222 {
 										type1 = int32(MT_FATSO)
 									} else {
-										if r < int32(246) {
+										if r < 246 {
 											type1 = int32(MT_KNIGHT)
 										} else {
 											type1 = int32(MT_BRUISER)
@@ -24832,7 +24832,7 @@ func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, cru
 					return int32(crushed)
 				}
 			}
-		case int32(1):
+		case 1:
 			// UP
 			if (*sector_t)(unsafe.Pointer(sector)).Ffloorheight+speed > dest {
 				lastpos = (*sector_t)(unsafe.Pointer(sector)).Ffloorheight
@@ -24860,7 +24860,7 @@ func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, cru
 			}
 			break
 		}
-	case int32(1):
+	case 1:
 		// CEILING
 		switch direction {
 		case -1:
@@ -24889,7 +24889,7 @@ func T_MovePlane(tls *libc.TLS, sector uintptr, speed fixed_t, dest fixed_t, cru
 					return int32(crushed)
 				}
 			}
-		case int32(1):
+		case 1:
 			// UP
 			if (*sector_t)(unsafe.Pointer(sector)).Fceilingheight+speed > dest {
 				lastpos = (*sector_t)(unsafe.Pointer(sector)).Fceilingheight
@@ -24927,7 +24927,7 @@ func T_MoveFloor(tls *libc.TLS, floor *floormove_t) {
 	}
 	if res == int32(pastdest) {
 		(*sector_t)(unsafe.Pointer(floor.Fsector)).Fspecialdata = libc.UintptrFromInt32(0)
-		if floor.Fdirection == int32(1) {
+		if floor.Fdirection == 1 {
 			switch floor.Ftype1 {
 			case int32(donutRaise):
 				(*sector_t)(unsafe.Pointer(floor.Fsector)).Fspecial = int16(floor.Fnewspecial)
@@ -24975,8 +24975,8 @@ func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 			continue
 		}
 		// new floor thinker
-		rtn = int32(1)
-		floor = Z_Malloc(tls, int32(64), int32(PU_LEVSPEC), uintptr(0))
+		rtn = 1
+		floor = Z_Malloc(tls, 64, int32(PU_LEVSPEC), uintptr(0))
 		P_AddThinker(tls, floor)
 		(*sector_t)(unsafe.Pointer(sec)).Fspecialdata = floor
 		*(*actionf_p1)(unsafe.Pointer(floor + 16)) = __ccgo_fp(T_MoveFloor)
@@ -25005,7 +25005,7 @@ func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 			(*floormove_t)(unsafe.Pointer(floor)).Fcrush = 1
 			fallthrough
 		case int32(raiseFloor):
-			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
+			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = 1
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
 			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = 1 << FRACBITS
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = P_FindLowestCeilingSurrounding(tls, sec)
@@ -25014,27 +25014,27 @@ func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 			}
 			*(*fixed_t)(unsafe.Pointer(floor + 52)) -= 8 * (1 << FRACBITS) * libc.BoolInt32(floortype == int32(raiseFloorCrush))
 		case int32(raiseFloorTurbo):
-			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
+			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = 1
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
 			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = 1 << FRACBITS * 4
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = P_FindNextHighestFloor(tls, sec, (*sector_t)(unsafe.Pointer(sec)).Ffloorheight)
 		case int32(raiseFloorToNearest):
-			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
+			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = 1
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
 			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = 1 << FRACBITS
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = P_FindNextHighestFloor(tls, sec, (*sector_t)(unsafe.Pointer(sec)).Ffloorheight)
 		case int32(raiseFloor24):
-			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
+			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = 1
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
 			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = 1 << FRACBITS
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + 24*(1<<FRACBITS)
 		case int32(raiseFloor512):
-			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
+			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = 1
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
 			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = 1 << FRACBITS
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + 512*(1<<FRACBITS)
 		case int32(raiseFloor24AndChange):
-			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
+			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = 1
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
 			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = 1 << FRACBITS
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + 24*(1<<FRACBITS)
@@ -25042,7 +25042,7 @@ func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 			(*sector_t)(unsafe.Pointer(sec)).Fspecial = (*sector_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(line)).Ffrontsector)).Fspecial
 		case int32(raiseToTexture):
 			minsize = int32(INT_MAX9)
-			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
+			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = 1
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
 			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = 1 << FRACBITS
 			i = 0
@@ -25057,7 +25057,7 @@ func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 							minsize = *(*fixed_t)(unsafe.Pointer(textureheight + uintptr((*side_t)(unsafe.Pointer(side)).Fbottomtexture)*4))
 						}
 					}
-					side = getSide(tls, secnum, i, int32(1))
+					side = getSide(tls, secnum, i, 1)
 					if int32((*side_t)(unsafe.Pointer(side)).Fbottomtexture) >= 0 {
 						if *(*fixed_t)(unsafe.Pointer(textureheight + uintptr((*side_t)(unsafe.Pointer(side)).Fbottomtexture)*4)) < minsize {
 							minsize = *(*fixed_t)(unsafe.Pointer(textureheight + uintptr((*side_t)(unsafe.Pointer(side)).Fbottomtexture)*4))
@@ -25083,7 +25083,7 @@ func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 				}
 				if twoSided(tls, secnum, i) != 0 {
 					if (int64((*side_t)(unsafe.Pointer(getSide(tls, secnum, i, 0))).Fsector)-int64(sectors))/128 == int64(secnum) {
-						sec = getSector(tls, secnum, i, int32(1))
+						sec = getSector(tls, secnum, i, 1)
 						if (*sector_t)(unsafe.Pointer(sec)).Ffloorheight == (*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight {
 							(*floormove_t)(unsafe.Pointer(floor)).Ftexture = (*sector_t)(unsafe.Pointer(sec)).Ffloorpic
 							(*floormove_t)(unsafe.Pointer(floor)).Fnewspecial = int32((*sector_t)(unsafe.Pointer(sec)).Fspecial)
@@ -25136,12 +25136,12 @@ func EV_BuildStairs(tls *libc.TLS, line uintptr, type1 stair_e) (r int32) {
 			continue
 		}
 		// new floor thinker
-		rtn = int32(1)
-		floor = Z_Malloc(tls, int32(64), int32(PU_LEVSPEC), uintptr(0))
+		rtn = 1
+		floor = Z_Malloc(tls, 64, int32(PU_LEVSPEC), uintptr(0))
 		P_AddThinker(tls, floor)
 		(*sector_t)(unsafe.Pointer(sec)).Fspecialdata = floor
 		*(*actionf_p1)(unsafe.Pointer(floor + 16)) = __ccgo_fp(T_MoveFloor)
-		(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
+		(*floormove_t)(unsafe.Pointer(floor)).Fdirection = 1
 		(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
 		switch type1 {
 		case int32(build8):
@@ -25185,15 +25185,15 @@ func EV_BuildStairs(tls *libc.TLS, line uintptr, type1 stair_e) (r int32) {
 				}
 				sec = tsec
 				secnum = newsecnum
-				floor = Z_Malloc(tls, int32(64), int32(PU_LEVSPEC), uintptr(0))
+				floor = Z_Malloc(tls, 64, int32(PU_LEVSPEC), uintptr(0))
 				P_AddThinker(tls, floor)
 				(*sector_t)(unsafe.Pointer(sec)).Fspecialdata = floor
 				*(*actionf_p1)(unsafe.Pointer(floor + 16)) = __ccgo_fp(T_MoveFloor)
-				(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
+				(*floormove_t)(unsafe.Pointer(floor)).Fdirection = 1
 				(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
 				(*floormove_t)(unsafe.Pointer(floor)).Fspeed = speed
 				(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = height
-				ok = int32(1)
+				ok = 1
 				break
 				goto _2
 			_2:
@@ -25210,19 +25210,19 @@ const BONUSADD = 6
 
 func init() {
 	maxammo = [4]int32{
-		0: int32(200),
-		1: int32(50),
-		2: int32(300),
-		3: int32(50),
+		0: 200,
+		1: 50,
+		2: 300,
+		3: 50,
 	}
 }
 
 func init() {
 	clipammo = [4]int32{
-		0: int32(10),
-		1: int32(4),
-		2: int32(20),
-		3: int32(1),
+		0: 10,
+		1: 4,
+		2: 20,
+		3: 1,
 	}
 }
 
@@ -25251,12 +25251,12 @@ func P_GiveAmmo(tls *libc.TLS, player uintptr, ammo ammotype_t, num int32) (r bo
 	if num != 0 {
 		num *= clipammo[ammo]
 	} else {
-		num = clipammo[ammo] / int32(2)
+		num = clipammo[ammo] / 2
 	}
 	if gameskill == int32(sk_baby) || gameskill == int32(sk_nightmare) {
 		// give double ammo in trainer mode,
 		// you'll need in nightmare
-		num <<= int32(1)
+		num <<= 1
 	}
 	oldammo = *(*int32)(unsafe.Pointer(player + 168 + uintptr(ammo)*4))
 	*(*int32)(unsafe.Pointer(player + 168 + uintptr(ammo)*4)) += num
@@ -25314,7 +25314,7 @@ func P_GiveAmmo(tls *libc.TLS, player uintptr, ammo ammotype_t, num int32) (r bo
 //	//
 func P_GiveWeapon(tls *libc.TLS, player uintptr, weapon weapontype_t, dropped boolean) (r boolean) {
 	var gaveammo, gaveweapon boolean
-	if netgame != 0 && deathmatch != int32(2) && !(dropped != 0) {
+	if netgame != 0 && deathmatch != 2 && !(dropped != 0) {
 		// leave placed weapons forever on net games
 		if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(weapon)*4)) != 0 {
 			return 0
@@ -25322,9 +25322,9 @@ func P_GiveWeapon(tls *libc.TLS, player uintptr, weapon weapontype_t, dropped bo
 		*(*int32)(unsafe.Pointer(player + 244)) += int32(BONUSADD)
 		*(*boolean)(unsafe.Pointer(player + 132 + uintptr(weapon)*4)) = 1
 		if deathmatch != 0 {
-			P_GiveAmmo(tls, player, weaponinfo[weapon].Fammo, int32(5))
+			P_GiveAmmo(tls, player, weaponinfo[weapon].Fammo, 5)
 		} else {
-			P_GiveAmmo(tls, player, weaponinfo[weapon].Fammo, int32(2))
+			P_GiveAmmo(tls, player, weaponinfo[weapon].Fammo, 2)
 		}
 		(*player_t)(unsafe.Pointer(player)).Fpendingweapon = weapon
 		if player == uintptr(unsafe.Pointer(&players))+uintptr(consoleplayer)*328 {
@@ -25336,9 +25336,9 @@ func P_GiveWeapon(tls *libc.TLS, player uintptr, weapon weapontype_t, dropped bo
 		// give one clip with a dropped weapon,
 		// two clips with a found weapon
 		if dropped != 0 {
-			gaveammo = P_GiveAmmo(tls, player, weaponinfo[weapon].Fammo, int32(1))
+			gaveammo = P_GiveAmmo(tls, player, weaponinfo[weapon].Fammo, 1)
 		} else {
-			gaveammo = P_GiveAmmo(tls, player, weaponinfo[weapon].Fammo, int32(2))
+			gaveammo = P_GiveAmmo(tls, player, weaponinfo[weapon].Fammo, 2)
 		}
 	} else {
 		gaveammo = 0
@@ -25380,7 +25380,7 @@ func P_GiveBody(player uintptr, num int32) (r boolean) {
 //	//
 func P_GiveArmor(tls *libc.TLS, player uintptr, armortype int32) (r boolean) {
 	var hits int32
-	hits = armortype * int32(100)
+	hits = armortype * 100
 	if (*player_t)(unsafe.Pointer(player)).Farmorpoints >= hits {
 		return 0
 	} // don't pick up
@@ -25426,14 +25426,14 @@ func P_GivePower(player uintptr, power int32) (r boolean) {
 		return 1
 	}
 	if power == int32(pw_strength) {
-		P_GiveBody(player, int32(100))
-		*(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) = int32(1)
+		P_GiveBody(player, 100)
+		*(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) = 1
 		return 1
 	}
 	if *(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) != 0 {
 		return 0
 	} // already got it
-	*(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) = int32(1)
+	*(*int32)(unsafe.Pointer(player + 56 + uintptr(power)*4)) = 1
 	return 1
 }
 
@@ -25489,7 +25489,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		// deh_green_armor_class only applies to the green armor shirt;
 		// for the armor helmets, armortype 1 is always used.
 		if !((*player_t)(unsafe.Pointer(player)).Farmortype != 0) {
-			(*player_t)(unsafe.Pointer(player)).Farmortype = int32(1)
+			(*player_t)(unsafe.Pointer(player)).Farmortype = 1
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23809)
 	case int32(SPR_SOUL):
@@ -25508,7 +25508,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fhealth = (*player_t)(unsafe.Pointer(player)).Fhealth
 		// We always give armor type 2 for the megasphere; dehacked only
 		// affects the MegaArmor.
-		P_GiveArmor(tls, player, int32(2))
+		P_GiveArmor(tls, player, 2)
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23848)
 		sound = int32(sfx_getpow)
 		break
@@ -25572,15 +25572,15 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		// medikits, heals
 		fallthrough
 	case int32(SPR_STIM):
-		if !(P_GiveBody(player, int32(10)) != 0) {
+		if !(P_GiveBody(player, 10) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24024)
 	case int32(SPR_MEDI):
-		if !(P_GiveBody(player, int32(25)) != 0) {
+		if !(P_GiveBody(player, 25) != 0) {
 			return
 		}
-		if (*player_t)(unsafe.Pointer(player)).Fhealth < int32(25) {
+		if (*player_t)(unsafe.Pointer(player)).Fhealth < 25 {
 			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24046)
 		} else {
 			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24088)
@@ -25636,43 +25636,43 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 				return
 			}
 		} else {
-			if !(P_GiveAmmo(tls, player, int32(am_clip), int32(1)) != 0) {
+			if !(P_GiveAmmo(tls, player, int32(am_clip), 1) != 0) {
 				return
 			}
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24225)
 	case int32(SPR_AMMO):
-		if !(P_GiveAmmo(tls, player, int32(am_clip), int32(5)) != 0) {
+		if !(P_GiveAmmo(tls, player, int32(am_clip), 5) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24243)
 	case int32(SPR_ROCK):
-		if !(P_GiveAmmo(tls, player, int32(am_misl), int32(1)) != 0) {
+		if !(P_GiveAmmo(tls, player, int32(am_misl), 1) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24271)
 	case int32(SPR_BROK):
-		if !(P_GiveAmmo(tls, player, int32(am_misl), int32(5)) != 0) {
+		if !(P_GiveAmmo(tls, player, int32(am_misl), 5) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24291)
 	case int32(SPR_CELL):
-		if !(P_GiveAmmo(tls, player, int32(am_cell), int32(1)) != 0) {
+		if !(P_GiveAmmo(tls, player, int32(am_cell), 1) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24319)
 	case int32(SPR_CELP):
-		if !(P_GiveAmmo(tls, player, int32(am_cell), int32(5)) != 0) {
+		if !(P_GiveAmmo(tls, player, int32(am_cell), 5) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24345)
 	case int32(SPR_SHEL):
-		if !(P_GiveAmmo(tls, player, int32(am_shell), int32(1)) != 0) {
+		if !(P_GiveAmmo(tls, player, int32(am_shell), 1) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24376)
 	case int32(SPR_SBOX):
-		if !(P_GiveAmmo(tls, player, int32(am_shell), int32(5)) != 0) {
+		if !(P_GiveAmmo(tls, player, int32(am_shell), 5) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24404)
@@ -25683,7 +25683,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 				if !(i < int32(NUMAMMO)) {
 					break
 				}
-				*(*int32)(unsafe.Pointer(player + 184 + uintptr(i)*4)) *= int32(2)
+				*(*int32)(unsafe.Pointer(player + 184 + uintptr(i)*4)) *= 2
 				goto _1
 			_1:
 				;
@@ -25696,7 +25696,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 			if !(i < int32(NUMAMMO)) {
 				break
 			}
-			P_GiveAmmo(tls, player, i, int32(1))
+			P_GiveAmmo(tls, player, i, 1)
 			goto _2
 		_2:
 			;
@@ -25774,7 +25774,7 @@ func P_KillMobj(tls *libc.TLS, source uintptr, target uintptr) {
 		*(*int32)(unsafe.Pointer(target + 160)) &= ^int32(MF_NOGRAVITY)
 	}
 	*(*int32)(unsafe.Pointer(target + 160)) |= int32(MF_CORPSE) | int32(MF_DROPOFF)
-	*(*fixed_t)(unsafe.Pointer(target + 108)) >>= int32(2)
+	*(*fixed_t)(unsafe.Pointer(target + 108)) >>= 2
 	if source != 0 && (*mobj_t)(unsafe.Pointer(source)).Fplayer != 0 {
 		// count for intermission
 		if (*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_COUNTKILL) != 0 {
@@ -25809,9 +25809,9 @@ func P_KillMobj(tls *libc.TLS, source uintptr, target uintptr) {
 	} else {
 		P_SetMobjState(tls, target, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fdeathstate)
 	}
-	*(*int32)(unsafe.Pointer(target + 144)) -= P_Random() & int32(3)
-	if (*mobj_t)(unsafe.Pointer(target)).Ftics < int32(1) {
-		(*mobj_t)(unsafe.Pointer(target)).Ftics = int32(1)
+	*(*int32)(unsafe.Pointer(target + 144)) -= P_Random() & 3
+	if (*mobj_t)(unsafe.Pointer(target)).Ftics < 1 {
+		(*mobj_t)(unsafe.Pointer(target)).Ftics = 1
 	}
 	//	I_StartSound (&actor->r, actor->info->deathsound);
 	// In Chex Quest, monsters don't drop items.
@@ -25870,18 +25870,18 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 	}
 	player = (*mobj_t)(unsafe.Pointer(target)).Fplayer
 	if player != 0 && gameskill == int32(sk_baby) {
-		damage >>= int32(1)
+		damage >>= 1
 	} // take half damage in trainer mode
 	// Some close combat weapons should not
 	// inflict thrust and push the victim out of reach,
 	// thus kick away unless using the chainsaw.
 	if inflictor != 0 && !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_NOCLIP) != 0) && (!(source != 0) || !((*mobj_t)(unsafe.Pointer(source)).Fplayer != 0) || (*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer)).Freadyweapon != int32(wp_chainsaw)) {
 		ang = R_PointToAngle2((*mobj_t)(unsafe.Pointer(inflictor)).Fx, (*mobj_t)(unsafe.Pointer(inflictor)).Fy, (*mobj_t)(unsafe.Pointer(target)).Fx, (*mobj_t)(unsafe.Pointer(target)).Fy)
-		thrust = damage * (1 << FRACBITS >> 3) * int32(100) / ((*mobj_t)(unsafe.Pointer(target)).Finfo).Fmass
+		thrust = damage * (1 << FRACBITS >> 3) * 100 / ((*mobj_t)(unsafe.Pointer(target)).Finfo).Fmass
 		// make fall forwards sometimes
-		if damage < int32(40) && damage > (*mobj_t)(unsafe.Pointer(target)).Fhealth && (*mobj_t)(unsafe.Pointer(target)).Fz-(*mobj_t)(unsafe.Pointer(inflictor)).Fz > 64*(1<<FRACBITS) && P_Random()&int32(1) != 0 {
+		if damage < 40 && damage > (*mobj_t)(unsafe.Pointer(target)).Fhealth && (*mobj_t)(unsafe.Pointer(target)).Fz-(*mobj_t)(unsafe.Pointer(inflictor)).Fz > 64*(1<<FRACBITS) && P_Random()&int32(1) != 0 {
 			ang += uint32(ANG1803)
-			thrust *= int32(4)
+			thrust *= 4
 		}
 		ang >>= uint32(ANGLETOFINESHIFT)
 		*(*fixed_t)(unsafe.Pointer(target + 112)) += FixedMul(thrust, finecosine[ang])
@@ -25890,19 +25890,19 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 	// player specific
 	if player != 0 {
 		// end of game hell hack
-		if int32((*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Fsubsector)).Fsector)).Fspecial) == int32(11) && damage >= (*mobj_t)(unsafe.Pointer(target)).Fhealth {
-			damage = (*mobj_t)(unsafe.Pointer(target)).Fhealth - int32(1)
+		if int32((*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Fsubsector)).Fsector)).Fspecial) == 11 && damage >= (*mobj_t)(unsafe.Pointer(target)).Fhealth {
+			damage = (*mobj_t)(unsafe.Pointer(target)).Fhealth - 1
 		}
 		// Below certain threshold,
 		// ignore damage in GOD mode, or with INVUL power.
-		if damage < int32(1000) && ((*player_t)(unsafe.Pointer(player)).Fcheats&int32(CF_GODMODE) != 0 || *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_invulnerability)*4)) != 0) {
+		if damage < 1000 && ((*player_t)(unsafe.Pointer(player)).Fcheats&int32(CF_GODMODE) != 0 || *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_invulnerability)*4)) != 0) {
 			return
 		}
 		if (*player_t)(unsafe.Pointer(player)).Farmortype != 0 {
-			if (*player_t)(unsafe.Pointer(player)).Farmortype == int32(1) {
-				saved = damage / int32(3)
+			if (*player_t)(unsafe.Pointer(player)).Farmortype == 1 {
+				saved = damage / 3
 			} else {
-				saved = damage / int32(2)
+				saved = damage / 2
 			}
 			if (*player_t)(unsafe.Pointer(player)).Farmorpoints <= saved {
 				// armor is used up
@@ -25918,17 +25918,17 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 		}
 		(*player_t)(unsafe.Pointer(player)).Fattacker = source
 		*(*int32)(unsafe.Pointer(player + 240)) += damage // add damage after armor / invuln
-		if (*player_t)(unsafe.Pointer(player)).Fdamagecount > int32(100) {
-			(*player_t)(unsafe.Pointer(player)).Fdamagecount = int32(100)
+		if (*player_t)(unsafe.Pointer(player)).Fdamagecount > 100 {
+			(*player_t)(unsafe.Pointer(player)).Fdamagecount = 100
 		} // teleport stomp does 10k points...
-		if damage < int32(100) {
+		if damage < 100 {
 			v3 = damage
 		} else {
-			v3 = int32(100)
+			v3 = 100
 		}
 		temp = v3
 		if player == uintptr(unsafe.Pointer(&players))+uintptr(consoleplayer)*328 {
-			I_Tactile(tls, int32(40), int32(10), int32(40)+temp*int32(2))
+			I_Tactile(tls, 40, 10, 40+temp*int32(2))
 		}
 	}
 	// do the damage
@@ -25987,13 +25987,13 @@ func T_FireFlicker(tls *libc.TLS, flick *fireflicker_t) {
 	if flick.Fcount != 0 {
 		return
 	}
-	amount = P_Random() & int32(3) * int32(16)
+	amount = P_Random() & 3 * 16
 	if int32((*sector_t)(unsafe.Pointer(flick.Fsector)).Flightlevel)-amount < flick.Fminlight {
 		(*sector_t)(unsafe.Pointer(flick.Fsector)).Flightlevel = int16(flick.Fminlight)
 	} else {
 		(*sector_t)(unsafe.Pointer(flick.Fsector)).Flightlevel = int16(flick.Fmaxlight - amount)
 	}
-	flick.Fcount = int32(4)
+	flick.Fcount = 4
 }
 
 // C documentation
@@ -26005,14 +26005,14 @@ func P_SpawnFireFlicker(tls *libc.TLS, sector uintptr) {
 	// Note that we are resetting sector attributes.
 	// Nothing special about it during gameplay.
 	(*sector_t)(unsafe.Pointer(sector)).Fspecial = 0
-	mem := Z_Malloc(tls, int32(48), int32(PU_LEVSPEC), uintptr(0))
+	mem := Z_Malloc(tls, 48, int32(PU_LEVSPEC), uintptr(0))
 	flick := (*fireflicker_t)(unsafe.Pointer(mem))
 	P_AddThinker(tls, uintptr(unsafe.Pointer(&flick.Fthinker)))
 	flick.Fthinker.Ffunction.Facv = __ccgo_fp(T_FireFlicker)
 	flick.Fsector = sector
 	flick.Fmaxlight = int32((*sector_t)(unsafe.Pointer(sector)).Flightlevel)
-	flick.Fminlight = P_FindMinSurroundingLight(tls, sector, int32((*sector_t)(unsafe.Pointer(sector)).Flightlevel)) + int32(16)
-	flick.Fcount = int32(4)
+	flick.Fminlight = P_FindMinSurroundingLight(tls, sector, int32((*sector_t)(unsafe.Pointer(sector)).Flightlevel)) + 16
+	flick.Fcount = 4
 }
 
 //
@@ -26036,10 +26036,10 @@ func T_LightFlash(tls *libc.TLS, flash uintptr) {
 	}
 	if int32((*sector_t)(unsafe.Pointer((*lightflash_t)(unsafe.Pointer(flash)).Fsector)).Flightlevel) == (*lightflash_t)(unsafe.Pointer(flash)).Fmaxlight {
 		(*sector_t)(unsafe.Pointer((*lightflash_t)(unsafe.Pointer(flash)).Fsector)).Flightlevel = int16((*lightflash_t)(unsafe.Pointer(flash)).Fminlight)
-		(*lightflash_t)(unsafe.Pointer(flash)).Fcount = P_Random()&(*lightflash_t)(unsafe.Pointer(flash)).Fmintime + int32(1)
+		(*lightflash_t)(unsafe.Pointer(flash)).Fcount = P_Random()&(*lightflash_t)(unsafe.Pointer(flash)).Fmintime + 1
 	} else {
 		(*sector_t)(unsafe.Pointer((*lightflash_t)(unsafe.Pointer(flash)).Fsector)).Flightlevel = int16((*lightflash_t)(unsafe.Pointer(flash)).Fmaxlight)
-		(*lightflash_t)(unsafe.Pointer(flash)).Fcount = P_Random()&(*lightflash_t)(unsafe.Pointer(flash)).Fmaxtime + int32(1)
+		(*lightflash_t)(unsafe.Pointer(flash)).Fcount = P_Random()&(*lightflash_t)(unsafe.Pointer(flash)).Fmaxtime + 1
 	}
 }
 
@@ -26054,15 +26054,15 @@ func P_SpawnLightFlash(tls *libc.TLS, sector uintptr) {
 	var flash uintptr
 	// nothing special about it during gameplay
 	(*sector_t)(unsafe.Pointer(sector)).Fspecial = 0
-	flash = Z_Malloc(tls, int32(56), int32(PU_LEVSPEC), uintptr(0))
+	flash = Z_Malloc(tls, 56, int32(PU_LEVSPEC), uintptr(0))
 	P_AddThinker(tls, flash)
 	*(*actionf_p1)(unsafe.Pointer(flash + 16)) = __ccgo_fp(T_LightFlash)
 	(*lightflash_t)(unsafe.Pointer(flash)).Fsector = sector
 	(*lightflash_t)(unsafe.Pointer(flash)).Fmaxlight = int32((*sector_t)(unsafe.Pointer(sector)).Flightlevel)
 	(*lightflash_t)(unsafe.Pointer(flash)).Fminlight = P_FindMinSurroundingLight(tls, sector, int32((*sector_t)(unsafe.Pointer(sector)).Flightlevel))
-	(*lightflash_t)(unsafe.Pointer(flash)).Fmaxtime = int32(64)
-	(*lightflash_t)(unsafe.Pointer(flash)).Fmintime = int32(7)
-	(*lightflash_t)(unsafe.Pointer(flash)).Fcount = P_Random()&(*lightflash_t)(unsafe.Pointer(flash)).Fmaxtime + int32(1)
+	(*lightflash_t)(unsafe.Pointer(flash)).Fmaxtime = 64
+	(*lightflash_t)(unsafe.Pointer(flash)).Fmintime = 7
+	(*lightflash_t)(unsafe.Pointer(flash)).Fcount = P_Random()&(*lightflash_t)(unsafe.Pointer(flash)).Fmaxtime + 1
 }
 
 //
@@ -26101,7 +26101,7 @@ func T_StrobeFlash(tls *libc.TLS, flash uintptr) {
 //	//
 func P_SpawnStrobeFlash(tls *libc.TLS, sector uintptr, fastOrSlow int32, inSync int32) {
 	var flash uintptr
-	flash = Z_Malloc(tls, int32(56), int32(PU_LEVSPEC), uintptr(0))
+	flash = Z_Malloc(tls, 56, int32(PU_LEVSPEC), uintptr(0))
 	P_AddThinker(tls, flash)
 	(*strobe_t)(unsafe.Pointer(flash)).Fsector = sector
 	(*strobe_t)(unsafe.Pointer(flash)).Fdarktime = fastOrSlow
@@ -26115,9 +26115,9 @@ func P_SpawnStrobeFlash(tls *libc.TLS, sector uintptr, fastOrSlow int32, inSync 
 	// nothing special about it during gameplay
 	(*sector_t)(unsafe.Pointer(sector)).Fspecial = 0
 	if !(inSync != 0) {
-		(*strobe_t)(unsafe.Pointer(flash)).Fcount = P_Random()&int32(7) + int32(1)
+		(*strobe_t)(unsafe.Pointer(flash)).Fcount = P_Random()&int32(7) + 1
 	} else {
-		(*strobe_t)(unsafe.Pointer(flash)).Fcount = int32(1)
+		(*strobe_t)(unsafe.Pointer(flash)).Fcount = 1
 	}
 }
 
@@ -26250,9 +26250,9 @@ func T_Glow(tls *libc.TLS, g uintptr) {
 		if int32((*sector_t)(unsafe.Pointer((*glow_t)(unsafe.Pointer(g)).Fsector)).Flightlevel) <= (*glow_t)(unsafe.Pointer(g)).Fminlight {
 			p2 = (*glow_t)(unsafe.Pointer(g)).Fsector + 12
 			*(*int16)(unsafe.Pointer(p2)) = int16(int32(*(*int16)(unsafe.Pointer(p2))) + GLOWSPEED)
-			(*glow_t)(unsafe.Pointer(g)).Fdirection = int32(1)
+			(*glow_t)(unsafe.Pointer(g)).Fdirection = 1
 		}
-	case int32(1):
+	case 1:
 		// UP
 		p3 = (*glow_t)(unsafe.Pointer(g)).Fsector + 12
 		*(*int16)(unsafe.Pointer(p3)) = int16(int32(*(*int16)(unsafe.Pointer(p3))) + GLOWSPEED)
@@ -26267,7 +26267,7 @@ func T_Glow(tls *libc.TLS, g uintptr) {
 
 func P_SpawnGlowingLight(tls *libc.TLS, sector uintptr) {
 	var g uintptr
-	g = Z_Malloc(tls, int32(48), int32(PU_LEVSPEC), uintptr(0))
+	g = Z_Malloc(tls, 48, int32(PU_LEVSPEC), uintptr(0))
 	P_AddThinker(tls, g)
 	(*glow_t)(unsafe.Pointer(g)).Fsector = sector
 	(*glow_t)(unsafe.Pointer(g)).Fminlight = P_FindMinSurroundingLight(tls, sector, int32((*sector_t)(unsafe.Pointer(sector)).Flightlevel))
@@ -26304,10 +26304,10 @@ func PIT_StompThing(tls *libc.TLS, thing uintptr) (r boolean) {
 		return 1
 	}
 	// monsters don't stomp things except on boss level
-	if !((*mobj_t)(unsafe.Pointer(tmthing)).Fplayer != 0) && gamemap != int32(30) {
+	if !((*mobj_t)(unsafe.Pointer(tmthing)).Fplayer != 0) && gamemap != 30 {
 		return 0
 	}
-	P_DamageMobj(tls, thing, tmthing, tmthing, int32(10000))
+	P_DamageMobj(tls, thing, tmthing, tmthing, 10000)
 	return 1
 }
 
@@ -26461,7 +26461,7 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 	}
 	// check for skulls slamming into things
 	if (*mobj_t)(unsafe.Pointer(tmthing)).Fflags&int32(MF_SKULLFLY) != 0 {
-		damage = (P_Random()%int32(8) + int32(1)) * (*mobj_t)(unsafe.Pointer(tmthing)).Finfo.Fdamage
+		damage = (P_Random()%int32(8) + 1) * (*mobj_t)(unsafe.Pointer(tmthing)).Finfo.Fdamage
 		P_DamageMobj(tls, thing, tmthing, tmthing, damage)
 		*(*int32)(unsafe.Pointer(tmthing + 160)) &= ^int32(MF_SKULLFLY)
 		v2 = 0
@@ -26500,7 +26500,7 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 			return libc.BoolUint32(!((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SOLID) != 0))
 		}
 		// damage / explode
-		damage = (P_Random()%int32(8) + int32(1)) * (*mobj_t)(unsafe.Pointer(tmthing)).Finfo.Fdamage
+		damage = (P_Random()%int32(8) + 1) * (*mobj_t)(unsafe.Pointer(tmthing)).Finfo.Fdamage
 		P_DamageMobj(tls, thing, tmthing, (*mobj_t)(unsafe.Pointer(tmthing)).Ftarget, damage)
 		// don't traverse any more
 		return 0
@@ -26755,7 +26755,7 @@ func P_HitSlideLine(tls *libc.TLS, ld uintptr) {
 	}
 	side = P_PointOnLineSide((*mobj_t)(unsafe.Pointer(slidemo)).Fx, (*mobj_t)(unsafe.Pointer(slidemo)).Fy, ld)
 	lineangle = R_PointToAngle2(0, 0, (*line_t)(unsafe.Pointer(ld)).Fdx, (*line_t)(unsafe.Pointer(ld)).Fdy)
-	if side == int32(1) {
+	if side == 1 {
 		lineangle += uint32(ANG1805)
 	}
 	moveangle = R_PointToAngle2(0, 0, tmxmove, tmymove)
@@ -26836,7 +26836,7 @@ retry:
 	;
 	hitcount++
 	v1 = hitcount
-	if v1 == int32(3) {
+	if v1 == 3 {
 		goto stairstep
 	} // don't loop forever
 	// trace along the three leading corners
@@ -26964,7 +26964,7 @@ func PTR_AimTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 	if thingbottomslope < bottomslope {
 		thingbottomslope = bottomslope
 	}
-	aimslope = (thingtopslope + thingbottomslope) / int32(2)
+	aimslope = (thingtopslope + thingbottomslope) / 2
 	linetarget = th
 	return 0 // don't go any farther
 }
@@ -27135,8 +27135,8 @@ func PTR_UseTraverse(tls *libc.TLS, in uintptr) (r boolean) {
 		return 1
 	}
 	side = 0
-	if P_PointOnLineSide((*mobj_t)(unsafe.Pointer(usething)).Fx, (*mobj_t)(unsafe.Pointer(usething)).Fy, *(*uintptr)(unsafe.Pointer(in + 8))) == int32(1) {
-		side = int32(1)
+	if P_PointOnLineSide((*mobj_t)(unsafe.Pointer(usething)).Fx, (*mobj_t)(unsafe.Pointer(usething)).Fy, *(*uintptr)(unsafe.Pointer(in + 8))) == 1 {
+		side = 1
 	}
 	//	return false;		// don't use back side
 	P_UseSpecialLine(tls, usething, *(*uintptr)(unsafe.Pointer(in + 8)), side)
@@ -27274,11 +27274,11 @@ func PIT_ChangeSector(tls *libc.TLS, thing uintptr) (r boolean) {
 	}
 	nofit = 1
 	if crushchange != 0 && !(leveltime&3 != 0) {
-		P_DamageMobj(tls, thing, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), int32(10))
+		P_DamageMobj(tls, thing, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), 10)
 		// spray blood in a random direction
 		mo = P_SpawnMobj(tls, (*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy, (*mobj_t)(unsafe.Pointer(thing)).Fz+(*mobj_t)(unsafe.Pointer(thing)).Fheight/int32(2), int32(MT_BLOOD))
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = (P_Random() - P_Random()) << int32(12)
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = (P_Random() - P_Random()) << int32(12)
+		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = (P_Random() - P_Random()) << 12
+		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = (P_Random() - P_Random()) << 12
 	}
 	// keep checking (crush other things)
 	return 1
@@ -27335,7 +27335,7 @@ func SpechitOverrun(tls *libc.TLS, ld uintptr) {
 		//
 		// Use the specified magic value when emulating spechit overruns.
 		//
-		p = M_CheckParmWithArgs(__ccgo_ts(24727), int32(1))
+		p = M_CheckParmWithArgs(__ccgo_ts(24727), 1)
 		if p > 0 {
 			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uintptr(unsafe.Pointer(&baseaddr)))
 		} else {
@@ -27345,17 +27345,17 @@ func SpechitOverrun(tls *libc.TLS, ld uintptr) {
 	// Calculate address used in doom2.exe
 	addr = libc.Uint32FromInt64(libc.Int64FromUint32(baseaddr) + (int64(ld)-int64(lines))/88*int64(0x3E))
 	switch numspechit {
-	case int32(9):
+	case 9:
 		fallthrough
-	case int32(10):
+	case 10:
 		fallthrough
-	case int32(11):
+	case 11:
 		fallthrough
-	case int32(12):
+	case 12:
 		tmbbox[numspechit-int32(9)] = libc.Int32FromUint32(addr)
-	case int32(13):
+	case 13:
 		crushchange = addr
-	case int32(14):
+	case 14:
 		nofit = addr
 	default:
 		fprintf_ccgo(os.Stderr, 24736, numspechit)
@@ -27427,7 +27427,7 @@ func P_PointOnLineSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
 	if right < left {
 		return 0
 	} // front side
-	return int32(1) // back side
+	return 1 // back side
 }
 
 // C documentation
@@ -27446,15 +27446,15 @@ func P_BoxOnLineSide(tmbox uintptr, ld uintptr) (r int32) {
 		p1 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXTOP)*4)) > (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv1)).Fy)
 		p2 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXBOTTOM)*4)) > (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv1)).Fy)
 		if (*line_t)(unsafe.Pointer(ld)).Fdx < 0 {
-			p1 ^= int32(1)
-			p2 ^= int32(1)
+			p1 ^= 1
+			p2 ^= 1
 		}
 	case int32(ST_VERTICAL):
 		p1 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXRIGHT)*4)) < (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv1)).Fx)
 		p2 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXLEFT)*4)) < (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv1)).Fx)
 		if (*line_t)(unsafe.Pointer(ld)).Fdy < 0 {
-			p1 ^= int32(1)
-			p2 ^= int32(1)
+			p1 ^= 1
+			p2 ^= 1
 		}
 	case int32(ST_POSITIVE):
 		p1 = P_PointOnLineSide(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXLEFT)*4)), *(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXTOP)*4)), ld)
@@ -27495,7 +27495,7 @@ func P_PointOnDivlineSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
 	// try to quickly decide by looking at sign bits
 	if libc.Uint32FromInt32((*divline_t)(unsafe.Pointer(line)).Fdy^(*divline_t)(unsafe.Pointer(line)).Fdx^dx^dy)&uint32(0x80000000) != 0 {
 		if libc.Uint32FromInt32((*divline_t)(unsafe.Pointer(line)).Fdy^dx)&uint32(0x80000000) != 0 {
-			return int32(1)
+			return 1
 		} // (left is negative)
 		return 0
 	}
@@ -27504,7 +27504,7 @@ func P_PointOnDivlineSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
 	if right < left {
 		return 0
 	} // front side
-	return int32(1) // back side
+	return 1 // back side
 }
 
 // C documentation
@@ -27883,80 +27883,80 @@ type intercepts_overrun_t struct {
 
 var intercepts_overrun = [23]intercepts_overrun_t{
 	0: {
-		Flen1: int32(4),
+		Flen1: 4,
 	},
 	1: {
-		Flen1: int32(4),
+		Flen1: 4,
 	},
 	2: {
-		Flen1: int32(4),
+		Flen1: 4,
 	},
 	3: {
-		Flen1: int32(4),
+		Flen1: 4,
 		Faddr: uintptr(unsafe.Pointer(&lowfloor)),
 	},
 	4: {
-		Flen1: int32(4),
+		Flen1: 4,
 		Faddr: uintptr(unsafe.Pointer(&openbottom)),
 	},
 	5: {
-		Flen1: int32(4),
+		Flen1: 4,
 		Faddr: uintptr(unsafe.Pointer(&opentop)),
 	},
 	6: {
-		Flen1: int32(4),
+		Flen1: 4,
 		Faddr: uintptr(unsafe.Pointer(&openrange)),
 	},
 	7: {
-		Flen1: int32(4),
+		Flen1: 4,
 	},
 	8: {
-		Flen1: int32(120),
+		Flen1: 120,
 	},
 	9: {
-		Flen1: int32(8),
+		Flen1: 8,
 	},
 	10: {
-		Flen1: int32(4),
+		Flen1: 4,
 		Faddr: uintptr(unsafe.Pointer(&bulletslope)),
 	},
 	11: {
-		Flen1: int32(4),
+		Flen1: 4,
 	},
 	12: {
-		Flen1: int32(4),
+		Flen1: 4,
 	},
 	13: {
-		Flen1: int32(4),
+		Flen1: 4,
 	},
 	14: {
-		Flen1:        int32(40),
+		Flen1:        40,
 		Faddr:        uintptr(unsafe.Pointer(&playerstarts)),
 		Fint16_array: 1,
 	},
 	15: {
-		Flen1: int32(4),
+		Flen1: 4,
 	},
 	16: {
-		Flen1: int32(4),
+		Flen1: 4,
 		Faddr: uintptr(unsafe.Pointer(&bmapwidth)),
 	},
 	17: {
-		Flen1: int32(4),
+		Flen1: 4,
 	},
 	18: {
-		Flen1: int32(4),
+		Flen1: 4,
 		Faddr: uintptr(unsafe.Pointer(&bmaporgx)),
 	},
 	19: {
-		Flen1: int32(4),
+		Flen1: 4,
 		Faddr: uintptr(unsafe.Pointer(&bmaporgy)),
 	},
 	20: {
-		Flen1: int32(4),
+		Flen1: 4,
 	},
 	21: {
-		Flen1: int32(4),
+		Flen1: 4,
 		Faddr: uintptr(unsafe.Pointer(&bmapheight)),
 	},
 	22: {},
@@ -27977,11 +27977,11 @@ func InterceptsMemoryOverrun(tls *libc.TLS, location int32, value int32) {
 			// 16-bit and 32-bit values are written differently.
 			if addr != libc.UintptrFromInt32(0) {
 				if intercepts_overrun[i].Fint16_array != 0 {
-					index = (location - offset) / int32(2)
+					index = (location - offset) / 2
 					*(*int16)(unsafe.Pointer(addr + uintptr(index)*2)) = int16(value & int32(0xffff))
-					*(*int16)(unsafe.Pointer(addr + uintptr(index+int32(1))*2)) = int16(value >> int32(16) & int32(0xffff))
+					*(*int16)(unsafe.Pointer(addr + uintptr(index+int32(1))*2)) = int16(value >> 16 & int32(0xffff))
 				} else {
-					index = (location - offset) / int32(4)
+					index = (location - offset) / 4
 					*(*int32)(unsafe.Pointer(addr + uintptr(index)*4)) = value
 				}
 			}
@@ -28000,7 +28000,7 @@ func InterceptsOverrun(tls *libc.TLS, num_intercepts int32, intercept uintptr) {
 		// No overrun
 		return
 	}
-	location = (num_intercepts - int32(MAXINTERCEPTS_ORIGINAL) - int32(1)) * int32(12)
+	location = (num_intercepts - int32(MAXINTERCEPTS_ORIGINAL) - 1) * 12
 	// Overwrite memory that is overwritten in Vanilla Doom, using
 	// the values from the intercept structure.
 	//
@@ -28046,7 +28046,7 @@ func P_PathTraverse(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_
 	xt2 = x2 >> (FRACBITS + 7)
 	yt2 = y2 >> (FRACBITS + 7)
 	if xt2 > xt1 {
-		mapxstep = int32(1)
+		mapxstep = 1
 		partial = 1<<FRACBITS - x1>>(FRACBITS+7-FRACBITS)&(1<<FRACBITS-1)
 		ystep = FixedDiv(y2-y1, xabs(x2-x1))
 	} else {
@@ -28062,7 +28062,7 @@ func P_PathTraverse(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_
 	}
 	yintercept = y1>>(FRACBITS+7-FRACBITS) + FixedMul(partial, ystep)
 	if yt2 > yt1 {
-		mapystep = int32(1)
+		mapystep = 1
 		partial = 1<<FRACBITS - y1>>(FRACBITS+7-FRACBITS)&(1<<FRACBITS-1)
 		xstep = FixedDiv(x2-x1, xabs(y2-y1))
 	} else {
@@ -28084,7 +28084,7 @@ func P_PathTraverse(tls *libc.TLS, x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_
 	mapy = yt1
 	count = 0
 	for {
-		if !(count < int32(64)) {
+		if !(count < 64) {
 			break
 		}
 		if flags&int32(PT_ADDLINES) != 0 {
@@ -28158,9 +28158,9 @@ func P_ExplodeMissile(tls *libc.TLS, mo uintptr) {
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = v1
 	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = v1
 	P_SetMobjState(tls, mo, mobjinfo[(*mobj_t)(unsafe.Pointer(mo)).Ftype1].Fdeathstate)
-	*(*int32)(unsafe.Pointer(mo + 144)) -= P_Random() & int32(3)
-	if (*mobj_t)(unsafe.Pointer(mo)).Ftics < int32(1) {
-		(*mobj_t)(unsafe.Pointer(mo)).Ftics = int32(1)
+	*(*int32)(unsafe.Pointer(mo + 144)) -= P_Random() & 3
+	if (*mobj_t)(unsafe.Pointer(mo)).Ftics < 1 {
+		(*mobj_t)(unsafe.Pointer(mo)).Ftics = 1
 	}
 	*(*int32)(unsafe.Pointer(mo + 160)) &= ^int32(MF_MISSILE)
 	if (*mobj_t)(unsafe.Pointer(mo)).Finfo.Fdeathsound != 0 {
@@ -28209,8 +28209,8 @@ func P_XYMovement(tls *libc.TLS, mo uintptr) {
 		if xmove > 30*(1<<FRACBITS)/2 || ymove > 30*(1<<FRACBITS)/2 {
 			ptryx = (*mobj_t)(unsafe.Pointer(mo)).Fx + xmove/int32(2)
 			ptryy = (*mobj_t)(unsafe.Pointer(mo)).Fy + ymove/int32(2)
-			xmove >>= int32(1)
-			ymove >>= int32(1)
+			xmove >>= 1
+			ymove >>= 1
 		} else {
 			ptryx = (*mobj_t)(unsafe.Pointer(mo)).Fx + xmove
 			ptryy = (*mobj_t)(unsafe.Pointer(mo)).Fy + ymove
@@ -28289,7 +28289,7 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 	// check for smooth step up
 	if (*mobj_t)(unsafe.Pointer(mo)).Fplayer != 0 && (*mobj_t)(unsafe.Pointer(mo)).Fz < (*mobj_t)(unsafe.Pointer(mo)).Ffloorz {
 		*(*fixed_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer + 32)) -= (*mobj_t)(unsafe.Pointer(mo)).Ffloorz - (*mobj_t)(unsafe.Pointer(mo)).Fz
-		(*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fdeltaviewheight = (41*(1<<FRACBITS) - (*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fviewheight) >> int32(3)
+		(*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fdeltaviewheight = (41*(1<<FRACBITS) - (*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fviewheight) >> 3
 	}
 	// adjust height
 	*(*fixed_t)(unsafe.Pointer(mo + 32)) += (*mobj_t)(unsafe.Pointer(mo)).Fmomz
@@ -28343,7 +28343,7 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 				// Decrease viewheight for a moment
 				// after hitting the ground (hard),
 				// and utter appropriate sound.
-				(*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fdeltaviewheight = (*mobj_t)(unsafe.Pointer(mo)).Fmomz >> int32(3)
+				(*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Fplayer)).Fdeltaviewheight = (*mobj_t)(unsafe.Pointer(mo)).Fmomz >> 3
 				S_StartSound(tls, mo, int32(sfx_oof))
 			}
 			(*mobj_t)(unsafe.Pointer(mo)).Fmomz = 0
@@ -28421,11 +28421,11 @@ func P_NightmareRespawn(tls *libc.TLS, mobj uintptr) {
 	// inherit attributes from deceased one
 	mo = P_SpawnMobj(tls, x, y, z, (*mobj_t)(unsafe.Pointer(mobj)).Ftype1)
 	(*mobj_t)(unsafe.Pointer(mo)).Fspawnpoint = (*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint
-	(*mobj_t)(unsafe.Pointer(mo)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / int32(45)))
+	(*mobj_t)(unsafe.Pointer(mo)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / 45))
 	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Foptions)&int32(MTF_AMBUSH) != 0 {
 		*(*int32)(unsafe.Pointer(mo + 160)) |= int32(MF_AMBUSH)
 	}
-	(*mobj_t)(unsafe.Pointer(mo)).Freactiontime = int32(18)
+	(*mobj_t)(unsafe.Pointer(mo)).Freactiontime = 18
 	// remove the old monster,
 	P_RemoveMobj(tls, mobj)
 }
@@ -28476,7 +28476,7 @@ func P_MobjThinker(tls *libc.TLS, mobj uintptr) {
 		if leveltime&int32(31) != 0 {
 			return
 		}
-		if P_Random() > int32(4) {
+		if P_Random() > 4 {
 			return
 		}
 		P_NightmareRespawn(tls, mobj)
@@ -28491,7 +28491,7 @@ func P_MobjThinker(tls *libc.TLS, mobj uintptr) {
 func P_SpawnMobj(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r uintptr) {
 	var mobj, st uintptr
 	var info *mobjinfo_t
-	mobj = Z_Malloc(tls, int32(224), int32(PU_LEVEL), libc.UintptrFromInt32(0))
+	mobj = Z_Malloc(tls, 224, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 	xmemset(mobj, 0, uint64(224))
 	info = &mobjinfo[uintptr(type1)]
 	(*mobj_t)(unsafe.Pointer(mobj)).Ftype1 = type1
@@ -28535,10 +28535,10 @@ func P_RemoveMobj(tls *libc.TLS, mobj uintptr) {
 	if (*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_SPECIAL) != 0 && !((*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_DROPPED) != 0) && (*mobj_t)(unsafe.Pointer(mobj)).Ftype1 != int32(MT_INV) && (*mobj_t)(unsafe.Pointer(mobj)).Ftype1 != int32(MT_INS) {
 		itemrespawnque[iquehead] = (*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint
 		itemrespawntime[iquehead] = leveltime
-		iquehead = (iquehead + int32(1)) & (ITEMQUESIZE - 1)
+		iquehead = (iquehead + 1) & (ITEMQUESIZE - 1)
 		// lose one off the end?
 		if iquehead == iquetail {
-			iquetail = (iquetail + int32(1)) & (ITEMQUESIZE - 1)
+			iquetail = (iquetail + 1) & (ITEMQUESIZE - 1)
 		}
 	}
 	// unlink from sector and block lists
@@ -28559,7 +28559,7 @@ func P_RespawnSpecials(tls *libc.TLS) {
 	var mo, mthing, ss uintptr
 	var x, y, z fixed_t
 	// only respawn items in deathmatch
-	if deathmatch != int32(2) {
+	if deathmatch != 2 {
 		return
 	} //
 	// nothing left to respawn?
@@ -28599,9 +28599,9 @@ func P_RespawnSpecials(tls *libc.TLS) {
 	}
 	mo = P_SpawnMobj(tls, x, y, z, i)
 	(*mobj_t)(unsafe.Pointer(mo)).Fspawnpoint = *(*mapthing_t)(unsafe.Pointer(mthing))
-	(*mobj_t)(unsafe.Pointer(mo)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / int32(45)))
+	(*mobj_t)(unsafe.Pointer(mo)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / 45))
 	// pull it from the que
-	iquetail = (iquetail + int32(1)) & (ITEMQUESIZE - 1)
+	iquetail = (iquetail + 1) & (ITEMQUESIZE - 1)
 }
 
 // C documentation
@@ -28625,17 +28625,17 @@ func P_SpawnPlayer(tls *libc.TLS, mthing uintptr) {
 	}
 	p = uintptr(unsafe.Pointer(&players)) + uintptr(int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1)-1)*328
 	if (*player_t)(unsafe.Pointer(p)).Fplayerstate == int32(PST_REBORN) {
-		G_PlayerReborn(int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) - int32(1))
+		G_PlayerReborn(int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) - 1)
 	}
 	x = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx) << int32(FRACBITS)
 	y = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy) << int32(FRACBITS)
 	z = -1 - 0x7fffffff
 	mobj = P_SpawnMobj(tls, x, y, z, int32(MT_PLAYER))
 	// set color translations for player sprites
-	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) > int32(1) {
-		*(*int32)(unsafe.Pointer(mobj + 160)) |= (int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) - int32(1)) << int32(MF_TRANSSHIFT)
+	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) > 1 {
+		*(*int32)(unsafe.Pointer(mobj + 160)) |= (int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) - 1) << int32(MF_TRANSSHIFT)
 	}
-	(*mobj_t)(unsafe.Pointer(mobj)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / int32(45)))
+	(*mobj_t)(unsafe.Pointer(mobj)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / 45))
 	(*mobj_t)(unsafe.Pointer(mobj)).Fplayer = p
 	(*mobj_t)(unsafe.Pointer(mobj)).Fhealth = (*player_t)(unsafe.Pointer(p)).Fhealth
 	(*player_t)(unsafe.Pointer(p)).Fmo = mobj
@@ -28683,7 +28683,7 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 	var mobj uintptr
 	var x, y, z fixed_t
 	// count deathmatch start positions
-	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) == int32(11) {
+	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) == 11 {
 		if deathmatch_p < uintptr(unsafe.Pointer(&deathmatchstarts))+10*10 {
 			xmemcpy(deathmatch_p, mthing, uint64(10))
 			deathmatch_p += 10
@@ -28696,7 +28696,7 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 		return
 	}
 	// check for players specially
-	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) <= int32(4) {
+	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) <= 4 {
 		// save spots for respawning in network games
 		playerstarts[int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1)-1] = *(*mapthing_t)(unsafe.Pointer(mthing))
 		if !(deathmatch != 0) {
@@ -28709,12 +28709,12 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 		return
 	}
 	if gameskill == int32(sk_baby) {
-		bit = int32(1)
+		bit = 1
 	} else {
 		if gameskill == int32(sk_nightmare) {
-			bit = int32(4)
+			bit = 4
 		} else {
-			bit = int32(1) << (gameskill - int32(1))
+			bit = 1 << (gameskill - 1)
 		}
 	}
 	if !(int32((*mapthing_t)(unsafe.Pointer(mthing)).Foptions)&bit != 0) {
@@ -28756,7 +28756,7 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 	mobj = P_SpawnMobj(tls, x, y, z, i)
 	(*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint = *(*mapthing_t)(unsafe.Pointer(mthing))
 	if (*mobj_t)(unsafe.Pointer(mobj)).Ftics > 0 {
-		(*mobj_t)(unsafe.Pointer(mobj)).Ftics = int32(1) + P_Random()%(*mobj_t)(unsafe.Pointer(mobj)).Ftics
+		(*mobj_t)(unsafe.Pointer(mobj)).Ftics = 1 + P_Random()%(*mobj_t)(unsafe.Pointer(mobj)).Ftics
 	}
 	if (*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_COUNTKILL) != 0 {
 		totalkills++
@@ -28764,7 +28764,7 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 	if (*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_COUNTITEM) != 0 {
 		totalitems++
 	}
-	(*mobj_t)(unsafe.Pointer(mobj)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / int32(45)))
+	(*mobj_t)(unsafe.Pointer(mobj)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / 45))
 	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Foptions)&int32(MTF_AMBUSH) != 0 {
 		*(*int32)(unsafe.Pointer(mobj + 160)) |= int32(MF_AMBUSH)
 	}
@@ -28772,12 +28772,12 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 
 func P_SpawnPuff(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t) {
 	var th uintptr
-	z += (P_Random() - P_Random()) << int32(10)
+	z += (P_Random() - P_Random()) << 10
 	th = P_SpawnMobj(tls, x, y, z, int32(MT_PUFF))
 	(*mobj_t)(unsafe.Pointer(th)).Fmomz = 1 << FRACBITS
-	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & int32(3)
-	if (*mobj_t)(unsafe.Pointer(th)).Ftics < int32(1) {
-		(*mobj_t)(unsafe.Pointer(th)).Ftics = int32(1)
+	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & 3
+	if (*mobj_t)(unsafe.Pointer(th)).Ftics < 1 {
+		(*mobj_t)(unsafe.Pointer(th)).Ftics = 1
 	}
 	// don't make punches spark on the wall
 	if attackrange == 64*(1<<FRACBITS) {
@@ -28792,17 +28792,17 @@ func P_SpawnPuff(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t) {
 //	//
 func P_SpawnBlood(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t, damage int32) {
 	var th uintptr
-	z += (P_Random() - P_Random()) << int32(10)
+	z += (P_Random() - P_Random()) << 10
 	th = P_SpawnMobj(tls, x, y, z, int32(MT_BLOOD))
 	(*mobj_t)(unsafe.Pointer(th)).Fmomz = 1 << FRACBITS * 2
-	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & int32(3)
-	if (*mobj_t)(unsafe.Pointer(th)).Ftics < int32(1) {
-		(*mobj_t)(unsafe.Pointer(th)).Ftics = int32(1)
+	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & 3
+	if (*mobj_t)(unsafe.Pointer(th)).Ftics < 1 {
+		(*mobj_t)(unsafe.Pointer(th)).Ftics = 1
 	}
-	if damage <= int32(12) && damage >= int32(9) {
+	if damage <= 12 && damage >= 9 {
 		P_SetMobjState(tls, th, int32(S_BLOOD2))
 	} else {
-		if damage < int32(9) {
+		if damage < 9 {
 			P_SetMobjState(tls, th, int32(S_BLOOD3))
 		}
 	}
@@ -28816,9 +28816,9 @@ func P_SpawnBlood(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t, damage int32) 
 //	//  and possibly explodes it right there.
 //	//
 func P_CheckMissileSpawn(tls *libc.TLS, th uintptr) {
-	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & int32(3)
-	if (*mobj_t)(unsafe.Pointer(th)).Ftics < int32(1) {
-		(*mobj_t)(unsafe.Pointer(th)).Ftics = int32(1)
+	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & 3
+	if (*mobj_t)(unsafe.Pointer(th)).Ftics < 1 {
+		(*mobj_t)(unsafe.Pointer(th)).Ftics = 1
 	}
 	// move a little forward so an angle can
 	// be computed if it immediately explodes
@@ -28866,7 +28866,7 @@ func P_SpawnMissile(tls *libc.TLS, source uintptr, dest uintptr, type1 mobjtype_
 	an = R_PointToAngle2((*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(source)).Fy, (*mobj_t)(unsafe.Pointer(dest)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy)
 	// fuzzy player
 	if (*mobj_t)(unsafe.Pointer(dest)).Fflags&int32(MF_SHADOW) != 0 {
-		an += libc.Uint32FromInt32((P_Random() - P_Random()) << int32(20))
+		an += libc.Uint32FromInt32((P_Random() - P_Random()) << 20)
 	}
 	(*mobj_t)(unsafe.Pointer(th)).Fangle = an
 	an >>= uint32(ANGLETOFINESHIFT)
@@ -28874,8 +28874,8 @@ func P_SpawnMissile(tls *libc.TLS, source uintptr, dest uintptr, type1 mobjtype_
 	(*mobj_t)(unsafe.Pointer(th)).Fmomy = FixedMul((*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed, finesine[an])
 	dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(dest)).Fx-(*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy-(*mobj_t)(unsafe.Pointer(source)).Fy)
 	dist = dist / (*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed
-	if dist < int32(1) {
-		dist = int32(1)
+	if dist < 1 {
+		dist = 1
 	}
 	(*mobj_t)(unsafe.Pointer(th)).Fmomz = ((*mobj_t)(unsafe.Pointer(dest)).Fz - (*mobj_t)(unsafe.Pointer(source)).Fz) / dist
 	P_CheckMissileSpawn(tls, th)
@@ -28931,7 +28931,7 @@ func T_PlatRaise(tls *libc.TLS, plat *plat_t) {
 	var res result_e
 	switch plat.Fstatus {
 	case int32(up):
-		res = T_MovePlane(tls, plat.Fsector, plat.Fspeed, plat.Fhigh, plat.Fcrush, 0, int32(1))
+		res = T_MovePlane(tls, plat.Fsector, plat.Fspeed, plat.Fhigh, plat.Fcrush, 0, 1)
 		if plat.Ftype1 == int32(raiseAndChange) || plat.Ftype1 == int32(raiseToNearestAndChange) {
 			if !(leveltime&7 != 0) {
 				S_StartSound(tls, plat.Fsector+48, int32(sfx_stnmov))
@@ -29012,8 +29012,8 @@ func EV_DoPlat(tls *libc.TLS, line uintptr, type1 plattype_e, amount int32) (r i
 			continue
 		}
 		// Find lowest & highest floors around sector
-		rtn = int32(1)
-		plat = Z_Malloc(tls, int32(72), int32(PU_LEVSPEC), uintptr(0))
+		rtn = 1
+		plat = Z_Malloc(tls, 72, int32(PU_LEVSPEC), uintptr(0))
 		P_AddThinker(tls, plat)
 		(*plat_t)(unsafe.Pointer(plat)).Ftype1 = type1
 		(*plat_t)(unsafe.Pointer(plat)).Fsector = sec
@@ -29069,7 +29069,7 @@ func EV_DoPlat(tls *libc.TLS, line uintptr, type1 plattype_e, amount int32) (r i
 				(*plat_t)(unsafe.Pointer(plat)).Fhigh = (*sector_t)(unsafe.Pointer(sec)).Ffloorheight
 			}
 			(*plat_t)(unsafe.Pointer(plat)).Fwait = TICRATE * PLATWAIT
-			(*plat_t)(unsafe.Pointer(plat)).Fstatus = P_Random() & int32(1)
+			(*plat_t)(unsafe.Pointer(plat)).Fstatus = P_Random() & 1
 			S_StartSound(tls, sec+48, int32(sfx_pstart))
 			break
 		}
@@ -29269,9 +29269,9 @@ func P_CheckAmmo(tls *libc.TLS, player uintptr) (r boolean) {
 		count = int32(DEH_DEFAULT_BFG_CELLS_PER_SHOT)
 	} else {
 		if (*player_t)(unsafe.Pointer(player)).Freadyweapon == int32(wp_supershotgun) {
-			count = int32(2)
+			count = 2
 		} else {
-			count = int32(1)
+			count = 1
 		}
 	} // Regular.
 	// Some do not need ammunition anyway.
@@ -29285,7 +29285,7 @@ func P_CheckAmmo(tls *libc.TLS, player uintptr) (r boolean) {
 		if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_plasma)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_cell)*4)) != 0 && gamemode != int32(shareware) {
 			(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_plasma)
 		} else {
-			if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_supershotgun)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_shell)*4)) > int32(2) && gamemode == int32(commercial) {
+			if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_supershotgun)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_shell)*4)) > 2 && gamemode == int32(commercial) {
 				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_supershotgun)
 			} else {
 				if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_chaingun)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_clip)*4)) != 0 {
@@ -29303,7 +29303,7 @@ func P_CheckAmmo(tls *libc.TLS, player uintptr) (r boolean) {
 								if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_missile)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_misl)*4)) != 0 {
 									(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_missile)
 								} else {
-									if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_bfg)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_cell)*4)) > int32(40) && gamemode != int32(shareware) {
+									if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_bfg)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_cell)*4)) > 40 && gamemode != int32(shareware) {
 										(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_bfg)
 									} else {
 										// If everything fails.
@@ -29388,7 +29388,7 @@ func A_WeaponReady(tls *libc.TLS, player uintptr, psp uintptr) {
 		(*player_t)(unsafe.Pointer(player)).Fattackdown = 0
 	}
 	// bob the weapon based on movement speed
-	angle = int32(128) * leveltime & (FINEANGLES - 1)
+	angle = 128 * leveltime & (FINEANGLES - 1)
 	(*pspdef_t)(unsafe.Pointer(psp)).Fsx = 1<<FRACBITS + FixedMul((*player_t)(unsafe.Pointer(player)).Fbob, finecosine[angle])
 	angle &= FINEANGLES/2 - 1
 	(*pspdef_t)(unsafe.Pointer(psp)).Fsy = 32*(1<<FRACBITS) + FixedMul((*player_t)(unsafe.Pointer(player)).Fbob, finesine[angle])
@@ -29487,12 +29487,12 @@ func A_GunFlash(tls *libc.TLS, player uintptr, psp uintptr) {
 func A_Punch(tls *libc.TLS, player uintptr, psp uintptr) {
 	var angle angle_t
 	var damage, slope int32
-	damage = (P_Random()%int32(10) + int32(1)) << int32(1)
+	damage = (P_Random()%int32(10) + 1) << 1
 	if *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_strength)*4)) != 0 {
-		damage *= int32(10)
+		damage *= 10
 	}
 	angle = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle
-	angle += libc.Uint32FromInt32((P_Random() - P_Random()) << int32(18))
+	angle += libc.Uint32FromInt32((P_Random() - P_Random()) << 18)
 	slope = P_AimLineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, 64*(1<<FRACBITS))
 	P_LineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, 64*(1<<FRACBITS), slope, damage)
 	// turn to face target
@@ -29510,9 +29510,9 @@ func A_Punch(tls *libc.TLS, player uintptr, psp uintptr) {
 func A_Saw(tls *libc.TLS, player uintptr, psp uintptr) {
 	var angle angle_t
 	var damage, slope int32
-	damage = int32(2) * (P_Random()%int32(10) + int32(1))
+	damage = 2 * (P_Random()%int32(10) + 1)
 	angle = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle
-	angle += libc.Uint32FromInt32((P_Random() - P_Random()) << int32(18))
+	angle += libc.Uint32FromInt32((P_Random() - P_Random()) << 18)
 	// use meleerange + 1 se the puff doesn't skip the flash
 	slope = P_AimLineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, 64*(1<<FRACBITS)+1)
 	P_LineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, 64*(1<<FRACBITS)+1, slope, damage)
@@ -29559,7 +29559,7 @@ func DecreaseAmmo(tls *libc.TLS, player uintptr, ammonum int32, amount int32) {
 //	// A_FireMissile
 //	//
 func A_FireMissile(tls *libc.TLS, player uintptr, psp uintptr) {
-	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, int32(1))
+	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, 1)
 	P_SpawnPlayerMissile(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(MT_ROCKET))
 }
 
@@ -29579,7 +29579,7 @@ func A_FireBFG(tls *libc.TLS, player uintptr, psp uintptr) {
 //	// A_FirePlasma
 //	//
 func A_FirePlasma(tls *libc.TLS, player uintptr, psp uintptr) {
-	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, int32(1))
+	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, 1)
 	P_SetPsprite(tls, player, int32(ps_flash), weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fflashstate+P_Random()&int32(1))
 	P_SpawnPlayerMissile(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(MT_PLASMA))
 }
@@ -29607,10 +29607,10 @@ func P_BulletSlope(tls *libc.TLS, mo uintptr) {
 func P_GunShot(tls *libc.TLS, mo uintptr, accurate boolean) {
 	var angle angle_t
 	var damage int32
-	damage = int32(5) * (P_Random()%int32(3) + int32(1))
+	damage = 5 * (P_Random()%int32(3) + 1)
 	angle = (*mobj_t)(unsafe.Pointer(mo)).Fangle
 	if !(accurate != 0) {
-		angle += libc.Uint32FromInt32((P_Random() - P_Random()) << int32(18))
+		angle += libc.Uint32FromInt32((P_Random() - P_Random()) << 18)
 	}
 	P_LineAttack(tls, mo, angle, 32*64*(1<<FRACBITS), bulletslope, damage)
 }
@@ -29623,7 +29623,7 @@ func P_GunShot(tls *libc.TLS, mo uintptr, accurate boolean) {
 func A_FirePistol(tls *libc.TLS, player uintptr, psp uintptr) {
 	S_StartSound(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(sfx_pistol))
 	P_SetMobjState(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(S_PLAY_ATK2))
-	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, int32(1))
+	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, 1)
 	P_SetPsprite(tls, player, int32(ps_flash), weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fflashstate)
 	P_BulletSlope(tls, (*player_t)(unsafe.Pointer(player)).Fmo)
 	P_GunShot(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.BoolUint32(!((*player_t)(unsafe.Pointer(player)).Frefire != 0)))
@@ -29638,12 +29638,12 @@ func A_FireShotgun(tls *libc.TLS, player uintptr, psp uintptr) {
 	var i int32
 	S_StartSound(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(sfx_shotgn))
 	P_SetMobjState(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(S_PLAY_ATK2))
-	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, int32(1))
+	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, 1)
 	P_SetPsprite(tls, player, int32(ps_flash), weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fflashstate)
 	P_BulletSlope(tls, (*player_t)(unsafe.Pointer(player)).Fmo)
 	i = 0
 	for {
-		if !(i < int32(7)) {
+		if !(i < 7) {
 			break
 		}
 		P_GunShot(tls, (*player_t)(unsafe.Pointer(player)).Fmo, 0)
@@ -29664,17 +29664,17 @@ func A_FireShotgun2(tls *libc.TLS, player uintptr, psp uintptr) {
 	var damage, i int32
 	S_StartSound(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(sfx_dshtgn))
 	P_SetMobjState(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(S_PLAY_ATK2))
-	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, int32(2))
+	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, 2)
 	P_SetPsprite(tls, player, int32(ps_flash), weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fflashstate)
 	P_BulletSlope(tls, (*player_t)(unsafe.Pointer(player)).Fmo)
 	i = 0
 	for {
-		if !(i < int32(20)) {
+		if !(i < 20) {
 			break
 		}
-		damage = int32(5) * (P_Random()%int32(3) + int32(1))
+		damage = 5 * (P_Random()%int32(3) + 1)
 		angle = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fangle
-		angle += libc.Uint32FromInt32((P_Random() - P_Random()) << int32(19))
+		angle += libc.Uint32FromInt32((P_Random() - P_Random()) << 19)
 		P_LineAttack(tls, (*player_t)(unsafe.Pointer(player)).Fmo, angle, 32*64*(1<<FRACBITS), bulletslope+(P_Random()-P_Random())<<int32(5), damage)
 		goto _1
 	_1:
@@ -29694,7 +29694,7 @@ func A_FireCGun(tls *libc.TLS, player uintptr, psp uintptr) {
 		return
 	}
 	P_SetMobjState(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(S_PLAY_ATK2))
-	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, int32(1))
+	DecreaseAmmo(tls, player, weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo, 1)
 	P_SetPsprite(tls, player, int32(ps_flash), int32((int64(uintptr(weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fflashstate)*40+(*pspdef_t)(unsafe.Pointer(psp)).Fstate)-int64(uintptr(unsafe.Pointer(&states))+uintptr(S_CHAIN1)*40))/40))
 	P_BulletSlope(tls, (*player_t)(unsafe.Pointer(player)).Fmo)
 	P_GunShot(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.BoolUint32(!((*player_t)(unsafe.Pointer(player)).Frefire != 0)))
@@ -29710,11 +29710,11 @@ func A_Light0(tls *libc.TLS, player uintptr, psp uintptr) {
 }
 
 func A_Light1(tls *libc.TLS, player uintptr, psp uintptr) {
-	(*player_t)(unsafe.Pointer(player)).Fextralight = int32(1)
+	(*player_t)(unsafe.Pointer(player)).Fextralight = 1
 }
 
 func A_Light2(tls *libc.TLS, player uintptr, psp uintptr) {
-	(*player_t)(unsafe.Pointer(player)).Fextralight = int32(2)
+	(*player_t)(unsafe.Pointer(player)).Fextralight = 2
 }
 
 // C documentation
@@ -29729,7 +29729,7 @@ func A_BFGSpray(tls *libc.TLS, mo uintptr) {
 	// offset angles from its attack angle
 	i = 0
 	for {
-		if !(i < int32(40)) {
+		if !(i < 40) {
 			break
 		}
 		an = (*mobj_t)(unsafe.Pointer(mo)).Fangle - libc.Uint32FromInt32(ANG905/2) + libc.Uint32FromInt32(ANG905/40*i)
@@ -29743,10 +29743,10 @@ func A_BFGSpray(tls *libc.TLS, mo uintptr) {
 		damage = 0
 		j = 0
 		for {
-			if !(j < int32(15)) {
+			if !(j < 15) {
 				break
 			}
-			damage += P_Random()&int32(7) + int32(1)
+			damage += P_Random()&int32(7) + 1
 			goto _2
 		_2:
 			;
@@ -29891,7 +29891,7 @@ func saveg_write8(tls *libc.TLS, _value uint8) {
 func saveg_read16(tls *libc.TLS) (r int16) {
 	var result int32
 	result = libc.Int32FromUint8(saveg_read8(tls))
-	result |= libc.Int32FromUint8(saveg_read8(tls)) << int32(8)
+	result |= libc.Int32FromUint8(saveg_read8(tls)) << 8
 	return int16(result)
 }
 
@@ -29903,9 +29903,9 @@ func saveg_write16(tls *libc.TLS, value int16) {
 func saveg_read32(tls *libc.TLS) (r int32) {
 	var result int32
 	result = libc.Int32FromUint8(saveg_read8(tls))
-	result |= libc.Int32FromUint8(saveg_read8(tls)) << int32(8)
-	result |= libc.Int32FromUint8(saveg_read8(tls)) << int32(16)
-	result |= libc.Int32FromUint8(saveg_read8(tls)) << int32(24)
+	result |= libc.Int32FromUint8(saveg_read8(tls)) << 8
+	result |= libc.Int32FromUint8(saveg_read8(tls)) << 16
+	result |= libc.Int32FromUint8(saveg_read8(tls)) << 24
 	return result
 }
 
@@ -31042,7 +31042,7 @@ func P_ArchiveWorld(tls *libc.TLS) {
 		saveg_write16(tls, (*line_t)(unsafe.Pointer(li)).Ftag)
 		j = 0
 		for {
-			if !(j < int32(2)) {
+			if !(j < 2) {
 				break
 			}
 			if int32(*(*int16)(unsafe.Pointer(li + 30 + uintptr(j)*2))) == -1 {
@@ -31109,7 +31109,7 @@ func P_UnArchiveWorld(tls *libc.TLS) {
 		(*line_t)(unsafe.Pointer(li)).Ftag = saveg_read16(tls)
 		j = 0
 		for {
-			if !(j < int32(2)) {
+			if !(j < 2) {
 				break
 			}
 			if int32(*(*int16)(unsafe.Pointer(li + 30 + uintptr(j)*2))) == -1 {
@@ -31187,14 +31187,14 @@ func P_UnArchiveThinkers(tls *libc.TLS) {
 	}
 	P_InitThinkers(tls)
 	// read in saved thinkers
-	for int32(1) != 0 {
+	for 1 != 0 {
 		tclass = saveg_read8(tls)
 		switch libc.Int32FromUint8(tclass) {
 		case int32(tc_end):
 			return // end of list
 		case int32(tc_mobj):
 			saveg_read_pad(tls)
-			mobj = Z_Malloc(tls, int32(224), int32(PU_LEVEL), libc.UintptrFromInt32(0))
+			mobj = Z_Malloc(tls, 224, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_mobj_t(tls, mobj)
 			(*mobj_t)(unsafe.Pointer(mobj)).Ftarget = libc.UintptrFromInt32(0)
 			(*mobj_t)(unsafe.Pointer(mobj)).Ftracer = libc.UintptrFromInt32(0)
@@ -31322,14 +31322,14 @@ func P_UnArchiveSpecials(tls *libc.TLS) {
 	var ceiling, door, flash, floor, glow, plat, strobe uintptr
 	var tclass uint8
 	// read in saved thinkers
-	for int32(1) != 0 {
+	for 1 != 0 {
 		tclass = saveg_read8(tls)
 		switch libc.Int32FromUint8(tclass) {
 		case int32(tc_endspecials):
 			return // end of list
 		case int32(tc_ceiling):
 			saveg_read_pad(tls)
-			ceiling = Z_Malloc(tls, int32(72), int32(PU_LEVEL), libc.UintptrFromInt32(0))
+			ceiling = Z_Malloc(tls, 72, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_ceiling_t(tls, ceiling)
 			(*sector_t)(unsafe.Pointer((*ceiling_t)(unsafe.Pointer(ceiling)).Fsector)).Fspecialdata = ceiling
 			if *(*actionf_p1)(unsafe.Pointer(ceiling + 16)) != 0 {
@@ -31339,21 +31339,21 @@ func P_UnArchiveSpecials(tls *libc.TLS) {
 			P_AddActiveCeiling(tls, (*ceiling_t)(unsafe.Pointer(ceiling)))
 		case int32(tc_door):
 			saveg_read_pad(tls)
-			door = Z_Malloc(tls, int32(64), int32(PU_LEVEL), libc.UintptrFromInt32(0))
+			door = Z_Malloc(tls, 64, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_vldoor_t(tls, door)
 			(*sector_t)(unsafe.Pointer((*vldoor_t)(unsafe.Pointer(door)).Fsector)).Fspecialdata = door
 			*(*actionf_p1)(unsafe.Pointer(door + 16)) = __ccgo_fp(T_VerticalDoor)
 			P_AddThinker(tls, door)
 		case int32(tc_floor):
 			saveg_read_pad(tls)
-			floor = Z_Malloc(tls, int32(64), int32(PU_LEVEL), libc.UintptrFromInt32(0))
+			floor = Z_Malloc(tls, 64, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_floormove_t(tls, floor)
 			(*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Fspecialdata = floor
 			*(*actionf_p1)(unsafe.Pointer(floor + 16)) = __ccgo_fp(T_MoveFloor)
 			P_AddThinker(tls, floor)
 		case int32(tc_plat):
 			saveg_read_pad(tls)
-			plat = Z_Malloc(tls, int32(72), int32(PU_LEVEL), libc.UintptrFromInt32(0))
+			plat = Z_Malloc(tls, 72, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_plat_t(tls, plat)
 			(*sector_t)(unsafe.Pointer((*plat_t)(unsafe.Pointer(plat)).Fsector)).Fspecialdata = plat
 			if *(*actionf_p1)(unsafe.Pointer(plat + 16)) != 0 {
@@ -31363,19 +31363,19 @@ func P_UnArchiveSpecials(tls *libc.TLS) {
 			P_AddActivePlat(tls, (*plat_t)(unsafe.Pointer(plat)))
 		case int32(tc_flash):
 			saveg_read_pad(tls)
-			flash = Z_Malloc(tls, int32(56), int32(PU_LEVEL), libc.UintptrFromInt32(0))
+			flash = Z_Malloc(tls, 56, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_lightflash_t(tls, flash)
 			*(*actionf_p1)(unsafe.Pointer(flash + 16)) = __ccgo_fp(T_LightFlash)
 			P_AddThinker(tls, flash)
 		case int32(tc_strobe):
 			saveg_read_pad(tls)
-			strobe = Z_Malloc(tls, int32(56), int32(PU_LEVEL), libc.UintptrFromInt32(0))
+			strobe = Z_Malloc(tls, 56, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_strobe_t(tls, strobe)
 			*(*actionf_p1)(unsafe.Pointer(strobe + 16)) = __ccgo_fp(T_StrobeFlash)
 			P_AddThinker(tls, strobe)
 		case int32(tc_glow):
 			saveg_read_pad(tls)
-			glow = Z_Malloc(tls, int32(48), int32(PU_LEVEL), libc.UintptrFromInt32(0))
+			glow = Z_Malloc(tls, 48, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_glow_t(tls, glow)
 			*(*actionf_p1)(unsafe.Pointer(glow + 16)) = __ccgo_fp(T_Glow)
 			P_AddThinker(tls, glow)
@@ -31432,8 +31432,8 @@ func P_LoadVertexes(tls *libc.TLS, lump int32) {
 func GetSectorAtNullAddress(tls *libc.TLS) (r uintptr) {
 	if !(null_sector_is_initialized != 0) {
 		xmemset(uintptr(unsafe.Pointer(&null_sector)), 0, uint64(128))
-		I_GetMemoryValue(tls, uint32(0), uintptr(unsafe.Pointer(&null_sector)), int32(4))
-		I_GetMemoryValue(tls, uint32(4), uintptr(unsafe.Pointer(&null_sector))+4, int32(4))
+		I_GetMemoryValue(tls, uint32(0), uintptr(unsafe.Pointer(&null_sector)), 4)
+		I_GetMemoryValue(tls, uint32(4), uintptr(unsafe.Pointer(&null_sector))+4, 4)
 		null_sector_is_initialized = 1
 	}
 	return uintptr(unsafe.Pointer(&null_sector))
@@ -31464,8 +31464,8 @@ func P_LoadSegs(tls *libc.TLS, lump int32) {
 		}
 		(*seg_t)(unsafe.Pointer(li)).Fv1 = vertexes + uintptr((*mapseg_t)(unsafe.Pointer(ml)).Fv1)*8
 		(*seg_t)(unsafe.Pointer(li)).Fv2 = vertexes + uintptr((*mapseg_t)(unsafe.Pointer(ml)).Fv2)*8
-		(*seg_t)(unsafe.Pointer(li)).Fangle = libc.Uint32FromInt32(int32((*mapseg_t)(unsafe.Pointer(ml)).Fangle) << int32(16))
-		(*seg_t)(unsafe.Pointer(li)).Foffset = int32((*mapseg_t)(unsafe.Pointer(ml)).Foffset) << int32(16)
+		(*seg_t)(unsafe.Pointer(li)).Fangle = libc.Uint32FromInt32(int32((*mapseg_t)(unsafe.Pointer(ml)).Fangle) << 16)
+		(*seg_t)(unsafe.Pointer(li)).Foffset = int32((*mapseg_t)(unsafe.Pointer(ml)).Foffset) << 16
 		linedef = int32((*mapseg_t)(unsafe.Pointer(ml)).Flinedef)
 		ldef = lines + uintptr(linedef)*88
 		(*seg_t)(unsafe.Pointer(li)).Flinedef = ldef
@@ -31615,25 +31615,25 @@ func P_LoadThings(tls *libc.TLS, lump int32) {
 		// Do not spawn cool, new monsters if !commercial
 		if gamemode != int32(commercial) {
 			switch int32((*mapthing_t)(unsafe.Pointer(mt)).Ftype1) {
-			case int32(68): // Arachnotron
+			case 68: // Arachnotron
 				fallthrough
-			case int32(64): // Archvile
+			case 64: // Archvile
 				fallthrough
-			case int32(88): // Boss Brain
+			case 88: // Boss Brain
 				fallthrough
-			case int32(89): // Boss Shooter
+			case 89: // Boss Shooter
 				fallthrough
-			case int32(69): // Hell Knight
+			case 69: // Hell Knight
 				fallthrough
-			case int32(67): // Mancubus
+			case 67: // Mancubus
 				fallthrough
-			case int32(71): // Pain Elemental
+			case 71: // Pain Elemental
 				fallthrough
-			case int32(65): // Former Human Commando
+			case 65: // Former Human Commando
 				fallthrough
-			case int32(66): // Revenant
+			case 66: // Revenant
 				fallthrough
-			case int32(84): // Wolf SS
+			case 84: // Wolf SS
 				spawn = 0
 				break
 			}
@@ -31780,7 +31780,7 @@ func P_LoadSideDefs(tls *libc.TLS, lump int32) {
 func P_LoadBlockMap(tls *libc.TLS, lump int32) {
 	var count, i, lumplen int32
 	lumplen = W_LumpLength(tls, libc.Uint32FromInt32(lump))
-	count = lumplen / int32(2)
+	count = lumplen / 2
 	blockmaplump = Z_Malloc(tls, lumplen, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 	W_ReadLump(tls, libc.Uint32FromInt32(lump), blockmaplump)
 	blockmap = blockmaplump + uintptr(4)*2
@@ -31915,12 +31915,12 @@ func P_GroupLines(tls *libc.TLS) {
 			j++
 		}
 		// set the degenmobj_t to the middle of the bounding box
-		(*sector_t)(unsafe.Pointer(sector)).Fsoundorg.Fx = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXRIGHT)] + (*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXLEFT)]) / int32(2)
-		(*sector_t)(unsafe.Pointer(sector)).Fsoundorg.Fy = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXTOP)] + (*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXBOTTOM)]) / int32(2)
+		(*sector_t)(unsafe.Pointer(sector)).Fsoundorg.Fx = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXRIGHT)] + (*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXLEFT)]) / 2
+		(*sector_t)(unsafe.Pointer(sector)).Fsoundorg.Fy = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXTOP)] + (*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXBOTTOM)]) / 2
 		// adjust bounding box to map blocks
 		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXTOP)] - bmaporgy + 32*(1<<FRACBITS)) >> (FRACBITS + 7)
 		if block >= bmapheight {
-			v7 = bmapheight - int32(1)
+			v7 = bmapheight - 1
 		} else {
 			v7 = block
 		}
@@ -31936,7 +31936,7 @@ func P_GroupLines(tls *libc.TLS) {
 		*(*int32)(unsafe.Pointer(sector + 32 + uintptr(BOXBOTTOM)*4)) = block
 		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXRIGHT)] - bmaporgx + 32*(1<<FRACBITS)) >> (FRACBITS + 7)
 		if block >= bmapwidth {
-			v9 = bmapwidth - int32(1)
+			v9 = bmapwidth - 1
 		} else {
 			v9 = block
 		}
@@ -31968,7 +31968,7 @@ func PadRejectArray(array uintptr, len1 uint32) {
 	var rejectpad [4]uint32
 	// Values to pad the REJECT array with:
 	rejectpad = [4]uint32{
-		0: libc.Uint32FromInt32((totallines*int32(4)+int32(3)) & ^3 + int32(24)),
+		0: libc.Uint32FromInt32((totallines*int32(4)+int32(3)) & ^3 + 24),
 		2: uint32(50),
 		3: uint32(0x1d4a11),
 	}
@@ -32004,7 +32004,7 @@ func PadRejectArray(array uintptr, len1 uint32) {
 func P_LoadReject(tls *libc.TLS, lumpnum int32) {
 	var lumplen, minlength int32
 	// Calculate the size that the REJECT lump *should* be.
-	minlength = (numsectors*numsectors + int32(7)) / int32(8)
+	minlength = (numsectors*numsectors + 7) / 8
 	// If the lump meets the minimum length, it can be loaded directly.
 	// Otherwise, we need to allocate a buffer of the correct size
 	// and pad it with appropriate data.
@@ -32033,7 +32033,7 @@ func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, sk
 	v1 = v2
 	totalitems = v1
 	totalkills = v1
-	wminfo.Fpartime = int32(180)
+	wminfo.Fpartime = 180
 	i = 0
 	for {
 		if !(i < int32(MAXPLAYERS)) {
@@ -32051,7 +32051,7 @@ func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, sk
 	}
 	// Initial height of PointOfView
 	// will be set by player think.
-	players[consoleplayer].Fviewz = int32(1)
+	players[consoleplayer].Fviewz = 1
 	// Make sure all sounds are stopped before Z_FreeTags.
 	S_Start(tls)
 	Z_FreeTags(tls, int32(PU_LEVEL), int32(PU_PURGELEVEL)-1)
@@ -32059,7 +32059,7 @@ func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, sk
 	P_InitThinkers(tls)
 	// find map name
 	if gamemode == int32(commercial) {
-		if map1 < int32(10) {
+		if map1 < 10 {
 			snprintf_ccgo(bp, 9, 25226, map1)
 		} else {
 			snprintf_ccgo(bp, 9, 25233, map1)
@@ -32142,7 +32142,7 @@ func P_DivlineSide(tls *libc.TLS, x fixed_t, y fixed_t, node uintptr) (r int32) 
 	var dx, dy, left, right fixed_t
 	if !((*divline_t)(unsafe.Pointer(node)).Fdx != 0) {
 		if x == (*divline_t)(unsafe.Pointer(node)).Fx {
-			return int32(2)
+			return 2
 		}
 		if x <= (*divline_t)(unsafe.Pointer(node)).Fx {
 			return libc.BoolInt32((*divline_t)(unsafe.Pointer(node)).Fdy > 0)
@@ -32151,7 +32151,7 @@ func P_DivlineSide(tls *libc.TLS, x fixed_t, y fixed_t, node uintptr) (r int32) 
 	}
 	if !((*divline_t)(unsafe.Pointer(node)).Fdy != 0) {
 		if x == (*divline_t)(unsafe.Pointer(node)).Fy {
-			return int32(2)
+			return 2
 		}
 		if y <= (*divline_t)(unsafe.Pointer(node)).Fy {
 			return libc.BoolInt32((*divline_t)(unsafe.Pointer(node)).Fdx < 0)
@@ -32166,9 +32166,9 @@ func P_DivlineSide(tls *libc.TLS, x fixed_t, y fixed_t, node uintptr) (r int32) 
 		return 0
 	} // front side
 	if left == right {
-		return int32(2)
+		return 2
 	}
-	return int32(1) // back side
+	return 1 // back side
 }
 
 // C documentation
@@ -32317,7 +32317,7 @@ func P_CrossBSPNode(tls *libc.TLS, bspnum int32) (r boolean) {
 	bsp := uintptr(unsafe.Pointer(&nodes[bspnum]))
 	// decide which side the start point is on
 	side = P_DivlineSide(tls, strace.Fx, strace.Fy, bsp)
-	if side == int32(2) {
+	if side == 2 {
 		side = 0
 	} // an "on" should cross both sides
 	// cross the starting side
@@ -32348,8 +32348,8 @@ func P_CheckSight(tls *libc.TLS, t1 uintptr, t2 uintptr) (r boolean) {
 	s1 = int32((int64((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(t1)).Fsubsector)).Fsector) - int64(sectors)) / 128)
 	s2 = int32((int64((*subsector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(t2)).Fsubsector)).Fsector) - int64(sectors)) / 128)
 	pnum = s1*numsectors + s2
-	bytenum = pnum >> int32(3)
-	bitnum = int32(1) << (pnum & int32(7))
+	bytenum = pnum >> 3
+	bitnum = 1 << (pnum & 7)
 	// Check in REJECT table.
 	if libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(rejectmatrix + uintptr(bytenum))))&bitnum != 0 {
 		sightcounts[0]++
@@ -32449,125 +32449,125 @@ func init() {
 		0: {
 			Fendname:   [9]int8{'N', 'U', 'K', 'A', 'G', 'E', '3'},
 			Fstartname: [9]int8{'N', 'U', 'K', 'A', 'G', 'E', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		1: {
 			Fendname:   [9]int8{'F', 'W', 'A', 'T', 'E', 'R', '4'},
 			Fstartname: [9]int8{'F', 'W', 'A', 'T', 'E', 'R', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		2: {
 			Fendname:   [9]int8{'S', 'W', 'A', 'T', 'E', 'R', '4'},
 			Fstartname: [9]int8{'S', 'W', 'A', 'T', 'E', 'R', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		3: {
 			Fendname:   [9]int8{'L', 'A', 'V', 'A', '4'},
 			Fstartname: [9]int8{'L', 'A', 'V', 'A', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		4: {
 			Fendname:   [9]int8{'B', 'L', 'O', 'O', 'D', '3'},
 			Fstartname: [9]int8{'B', 'L', 'O', 'O', 'D', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		5: {
 			Fendname:   [9]int8{'R', 'R', 'O', 'C', 'K', '0', '8'},
 			Fstartname: [9]int8{'R', 'R', 'O', 'C', 'K', '0', '5'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		6: {
 			Fendname:   [9]int8{'S', 'L', 'I', 'M', 'E', '0', '4'},
 			Fstartname: [9]int8{'S', 'L', 'I', 'M', 'E', '0', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		7: {
 			Fendname:   [9]int8{'S', 'L', 'I', 'M', 'E', '0', '8'},
 			Fstartname: [9]int8{'S', 'L', 'I', 'M', 'E', '0', '5'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		8: {
 			Fendname:   [9]int8{'S', 'L', 'I', 'M', 'E', '1', '2'},
 			Fstartname: [9]int8{'S', 'L', 'I', 'M', 'E', '0', '9'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		9: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'B', 'L', 'O', 'D', 'G', 'R', '4'},
 			Fstartname: [9]int8{'B', 'L', 'O', 'D', 'G', 'R', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		10: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'S', 'L', 'A', 'D', 'R', 'I', 'P', '3'},
 			Fstartname: [9]int8{'S', 'L', 'A', 'D', 'R', 'I', 'P', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		11: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'B', 'L', 'O', 'D', 'R', 'I', 'P', '4'},
 			Fstartname: [9]int8{'B', 'L', 'O', 'D', 'R', 'I', 'P', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		12: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'F', 'I', 'R', 'E', 'W', 'A', 'L', 'L'},
 			Fstartname: [9]int8{'F', 'I', 'R', 'E', 'W', 'A', 'L', 'A'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		13: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'G', 'S', 'T', 'F', 'O', 'N', 'T', '3'},
 			Fstartname: [9]int8{'G', 'S', 'T', 'F', 'O', 'N', 'T', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		14: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'F', 'I', 'R', 'E', 'L', 'A', 'V', 'A'},
 			Fstartname: [9]int8{'F', 'I', 'R', 'E', 'L', 'A', 'V', '3'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		15: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'F', 'I', 'R', 'E', 'M', 'A', 'G', '3'},
 			Fstartname: [9]int8{'F', 'I', 'R', 'E', 'M', 'A', 'G', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		16: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'F', 'I', 'R', 'E', 'B', 'L', 'U', '2'},
 			Fstartname: [9]int8{'F', 'I', 'R', 'E', 'B', 'L', 'U', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		17: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'R', 'O', 'C', 'K', 'R', 'E', 'D', '3'},
 			Fstartname: [9]int8{'R', 'O', 'C', 'K', 'R', 'E', 'D', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		18: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'B', 'F', 'A', 'L', 'L', '4'},
 			Fstartname: [9]int8{'B', 'F', 'A', 'L', 'L', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		19: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'S', 'F', 'A', 'L', 'L', '4'},
 			Fstartname: [9]int8{'S', 'F', 'A', 'L', 'L', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		20: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'W', 'F', 'A', 'L', 'L', '4'},
 			Fstartname: [9]int8{'W', 'F', 'A', 'L', 'L', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		21: {
 			Fistexture: 1,
 			Fendname:   [9]int8{'D', 'B', 'R', 'A', 'I', 'N', '4'},
 			Fstartname: [9]int8{'D', 'B', 'R', 'A', 'I', 'N', '1'},
-			Fspeed:     int32(8),
+			Fspeed:     8,
 		},
 		22: {
 			Fistexture: -1,
@@ -32603,8 +32603,8 @@ func P_InitPicAnims(tls *libc.TLS) {
 			lastanim.Fbasepic = R_FlatNumForName(tls, startname)
 		}
 		lastanim.Fistexture = libc.Uint32FromInt32(animdefs[i].Fistexture)
-		lastanim.Fnumpics = lastanim.Fpicnum - lastanim.Fbasepic + int32(1)
-		if lastanim.Fnumpics < int32(2) {
+		lastanim.Fnumpics = lastanim.Fpicnum - lastanim.Fbasepic + 1
+		if lastanim.Fnumpics < 2 {
 			I_Error(tls, __ccgo_ts(25279), startname, endname)
 		}
 		(*anim_t)(unsafe.Pointer(lastanim)).Fspeed = animdefs[i].Fspeed
@@ -32784,7 +32784,7 @@ func P_FindNextHighestFloor(tls *libc.TLS, sec uintptr, currentheight int32) (r 
 	}
 	min = heightlist[0]
 	// Range checking?
-	i = int32(1)
+	i = 1
 	for {
 		if !(i < h) {
 			break
@@ -32869,7 +32869,7 @@ func P_FindHighestCeilingSurrounding(tls *libc.TLS, sec uintptr) (r fixed_t) {
 //	//
 func P_FindSectorFromLineTag(tls *libc.TLS, line uintptr, start int32) (r int32) {
 	var i int32
-	i = start + int32(1)
+	i = start + 1
 	for {
 		if !(i < numsectors) {
 			break
@@ -32953,20 +32953,20 @@ func P_CrossSpecialLine(tls *libc.TLS, linenum int32, side int32, thing uintptr)
 		}
 		ok = 0
 		switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
-		case int32(39): // TELEPORT TRIGGER
+		case 39: // TELEPORT TRIGGER
 			fallthrough
-		case int32(97): // TELEPORT RETRIGGER
+		case 97: // TELEPORT RETRIGGER
 			fallthrough
-		case int32(125): // TELEPORT MONSTERONLY TRIGGER
+		case 125: // TELEPORT MONSTERONLY TRIGGER
 			fallthrough
-		case int32(126): // TELEPORT MONSTERONLY RETRIGGER
+		case 126: // TELEPORT MONSTERONLY RETRIGGER
 			fallthrough
-		case int32(4): // RAISE DOOR
+		case 4: // RAISE DOOR
 			fallthrough
-		case int32(10): // PLAT DOWN-WAIT-UP-STAY TRIGGER
+		case 10: // PLAT DOWN-WAIT-UP-STAY TRIGGER
 			fallthrough
-		case int32(88): // PLAT DOWN-WAIT-UP-STAY RETRIGGER
-			ok = int32(1)
+		case 88: // PLAT DOWN-WAIT-UP-STAY RETRIGGER
+			ok = 1
 			break
 		}
 		if !(ok != 0) {
@@ -32977,269 +32977,269 @@ func P_CrossSpecialLine(tls *libc.TLS, linenum int32, side int32, thing uintptr)
 	switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
 	// TRIGGERS.
 	// All from here to RETRIGGERS.
-	case int32(2):
+	case 2:
 		// Open Door
 		EV_DoDoor(tls, line, int32(vld_open))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(3):
+	case 3:
 		// Close Door
 		EV_DoDoor(tls, line, int32(vld_close))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(4):
+	case 4:
 		// Raise Door
 		EV_DoDoor(tls, line, int32(vld_normal))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(5):
+	case 5:
 		// Raise Floor
 		EV_DoFloor(tls, line, int32(raiseFloor))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(6):
+	case 6:
 		// Fast Ceiling Crush & Raise
 		EV_DoCeiling(tls, line, int32(fastCrushAndRaise))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(8):
+	case 8:
 		// Build Stairs
 		EV_BuildStairs(tls, line, int32(build8))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(10):
+	case 10:
 		// PlatDownWaitUp
 		EV_DoPlat(tls, line, int32(downWaitUpStay), 0)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(12):
+	case 12:
 		// Light Turn On - brightest near
 		EV_LightTurnOn(tls, line, 0)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(13):
+	case 13:
 		// Light Turn On 255
-		EV_LightTurnOn(tls, line, int32(255))
+		EV_LightTurnOn(tls, line, 255)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(16):
+	case 16:
 		// Close Door 30
 		EV_DoDoor(tls, line, int32(vld_close30ThenOpen))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(17):
+	case 17:
 		// Start Light Strobing
 		EV_StartLightStrobing(tls, line)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(19):
+	case 19:
 		// Lower Floor
 		EV_DoFloor(tls, line, int32(lowerFloor))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(22):
+	case 22:
 		// Raise floor to nearest height and change texture
 		EV_DoPlat(tls, line, int32(raiseToNearestAndChange), 0)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(25):
+	case 25:
 		// Ceiling Crush and Raise
 		EV_DoCeiling(tls, line, int32(crushAndRaise))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(30):
+	case 30:
 		// Raise floor to shortest texture height
 		//  on either side of lines.
 		EV_DoFloor(tls, line, int32(raiseToTexture))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(35):
+	case 35:
 		// Lights Very Dark
-		EV_LightTurnOn(tls, line, int32(35))
+		EV_LightTurnOn(tls, line, 35)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(36):
+	case 36:
 		// Lower Floor (TURBO)
 		EV_DoFloor(tls, line, int32(turboLower))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(37):
+	case 37:
 		// LowerAndChange
 		EV_DoFloor(tls, line, int32(lowerAndChange))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(38):
+	case 38:
 		// Lower Floor To Lowest
 		EV_DoFloor(tls, line, int32(lowerFloorToLowest))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(39):
+	case 39:
 		// TELEPORT!
 		EV_Teleport(tls, line, side, thing)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(40):
+	case 40:
 		// RaiseCeilingLowerFloor
 		EV_DoCeiling(tls, line, int32(raiseToHighest))
 		EV_DoFloor(tls, line, int32(lowerFloorToLowest))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(44):
+	case 44:
 		// Ceiling Crush
 		EV_DoCeiling(tls, line, int32(lowerAndCrush))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(52):
+	case 52:
 		// EXIT!
 		G_ExitLevel(tls)
-	case int32(53):
+	case 53:
 		// Perpetual Platform Raise
 		EV_DoPlat(tls, line, int32(perpetualRaise), 0)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(54):
+	case 54:
 		// Platform Stop
 		EV_StopPlat(tls, line)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(56):
+	case 56:
 		// Raise Floor Crush
 		EV_DoFloor(tls, line, int32(raiseFloorCrush))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(57):
+	case 57:
 		// Ceiling Crush Stop
 		EV_CeilingCrushStop(tls, line)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(58):
+	case 58:
 		// Raise Floor 24
 		EV_DoFloor(tls, line, int32(raiseFloor24))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(59):
+	case 59:
 		// Raise Floor 24 And Change
 		EV_DoFloor(tls, line, int32(raiseFloor24AndChange))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(104):
+	case 104:
 		// Turn lights off in sector(tag)
 		EV_TurnTagLightsOff(tls, line)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(108):
+	case 108:
 		// Blazing Door Raise (faster than TURBO!)
 		EV_DoDoor(tls, line, int32(vld_blazeRaise))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(109):
+	case 109:
 		// Blazing Door Open (faster than TURBO!)
 		EV_DoDoor(tls, line, int32(vld_blazeOpen))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(100):
+	case 100:
 		// Build Stairs Turbo 16
 		EV_BuildStairs(tls, line, int32(turbo16))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(110):
+	case 110:
 		// Blazing Door Close (faster than TURBO!)
 		EV_DoDoor(tls, line, int32(vld_blazeClose))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(119):
+	case 119:
 		// Raise floor to nearest surr. floor
 		EV_DoFloor(tls, line, int32(raiseFloorToNearest))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(121):
+	case 121:
 		// Blazing PlatDownWaitUpStay
 		EV_DoPlat(tls, line, int32(blazeDWUS), 0)
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(124):
+	case 124:
 		// Secret EXIT
 		G_SecretExitLevel(tls)
-	case int32(125):
+	case 125:
 		// TELEPORT MonsterONLY
 		if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != 0) {
 			EV_Teleport(tls, line, side, thing)
 			(*line_t)(unsafe.Pointer(line)).Fspecial = 0
 		}
-	case int32(130):
+	case 130:
 		// Raise Floor Turbo
 		EV_DoFloor(tls, line, int32(raiseFloorTurbo))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
-	case int32(141):
+	case 141:
 		// Silent Ceiling Crush & Raise
 		EV_DoCeiling(tls, line, int32(silentCrushAndRaise))
 		(*line_t)(unsafe.Pointer(line)).Fspecial = 0
 		break
 		// RETRIGGERS.  All from here till end.
 		fallthrough
-	case int32(72):
+	case 72:
 		// Ceiling Crush
 		EV_DoCeiling(tls, line, int32(lowerAndCrush))
-	case int32(73):
+	case 73:
 		// Ceiling Crush and Raise
 		EV_DoCeiling(tls, line, int32(crushAndRaise))
-	case int32(74):
+	case 74:
 		// Ceiling Crush Stop
 		EV_CeilingCrushStop(tls, line)
-	case int32(75):
+	case 75:
 		// Close Door
 		EV_DoDoor(tls, line, int32(vld_close))
-	case int32(76):
+	case 76:
 		// Close Door 30
 		EV_DoDoor(tls, line, int32(vld_close30ThenOpen))
-	case int32(77):
+	case 77:
 		// Fast Ceiling Crush & Raise
 		EV_DoCeiling(tls, line, int32(fastCrushAndRaise))
-	case int32(79):
+	case 79:
 		// Lights Very Dark
-		EV_LightTurnOn(tls, line, int32(35))
-	case int32(80):
+		EV_LightTurnOn(tls, line, 35)
+	case 80:
 		// Light Turn On - brightest near
 		EV_LightTurnOn(tls, line, 0)
-	case int32(81):
+	case 81:
 		// Light Turn On 255
-		EV_LightTurnOn(tls, line, int32(255))
-	case int32(82):
+		EV_LightTurnOn(tls, line, 255)
+	case 82:
 		// Lower Floor To Lowest
 		EV_DoFloor(tls, line, int32(lowerFloorToLowest))
-	case int32(83):
+	case 83:
 		// Lower Floor
 		EV_DoFloor(tls, line, int32(lowerFloor))
-	case int32(84):
+	case 84:
 		// LowerAndChange
 		EV_DoFloor(tls, line, int32(lowerAndChange))
-	case int32(86):
+	case 86:
 		// Open Door
 		EV_DoDoor(tls, line, int32(vld_open))
-	case int32(87):
+	case 87:
 		// Perpetual Platform Raise
 		EV_DoPlat(tls, line, int32(perpetualRaise), 0)
-	case int32(88):
+	case 88:
 		// PlatDownWaitUp
 		EV_DoPlat(tls, line, int32(downWaitUpStay), 0)
-	case int32(89):
+	case 89:
 		// Platform Stop
 		EV_StopPlat(tls, line)
-	case int32(90):
+	case 90:
 		// Raise Door
 		EV_DoDoor(tls, line, int32(vld_normal))
-	case int32(91):
+	case 91:
 		// Raise Floor
 		EV_DoFloor(tls, line, int32(raiseFloor))
-	case int32(92):
+	case 92:
 		// Raise Floor 24
 		EV_DoFloor(tls, line, int32(raiseFloor24))
-	case int32(93):
+	case 93:
 		// Raise Floor 24 And Change
 		EV_DoFloor(tls, line, int32(raiseFloor24AndChange))
-	case int32(94):
+	case 94:
 		// Raise Floor Crush
 		EV_DoFloor(tls, line, int32(raiseFloorCrush))
-	case int32(95):
+	case 95:
 		// Raise floor to nearest height
 		// and change texture.
 		EV_DoPlat(tls, line, int32(raiseToNearestAndChange), 0)
-	case int32(96):
+	case 96:
 		// Raise floor to shortest texture height
 		// on either side of lines.
 		EV_DoFloor(tls, line, int32(raiseToTexture))
-	case int32(97):
+	case 97:
 		// TELEPORT!
 		EV_Teleport(tls, line, side, thing)
-	case int32(98):
+	case 98:
 		// Lower Floor (TURBO)
 		EV_DoFloor(tls, line, int32(turboLower))
-	case int32(105):
+	case 105:
 		// Blazing Door Raise (faster than TURBO!)
 		EV_DoDoor(tls, line, int32(vld_blazeRaise))
-	case int32(106):
+	case 106:
 		// Blazing Door Open (faster than TURBO!)
 		EV_DoDoor(tls, line, int32(vld_blazeOpen))
-	case int32(107):
+	case 107:
 		// Blazing Door Close (faster than TURBO!)
 		EV_DoDoor(tls, line, int32(vld_blazeClose))
-	case int32(120):
+	case 120:
 		// Blazing PlatDownWaitUpStay.
 		EV_DoPlat(tls, line, int32(blazeDWUS), 0)
-	case int32(126):
+	case 126:
 		// TELEPORT MonsterONLY.
 		if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != 0) {
 			EV_Teleport(tls, line, side, thing)
 		}
-	case int32(128):
+	case 128:
 		// Raise To Nearest Floor
 		EV_DoFloor(tls, line, int32(raiseFloorToNearest))
-	case int32(129):
+	case 129:
 		// Raise Floor Turbo
 		EV_DoFloor(tls, line, int32(raiseFloorTurbo))
 		break
@@ -33258,9 +33258,9 @@ func P_ShootSpecialLine(tls *libc.TLS, thing uintptr, line uintptr) {
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != 0) {
 		ok = 0
 		switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
-		case int32(46):
+		case 46:
 			// OPEN DOOR IMPACT
-			ok = int32(1)
+			ok = 1
 			break
 		}
 		if !(ok != 0) {
@@ -33268,15 +33268,15 @@ func P_ShootSpecialLine(tls *libc.TLS, thing uintptr, line uintptr) {
 		}
 	}
 	switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
-	case int32(24):
+	case 24:
 		// RAISE FLOOR
 		EV_DoFloor(tls, line, int32(raiseFloor))
 		P_ChangeSwitchTexture(tls, line, 0)
-	case int32(46):
+	case 46:
 		// OPEN DOOR
 		EV_DoDoor(tls, line, int32(vld_open))
-		P_ChangeSwitchTexture(tls, line, int32(1))
-	case int32(47):
+		P_ChangeSwitchTexture(tls, line, 1)
+	case 47:
 		// RAISE FLOOR NEAR AND CHANGE
 		EV_DoPlat(tls, line, int32(raiseToNearestAndChange), 0)
 		P_ChangeSwitchTexture(tls, line, 0)
@@ -33300,41 +33300,41 @@ func P_PlayerInSpecialSector(tls *libc.TLS, player uintptr) {
 	}
 	// Has hitten ground.
 	switch int32((*sector_t)(unsafe.Pointer(sector)).Fspecial) {
-	case int32(5):
+	case 5:
 		// HELLSLIME DAMAGE
 		if !(*(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_ironfeet)*4)) != 0) {
 			if !(leveltime&0x1f != 0) {
-				P_DamageMobj(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), int32(10))
+				P_DamageMobj(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), 10)
 			}
 		}
-	case int32(7):
+	case 7:
 		// NUKAGE DAMAGE
 		if !(*(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_ironfeet)*4)) != 0) {
 			if !(leveltime&0x1f != 0) {
-				P_DamageMobj(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), int32(5))
+				P_DamageMobj(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), 5)
 			}
 		}
-	case int32(16):
+	case 16:
 		// SUPER HELLSLIME DAMAGE
 		fallthrough
-	case int32(4):
+	case 4:
 		// STROBE HURT
-		if !(*(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_ironfeet)*4)) != 0) || P_Random() < int32(5) {
+		if !(*(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_ironfeet)*4)) != 0) || P_Random() < 5 {
 			if !(leveltime&0x1f != 0) {
-				P_DamageMobj(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), int32(20))
+				P_DamageMobj(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), 20)
 			}
 		}
-	case int32(9):
+	case 9:
 		// SECRET SECTOR
 		(*player_t)(unsafe.Pointer(player)).Fsecretcount++
 		(*sector_t)(unsafe.Pointer(sector)).Fspecial = 0
-	case int32(11):
+	case 11:
 		// EXIT SUPER DAMAGE! (for E1M8 finale)
 		*(*int32)(unsafe.Pointer(player + 208)) &= ^int32(CF_GODMODE)
 		if !(leveltime&0x1f != 0) {
-			P_DamageMobj(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), int32(20))
+			P_DamageMobj(tls, (*player_t)(unsafe.Pointer(player)).Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), 20)
 		}
-		if (*player_t)(unsafe.Pointer(player)).Fhealth <= int32(10) {
+		if (*player_t)(unsafe.Pointer(player)).Fhealth <= 10 {
 			G_ExitLevel(tls)
 		}
 	default:
@@ -33354,7 +33354,7 @@ func P_UpdateSpecials(tls *libc.TLS) {
 		}
 	}
 	//	ANIMATE FLATS AND TEXTURES GLOBALLY
-	for pos := int32(0); ; pos++ {
+	for pos := 0; ; pos++ {
 		anim := &anims[pos]
 		if anim == lastanim {
 			break
@@ -33382,7 +33382,7 @@ func P_UpdateSpecials(tls *libc.TLS) {
 		}
 		line = linespeciallist[i]
 		switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
-		case int32(48):
+		case 48:
 			// EFFECT FIRSTCOL SCROLL +
 			(*(*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(line + 30)))*24))).Ftextureoffset += 1 << FRACBITS
 			break
@@ -33445,7 +33445,7 @@ func DonutOverrun(tls *libc.TLS, s3_floorheight uintptr, s3_floorpic uintptr, li
 		// In Vanilla Doom this can differ depending on the operating
 		// system.  The default (if this option is not specified) is to
 		// emulate the behavior when running under Windows 98.
-		p = M_CheckParmWithArgs(__ccgo_ts(25431), int32(2))
+		p = M_CheckParmWithArgs(__ccgo_ts(25431), 2)
 		if p > 0 {
 			// Dump of needed memory: (fixed_t)0000:0000 and (short)0000:0008
 			//
@@ -33479,7 +33479,7 @@ func DonutOverrun(tls *libc.TLS, s3_floorheight uintptr, s3_floorpic uintptr, li
 	*(*int16)(unsafe.Pointer(s3_floorpic)) = int16(tmp_s3_floorpic)
 }
 
-var first = int32(1)
+var first = 1
 
 var tmp_s3_floorheight int32
 
@@ -33507,7 +33507,7 @@ func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
 		if (*sector_t)(unsafe.Pointer(s1)).Fspecialdata != 0 {
 			continue
 		}
-		rtn = int32(1)
+		rtn = 1
 		s2 = getNextSector(tls, *(*uintptr)(unsafe.Pointer((*sector_t)(unsafe.Pointer(s1)).Flines)), s1)
 		// Vanilla Doom does not check if the linedef is one sided.  The
 		// game does not crash, but reads invalid memory and causes the
@@ -33543,20 +33543,20 @@ func EV_DoDonut(tls *libc.TLS, line uintptr) (r int32) {
 				*(*int16)(unsafe.Pointer(bp + 4)) = (*sector_t)(unsafe.Pointer(s3)).Ffloorpic
 			}
 			//	Spawn rising slime
-			floor = Z_Malloc(tls, int32(64), int32(PU_LEVSPEC), uintptr(0))
+			floor = Z_Malloc(tls, 64, int32(PU_LEVSPEC), uintptr(0))
 			P_AddThinker(tls, floor)
 			(*sector_t)(unsafe.Pointer(s2)).Fspecialdata = floor
 			*(*actionf_p1)(unsafe.Pointer(floor + 16)) = __ccgo_fp(T_MoveFloor)
 			(*floormove_t)(unsafe.Pointer(floor)).Ftype1 = int32(donutRaise)
 			(*floormove_t)(unsafe.Pointer(floor)).Fcrush = 0
-			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = int32(1)
+			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = 1
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = s2
 			(*floormove_t)(unsafe.Pointer(floor)).Fspeed = 1 << FRACBITS / 2
 			(*floormove_t)(unsafe.Pointer(floor)).Ftexture = *(*int16)(unsafe.Pointer(bp + 4))
 			(*floormove_t)(unsafe.Pointer(floor)).Fnewspecial = 0
 			(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = *(*fixed_t)(unsafe.Pointer(bp))
 			//	Spawn lowering donut-hole
-			floor = Z_Malloc(tls, int32(64), int32(PU_LEVSPEC), uintptr(0))
+			floor = Z_Malloc(tls, 64, int32(PU_LEVSPEC), uintptr(0))
 			P_AddThinker(tls, floor)
 			(*sector_t)(unsafe.Pointer(s1)).Fspecialdata = floor
 			*(*actionf_p1)(unsafe.Pointer(floor + 16)) = __ccgo_fp(T_MoveFloor)
@@ -33585,7 +33585,7 @@ func P_SpawnSpecials(tls *libc.TLS) {
 	// See if -TIMER was specified.
 	if timelimit > 0 && deathmatch != 0 {
 		levelTimer = 1
-		levelTimeCount = timelimit * int32(60) * int32(TICRATE)
+		levelTimeCount = timelimit * 60 * int32(TICRATE)
 	} else {
 		levelTimer = 0
 	}
@@ -33600,38 +33600,38 @@ func P_SpawnSpecials(tls *libc.TLS) {
 			goto _1
 		}
 		switch int32((*sector_t)(unsafe.Pointer(sector)).Fspecial) {
-		case int32(1):
+		case 1:
 			// FLICKERING LIGHTS
 			P_SpawnLightFlash(tls, sector)
-		case int32(2):
+		case 2:
 			// STROBE FAST
 			P_SpawnStrobeFlash(tls, sector, int32(FASTDARK), 0)
-		case int32(3):
+		case 3:
 			// STROBE SLOW
 			P_SpawnStrobeFlash(tls, sector, int32(SLOWDARK), 0)
-		case int32(4):
+		case 4:
 			// STROBE FAST/DEATH SLIME
 			P_SpawnStrobeFlash(tls, sector, int32(FASTDARK), 0)
-			(*sector_t)(unsafe.Pointer(sector)).Fspecial = int16(4)
-		case int32(8):
+			(*sector_t)(unsafe.Pointer(sector)).Fspecial = 4
+		case 8:
 			// GLOWING LIGHT
 			P_SpawnGlowingLight(tls, sector)
-		case int32(9):
+		case 9:
 			// SECRET SECTOR
 			totalsecret++
-		case int32(10):
+		case 10:
 			// DOOR CLOSE IN 30 SECONDS
 			P_SpawnDoorCloseIn30(tls, sector)
-		case int32(12):
+		case 12:
 			// SYNC STROBE SLOW
-			P_SpawnStrobeFlash(tls, sector, int32(SLOWDARK), int32(1))
-		case int32(13):
+			P_SpawnStrobeFlash(tls, sector, int32(SLOWDARK), 1)
+		case 13:
 			// SYNC STROBE FAST
-			P_SpawnStrobeFlash(tls, sector, int32(FASTDARK), int32(1))
-		case int32(14):
+			P_SpawnStrobeFlash(tls, sector, int32(FASTDARK), 1)
+		case 14:
 			// DOOR RAISE IN 5 MINUTES
 			P_SpawnDoorRaiseIn5Mins(tls, sector, i)
-		case int32(17):
+		case 17:
 			P_SpawnFireFlicker(tls, sector)
 			break
 		}
@@ -33649,7 +33649,7 @@ func P_SpawnSpecials(tls *libc.TLS) {
 			break
 		}
 		switch int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fspecial) {
-		case int32(48):
+		case 48:
 			if int32(numlinespecials) >= int32(MAXLINEANIMS) {
 				I_Error(tls, __ccgo_ts(25801), 0)
 			}
@@ -33706,202 +33706,202 @@ func init() {
 		0: {
 			Fname1:   [9]int8{'S', 'W', '1', 'B', 'R', 'C', 'O', 'M'},
 			Fname2:   [9]int8{'S', 'W', '2', 'B', 'R', 'C', 'O', 'M'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		1: {
 			Fname1:   [9]int8{'S', 'W', '1', 'B', 'R', 'N', '1'},
 			Fname2:   [9]int8{'S', 'W', '2', 'B', 'R', 'N', '1'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		2: {
 			Fname1:   [9]int8{'S', 'W', '1', 'B', 'R', 'N', '2'},
 			Fname2:   [9]int8{'S', 'W', '2', 'B', 'R', 'N', '2'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		3: {
 			Fname1:   [9]int8{'S', 'W', '1', 'B', 'R', 'N', 'G', 'N'},
 			Fname2:   [9]int8{'S', 'W', '2', 'B', 'R', 'N', 'G', 'N'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		4: {
 			Fname1:   [9]int8{'S', 'W', '1', 'B', 'R', 'O', 'W', 'N'},
 			Fname2:   [9]int8{'S', 'W', '2', 'B', 'R', 'O', 'W', 'N'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		5: {
 			Fname1:   [9]int8{'S', 'W', '1', 'C', 'O', 'M', 'M'},
 			Fname2:   [9]int8{'S', 'W', '2', 'C', 'O', 'M', 'M'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		6: {
 			Fname1:   [9]int8{'S', 'W', '1', 'C', 'O', 'M', 'P'},
 			Fname2:   [9]int8{'S', 'W', '2', 'C', 'O', 'M', 'P'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		7: {
 			Fname1:   [9]int8{'S', 'W', '1', 'D', 'I', 'R', 'T'},
 			Fname2:   [9]int8{'S', 'W', '2', 'D', 'I', 'R', 'T'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		8: {
 			Fname1:   [9]int8{'S', 'W', '1', 'E', 'X', 'I', 'T'},
 			Fname2:   [9]int8{'S', 'W', '2', 'E', 'X', 'I', 'T'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		9: {
 			Fname1:   [9]int8{'S', 'W', '1', 'G', 'R', 'A', 'Y'},
 			Fname2:   [9]int8{'S', 'W', '2', 'G', 'R', 'A', 'Y'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		10: {
 			Fname1:   [9]int8{'S', 'W', '1', 'G', 'R', 'A', 'Y', '1'},
 			Fname2:   [9]int8{'S', 'W', '2', 'G', 'R', 'A', 'Y', '1'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		11: {
 			Fname1:   [9]int8{'S', 'W', '1', 'M', 'E', 'T', 'A', 'L'},
 			Fname2:   [9]int8{'S', 'W', '2', 'M', 'E', 'T', 'A', 'L'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		12: {
 			Fname1:   [9]int8{'S', 'W', '1', 'P', 'I', 'P', 'E'},
 			Fname2:   [9]int8{'S', 'W', '2', 'P', 'I', 'P', 'E'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		13: {
 			Fname1:   [9]int8{'S', 'W', '1', 'S', 'L', 'A', 'D'},
 			Fname2:   [9]int8{'S', 'W', '2', 'S', 'L', 'A', 'D'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		14: {
 			Fname1:   [9]int8{'S', 'W', '1', 'S', 'T', 'A', 'R', 'G'},
 			Fname2:   [9]int8{'S', 'W', '2', 'S', 'T', 'A', 'R', 'G'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		15: {
 			Fname1:   [9]int8{'S', 'W', '1', 'S', 'T', 'O', 'N', '1'},
 			Fname2:   [9]int8{'S', 'W', '2', 'S', 'T', 'O', 'N', '1'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		16: {
 			Fname1:   [9]int8{'S', 'W', '1', 'S', 'T', 'O', 'N', '2'},
 			Fname2:   [9]int8{'S', 'W', '2', 'S', 'T', 'O', 'N', '2'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		17: {
 			Fname1:   [9]int8{'S', 'W', '1', 'S', 'T', 'O', 'N', 'E'},
 			Fname2:   [9]int8{'S', 'W', '2', 'S', 'T', 'O', 'N', 'E'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		18: {
 			Fname1:   [9]int8{'S', 'W', '1', 'S', 'T', 'R', 'T', 'N'},
 			Fname2:   [9]int8{'S', 'W', '2', 'S', 'T', 'R', 'T', 'N'},
-			Fepisode: int16(1),
+			Fepisode: 1,
 		},
 		19: {
 			Fname1:   [9]int8{'S', 'W', '1', 'B', 'L', 'U', 'E'},
 			Fname2:   [9]int8{'S', 'W', '2', 'B', 'L', 'U', 'E'},
-			Fepisode: int16(2),
+			Fepisode: 2,
 		},
 		20: {
 			Fname1:   [9]int8{'S', 'W', '1', 'C', 'M', 'T'},
 			Fname2:   [9]int8{'S', 'W', '2', 'C', 'M', 'T'},
-			Fepisode: int16(2),
+			Fepisode: 2,
 		},
 		21: {
 			Fname1:   [9]int8{'S', 'W', '1', 'G', 'A', 'R', 'G'},
 			Fname2:   [9]int8{'S', 'W', '2', 'G', 'A', 'R', 'G'},
-			Fepisode: int16(2),
+			Fepisode: 2,
 		},
 		22: {
 			Fname1:   [9]int8{'S', 'W', '1', 'G', 'S', 'T', 'O', 'N'},
 			Fname2:   [9]int8{'S', 'W', '2', 'G', 'S', 'T', 'O', 'N'},
-			Fepisode: int16(2),
+			Fepisode: 2,
 		},
 		23: {
 			Fname1:   [9]int8{'S', 'W', '1', 'H', 'O', 'T'},
 			Fname2:   [9]int8{'S', 'W', '2', 'H', 'O', 'T'},
-			Fepisode: int16(2),
+			Fepisode: 2,
 		},
 		24: {
 			Fname1:   [9]int8{'S', 'W', '1', 'L', 'I', 'O', 'N'},
 			Fname2:   [9]int8{'S', 'W', '2', 'L', 'I', 'O', 'N'},
-			Fepisode: int16(2),
+			Fepisode: 2,
 		},
 		25: {
 			Fname1:   [9]int8{'S', 'W', '1', 'S', 'A', 'T', 'Y', 'R'},
 			Fname2:   [9]int8{'S', 'W', '2', 'S', 'A', 'T', 'Y', 'R'},
-			Fepisode: int16(2),
+			Fepisode: 2,
 		},
 		26: {
 			Fname1:   [9]int8{'S', 'W', '1', 'S', 'K', 'I', 'N'},
 			Fname2:   [9]int8{'S', 'W', '2', 'S', 'K', 'I', 'N'},
-			Fepisode: int16(2),
+			Fepisode: 2,
 		},
 		27: {
 			Fname1:   [9]int8{'S', 'W', '1', 'V', 'I', 'N', 'E'},
 			Fname2:   [9]int8{'S', 'W', '2', 'V', 'I', 'N', 'E'},
-			Fepisode: int16(2),
+			Fepisode: 2,
 		},
 		28: {
 			Fname1:   [9]int8{'S', 'W', '1', 'W', 'O', 'O', 'D'},
 			Fname2:   [9]int8{'S', 'W', '2', 'W', 'O', 'O', 'D'},
-			Fepisode: int16(2),
+			Fepisode: 2,
 		},
 		29: {
 			Fname1:   [9]int8{'S', 'W', '1', 'P', 'A', 'N', 'E', 'L'},
 			Fname2:   [9]int8{'S', 'W', '2', 'P', 'A', 'N', 'E', 'L'},
-			Fepisode: int16(3),
+			Fepisode: 3,
 		},
 		30: {
 			Fname1:   [9]int8{'S', 'W', '1', 'R', 'O', 'C', 'K'},
 			Fname2:   [9]int8{'S', 'W', '2', 'R', 'O', 'C', 'K'},
-			Fepisode: int16(3),
+			Fepisode: 3,
 		},
 		31: {
 			Fname1:   [9]int8{'S', 'W', '1', 'M', 'E', 'T', '2'},
 			Fname2:   [9]int8{'S', 'W', '2', 'M', 'E', 'T', '2'},
-			Fepisode: int16(3),
+			Fepisode: 3,
 		},
 		32: {
 			Fname1:   [9]int8{'S', 'W', '1', 'W', 'D', 'M', 'E', 'T'},
 			Fname2:   [9]int8{'S', 'W', '2', 'W', 'D', 'M', 'E', 'T'},
-			Fepisode: int16(3),
+			Fepisode: 3,
 		},
 		33: {
 			Fname1:   [9]int8{'S', 'W', '1', 'B', 'R', 'I', 'K'},
 			Fname2:   [9]int8{'S', 'W', '2', 'B', 'R', 'I', 'K'},
-			Fepisode: int16(3),
+			Fepisode: 3,
 		},
 		34: {
 			Fname1:   [9]int8{'S', 'W', '1', 'M', 'O', 'D', '1'},
 			Fname2:   [9]int8{'S', 'W', '2', 'M', 'O', 'D', '1'},
-			Fepisode: int16(3),
+			Fepisode: 3,
 		},
 		35: {
 			Fname1:   [9]int8{'S', 'W', '1', 'Z', 'I', 'M'},
 			Fname2:   [9]int8{'S', 'W', '2', 'Z', 'I', 'M'},
-			Fepisode: int16(3),
+			Fepisode: 3,
 		},
 		36: {
 			Fname1:   [9]int8{'S', 'W', '1', 'S', 'T', 'O', 'N', '6'},
 			Fname2:   [9]int8{'S', 'W', '2', 'S', 'T', 'O', 'N', '6'},
-			Fepisode: int16(3),
+			Fepisode: 3,
 		},
 		37: {
 			Fname1:   [9]int8{'S', 'W', '1', 'T', 'E', 'K'},
 			Fname2:   [9]int8{'S', 'W', '2', 'T', 'E', 'K'},
-			Fepisode: int16(3),
+			Fepisode: 3,
 		},
 		38: {
 			Fname1:   [9]int8{'S', 'W', '1', 'M', 'A', 'R', 'B'},
 			Fname2:   [9]int8{'S', 'W', '2', 'M', 'A', 'R', 'B'},
-			Fepisode: int16(3),
+			Fepisode: 3,
 		},
 		39: {
 			Fname1:   [9]int8{'S', 'W', '1', 'S', 'K', 'U', 'L', 'L'},
 			Fname2:   [9]int8{'S', 'W', '2', 'S', 'K', 'U', 'L', 'L'},
-			Fepisode: int16(3),
+			Fepisode: 3,
 		},
 		40: {
 			Fname1: [9]int8{},
@@ -33918,12 +33918,12 @@ func init() {
 //	//
 func P_InitSwitchList(tls *libc.TLS) {
 	var episode, i, index, v2, v3 int32
-	episode = int32(1)
+	episode = 1
 	if gamemode == int32(registered) || gamemode == int32(retail) {
-		episode = int32(2)
+		episode = 2
 	} else {
 		if gamemode == int32(commercial) {
-			episode = int32(3)
+			episode = 3
 		}
 	}
 	index = 0
@@ -33933,7 +33933,7 @@ func P_InitSwitchList(tls *libc.TLS) {
 			break
 		}
 		if !(alphSwitchList[i].Fepisode != 0) {
-			numswitches = index / int32(2)
+			numswitches = index / 2
 			switchlist[index] = -1
 			break
 		}
@@ -34010,7 +34010,7 @@ func P_ChangeSwitchTexture(tls *libc.TLS, line uintptr, useAgain int32) {
 	texBot = int32((*(*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(line + 30)))*24))).Fbottomtexture)
 	sound = int32(sfx_swtchn)
 	// EXIT SWITCH?
-	if int32((*line_t)(unsafe.Pointer(line)).Fspecial) == int32(11) {
+	if int32((*line_t)(unsafe.Pointer(line)).Fspecial) == 11 {
 		sound = int32(sfx_swtchx)
 	}
 	i = 0
@@ -34063,7 +34063,7 @@ func P_UseSpecialLine(tls *libc.TLS, thing uintptr, line uintptr, side int32) (r
 	// Use the back sides of VERY SPECIAL lines...
 	if side != 0 {
 		switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
-		case int32(124):
+		case 124:
 			// Sliding door open&close
 			// UNUSED?
 		default:
@@ -34078,13 +34078,13 @@ func P_UseSpecialLine(tls *libc.TLS, thing uintptr, line uintptr, side int32) (r
 			return 0
 		}
 		switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
-		case int32(1): // MANUAL DOOR RAISE
+		case 1: // MANUAL DOOR RAISE
 			fallthrough
-		case int32(32): // MANUAL BLUE
+		case 32: // MANUAL BLUE
 			fallthrough
-		case int32(33): // MANUAL RED
+		case 33: // MANUAL RED
 			fallthrough
-		case int32(34): // MANUAL YELLOW
+		case 34: // MANUAL YELLOW
 		default:
 			return 0
 			break
@@ -34093,25 +34093,25 @@ func P_UseSpecialLine(tls *libc.TLS, thing uintptr, line uintptr, side int32) (r
 	// do something
 	switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
 	// MANUALS
-	case int32(1): // Vertical Door
+	case 1: // Vertical Door
 		fallthrough
-	case int32(26): // Blue Door/Locked
+	case 26: // Blue Door/Locked
 		fallthrough
-	case int32(27): // Yellow Door /Locked
+	case 27: // Yellow Door /Locked
 		fallthrough
-	case int32(28): // Red Door /Locked
+	case 28: // Red Door /Locked
 		fallthrough
-	case int32(31): // Manual door open
+	case 31: // Manual door open
 		fallthrough
-	case int32(32): // Blue locked door open
+	case 32: // Blue locked door open
 		fallthrough
-	case int32(33): // Red locked door open
+	case 33: // Red locked door open
 		fallthrough
-	case int32(34): // Yellow locked door open
+	case 34: // Yellow locked door open
 		fallthrough
-	case int32(117): // Blazing door raise
+	case 117: // Blazing door raise
 		fallthrough
-	case int32(118): // Blazing door open
+	case 118: // Blazing door open
 		EV_VerticalDoor(tls, line, thing)
 		break
 		//UNUSED - Door Slide Open&Close
@@ -34120,141 +34120,141 @@ func P_UseSpecialLine(tls *libc.TLS, thing uintptr, line uintptr, side int32) (r
 		// break;
 		// SWITCHES
 		fallthrough
-	case int32(7):
+	case 7:
 		// Build Stairs
 		if EV_BuildStairs(tls, line, int32(build8)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(9):
+	case 9:
 		// Change Donut
 		if EV_DoDonut(tls, line) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(11):
+	case 11:
 		// Exit level
 		P_ChangeSwitchTexture(tls, line, 0)
 		G_ExitLevel(tls)
-	case int32(14):
+	case 14:
 		// Raise Floor 32 and change texture
-		if EV_DoPlat(tls, line, int32(raiseAndChange), int32(32)) != 0 {
+		if EV_DoPlat(tls, line, int32(raiseAndChange), 32) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(15):
+	case 15:
 		// Raise Floor 24 and change texture
-		if EV_DoPlat(tls, line, int32(raiseAndChange), int32(24)) != 0 {
+		if EV_DoPlat(tls, line, int32(raiseAndChange), 24) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(18):
+	case 18:
 		// Raise Floor to next highest floor
 		if EV_DoFloor(tls, line, int32(raiseFloorToNearest)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(20):
+	case 20:
 		// Raise Plat next highest floor and change texture
 		if EV_DoPlat(tls, line, int32(raiseToNearestAndChange), 0) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(21):
+	case 21:
 		// PlatDownWaitUpStay
 		if EV_DoPlat(tls, line, int32(downWaitUpStay), 0) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(23):
+	case 23:
 		// Lower Floor to Lowest
 		if EV_DoFloor(tls, line, int32(lowerFloorToLowest)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(29):
+	case 29:
 		// Raise Door
 		if EV_DoDoor(tls, line, int32(vld_normal)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(41):
+	case 41:
 		// Lower Ceiling to Floor
 		if EV_DoCeiling(tls, line, int32(lowerToFloor)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(71):
+	case 71:
 		// Turbo Lower Floor
 		if EV_DoFloor(tls, line, int32(turboLower)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(49):
+	case 49:
 		// Ceiling Crush And Raise
 		if EV_DoCeiling(tls, line, int32(crushAndRaise)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(50):
+	case 50:
 		// Close Door
 		if EV_DoDoor(tls, line, int32(vld_close)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(51):
+	case 51:
 		// Secret EXIT
 		P_ChangeSwitchTexture(tls, line, 0)
 		G_SecretExitLevel(tls)
-	case int32(55):
+	case 55:
 		// Raise Floor Crush
 		if EV_DoFloor(tls, line, int32(raiseFloorCrush)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(101):
+	case 101:
 		// Raise Floor
 		if EV_DoFloor(tls, line, int32(raiseFloor)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(102):
+	case 102:
 		// Lower Floor to Surrounding floor height
 		if EV_DoFloor(tls, line, int32(lowerFloor)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(103):
+	case 103:
 		// Open Door
 		if EV_DoDoor(tls, line, int32(vld_open)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(111):
+	case 111:
 		// Blazing Door Raise (faster than TURBO!)
 		if EV_DoDoor(tls, line, int32(vld_blazeRaise)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(112):
+	case 112:
 		// Blazing Door Open (faster than TURBO!)
 		if EV_DoDoor(tls, line, int32(vld_blazeOpen)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(113):
+	case 113:
 		// Blazing Door Close (faster than TURBO!)
 		if EV_DoDoor(tls, line, int32(vld_blazeClose)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(122):
+	case 122:
 		// Blazing PlatDownWaitUpStay
 		if EV_DoPlat(tls, line, int32(blazeDWUS), 0) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(127):
+	case 127:
 		// Build Stairs Turbo 16
 		if EV_BuildStairs(tls, line, int32(turbo16)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(131):
+	case 131:
 		// Raise Floor Turbo
 		if EV_DoFloor(tls, line, int32(raiseFloorTurbo)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(133):
+	case 133:
 		// BlzOpenDoor BLUE
 		fallthrough
-	case int32(135):
+	case 135:
 		// BlzOpenDoor RED
 		fallthrough
-	case int32(137):
+	case 137:
 		// BlzOpenDoor YELLOW
 		if EV_DoLockedDoor(tls, line, int32(vld_blazeOpen), thing) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
 		}
-	case int32(140):
+	case 140:
 		// Raise Floor 512
 		if EV_DoFloor(tls, line, int32(raiseFloor512)) != 0 {
 			P_ChangeSwitchTexture(tls, line, 0)
@@ -34262,120 +34262,120 @@ func P_UseSpecialLine(tls *libc.TLS, thing uintptr, line uintptr, side int32) (r
 		break
 		// BUTTONS
 		fallthrough
-	case int32(42):
+	case 42:
 		// Close Door
 		if EV_DoDoor(tls, line, int32(vld_close)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(43):
+	case 43:
 		// Lower Ceiling to Floor
 		if EV_DoCeiling(tls, line, int32(lowerToFloor)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(45):
+	case 45:
 		// Lower Floor to Surrounding floor height
 		if EV_DoFloor(tls, line, int32(lowerFloor)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(60):
+	case 60:
 		// Lower Floor to Lowest
 		if EV_DoFloor(tls, line, int32(lowerFloorToLowest)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(61):
+	case 61:
 		// Open Door
 		if EV_DoDoor(tls, line, int32(vld_open)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(62):
+	case 62:
 		// PlatDownWaitUpStay
-		if EV_DoPlat(tls, line, int32(downWaitUpStay), int32(1)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+		if EV_DoPlat(tls, line, int32(downWaitUpStay), 1) != 0 {
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(63):
+	case 63:
 		// Raise Door
 		if EV_DoDoor(tls, line, int32(vld_normal)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(64):
+	case 64:
 		// Raise Floor to ceiling
 		if EV_DoFloor(tls, line, int32(raiseFloor)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(66):
+	case 66:
 		// Raise Floor 24 and change texture
-		if EV_DoPlat(tls, line, int32(raiseAndChange), int32(24)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+		if EV_DoPlat(tls, line, int32(raiseAndChange), 24) != 0 {
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(67):
+	case 67:
 		// Raise Floor 32 and change texture
-		if EV_DoPlat(tls, line, int32(raiseAndChange), int32(32)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+		if EV_DoPlat(tls, line, int32(raiseAndChange), 32) != 0 {
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(65):
+	case 65:
 		// Raise Floor Crush
 		if EV_DoFloor(tls, line, int32(raiseFloorCrush)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(68):
+	case 68:
 		// Raise Plat to next highest floor and change texture
 		if EV_DoPlat(tls, line, int32(raiseToNearestAndChange), 0) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(69):
+	case 69:
 		// Raise Floor to next highest floor
 		if EV_DoFloor(tls, line, int32(raiseFloorToNearest)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(70):
+	case 70:
 		// Turbo Lower Floor
 		if EV_DoFloor(tls, line, int32(turboLower)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(114):
+	case 114:
 		// Blazing Door Raise (faster than TURBO!)
 		if EV_DoDoor(tls, line, int32(vld_blazeRaise)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(115):
+	case 115:
 		// Blazing Door Open (faster than TURBO!)
 		if EV_DoDoor(tls, line, int32(vld_blazeOpen)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(116):
+	case 116:
 		// Blazing Door Close (faster than TURBO!)
 		if EV_DoDoor(tls, line, int32(vld_blazeClose)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(123):
+	case 123:
 		// Blazing PlatDownWaitUpStay
 		if EV_DoPlat(tls, line, int32(blazeDWUS), 0) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(132):
+	case 132:
 		// Raise Floor Turbo
 		if EV_DoFloor(tls, line, int32(raiseFloorTurbo)) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(99):
+	case 99:
 		// BlzOpenDoor BLUE
 		fallthrough
-	case int32(134):
+	case 134:
 		// BlzOpenDoor RED
 		fallthrough
-	case int32(136):
+	case 136:
 		// BlzOpenDoor YELLOW
 		if EV_DoLockedDoor(tls, line, int32(vld_blazeOpen), thing) != 0 {
-			P_ChangeSwitchTexture(tls, line, int32(1))
+			P_ChangeSwitchTexture(tls, line, 1)
 		}
-	case int32(138):
+	case 138:
 		// Light Turn On
-		EV_LightTurnOn(tls, line, int32(255))
-		P_ChangeSwitchTexture(tls, line, int32(1))
-	case int32(139):
+		EV_LightTurnOn(tls, line, 255)
+		P_ChangeSwitchTexture(tls, line, 1)
+	case 139:
 		// Light Turn Off
-		EV_LightTurnOn(tls, line, int32(35))
-		P_ChangeSwitchTexture(tls, line, int32(1))
+		EV_LightTurnOn(tls, line, 35)
+		P_ChangeSwitchTexture(tls, line, 1)
 		break
 	}
 	return 1
@@ -34436,7 +34436,7 @@ func EV_Teleport(tls *libc.TLS, line uintptr, side int32, thing uintptr) (r int3
 	}
 	// Don't teleport if hit back of line,
 	//  so you can get out of teleporter.
-	if side == int32(1) {
+	if side == 1 {
 		return 0
 	}
 	tag = int32((*line_t)(unsafe.Pointer(line)).Ftag)
@@ -34491,7 +34491,7 @@ func EV_Teleport(tls *libc.TLS, line uintptr, side int32, thing uintptr) (r int3
 				S_StartSound(tls, fog, int32(sfx_telept))
 				// don't move for a bit
 				if (*mobj_t)(unsafe.Pointer(thing)).Fplayer != 0 {
-					(*mobj_t)(unsafe.Pointer(thing)).Freactiontime = int32(18)
+					(*mobj_t)(unsafe.Pointer(thing)).Freactiontime = 18
 				}
 				(*mobj_t)(unsafe.Pointer(thing)).Fangle = (*mobj_t)(unsafe.Pointer(m)).Fangle
 				v4 = 0
@@ -34499,7 +34499,7 @@ func EV_Teleport(tls *libc.TLS, line uintptr, side int32, thing uintptr) (r int3
 				v3 = v4
 				(*mobj_t)(unsafe.Pointer(thing)).Fmomy = v3
 				(*mobj_t)(unsafe.Pointer(thing)).Fmomx = v3
-				return int32(1)
+				return 1
 				goto _2
 			_2:
 				;
@@ -34585,7 +34585,7 @@ func P_Ticker(tls *libc.TLS) {
 		return
 	}
 	// pause if in menu and at least one tic has been run
-	if !(netgame != 0) && menuactive != 0 && !(demoplayback != 0) && players[consoleplayer].Fviewz != int32(1) {
+	if !(netgame != 0) && menuactive != 0 && !(demoplayback != 0) && players[consoleplayer].Fviewz != 1 {
 		return
 	}
 	i = 0
@@ -34641,7 +34641,7 @@ func P_CalcHeight(tls *libc.TLS, player uintptr) {
 	// Note: a LUT allows for effects
 	//  like a ramp with low health.
 	(*player_t)(unsafe.Pointer(player)).Fbob = FixedMul((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fmomx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fmomx) + FixedMul((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fmomy, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fmomy)
-	*(*fixed_t)(unsafe.Pointer(player + 40)) >>= int32(2)
+	*(*fixed_t)(unsafe.Pointer(player + 40)) >>= 2
 	if (*player_t)(unsafe.Pointer(player)).Fbob > int32(MAXBOB) {
 		(*player_t)(unsafe.Pointer(player)).Fbob = int32(MAXBOB)
 	}
@@ -34665,13 +34665,13 @@ func P_CalcHeight(tls *libc.TLS, player uintptr) {
 		if (*player_t)(unsafe.Pointer(player)).Fviewheight < 41*(1<<FRACBITS)/2 {
 			(*player_t)(unsafe.Pointer(player)).Fviewheight = 41 * (1 << FRACBITS) / 2
 			if (*player_t)(unsafe.Pointer(player)).Fdeltaviewheight <= 0 {
-				(*player_t)(unsafe.Pointer(player)).Fdeltaviewheight = int32(1)
+				(*player_t)(unsafe.Pointer(player)).Fdeltaviewheight = 1
 			}
 		}
 		if (*player_t)(unsafe.Pointer(player)).Fdeltaviewheight != 0 {
 			*(*fixed_t)(unsafe.Pointer(player + 36)) += 1 << FRACBITS / 4
 			if !((*player_t)(unsafe.Pointer(player)).Fdeltaviewheight != 0) {
-				(*player_t)(unsafe.Pointer(player)).Fdeltaviewheight = int32(1)
+				(*player_t)(unsafe.Pointer(player)).Fdeltaviewheight = 1
 			}
 		}
 	}
@@ -34863,7 +34863,7 @@ func P_PlayerThink(tls *libc.TLS, player uintptr) {
 		if *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_infrared)*4)) != 0 {
 			if *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_infrared)*4)) > 4*32 || *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_infrared)*4))&int32(8) != 0 {
 				// almost full bright
-				(*player_t)(unsafe.Pointer(player)).Ffixedcolormap = int32(1)
+				(*player_t)(unsafe.Pointer(player)).Ffixedcolormap = 1
 			} else {
 				(*player_t)(unsafe.Pointer(player)).Ffixedcolormap = 0
 			}
@@ -35118,47 +35118,47 @@ clipsolid:
 func init() {
 	checkcoord = [12][4]int32{
 		0: {
-			0: int32(3),
-			2: int32(2),
-			3: int32(1),
+			0: 3,
+			2: 2,
+			3: 1,
 		},
 		1: {
-			0: int32(3),
-			2: int32(2),
+			0: 3,
+			2: 2,
 		},
 		2: {
-			0: int32(3),
-			1: int32(1),
-			2: int32(2),
+			0: 3,
+			1: 1,
+			2: 2,
 		},
 		3: {},
 		4: {
-			0: int32(2),
-			2: int32(2),
-			3: int32(1),
+			0: 2,
+			2: 2,
+			3: 1,
 		},
 		5: {},
 		6: {
-			0: int32(3),
-			1: int32(1),
-			2: int32(3),
+			0: 3,
+			1: 1,
+			2: 3,
 		},
 		7: {},
 		8: {
-			0: int32(2),
-			2: int32(3),
-			3: int32(1),
+			0: 2,
+			2: 3,
+			3: 1,
 		},
 		9: {
-			0: int32(2),
-			1: int32(1),
-			2: int32(3),
-			3: int32(1),
+			0: 2,
+			1: 1,
+			2: 3,
+			3: 1,
 		},
 		10: {
-			0: int32(2),
-			1: int32(1),
-			2: int32(3),
+			0: 2,
+			1: 1,
+			2: 3,
 		},
 	}
 }
@@ -35174,22 +35174,22 @@ func R_CheckBBox(tls *libc.TLS, bspcoord uintptr) (r boolean) {
 		boxx = 0
 	} else {
 		if viewx < *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(BOXRIGHT)*4)) {
-			boxx = int32(1)
+			boxx = 1
 		} else {
-			boxx = int32(2)
+			boxx = 2
 		}
 	}
 	if viewy >= *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(BOXTOP)*4)) {
 		boxy = 0
 	} else {
 		if viewy > *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(BOXBOTTOM)*4)) {
-			boxy = int32(1)
+			boxy = 1
 		} else {
-			boxy = int32(2)
+			boxy = 2
 		}
 	}
 	boxpos = boxy<<int32(2) + boxx
-	if boxpos == int32(5) {
+	if boxpos == 5 {
 		return 1
 	}
 	x1 = *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&checkcoord)) + uintptr(boxpos)*16)))*4))
@@ -35499,7 +35499,7 @@ func R_GenerateComposite(tls *libc.TLS, texnum int32) {
 	}
 	// Now that the texture has been built in column cache,
 	//  it is purgable from zone memory.
-	Z_ChangeTag2(tls, block, int32(PU_CACHE), __ccgo_ts(25929), int32(286))
+	Z_ChangeTag2(tls, block, int32(PU_CACHE), __ccgo_ts(25929), 286)
 }
 
 // C documentation
@@ -35547,7 +35547,7 @@ func R_GenerateLookup(tls *libc.TLS, texnum int32) {
 			}
 			*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))++
 			*(*int16)(unsafe.Pointer(collump + uintptr(x)*2)) = int16((*texpatch_t)(unsafe.Pointer(patch)).Fpatch)
-			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = libc.Uint16FromInt32(*(*int32)(unsafe.Pointer(realpatch + 8 + uintptr(x-x1)*4)) + int32(3))
+			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = libc.Uint16FromInt32(*(*int32)(unsafe.Pointer(realpatch + 8 + uintptr(x-x1)*4)) + 3)
 			goto _2
 		_2:
 			;
@@ -35569,7 +35569,7 @@ func R_GenerateLookup(tls *libc.TLS, texnum int32) {
 			return
 		}
 		// I_Error ("R_GenerateLookup: column without a patch");
-		if libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))) > int32(1) {
+		if libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))) > 1 {
 			// Use the cached block.
 			*(*int16)(unsafe.Pointer(collump + uintptr(x)*2)) = int16(-1)
 			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = libc.Uint16FromInt32(*(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)))
@@ -35696,7 +35696,7 @@ func R_InitTextures(tls *libc.TLS) {
 	totalwidth = 0
 	//	Really complex printing shit...
 	temp1 = W_GetNumForName(tls, __ccgo_ts(26047)) // P_???????
-	temp2 = W_GetNumForName(tls, __ccgo_ts(26055)) - int32(1)
+	temp2 = W_GetNumForName(tls, __ccgo_ts(26055)) - 1
 	temp3 = (temp2-temp1+int32(63))/int32(64) + (numtextures+int32(63))/int32(64)
 	// If stdout is a real console, use the classic vanilla "filling
 	// up the box" effect, which uses backspace to "step back" inside
@@ -35775,11 +35775,11 @@ func R_InitTextures(tls *libc.TLS) {
 		}
 		*(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(i)*8)) = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt16((*texture_t)(unsafe.Pointer(texture)).Fwidth)*uint64(2)), int32(PU_STATIC), uintptr(0))
 		*(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(i)*8)) = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt16((*texture_t)(unsafe.Pointer(texture)).Fwidth)*uint64(2)), int32(PU_STATIC), uintptr(0))
-		j = int32(1)
+		j = 1
 		for j*int32(2) <= int32((*texture_t)(unsafe.Pointer(texture)).Fwidth) {
-			j <<= int32(1)
+			j <<= 1
 		}
-		*(*int32)(unsafe.Pointer(texturewidthmask + uintptr(i)*4)) = j - int32(1)
+		*(*int32)(unsafe.Pointer(texturewidthmask + uintptr(i)*4)) = j - 1
 		*(*fixed_t)(unsafe.Pointer(textureheight + uintptr(i)*4)) = int32((*texture_t)(unsafe.Pointer(texture)).Fheight) << int32(FRACBITS)
 		totalwidth += int32((*texture_t)(unsafe.Pointer(texture)).Fwidth)
 		goto _5
@@ -35828,9 +35828,9 @@ func R_InitTextures(tls *libc.TLS) {
 //	//
 func R_InitFlats(tls *libc.TLS) {
 	var i int32
-	firstflat = W_GetNumForName(tls, __ccgo_ts(26151)) + int32(1)
-	lastflat = W_GetNumForName(tls, __ccgo_ts(26159)) - int32(1)
-	numflats = lastflat - firstflat + int32(1)
+	firstflat = W_GetNumForName(tls, __ccgo_ts(26151)) + 1
+	lastflat = W_GetNumForName(tls, __ccgo_ts(26159)) - 1
+	numflats = lastflat - firstflat + 1
 	// Create translation table for global animation.
 	flattranslation = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numflats+1)*uint64(4)), int32(PU_STATIC), uintptr(0))
 	i = 0
@@ -35857,9 +35857,9 @@ func R_InitFlats(tls *libc.TLS) {
 func R_InitSpriteLumps(tls *libc.TLS) {
 	var i int32
 	var patch uintptr
-	firstspritelump = W_GetNumForName(tls, __ccgo_ts(26047)) + int32(1)
-	lastspritelump = W_GetNumForName(tls, __ccgo_ts(26055)) - int32(1)
-	numspritelumps = lastspritelump - firstspritelump + int32(1)
+	firstspritelump = W_GetNumForName(tls, __ccgo_ts(26047)) + 1
+	lastspritelump = W_GetNumForName(tls, __ccgo_ts(26055)) - 1
+	numspritelumps = lastspritelump - firstspritelump + 1
 	spritewidth = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
 	spriteoffset = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
 	spritetopoffset = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
@@ -35986,8 +35986,8 @@ func R_PrecacheLevel(tls *libc.TLS) {
 		if !(i < numsectors) {
 			break
 		}
-		*(*int8)(unsafe.Pointer(flatpresent + uintptr((*(*sector_t)(unsafe.Pointer(sectors + uintptr(i)*128))).Ffloorpic))) = int8(1)
-		*(*int8)(unsafe.Pointer(flatpresent + uintptr((*(*sector_t)(unsafe.Pointer(sectors + uintptr(i)*128))).Fceilingpic))) = int8(1)
+		*(*int8)(unsafe.Pointer(flatpresent + uintptr((*(*sector_t)(unsafe.Pointer(sectors + uintptr(i)*128))).Ffloorpic))) = 1
+		*(*int8)(unsafe.Pointer(flatpresent + uintptr((*(*sector_t)(unsafe.Pointer(sectors + uintptr(i)*128))).Fceilingpic))) = 1
 		goto _1
 	_1:
 		;
@@ -36016,9 +36016,9 @@ func R_PrecacheLevel(tls *libc.TLS) {
 		if !(i < numsides) {
 			break
 		}
-		*(*int8)(unsafe.Pointer(texturepresent + uintptr((*(*side_t)(unsafe.Pointer(sides + uintptr(i)*24))).Ftoptexture))) = int8(1)
-		*(*int8)(unsafe.Pointer(texturepresent + uintptr((*(*side_t)(unsafe.Pointer(sides + uintptr(i)*24))).Fmidtexture))) = int8(1)
-		*(*int8)(unsafe.Pointer(texturepresent + uintptr((*(*side_t)(unsafe.Pointer(sides + uintptr(i)*24))).Fbottomtexture))) = int8(1)
+		*(*int8)(unsafe.Pointer(texturepresent + uintptr((*(*side_t)(unsafe.Pointer(sides + uintptr(i)*24))).Ftoptexture))) = 1
+		*(*int8)(unsafe.Pointer(texturepresent + uintptr((*(*side_t)(unsafe.Pointer(sides + uintptr(i)*24))).Fmidtexture))) = 1
+		*(*int8)(unsafe.Pointer(texturepresent + uintptr((*(*side_t)(unsafe.Pointer(sides + uintptr(i)*24))).Fbottomtexture))) = 1
 		goto _3
 	_3:
 		;
@@ -36030,7 +36030,7 @@ func R_PrecacheLevel(tls *libc.TLS) {
 	//  while the sky texture is stored like
 	//  a wall texture, with an episode dependend
 	//  name.
-	*(*int8)(unsafe.Pointer(texturepresent + uintptr(skytexture))) = int8(1)
+	*(*int8)(unsafe.Pointer(texturepresent + uintptr(skytexture))) = 1
 	i = 0
 	for {
 		if !(i < numtextures) {
@@ -36067,7 +36067,7 @@ func R_PrecacheLevel(tls *libc.TLS) {
 			break
 		}
 		if *(*actionf_p1)(unsafe.Pointer(th + 16)) == __ccgo_fp(P_MobjThinker) {
-			*(*int8)(unsafe.Pointer(spritepresent + uintptr((*mobj_t)(unsafe.Pointer(th)).Fsprite))) = int8(1)
+			*(*int8)(unsafe.Pointer(spritepresent + uintptr((*mobj_t)(unsafe.Pointer(th)).Fsprite))) = 1
 		}
 		goto _6
 	_6:
@@ -36090,7 +36090,7 @@ func R_PrecacheLevel(tls *libc.TLS) {
 			sf = (*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes + uintptr(j)*28
 			k = 0
 			for {
-				if !(k < int32(8)) {
+				if !(k < 8) {
 					break
 				}
 				lump = firstspritelump + int32(*(*int16)(unsafe.Pointer(sf + 4 + uintptr(k)*2)))
@@ -36188,7 +36188,7 @@ func R_DrawColumnLow(tls *libc.TLS) {
 	}
 	//	dccount++;
 	// Blocky mode, need to multiply by 2.
-	x = dc_x << int32(1)
+	x = dc_x << 1
 	dest = ylookup[dc_yl] + uintptr(columnofs[x])
 	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+int32(1)])
 	fracstep = dc_iscale
@@ -36283,11 +36283,11 @@ func R_DrawFuzzColumn(tls *libc.TLS) {
 	var frac, fracstep fixed_t
 	// Adjust borders. Low...
 	if !(dc_yl != 0) {
-		dc_yl = int32(1)
+		dc_yl = 1
 	}
 	// .. and high.
 	if dc_yh == viewheight-1 {
-		dc_yh = viewheight - int32(2)
+		dc_yh = viewheight - 2
 	}
 	count = dc_yh - dc_yl
 	// Zero length.
@@ -36336,11 +36336,11 @@ func R_DrawFuzzColumnLow(tls *libc.TLS) {
 	var frac, fracstep fixed_t
 	// Adjust borders. Low...
 	if !(dc_yl != 0) {
-		dc_yl = int32(1)
+		dc_yl = 1
 	}
 	// .. and high.
 	if dc_yh == viewheight-1 {
-		dc_yh = viewheight - int32(2)
+		dc_yh = viewheight - 2
 	}
 	count = dc_yh - dc_yl
 	// Zero length.
@@ -36348,7 +36348,7 @@ func R_DrawFuzzColumnLow(tls *libc.TLS) {
 		return
 	}
 	// low detail mode, need to multiply by 2
-	x = dc_x << int32(1)
+	x = dc_x << 1
 	if libc.Uint32FromInt32(x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
 		I_Error(tls, __ccgo_ts(26268), dc_yl, dc_yh, dc_x)
 	}
@@ -36432,7 +36432,7 @@ func R_DrawTranslatedColumnLow(tls *libc.TLS) {
 		return
 	}
 	// low detail, need to scale by 2
-	x = dc_x << int32(1)
+	x = dc_x << 1
 	if libc.Uint32FromInt32(x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
 		I_Error(tls, __ccgo_ts(26239), dc_yl, dc_yh, x)
 	}
@@ -36480,7 +36480,7 @@ func R_InitTranslationTables(tls *libc.TLS) {
 	// translate just the 16 green colors
 	i = 0
 	for {
-		if !(i < int32(256)) {
+		if !(i < 256) {
 			break
 		}
 		if i >= int32(0x70) && i <= int32(0x7f) {
@@ -36526,8 +36526,8 @@ func R_DrawSpan(tls *libc.TLS) {
 	count = ds_x2 - ds_x1
 	for {
 		// Calculate current texture index in u,v.
-		ytemp = position >> int32(4) & uint32(0x0fc0)
-		xtemp = position >> int32(26)
+		ytemp = position >> 4 & uint32(0x0fc0)
+		xtemp = position >> 26
 		spot = libc.Int32FromUint32(xtemp | ytemp)
 		// Lookup pixel from flat texture tile,
 		//  re-index using light/colormap.
@@ -36566,13 +36566,13 @@ func R_DrawSpanLow(tls *libc.TLS) {
 	step = libc.Uint32FromInt32(ds_xstep<<10)&uint32(0xffff0000) | libc.Uint32FromInt32(ds_ystep>>6&0x0000ffff)
 	count = ds_x2 - ds_x1
 	// Blocky mode, need to multiply by 2.
-	ds_x1 <<= int32(1)
-	ds_x2 <<= int32(1)
+	ds_x1 <<= 1
+	ds_x2 <<= 1
 	dest = ylookup[ds_y] + uintptr(columnofs[ds_x1])
 	for {
 		// Calculate current texture index in u,v.
-		ytemp = position >> int32(4) & uint32(0x0fc0)
-		xtemp = position >> int32(26)
+		ytemp = position >> 4 & uint32(0x0fc0)
+		xtemp = position >> 26
 		spot = libc.Int32FromUint32(xtemp | ytemp)
 		// Lowres/blocky mode does it twice,
 		//  while scale is adjusted appropriately.
@@ -36608,7 +36608,7 @@ func R_InitBuffer(tls *libc.TLS, width int32, height int32) {
 	// Handle resize,
 	//  e.g. smaller view windows
 	//  with border and/or status bar.
-	viewwindowx = (int32(SCREENWIDTH) - width) >> int32(1)
+	viewwindowx = (int32(SCREENWIDTH) - width) >> 1
 	// Column offset. For windows.
 	i = 0
 	for {
@@ -36625,7 +36625,7 @@ func R_InitBuffer(tls *libc.TLS, width int32, height int32) {
 	if width == int32(SCREENWIDTH) {
 		viewwindowy = 0
 	} else {
-		viewwindowy = (SCREENHEIGHT - SBARHEIGHT - height) >> int32(1)
+		viewwindowy = (SCREENHEIGHT - SBARHEIGHT - height) >> 1
 	}
 	// Preclaculate all row offsets.
 	i = 0
@@ -36714,7 +36714,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 		goto _3
 	_3:
 		;
-		x += int32(8)
+		x += 8
 	}
 	patch = W_CacheLumpName(tls, __ccgo_ts(26352), int32(PU_CACHE))
 	x = 0
@@ -36726,7 +36726,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 		goto _4
 	_4:
 		;
-		x += int32(8)
+		x += 8
 	}
 	patch = W_CacheLumpName(tls, __ccgo_ts(26359), int32(PU_CACHE))
 	y = 0
@@ -36738,7 +36738,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 		goto _5
 	_5:
 		;
-		y += int32(8)
+		y += 8
 	}
 	patch = W_CacheLumpName(tls, __ccgo_ts(26366), int32(PU_CACHE))
 	y = 0
@@ -36750,7 +36750,7 @@ func R_FillBackScreen(tls *libc.TLS) {
 		goto _6
 	_6:
 		;
-		y += int32(8)
+		y += 8
 	}
 	// Draw beveled edge.
 	V_DrawPatch(tls, viewwindowx-int32(8), viewwindowy-int32(8), W_CacheLumpName(tls, __ccgo_ts(26373), int32(PU_CACHE)))
@@ -36788,8 +36788,8 @@ func R_DrawViewBorder(tls *libc.TLS) {
 	if scaledviewwidth == int32(SCREENWIDTH) {
 		return
 	}
-	top = (SCREENHEIGHT - SBARHEIGHT - viewheight) / int32(2)
-	side = (int32(SCREENWIDTH) - scaledviewwidth) / int32(2)
+	top = (SCREENHEIGHT - SBARHEIGHT - viewheight) / 2
+	side = (int32(SCREENWIDTH) - scaledviewwidth) / 2
 	// copy top and one line of left side
 	R_VideoErase(uint32(0), top*int32(SCREENWIDTH)+side)
 	// copy one line of right side and bottom
@@ -36797,8 +36797,8 @@ func R_DrawViewBorder(tls *libc.TLS) {
 	R_VideoErase(libc.Uint32FromInt32(ofs), top*int32(SCREENWIDTH)+side)
 	// copy sides using wraparound
 	ofs = top*int32(SCREENWIDTH) + int32(SCREENWIDTH) - side
-	side <<= int32(1)
-	i = int32(1)
+	side <<= 1
+	i = 1
 	for {
 		if !(i < viewheight) {
 			break
@@ -36822,7 +36822,7 @@ const FIELDOFVIEW = 2048
 const NF_SUBSECTOR5 = 32768
 
 func init() {
-	validcount = int32(1)
+	validcount = 1
 }
 
 // C documentation
@@ -36853,7 +36853,7 @@ func R_PointOnSide(x fixed_t, y fixed_t, node *node_t) (r int32) {
 	if libc.Uint32FromInt32(node.Fdy^node.Fdx^dx^dy)&uint32(0x80000000) != 0 {
 		if libc.Uint32FromInt32(node.Fdy^dx)&uint32(0x80000000) != 0 {
 			// (left is negative)
-			return int32(1)
+			return 1
 		}
 		return 0
 	}
@@ -36864,7 +36864,7 @@ func R_PointOnSide(x fixed_t, y fixed_t, node *node_t) (r int32) {
 		return 0
 	}
 	// back side
-	return int32(1)
+	return 1
 }
 
 func R_PointOnSegSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
@@ -36891,7 +36891,7 @@ func R_PointOnSegSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
 	if libc.Uint32FromInt32(ldy^ldx^dx^dy)&uint32(0x80000000) != 0 {
 		if libc.Uint32FromInt32(ldy^dx)&uint32(0x80000000) != 0 {
 			// (left is negative)
-			return int32(1)
+			return 1
 		}
 		return 0
 	}
@@ -36902,7 +36902,7 @@ func R_PointOnSegSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
 		return 0
 	}
 	// back side
-	return int32(1)
+	return 1
 }
 
 //
@@ -37034,8 +37034,8 @@ func R_ScaleFromGlobalAngle(visangle angle_t) (r fixed_t) {
 		if scale > 64*(1<<FRACBITS) {
 			scale = 64 * (1 << FRACBITS)
 		} else {
-			if scale < int32(256) {
-				scale = int32(256)
+			if scale < 256 {
+				scale = 256
 			}
 		}
 	} else {
@@ -37077,15 +37077,15 @@ func R_InitTextureMapping() {
 			t = -1
 		} else {
 			if finetangent[i] < -(1<<FRACBITS)*2 {
-				t = viewwidth + int32(1)
+				t = viewwidth + 1
 			} else {
 				t = FixedMul(finetangent[i], focallength)
-				t = (centerxfrac - t + 1<<FRACBITS - int32(1)) >> int32(FRACBITS)
+				t = (centerxfrac - t + 1<<FRACBITS - 1) >> int32(FRACBITS)
 				if t < -1 {
 					t = -1
 				} else {
 					if t > viewwidth+int32(1) {
-						t = viewwidth + int32(1)
+						t = viewwidth + 1
 					}
 				}
 			}
@@ -37152,7 +37152,7 @@ func R_InitLightTables() {
 		if !(i < int32(LIGHTLEVELS)) {
 			break
 		}
-		startmap = (LIGHTLEVELS - 1 - i) * int32(2) * int32(NUMCOLORMAPS) / int32(LIGHTLEVELS)
+		startmap = (LIGHTLEVELS - 1 - i) * 2 * int32(NUMCOLORMAPS) / int32(LIGHTLEVELS)
 		j = 0
 		for {
 			if !(j < int32(MAXLIGHTZ)) {
@@ -37196,17 +37196,17 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 	var i, j, level, startmap int32
 	var v1, v2 uintptr
 	setsizeneeded = 0
-	if setblocks == int32(11) {
+	if setblocks == 11 {
 		scaledviewwidth = int32(SCREENWIDTH)
 		viewheight = int32(SCREENHEIGHT)
 	} else {
-		scaledviewwidth = setblocks * int32(32)
-		viewheight = setblocks * int32(168) / int32(10) & ^7
+		scaledviewwidth = setblocks * 32
+		viewheight = setblocks * 168 / 10 & ^7
 	}
 	detailshift = setdetail
 	viewwidth = scaledviewwidth >> detailshift
-	centery = viewheight / int32(2)
-	centerx = viewwidth / int32(2)
+	centery = viewheight / 2
+	centerx = viewwidth / 2
 	centerxfrac = centerx << int32(FRACBITS)
 	centeryfrac = centery << int32(FRACBITS)
 	projection = centerxfrac
@@ -37275,7 +37275,7 @@ func R_ExecuteSetViewSize(tls *libc.TLS) {
 		if !(i < int32(LIGHTLEVELS)) {
 			break
 		}
-		startmap = (LIGHTLEVELS - 1 - i) * int32(2) * int32(NUMCOLORMAPS) / int32(LIGHTLEVELS)
+		startmap = (LIGHTLEVELS - 1 - i) * 2 * int32(NUMCOLORMAPS) / int32(LIGHTLEVELS)
 		j = 0
 		for {
 			if !(j < int32(MAXLIGHTSCALE)) {
@@ -37334,7 +37334,7 @@ func R_PointInSubsector(x fixed_t, y fixed_t) (r uintptr) {
 	if !(numnodes != 0) {
 		return subsectors
 	}
-	nodenum = numnodes - int32(1)
+	nodenum = numnodes - 1
 	for !(nodenum&NF_SUBSECTOR5 != 0) {
 		node := &nodes[nodenum]
 		side = R_PointOnSide(x, y, node)
@@ -37660,7 +37660,7 @@ func R_DrawPlanes(tls *libc.TLS) {
 		if pl.Fminx-1 >= 0 {
 			pl.Ftop[pl.Fminx-1] = 0xff
 		}
-		stop = pl.Fmaxx + int32(1)
+		stop = pl.Fmaxx + 1
 		x = pl.Fminx
 		for {
 			if !(x <= stop) {
@@ -37823,16 +37823,16 @@ func R_RenderSegLoop(tls *libc.TLS) {
 			break
 		}
 		// mark floor / ceiling areas
-		yl = (topfrac + 1<<HEIGHTBITS - int32(1)) >> int32(HEIGHTBITS)
+		yl = (topfrac + 1<<HEIGHTBITS - 1) >> int32(HEIGHTBITS)
 		// no space above wall?
 		if yl < int32(*(*int16)(unsafe.Pointer(ceilingclip_temp)))+int32(1) {
-			yl = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + int32(1)
+			yl = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + 1
 		}
 		if markceiling != 0 {
-			top = int32(ceilingclip[rw_x]) + int32(1)
-			bottom = yl - int32(1)
+			top = int32(ceilingclip[rw_x]) + 1
+			bottom = yl - 1
 			if bottom >= int32(*(*int16)(unsafe.Pointer(floorclip_temp))) {
-				bottom = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - int32(1)
+				bottom = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - 1
 			}
 			if top <= bottom {
 				ceilingplane.Ftop[rw_x] = uint8(top)
@@ -37841,13 +37841,13 @@ func R_RenderSegLoop(tls *libc.TLS) {
 		}
 		yh = bottomfrac >> int32(HEIGHTBITS)
 		if yh >= int32(*(*int16)(unsafe.Pointer(floorclip_temp))) {
-			yh = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - int32(1)
+			yh = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - 1
 		}
 		if markfloor != 0 {
-			top = yh + int32(1)
-			bottom = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - int32(1)
+			top = yh + 1
+			bottom = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - 1
 			if top <= int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) {
-				top = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + int32(1)
+				top = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + 1
 			}
 			if top <= bottom {
 				floorplane.Ftop[rw_x] = uint8(top)
@@ -37892,7 +37892,7 @@ func R_RenderSegLoop(tls *libc.TLS) {
 				mid = pixhigh >> int32(HEIGHTBITS)
 				pixhigh += pixhighstep
 				if mid >= int32(*(*int16)(unsafe.Pointer(floorclip_temp))) {
-					mid = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - int32(1)
+					mid = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - 1
 				}
 				if mid >= yl {
 					dc_yl = yl
@@ -37902,21 +37902,21 @@ func R_RenderSegLoop(tls *libc.TLS) {
 					(*(*func(*libc.TLS))(unsafe.Pointer(&struct{ uintptr }{colfunc})))(tls)
 					*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(mid)
 				} else {
-					*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(yl - int32(1))
+					*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(yl - 1)
 				}
 			} else {
 				// no top wall
 				if markceiling != 0 {
-					*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(yl - int32(1))
+					*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(yl - 1)
 				}
 			}
 			if bottomtexture != 0 {
 				// bottom wall
-				mid = (pixlow + 1<<HEIGHTBITS - int32(1)) >> int32(HEIGHTBITS)
+				mid = (pixlow + 1<<HEIGHTBITS - 1) >> int32(HEIGHTBITS)
 				pixlow += pixlowstep
 				// no space above wall?
 				if mid <= int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) {
-					mid = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + int32(1)
+					mid = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + 1
 				}
 				if mid <= yh {
 					dc_yl = mid
@@ -37926,12 +37926,12 @@ func R_RenderSegLoop(tls *libc.TLS) {
 					(*(*func(*libc.TLS))(unsafe.Pointer(&struct{ uintptr }{colfunc})))(tls)
 					*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(mid)
 				} else {
-					*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(yh + int32(1))
+					*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(yh + 1)
 				}
 			} else {
 				// no bottom wall
 				if markfloor != 0 {
-					*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(yh + int32(1))
+					*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(yh + 1)
 				}
 			}
 			if maskedtexture != 0 {
@@ -37992,7 +37992,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	drawsegs[ds_index].Fx1 = v2
 	drawsegs[ds_index].Fx2 = stop
 	drawsegs[ds_index].Fcurline = curline
-	rw_stopx = stop + int32(1)
+	rw_stopx = stop + 1
 	// calculate scale at both ends and step
 	v3 = R_ScaleFromGlobalAngle(viewangle + xtoviewangle[start])
 	rw_scale = v3
@@ -38187,15 +38187,15 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		markceiling = 0
 	}
 	// calculate incremental stepping values for texture edges
-	worldtop >>= int32(4)
-	worldbottom >>= int32(4)
+	worldtop >>= 4
+	worldbottom >>= 4
 	topstep = -FixedMul(rw_scalestep, worldtop)
 	topfrac = centeryfrac>>4 - FixedMul(worldtop, rw_scale)
 	bottomstep = -FixedMul(rw_scalestep, worldbottom)
 	bottomfrac = centeryfrac>>4 - FixedMul(worldbottom, rw_scale)
 	if backsector != 0 {
-		worldhigh >>= int32(4)
-		worldlow >>= int32(4)
+		worldhigh >>= 4
+		worldlow >>= 4
 		if worldhigh < worldtop {
 			pixhigh = centeryfrac>>4 - FixedMul(worldhigh, rw_scale)
 			pixhighstep = -FixedMul(rw_scalestep, worldhigh)
@@ -38277,7 +38277,7 @@ func R_InstallSpriteLump(tls *libc.TLS, lump int32, frame uint32, rotation uint3
 		sprtemp[frame].Frotate = 0
 		r = 0
 		for {
-			if !(r < int32(8)) {
+			if !(r < 8) {
 				break
 			}
 			*(*int16)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 4 + uintptr(r)*2)) = int16(lump - firstspritelump)
@@ -38333,8 +38333,8 @@ func R_InitSpriteDefs(tls *libc.TLS, namelist uintptr) {
 		return
 	}
 	sprites = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numsprites)*uint64(16)), int32(PU_STATIC), libc.UintptrFromInt32(0))
-	start = firstspritelump - int32(1)
-	end = lastspritelump + int32(1)
+	start = firstspritelump - 1
+	end = lastspritelump + 1
 	// scan all the lump names for each of the names,
 	//  noting the highest frame letter.
 	// Just compare 4 characters as ints
@@ -38348,7 +38348,7 @@ func R_InitSpriteDefs(tls *libc.TLS, namelist uintptr) {
 		maxframe = -1
 		// scan the lumps,
 		//  filling in the frames for whatever is found
-		l = start + int32(1)
+		l = start + 1
 		for {
 			if !(l < end) {
 				break
@@ -38389,7 +38389,7 @@ func R_InitSpriteDefs(tls *libc.TLS, namelist uintptr) {
 				goto _4
 			case 0:
 				goto _5
-			case int32(1):
+			case 1:
 				goto _6
 			}
 			goto _7
@@ -38408,7 +38408,7 @@ func R_InitSpriteDefs(tls *libc.TLS, namelist uintptr) {
 			rotation = 0
 		_10:
 			;
-			if !(rotation < int32(8)) {
+			if !(rotation < 8) {
 				goto _8
 			}
 			if int32(*(*int16)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 4 + uintptr(rotation)*2))) == -1 {
@@ -38493,13 +38493,13 @@ func R_DrawMaskedColumn(tls *libc.TLS, column uintptr) {
 		//  for post
 		topscreen = sprtopscreen + spryscale*libc.Int32FromUint8((*column_t)(unsafe.Pointer(column)).Ftopdelta)
 		bottomscreen = topscreen + spryscale*libc.Int32FromUint8((*column_t)(unsafe.Pointer(column)).Flength)
-		dc_yl = (topscreen + 1<<FRACBITS - int32(1)) >> int32(FRACBITS)
-		dc_yh = (bottomscreen - int32(1)) >> int32(FRACBITS)
+		dc_yl = (topscreen + 1<<FRACBITS - 1) >> int32(FRACBITS)
+		dc_yh = (bottomscreen - 1) >> int32(FRACBITS)
 		if dc_yh >= int32(*(*int16)(unsafe.Pointer(mfloorclip + uintptr(dc_x)*2))) {
-			dc_yh = int32(*(*int16)(unsafe.Pointer(mfloorclip + uintptr(dc_x)*2))) - int32(1)
+			dc_yh = int32(*(*int16)(unsafe.Pointer(mfloorclip + uintptr(dc_x)*2))) - 1
 		}
 		if dc_yl <= int32(*(*int16)(unsafe.Pointer(mceilingclip + uintptr(dc_x)*2))) {
-			dc_yl = int32(*(*int16)(unsafe.Pointer(mceilingclip + uintptr(dc_x)*2))) + int32(1)
+			dc_yl = int32(*(*int16)(unsafe.Pointer(mceilingclip + uintptr(dc_x)*2))) + 1
 		}
 		if dc_yl <= dc_yh {
 			dc_source = column + uintptr(3)
@@ -38606,7 +38606,7 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 	if (*spriteframe_t)(unsafe.Pointer(sprframe)).Frotate != 0 {
 		// choose a different rotation based on player view
 		ang = R_PointToAngle((*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy)
-		rot = (ang - (*mobj_t)(unsafe.Pointer(thing)).Fangle + libc.Uint32FromInt32(ANG455/2)*libc.Uint32FromInt32(9)) >> int32(29)
+		rot = (ang - (*mobj_t)(unsafe.Pointer(thing)).Fangle + libc.Uint32FromInt32(ANG455/2)*libc.Uint32FromInt32(9)) >> 29
 		lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4 + uintptr(rot)*2)))
 		flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20 + uintptr(rot))))
 	} else {
@@ -38622,7 +38622,7 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 		return
 	}
 	tx += *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4))
-	x2 = (centerxfrac+FixedMul(tx, xscale))>>int32(FRACBITS) - int32(1)
+	x2 = (centerxfrac+FixedMul(tx, xscale))>>int32(FRACBITS) - 1
 	// off the left side
 	if x2 < 0 {
 		return
@@ -38643,14 +38643,14 @@ func R_ProjectSprite(tls *libc.TLS, thing uintptr) {
 	}
 	(*vissprite_t)(unsafe.Pointer(vis)).Fx1 = v1
 	if x2 >= viewwidth {
-		v2 = viewwidth - int32(1)
+		v2 = viewwidth - 1
 	} else {
 		v2 = x2
 	}
 	(*vissprite_t)(unsafe.Pointer(vis)).Fx2 = v2
 	iscale = FixedDiv(1<<FRACBITS, xscale)
 	if flip != 0 {
-		(*vissprite_t)(unsafe.Pointer(vis)).Fstartfrac = *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4)) - int32(1)
+		(*vissprite_t)(unsafe.Pointer(vis)).Fstartfrac = *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4)) - 1
 		(*vissprite_t)(unsafe.Pointer(vis)).Fxiscale = -iscale
 	} else {
 		(*vissprite_t)(unsafe.Pointer(vis)).Fstartfrac = 0
@@ -38757,7 +38757,7 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 		return
 	}
 	tx += *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4))
-	x2 = (centerxfrac+FixedMul(tx, pspritescale))>>int32(FRACBITS) - int32(1)
+	x2 = (centerxfrac+FixedMul(tx, pspritescale))>>int32(FRACBITS) - 1
 	// off the left side
 	if x2 < 0 {
 		return
@@ -38773,7 +38773,7 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 	}
 	vis.Fx1 = v1
 	if x2 >= viewwidth {
-		v2 = viewwidth - int32(1)
+		v2 = viewwidth - 1
 	} else {
 		v2 = x2
 	}
@@ -38781,7 +38781,7 @@ func R_DrawPSprite(tls *libc.TLS, psp uintptr) {
 	vis.Fscale = pspritescale << detailshift
 	if flip != 0 {
 		vis.Fxiscale = -pspriteiscale
-		vis.Fstartfrac = *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4)) - int32(1)
+		vis.Fstartfrac = *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4)) - 1
 	} else {
 		vis.Fxiscale = pspriteiscale
 		vis.Fstartfrac = 0
@@ -38990,7 +38990,7 @@ func R_DrawSprite(tls *libc.TLS, spr *vissprite_t) {
 		if spr.Fgzt <= drawsegs[ds].Ftsilheight {
 			silhouette &= ^SIL_TOP
 		}
-		if silhouette == int32(1) {
+		if silhouette == 1 {
 			// bottom sil
 			x = r1
 			for {
@@ -39006,7 +39006,7 @@ func R_DrawSprite(tls *libc.TLS, spr *vissprite_t) {
 				x++
 			}
 		} else {
-			if silhouette == int32(2) {
+			if silhouette == 2 {
 				// top sil
 				x = r1
 				for {
@@ -39022,7 +39022,7 @@ func R_DrawSprite(tls *libc.TLS, spr *vissprite_t) {
 					x++
 				}
 			} else {
-				if silhouette == int32(3) {
+				if silhouette == 3 {
 					// both
 					x = r1
 					for {
@@ -39143,7 +39143,7 @@ func Transform(hd uintptr, data uintptr) {
 	i = 0
 	p2 = bp
 	for {
-		if !(i < int32(16)) {
+		if !(i < 16) {
 			break
 		}
 		v2 = data
@@ -39532,7 +39532,7 @@ func Transform(hd uintptr, data uintptr) {
 func SHA1_Update(hd uintptr, inbuf uintptr, inlen uint64) {
 	var v2, v6 int32
 	var v3, v4, v7, v8 uintptr
-	if (*sha1_context_t)(unsafe.Pointer(hd)).Fcount == int32(64) {
+	if (*sha1_context_t)(unsafe.Pointer(hd)).Fcount == 64 {
 		/* flush the buffer */
 		Transform(hd, hd+24)
 		(*sha1_context_t)(unsafe.Pointer(hd)).Fcount = 0
@@ -39543,7 +39543,7 @@ func SHA1_Update(hd uintptr, inbuf uintptr, inlen uint64) {
 	}
 	if (*sha1_context_t)(unsafe.Pointer(hd)).Fcount != 0 {
 		for {
-			if !(inlen != 0 && (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < int32(64)) {
+			if !(inlen != 0 && (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < 64) {
 				break
 			}
 			v3 = hd + 88
@@ -39570,7 +39570,7 @@ func SHA1_Update(hd uintptr, inbuf uintptr, inlen uint64) {
 		inbuf += uintptr(64)
 	}
 	for {
-		if !(inlen != 0 && (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < int32(64)) {
+		if !(inlen != 0 && (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < 64) {
 			break
 		}
 		v7 = hd + 88
@@ -39600,8 +39600,8 @@ func SHA1_Final(digest uintptr, hd uintptr) {
 	SHA1_Update(hd, libc.UintptrFromInt32(0), uint64(0)) /* flush */
 	t = (*sha1_context_t)(unsafe.Pointer(hd)).Fnblocks
 	/* multiply by 64 to make a byte count */
-	lsb = t << int32(6)
-	msb = t >> int32(26)
+	lsb = t << 6
+	msb = t >> 26
 	/* add the count */
 	t = lsb
 	lsb += libc.Uint32FromInt32((*sha1_context_t)(unsafe.Pointer(hd)).Fcount)
@@ -39612,14 +39612,14 @@ func SHA1_Final(digest uintptr, hd uintptr) {
 	t = lsb
 	lsb <<= uint32(3)
 	msb <<= uint32(3)
-	msb |= t >> int32(29)
-	if (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < int32(56) {
+	msb |= t >> 29
+	if (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < 56 {
 		/* enough room */
 		v2 = hd + 88
 		v1 = *(*int32)(unsafe.Pointer(v2))
 		*(*int32)(unsafe.Pointer(v2))++
 		*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v1))) = uint8(0x80) /* pad */
-		for (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < int32(56) {
+		for (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < 56 {
 			v4 = hd + 88
 			v3 = *(*int32)(unsafe.Pointer(v4))
 			*(*int32)(unsafe.Pointer(v4))++
@@ -39631,7 +39631,7 @@ func SHA1_Final(digest uintptr, hd uintptr) {
 		v5 = *(*int32)(unsafe.Pointer(v6))
 		*(*int32)(unsafe.Pointer(v6))++
 		*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v5))) = uint8(0x80) /* pad character */
-		for (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < int32(64) {
+		for (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < 64 {
 			v8 = hd + 88
 			v7 = *(*int32)(unsafe.Pointer(v8))
 			*(*int32)(unsafe.Pointer(v8))++
@@ -39641,73 +39641,73 @@ func SHA1_Final(digest uintptr, hd uintptr) {
 		xmemset(hd+24, 0, uint64(56))                        /* fill next block with zeroes */
 	}
 	/* append the 64 bit count */
-	*(*uint8)(unsafe.Pointer(hd + 24 + 56)) = uint8(msb >> int32(24))
-	*(*uint8)(unsafe.Pointer(hd + 24 + 57)) = uint8(msb >> int32(16))
-	*(*uint8)(unsafe.Pointer(hd + 24 + 58)) = uint8(msb >> int32(8))
+	*(*uint8)(unsafe.Pointer(hd + 24 + 56)) = uint8(msb >> 24)
+	*(*uint8)(unsafe.Pointer(hd + 24 + 57)) = uint8(msb >> 16)
+	*(*uint8)(unsafe.Pointer(hd + 24 + 58)) = uint8(msb >> 8)
 	*(*uint8)(unsafe.Pointer(hd + 24 + 59)) = uint8(msb)
-	*(*uint8)(unsafe.Pointer(hd + 24 + 60)) = uint8(lsb >> int32(24))
-	*(*uint8)(unsafe.Pointer(hd + 24 + 61)) = uint8(lsb >> int32(16))
-	*(*uint8)(unsafe.Pointer(hd + 24 + 62)) = uint8(lsb >> int32(8))
+	*(*uint8)(unsafe.Pointer(hd + 24 + 60)) = uint8(lsb >> 24)
+	*(*uint8)(unsafe.Pointer(hd + 24 + 61)) = uint8(lsb >> 16)
+	*(*uint8)(unsafe.Pointer(hd + 24 + 62)) = uint8(lsb >> 8)
 	*(*uint8)(unsafe.Pointer(hd + 24 + 63)) = uint8(lsb)
 	Transform(hd, hd+24)
 	p = hd + 24
 	v9 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v9)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> int32(24))
+	*(*uint8)(unsafe.Pointer(v9)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> 24)
 	v10 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v10)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> int32(16))
+	*(*uint8)(unsafe.Pointer(v10)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> 16)
 	v11 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v11)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> int32(8))
+	*(*uint8)(unsafe.Pointer(v11)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> 8)
 	v12 = p
 	p++
 	*(*uint8)(unsafe.Pointer(v12)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0)
 	v13 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v13)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> int32(24))
+	*(*uint8)(unsafe.Pointer(v13)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> 24)
 	v14 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v14)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> int32(16))
+	*(*uint8)(unsafe.Pointer(v14)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> 16)
 	v15 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v15)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> int32(8))
+	*(*uint8)(unsafe.Pointer(v15)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> 8)
 	v16 = p
 	p++
 	*(*uint8)(unsafe.Pointer(v16)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1)
 	v17 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v17)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> int32(24))
+	*(*uint8)(unsafe.Pointer(v17)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> 24)
 	v18 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v18)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> int32(16))
+	*(*uint8)(unsafe.Pointer(v18)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> 16)
 	v19 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v19)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> int32(8))
+	*(*uint8)(unsafe.Pointer(v19)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> 8)
 	v20 = p
 	p++
 	*(*uint8)(unsafe.Pointer(v20)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2)
 	v21 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v21)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> int32(24))
+	*(*uint8)(unsafe.Pointer(v21)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> 24)
 	v22 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v22)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> int32(16))
+	*(*uint8)(unsafe.Pointer(v22)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> 16)
 	v23 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v23)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> int32(8))
+	*(*uint8)(unsafe.Pointer(v23)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> 8)
 	v24 = p
 	p++
 	*(*uint8)(unsafe.Pointer(v24)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3)
 	v25 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v25)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> int32(24))
+	*(*uint8)(unsafe.Pointer(v25)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> 24)
 	v26 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v26)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> int32(16))
+	*(*uint8)(unsafe.Pointer(v26)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> 16)
 	v27 = p
 	p++
-	*(*uint8)(unsafe.Pointer(v27)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> int32(8))
+	*(*uint8)(unsafe.Pointer(v27)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> 8)
 	v28 = p
 	p++
 	*(*uint8)(unsafe.Pointer(v28)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4)
@@ -39716,9 +39716,9 @@ func SHA1_Final(digest uintptr, hd uintptr) {
 
 func SHA1_UpdateInt32(context uintptr, val uint32) {
 	bp := alloc(16)
-	(*(*[4]uint8)(unsafe.Pointer(bp)))[0] = uint8(val >> int32(24) & uint32(0xff))
-	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(1)] = uint8(val >> int32(16) & uint32(0xff))
-	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(2)] = uint8(val >> int32(8) & uint32(0xff))
+	(*(*[4]uint8)(unsafe.Pointer(bp)))[0] = uint8(val >> 24 & uint32(0xff))
+	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(1)] = uint8(val >> 16 & uint32(0xff))
+	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(2)] = uint8(val >> 8 & uint32(0xff))
 	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(3)] = uint8(val & uint32(0xff))
 	SHA1_Update(context, bp, uint64(4))
 }
@@ -39944,756 +39944,756 @@ func init() {
 		},
 		1: {
 			Fname:        [9]int8{'p', 'i', 's', 't', 'o', 'l'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		2: {
 			Fname:        [9]int8{'s', 'h', 'o', 't', 'g', 'n'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		3: {
 			Fname:        [9]int8{'s', 'g', 'c', 'o', 'c', 'k'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		4: {
 			Fname:        [9]int8{'d', 's', 'h', 't', 'g', 'n'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		5: {
 			Fname:        [9]int8{'d', 'b', 'o', 'p', 'n'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		6: {
 			Fname:        [9]int8{'d', 'b', 'c', 'l', 's'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		7: {
 			Fname:        [9]int8{'d', 'b', 'l', 'o', 'a', 'd'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		8: {
 			Fname:        [9]int8{'p', 'l', 'a', 's', 'm', 'a'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		9: {
 			Fname:        [9]int8{'b', 'f', 'g'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		10: {
 			Fname:        [9]int8{'s', 'a', 'w', 'u', 'p'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		11: {
 			Fname:        [9]int8{'s', 'a', 'w', 'i', 'd', 'l'},
-			Fpriority:    int32(118),
+			Fpriority:    118,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		12: {
 			Fname:        [9]int8{'s', 'a', 'w', 'f', 'u', 'l'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		13: {
 			Fname:        [9]int8{'s', 'a', 'w', 'h', 'i', 't'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		14: {
 			Fname:        [9]int8{'r', 'l', 'a', 'u', 'n', 'c'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		15: {
 			Fname:        [9]int8{'r', 'x', 'p', 'l', 'o', 'd'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		16: {
 			Fname:        [9]int8{'f', 'i', 'r', 's', 'h', 't'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		17: {
 			Fname:        [9]int8{'f', 'i', 'r', 'x', 'p', 'l'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		18: {
 			Fname:        [9]int8{'p', 's', 't', 'a', 'r', 't'},
-			Fpriority:    int32(100),
+			Fpriority:    100,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		19: {
 			Fname:        [9]int8{'p', 's', 't', 'o', 'p'},
-			Fpriority:    int32(100),
+			Fpriority:    100,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		20: {
 			Fname:        [9]int8{'d', 'o', 'r', 'o', 'p', 'n'},
-			Fpriority:    int32(100),
+			Fpriority:    100,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		21: {
 			Fname:        [9]int8{'d', 'o', 'r', 'c', 'l', 's'},
-			Fpriority:    int32(100),
+			Fpriority:    100,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		22: {
 			Fname:        [9]int8{'s', 't', 'n', 'm', 'o', 'v'},
-			Fpriority:    int32(119),
+			Fpriority:    119,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		23: {
 			Fname:        [9]int8{'s', 'w', 't', 'c', 'h', 'n'},
-			Fpriority:    int32(78),
+			Fpriority:    78,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		24: {
 			Fname:        [9]int8{'s', 'w', 't', 'c', 'h', 'x'},
-			Fpriority:    int32(78),
+			Fpriority:    78,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		25: {
 			Fname:        [9]int8{'p', 'l', 'p', 'a', 'i', 'n'},
-			Fpriority:    int32(96),
+			Fpriority:    96,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		26: {
 			Fname:        [9]int8{'d', 'm', 'p', 'a', 'i', 'n'},
-			Fpriority:    int32(96),
+			Fpriority:    96,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		27: {
 			Fname:        [9]int8{'p', 'o', 'p', 'a', 'i', 'n'},
-			Fpriority:    int32(96),
+			Fpriority:    96,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		28: {
 			Fname:        [9]int8{'v', 'i', 'p', 'a', 'i', 'n'},
-			Fpriority:    int32(96),
+			Fpriority:    96,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		29: {
 			Fname:        [9]int8{'m', 'n', 'p', 'a', 'i', 'n'},
-			Fpriority:    int32(96),
+			Fpriority:    96,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		30: {
 			Fname:        [9]int8{'p', 'e', 'p', 'a', 'i', 'n'},
-			Fpriority:    int32(96),
+			Fpriority:    96,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		31: {
 			Fname:        [9]int8{'s', 'l', 'o', 'p'},
-			Fpriority:    int32(78),
+			Fpriority:    78,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		32: {
 			Fname:        [9]int8{'i', 't', 'e', 'm', 'u', 'p'},
-			Fpriority:    int32(78),
+			Fpriority:    78,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		33: {
 			Fname:        [9]int8{'w', 'p', 'n', 'u', 'p'},
-			Fpriority:    int32(78),
+			Fpriority:    78,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		34: {
 			Fname:        [9]int8{'o', 'o', 'f'},
-			Fpriority:    int32(96),
+			Fpriority:    96,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		35: {
 			Fname:        [9]int8{'t', 'e', 'l', 'e', 'p', 't'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		36: {
 			Fname:        [9]int8{'p', 'o', 's', 'i', 't', '1'},
-			Fpriority:    int32(98),
+			Fpriority:    98,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		37: {
 			Fname:        [9]int8{'p', 'o', 's', 'i', 't', '2'},
-			Fpriority:    int32(98),
+			Fpriority:    98,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		38: {
 			Fname:        [9]int8{'p', 'o', 's', 'i', 't', '3'},
-			Fpriority:    int32(98),
+			Fpriority:    98,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		39: {
 			Fname:        [9]int8{'b', 'g', 's', 'i', 't', '1'},
-			Fpriority:    int32(98),
+			Fpriority:    98,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		40: {
 			Fname:        [9]int8{'b', 'g', 's', 'i', 't', '2'},
-			Fpriority:    int32(98),
+			Fpriority:    98,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		41: {
 			Fname:        [9]int8{'s', 'g', 't', 's', 'i', 't'},
-			Fpriority:    int32(98),
+			Fpriority:    98,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		42: {
 			Fname:        [9]int8{'c', 'a', 'c', 's', 'i', 't'},
-			Fpriority:    int32(98),
+			Fpriority:    98,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		43: {
 			Fname:        [9]int8{'b', 'r', 's', 's', 'i', 't'},
-			Fpriority:    int32(94),
+			Fpriority:    94,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		44: {
 			Fname:        [9]int8{'c', 'y', 'b', 's', 'i', 't'},
-			Fpriority:    int32(92),
+			Fpriority:    92,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		45: {
 			Fname:        [9]int8{'s', 'p', 'i', 's', 'i', 't'},
-			Fpriority:    int32(90),
+			Fpriority:    90,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		46: {
 			Fname:        [9]int8{'b', 's', 'p', 's', 'i', 't'},
-			Fpriority:    int32(90),
+			Fpriority:    90,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		47: {
 			Fname:        [9]int8{'k', 'n', 't', 's', 'i', 't'},
-			Fpriority:    int32(90),
+			Fpriority:    90,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		48: {
 			Fname:        [9]int8{'v', 'i', 'l', 's', 'i', 't'},
-			Fpriority:    int32(90),
+			Fpriority:    90,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		49: {
 			Fname:        [9]int8{'m', 'a', 'n', 's', 'i', 't'},
-			Fpriority:    int32(90),
+			Fpriority:    90,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		50: {
 			Fname:        [9]int8{'p', 'e', 's', 'i', 't'},
-			Fpriority:    int32(90),
+			Fpriority:    90,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		51: {
 			Fname:        [9]int8{'s', 'k', 'l', 'a', 't', 'k'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		52: {
 			Fname:        [9]int8{'s', 'g', 't', 'a', 't', 'k'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		53: {
 			Fname:        [9]int8{'s', 'k', 'e', 'p', 'c', 'h'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		54: {
 			Fname:        [9]int8{'v', 'i', 'l', 'a', 't', 'k'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		55: {
 			Fname:        [9]int8{'c', 'l', 'a', 'w'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		56: {
 			Fname:        [9]int8{'s', 'k', 'e', 's', 'w', 'g'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		57: {
 			Fname:        [9]int8{'p', 'l', 'd', 'e', 't', 'h'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		58: {
 			Fname:        [9]int8{'p', 'd', 'i', 'e', 'h', 'i'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		59: {
 			Fname:        [9]int8{'p', 'o', 'd', 't', 'h', '1'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		60: {
 			Fname:        [9]int8{'p', 'o', 'd', 't', 'h', '2'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		61: {
 			Fname:        [9]int8{'p', 'o', 'd', 't', 'h', '3'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		62: {
 			Fname:        [9]int8{'b', 'g', 'd', 't', 'h', '1'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		63: {
 			Fname:        [9]int8{'b', 'g', 'd', 't', 'h', '2'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		64: {
 			Fname:        [9]int8{'s', 'g', 't', 'd', 't', 'h'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		65: {
 			Fname:        [9]int8{'c', 'a', 'c', 'd', 't', 'h'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		66: {
 			Fname:        [9]int8{'s', 'k', 'l', 'd', 't', 'h'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		67: {
 			Fname:        [9]int8{'b', 'r', 's', 'd', 't', 'h'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		68: {
 			Fname:        [9]int8{'c', 'y', 'b', 'd', 't', 'h'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		69: {
 			Fname:        [9]int8{'s', 'p', 'i', 'd', 't', 'h'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		70: {
 			Fname:        [9]int8{'b', 's', 'p', 'd', 't', 'h'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		71: {
 			Fname:        [9]int8{'v', 'i', 'l', 'd', 't', 'h'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		72: {
 			Fname:        [9]int8{'k', 'n', 't', 'd', 't', 'h'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		73: {
 			Fname:        [9]int8{'p', 'e', 'd', 't', 'h'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		74: {
 			Fname:        [9]int8{'s', 'k', 'e', 'd', 't', 'h'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		75: {
 			Fname:        [9]int8{'p', 'o', 's', 'a', 'c', 't'},
-			Fpriority:    int32(120),
+			Fpriority:    120,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		76: {
 			Fname:        [9]int8{'b', 'g', 'a', 'c', 't'},
-			Fpriority:    int32(120),
+			Fpriority:    120,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		77: {
 			Fname:        [9]int8{'d', 'm', 'a', 'c', 't'},
-			Fpriority:    int32(120),
+			Fpriority:    120,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		78: {
 			Fname:        [9]int8{'b', 's', 'p', 'a', 'c', 't'},
-			Fpriority:    int32(100),
+			Fpriority:    100,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		79: {
 			Fname:        [9]int8{'b', 's', 'p', 'w', 'l', 'k'},
-			Fpriority:    int32(100),
+			Fpriority:    100,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		80: {
 			Fname:        [9]int8{'v', 'i', 'l', 'a', 'c', 't'},
-			Fpriority:    int32(100),
+			Fpriority:    100,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		81: {
 			Fname:        [9]int8{'n', 'o', 'w', 'a', 'y'},
-			Fpriority:    int32(78),
+			Fpriority:    78,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		82: {
 			Fname:        [9]int8{'b', 'a', 'r', 'e', 'x', 'p'},
-			Fpriority:    int32(60),
+			Fpriority:    60,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		83: {
 			Fname:        [9]int8{'p', 'u', 'n', 'c', 'h'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		84: {
 			Fname:        [9]int8{'h', 'o', 'o', 'f'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		85: {
 			Fname:        [9]int8{'m', 'e', 't', 'a', 'l'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		86: {
 			Fname:        [9]int8{'c', 'h', 'g', 'u', 'n'},
-			Fpriority:    int32(64),
+			Fpriority:    64,
 			Flink:        uintptr(unsafe.Pointer(&S_sfx)) + uintptr(sfx_pistol)*64,
-			Fpitch:       int32(150),
+			Fpitch:       150,
 			Fnumchannels: -1,
 		},
 		87: {
 			Fname:        [9]int8{'t', 'i', 'n', 'k'},
-			Fpriority:    int32(60),
+			Fpriority:    60,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		88: {
 			Fname:        [9]int8{'b', 'd', 'o', 'p', 'n'},
-			Fpriority:    int32(100),
+			Fpriority:    100,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		89: {
 			Fname:        [9]int8{'b', 'd', 'c', 'l', 's'},
-			Fpriority:    int32(100),
+			Fpriority:    100,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		90: {
 			Fname:        [9]int8{'i', 't', 'm', 'b', 'k'},
-			Fpriority:    int32(100),
+			Fpriority:    100,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		91: {
 			Fname:        [9]int8{'f', 'l', 'a', 'm', 'e'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		92: {
 			Fname:        [9]int8{'f', 'l', 'a', 'm', 's', 't'},
-			Fpriority:    int32(32),
+			Fpriority:    32,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		93: {
 			Fname:        [9]int8{'g', 'e', 't', 'p', 'o', 'w'},
-			Fpriority:    int32(60),
+			Fpriority:    60,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		94: {
 			Fname:        [9]int8{'b', 'o', 's', 'p', 'i', 't'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		95: {
 			Fname:        [9]int8{'b', 'o', 's', 'c', 'u', 'b'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		96: {
 			Fname:        [9]int8{'b', 'o', 's', 's', 'i', 't'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		97: {
 			Fname:        [9]int8{'b', 'o', 's', 'p', 'n'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		98: {
 			Fname:        [9]int8{'b', 'o', 's', 'd', 't', 'h'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		99: {
 			Fname:        [9]int8{'m', 'a', 'n', 'a', 't', 'k'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		100: {
 			Fname:        [9]int8{'m', 'a', 'n', 'd', 't', 'h'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		101: {
 			Fname:        [9]int8{'s', 's', 's', 'i', 't'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		102: {
 			Fname:        [9]int8{'s', 's', 'd', 't', 'h'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		103: {
 			Fname:        [9]int8{'k', 'e', 'e', 'n', 'p', 'n'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		104: {
 			Fname:        [9]int8{'k', 'e', 'e', 'n', 'd', 't'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		105: {
 			Fname:        [9]int8{'s', 'k', 'e', 'a', 'c', 't'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		106: {
 			Fname:        [9]int8{'s', 'k', 'e', 's', 'i', 't'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		107: {
 			Fname:        [9]int8{'s', 'k', 'e', 'a', 't', 'k'},
-			Fpriority:    int32(70),
+			Fpriority:    70,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
 		},
 		108: {
 			Fname:        [9]int8{'r', 'a', 'd', 'i', 'o'},
-			Fpriority:    int32(60),
+			Fpriority:    60,
 			Fpitch:       -1,
 			Fvolume:      -1,
 			Fnumchannels: -1,
@@ -40706,10 +40706,10 @@ const MAX_CAPTURES = 32
 // Array of end-of-level statistics that have been captured.
 
 var captured_stats [32]wbstartstruct_t
-var num_captured_stats = int32(0)
+var num_captured_stats int32 = 0
 
 func StatCopy(stats uintptr) {
-	if M_ParmExists(__ccgo_ts(5318)) != 0 && num_captured_stats < int32(MAX_CAPTURES) {
+	if M_ParmExists(__ccgo_ts(5318)) != 0 && num_captured_stats < MAX_CAPTURES {
 		xmemcpy(uintptr(unsafe.Pointer(&captured_stats))+uintptr(num_captured_stats)*200, stats, uint64(200))
 		num_captured_stats++
 	}
@@ -40792,10 +40792,10 @@ func STlib_drawNum(tls *libc.TLS, n *st_number_t, refresh boolean) {
 	n.Foldnum = *(*int32)(unsafe.Pointer(n.Fnum))
 	neg = libc.BoolInt32(num < 0)
 	if neg != 0 {
-		if numdigits == int32(2) && num < -int32(9) {
+		if numdigits == 2 && num < -int32(9) {
 			num = -int32(9)
 		} else {
-			if numdigits == int32(3) && num < -int32(99) {
+			if numdigits == 3 && num < -int32(99) {
 				num = -int32(99)
 			}
 		}
@@ -40808,7 +40808,7 @@ func STlib_drawNum(tls *libc.TLS, n *st_number_t, refresh boolean) {
 	}
 	V_CopyRect(tls, x, n.Fy-(SCREENHEIGHT-ST_HEIGHT), st_backing_screen, w*numdigits, h, x, n.Fy)
 	// if non-number, do not draw it
-	if num == int32(1994) {
+	if num == 1994 {
 		return
 	}
 	x = n.Fx
@@ -40827,7 +40827,7 @@ func STlib_drawNum(tls *libc.TLS, n *st_number_t, refresh boolean) {
 		}
 		x -= w
 		V_DrawPatch(tls, x, n.Fy, *(*uintptr)(unsafe.Pointer(n.Fp + uintptr(num%int32(10))*8)))
-		num /= int32(10)
+		num /= 10
 	}
 	// draw a minus sign if necessary
 	if neg != 0 {
@@ -40848,7 +40848,7 @@ func STlib_updateNum(tls *libc.TLS, n *st_number_t, refresh boolean) {
 //
 //	//
 func STlib_initPercent(st *st_percent_t, x int32, y int32, pl uintptr, num uintptr, on uintptr, percent uintptr) {
-	STlib_initNum(&st.Fn, x, y, pl, num, on, int32(3))
+	STlib_initNum(&st.Fn, x, y, pl, num, on, 3)
 	st.Fp = percent
 }
 
@@ -41119,12 +41119,12 @@ var oldweaponsowned [9]boolean
 // C documentation
 //
 //	// count until face changes
-var st_facecount = int32(0)
+var st_facecount int32 = 0
 
 // C documentation
 //
 //	// current face index, used by w_faces
-var st_faceindex = int32(0)
+var st_faceindex int32 = 0
 
 // C documentation
 //
@@ -41140,7 +41140,7 @@ func init() {
 	cheat_mus = cheatseq_t{
 		Fsequence:        [25]int8{'i', 'd', 'm', 'u', 's'},
 		Fsequence_len:    libc.Uint64FromInt64(6) - libc.Uint64FromInt32(1),
-		Fparameter_chars: int32(2),
+		Fparameter_chars: 2,
 		Fparameter_buf:   [5]int8{},
 	}
 }
@@ -41237,7 +41237,7 @@ func init() {
 	cheat_clev = cheatseq_t{
 		Fsequence:        [25]int8{'i', 'd', 'c', 'l', 'e', 'v'},
 		Fsequence_len:    libc.Uint64FromInt64(7) - libc.Uint64FromInt32(1),
-		Fparameter_chars: int32(2),
+		Fparameter_chars: 2,
 		Fparameter_buf:   [5]int8{},
 	}
 }
@@ -41287,7 +41287,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 					*(*int32)(unsafe.Pointer(plyr + 208)) ^= int32(CF_GODMODE)
 					if (*player_t)(unsafe.Pointer(plyr)).Fcheats&int32(CF_GODMODE) != 0 {
 						if (*player_t)(unsafe.Pointer(plyr)).Fmo != 0 {
-							(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fhealth = int32(100)
+							(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fhealth = 100
 						}
 						(*player_t)(unsafe.Pointer(plyr)).Fhealth = int32(DEH_DEFAULT_GOD_MODE_HEALTH)
 						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27550)
@@ -41368,18 +41368,18 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 								// in the Ultimate Doom executable so that it would work for
 								// the Doom 1 music as well.
 								if gamemode == int32(commercial) || gameversion < int32(exe_ultimate) {
-									musnum = int32(mus_runnin) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10) + int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('0') - int32(1)
-									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('0') > int32(35) {
+									musnum = int32(mus_runnin) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10) + int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('0') - 1
+									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('0') > 35 {
 										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27653)
 									} else {
-										S_ChangeMusic(tls, musnum, int32(1))
+										S_ChangeMusic(tls, musnum, 1)
 									}
 								} else {
 									musnum = int32(mus_e1m1) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*int32(9) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('1'))
-									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*int32(9)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('1') > int32(31) {
+									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*int32(9)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('1') > 31 {
 										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27653)
 									} else {
-										S_ChangeMusic(tls, musnum, int32(1))
+										S_ChangeMusic(tls, musnum, 1)
 									}
 								}
 							} else {
@@ -41423,7 +41423,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 				// 'behold?' power-up cheats
 				i = 0
 				for {
-					if !(i < int32(6)) {
+					if !(i < 6) {
 						break
 					}
 					if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_powerup))+uintptr(i)*72, int8(ev.Fdata2)) != 0 {
@@ -41431,7 +41431,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 							P_GivePower(plyr, i)
 						} else {
 							if i != int32(pw_strength) {
-								*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(i)*4)) = int32(1)
+								*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(i)*4)) = 1
 							} else {
 								*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(i)*4)) = 0
 							}
@@ -41463,7 +41463,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			if !(netgame != 0) && cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_clev)), int8(ev.Fdata2)) != 0 {
 				cht_GetParam(uintptr(unsafe.Pointer(&cheat_clev)), bp+3)
 				if gamemode == int32(commercial) {
-					epsd = int32(1)
+					epsd = 1
 					map1 = (int32((*(*[3]int8)(unsafe.Pointer(bp + 3)))[0])-int32('0'))*int32(10) + int32((*(*[3]int8)(unsafe.Pointer(bp + 3)))[int32(1)]) - int32('0')
 				} else {
 					epsd = int32((*(*[3]int8)(unsafe.Pointer(bp + 3)))[0]) - int32('0')
@@ -41471,28 +41471,28 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 				}
 				// Chex.exe always warps to episode 1.
 				if gameversion == int32(exe_chex) {
-					epsd = int32(1)
+					epsd = 1
 				}
 				// Catch invalid maps.
-				if epsd < int32(1) {
+				if epsd < 1 {
 					return 0
 				}
-				if map1 < int32(1) {
+				if map1 < 1 {
 					return 0
 				}
 				// Ohmygod - this is not going to work.
-				if gamemode == int32(retail) && (epsd > int32(4) || map1 > int32(9)) {
+				if gamemode == int32(retail) && (epsd > 4 || map1 > 9) {
 					return 0
 				}
-				if gamemode == int32(registered) && (epsd > int32(3) || map1 > int32(9)) {
+				if gamemode == int32(registered) && (epsd > 3 || map1 > 9) {
 					return 0
 				}
-				if gamemode == int32(shareware) && (epsd > int32(1) || map1 > int32(9)) {
+				if gamemode == int32(shareware) && (epsd > 1 || map1 > 9) {
 					return 0
 				}
 				// The source release has this check as map > 34. However, Vanilla
 				// Doom allows IDCLEV up to MAP40 even though it normally crashes.
-				if gamemode == int32(commercial) && (epsd > int32(1) || map1 > int32(40)) {
+				if gamemode == int32(commercial) && (epsd > 1 || map1 > 40) {
 					return 0
 				}
 				// So be it.
@@ -41508,14 +41508,14 @@ var buf [52]int8
 
 func ST_calcPainOffset(tls *libc.TLS) (r int32) {
 	var health, v1 int32
-	if (*player_t)(unsafe.Pointer(plyr)).Fhealth > int32(100) {
-		v1 = int32(100)
+	if (*player_t)(unsafe.Pointer(plyr)).Fhealth > 100 {
+		v1 = 100
 	} else {
 		v1 = (*player_t)(unsafe.Pointer(plyr)).Fhealth
 	}
 	health = v1
 	if health != oldhealth {
-		lastcalc = (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + ST_NUMSPECIALFACES) * ((int32(100) - health) * int32(ST_NUMPAINFACES) / int32(101))
+		lastcalc = (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + ST_NUMSPECIALFACES) * ((int32(100) - health) * int32(ST_NUMPAINFACES) / 101)
 		oldhealth = health
 	}
 	return lastcalc
@@ -41537,15 +41537,15 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 	var badguyangle, diffang angle_t
 	var doevilgrin boolean
 	var i, v2 int32
-	if priority < int32(10) {
+	if priority < 10 {
 		// dead
 		if !((*player_t)(unsafe.Pointer(plyr)).Fhealth != 0) {
-			priority = int32(9)
+			priority = 9
 			st_faceindex = ST_NUMPAINFACES*(ST_NUMSTRAIGHTFACES+ST_NUMTURNFACES+ST_NUMSPECIALFACES) + 1
-			st_facecount = int32(1)
+			st_facecount = 1
 		}
 	}
-	if priority < int32(9) {
+	if priority < 9 {
 		if (*player_t)(unsafe.Pointer(plyr)).Fbonuscount != 0 {
 			// picking up bonus
 			doevilgrin = 0
@@ -41565,16 +41565,16 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 			}
 			if doevilgrin != 0 {
 				// evil grin if just picked up weapon
-				priority = int32(8)
+				priority = 8
 				st_facecount = 2 * TICRATE
 				st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1)
 			}
 		}
 	}
-	if priority < int32(8) {
+	if priority < 8 {
 		if (*player_t)(unsafe.Pointer(plyr)).Fdamagecount != 0 && (*player_t)(unsafe.Pointer(plyr)).Fattacker != 0 && (*player_t)(unsafe.Pointer(plyr)).Fattacker != (*player_t)(unsafe.Pointer(plyr)).Fmo {
 			// being attacked
-			priority = int32(7)
+			priority = 7
 			if (*player_t)(unsafe.Pointer(plyr)).Fhealth-st_oldhealth > int32(ST_MUCHPAIN) {
 				st_facecount = 1 * TICRATE
 				st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
@@ -41606,21 +41606,21 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 			}
 		}
 	}
-	if priority < int32(7) {
+	if priority < 7 {
 		// getting hurt because of your own damn stupidity
 		if (*player_t)(unsafe.Pointer(plyr)).Fdamagecount != 0 {
 			if (*player_t)(unsafe.Pointer(plyr)).Fhealth-st_oldhealth > int32(ST_MUCHPAIN) {
-				priority = int32(7)
+				priority = 7
 				st_facecount = 1 * TICRATE
 				st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
 			} else {
-				priority = int32(6)
+				priority = 6
 				st_facecount = 1 * TICRATE
 				st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1 + 1)
 			}
 		}
 	}
-	if priority < int32(6) {
+	if priority < 6 {
 		// rapid firing
 		if (*player_t)(unsafe.Pointer(plyr)).Fattackdown != 0 {
 			if lastattackdown == -1 {
@@ -41629,22 +41629,22 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 				lastattackdown--
 				v2 = lastattackdown
 				if !(v2 != 0) {
-					priority = int32(5)
+					priority = 5
 					st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1 + 1)
-					st_facecount = int32(1)
-					lastattackdown = int32(1)
+					st_facecount = 1
+					lastattackdown = 1
 				}
 			}
 		} else {
 			lastattackdown = -1
 		}
 	}
-	if priority < int32(5) {
+	if priority < 5 {
 		// invulnerability
 		if (*player_t)(unsafe.Pointer(plyr)).Fcheats&int32(CF_GODMODE) != 0 || *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_invulnerability)*4)) != 0 {
-			priority = int32(4)
+			priority = 4
 			st_faceindex = ST_NUMPAINFACES * (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + ST_NUMSPECIALFACES)
-			st_facecount = int32(1)
+			st_facecount = 1
 		}
 	}
 	// look left or look right if the facecount has timed out
@@ -41687,7 +41687,7 @@ func ST_updateWidgets(tls *libc.TLS) {
 	// update keycard multiple widgets
 	i = 0
 	for {
-		if !(i < int32(3)) {
+		if !(i < 3) {
 			break
 		}
 		if *(*boolean)(unsafe.Pointer(plyr + 80 + uintptr(i)*4)) != 0 {
@@ -41697,7 +41697,7 @@ func ST_updateWidgets(tls *libc.TLS) {
 		}
 		keyboxes[i] = v2
 		if *(*boolean)(unsafe.Pointer(plyr + 80 + uintptr(i+int32(3))*4)) != 0 {
-			keyboxes[i] = i + int32(3)
+			keyboxes[i] = i + 3
 		}
 		goto _1
 	_1:
@@ -41730,7 +41730,7 @@ func ST_updateWidgets(tls *libc.TLS) {
 	}
 }
 
-var largeammo = int32(1994)
+var largeammo int32 = 1994
 
 func ST_Ticker(tls *libc.TLS) {
 	st_randomnumber = M_Random()
@@ -41738,7 +41738,7 @@ func ST_Ticker(tls *libc.TLS) {
 	st_oldhealth = (*player_t)(unsafe.Pointer(plyr)).Fhealth
 }
 
-var st_palette = int32(0)
+var st_palette int32 = 0
 
 func ST_doPaletteStuff(tls *libc.TLS) {
 	var bzc, cnt, palette int32
@@ -41746,14 +41746,14 @@ func ST_doPaletteStuff(tls *libc.TLS) {
 	cnt = (*player_t)(unsafe.Pointer(plyr)).Fdamagecount
 	if *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_strength)*4)) != 0 {
 		// slowly fade the berzerk out
-		bzc = int32(12) - *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_strength)*4))>>int32(6)
+		bzc = 12 - *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_strength)*4))>>int32(6)
 		if bzc > cnt {
 			cnt = bzc
 		}
 	}
 	if cnt != 0 {
-		if cnt >= int32(4) {
-			palette = (cnt + int32(7)) >> int32(3)
+		if cnt >= 4 {
+			palette = (cnt + 7) >> 3
 			if palette >= int32(NUMREDPALS) {
 				palette = NUMREDPALS - 1
 			}
@@ -41763,8 +41763,8 @@ func ST_doPaletteStuff(tls *libc.TLS) {
 		palette += int32(STARTREDPALS)
 	} else {
 		if (*player_t)(unsafe.Pointer(plyr)).Fbonuscount != 0 {
-			if (*player_t)(unsafe.Pointer(plyr)).Fbonuscount >= int32(4) {
-				palette = ((*player_t)(unsafe.Pointer(plyr)).Fbonuscount + int32(7)) >> int32(3)
+			if (*player_t)(unsafe.Pointer(plyr)).Fbonuscount >= 4 {
+				palette = ((*player_t)(unsafe.Pointer(plyr)).Fbonuscount + 7) >> 3
 				if palette >= int32(NUMBONUSPALS) {
 					palette = NUMBONUSPALS - 1
 				}
@@ -41852,7 +41852,7 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback func(*libc.TLS, uintptr, uint
 	// Load the numbers, tall and short
 	i = 0
 	for {
-		if !(i < int32(10)) {
+		if !(i < 10) {
 			break
 		}
 		snprintf_ccgo(bp, 9, 27843, i)
@@ -41885,7 +41885,7 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback func(*libc.TLS, uintptr, uint
 	// arms ownership widgets
 	i = 0
 	for {
-		if !(i < int32(6)) {
+		if !(i < 6) {
 			break
 		}
 		snprintf_ccgo(bp, 9, 27887, i+2)
@@ -41983,7 +41983,7 @@ func ST_initData(tls *libc.TLS) {
 	}
 	i = 0
 	for {
-		if !(i < int32(3)) {
+		if !(i < 3) {
 			break
 		}
 		keyboxes[i] = -1
@@ -42006,7 +42006,7 @@ func ST_createWidgets(tls *libc.TLS) {
 	STlib_initBinIcon(&w_armsbg, int32(ST_ARMSBGX), int32(ST_ARMSBGY), armsbg, uintptr(unsafe.Pointer(&st_notdeathmatch)), uintptr(unsafe.Pointer(&st_statusbaron)))
 	// weapons owned
 	for i := int32(0); i < 6; i++ {
-		STlib_initMultIcon(&w_arms[i], int32(ST_ARMSX)+i%int32(3)*int32(ST_ARMSXSPACE), int32(ST_ARMSY)+i/int32(3)*int32(ST_ARMSYSPACE), uintptr(unsafe.Pointer(&arms))+uintptr(i)*16, plyr+132+uintptr(i+int32(1))*4, uintptr(unsafe.Pointer(&st_armson)))
+		STlib_initMultIcon(&w_arms[i], ST_ARMSX+i%3*ST_ARMSXSPACE, int32(ST_ARMSY)+i/int32(3)*int32(ST_ARMSYSPACE), uintptr(unsafe.Pointer(&arms))+uintptr(i)*16, plyr+132+uintptr(i+1)*4, uintptr(unsafe.Pointer(&st_armson)))
 	}
 	// frags sum
 	STlib_initNum(&w_frags, int32(ST_FRAGSX), int32(ST_FRAGSY), uintptr(unsafe.Pointer(&tallnum)), uintptr(unsafe.Pointer(&st_fragscount)), uintptr(unsafe.Pointer(&st_fragson)), int32(ST_FRAGSWIDTH))
@@ -42030,7 +42030,7 @@ func ST_createWidgets(tls *libc.TLS) {
 	STlib_initNum(&w_maxammo[3], int32(ST_MAXAMMO3X), int32(ST_MAXAMMO3Y), uintptr(unsafe.Pointer(&shortnum)), plyr+184+3*4, uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
 }
 
-var st_stopped = 1
+var st_stopped int32 = 1
 
 func ST_Start(tls *libc.TLS) {
 	if !(st_stopped != 0) {
@@ -42085,9 +42085,9 @@ type channel_t struct {
 var channels uintptr
 
 func init() {
-	sfxVolume = int32(8)
-	musicVolume = int32(8)
-	snd_channels = int32(8)
+	sfxVolume = 8
+	musicVolume = 8
+	snd_channels = 8
 }
 
 // Internal volume level, ranging from 0-127
@@ -42132,7 +42132,7 @@ func S_Init(tls *libc.TLS, sfxVolume int32, musicVolume int32) {
 	// no sounds are playing, and they are not mus_paused
 	mus_paused = uint32(0)
 	// Note that sounds have not been cached (yet).
-	i = int32(1)
+	i = 1
 	for {
 		if !(i < int32(NUMSFX)) {
 			break
@@ -42209,7 +42209,7 @@ func S_Start(tls *libc.TLS) {
 	// start new music for the level
 	mus_paused = uint32(0)
 	if gamemode == int32(commercial) {
-		mnum = int32(mus_runnin) + gamemap - int32(1)
+		mnum = int32(mus_runnin) + gamemap - 1
 	} else {
 		spmus = [9]int32{
 			0: int32(mus_e3m4),
@@ -42222,8 +42222,8 @@ func S_Start(tls *libc.TLS) {
 			7: int32(mus_e2m5),
 			8: int32(mus_e1m9),
 		}
-		if gameepisode < int32(4) {
-			mnum = int32(mus_e1m1) + (gameepisode-1)*int32(9) + gamemap - int32(1)
+		if gameepisode < 4 {
+			mnum = int32(mus_e1m1) + (gameepisode-1)*int32(9) + gamemap - 1
 		} else {
 			mnum = spmus[gamemap-1]
 		}
@@ -42329,7 +42329,7 @@ func S_AdjustSoundParams(tls *libc.TLS, listener uintptr, source uintptr, vol ui
 		v1 = ady
 	}
 	approx_dist = adx + ady - v1>>int32(1)
-	if gamemap != int32(8) && approx_dist > 1200*(1<<FRACBITS) {
+	if gamemap != 8 && approx_dist > 1200*(1<<FRACBITS) {
 		return 0
 	}
 	// angle of source to listener
@@ -42341,16 +42341,16 @@ func S_AdjustSoundParams(tls *libc.TLS, listener uintptr, source uintptr, vol ui
 	}
 	angle >>= uint32(ANGLETOFINESHIFT)
 	// stereo separation
-	*(*int32)(unsafe.Pointer(sep)) = int32(128) - FixedMul(96*(1<<FRACBITS), finesine[angle])>>FRACBITS
+	*(*int32)(unsafe.Pointer(sep)) = 128 - FixedMul(96*(1<<FRACBITS), finesine[angle])>>FRACBITS
 	// volume calculation
 	if approx_dist < 200*(1<<FRACBITS) {
 		*(*int32)(unsafe.Pointer(vol)) = snd_SfxVolume
 	} else {
-		if gamemap == int32(8) {
+		if gamemap == 8 {
 			if approx_dist > 1200*(1<<FRACBITS) {
 				approx_dist = 1200 * (1 << FRACBITS)
 			}
-			*(*int32)(unsafe.Pointer(vol)) = int32(15) + (snd_SfxVolume-int32(15))*((1200*(1<<FRACBITS)-approx_dist)>>int32(FRACBITS))/((1200*(1<<FRACBITS)-200*(1<<FRACBITS))>>FRACBITS)
+			*(*int32)(unsafe.Pointer(vol)) = 15 + (snd_SfxVolume-int32(15))*((1200*(1<<FRACBITS)-approx_dist)>>int32(FRACBITS))/((1200*(1<<FRACBITS)-200*(1<<FRACBITS))>>FRACBITS)
 		} else {
 			// distance effect
 			*(*int32)(unsafe.Pointer(vol)) = snd_SfxVolume * ((1200*(1<<FRACBITS) - approx_dist) >> int32(FRACBITS)) / ((1200*(1<<FRACBITS) - 200*(1<<FRACBITS)) >> FRACBITS)
@@ -42367,14 +42367,14 @@ func S_StartSound(tls *libc.TLS, origin_p uintptr, sfx_id int32) {
 	origin = origin_p
 	*(*int32)(unsafe.Pointer(bp + 4)) = snd_SfxVolume
 	// check for bogus sound #
-	if sfx_id < int32(1) || sfx_id > int32(NUMSFX) {
+	if sfx_id < 1 || sfx_id > int32(NUMSFX) {
 		I_Error(tls, __ccgo_ts(27983), sfx_id)
 	}
 	sfx = &S_sfx[sfx_id]
 	// Initialize sound parameters
 	if sfx.Flink != 0 {
 		*(*int32)(unsafe.Pointer(bp + 4)) += sfx.Fvolume
-		if *(*int32)(unsafe.Pointer(bp + 4)) < int32(1) {
+		if *(*int32)(unsafe.Pointer(bp + 4)) < 1 {
 			return
 		}
 		if *(*int32)(unsafe.Pointer(bp + 4)) > snd_SfxVolume {
@@ -42451,7 +42451,7 @@ func S_UpdateSounds(tls *libc.TLS, listener uintptr) {
 				*(*int32)(unsafe.Pointer(bp + 4)) = int32(NORM_SEP)
 				if (*sfxinfo_t)(unsafe.Pointer(sfx)).Flink != 0 {
 					*(*int32)(unsafe.Pointer(bp)) += (*sfxinfo_t)(unsafe.Pointer(sfx)).Fvolume
-					if *(*int32)(unsafe.Pointer(bp)) < int32(1) {
+					if *(*int32)(unsafe.Pointer(bp)) < 1 {
 						S_StopChannel(tls, cnum)
 						goto _1
 					} else {
@@ -42484,14 +42484,14 @@ func S_UpdateSounds(tls *libc.TLS, listener uintptr) {
 }
 
 func S_SetMusicVolume(tls *libc.TLS, volume int32) {
-	if volume < 0 || volume > int32(127) {
+	if volume < 0 || volume > 127 {
 		I_Error(tls, __ccgo_ts(27997), volume)
 	}
 	I_SetMusicVolume(tls, volume)
 }
 
 func S_SetSfxVolume(tls *libc.TLS, volume int32) {
-	if volume < 0 || volume > int32(127) {
+	if volume < 0 || volume > 127 {
 		I_Error(tls, __ccgo_ts(28031), volume)
 	}
 	snd_SfxVolume = volume
@@ -42560,7 +42560,7 @@ func SlopeDiv(num uint32, den uint32) (r int32) {
 	if den < uint32(512) {
 		return int32(SLOPERANGE)
 	} else {
-		ans = num << int32(3) / (den >> int32(8))
+		ans = num << 3 / (den >> 8)
 		if ans <= uint32(SLOPERANGE) {
 			return libc.Int32FromUint32(ans)
 		} else {
@@ -42909,9 +42909,9 @@ func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, he
 	var pack, pcx, v10, v2, v3, v4, v5, v6, v7, v9 uintptr
 	pcx = Z_Malloc(tls, width*height*int32(2)+int32(1000), int32(PU_STATIC), libc.UintptrFromInt32(0))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fmanufacturer = int8(0x0a) // PCX id
-	(*pcx_t)(unsafe.Pointer(pcx)).Fversion = int8(5)         // 256 color
-	(*pcx_t)(unsafe.Pointer(pcx)).Fencoding = int8(1)        // uncompressed
-	(*pcx_t)(unsafe.Pointer(pcx)).Fbits_per_pixel = int8(8)  // 256 color
+	(*pcx_t)(unsafe.Pointer(pcx)).Fversion = 5               // 256 color
+	(*pcx_t)(unsafe.Pointer(pcx)).Fencoding = 1              // uncompressed
+	(*pcx_t)(unsafe.Pointer(pcx)).Fbits_per_pixel = 8        // 256 color
 	(*pcx_t)(unsafe.Pointer(pcx)).Fxmin = uint16(0)
 	(*pcx_t)(unsafe.Pointer(pcx)).Fymin = uint16(0)
 	(*pcx_t)(unsafe.Pointer(pcx)).Fxmax = libc.Uint16FromInt16(int16(width - 1))
@@ -42919,7 +42919,7 @@ func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, he
 	(*pcx_t)(unsafe.Pointer(pcx)).Fhres = libc.Uint16FromInt16(int16(width))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fvres = libc.Uint16FromInt16(int16(height))
 	xmemset(pcx+16, 0, uint64(48))
-	(*pcx_t)(unsafe.Pointer(pcx)).Fcolor_planes = int8(1) // chunky image
+	(*pcx_t)(unsafe.Pointer(pcx)).Fcolor_planes = 1 // chunky image
 	(*pcx_t)(unsafe.Pointer(pcx)).Fbytes_per_line = libc.Uint16FromInt16(int16(width))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fpalette_type = libc.Uint16FromInt16(int16(2)) // not a grey scale
 	xmemset(pcx+70, 0, uint64(58))
@@ -42957,7 +42957,7 @@ func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, he
 	*(*uint8)(unsafe.Pointer(v7)) = uint8(0x0c) // palette ID byte
 	i = 0
 	for {
-		if !(i < int32(768)) {
+		if !(i < 768) {
 			break
 		}
 		v9 = pack
@@ -42988,7 +42988,7 @@ func V_ScreenShot(tls *libc.TLS, format uintptr) {
 	ext = __ccgo_ts(28304)
 	i = 0
 	for {
-		if !(i <= int32(99)) {
+		if !(i <= 99) {
 			break
 		}
 		M_snprintf(tls, bp, uint64(16), format, libc.VaList(bp+24, i, ext))
@@ -43000,7 +43000,7 @@ func V_ScreenShot(tls *libc.TLS, format uintptr) {
 		;
 		i++
 	}
-	if i == int32(100) {
+	if i == 100 {
 		I_Error(tls, __ccgo_ts(28308), 0)
 	}
 	// save the pcx file
@@ -43024,7 +43024,7 @@ func V_DrawMouseSpeedBox(speed int32) {
 	}
 	// Calculate box position
 	box_x = SCREENWIDTH - MOUSE_SPEED_BOX_WIDTH - 10
-	box_y = int32(15)
+	box_y = 15
 	V_DrawFilledBox(box_x, box_y, int32(MOUSE_SPEED_BOX_WIDTH), int32(MOUSE_SPEED_BOX_HEIGHT), bgcolor)
 	V_DrawBox(box_x, box_y, int32(MOUSE_SPEED_BOX_WIDTH), int32(MOUSE_SPEED_BOX_HEIGHT), bordercolor)
 	// Calculate the position of the red line.  This is 1/3 of the way
@@ -43136,116 +43136,116 @@ type anim_t1 struct {
 var lnodes = [4][9]point_t{
 	0: {
 		0: {
-			Fx: int32(185),
-			Fy: int32(164),
+			Fx: 185,
+			Fy: 164,
 		},
 		1: {
-			Fx: int32(148),
-			Fy: int32(143),
+			Fx: 148,
+			Fy: 143,
 		},
 		2: {
-			Fx: int32(69),
-			Fy: int32(122),
+			Fx: 69,
+			Fy: 122,
 		},
 		3: {
-			Fx: int32(209),
-			Fy: int32(102),
+			Fx: 209,
+			Fy: 102,
 		},
 		4: {
-			Fx: int32(116),
-			Fy: int32(89),
+			Fx: 116,
+			Fy: 89,
 		},
 		5: {
-			Fx: int32(166),
-			Fy: int32(55),
+			Fx: 166,
+			Fy: 55,
 		},
 		6: {
-			Fx: int32(71),
-			Fy: int32(56),
+			Fx: 71,
+			Fy: 56,
 		},
 		7: {
-			Fx: int32(135),
-			Fy: int32(29),
+			Fx: 135,
+			Fy: 29,
 		},
 		8: {
-			Fx: int32(71),
-			Fy: int32(24),
+			Fx: 71,
+			Fy: 24,
 		},
 	},
 	1: {
 		0: {
-			Fx: int32(254),
-			Fy: int32(25),
+			Fx: 254,
+			Fy: 25,
 		},
 		1: {
-			Fx: int32(97),
-			Fy: int32(50),
+			Fx: 97,
+			Fy: 50,
 		},
 		2: {
-			Fx: int32(188),
-			Fy: int32(64),
+			Fx: 188,
+			Fy: 64,
 		},
 		3: {
-			Fx: int32(128),
-			Fy: int32(78),
+			Fx: 128,
+			Fy: 78,
 		},
 		4: {
-			Fx: int32(214),
-			Fy: int32(92),
+			Fx: 214,
+			Fy: 92,
 		},
 		5: {
-			Fx: int32(133),
-			Fy: int32(130),
+			Fx: 133,
+			Fy: 130,
 		},
 		6: {
-			Fx: int32(208),
-			Fy: int32(136),
+			Fx: 208,
+			Fy: 136,
 		},
 		7: {
-			Fx: int32(148),
-			Fy: int32(140),
+			Fx: 148,
+			Fy: 140,
 		},
 		8: {
-			Fx: int32(235),
-			Fy: int32(158),
+			Fx: 235,
+			Fy: 158,
 		},
 	},
 	2: {
 		0: {
-			Fx: int32(156),
-			Fy: int32(168),
+			Fx: 156,
+			Fy: 168,
 		},
 		1: {
-			Fx: int32(48),
-			Fy: int32(154),
+			Fx: 48,
+			Fy: 154,
 		},
 		2: {
-			Fx: int32(174),
-			Fy: int32(95),
+			Fx: 174,
+			Fy: 95,
 		},
 		3: {
-			Fx: int32(265),
-			Fy: int32(75),
+			Fx: 265,
+			Fy: 75,
 		},
 		4: {
-			Fx: int32(130),
-			Fy: int32(48),
+			Fx: 130,
+			Fy: 48,
 		},
 		5: {
-			Fx: int32(279),
-			Fy: int32(23),
+			Fx: 279,
+			Fy: 23,
 		},
 		6: {
-			Fx: int32(198),
-			Fy: int32(48),
+			Fx: 198,
+			Fy: 48,
 		},
 		7: {
-			Fx: int32(140),
-			Fy: int32(25),
+			Fx: 140,
+			Fy: 25,
 		},
 		8: {
-			Fx: int32(281),
-			Fy: int32(136),
+			Fx: 281,
+			Fy: 136,
 		},
 	},
 }
@@ -43259,82 +43259,82 @@ var lnodes = [4][9]point_t{
 var epsd0animinfo = [10]anim_t1{
 	0: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(224),
-			Fy: int32(104),
+			Fx: 224,
+			Fy: 104,
 		},
 	},
 	1: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(184),
-			Fy: int32(160),
+			Fx: 184,
+			Fy: 160,
 		},
 	},
 	2: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(112),
-			Fy: int32(136),
+			Fx: 112,
+			Fy: 136,
 		},
 	},
 	3: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(72),
-			Fy: int32(112),
+			Fx: 72,
+			Fy: 112,
 		},
 	},
 	4: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(88),
-			Fy: int32(96),
+			Fx: 88,
+			Fy: 96,
 		},
 	},
 	5: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(64),
-			Fy: int32(48),
+			Fx: 64,
+			Fy: 48,
 		},
 	},
 	6: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(192),
-			Fy: int32(40),
+			Fx: 192,
+			Fy: 40,
 		},
 	},
 	7: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(136),
-			Fy: int32(16),
+			Fx: 136,
+			Fy: 16,
 		},
 	},
 	8: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(80),
-			Fy: int32(16),
+			Fx: 80,
+			Fy: 16,
 		},
 	},
 	9: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(64),
-			Fy: int32(24),
+			Fx: 64,
+			Fy: 24,
 		},
 	},
 }
@@ -43343,141 +43343,141 @@ var epsd1animinfo = [9]anim_t1{
 	0: {
 		Ftype1:  int32(ANIM_LEVEL),
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(1),
+		Fnanims: 1,
 		Floc: point_t{
-			Fx: int32(128),
-			Fy: int32(136),
+			Fx: 128,
+			Fy: 136,
 		},
-		Fdata1: int32(1),
+		Fdata1: 1,
 	},
 	1: {
 		Ftype1:  int32(ANIM_LEVEL),
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(1),
+		Fnanims: 1,
 		Floc: point_t{
-			Fx: int32(128),
-			Fy: int32(136),
+			Fx: 128,
+			Fy: 136,
 		},
-		Fdata1: int32(2),
+		Fdata1: 2,
 	},
 	2: {
 		Ftype1:  int32(ANIM_LEVEL),
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(1),
+		Fnanims: 1,
 		Floc: point_t{
-			Fx: int32(128),
-			Fy: int32(136),
+			Fx: 128,
+			Fy: 136,
 		},
-		Fdata1: int32(3),
+		Fdata1: 3,
 	},
 	3: {
 		Ftype1:  int32(ANIM_LEVEL),
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(1),
+		Fnanims: 1,
 		Floc: point_t{
-			Fx: int32(128),
-			Fy: int32(136),
+			Fx: 128,
+			Fy: 136,
 		},
-		Fdata1: int32(4),
+		Fdata1: 4,
 	},
 	4: {
 		Ftype1:  int32(ANIM_LEVEL),
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(1),
+		Fnanims: 1,
 		Floc: point_t{
-			Fx: int32(128),
-			Fy: int32(136),
+			Fx: 128,
+			Fy: 136,
 		},
-		Fdata1: int32(5),
+		Fdata1: 5,
 	},
 	5: {
 		Ftype1:  int32(ANIM_LEVEL),
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(1),
+		Fnanims: 1,
 		Floc: point_t{
-			Fx: int32(128),
-			Fy: int32(136),
+			Fx: 128,
+			Fy: 136,
 		},
-		Fdata1: int32(6),
+		Fdata1: 6,
 	},
 	6: {
 		Ftype1:  int32(ANIM_LEVEL),
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(1),
+		Fnanims: 1,
 		Floc: point_t{
-			Fx: int32(128),
-			Fy: int32(136),
+			Fx: 128,
+			Fy: 136,
 		},
-		Fdata1: int32(7),
+		Fdata1: 7,
 	},
 	7: {
 		Ftype1:  int32(ANIM_LEVEL),
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(192),
-			Fy: int32(144),
+			Fx: 192,
+			Fy: 144,
 		},
-		Fdata1: int32(8),
+		Fdata1: 8,
 	},
 	8: {
 		Ftype1:  int32(ANIM_LEVEL),
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(1),
+		Fnanims: 1,
 		Floc: point_t{
-			Fx: int32(128),
-			Fy: int32(136),
+			Fx: 128,
+			Fy: 136,
 		},
-		Fdata1: int32(8),
+		Fdata1: 8,
 	},
 }
 
 var epsd2animinfo = [6]anim_t1{
 	0: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(104),
-			Fy: int32(168),
+			Fx: 104,
+			Fy: 168,
 		},
 	},
 	1: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(40),
-			Fy: int32(136),
+			Fx: 40,
+			Fy: 136,
 		},
 	},
 	2: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(160),
-			Fy: int32(96),
+			Fx: 160,
+			Fy: 96,
 		},
 	},
 	3: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(104),
-			Fy: int32(80),
+			Fx: 104,
+			Fy: 80,
 		},
 	},
 	4: {
 		Fperiod: TICRATE / 3,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(120),
-			Fy: int32(32),
+			Fx: 120,
+			Fy: 32,
 		},
 	},
 	5: {
 		Fperiod: TICRATE / 4,
-		Fnanims: int32(3),
+		Fnanims: 3,
 		Floc: point_t{
-			Fx: int32(40),
+			Fx: 40,
 		},
 	},
 }
@@ -43666,7 +43666,7 @@ func WI_drawLF(tls *libc.TLS) {
 		// draw <LevelName>
 		V_DrawPatch(tls, (int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast)*8)))).Fwidth))/int32(2), y, *(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast)*8)))
 		// draw "Finished!"
-		y += int32(5) * int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast)*8)))).Fheight) / int32(4)
+		y += 5 * int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast)*8)))).Fheight) / 4
 		V_DrawPatch(tls, (int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(finished)).Fwidth))/int32(2), y, finished)
 	} else {
 		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast == NUMCMAPS {
@@ -43680,8 +43680,8 @@ func WI_drawLF(tls *libc.TLS) {
 				*(*patch_t)(unsafe.Pointer(bp)) = patch_t{
 					Fwidth:      int16(SCREENWIDTH),
 					Fheight:     int16(SCREENHEIGHT),
-					Fleftoffset: int16(1),
-					Ftopoffset:  int16(1),
+					Fleftoffset: 1,
+					Ftopoffset:  1,
 				}
 				V_DrawPatch(tls, 0, y, bp)
 			}
@@ -43698,7 +43698,7 @@ func WI_drawEL(tls *libc.TLS) {
 	// draw "Entering"
 	V_DrawPatch(tls, (int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(entering)).Fwidth))/int32(2), y, entering)
 	// draw level
-	y += int32(5) * int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext)*8)))).Fheight) / int32(4)
+	y += 5 * int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext)*8)))).Fheight) / 4
 	V_DrawPatch(tls, (int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext)*8)))).Fwidth))/int32(2), y, *(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext)*8)))
 }
 
@@ -43707,7 +43707,7 @@ func WI_drawOnLnode(tls *libc.TLS, n int32, c uintptr) {
 	var fits boolean
 	fits = 0
 	i = 0
-	for cond := true; cond; cond = !(fits != 0) && i != int32(2) && *(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)) != libc.UintptrFromInt32(0) {
+	for cond := true; cond; cond = !(fits != 0) && i != 2 && *(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)) != libc.UintptrFromInt32(0) {
 		left = (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fx - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Fleftoffset)
 		top = (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fy - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Ftopoffset)
 		right = left + int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Fwidth)
@@ -43718,7 +43718,7 @@ func WI_drawOnLnode(tls *libc.TLS, n int32, c uintptr) {
 			i++
 		}
 	}
-	if fits != 0 && i < int32(2) {
+	if fits != 0 && i < 2 {
 		V_DrawPatch(tls, (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fx, (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fy, *(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))
 	} else {
 		// DEBUG
@@ -43732,7 +43732,7 @@ func WI_initAnimatedBack(tls *libc.TLS) {
 	if gamemode == int32(commercial) {
 		return
 	}
-	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > int32(2) {
+	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > 2 {
 		return
 	}
 	i = 0
@@ -43745,13 +43745,13 @@ func WI_initAnimatedBack(tls *libc.TLS) {
 		(*anim_t1)(unsafe.Pointer(a)).Fctr = -1
 		// specify the next time to draw it
 		if (*anim_t1)(unsafe.Pointer(a)).Ftype1 == int32(ANIM_ALWAYS) {
-			(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + int32(1) + M_Random()%(*anim_t1)(unsafe.Pointer(a)).Fperiod
+			(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + 1 + M_Random()%(*anim_t1)(unsafe.Pointer(a)).Fperiod
 		} else {
 			if (*anim_t1)(unsafe.Pointer(a)).Ftype1 == int32(ANIM_RANDOM) {
-				(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + int32(1) + (*anim_t1)(unsafe.Pointer(a)).Fdata2 + M_Random()%(*anim_t1)(unsafe.Pointer(a)).Fdata1
+				(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + 1 + (*anim_t1)(unsafe.Pointer(a)).Fdata2 + M_Random()%(*anim_t1)(unsafe.Pointer(a)).Fdata1
 			} else {
 				if (*anim_t1)(unsafe.Pointer(a)).Ftype1 == int32(ANIM_LEVEL) {
-					(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + int32(1)
+					(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + 1
 				}
 			}
 		}
@@ -43768,7 +43768,7 @@ func WI_updateAnimatedBack(tls *libc.TLS) {
 	if gamemode == int32(commercial) {
 		return
 	}
-	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > int32(2) {
+	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > 2 {
 		return
 	}
 	i = 0
@@ -43797,7 +43797,7 @@ func WI_updateAnimatedBack(tls *libc.TLS) {
 				}
 			case int32(ANIM_LEVEL):
 				// gawd-awful hack for level anims
-				if !(state == int32(StatCount) && i == int32(7)) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext == (*anim_t1)(unsafe.Pointer(a)).Fdata1 {
+				if !(state == int32(StatCount) && i == 7) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext == (*anim_t1)(unsafe.Pointer(a)).Fdata1 {
 					(*anim_t1)(unsafe.Pointer(a)).Fctr++
 					if (*anim_t1)(unsafe.Pointer(a)).Fctr == (*anim_t1)(unsafe.Pointer(a)).Fnanims {
 						(*anim_t1)(unsafe.Pointer(a)).Fctr--
@@ -43820,7 +43820,7 @@ func WI_drawAnimatedBack(tls *libc.TLS) {
 	if gamemode == int32(commercial) {
 		return
 	}
-	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > int32(2) {
+	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > 2 {
 		return
 	}
 	i = 0
@@ -43852,13 +43852,13 @@ func WI_drawNum(tls *libc.TLS, x int32, y int32, n int32, digits int32) (r int32
 	if digits < 0 {
 		if !(n != 0) {
 			// make variable-length zeros 1 digit long
-			digits = int32(1)
+			digits = 1
 		} else {
 			// figure out # of digits in #
 			digits = 0
 			temp = n
 			for temp != 0 {
-				temp /= int32(10)
+				temp /= 10
 				digits++
 			}
 		}
@@ -43868,7 +43868,7 @@ func WI_drawNum(tls *libc.TLS, x int32, y int32, n int32, digits int32) (r int32
 		n = -n
 	}
 	// if non-number, do not draw it
-	if n == int32(1994) {
+	if n == 1994 {
 		return 0
 	}
 	// draw the new number
@@ -43880,11 +43880,11 @@ func WI_drawNum(tls *libc.TLS, x int32, y int32, n int32, digits int32) (r int32
 		}
 		x -= fontwidth
 		V_DrawPatch(tls, x, y, num[n%int32(10)])
-		n /= int32(10)
+		n /= 10
 	}
 	// draw a minus sign if necessary
 	if neg != 0 {
-		x -= int32(8)
+		x -= 8
 		V_DrawPatch(tls, x, y, wiminus)
 	}
 	return x
@@ -43910,13 +43910,13 @@ func WI_drawTime(tls *libc.TLS, x int32, y int32, t int32) {
 		return
 	}
 	if t <= 61*59 {
-		div = int32(1)
+		div = 1
 		for cond := true; cond; cond = t/div != 0 {
-			n = t / div % int32(60)
-			x = WI_drawNum(tls, x, y, n, int32(2)) - int32((*patch_t)(unsafe.Pointer(colon)).Fwidth)
-			div *= int32(60)
+			n = t / div % 60
+			x = WI_drawNum(tls, x, y, n, 2) - int32((*patch_t)(unsafe.Pointer(colon)).Fwidth)
+			div *= 60
 			// draw
-			if div == int32(60) || t/div != 0 {
+			if div == 60 || t/div != 0 {
 				V_DrawPatch(tls, x, y, colon)
 			}
 		}
@@ -43933,7 +43933,7 @@ func WI_End(tls *libc.TLS) {
 func WI_initNoState() {
 	state = int32(NoState)
 	acceleratestage = 0
-	cnt = int32(10)
+	cnt = 10
 }
 
 func WI_updateNoState(tls *libc.TLS) {
@@ -43978,12 +43978,12 @@ func WI_drawShowNextLoc(tls *libc.TLS) {
 	// draw animated background
 	WI_drawAnimatedBack(tls)
 	if gamemode != int32(commercial) {
-		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > int32(2) {
+		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > 2 {
 			WI_drawEL(tls)
 			return
 		}
-		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast == int32(8) {
-			v1 = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext - int32(1)
+		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast == 8 {
+			v1 = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext - 1
 		} else {
 			v1 = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast
 		}
@@ -44002,7 +44002,7 @@ func WI_drawShowNextLoc(tls *libc.TLS) {
 		}
 		// splat the secret level?
 		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fdidsecret != 0 {
-			WI_drawOnLnode(tls, int32(8), uintptr(unsafe.Pointer(&splat)))
+			WI_drawOnLnode(tls, 8, uintptr(unsafe.Pointer(&splat)))
 		}
 		// draw flashing ptr
 		if snl_pointeron != 0 {
@@ -44010,7 +44010,7 @@ func WI_drawShowNextLoc(tls *libc.TLS) {
 		}
 	}
 	// draws which level you are entering..
-	if gamemode != int32(commercial) || (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext != int32(30) {
+	if gamemode != int32(commercial) || (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext != 30 {
 		WI_drawEL(tls)
 	}
 }
@@ -44051,7 +44051,7 @@ func WI_initDeathmatchStats(tls *libc.TLS) {
 	var i, j int32
 	state = int32(StatCount)
 	acceleratestage = 0
-	dm_state = int32(1)
+	dm_state = 1
 	cnt_pause = int32(TICRATE)
 	i = 0
 	for {
@@ -44086,7 +44086,7 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 	var i, j, v5 int32
 	var stillticking boolean
 	WI_updateAnimatedBack(tls)
-	if acceleratestage != 0 && dm_state != int32(4) {
+	if acceleratestage != 0 && dm_state != 4 {
 		acceleratestage = 0
 		i = 0
 		for {
@@ -44115,9 +44115,9 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 			i++
 		}
 		S_StartSound(tls, uintptr(0), int32(sfx_barexp))
-		dm_state = int32(4)
+		dm_state = 4
 	}
-	if dm_state == int32(2) {
+	if dm_state == 2 {
 		if !(bcnt&3 != 0) {
 			S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 		}
@@ -44139,8 +44139,8 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 						} else {
 							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4))++
 						}
-						if *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) > int32(99) {
-							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = int32(99)
+						if *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) > 99 {
+							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = 99
 						}
 						if *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) < -int32(99) {
 							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = -int32(99)
@@ -44153,8 +44153,8 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 					j++
 				}
 				dm_totals[i] = WI_fragSum(i)
-				if dm_totals[i] > int32(99) {
-					dm_totals[i] = int32(99)
+				if dm_totals[i] > 99 {
+					dm_totals[i] = 99
 				}
 				if dm_totals[i] < -int32(99) {
 					dm_totals[i] = -int32(99)
@@ -44170,7 +44170,7 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 			dm_state++
 		}
 	} else {
-		if dm_state == int32(4) {
+		if dm_state == 4 {
 			if acceleratestage != 0 {
 				S_StartSound(tls, uintptr(0), int32(sfx_slop))
 				if gamemode == int32(commercial) {
@@ -44246,7 +44246,7 @@ func WI_drawDeathmatchStats(tls *libc.TLS) {
 					break
 				}
 				if playeringame[j] != 0 {
-					WI_drawNum(tls, x+w, y, *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)), int32(2))
+					WI_drawNum(tls, x+w, y, *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)), 2)
 				}
 				x += int32(DM_SPACINGX)
 				goto _3
@@ -44254,7 +44254,7 @@ func WI_drawDeathmatchStats(tls *libc.TLS) {
 				;
 				j++
 			}
-			WI_drawNum(tls, int32(DM_TOTALSX)+w, y, dm_totals[i], int32(2))
+			WI_drawNum(tls, int32(DM_TOTALSX)+w, y, dm_totals[i], 2)
 		}
 		y += int32(WI_SPACINGY)
 		goto _2
@@ -44272,7 +44272,7 @@ func WI_initNetgameStats(tls *libc.TLS) {
 	var i, v2, v3, v4 int32
 	state = int32(StatCount)
 	acceleratestage = 0
-	ng_state = int32(1)
+	ng_state = 1
 	cnt_pause = int32(TICRATE)
 	i = 0
 	for {
@@ -44303,7 +44303,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 	var fsum, i, v6, v7 int32
 	var stillticking boolean
 	WI_updateAnimatedBack(tls)
-	if acceleratestage != 0 && ng_state != int32(10) {
+	if acceleratestage != 0 && ng_state != 10 {
 		acceleratestage = 0
 		i = 0
 		for {
@@ -44313,9 +44313,9 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 			if !(playeringame[i] != 0) {
 				goto _1
 			}
-			cnt_kills[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fskills * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
-			cnt_items[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fsitems * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
-			cnt_secret[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fssecret * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
+			cnt_kills[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
+			cnt_items[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
+			cnt_secret[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
 			if dofrags != 0 {
 				cnt_frags[i] = WI_fragSum(i)
 			}
@@ -44325,9 +44325,9 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 			i++
 		}
 		S_StartSound(tls, uintptr(0), int32(sfx_barexp))
-		ng_state = int32(10)
+		ng_state = 10
 	}
-	if ng_state == int32(2) {
+	if ng_state == 2 {
 		if !(bcnt&3 != 0) {
 			S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 		}
@@ -44340,9 +44340,9 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 			if !(playeringame[i] != 0) {
 				goto _2
 			}
-			*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_kills)) + uintptr(i)*4)) += int32(2)
+			*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_kills)) + uintptr(i)*4)) += 2
 			if cnt_kills[i] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fskills*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills {
-				cnt_kills[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fskills * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
+				cnt_kills[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
 			} else {
 				stillticking = 1
 			}
@@ -44356,7 +44356,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 			ng_state++
 		}
 	} else {
-		if ng_state == int32(4) {
+		if ng_state == 4 {
 			if !(bcnt&3 != 0) {
 				S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 			}
@@ -44369,9 +44369,9 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 				if !(playeringame[i] != 0) {
 					goto _3
 				}
-				*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_items)) + uintptr(i)*4)) += int32(2)
+				*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_items)) + uintptr(i)*4)) += 2
 				if cnt_items[i] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fsitems*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems {
-					cnt_items[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fsitems * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
+					cnt_items[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
 				} else {
 					stillticking = 1
 				}
@@ -44385,7 +44385,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 				ng_state++
 			}
 		} else {
-			if ng_state == int32(6) {
+			if ng_state == 6 {
 				if !(bcnt&3 != 0) {
 					S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 				}
@@ -44398,9 +44398,9 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 					if !(playeringame[i] != 0) {
 						goto _4
 					}
-					*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_secret)) + uintptr(i)*4)) += int32(2)
+					*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_secret)) + uintptr(i)*4)) += 2
 					if cnt_secret[i] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fssecret*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret {
-						cnt_secret[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fssecret * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
+						cnt_secret[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
 					} else {
 						stillticking = 1
 					}
@@ -44411,10 +44411,10 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 				}
 				if !(stillticking != 0) {
 					S_StartSound(tls, uintptr(0), int32(sfx_barexp))
-					ng_state += int32(1) + int32(2)*libc.BoolInt32(!(dofrags != 0))
+					ng_state += 1 + 2*libc.BoolInt32(!(dofrags != 0))
 				}
 			} else {
-				if ng_state == int32(8) {
+				if ng_state == 8 {
 					if !(bcnt&3 != 0) {
 						S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 					}
@@ -44427,7 +44427,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 						if !(playeringame[i] != 0) {
 							goto _5
 						}
-						*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_frags)) + uintptr(i)*4)) += int32(1)
+						*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_frags)) + uintptr(i)*4)) += 1
 						v6 = WI_fragSum(i)
 						fsum = v6
 						if cnt_frags[i] >= v6 {
@@ -44445,7 +44445,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 						ng_state++
 					}
 				} else {
-					if ng_state == int32(10) {
+					if ng_state == 10 {
 						if acceleratestage != 0 {
 							S_StartSound(tls, uintptr(0), int32(sfx_sgcock))
 							if gamemode == int32(commercial) {
@@ -44478,11 +44478,11 @@ func WI_drawNetgameStats(tls *libc.TLS) {
 	WI_drawAnimatedBack(tls)
 	WI_drawLF(tls)
 	// draw stat titles (top line)
-	V_DrawPatch(tls, int32(32)+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+int32(NG_SPACINGX)-int32((*patch_t)(unsafe.Pointer(kills)).Fwidth), int32(NG_STATSY), kills)
-	V_DrawPatch(tls, int32(32)+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+2*NG_SPACINGX-int32((*patch_t)(unsafe.Pointer(items)).Fwidth), int32(NG_STATSY), items)
-	V_DrawPatch(tls, int32(32)+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+3*NG_SPACINGX-int32((*patch_t)(unsafe.Pointer(secret)).Fwidth), int32(NG_STATSY), secret)
+	V_DrawPatch(tls, 32+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+int32(NG_SPACINGX)-int32((*patch_t)(unsafe.Pointer(kills)).Fwidth), int32(NG_STATSY), kills)
+	V_DrawPatch(tls, 32+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+2*NG_SPACINGX-int32((*patch_t)(unsafe.Pointer(items)).Fwidth), int32(NG_STATSY), items)
+	V_DrawPatch(tls, 32+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+3*NG_SPACINGX-int32((*patch_t)(unsafe.Pointer(secret)).Fwidth), int32(NG_STATSY), secret)
 	if dofrags != 0 {
-		V_DrawPatch(tls, int32(32)+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+4*NG_SPACINGX-int32((*patch_t)(unsafe.Pointer(frags)).Fwidth), int32(NG_STATSY), frags)
+		V_DrawPatch(tls, 32+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+4*NG_SPACINGX-int32((*patch_t)(unsafe.Pointer(frags)).Fwidth), int32(NG_STATSY), frags)
 	}
 	// draw stats
 	y = int32(NG_STATSY) + int32((*patch_t)(unsafe.Pointer(kills)).Fheight)
@@ -44494,7 +44494,7 @@ func WI_drawNetgameStats(tls *libc.TLS) {
 		if !(playeringame[i] != 0) {
 			goto _1
 		}
-		x = int32(32) + int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2) + int32(32)*libc.BoolInt32(!(dofrags != 0))
+		x = 32 + int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2) + 32*libc.BoolInt32(!(dofrags != 0))
 		V_DrawPatch(tls, x-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth), y, p[i])
 		if i == me {
 			V_DrawPatch(tls, x-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth), y, star)
@@ -44523,7 +44523,7 @@ func WI_initStats(tls *libc.TLS) {
 	var v1, v2, v3 int32
 	state = int32(StatCount)
 	acceleratestage = 0
-	sp_state = int32(1)
+	sp_state = 1
 	v2 = -1
 	cnt_secret[0] = v2
 	v1 = v2
@@ -44539,58 +44539,58 @@ func WI_initStats(tls *libc.TLS) {
 func WI_updateStats(tls *libc.TLS) {
 	var v1 int32
 	WI_updateAnimatedBack(tls)
-	if acceleratestage != 0 && sp_state != int32(10) {
+	if acceleratestage != 0 && sp_state != 10 {
 		acceleratestage = 0
-		cnt_kills[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fskills * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
-		cnt_items[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fsitems * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
-		cnt_secret[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fssecret * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
+		cnt_kills[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
+		cnt_items[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
+		cnt_secret[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
 		cnt_time = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fstime / int32(TICRATE)
 		cnt_par = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpartime / int32(TICRATE)
 		S_StartSound(tls, uintptr(0), int32(sfx_barexp))
-		sp_state = int32(10)
+		sp_state = 10
 	}
-	if sp_state == int32(2) {
-		*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_kills)))) += int32(2)
+	if sp_state == 2 {
+		*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_kills)))) += 2
 		if !(bcnt&3 != 0) {
 			S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 		}
 		if cnt_kills[0] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fskills*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills {
-			cnt_kills[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fskills * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
+			cnt_kills[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
 			S_StartSound(tls, uintptr(0), int32(sfx_barexp))
 			sp_state++
 		}
 	} else {
-		if sp_state == int32(4) {
-			*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_items)))) += int32(2)
+		if sp_state == 4 {
+			*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_items)))) += 2
 			if !(bcnt&3 != 0) {
 				S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 			}
 			if cnt_items[0] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fsitems*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems {
-				cnt_items[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fsitems * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
+				cnt_items[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
 				S_StartSound(tls, uintptr(0), int32(sfx_barexp))
 				sp_state++
 			}
 		} else {
-			if sp_state == int32(6) {
-				*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_secret)))) += int32(2)
+			if sp_state == 6 {
+				*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_secret)))) += 2
 				if !(bcnt&3 != 0) {
 					S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 				}
 				if cnt_secret[0] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fssecret*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret {
-					cnt_secret[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fssecret * int32(100) / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
+					cnt_secret[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
 					S_StartSound(tls, uintptr(0), int32(sfx_barexp))
 					sp_state++
 				}
 			} else {
-				if sp_state == int32(8) {
+				if sp_state == 8 {
 					if !(bcnt&3 != 0) {
 						S_StartSound(tls, uintptr(0), int32(sfx_pistol))
 					}
-					cnt_time += int32(3)
+					cnt_time += 3
 					if cnt_time >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fstime/int32(TICRATE) {
 						cnt_time = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fstime / int32(TICRATE)
 					}
-					cnt_par += int32(3)
+					cnt_par += 3
 					if cnt_par >= (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpartime/int32(TICRATE) {
 						cnt_par = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpartime / int32(TICRATE)
 						if cnt_time >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fstime/int32(TICRATE) {
@@ -44599,7 +44599,7 @@ func WI_updateStats(tls *libc.TLS) {
 						}
 					}
 				} else {
-					if sp_state == int32(10) {
+					if sp_state == 10 {
 						if acceleratestage != 0 {
 							S_StartSound(tls, uintptr(0), int32(sfx_sgcock))
 							if gamemode == int32(commercial) {
@@ -44626,7 +44626,7 @@ func WI_updateStats(tls *libc.TLS) {
 
 func WI_drawStats(tls *libc.TLS) {
 	var lh int32
-	lh = int32(3) * int32((*patch_t)(unsafe.Pointer(num[0])).Fheight) / int32(2)
+	lh = 3 * int32((*patch_t)(unsafe.Pointer(num[0])).Fheight) / 2
 	WI_slamBackground(tls)
 	// draw animated background
 	WI_drawAnimatedBack(tls)
@@ -44639,7 +44639,7 @@ func WI_drawStats(tls *libc.TLS) {
 	WI_drawPercent(tls, SCREENWIDTH-SP_STATSX, int32(SP_STATSY)+int32(2)*lh, cnt_secret[0])
 	V_DrawPatch(tls, int32(SP_TIMEX), SCREENHEIGHT-32, timepatch)
 	WI_drawTime(tls, SCREENWIDTH/2-SP_TIMEX, SCREENHEIGHT-32, cnt_time)
-	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd < int32(3) {
+	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd < 3 {
 		V_DrawPatch(tls, SCREENWIDTH/2+SP_TIMEX, SCREENHEIGHT-32, par)
 		WI_drawTime(tls, SCREENWIDTH-SP_TIMEX, SCREENHEIGHT-32, cnt_par)
 	}
@@ -44658,7 +44658,7 @@ func WI_checkForAccelerate(tls *libc.TLS) {
 		if playeringame[i] != 0 {
 			if libc.Int32FromUint8((*player_t)(unsafe.Pointer(player)).Fcmd.Fbuttons)&int32(BT_ATTACK) != 0 {
 				if !((*player_t)(unsafe.Pointer(player)).Fattackdown != 0) {
-					acceleratestage = int32(1)
+					acceleratestage = 1
 				}
 				(*player_t)(unsafe.Pointer(player)).Fattackdown = 1
 			} else {
@@ -44666,7 +44666,7 @@ func WI_checkForAccelerate(tls *libc.TLS) {
 			}
 			if libc.Int32FromUint8((*player_t)(unsafe.Pointer(player)).Fcmd.Fbuttons)&int32(BT_USE) != 0 {
 				if !((*player_t)(unsafe.Pointer(player)).Fusedown != 0) {
-					acceleratestage = int32(1)
+					acceleratestage = 1
 				}
 				(*player_t)(unsafe.Pointer(player)).Fusedown = 1
 			} else {
@@ -44687,7 +44687,7 @@ func WI_checkForAccelerate(tls *libc.TLS) {
 func WI_Ticker(tls *libc.TLS) {
 	// counter for general background animation
 	bcnt++
-	if bcnt == int32(1) {
+	if bcnt == 1 {
 		// intermission music
 		if gamemode == int32(commercial) {
 			S_ChangeMusic(tls, int32(mus_dm2int), 1)
@@ -44754,7 +44754,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback func(*libc.TLS, uintptr, uintptr)
 		callback(tls, __ccgo_ts(28405), uintptr(unsafe.Pointer(&yah))+1*8)
 		// splat
 		callback(tls, __ccgo_ts(28412), uintptr(unsafe.Pointer(&splat)))
-		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd < int32(3) {
+		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd < 3 {
 			j = 0
 			for {
 				if !(j < NUMANIMS[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd]) {
@@ -44767,7 +44767,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback func(*libc.TLS, uintptr, uintptr)
 						break
 					}
 					// MONDO HACK!
-					if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd != int32(1) || j != int32(8) {
+					if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd != 1 || j != 8 {
 						// animations
 						snprintf_ccgo(bp1, 9, 28420, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, j, i)
 						callback(tls, bp1, a+32+uintptr(i)*8)
@@ -44791,7 +44791,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback func(*libc.TLS, uintptr, uintptr)
 	callback(tls, __ccgo_ts(28434), uintptr(unsafe.Pointer(&wiminus)))
 	i = 0
 	for {
-		if !(i < int32(10)) {
+		if !(i < 10) {
 			break
 		}
 		// numbers 0-9
@@ -44861,7 +44861,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback func(*libc.TLS, uintptr, uintptr)
 	if gamemode == int32(commercial) {
 		M_StringCopy(bp1, __ccgo_ts(1951), uint64(9))
 	} else {
-		if gamemode == int32(retail) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd == int32(3) {
+		if gamemode == int32(retail) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd == 3 {
 			M_StringCopy(bp1, __ccgo_ts(1951), uint64(9))
 		} else {
 			snprintf_ccgo(bp1, 9, 28577, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)
@@ -44877,7 +44877,7 @@ func WI_loadCallback(tls *libc.TLS, name uintptr, variable uintptr) {
 
 func WI_loadData(tls *libc.TLS) {
 	if gamemode == int32(commercial) {
-		NUMCMAPS = int32(32)
+		NUMCMAPS = 32
 		lnames = Z_Malloc(tls, libc.Int32FromUint64(uint64(8)*libc.Uint64FromInt32(NUMCMAPS)), int32(PU_STATIC), libc.UintptrFromInt32(0))
 	} else {
 		lnames = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt64(8)*libc.Uint64FromInt32(NUMMAPS)), int32(PU_STATIC), libc.UintptrFromInt32(0))
@@ -44934,17 +44934,17 @@ func WI_initVariables(tls *libc.TLS, wbstartstruct uintptr) {
 	me = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpnum
 	plrs = wbs + 40
 	if !((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills != 0) {
-		(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills = int32(1)
+		(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills = 1
 	}
 	if !((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems != 0) {
-		(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems = int32(1)
+		(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems = 1
 	}
 	if !((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret != 0) {
-		(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret = int32(1)
+		(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret = 1
 	}
 	if gamemode != int32(retail) {
-		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > int32(2) {
-			*(*int32)(unsafe.Pointer(wbs)) -= int32(3)
+		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > 2 {
+			*(*int32)(unsafe.Pointer(wbs)) -= 3
 		}
 	}
 }
@@ -44964,7 +44964,7 @@ func WI_Start(tls *libc.TLS, wbstartstruct uintptr) {
 }
 
 var open_wadfiles = libc.UintptrFromInt32(0)
-var num_open_wadfiles = int32(0)
+var num_open_wadfiles int32 = 0
 
 func GetFileNumber(tls *libc.TLS, handle uintptr) (r int32) {
 	var i, result int32
@@ -45082,7 +45082,7 @@ func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
 	//
 	// Load the specified PWAD files.
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(28599), int32(1))
+	p = M_CheckParmWithArgs(__ccgo_ts(28599), 1)
 	if p != 0 {
 		// the parms after p are wadfile/lump names,
 		// until end of parms or another - preceded parm
@@ -45210,7 +45210,7 @@ func W_AddFile(tls *libc.TLS, filename uintptr) (r uintptr) {
 		// parsing code expects a little-endian directory, so will swap
 		// them back.  Effectively we're constructing a "fake WAD directory"
 		// here, as it would appear on disk.
-		fileinfo = Z_Malloc(tls, int32(16), int32(PU_STATIC), uintptr(0))
+		fileinfo = Z_Malloc(tls, 16, int32(PU_STATIC), uintptr(0))
 		(*filelump_t)(unsafe.Pointer(fileinfo)).Ffilepos = 0
 		(*filelump_t)(unsafe.Pointer(fileinfo)).Fsize = libc.Int32FromUint32((*wad_file_t)(unsafe.Pointer(wad_file)).Flength)
 		// Name the lump after the base of the filename (without the
@@ -45390,7 +45390,7 @@ func W_CacheLumpNum(tls *libc.TLS, lumpnum int32, tag int32) (r uintptr) {
 		if (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache != libc.UintptrFromInt32(0) {
 			// Already cached, so just switch the zone tag.
 			result = (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache
-			Z_ChangeTag2(tls, (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache, tag, __ccgo_ts(28866), int32(410))
+			Z_ChangeTag2(tls, (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache, tag, __ccgo_ts(28866), 410)
 		} else {
 			// Not yet loaded, so load it now
 			(*lumpinfo_t)(unsafe.Pointer(lump)).Fcache = Z_Malloc(tls, W_LumpLength(tls, libc.Uint32FromInt32(lumpnum)), tag, lump+24)
@@ -45429,7 +45429,7 @@ func W_ReleaseLumpNum(tls *libc.TLS, lumpnum int32) {
 	if (*wad_file_t)(unsafe.Pointer((*lumpinfo_t)(unsafe.Pointer(lump)).Fwad_file)).Fmapped != libc.UintptrFromInt32(0) {
 		// Memory-mapped file, so nothing needs to be done here.
 	} else {
-		Z_ChangeTag2(tls, (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache, int32(PU_CACHE), __ccgo_ts(28866), int32(461))
+		Z_ChangeTag2(tls, (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache, int32(PU_CACHE), __ccgo_ts(28866), 461)
 	}
 }
 
@@ -45837,7 +45837,7 @@ func W_StdC_OpenFile(tls *libc.TLS, path uintptr) (r uintptr) {
 		return libc.UintptrFromInt32(0)
 	}
 	// Create a new stdc_wad_file_t to hold the file handle.
-	result = Z_Malloc(tls, int32(32), int32(PU_STATIC), uintptr(0))
+	result = Z_Malloc(tls, 32, int32(PU_STATIC), uintptr(0))
 	(*stdc_wad_file_t)(unsafe.Pointer(result)).Fwad.Ffile_class = uintptr(unsafe.Pointer(&stdc_wad_file))
 	(*stdc_wad_file_t)(unsafe.Pointer(result)).Fwad.Fmapped = libc.UintptrFromInt32(0)
 	(*stdc_wad_file_t)(unsafe.Pointer(result)).Fwad.Flength = libc.Uint32FromInt64(M_FileLength(tls, fstream))
@@ -45874,12 +45874,12 @@ func init() {
 	*(*uintptr)(unsafe.Add(p, 8)) = __ccgo_fp(W_StdC_CloseFile)
 	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(W_StdC_Read)
 
-	vanilla_keyboard_mapping = int32(1)
+	vanilla_keyboard_mapping = 1
 }
 
 // Is the shift key currently down?
 
-var shiftdown = int32(0)
+var shiftdown int32 = 0
 
 // C documentation
 //
@@ -46101,7 +46101,7 @@ var colors [256]color.RGBA
 
 func init() {
 	mouse_acceleration = float32(2)
-	mouse_threshold = int32(10)
+	mouse_threshold = 10
 }
 
 func I_InitGraphics(tls *libc.TLS) {
