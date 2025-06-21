@@ -2856,7 +2856,7 @@ func AM_initVariables(tls *libc.TLS) {
 }
 
 var st_notify = event_t{
-	Ftype1: int32(ev_keyup),
+	Ftype1: ev_keyup,
 	Fdata1: libc.Int32FromUint8('a')<<24 + libc.Int32FromUint8('m')<<16 | libc.Int32FromUint8('e')<<8,
 }
 
@@ -2948,7 +2948,7 @@ func AM_Stop(tls *libc.TLS) {
 }
 
 var st_notify1 = event_t{
-	Fdata1: int32(ev_keyup),
+	Fdata1: ev_keyup,
 	Fdata2: libc.Int32FromUint8('a')<<24 + libc.Int32FromUint8('m')<<16 | libc.Int32FromUint8('x')<<8,
 }
 
@@ -3007,13 +3007,13 @@ func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	var key, rc int32
 	rc = 0
 	if !(automapactive != 0) {
-		if ev.Ftype1 == int32(ev_keydown) && ev.Fdata1 == key_map_toggle {
+		if ev.Ftype1 == ev_keydown && ev.Fdata1 == key_map_toggle {
 			AM_Start(tls)
 			viewactive = 0
 			rc = 1
 		}
 	} else {
-		if ev.Ftype1 == int32(ev_keydown) {
+		if ev.Ftype1 == ev_keydown {
 			rc = 1
 			key = ev.Fdata1
 			if key == key_map_east { // pan right
@@ -3110,7 +3110,7 @@ func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 				cheating = (cheating + int32(1)) % int32(3)
 			}
 		} else {
-			if ev.Ftype1 == int32(ev_keyup) {
+			if ev.Ftype1 == ev_keyup {
 				rc = 0
 				key = ev.Fdata1
 				if key == key_map_east {
@@ -6973,7 +6973,7 @@ _2:
 //
 
 func F_CastResponder(tls *libc.TLS, ev *event_t) (r boolean) {
-	if ev.Ftype1 != int32(ev_keydown) {
+	if ev.Ftype1 != ev_keydown {
 		return 0
 	}
 	if castdeath != 0 {
@@ -8014,7 +8014,7 @@ func SetMouseButtons(tls *libc.TLS, buttons_mask uint32) {
 //	//
 func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	// allow spy mode changes even during the demo
-	if gamestate == int32(GS_LEVEL) && ev.Ftype1 == int32(ev_keydown) && ev.Fdata1 == key_spy && (singledemo != 0 || !(deathmatch != 0)) {
+	if gamestate == int32(GS_LEVEL) && ev.Ftype1 == ev_keydown && ev.Fdata1 == key_spy && (singledemo != 0 || !(deathmatch != 0)) {
 		// spy mode
 		for cond := true; cond; cond = !(playeringame[displayplayer] != 0) && displayplayer != consoleplayer {
 			displayplayer++
@@ -8026,7 +8026,7 @@ func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	}
 	// any other key pops up menu if in demos
 	if gameaction == int32(ga_nothing) && !(singledemo != 0) && (demoplayback != 0 || gamestate == int32(GS_DEMOSCREEN)) {
-		if ev.Ftype1 == int32(ev_keydown) || ev.Ftype1 == int32(ev_mouse) && ev.Fdata1 != 0 || ev.Ftype1 == int32(ev_joystick) && ev.Fdata1 != 0 {
+		if ev.Ftype1 == ev_keydown || ev.Ftype1 == ev_mouse && ev.Fdata1 != 0 || ev.Ftype1 == ev_joystick && ev.Fdata1 != 0 {
 			M_StartControlPanel(tls)
 			return 1
 		}
@@ -8048,7 +8048,7 @@ func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			return 1
 		} // finale ate the event
 	}
-	if testcontrols != 0 && ev.Ftype1 == int32(ev_mouse) {
+	if testcontrols != 0 && ev.Ftype1 == ev_mouse {
 		// If we are invoked by setup to test the controls, save the
 		// mouse speed so that we can display it on-screen.
 		// Perform a low pass filter on this so that the thermometer
@@ -8057,15 +8057,15 @@ func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	}
 	// If the next/previous weapon keys are pressed, set the next_weapon
 	// variable to change weapons when the next ticcmd is generated.
-	if ev.Ftype1 == int32(ev_keydown) && ev.Fdata1 == key_prevweapon {
+	if ev.Ftype1 == ev_keydown && ev.Fdata1 == key_prevweapon {
 		next_weapon = -1
 	} else {
-		if ev.Ftype1 == int32(ev_keydown) && ev.Fdata1 == key_nextweapon {
+		if ev.Ftype1 == ev_keydown && ev.Fdata1 == key_nextweapon {
 			next_weapon = int32(1)
 		}
 	}
 	switch ev.Ftype1 {
-	case int32(ev_keydown):
+	case ev_keydown:
 		if ev.Fdata1 == key_pause {
 			sendpause = 1
 		} else {
@@ -8074,17 +8074,17 @@ func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			}
 		}
 		return 1 // eat key down events
-	case int32(ev_keyup):
+	case ev_keyup:
 		if ev.Fdata1 < int32(NUMKEYS) {
 			gamekeydown[ev.Fdata1] = 0
 		}
 		return 0 // always let key up events filter down
-	case int32(ev_mouse):
+	case ev_mouse:
 		SetMouseButtons(tls, libc.Uint32FromInt32(ev.Fdata1))
 		mousex = ev.Fdata2 * (mouseSensitivity + int32(5)) / int32(10)
 		mousey = ev.Fdata3 * (mouseSensitivity + int32(5)) / int32(10)
 		return 1 // eat events
-	case int32(ev_joystick):
+	case ev_joystick:
 		SetJoyButtons(tls, libc.Uint32FromInt32(ev.Fdata1))
 		joyxmove = ev.Fdata2
 		joyymove = ev.Fdata3
@@ -10126,11 +10126,11 @@ func HU_Responder(ev *event_t) (r boolean) {
 		return 0
 	} else {
 		if ev.Fdata1 == 0x80+0x38 {
-			altdown = libc.BoolUint32(ev.Ftype1 == int32(ev_keydown))
+			altdown = libc.BoolUint32(ev.Ftype1 == ev_keydown)
 			return 0
 		}
 	}
-	if ev.Ftype1 != int32(ev_keydown) {
+	if ev.Ftype1 != ev_keydown {
 		return 0
 	}
 	if !(chat_on != 0) {
@@ -21338,14 +21338,14 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	// In testcontrols mode, none of the function keys should do anything
 	// - the only key is escape to quit.
 	if testcontrols != 0 {
-		if ev.Ftype1 == int32(ev_quit) || ev.Ftype1 == int32(ev_keydown) && (ev.Fdata1 == key_menu_activate || ev.Fdata1 == key_menu_quit) {
+		if ev.Ftype1 == ev_quit || ev.Ftype1 == ev_keydown && (ev.Fdata1 == key_menu_activate || ev.Fdata1 == key_menu_quit) {
 			I_Quit(tls)
 			return 1
 		}
 		return 0
 	}
 	// "close" button pressed on window?
-	if ev.Ftype1 == int32(ev_quit) {
+	if ev.Ftype1 == ev_quit {
 		// First click on close button = bring up quit confirm message.
 		// Second click on close button = confirm quit
 		if menuactive != 0 && messageToPrint != 0 && messageRoutine == __ccgo_fp(M_QuitResponse) {
@@ -21359,7 +21359,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	// key is the key pressed, ch is the actual character typed
 	ch = 0
 	key = -1
-	if ev.Ftype1 == int32(ev_joystick) && joywait < I_GetTime(tls) {
+	if ev.Ftype1 == ev_joystick && joywait < I_GetTime(tls) {
 		if ev.Fdata3 < 0 {
 			key = key_menu_up
 			joywait = I_GetTime(tls) + int32(5)
@@ -21391,7 +21391,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			joywait = I_GetTime(tls) + int32(5)
 		}
 	} else {
-		if ev.Ftype1 == int32(ev_mouse) && mousewait < I_GetTime(tls) {
+		if ev.Ftype1 == ev_mouse && mousewait < I_GetTime(tls) {
 			mousey1 += ev.Fdata3
 			if mousey1 < lasty-int32(30) {
 				key = key_menu_down
@@ -21429,7 +21429,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 				mousewait = I_GetTime(tls) + int32(15)
 			}
 		} else {
-			if ev.Ftype1 == int32(ev_keydown) {
+			if ev.Ftype1 == ev_keydown {
 				key = ev.Fdata1
 				ch = ev.Fdata2
 			}
@@ -41271,7 +41271,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	var epsd, i, map1, musnum, v6, v7, v8, v9 int32
 	var v10 bool
 	// Filter automap on/off.
-	if ev.Ftype1 == int32(ev_keyup) && libc.Uint32FromInt32(ev.Fdata1)&uint32(0xffff0000) == libc.Uint32FromInt32(libc.Int32FromUint8('a')<<24+libc.Int32FromUint8('m')<<16) {
+	if ev.Ftype1 == ev_keyup && libc.Uint32FromInt32(ev.Fdata1)&uint32(0xffff0000) == libc.Uint32FromInt32(libc.Int32FromUint8('a')<<24+libc.Int32FromUint8('m')<<16) {
 		switch ev.Fdata1 {
 		case libc.Int32FromUint8('a')<<24 + libc.Int32FromUint8('m')<<16 | libc.Int32FromUint8('e')<<8:
 			st_firsttime = 1
@@ -41280,7 +41280,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			break
 		}
 	} else {
-		if ev.Ftype1 == int32(ev_keydown) {
+		if ev.Ftype1 == ev_keydown {
 			if !(netgame != 0) && gameskill != int32(sk_nightmare) {
 				// 'dqd' cheat for toggleable god mode
 				if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_god)), int8(ev.Fdata2)) != 0 {
@@ -46060,14 +46060,14 @@ func I_GetEvent(tls *libc.TLS) {
 		if event.Pressed {
 			// data1 has the key pressed, data2 has the character
 			// (shift-translated, etc)
-			bp.Ftype1 = int32(ev_keydown)
+			bp.Ftype1 = ev_keydown
 			bp.Fdata1 = int32(event.Key)
 			bp.Fdata2 = libc.Int32FromUint8(GetTypedChar(tls, event.Key))
 			if bp.Fdata1 != 0 {
 				D_PostEvent(&bp)
 			}
 		} else {
-			bp.Ftype1 = int32(ev_keyup)
+			bp.Ftype1 = ev_keyup
 			bp.Fdata1 = int32(event.Key)
 			// data2 is just initialized to zero for ev_keyup.
 			// For ev_keydown it's the shifted Unicode character
