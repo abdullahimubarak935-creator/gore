@@ -32579,11 +32579,10 @@ func init() {
 
 func P_InitPicAnims(tls *libc.TLS) {
 	var endname, startname uintptr
-	var i int32
 	//	Init animation
-	lastanim = uintptr(unsafe.Pointer(&anims))
-	i = 0
-	for {
+	lastanim = &anims[0]
+	animPos := 0
+	for i := 0; ; i++ {
 		if !(animdefs[i].Fistexture != -int32(1)) {
 			break
 		}
@@ -32592,28 +32591,25 @@ func P_InitPicAnims(tls *libc.TLS) {
 		if animdefs[i].Fistexture != 0 {
 			// different episode ?
 			if R_CheckTextureNumForName(tls, startname) == -int32(1) {
-				goto _1
+				continue
 			}
-			(*anim_t)(unsafe.Pointer(lastanim)).Fpicnum = R_TextureNumForName(tls, endname)
-			(*anim_t)(unsafe.Pointer(lastanim)).Fbasepic = R_TextureNumForName(tls, startname)
+			lastanim.Fpicnum = R_TextureNumForName(tls, endname)
+			lastanim.Fbasepic = R_TextureNumForName(tls, startname)
 		} else {
 			if W_CheckNumForName(tls, startname) == -int32(1) {
-				goto _1
+				continue
 			}
-			(*anim_t)(unsafe.Pointer(lastanim)).Fpicnum = R_FlatNumForName(tls, endname)
-			(*anim_t)(unsafe.Pointer(lastanim)).Fbasepic = R_FlatNumForName(tls, startname)
+			lastanim.Fpicnum = R_FlatNumForName(tls, endname)
+			lastanim.Fbasepic = R_FlatNumForName(tls, startname)
 		}
-		(*anim_t)(unsafe.Pointer(lastanim)).Fistexture = libc.Uint32FromInt32(animdefs[i].Fistexture)
-		(*anim_t)(unsafe.Pointer(lastanim)).Fnumpics = (*anim_t)(unsafe.Pointer(lastanim)).Fpicnum - (*anim_t)(unsafe.Pointer(lastanim)).Fbasepic + int32(1)
-		if (*anim_t)(unsafe.Pointer(lastanim)).Fnumpics < int32(2) {
+		lastanim.Fistexture = libc.Uint32FromInt32(animdefs[i].Fistexture)
+		lastanim.Fnumpics = lastanim.Fpicnum - lastanim.Fbasepic + int32(1)
+		if lastanim.Fnumpics < int32(2) {
 			I_Error(tls, __ccgo_ts(25279), startname, endname)
 		}
 		(*anim_t)(unsafe.Pointer(lastanim)).Fspeed = animdefs[i].Fspeed
-		lastanim += 20
-		goto _1
-	_1:
-		;
-		i++
+		animPos++
+		lastanim = &anims[animPos]
 	}
 }
 
@@ -33348,7 +33344,7 @@ func P_PlayerInSpecialSector(tls *libc.TLS, player uintptr) {
 }
 
 func P_UpdateSpecials(tls *libc.TLS) {
-	var anim, line uintptr
+	var line uintptr
 	var i, pic int32
 	//	LEVEL TIMER
 	if levelTimer == 1 {
@@ -33358,31 +33354,25 @@ func P_UpdateSpecials(tls *libc.TLS) {
 		}
 	}
 	//	ANIMATE FLATS AND TEXTURES GLOBALLY
-	anim = uintptr(unsafe.Pointer(&anims))
-	for {
-		if !(anim < lastanim) {
+	for pos := int32(0); ; pos++ {
+		anim := &anims[pos]
+		if anim == lastanim {
 			break
 		}
-		i = (*anim_t)(unsafe.Pointer(anim)).Fbasepic
+		i = anim.Fbasepic
 		for {
-			if !(i < (*anim_t)(unsafe.Pointer(anim)).Fbasepic+(*anim_t)(unsafe.Pointer(anim)).Fnumpics) {
+			if !(i < anim.Fbasepic+anim.Fnumpics) {
 				break
 			}
-			pic = (*anim_t)(unsafe.Pointer(anim)).Fbasepic + (leveltime/(*anim_t)(unsafe.Pointer(anim)).Fspeed+i)%(*anim_t)(unsafe.Pointer(anim)).Fnumpics
-			if (*anim_t)(unsafe.Pointer(anim)).Fistexture != 0 {
+			pic = anim.Fbasepic + (leveltime/anim.Fspeed+i)%anim.Fnumpics
+			if anim.Fistexture != 0 {
 				*(*int32)(unsafe.Pointer(texturetranslation + uintptr(i)*4)) = pic
 			} else {
 				*(*int32)(unsafe.Pointer(flattranslation + uintptr(i)*4)) = pic
 			}
-			goto _2
-		_2:
-			;
 			i++
 		}
-		goto _1
-	_1:
-		;
-		anim += 20
+
 	}
 	//	ANIMATE LINE SPECIALS
 	i = 0
@@ -47285,7 +47275,7 @@ var key_weapon8 int32
 
 var la_damage int32
 
-var lastanim uintptr
+var lastanim *anim_t
 
 var lastflat int32
 
