@@ -35,6 +35,24 @@ func alloc(size int) uintptr {
 	return uintptr(unsafe.Pointer(&data[0]))
 }
 
+// Horrible memory allocation hack to avoid Go GC
+// Once we're done with libc, this should go
+var alloced = make(map[uintptr][]byte)
+
+func xmalloc(tls *libc.TLS, n uint64) uintptr {
+	data := make([]byte, n)
+	res := uintptr(unsafe.Pointer(&data[0]))
+	alloced[res] = data
+	//res := libc.Xmalloc(tls, types.Size_t(n))
+	//alloced[res] = true
+	return res
+}
+
+func xfree(tls *libc.TLS, ptr uintptr) {
+	delete(alloced, ptr)
+	libc.Xfree(tls, ptr)
+}
+
 // LIBC functions
 func xabs(j int32) int32 {
 	if j < 0 {
@@ -147,6 +165,18 @@ func xmemcpy(dest, src uintptr, n uint64) (r uintptr) {
 		destSlice := unsafe.Slice((*byte)(unsafe.Pointer(dest)), n)
 		copy(destSlice, srcSlice)
 	}
+	return dest
+}
+
+func xmemmove(dest, src uintptr, n uint64) uintptr {
+	if n == 0 {
+		return dest
+	}
+
+	destSlice := unsafe.Slice((*byte)(unsafe.Pointer(dest)), n)
+	srcSlice := unsafe.Slice((*byte)(unsafe.Pointer(src)), n)
+	copy(destSlice, srcSlice)
+
 	return dest
 }
 
@@ -4003,7 +4033,7 @@ func CheckDirectoryHasIWAD(tls *libc.TLS, dir uintptr, iwadname uintptr) (r uint
 	if M_FileExists(tls, filename) != 0 {
 		return filename
 	}
-	libc.Xfree(tls, filename)
+	xfree(tls, filename)
 	return libc.UintptrFromInt32(0)
 }
 
@@ -4109,7 +4139,7 @@ func D_FindWADByName(tls *libc.TLS, name uintptr) (r uintptr) {
 		if M_FileExists(tls, path) != 0 {
 			return path
 		}
-		libc.Xfree(tls, path)
+		xfree(tls, path)
 		goto _1
 	_1:
 		;
@@ -5265,7 +5295,7 @@ func GetGameName(tls *libc.TLS, gamename uintptr) (r uintptr) {
 				if !(v5 && v3 != 0) {
 					break
 				}
-				libc.Xmemmove(tls, gamename, gamename+uintptr(1), gamename_size-uint64(1))
+				xmemmove(gamename, gamename+uintptr(1), gamename_size-uint64(1))
 			}
 			for {
 				if v9 = int32(*(*int8)(unsafe.Pointer(gamename))) != int32('\000'); v9 {
@@ -18402,7 +18432,7 @@ func AutoAllocMemory(tls *libc.TLS, size uintptr, default_ram int32, min_ram int
 		}
 		// Try to allocate the zone memory.
 		*(*int32)(unsafe.Pointer(size)) = default_ram * 1024 * 1024
-		zonemem = libc.Xmalloc(tls, libc.Uint64FromInt32(*(*int32)(unsafe.Pointer(size))))
+		zonemem = xmalloc(tls, libc.Uint64FromInt32(*(*int32)(unsafe.Pointer(size))))
 		// Failed to allocate?  Reduce zone size until we reach a size
 		// that is acceptable.
 		if zonemem == libc.UintptrFromInt32(0) {
@@ -18502,7 +18532,7 @@ func I_Quit(tls *libc.TLS) {
 func EscapeShellString(tls *libc.TLS, string1 uintptr) (r1 uintptr) {
 	var r, result, s uintptr
 	// In the worst case, every character might be escaped.
-	result = libc.Xmalloc(tls, xstrlen(string1)*uint64(2)+uint64(3))
+	result = xmalloc(tls, xstrlen(string1)*uint64(2)+uint64(3))
 	r = result
 	// Enclosing quotes.
 	*(*int8)(unsafe.Pointer(r)) = int8('"')
@@ -19743,7 +19773,7 @@ func M_BindVariable(tls *libc.TLS, name uintptr, location uintptr) {
 
 func GetDefaultConfigDir(tls *libc.TLS) (r uintptr) {
 	var result uintptr
-	result = libc.Xmalloc(tls, uint64(2))
+	result = xmalloc(tls, uint64(2))
 	*(*int8)(unsafe.Pointer(result)) = int8('.')
 	*(*int8)(unsafe.Pointer(result + 1)) = int8('\000')
 	return result
@@ -22080,7 +22110,7 @@ func M_StringJoin(tls *libc.TLS, s uintptr, va uintptr) (r uintptr) {
 		goto _1
 	_1:
 	}
-	result = libc.Xmalloc(tls, result_len)
+	result = xmalloc(tls, result_len)
 	if result == libc.UintptrFromInt32(0) {
 		I_Error(tls, __ccgo_ts(23298), 0)
 		return libc.UintptrFromInt32(0)
@@ -29853,7 +29883,7 @@ func P_SaveGameFile(tls *libc.TLS, slot int32) (r uintptr) {
 	bp := alloc(64)
 	if filename1 == libc.UintptrFromInt32(0) {
 		filename_size = xstrlen(savegamedir) + uint64(32)
-		filename1 = libc.Xmalloc(tls, filename_size)
+		filename1 = xmalloc(tls, filename_size)
 	}
 	snprintf_ccgo(bp, 32, 24933, slot)
 	M_snprintf(tls, filename1, filename_size, __ccgo_ts(24947), libc.VaList(bp+40, savegamedir, bp))
@@ -45174,7 +45204,7 @@ func ExtendLumpInfo(tls *libc.TLS, newnumlumps int32) {
 		i++
 	}
 	// All done.
-	libc.Xfree(tls, lumpinfo)
+	xfree(tls, lumpinfo)
 	lumpinfo = newlumpinfo
 	numlumps = libc.Uint32FromInt32(newnumlumps)
 }
