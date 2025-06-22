@@ -31218,9 +31218,9 @@ func P_UnArchiveThinkers(tls *libc.TLS) {
 	for 1 != 0 {
 		tclass = saveg_read8(tls)
 		switch libc.Int32FromUint8(tclass) {
-		case int32(tc_end):
+		case tc_end:
 			return // end of list
-		case int32(tc_mobj):
+		case tc_mobj:
 			saveg_read_pad(tls)
 			mobj = Z_Malloc(tls, 224, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_mobj_t(tls, mobj)
@@ -31353,9 +31353,9 @@ func P_UnArchiveSpecials(tls *libc.TLS) {
 	for 1 != 0 {
 		tclass = saveg_read8(tls)
 		switch libc.Int32FromUint8(tclass) {
-		case int32(tc_endspecials):
+		case tc_endspecials:
 			return // end of list
-		case int32(tc_ceiling):
+		case tc_ceiling:
 			saveg_read_pad(tls)
 			ceiling = Z_Malloc(tls, 72, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_ceiling_t(tls, ceiling)
@@ -31365,21 +31365,21 @@ func P_UnArchiveSpecials(tls *libc.TLS) {
 			}
 			P_AddThinker(tls, ceiling)
 			P_AddActiveCeiling(tls, (*ceiling_t)(unsafe.Pointer(ceiling)))
-		case int32(tc_door):
+		case tc_door:
 			saveg_read_pad(tls)
 			door = Z_Malloc(tls, 64, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_vldoor_t(tls, door)
 			(*sector_t)(unsafe.Pointer((*vldoor_t)(unsafe.Pointer(door)).Fsector)).Fspecialdata = door
 			*(*actionf_p1)(unsafe.Pointer(door + 16)) = __ccgo_fp(T_VerticalDoor)
 			P_AddThinker(tls, door)
-		case int32(tc_floor):
+		case tc_floor:
 			saveg_read_pad(tls)
 			floor = Z_Malloc(tls, 64, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_floormove_t(tls, floor)
 			(*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Fspecialdata = floor
 			*(*actionf_p1)(unsafe.Pointer(floor + 16)) = __ccgo_fp(T_MoveFloor)
 			P_AddThinker(tls, floor)
-		case int32(tc_plat):
+		case tc_plat:
 			saveg_read_pad(tls)
 			plat = Z_Malloc(tls, 72, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_plat_t(tls, plat)
@@ -31389,19 +31389,19 @@ func P_UnArchiveSpecials(tls *libc.TLS) {
 			}
 			P_AddThinker(tls, plat)
 			P_AddActivePlat(tls, (*plat_t)(unsafe.Pointer(plat)))
-		case int32(tc_flash):
+		case tc_flash:
 			saveg_read_pad(tls)
 			flash = Z_Malloc(tls, 56, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_lightflash_t(tls, flash)
 			*(*actionf_p1)(unsafe.Pointer(flash + 16)) = __ccgo_fp(T_LightFlash)
 			P_AddThinker(tls, flash)
-		case int32(tc_strobe):
+		case tc_strobe:
 			saveg_read_pad(tls)
 			strobe = Z_Malloc(tls, 56, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_strobe_t(tls, strobe)
 			*(*actionf_p1)(unsafe.Pointer(strobe + 16)) = __ccgo_fp(T_StrobeFlash)
 			P_AddThinker(tls, strobe)
-		case int32(tc_glow):
+		case tc_glow:
 			saveg_read_pad(tls)
 			glow = Z_Malloc(tls, 48, int32(PU_LEVEL), libc.UintptrFromInt32(0))
 			saveg_read_glow_t(tls, glow)
