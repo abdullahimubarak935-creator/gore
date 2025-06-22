@@ -101,24 +101,47 @@ func (d *doomTestHeadless) GetKey(event *DoomKeyEvent) bool {
 }
 
 // InsertKey simulates an immediate key press and release event in the game.
-func (d *doomTestHeadless) InsertKey(Key uint8) {
+func (d *doomTestHeadless) InsertKey(key uint8) {
 	d.lock.Lock()
 	defer d.lock.Unlock()
 	d.keys = append(d.keys, delayedKeyEvent{
 		event: DoomKeyEvent{
 			Pressed: true,
-			Key:     Key,
+			Key:     key,
 		},
 		ticks: 0, // Insert immediately
 	},
 		delayedKeyEvent{
 			event: DoomKeyEvent{
 				Pressed: false,
-				Key:     Key,
+				Key:     key,
 			},
 			ticks: 2, // Release after 1 tick
 		},
 	)
+}
+
+func (d *doomTestHeadless) InsertKeySequence(keys []uint8) {
+	d.lock.Lock()
+	defer d.lock.Unlock()
+	for _, key := range keys {
+		// Insert a key press and release for each key
+		d.keys = append(d.keys, delayedKeyEvent{
+			event: DoomKeyEvent{
+				Pressed: true,
+				Key:     key,
+			},
+			ticks: 2,
+		},
+			delayedKeyEvent{
+				event: DoomKeyEvent{
+					Pressed: false,
+					Key:     key,
+				},
+				ticks: 2,
+			},
+		)
+	}
 }
 
 func (d *doomTestHeadless) InsertKeyChange(Key uint8, pressed bool) {
@@ -294,13 +317,93 @@ func TestDoomRandom(t *testing.T) {
 
 		// Exit
 		game.InsertKey(KEY_ESCAPE) // Open menu
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(1 * time.Millisecond)
 		game.InsertKey(KEY_UPARROW1) // Go to quit
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(1 * time.Millisecond)
 		game.InsertKey(KEY_ENTER) // Confirm quit
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(1 * time.Millisecond)
 		game.InsertKey('y') // Confirm exit
+		time.Sleep(1 * time.Millisecond)
+	}()
+	Run(game, []string{"-iwad", "doom1.wad"})
+}
+
+func TestDoomLevels(t *testing.T) {
+
+	dg_speed_ratio = 100.0 // Run at 50x speed
+	game := &doomTestHeadless{
+		t:     t,
+		start: time.Now(),
+		keys:  nil,
+	}
+	defer game.Close()
+	go func() {
+		// Let things get settled
+		time.Sleep(20 * time.Millisecond)
+		// Start a game
+		game.InsertKey(KEY_ESCAPE) // Open menu
+		time.Sleep(2 * time.Millisecond)
+		game.InsertKey(KEY_ENTER)
+		time.Sleep(2 * time.Millisecond)
+		game.InsertKey(KEY_ENTER)
+		time.Sleep(2 * time.Millisecond)
+		game.InsertKey(KEY_ENTER) // Start new game
+
+		// Go through levels E1M1 to E1M9 using the IDCLEV cheat
+		for i := 1; i <= 9; i++ {
+			sequence := []uint8{'i', 'd', 'c', 'l', 'e', 'v', '1', '0' + uint8(i)}
+			game.InsertKeySequence(sequence)
+			time.Sleep(20 * time.Millisecond) // Wait for the level to load
+			t.Logf("Completed level E1M%d", i)
+		}
+
+		// Exit
+		game.InsertKey(KEY_ESCAPE) // Open menu
+		time.Sleep(1 * time.Millisecond)
+		game.InsertKey(KEY_UPARROW1) // Go to quit
+		time.Sleep(1 * time.Millisecond)
+		game.InsertKey(KEY_ENTER) // Confirm quit
+		time.Sleep(1 * time.Millisecond)
+		game.InsertKey('y') // Confirm exit
+		time.Sleep(1 * time.Millisecond)
+	}()
+	Run(game, []string{"-iwad", "doom1.wad"})
+}
+
+func TestDoomMap(t *testing.T) {
+	dg_speed_ratio = 100.0 // Run at 50x speed
+	game := &doomTestHeadless{
+		t:     t,
+		start: time.Now(),
+		keys:  nil,
+	}
+	defer game.Close()
+	go func() {
+		// Let things get settled
+		time.Sleep(20 * time.Millisecond)
+		// Start a game
+		game.InsertKey(KEY_ESCAPE) // Open menu
+		time.Sleep(2 * time.Millisecond)
+		game.InsertKey(KEY_ENTER)
+		time.Sleep(2 * time.Millisecond)
+		game.InsertKey(KEY_ENTER)
+		time.Sleep(2 * time.Millisecond)
+		game.InsertKey(KEY_ENTER) // Start new game
+
 		time.Sleep(10 * time.Millisecond)
+		game.InsertKeyChange(KEY_TAB, true) // Open level map
+		time.Sleep(100 * time.Millisecond)
+		game.InsertKeyChange(KEY_TAB, false)
+
+		// Exit
+		game.InsertKey(KEY_ESCAPE) // Open menu
+		time.Sleep(2 * time.Millisecond)
+		game.InsertKey(KEY_UPARROW1) // Go to quit
+		time.Sleep(2 * time.Millisecond)
+		game.InsertKey(KEY_ENTER) // Confirm quit
+		time.Sleep(2 * time.Millisecond)
+		game.InsertKey('y') // Confirm exit
+		time.Sleep(2 * time.Millisecond)
 	}()
 	Run(game, []string{"-iwad", "doom1.wad"})
 }
