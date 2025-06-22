@@ -3579,8 +3579,8 @@ func AM_drawWalls() {
 		l.Fa.Fy = (*vertex_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fv1)).Fy
 		l.Fb.Fx = (*vertex_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fv2)).Fx
 		l.Fb.Fy = (*vertex_t)(unsafe.Pointer((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fv2)).Fy
-		if cheating != 0 || int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&int32(ML_MAPPED) != 0 {
-			if int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&int32(ML_DONTDRAW) != 0 && !(cheating != 0) {
+		if cheating != 0 || int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&ML_MAPPED != 0 {
+			if int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&ML_DONTDRAW != 0 && !(cheating != 0) {
 				goto _1
 			}
 			if !((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fbacksector != 0) {
@@ -3590,7 +3590,7 @@ func AM_drawWalls() {
 					// teleporters
 					AM_drawMline(&l, 256-5*16+REDRANGE/2)
 				} else {
-					if int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&int32(ML_SECRET) != 0 { // secret door
+					if int32((*(*line_t)(unsafe.Pointer(lines + uintptr(i)*88))).Fflags)&ML_SECRET != 0 { // secret door
 						if cheating != 0 {
 							AM_drawMline(&l, 256-5*16+lightlev)
 						} else {
@@ -23236,7 +23236,7 @@ func P_RecursiveSound(tls *libc.TLS, sec uintptr, soundblocks int32) {
 		} else {
 			other = (*(*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(check + 30)))*24))).Fsector
 		}
-		if int32((*line_t)(unsafe.Pointer(check)).Fflags)&int32(ML_SOUNDBLOCK) != 0 {
+		if int32((*line_t)(unsafe.Pointer(check)).Fflags)&ML_SOUNDBLOCK != 0 {
 			if !(soundblocks != 0) {
 				P_RecursiveSound(tls, other, 1)
 			}
@@ -26434,10 +26434,10 @@ func PIT_CheckLine(tls *libc.TLS, ld uintptr) (r boolean) {
 		return 0
 	} // one sided line
 	if !((*mobj_t)(unsafe.Pointer(tmthing)).Fflags&int32(MF_MISSILE) != 0) {
-		if int32((*line_t)(unsafe.Pointer(ld)).Fflags)&int32(ML_BLOCKING) != 0 {
+		if int32((*line_t)(unsafe.Pointer(ld)).Fflags)&ML_BLOCKING != 0 {
 			return 0
 		} // explicitly blocking everything
-		if !((*mobj_t)(unsafe.Pointer(tmthing)).Fplayer != 0) && int32((*line_t)(unsafe.Pointer(ld)).Fflags)&int32(ML_BLOCKMONSTERS) != 0 {
+		if !((*mobj_t)(unsafe.Pointer(tmthing)).Fplayer != 0) && int32((*line_t)(unsafe.Pointer(ld)).Fflags)&ML_BLOCKMONSTERS != 0 {
 			return 0
 		} // block monsters only
 	}
@@ -31500,7 +31500,7 @@ func P_LoadSegs(tls *libc.TLS, lump int32) {
 		side = int32((*mapseg_t)(unsafe.Pointer(ml)).Fside)
 		(*seg_t)(unsafe.Pointer(li)).Fsidedef = sides + uintptr(*(*int16)(unsafe.Pointer(ldef + 30 + uintptr(side)*2)))*24
 		(*seg_t)(unsafe.Pointer(li)).Ffrontsector = (*(*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(ldef + 30 + uintptr(side)*2)))*24))).Fsector
-		if int32((*line_t)(unsafe.Pointer(ldef)).Fflags)&int32(ML_TWOSIDED) != 0 {
+		if int32((*line_t)(unsafe.Pointer(ldef)).Fflags)&ML_TWOSIDED != 0 {
 			sidenum = int32(*(*int16)(unsafe.Pointer(ldef + 30 + uintptr(side^int32(1))*2)))
 			// If the sidenum is out of range, this may be a "glass hack"
 			// impassible window.  Point at side #0 (this may not be
@@ -32102,19 +32102,19 @@ func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, sk
 	lumpnum = W_GetNumForName(tls, bp)
 	leveltime = 0
 	// note: most of this ordering is important
-	P_LoadBlockMap(tls, lumpnum+int32(ML_BLOCKMAP))
-	P_LoadVertexes(tls, lumpnum+int32(ML_VERTEXES))
-	P_LoadSectors(tls, lumpnum+int32(ML_SECTORS))
-	P_LoadSideDefs(tls, lumpnum+int32(ML_SIDEDEFS))
-	P_LoadLineDefs(tls, lumpnum+int32(ML_LINEDEFS))
-	P_LoadSubsectors(tls, lumpnum+int32(ML_SSECTORS))
-	P_LoadNodes(tls, lumpnum+int32(ML_NODES))
-	P_LoadSegs(tls, lumpnum+int32(ML_SEGS))
+	P_LoadBlockMap(tls, lumpnum+ML_BLOCKMAP)
+	P_LoadVertexes(tls, lumpnum+ML_VERTEXES)
+	P_LoadSectors(tls, lumpnum+ML_SECTORS)
+	P_LoadSideDefs(tls, lumpnum+ML_SIDEDEFS)
+	P_LoadLineDefs(tls, lumpnum+ML_LINEDEFS)
+	P_LoadSubsectors(tls, lumpnum+ML_SSECTORS)
+	P_LoadNodes(tls, lumpnum+ML_NODES)
+	P_LoadSegs(tls, lumpnum+ML_SEGS)
 	P_GroupLines(tls)
-	P_LoadReject(tls, lumpnum+int32(ML_REJECT))
+	P_LoadReject(tls, lumpnum+ML_REJECT)
 	bodyqueslot = 0
 	deathmatch_p = uintptr(unsafe.Pointer(&deathmatchstarts))
-	P_LoadThings(tls, lumpnum+int32(ML_THINGS))
+	P_LoadThings(tls, lumpnum+ML_THINGS)
 	// if deathmatch, randomly spawn the active players
 	if deathmatch != 0 {
 		i = 0
@@ -32677,7 +32677,7 @@ func getSector(tls *libc.TLS, currentSector int32, line int32, side int32) (r ui
 //	//  it will tell you whether the line is two-sided or not.
 //	//
 func twoSided(tls *libc.TLS, sector int32, line int32) (r int32) {
-	return int32((*line_s)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*(*sector_t)(unsafe.Pointer(sectors + uintptr(sector)*128))).Flines + uintptr(line)*8)))).Fflags) & int32(ML_TWOSIDED)
+	return int32((*line_s)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*(*sector_t)(unsafe.Pointer(sectors + uintptr(sector)*128))).Flines + uintptr(line)*8)))).Fflags) & ML_TWOSIDED
 }
 
 // C documentation
@@ -34102,7 +34102,7 @@ func P_UseSpecialLine(tls *libc.TLS, thing uintptr, line uintptr, side int32) (r
 	// Switches that other things can activate.
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != 0) {
 		// never open secret doors
-		if int32((*line_t)(unsafe.Pointer(line)).Fflags)&int32(ML_SECRET) != 0 {
+		if int32((*line_t)(unsafe.Pointer(line)).Fflags)&ML_SECRET != 0 {
 			return 0
 		}
 		switch int32((*line_t)(unsafe.Pointer(line)).Fspecial) {
@@ -37778,7 +37778,7 @@ func R_RenderMaskedSegRange(tls *libc.TLS, ds *drawseg_t, x1 int32, x2 int32) {
 	mfloorclip = ds.Fsprbottomclip
 	mceilingclip = ds.Fsprtopclip
 	// find positioning
-	if int32((*line_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Flinedef)).Fflags)&int32(ML_DONTPEGBOTTOM) != 0 {
+	if int32((*line_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Flinedef)).Fflags)&ML_DONTPEGBOTTOM != 0 {
 		if (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight > (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight {
 			v1 = (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight
 		} else {
@@ -38053,7 +38053,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		v8 = 1
 		markceiling = v8
 		markfloor = v8
-		if int32((*line_t)(unsafe.Pointer(linedef)).Fflags)&int32(ML_DONTPEGBOTTOM) != 0 {
+		if int32((*line_t)(unsafe.Pointer(linedef)).Fflags)&ML_DONTPEGBOTTOM != 0 {
 			vtop = (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr((*side_t)(unsafe.Pointer(sidedef)).Fmidtexture)*4))
 			// bottom of texture at bottom
 			rw_midtexturemid = vtop - viewz
@@ -38130,7 +38130,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		if worldhigh < worldtop {
 			// top texture
 			toptexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr((*side_t)(unsafe.Pointer(sidedef)).Ftoptexture)*4))
-			if int32((*line_t)(unsafe.Pointer(linedef)).Fflags)&int32(ML_DONTPEGTOP) != 0 {
+			if int32((*line_t)(unsafe.Pointer(linedef)).Fflags)&ML_DONTPEGTOP != 0 {
 				// top of texture at top
 				rw_toptexturemid = worldtop
 			} else {
@@ -38142,7 +38142,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		if worldlow > worldbottom {
 			// bottom texture
 			bottomtexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr((*side_t)(unsafe.Pointer(sidedef)).Fbottomtexture)*4))
-			if int32((*line_t)(unsafe.Pointer(linedef)).Fflags)&int32(ML_DONTPEGBOTTOM) != 0 {
+			if int32((*line_t)(unsafe.Pointer(linedef)).Fflags)&ML_DONTPEGBOTTOM != 0 {
 				// bottom of texture at bottom
 				// top of texture at top
 				rw_bottomtexturemid = worldtop
