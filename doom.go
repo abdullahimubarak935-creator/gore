@@ -37,20 +37,17 @@ func alloc(size int) uintptr {
 
 // Horrible memory allocation hack to avoid Go GC
 // Once we're done with libc, this should go
-var alloced = make(map[uintptr][]byte)
+var dg_alloced = make(map[uintptr][]byte)
 
 func xmalloc(tls *libc.TLS, n uint64) uintptr {
 	data := make([]byte, n)
 	res := uintptr(unsafe.Pointer(&data[0]))
-	alloced[res] = data
-	//res := libc.Xmalloc(tls, types.Size_t(n))
-	//alloced[res] = true
+	dg_alloced[res] = data
 	return res
 }
 
 func xfree(tls *libc.TLS, ptr uintptr) {
-	delete(alloced, ptr)
-	libc.Xfree(tls, ptr)
+	delete(dg_alloced, ptr)
 }
 
 // LIBC functions
@@ -5751,6 +5748,7 @@ func D_Endoom(tls *libc.TLS) {
 	}
 	endoom = W_CacheLumpName(tls, __ccgo_ts(3994), int32(PU_STATIC))
 	I_Endoom(tls, endoom)
+	log.Printf("Exiting - outstanding memory: %d", len(dg_alloced))
 	dg_exiting = true
 }
 
