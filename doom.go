@@ -43369,7 +43369,7 @@ var epsd0animinfo = [10]anim_t1{
 
 var epsd1animinfo = [9]anim_t1{
 	0: {
-		Ftype1:  int32(ANIM_LEVEL),
+		Ftype1:  ANIM_LEVEL,
 		Fperiod: TICRATE / 3,
 		Fnanims: 1,
 		Floc: point_t{
@@ -43379,7 +43379,7 @@ var epsd1animinfo = [9]anim_t1{
 		Fdata1: 1,
 	},
 	1: {
-		Ftype1:  int32(ANIM_LEVEL),
+		Ftype1:  ANIM_LEVEL,
 		Fperiod: TICRATE / 3,
 		Fnanims: 1,
 		Floc: point_t{
@@ -43389,7 +43389,7 @@ var epsd1animinfo = [9]anim_t1{
 		Fdata1: 2,
 	},
 	2: {
-		Ftype1:  int32(ANIM_LEVEL),
+		Ftype1:  ANIM_LEVEL,
 		Fperiod: TICRATE / 3,
 		Fnanims: 1,
 		Floc: point_t{
@@ -43399,7 +43399,7 @@ var epsd1animinfo = [9]anim_t1{
 		Fdata1: 3,
 	},
 	3: {
-		Ftype1:  int32(ANIM_LEVEL),
+		Ftype1:  ANIM_LEVEL,
 		Fperiod: TICRATE / 3,
 		Fnanims: 1,
 		Floc: point_t{
@@ -43409,7 +43409,7 @@ var epsd1animinfo = [9]anim_t1{
 		Fdata1: 4,
 	},
 	4: {
-		Ftype1:  int32(ANIM_LEVEL),
+		Ftype1:  ANIM_LEVEL,
 		Fperiod: TICRATE / 3,
 		Fnanims: 1,
 		Floc: point_t{
@@ -43419,7 +43419,7 @@ var epsd1animinfo = [9]anim_t1{
 		Fdata1: 5,
 	},
 	5: {
-		Ftype1:  int32(ANIM_LEVEL),
+		Ftype1:  ANIM_LEVEL,
 		Fperiod: TICRATE / 3,
 		Fnanims: 1,
 		Floc: point_t{
@@ -43429,7 +43429,7 @@ var epsd1animinfo = [9]anim_t1{
 		Fdata1: 6,
 	},
 	6: {
-		Ftype1:  int32(ANIM_LEVEL),
+		Ftype1:  ANIM_LEVEL,
 		Fperiod: TICRATE / 3,
 		Fnanims: 1,
 		Floc: point_t{
@@ -43439,7 +43439,7 @@ var epsd1animinfo = [9]anim_t1{
 		Fdata1: 7,
 	},
 	7: {
-		Ftype1:  int32(ANIM_LEVEL),
+		Ftype1:  ANIM_LEVEL,
 		Fperiod: TICRATE / 3,
 		Fnanims: 3,
 		Floc: point_t{
@@ -43449,7 +43449,7 @@ var epsd1animinfo = [9]anim_t1{
 		Fdata1: 8,
 	},
 	8: {
-		Ftype1:  int32(ANIM_LEVEL),
+		Ftype1:  ANIM_LEVEL,
 		Fperiod: TICRATE / 3,
 		Fnanims: 1,
 		Floc: point_t{
@@ -43772,13 +43772,13 @@ func WI_initAnimatedBack(tls *libc.TLS) {
 		// init variables
 		(*anim_t1)(unsafe.Pointer(a)).Fctr = -1
 		// specify the next time to draw it
-		if (*anim_t1)(unsafe.Pointer(a)).Ftype1 == int32(ANIM_ALWAYS) {
+		if (*anim_t1)(unsafe.Pointer(a)).Ftype1 == ANIM_ALWAYS {
 			(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + 1 + M_Random()%(*anim_t1)(unsafe.Pointer(a)).Fperiod
 		} else {
-			if (*anim_t1)(unsafe.Pointer(a)).Ftype1 == int32(ANIM_RANDOM) {
+			if (*anim_t1)(unsafe.Pointer(a)).Ftype1 == ANIM_RANDOM {
 				(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + 1 + (*anim_t1)(unsafe.Pointer(a)).Fdata2 + M_Random()%(*anim_t1)(unsafe.Pointer(a)).Fdata1
 			} else {
-				if (*anim_t1)(unsafe.Pointer(a)).Ftype1 == int32(ANIM_LEVEL) {
+				if (*anim_t1)(unsafe.Pointer(a)).Ftype1 == ANIM_LEVEL {
 					(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + 1
 				}
 			}
@@ -43807,7 +43807,7 @@ func WI_updateAnimatedBack(tls *libc.TLS) {
 		a = anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd] + uintptr(i)*72
 		if bcnt == (*anim_t1)(unsafe.Pointer(a)).Fnexttic {
 			switch (*anim_t1)(unsafe.Pointer(a)).Ftype1 {
-			case int32(ANIM_ALWAYS):
+			case ANIM_ALWAYS:
 				v3 = a + 64
 				*(*int32)(unsafe.Pointer(v3))++
 				v2 = *(*int32)(unsafe.Pointer(v3))
@@ -43815,7 +43815,7 @@ func WI_updateAnimatedBack(tls *libc.TLS) {
 					(*anim_t1)(unsafe.Pointer(a)).Fctr = 0
 				}
 				(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + (*anim_t1)(unsafe.Pointer(a)).Fperiod
-			case int32(ANIM_RANDOM):
+			case ANIM_RANDOM:
 				(*anim_t1)(unsafe.Pointer(a)).Fctr++
 				if (*anim_t1)(unsafe.Pointer(a)).Fctr == (*anim_t1)(unsafe.Pointer(a)).Fnanims {
 					(*anim_t1)(unsafe.Pointer(a)).Fctr = -1
@@ -43823,7 +43823,7 @@ func WI_updateAnimatedBack(tls *libc.TLS) {
 				} else {
 					(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + (*anim_t1)(unsafe.Pointer(a)).Fperiod
 				}
-			case int32(ANIM_LEVEL):
+			case ANIM_LEVEL:
 				// gawd-awful hack for level anims
 				if !(state == int32(StatCount) && i == 7) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext == (*anim_t1)(unsafe.Pointer(a)).Fdata1 {
 					(*anim_t1)(unsafe.Pointer(a)).Fctr++
