@@ -43825,7 +43825,7 @@ func WI_updateAnimatedBack(tls *libc.TLS) {
 				}
 			case ANIM_LEVEL:
 				// gawd-awful hack for level anims
-				if !(state == int32(StatCount) && i == 7) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext == (*anim_t1)(unsafe.Pointer(a)).Fdata1 {
+				if !(state == StatCount && i == 7) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext == (*anim_t1)(unsafe.Pointer(a)).Fdata1 {
 					(*anim_t1)(unsafe.Pointer(a)).Fctr++
 					if (*anim_t1)(unsafe.Pointer(a)).Fctr == (*anim_t1)(unsafe.Pointer(a)).Fnanims {
 						(*anim_t1)(unsafe.Pointer(a)).Fctr--
@@ -43959,7 +43959,7 @@ func WI_End(tls *libc.TLS) {
 }
 
 func WI_initNoState() {
-	state = int32(NoState)
+	state = NoState
 	acceleratestage = 0
 	cnt = 10
 }
@@ -43982,7 +43982,7 @@ func WI_updateNoState(tls *libc.TLS) {
 var snl_pointeron = uint32(0)
 
 func WI_initShowNextLoc(tls *libc.TLS) {
-	state = int32(ShowNextLoc)
+	state = ShowNextLoc
 	acceleratestage = 0
 	cnt = SHOWNEXTLOCDELAY * TICRATE
 	WI_initAnimatedBack(tls)
@@ -44077,7 +44077,7 @@ var dm_totals [4]int32
 
 func WI_initDeathmatchStats(tls *libc.TLS) {
 	var i, j int32
-	state = int32(StatCount)
+	state = StatCount
 	acceleratestage = 0
 	dm_state = 1
 	cnt_pause = int32(TICRATE)
@@ -44298,7 +44298,7 @@ var ng_state int32
 
 func WI_initNetgameStats(tls *libc.TLS) {
 	var i, v2, v3, v4 int32
-	state = int32(StatCount)
+	state = StatCount
 	acceleratestage = 0
 	ng_state = 1
 	cnt_pause = int32(TICRATE)
@@ -44549,7 +44549,7 @@ var sp_state int32
 
 func WI_initStats(tls *libc.TLS) {
 	var v1, v2, v3 int32
-	state = int32(StatCount)
+	state = StatCount
 	acceleratestage = 0
 	sp_state = 1
 	v2 = -1
@@ -44725,7 +44725,7 @@ func WI_Ticker(tls *libc.TLS) {
 	}
 	WI_checkForAccelerate(tls)
 	switch state {
-	case int32(StatCount):
+	case StatCount:
 		if deathmatch != 0 {
 			WI_updateDeathmatchStats(tls)
 		} else {
@@ -44735,9 +44735,9 @@ func WI_Ticker(tls *libc.TLS) {
 				WI_updateStats(tls)
 			}
 		}
-	case int32(ShowNextLoc):
+	case ShowNextLoc:
 		WI_updateShowNextLoc(tls)
-	case int32(NoState):
+	case NoState:
 		WI_updateNoState(tls)
 		break
 	}
@@ -44934,7 +44934,7 @@ func WI_unloadData(tls *libc.TLS) {
 
 func WI_Drawer(tls *libc.TLS) {
 	switch state {
-	case int32(StatCount):
+	case StatCount:
 		if deathmatch != 0 {
 			WI_drawDeathmatchStats(tls)
 		} else {
@@ -44944,9 +44944,9 @@ func WI_Drawer(tls *libc.TLS) {
 				WI_drawStats(tls)
 			}
 		}
-	case int32(ShowNextLoc):
+	case ShowNextLoc:
 		WI_drawShowNextLoc(tls)
-	case int32(NoState):
+	case NoState:
 		WI_drawNoState(tls)
 		break
 	}
