@@ -7540,35 +7540,35 @@ var weapon_order_table = [9]struct {
 }{
 	0: {},
 	1: {
-		Fweapon: int32(wp_chainsaw),
+		Fweapon: wp_chainsaw,
 	},
 	2: {
-		Fweapon:     int32(wp_pistol),
-		Fweapon_num: int32(wp_pistol),
+		Fweapon:     wp_pistol,
+		Fweapon_num: wp_pistol,
 	},
 	3: {
-		Fweapon:     int32(wp_shotgun),
-		Fweapon_num: int32(wp_shotgun),
+		Fweapon:     wp_shotgun,
+		Fweapon_num: wp_shotgun,
 	},
 	4: {
-		Fweapon:     int32(wp_supershotgun),
-		Fweapon_num: int32(wp_shotgun),
+		Fweapon:     wp_supershotgun,
+		Fweapon_num: wp_shotgun,
 	},
 	5: {
-		Fweapon:     int32(wp_chaingun),
-		Fweapon_num: int32(wp_chaingun),
+		Fweapon:     wp_chaingun,
+		Fweapon_num: wp_chaingun,
 	},
 	6: {
-		Fweapon:     int32(wp_missile),
-		Fweapon_num: int32(wp_missile),
+		Fweapon:     wp_missile,
+		Fweapon_num: wp_missile,
 	},
 	7: {
-		Fweapon:     int32(wp_plasma),
-		Fweapon_num: int32(wp_plasma),
+		Fweapon:     wp_plasma,
+		Fweapon_num: wp_plasma,
 	},
 	8: {
-		Fweapon:     int32(wp_bfg),
-		Fweapon_num: int32(wp_bfg),
+		Fweapon:     wp_bfg,
+		Fweapon_num: wp_bfg,
 	},
 }
 
@@ -7607,7 +7607,7 @@ func WeaponSelectable(tls *libc.TLS, weapon weapontype_t) (r boolean) {
 	var v1, v2 int32
 	var v3 bool
 	// Can't select the super shotgun in Doom 1.
-	if v3 = weapon == int32(wp_supershotgun); v3 {
+	if v3 = weapon == wp_supershotgun; v3 {
 		if gamemission == int32(pack_chex) {
 			v1 = int32(doom)
 		} else {
@@ -7623,7 +7623,7 @@ func WeaponSelectable(tls *libc.TLS, weapon weapontype_t) (r boolean) {
 		return 0
 	}
 	// These weapons aren't available in shareware.
-	if (weapon == int32(wp_plasma) || weapon == int32(wp_bfg)) && gamemission == int32(doom) && gamemode == int32(shareware) {
+	if (weapon == wp_plasma || weapon == wp_bfg) && gamemission == int32(doom) && gamemode == int32(shareware) {
 		return 0
 	}
 	// Can't select a weapon if we don't own it.
@@ -7632,7 +7632,7 @@ func WeaponSelectable(tls *libc.TLS, weapon weapontype_t) (r boolean) {
 	}
 	// Can't select the fist if we have the chainsaw, unless
 	// we also have the berserk pack.
-	if weapon == int32(wp_fist) && *(*boolean)(unsafe.Pointer(uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328 + 132 + uintptr(wp_chainsaw)*4)) != 0 && !(*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328 + 56 + uintptr(pw_strength)*4)) != 0) {
+	if weapon == wp_fist && *(*boolean)(unsafe.Pointer(uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328 + 132 + uintptr(wp_chainsaw)*4)) != 0 && !(*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328 + 56 + uintptr(pw_strength)*4)) != 0) {
 		return 0
 	}
 	return 1
@@ -7642,7 +7642,7 @@ func G_NextWeapon(tls *libc.TLS, direction int32) (r int32) {
 	var i, start_i int32
 	var weapon weapontype_t
 	// Find index in the table.
-	if players[consoleplayer].Fpendingweapon == int32(wp_nochange) {
+	if players[consoleplayer].Fpendingweapon == wp_nochange {
 		weapon = players[consoleplayer].Freadyweapon
 	} else {
 		weapon = players[consoleplayer].Fpendingweapon
@@ -25302,29 +25302,29 @@ func P_GiveAmmo(tls *libc.TLS, player uintptr, ammo ammotype_t, num int32) (r bo
 	// Preferences are not user selectable.
 	switch ammo {
 	case int32(am_clip):
-		if (*player_t)(unsafe.Pointer(player)).Freadyweapon == int32(wp_fist) {
+		if (*player_t)(unsafe.Pointer(player)).Freadyweapon == wp_fist {
 			if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_chaingun)*4)) != 0 {
-				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_chaingun)
+				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_chaingun
 			} else {
-				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_pistol)
+				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_pistol
 			}
 		}
 	case int32(am_shell):
-		if (*player_t)(unsafe.Pointer(player)).Freadyweapon == int32(wp_fist) || (*player_t)(unsafe.Pointer(player)).Freadyweapon == int32(wp_pistol) {
+		if (*player_t)(unsafe.Pointer(player)).Freadyweapon == wp_fist || (*player_t)(unsafe.Pointer(player)).Freadyweapon == wp_pistol {
 			if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_shotgun)*4)) != 0 {
-				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_shotgun)
+				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_shotgun
 			}
 		}
 	case int32(am_cell):
-		if (*player_t)(unsafe.Pointer(player)).Freadyweapon == int32(wp_fist) || (*player_t)(unsafe.Pointer(player)).Freadyweapon == int32(wp_pistol) {
+		if (*player_t)(unsafe.Pointer(player)).Freadyweapon == wp_fist || (*player_t)(unsafe.Pointer(player)).Freadyweapon == wp_pistol {
 			if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_plasma)*4)) != 0 {
-				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_plasma)
+				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_plasma
 			}
 		}
 	case int32(am_misl):
-		if (*player_t)(unsafe.Pointer(player)).Freadyweapon == int32(wp_fist) {
+		if (*player_t)(unsafe.Pointer(player)).Freadyweapon == wp_fist {
 			if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_missile)*4)) != 0 {
-				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_missile)
+				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_missile
 			}
 		}
 		fallthrough
@@ -25627,8 +25627,8 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24126)
-		if (*player_t)(unsafe.Pointer(player)).Freadyweapon != int32(wp_fist) {
-			(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_fist)
+		if (*player_t)(unsafe.Pointer(player)).Freadyweapon != wp_fist {
+			(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_fist
 		}
 		sound = int32(sfx_getpow)
 	case int32(SPR_PINS):
@@ -25735,43 +25735,43 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		// weapons
 		fallthrough
 	case int32(SPR_BFUG):
-		if !(P_GiveWeapon(tls, player, int32(wp_bfg), 0) != 0) {
+		if !(P_GiveWeapon(tls, player, wp_bfg, 0) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24474)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_MGUN):
-		if !(P_GiveWeapon(tls, player, int32(wp_chaingun), libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
+		if !(P_GiveWeapon(tls, player, wp_chaingun, libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24505)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_CSAW):
-		if !(P_GiveWeapon(tls, player, int32(wp_chainsaw), 0) != 0) {
+		if !(P_GiveWeapon(tls, player, wp_chainsaw, 0) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24527)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_LAUN):
-		if !(P_GiveWeapon(tls, player, int32(wp_missile), 0) != 0) {
+		if !(P_GiveWeapon(tls, player, wp_missile, 0) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24556)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_PLAS):
-		if !(P_GiveWeapon(tls, player, int32(wp_plasma), 0) != 0) {
+		if !(P_GiveWeapon(tls, player, wp_plasma, 0) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24585)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_SHOT):
-		if !(P_GiveWeapon(tls, player, int32(wp_shotgun), libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
+		if !(P_GiveWeapon(tls, player, wp_shotgun, libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24609)
 		sound = int32(sfx_wpnup)
 	case int32(SPR_SGN2):
-		if !(P_GiveWeapon(tls, player, int32(wp_supershotgun), libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
+		if !(P_GiveWeapon(tls, player, wp_supershotgun, libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
 		(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(24630)
@@ -25903,7 +25903,7 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 	// Some close combat weapons should not
 	// inflict thrust and push the victim out of reach,
 	// thus kick away unless using the chainsaw.
-	if inflictor != 0 && !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_NOCLIP) != 0) && (!(source != 0) || !((*mobj_t)(unsafe.Pointer(source)).Fplayer != 0) || (*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer)).Freadyweapon != int32(wp_chainsaw)) {
+	if inflictor != 0 && !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_NOCLIP) != 0) && (!(source != 0) || !((*mobj_t)(unsafe.Pointer(source)).Fplayer != 0) || (*player_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(source)).Fplayer)).Freadyweapon != wp_chainsaw) {
 		ang = R_PointToAngle2((*mobj_t)(unsafe.Pointer(inflictor)).Fx, (*mobj_t)(unsafe.Pointer(inflictor)).Fy, (*mobj_t)(unsafe.Pointer(target)).Fx, (*mobj_t)(unsafe.Pointer(target)).Fy)
 		thrust = damage * (1 << FRACBITS >> 3) * 100 / ((*mobj_t)(unsafe.Pointer(target)).Finfo).Fmass
 		// make fall forwards sometimes
@@ -29269,14 +29269,14 @@ func P_SetPsprite(tls *libc.TLS, player uintptr, position int32, stnum statenum_
 //	//
 func P_BringUpWeapon(tls *libc.TLS, player uintptr) {
 	var newstate statenum_t
-	if (*player_t)(unsafe.Pointer(player)).Fpendingweapon == int32(wp_nochange) {
+	if (*player_t)(unsafe.Pointer(player)).Fpendingweapon == wp_nochange {
 		(*player_t)(unsafe.Pointer(player)).Fpendingweapon = (*player_t)(unsafe.Pointer(player)).Freadyweapon
 	}
-	if (*player_t)(unsafe.Pointer(player)).Fpendingweapon == int32(wp_chainsaw) {
+	if (*player_t)(unsafe.Pointer(player)).Fpendingweapon == wp_chainsaw {
 		S_StartSound(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(sfx_sawup))
 	}
 	newstate = weaponinfo[(*player_t)(unsafe.Pointer(player)).Fpendingweapon].Fupstate
-	(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_nochange)
+	(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_nochange
 	(*(*pspdef_t)(unsafe.Pointer(player + 272 + uintptr(ps_weapon)*24))).Fsy = 128 * (1 << FRACBITS)
 	P_SetPsprite(tls, player, int32(ps_weapon), newstate)
 }
@@ -29293,10 +29293,10 @@ func P_CheckAmmo(tls *libc.TLS, player uintptr) (r boolean) {
 	var count int32
 	ammo = weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fammo
 	// Minimal amount for one shot varies.
-	if (*player_t)(unsafe.Pointer(player)).Freadyweapon == int32(wp_bfg) {
+	if (*player_t)(unsafe.Pointer(player)).Freadyweapon == wp_bfg {
 		count = int32(DEH_DEFAULT_BFG_CELLS_PER_SHOT)
 	} else {
-		if (*player_t)(unsafe.Pointer(player)).Freadyweapon == int32(wp_supershotgun) {
+		if (*player_t)(unsafe.Pointer(player)).Freadyweapon == wp_supershotgun {
 			count = 2
 		} else {
 			count = 1
@@ -29309,33 +29309,33 @@ func P_CheckAmmo(tls *libc.TLS, player uintptr) (r boolean) {
 	}
 	// Out of ammo, pick a weapon to change to.
 	// Preferences are set here.
-	for cond := true; cond; cond = (*player_t)(unsafe.Pointer(player)).Fpendingweapon == int32(wp_nochange) {
+	for cond := true; cond; cond = (*player_t)(unsafe.Pointer(player)).Fpendingweapon == wp_nochange {
 		if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_plasma)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_cell)*4)) != 0 && gamemode != int32(shareware) {
-			(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_plasma)
+			(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_plasma
 		} else {
 			if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_supershotgun)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_shell)*4)) > 2 && gamemode == int32(commercial) {
-				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_supershotgun)
+				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_supershotgun
 			} else {
 				if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_chaingun)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_clip)*4)) != 0 {
-					(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_chaingun)
+					(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_chaingun
 				} else {
 					if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_shotgun)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_shell)*4)) != 0 {
-						(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_shotgun)
+						(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_shotgun
 					} else {
 						if *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_clip)*4)) != 0 {
-							(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_pistol)
+							(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_pistol
 						} else {
 							if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_chainsaw)*4)) != 0 {
-								(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_chainsaw)
+								(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_chainsaw
 							} else {
 								if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_missile)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_misl)*4)) != 0 {
-									(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_missile)
+									(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_missile
 								} else {
 									if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_bfg)*4)) != 0 && *(*int32)(unsafe.Pointer(player + 168 + uintptr(am_cell)*4)) > 40 && gamemode != int32(shareware) {
-										(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_bfg)
+										(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_bfg
 									} else {
 										// If everything fails.
-										(*player_t)(unsafe.Pointer(player)).Fpendingweapon = int32(wp_fist)
+										(*player_t)(unsafe.Pointer(player)).Fpendingweapon = wp_fist
 									}
 								}
 							}
@@ -29392,12 +29392,12 @@ func A_WeaponReady(tls *libc.TLS, player uintptr, psp uintptr) {
 	if (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fstate == uintptr(unsafe.Pointer(&states))+uintptr(S_PLAY_ATK1)*40 || (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(player)).Fmo)).Fstate == uintptr(unsafe.Pointer(&states))+uintptr(S_PLAY_ATK2)*40 {
 		P_SetMobjState(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(S_PLAY))
 	}
-	if (*player_t)(unsafe.Pointer(player)).Freadyweapon == int32(wp_chainsaw) && (*pspdef_t)(unsafe.Pointer(psp)).Fstate == uintptr(unsafe.Pointer(&states))+uintptr(S_SAW)*40 {
+	if (*player_t)(unsafe.Pointer(player)).Freadyweapon == wp_chainsaw && (*pspdef_t)(unsafe.Pointer(psp)).Fstate == uintptr(unsafe.Pointer(&states))+uintptr(S_SAW)*40 {
 		S_StartSound(tls, (*player_t)(unsafe.Pointer(player)).Fmo, int32(sfx_sawidl))
 	}
 	// check for change
 	//  if player is dead, put the weapon away
-	if (*player_t)(unsafe.Pointer(player)).Fpendingweapon != int32(wp_nochange) || !((*player_t)(unsafe.Pointer(player)).Fhealth != 0) {
+	if (*player_t)(unsafe.Pointer(player)).Fpendingweapon != wp_nochange || !((*player_t)(unsafe.Pointer(player)).Fhealth != 0) {
 		// change weapon
 		//  (pending weapon should allready be validated)
 		newstate = weaponinfo[(*player_t)(unsafe.Pointer(player)).Freadyweapon].Fdownstate
@@ -29407,7 +29407,7 @@ func A_WeaponReady(tls *libc.TLS, player uintptr, psp uintptr) {
 	// check for fire
 	//  the missile launcher and bfg do not auto fire
 	if libc.Int32FromUint8((*player_t)(unsafe.Pointer(player)).Fcmd.Fbuttons)&int32(BT_ATTACK) != 0 {
-		if !((*player_t)(unsafe.Pointer(player)).Fattackdown != 0) || (*player_t)(unsafe.Pointer(player)).Freadyweapon != int32(wp_missile) && (*player_t)(unsafe.Pointer(player)).Freadyweapon != int32(wp_bfg) {
+		if !((*player_t)(unsafe.Pointer(player)).Fattackdown != 0) || (*player_t)(unsafe.Pointer(player)).Freadyweapon != wp_missile && (*player_t)(unsafe.Pointer(player)).Freadyweapon != wp_bfg {
 			(*player_t)(unsafe.Pointer(player)).Fattackdown = 1
 			P_FireWeapon(tls, player)
 			return
@@ -29432,7 +29432,7 @@ func A_WeaponReady(tls *libc.TLS, player uintptr, psp uintptr) {
 func A_ReFire(tls *libc.TLS, player uintptr, psp uintptr) {
 	// check for fire
 	//  (if a weaponchange is pending, let it go through instead)
-	if libc.Int32FromUint8((*player_t)(unsafe.Pointer(player)).Fcmd.Fbuttons)&int32(BT_ATTACK) != 0 && (*player_t)(unsafe.Pointer(player)).Fpendingweapon == int32(wp_nochange) && (*player_t)(unsafe.Pointer(player)).Fhealth != 0 {
+	if libc.Int32FromUint8((*player_t)(unsafe.Pointer(player)).Fcmd.Fbuttons)&int32(BT_ATTACK) != 0 && (*player_t)(unsafe.Pointer(player)).Fpendingweapon == wp_nochange && (*player_t)(unsafe.Pointer(player)).Fhealth != 0 {
 		(*player_t)(unsafe.Pointer(player)).Frefire++
 		P_FireWeapon(tls, player)
 	} else {
@@ -34827,16 +34827,16 @@ func P_PlayerThink(tls *libc.TLS, player uintptr) {
 		//  when the weapon psprite can do it
 		//  (read: not in the middle of an attack).
 		newweapon = libc.Int32FromUint8((*ticcmd_t)(unsafe.Pointer(cmd)).Fbuttons) & int32(BT_WEAPONMASK) >> int32(BT_WEAPONSHIFT)
-		if newweapon == int32(wp_fist) && *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_chainsaw)*4)) != 0 && !((*player_t)(unsafe.Pointer(player)).Freadyweapon == int32(wp_chainsaw) && *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_strength)*4)) != 0) {
-			newweapon = int32(wp_chainsaw)
+		if newweapon == wp_fist && *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_chainsaw)*4)) != 0 && !((*player_t)(unsafe.Pointer(player)).Freadyweapon == wp_chainsaw && *(*int32)(unsafe.Pointer(player + 56 + uintptr(pw_strength)*4)) != 0) {
+			newweapon = wp_chainsaw
 		}
-		if gamemode == int32(commercial) && newweapon == int32(wp_shotgun) && *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_supershotgun)*4)) != 0 && (*player_t)(unsafe.Pointer(player)).Freadyweapon != int32(wp_supershotgun) {
-			newweapon = int32(wp_supershotgun)
+		if gamemode == int32(commercial) && newweapon == wp_shotgun && *(*boolean)(unsafe.Pointer(player + 132 + uintptr(wp_supershotgun)*4)) != 0 && (*player_t)(unsafe.Pointer(player)).Freadyweapon != wp_supershotgun {
+			newweapon = wp_supershotgun
 		}
 		if *(*boolean)(unsafe.Pointer(player + 132 + uintptr(newweapon)*4)) != 0 && newweapon != (*player_t)(unsafe.Pointer(player)).Freadyweapon {
 			// Do not go to plasma or BFG in shareware,
 			//  even if cheated.
-			if newweapon != int32(wp_plasma) && newweapon != int32(wp_bfg) || gamemode != int32(shareware) {
+			if newweapon != wp_plasma && newweapon != wp_bfg || gamemode != int32(shareware) {
 				(*player_t)(unsafe.Pointer(player)).Fpendingweapon = newweapon
 			}
 		}
