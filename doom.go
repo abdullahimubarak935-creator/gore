@@ -9497,14 +9497,14 @@ type hu_stext_t struct {
 	Fl      [4]hu_textline_t
 	Fh      int32
 	Fcl     int32
-	Fon     uintptr
+	Fon     *boolean
 	Flaston boolean
 }
 
 type hu_itext_t struct {
 	Fl      hu_textline_t
 	Flm     int32
-	Fon     uintptr
+	Fon     *boolean
 	Flaston boolean
 }
 
@@ -9615,7 +9615,7 @@ func HUlib_eraseTextLine(l *hu_textline_t) {
 	}
 }
 
-func HUlib_initSText(s *hu_stext_t, x int32, y int32, h int32, font uintptr, startchar int32, on uintptr) {
+func HUlib_initSText(s *hu_stext_t, x int32, y int32, h int32, font uintptr, startchar int32, on *boolean) {
 	s.Fh = h
 	s.Fon = on
 	s.Flaston = 1
@@ -9657,7 +9657,7 @@ func HUlib_addMessageToSText(s *hu_stext_t, prefix uintptr, msg uintptr) {
 
 func HUlib_drawSText(tls *libc.TLS, s *hu_stext_t) {
 	var idx int32
-	if !(*(*boolean)(unsafe.Pointer(s.Fon)) != 0) {
+	if !(*s.Fon != 0) {
 		return
 	} // if not on, don't draw
 	// draw everything
@@ -9674,15 +9674,15 @@ func HUlib_drawSText(tls *libc.TLS, s *hu_stext_t) {
 
 func HUlib_eraseSText(s *hu_stext_t) {
 	for i := int32(0); i < s.Fh; i++ {
-		if s.Flaston != 0 && !(*(*boolean)(unsafe.Pointer(s.Fon)) != 0) {
+		if s.Flaston != 0 && !(*s.Fon != 0) {
 			s.Fl[i].Fneedsupdate = 4
 		}
 		HUlib_eraseTextLine(&s.Fl[i])
 	}
-	s.Flaston = *(*boolean)(unsafe.Pointer(s.Fon))
+	s.Flaston = *s.Fon
 }
 
-func HUlib_initIText(it *hu_itext_t, x int32, y int32, font uintptr, startchar int32, on uintptr) {
+func HUlib_initIText(it *hu_itext_t, x int32, y int32, font uintptr, startchar int32, on *boolean) {
 	it.Flm = 0 // default left margin is start of text
 	it.Fon = on
 	it.Flaston = 1
@@ -9727,18 +9727,18 @@ func HUlib_keyInIText(it *hu_itext_t, ch uint8) (r boolean) {
 }
 
 func HUlib_drawIText(tls *libc.TLS, it *hu_itext_t) {
-	if !(*(*boolean)(unsafe.Pointer(it.Fon)) != 0) {
+	if !(*it.Fon != 0) {
 		return
 	}
 	HUlib_drawTextLine(tls, &it.Fl, 1) // draw the line w/ cursor
 }
 
 func HUlib_eraseIText(it *hu_itext_t) {
-	if it.Flaston != 0 && !(*(*boolean)(unsafe.Pointer(it.Fon)) != 0) {
+	if it.Flaston != 0 && !(*it.Fon != 0) {
 		it.Fl.Fneedsupdate = 4
 	}
 	HUlib_eraseTextLine(&it.Fl)
-	it.Flaston = *(*boolean)(unsafe.Pointer(it.Fon))
+	it.Flaston = *it.Fon
 }
 
 const HU_TITLEX = 0
@@ -9771,7 +9771,7 @@ func init() {
 var plr1 *player_t
 var w_title hu_textline_t
 var w_chat hu_itext_t
-var always_off = 0
+var always_off boolean = 0
 var chat_dest [4]int8
 var w_inputbuffer [4]hu_itext_t
 
@@ -9971,7 +9971,7 @@ func HU_Start(tls *libc.TLS) {
 	message_nottobefuckedwith = 0
 	chat_on = 0
 	// create the message widget
-	HUlib_initSText(&w_message, HU_MSGX, HU_MSGY, int32(HU_MSGHEIGHT), uintptr(unsafe.Pointer(&hu_font)), int32('!'), uintptr(unsafe.Pointer(&message_on)))
+	HUlib_initSText(&w_message, HU_MSGX, HU_MSGY, int32(HU_MSGHEIGHT), uintptr(unsafe.Pointer(&hu_font)), int32('!'), &message_on)
 	// create the map title widget
 	HUlib_initTextLine(&w_title, HU_TITLEX, 167-int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight), uintptr(unsafe.Pointer(&hu_font)), int32('!'))
 	if gamemission == int32(pack_chex) {
@@ -10010,14 +10010,14 @@ func HU_Start(tls *libc.TLS) {
 		HUlib_addCharToTextLine(&w_title, *(*int8)(unsafe.Pointer(v3)))
 	}
 	// create the chat widget
-	HUlib_initIText(&w_chat, HU_MSGX, HU_MSGY+int32(HU_MSGHEIGHT)*(int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight)+int32(1)), uintptr(unsafe.Pointer(&hu_font)), int32('!'), uintptr(unsafe.Pointer(&chat_on)))
+	HUlib_initIText(&w_chat, HU_MSGX, HU_MSGY+int32(HU_MSGHEIGHT)*(int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight)+int32(1)), uintptr(unsafe.Pointer(&hu_font)), int32('!'), &chat_on)
 	// create the inputbuffer widgets
 	i = 0
 	for {
 		if !(i < int32(MAXPLAYERS)) {
 			break
 		}
-		HUlib_initIText(&w_inputbuffer[i], 0, 0, uintptr(0), 0, uintptr(unsafe.Pointer(&always_off)))
+		HUlib_initIText(&w_inputbuffer[i], 0, 0, uintptr(0), 0, &always_off)
 		goto _4
 	_4:
 		;
@@ -40752,7 +40752,7 @@ type st_number_t struct {
 	Fwidth  int32
 	Foldnum int32
 	Fnum    uintptr
-	Fon     uintptr
+	Fon     *boolean
 	Fp      uintptr
 	Fdata   int32
 }
@@ -40767,7 +40767,7 @@ type st_multicon_t struct {
 	Fy       int32
 	Foldinum int32
 	Finum    uintptr
-	Fon      uintptr
+	Fon      *boolean
 	Fp       uintptr
 	Fdata    int32
 }
@@ -40777,7 +40777,7 @@ type st_binicon_t struct {
 	Fy      int32
 	Foldval boolean
 	Fval    uintptr
-	Fon     uintptr
+	Fon     *boolean
 	Fp      uintptr
 	Fdata   int32
 }
@@ -40789,7 +40789,7 @@ func STlib_init(tls *libc.TLS) {
 // C documentation
 //
 //	// ?
-func STlib_initNum(st *st_number_t, x int32, y int32, pl uintptr, num uintptr, on uintptr, width int32) {
+func STlib_initNum(st *st_number_t, x int32, y int32, pl uintptr, num uintptr, on *boolean, width int32) {
 	st.Fx = x
 	st.Fy = y
 	st.Foldnum = 0
@@ -40867,7 +40867,7 @@ func STlib_drawNum(tls *libc.TLS, n *st_number_t, refresh boolean) {
 //
 //	//
 func STlib_updateNum(tls *libc.TLS, n *st_number_t, refresh boolean) {
-	if *(*boolean)(unsafe.Pointer(n.Fon)) != 0 {
+	if *n.Fon != 0 {
 		STlib_drawNum(tls, n, refresh)
 	}
 }
@@ -40875,7 +40875,7 @@ func STlib_updateNum(tls *libc.TLS, n *st_number_t, refresh boolean) {
 // C documentation
 //
 //	//
-func STlib_initPercent(st *st_percent_t, x int32, y int32, pl uintptr, num uintptr, on uintptr, percent uintptr) {
+func STlib_initPercent(st *st_percent_t, x int32, y int32, pl uintptr, num uintptr, on *boolean, percent uintptr) {
 	STlib_initNum(&st.Fn, x, y, pl, num, on, 3)
 	st.Fp = percent
 }
@@ -40887,7 +40887,7 @@ func STlib_updatePercent(tls *libc.TLS, per *st_percent_t, refresh int32) {
 	STlib_updateNum(tls, &per.Fn, libc.Uint32FromInt32(refresh))
 }
 
-func STlib_initMultIcon(st *st_multicon_t, x int32, y int32, il uintptr, inum uintptr, on uintptr) {
+func STlib_initMultIcon(st *st_multicon_t, x int32, y int32, il uintptr, inum uintptr, on *boolean) {
 	st.Fx = x
 	st.Fy = y
 	st.Foldinum = -1
@@ -40898,7 +40898,7 @@ func STlib_initMultIcon(st *st_multicon_t, x int32, y int32, il uintptr, inum ui
 
 func STlib_updateMultIcon(tls *libc.TLS, mi *st_multicon_t, refresh boolean) {
 	var h, w, x, y int32
-	if *(*boolean)(unsafe.Pointer(mi.Fon)) != 0 && (mi.Foldinum != *(*int32)(unsafe.Pointer(mi.Finum)) || refresh != 0) && *(*int32)(unsafe.Pointer(mi.Finum)) != -1 {
+	if *mi.Fon != 0 && (mi.Foldinum != *(*int32)(unsafe.Pointer(mi.Finum)) || refresh != 0) && *(*int32)(unsafe.Pointer(mi.Finum)) != -1 {
 		if mi.Foldinum != -1 {
 			x = mi.Fx - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr(mi.Foldinum)*8)))).Fleftoffset)
 			y = mi.Fy - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*st_multicon_t)(unsafe.Pointer(mi)).Fp + uintptr(mi.Foldinum)*8)))).Ftopoffset)
@@ -40914,7 +40914,7 @@ func STlib_updateMultIcon(tls *libc.TLS, mi *st_multicon_t, refresh boolean) {
 	}
 }
 
-func STlib_initBinIcon(st *st_binicon_t, x int32, y int32, i uintptr, val uintptr, on uintptr) {
+func STlib_initBinIcon(st *st_binicon_t, x int32, y int32, i uintptr, val uintptr, on *boolean) {
 	st.Fx = x
 	st.Fy = y
 	st.Foldval = 0
@@ -40925,7 +40925,7 @@ func STlib_initBinIcon(st *st_binicon_t, x int32, y int32, i uintptr, val uintpt
 
 func STlib_updateBinIcon(tls *libc.TLS, bi *st_binicon_t, refresh boolean) {
 	var h, w, x, y int32
-	if *(*boolean)(unsafe.Pointer(bi.Fon)) != 0 && (bi.Foldval != *(*boolean)(unsafe.Pointer(bi.Fval)) || refresh != 0) {
+	if *bi.Fon != 0 && (bi.Foldval != *(*boolean)(unsafe.Pointer(bi.Fval)) || refresh != 0) {
 		x = bi.Fx - int32((*patch_t)(unsafe.Pointer(bi.Fp)).Fleftoffset)
 		y = bi.Fy - int32((*patch_t)(unsafe.Pointer(bi.Fp)).Ftopoffset)
 		w = int32((*patch_t)(unsafe.Pointer(bi.Fp)).Fwidth)
@@ -42025,37 +42025,37 @@ func ST_initData(tls *libc.TLS) {
 
 func ST_createWidgets(tls *libc.TLS) {
 	// ready weapon ammo
-	STlib_initNum(&w_ready, ST_AMMOX, ST_AMMOY, uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_AMMOWIDTH)
+	STlib_initNum(&w_ready, ST_AMMOX, ST_AMMOY, uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo])), &st_statusbaron, ST_AMMOWIDTH)
 	// the last weapon type
 	w_ready.Fdata = plyr.Freadyweapon
 	// health percentage
-	STlib_initPercent(&w_health, ST_HEALTHX, ST_HEALTHY, uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fhealth)), uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
+	STlib_initPercent(&w_health, ST_HEALTHX, ST_HEALTHY, uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fhealth)), &st_statusbaron, tallpercent)
 	// arms background
-	STlib_initBinIcon(&w_armsbg, ST_ARMSBGX, ST_ARMSBGY, armsbg, uintptr(unsafe.Pointer(&st_notdeathmatch)), uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initBinIcon(&w_armsbg, ST_ARMSBGX, ST_ARMSBGY, armsbg, uintptr(unsafe.Pointer(&st_notdeathmatch)), &st_statusbaron)
 	// weapons owned
 	for i := int32(0); i < 6; i++ {
-		STlib_initMultIcon(&w_arms[i], ST_ARMSX+i%3*ST_ARMSXSPACE, ST_ARMSY+i/int32(3)*ST_ARMSYSPACE, uintptr(unsafe.Pointer(&arms))+uintptr(i)*16, uintptr(unsafe.Pointer(&plyr.Fweaponowned[i+1])), uintptr(unsafe.Pointer(&st_armson)))
+		STlib_initMultIcon(&w_arms[i], ST_ARMSX+i%3*ST_ARMSXSPACE, ST_ARMSY+i/int32(3)*ST_ARMSYSPACE, uintptr(unsafe.Pointer(&arms))+uintptr(i)*16, uintptr(unsafe.Pointer(&plyr.Fweaponowned[i+1])), &st_armson)
 	}
 	// frags sum
-	STlib_initNum(&w_frags, ST_FRAGSX, ST_FRAGSY, uintptr(unsafe.Pointer(&tallnum)), uintptr(unsafe.Pointer(&st_fragscount)), uintptr(unsafe.Pointer(&st_fragson)), ST_FRAGSWIDTH)
+	STlib_initNum(&w_frags, ST_FRAGSX, ST_FRAGSY, uintptr(unsafe.Pointer(&tallnum)), uintptr(unsafe.Pointer(&st_fragscount)), &st_fragson, ST_FRAGSWIDTH)
 	// faces
-	STlib_initMultIcon(&w_faces, ST_FACESX, ST_FACESY, uintptr(unsafe.Pointer(&faces)), uintptr(unsafe.Pointer(&st_faceindex)), uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initMultIcon(&w_faces, ST_FACESX, ST_FACESY, uintptr(unsafe.Pointer(&faces)), uintptr(unsafe.Pointer(&st_faceindex)), &st_statusbaron)
 	// armor percentage - should be colored later
-	STlib_initPercent(&w_armor, ST_ARMORX, ST_ARMORY, uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Farmorpoints)), uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
+	STlib_initPercent(&w_armor, ST_ARMORX, ST_ARMORY, uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Farmorpoints)), &st_statusbaron, tallpercent)
 	// keyboxes 0-2
-	STlib_initMultIcon(&w_keyboxes[0], ST_KEY0X, ST_KEY0Y, uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes)), uintptr(unsafe.Pointer(&st_statusbaron)))
-	STlib_initMultIcon(&w_keyboxes[1], ST_KEY1X, ST_KEY1Y, uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+1*4, uintptr(unsafe.Pointer(&st_statusbaron)))
-	STlib_initMultIcon(&w_keyboxes[2], ST_KEY2X, ST_KEY2Y, uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+2*4, uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initMultIcon(&w_keyboxes[0], ST_KEY0X, ST_KEY0Y, uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes)), &st_statusbaron)
+	STlib_initMultIcon(&w_keyboxes[1], ST_KEY1X, ST_KEY1Y, uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+1*4, &st_statusbaron)
+	STlib_initMultIcon(&w_keyboxes[2], ST_KEY2X, ST_KEY2Y, uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+2*4, &st_statusbaron)
 	// ammo count (all four kinds)
-	STlib_initNum(&w_ammo[0], ST_AMMO0X, ST_AMMO0Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[0])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_AMMO0WIDTH)
-	STlib_initNum(&w_ammo[1], ST_AMMO1X, ST_AMMO1Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[1])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_AMMO0WIDTH)
-	STlib_initNum(&w_ammo[2], ST_AMMO2X, ST_AMMO2Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[2])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_AMMO0WIDTH)
-	STlib_initNum(&w_ammo[3], ST_AMMO3X, ST_AMMO3Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[3])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_AMMO0WIDTH)
+	STlib_initNum(&w_ammo[0], ST_AMMO0X, ST_AMMO0Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[0])), &st_statusbaron, ST_AMMO0WIDTH)
+	STlib_initNum(&w_ammo[1], ST_AMMO1X, ST_AMMO1Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[1])), &st_statusbaron, ST_AMMO0WIDTH)
+	STlib_initNum(&w_ammo[2], ST_AMMO2X, ST_AMMO2Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[2])), &st_statusbaron, ST_AMMO0WIDTH)
+	STlib_initNum(&w_ammo[3], ST_AMMO3X, ST_AMMO3Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[3])), &st_statusbaron, ST_AMMO0WIDTH)
 	// max ammo count (all four kinds)
-	STlib_initNum(&w_maxammo[0], ST_MAXAMMO0X, ST_MAXAMMO0Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[0])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_MAXAMMO0WIDTH)
-	STlib_initNum(&w_maxammo[1], ST_MAXAMMO1X, ST_MAXAMMO1Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[1])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_MAXAMMO0WIDTH)
-	STlib_initNum(&w_maxammo[2], ST_MAXAMMO2X, ST_MAXAMMO2Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[2])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_MAXAMMO0WIDTH)
-	STlib_initNum(&w_maxammo[3], ST_MAXAMMO3X, ST_MAXAMMO3Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[3])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_MAXAMMO0WIDTH)
+	STlib_initNum(&w_maxammo[0], ST_MAXAMMO0X, ST_MAXAMMO0Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[0])), &st_statusbaron, ST_MAXAMMO0WIDTH)
+	STlib_initNum(&w_maxammo[1], ST_MAXAMMO1X, ST_MAXAMMO1Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[1])), &st_statusbaron, ST_MAXAMMO0WIDTH)
+	STlib_initNum(&w_maxammo[2], ST_MAXAMMO2X, ST_MAXAMMO2Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[2])), &st_statusbaron, ST_MAXAMMO0WIDTH)
+	STlib_initNum(&w_maxammo[3], ST_MAXAMMO3X, ST_MAXAMMO3Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[3])), &st_statusbaron, ST_MAXAMMO0WIDTH)
 }
 
 var st_stopped int32 = 1
