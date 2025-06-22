@@ -7270,7 +7270,7 @@ func wipe_exitColorXForm(tls *libc.TLS, width int32, height int32, ticks int32) 
 	return 0
 }
 
-var y uintptr
+var y_screen uintptr
 
 func wipe_initMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r1 int32) {
 	var i, r int32
@@ -7282,20 +7282,20 @@ func wipe_initMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r1 in
 	wipe_shittyColMajorXform(tls, wipe_scr_end, width/int32(2), height)
 	// setup initial column positions
 	// (y<0 => not ready to scroll yet)
-	y = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(width)*uint64(4)), int32(PU_STATIC), uintptr(0))
-	*(*int32)(unsafe.Pointer(y)) = -(M_Random() % 16)
+	y_screen = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(width)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	*(*int32)(unsafe.Pointer(y_screen)) = -(M_Random() % 16)
 	i = 1
 	for {
 		if !(i < width) {
 			break
 		}
 		r = M_Random()%int32(3) - 1
-		*(*int32)(unsafe.Pointer(y + uintptr(i)*4)) = *(*int32)(unsafe.Pointer(y + uintptr(i-1)*4)) + r
-		if *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) > 0 {
-			*(*int32)(unsafe.Pointer(y + uintptr(i)*4)) = 0
+		*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) = *(*int32)(unsafe.Pointer(y_screen + uintptr(i-1)*4)) + r
+		if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) > 0 {
+			*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) = 0
 		} else {
-			if *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) == -int32(16) {
-				*(*int32)(unsafe.Pointer(y + uintptr(i)*4)) = -int32(15)
+			if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) == -int32(16) {
+				*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) = -int32(15)
 			}
 		}
 		goto _1
@@ -7323,22 +7323,22 @@ func wipe_doMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r int32
 			if !(i < width) {
 				break
 			}
-			if *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) < 0 {
-				*(*int32)(unsafe.Pointer(y + uintptr(i)*4))++
+			if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) < 0 {
+				*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4))++
 				done = 0
 			} else {
-				if *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) < height {
-					if *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) < 16 {
-						v3 = *(*int32)(unsafe.Pointer(y + uintptr(i)*4)) + 1
+				if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) < height {
+					if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) < 16 {
+						v3 = *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) + 1
 					} else {
 						v3 = 8
 					}
 					dy = v3
-					if *(*int32)(unsafe.Pointer(y + uintptr(i)*4))+dy >= height {
-						dy = height - *(*int32)(unsafe.Pointer(y + uintptr(i)*4))
+					if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4))+dy >= height {
+						dy = height - *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4))
 					}
-					s = wipe_scr_end + uintptr(i*height+*(*int32)(unsafe.Pointer(y + uintptr(i)*4)))*2
-					d = wipe_scr + uintptr(*(*int32)(unsafe.Pointer(y + uintptr(i)*4))*width+i)*2
+					s = wipe_scr_end + uintptr(i*height+*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)))*2
+					d = wipe_scr + uintptr(*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4))*width+i)*2
 					idx = 0
 					j = dy
 					for {
@@ -7354,11 +7354,11 @@ func wipe_doMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r int32
 						;
 						j--
 					}
-					*(*int32)(unsafe.Pointer(y + uintptr(i)*4)) += dy
+					*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) += dy
 					s = wipe_scr_start + uintptr(i*height)*2
-					d = wipe_scr + uintptr(*(*int32)(unsafe.Pointer(y + uintptr(i)*4))*width+i)*2
+					d = wipe_scr + uintptr(*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4))*width+i)*2
 					idx = 0
-					j = height - *(*int32)(unsafe.Pointer(y + uintptr(i)*4))
+					j = height - *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4))
 					for {
 						if !(j != 0) {
 							break
@@ -7385,7 +7385,7 @@ func wipe_doMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r int32
 }
 
 func wipe_exitMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r int32) {
-	Z_Free(tls, y)
+	Z_Free(tls, y_screen)
 	Z_Free(tls, wipe_scr_start)
 	Z_Free(tls, wipe_scr_end)
 	return 0

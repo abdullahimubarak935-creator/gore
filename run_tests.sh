@@ -6,5 +6,5 @@ echo "All tests: $TEST"
 set -e
 for f in $TEST ; do
 	echo "Running $f..."
-	go test -v -run "^${f}\$" .
+	go test -v -count 1 -run "^${f}\$" .
 done
