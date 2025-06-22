@@ -3,6 +3,7 @@ package gore
 import (
 	"fmt"
 	"image"
+	"image/png"
 	"io"
 	"math/rand"
 	"os"
@@ -10,6 +11,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	diff "github.com/olegfedoseev/image-diff"
 )
 
 type delayedKeyEvent struct {
@@ -24,6 +27,7 @@ type doomTestHeadless struct {
 	lastEventTick int32
 	outputFile    io.WriteCloser
 	lock          sync.Mutex
+	lastImage     *image.RGBA
 }
 
 func (d *doomTestHeadless) Close() {
@@ -66,6 +70,8 @@ func ffmpegSaver(filename string) (io.WriteCloser, error) {
 }
 
 func (d *doomTestHeadless) DrawFrame(frame *image.RGBA) {
+	d.lock.Lock()
+	defer d.lock.Unlock()
 	if d.outputFile == nil {
 		var err error
 		name := fmt.Sprintf("doom_test_%s.mp4", d.t.Name())
@@ -76,10 +82,26 @@ func (d *doomTestHeadless) DrawFrame(frame *image.RGBA) {
 		d.t.Logf("Saving output to %s", name)
 	}
 	d.outputFile.Write(frame.Pix)
+	if d.lastImage == nil {
+		d.lastImage = image.NewRGBA(frame.Rect)
+	}
+	copy(d.lastImage.Pix, frame.Pix)
 }
 
 func (d *doomTestHeadless) SetTitle(title string) {
 	d.t.Logf("SetTitle called with: %s", title)
+}
+
+func (d *doomTestHeadless) GetScreen() *image.RGBA {
+	d.lock.Lock()
+	defer d.lock.Unlock()
+	if d.lastImage == nil {
+		return nil
+	}
+	// Return a copy of the last image
+	screenCopy := image.NewRGBA(d.lastImage.Rect)
+	copy(screenCopy.Pix, d.lastImage.Pix)
+	return screenCopy
 }
 
 func (d *doomTestHeadless) GetKey(event *DoomKeyEvent) bool {
@@ -109,21 +131,20 @@ func (d *doomTestHeadless) InsertKey(key uint8) {
 			Pressed: true,
 			Key:     key,
 		},
-		ticks: 0, // Insert immediately
+		ticks: 1,
 	},
 		delayedKeyEvent{
 			event: DoomKeyEvent{
 				Pressed: false,
 				Key:     key,
 			},
-			ticks: 2, // Release after 1 tick
+			ticks: 1,
 		},
 	)
 }
 
-func (d *doomTestHeadless) InsertKeySequence(keys []uint8) {
+func (d *doomTestHeadless) InsertKeySequence(keys ...uint8) {
 	d.lock.Lock()
-	defer d.lock.Unlock()
 	for _, key := range keys {
 		// Insert a key press and release for each key
 		d.keys = append(d.keys, delayedKeyEvent{
@@ -141,6 +162,17 @@ func (d *doomTestHeadless) InsertKeySequence(keys []uint8) {
 				ticks: 2,
 			},
 		)
+	}
+	d.lock.Unlock()
+	// Wait for the last key event to be processed
+	for {
+		d.lock.Lock()
+		inuse := len(d.keys) > 0
+		d.lock.Unlock()
+		time.Sleep(1 * time.Millisecond) // Wait a bit before checking again
+		if !inuse {
+			break
+		}
 	}
 }
 
@@ -177,103 +209,82 @@ func TestDoomDemo(t *testing.T) {
 	Run(game, []string{"-iwad", "doom1.wad"})
 }
 
+func savePNG(filename string, img image.Image) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return fmt.Errorf("error creating PNG file: %w", err)
+	}
+	defer file.Close()
+
+	if err := png.Encode(file, img); err != nil {
+		return fmt.Errorf("error encoding PNG: %w", err)
+	}
+	return nil
+}
+
 func TestLoadSave(t *testing.T) {
 	dg_speed_ratio = 100.0 // Run at 50x speed
 	game := &doomTestHeadless{
 		t:     t,
 		start: time.Now(),
-		keys: []delayedKeyEvent{
-			// Start a new game
-			{DoomKeyEvent{Pressed: true, Key: KEY_ESCAPE}, 5_000},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ESCAPE}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			// Move around in the game a bit
-			{DoomKeyEvent{Pressed: true, Key: KEY_UPARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_UPARROW1}, 1000},
-			{DoomKeyEvent{Pressed: true, Key: KEY_LEFTARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_LEFTARROW1}, 1000},
-			// Go to the menu and save
-			{DoomKeyEvent{Pressed: true, Key: KEY_ESCAPE}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ESCAPE}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			// Clear the previous name and enter a new one
-			{DoomKeyEvent{Pressed: true, Key: KEY_BACKSPACE1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_BACKSPACE1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_BACKSPACE1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_BACKSPACE1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_BACKSPACE1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_BACKSPACE1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_BACKSPACE1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_BACKSPACE1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_BACKSPACE1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_BACKSPACE1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_BACKSPACE1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_BACKSPACE1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: 't'}, 100},
-			{DoomKeyEvent{Pressed: false, Key: 't'}, 100},
-			{DoomKeyEvent{Pressed: true, Key: 'e'}, 100},
-			{DoomKeyEvent{Pressed: false, Key: 'e'}, 100},
-			{DoomKeyEvent{Pressed: true, Key: 's'}, 100},
-			{DoomKeyEvent{Pressed: false, Key: 's'}, 100},
-			{DoomKeyEvent{Pressed: true, Key: 't'}, 100},
-			{DoomKeyEvent{Pressed: false, Key: 't'}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			// Start a new game
-			{DoomKeyEvent{Pressed: true, Key: KEY_ESCAPE}, 1000},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ESCAPE}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_UPARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_UPARROW1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_UPARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_UPARROW1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_UPARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_UPARROW1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			// Load the saved game
-			{DoomKeyEvent{Pressed: true, Key: KEY_ESCAPE}, 1000},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ESCAPE}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			// Quit
-			{DoomKeyEvent{Pressed: true, Key: KEY_ESCAPE}, 1000},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ESCAPE}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_DOWNARROW1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: true, Key: 'y'}, 100},
-			{DoomKeyEvent{Pressed: false, Key: 'y'}, 100},
-		},
 	}
+	go func() {
+		time.Sleep(20 * time.Millisecond) // Let things get settled
+		// Start a new game
+		game.InsertKeySequence(KEY_ESCAPE, KEY_ENTER, KEY_ENTER, KEY_ENTER)
+		time.Sleep(2 * time.Millisecond) // Wait for the game to start
+		// Move around in the game a bit
+		game.InsertKeyChange(KEY_UPARROW1, true)
+		time.Sleep(20 * time.Millisecond) // Move up for a bit
+		game.InsertKeyChange(KEY_UPARROW1, false)
+		game.InsertKeyChange(KEY_LEFTARROW1, true)
+		time.Sleep(20 * time.Millisecond) // Move left for a bit
+		game.InsertKeyChange(KEY_LEFTARROW1, false)
+		time.Sleep(1 * time.Millisecond)
+		// Grab a screenshot
+		img1 := game.GetScreen()
+		// Go to the menu and save
+		game.InsertKeySequence(KEY_ESCAPE, KEY_DOWNARROW1, KEY_DOWNARROW1, KEY_DOWNARROW1, KEY_ENTER, KEY_ENTER)
+		// Clear the old name
+		game.InsertKeySequence(KEY_BACKSPACE1, KEY_BACKSPACE1, KEY_BACKSPACE1, KEY_BACKSPACE1, KEY_BACKSPACE1, KEY_BACKSPACE1)
+		// Enter a new name
+		game.InsertKeySequence('t', 'e', 's', 't', KEY_ENTER)
+		// Start a new game
+		game.InsertKeySequence(KEY_ESCAPE, KEY_UPARROW1, KEY_UPARROW1, KEY_UPARROW1, KEY_ENTER, KEY_ENTER, KEY_ENTER) // Open menu
+		time.Sleep(10 * time.Millisecond)                                                                             // Wait for the game to start
+		// New games must have a different screenshot
+		imgNew := game.GetScreen()
+		// Load the saved game
+		game.InsertKeySequence(KEY_ESCAPE, KEY_DOWNARROW1, KEY_DOWNARROW1, KEY_ENTER, KEY_ENTER)
+		time.Sleep(10 * time.Millisecond) // Wait for the game to load
+		img2 := game.GetScreen()
+		// Check if the images are the same
+		diffImg, percent, err := diff.CompareImages(img1, img2)
+		if err != nil {
+			t.Errorf("save/load comparison failed: %v", err)
+		}
+		t.Logf("Load game screenshot comparison: %f%% difference", percent)
+		if percent > 2 { // Allow a small margin of error
+			savePNG("doom_test_screenshot1.png", img1)
+			savePNG("doom_test_screenshot2.png", img2)
+			savePNG("doom_test_diff.png", diffImg)
+			t.Errorf("Screenshots do not match after loading save: %f%% difference", percent)
+		}
+
+		diffImg, percent, err = diff.CompareImages(img1, imgNew)
+		if err != nil {
+			t.Errorf("new game comparison failed: %v", err)
+		}
+		t.Logf("New game screenshot comparison: %f%% difference", percent)
+		if percent < 50 { // They should be different, so allow a very large margin of error
+			savePNG("doom_test_screenshot1.png", img1)
+			savePNG("doom_test_screenshot_new.png", imgNew)
+			t.Errorf("New game screenshot matches the original: %f%% difference", percent)
+		}
+
+		// Quit
+		game.InsertKeySequence(KEY_ESCAPE, KEY_DOWNARROW1, KEY_DOWNARROW1, KEY_DOWNARROW1, KEY_ENTER, 'y')
+	}()
 	defer game.Close()
 	Run(game, []string{"-iwad", "doom1.wad"})
 }
@@ -291,11 +302,8 @@ func TestDoomRandom(t *testing.T) {
 		time.Sleep(20 * time.Millisecond)
 		// Start a game
 		game.InsertKey(KEY_ESCAPE) // Open menu
-		time.Sleep(2 * time.Millisecond)
 		game.InsertKey(KEY_ENTER)
-		time.Sleep(2 * time.Millisecond)
 		game.InsertKey(KEY_ENTER)
-		time.Sleep(2 * time.Millisecond)
 		game.InsertKey(KEY_ENTER) // Start new game
 
 		time.Sleep(10 * time.Millisecond)
@@ -316,14 +324,10 @@ func TestDoomRandom(t *testing.T) {
 		}
 
 		// Exit
-		game.InsertKey(KEY_ESCAPE) // Open menu
-		time.Sleep(1 * time.Millisecond)
+		game.InsertKey(KEY_ESCAPE)   // Open menu
 		game.InsertKey(KEY_UPARROW1) // Go to quit
-		time.Sleep(1 * time.Millisecond)
-		game.InsertKey(KEY_ENTER) // Confirm quit
-		time.Sleep(1 * time.Millisecond)
-		game.InsertKey('y') // Confirm exit
-		time.Sleep(1 * time.Millisecond)
+		game.InsertKey(KEY_ENTER)    // Confirm quit
+		game.InsertKey('y')          // Confirm exit
 	}()
 	Run(game, []string{"-iwad", "doom1.wad"})
 }
@@ -342,30 +346,23 @@ func TestDoomLevels(t *testing.T) {
 		time.Sleep(20 * time.Millisecond)
 		// Start a game
 		game.InsertKey(KEY_ESCAPE) // Open menu
-		time.Sleep(2 * time.Millisecond)
 		game.InsertKey(KEY_ENTER)
-		time.Sleep(2 * time.Millisecond)
 		game.InsertKey(KEY_ENTER)
-		time.Sleep(2 * time.Millisecond)
 		game.InsertKey(KEY_ENTER) // Start new game
 
 		// Go through levels E1M1 to E1M9 using the IDCLEV cheat
 		for i := 1; i <= 9; i++ {
 			sequence := []uint8{'i', 'd', 'c', 'l', 'e', 'v', '1', '0' + uint8(i)}
-			game.InsertKeySequence(sequence)
+			game.InsertKeySequence(sequence...)
 			time.Sleep(20 * time.Millisecond) // Wait for the level to load
 			t.Logf("Completed level E1M%d", i)
 		}
 
 		// Exit
-		game.InsertKey(KEY_ESCAPE) // Open menu
-		time.Sleep(1 * time.Millisecond)
+		game.InsertKey(KEY_ESCAPE)   // Open menu
 		game.InsertKey(KEY_UPARROW1) // Go to quit
-		time.Sleep(1 * time.Millisecond)
-		game.InsertKey(KEY_ENTER) // Confirm quit
-		time.Sleep(1 * time.Millisecond)
-		game.InsertKey('y') // Confirm exit
-		time.Sleep(1 * time.Millisecond)
+		game.InsertKey(KEY_ENTER)    // Confirm quit
+		game.InsertKey('y')          // Confirm exit
 	}()
 	Run(game, []string{"-iwad", "doom1.wad"})
 }
@@ -383,27 +380,18 @@ func TestDoomMap(t *testing.T) {
 		time.Sleep(20 * time.Millisecond)
 		// Start a game
 		game.InsertKey(KEY_ESCAPE) // Open menu
-		time.Sleep(2 * time.Millisecond)
 		game.InsertKey(KEY_ENTER)
-		time.Sleep(2 * time.Millisecond)
 		game.InsertKey(KEY_ENTER)
-		time.Sleep(2 * time.Millisecond)
 		game.InsertKey(KEY_ENTER) // Start new game
 
 		time.Sleep(10 * time.Millisecond)
-		game.InsertKeyChange(KEY_TAB, true) // Open level map
 		time.Sleep(100 * time.Millisecond)
-		game.InsertKeyChange(KEY_TAB, false)
 
 		// Exit
-		game.InsertKey(KEY_ESCAPE) // Open menu
-		time.Sleep(2 * time.Millisecond)
+		game.InsertKey(KEY_ESCAPE)   // Open menu
 		game.InsertKey(KEY_UPARROW1) // Go to quit
-		time.Sleep(2 * time.Millisecond)
-		game.InsertKey(KEY_ENTER) // Confirm quit
-		time.Sleep(2 * time.Millisecond)
-		game.InsertKey('y') // Confirm exit
-		time.Sleep(2 * time.Millisecond)
+		game.InsertKey(KEY_ENTER)    // Confirm quit
+		game.InsertKey('y')          // Confirm exit
 	}()
 	Run(game, []string{"-iwad", "doom1.wad"})
 }

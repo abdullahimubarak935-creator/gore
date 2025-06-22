@@ -4,6 +4,7 @@ go 1.24.4
 
 require (
 	github.com/hajimehoshi/ebiten/v2 v2.8.8
+	github.com/olegfedoseev/image-diff v0.0.0-20171116094004-897a4e73dfd6
 	modernc.org/libc v1.66.0
 )
 
