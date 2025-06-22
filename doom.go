@@ -26773,11 +26773,11 @@ func P_HitSlideLine(tls *libc.TLS, ld uintptr) {
 	var deltaangle, lineangle, moveangle angle_t
 	var movelen, newlen fixed_t
 	var side int32
-	if (*line_t)(unsafe.Pointer(ld)).Fslopetype == int32(ST_HORIZONTAL) {
+	if (*line_t)(unsafe.Pointer(ld)).Fslopetype == ST_HORIZONTAL {
 		tmymove = 0
 		return
 	}
-	if (*line_t)(unsafe.Pointer(ld)).Fslopetype == int32(ST_VERTICAL) {
+	if (*line_t)(unsafe.Pointer(ld)).Fslopetype == ST_VERTICAL {
 		tmxmove = 0
 		return
 	}
@@ -27470,24 +27470,24 @@ func P_BoxOnLineSide(tmbox uintptr, ld uintptr) (r int32) {
 	p1 = 0
 	p2 = 0
 	switch (*line_t)(unsafe.Pointer(ld)).Fslopetype {
-	case int32(ST_HORIZONTAL):
+	case ST_HORIZONTAL:
 		p1 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXTOP)*4)) > (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv1)).Fy)
 		p2 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXBOTTOM)*4)) > (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv1)).Fy)
 		if (*line_t)(unsafe.Pointer(ld)).Fdx < 0 {
 			p1 ^= 1
 			p2 ^= 1
 		}
-	case int32(ST_VERTICAL):
+	case ST_VERTICAL:
 		p1 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXRIGHT)*4)) < (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv1)).Fx)
 		p2 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXLEFT)*4)) < (*vertex_t)(unsafe.Pointer((*line_t)(unsafe.Pointer(ld)).Fv1)).Fx)
 		if (*line_t)(unsafe.Pointer(ld)).Fdy < 0 {
 			p1 ^= 1
 			p2 ^= 1
 		}
-	case int32(ST_POSITIVE):
+	case ST_POSITIVE:
 		p1 = P_PointOnLineSide(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXLEFT)*4)), *(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXTOP)*4)), ld)
 		p2 = P_PointOnLineSide(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXRIGHT)*4)), *(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXBOTTOM)*4)), ld)
-	case int32(ST_NEGATIVE):
+	case ST_NEGATIVE:
 		p1 = P_PointOnLineSide(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXRIGHT)*4)), *(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXTOP)*4)), ld)
 		p2 = P_PointOnLineSide(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXLEFT)*4)), *(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXBOTTOM)*4)), ld)
 		break
@@ -31717,15 +31717,15 @@ func P_LoadLineDefs(tls *libc.TLS, lump int32) {
 		(*line_t)(unsafe.Pointer(ld)).Fdx = (*vertex_t)(unsafe.Pointer(v2)).Fx - (*vertex_t)(unsafe.Pointer(v1)).Fx
 		(*line_t)(unsafe.Pointer(ld)).Fdy = (*vertex_t)(unsafe.Pointer(v2)).Fy - (*vertex_t)(unsafe.Pointer(v1)).Fy
 		if !((*line_t)(unsafe.Pointer(ld)).Fdx != 0) {
-			(*line_t)(unsafe.Pointer(ld)).Fslopetype = int32(ST_VERTICAL)
+			(*line_t)(unsafe.Pointer(ld)).Fslopetype = ST_VERTICAL
 		} else {
 			if !((*line_t)(unsafe.Pointer(ld)).Fdy != 0) {
-				(*line_t)(unsafe.Pointer(ld)).Fslopetype = int32(ST_HORIZONTAL)
+				(*line_t)(unsafe.Pointer(ld)).Fslopetype = ST_HORIZONTAL
 			} else {
 				if FixedDiv((*line_t)(unsafe.Pointer(ld)).Fdy, (*line_t)(unsafe.Pointer(ld)).Fdx) > 0 {
-					(*line_t)(unsafe.Pointer(ld)).Fslopetype = int32(ST_POSITIVE)
+					(*line_t)(unsafe.Pointer(ld)).Fslopetype = ST_POSITIVE
 				} else {
-					(*line_t)(unsafe.Pointer(ld)).Fslopetype = int32(ST_NEGATIVE)
+					(*line_t)(unsafe.Pointer(ld)).Fslopetype = ST_NEGATIVE
 				}
 			}
 		}
@@ -41283,10 +41283,10 @@ func ST_refreshBackground(tls *libc.TLS) {
 		V_UseBuffer(st_backing_screen)
 		V_DrawPatch(tls, ST_X, 0, sbar)
 		if netgame != 0 {
-			V_DrawPatch(tls, int32(ST_FX), 0, faceback)
+			V_DrawPatch(tls, ST_FX, 0, faceback)
 		}
 		V_RestoreBuffer()
-		V_CopyRect(tls, ST_X, 0, st_backing_screen, int32(SCREENWIDTH), int32(ST_HEIGHT), ST_X, SCREENHEIGHT-ST_HEIGHT)
+		V_CopyRect(tls, ST_X, 0, st_backing_screen, int32(SCREENWIDTH), ST_HEIGHT, ST_X, SCREENHEIGHT-ST_HEIGHT)
 	}
 }
 
@@ -41543,7 +41543,7 @@ func ST_calcPainOffset(tls *libc.TLS) (r int32) {
 	}
 	health = v1
 	if health != oldhealth {
-		lastcalc = (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + ST_NUMSPECIALFACES) * ((int32(100) - health) * int32(ST_NUMPAINFACES) / 101)
+		lastcalc = (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + ST_NUMSPECIALFACES) * ((int32(100) - health) * ST_NUMPAINFACES / 101)
 		oldhealth = health
 	}
 	return lastcalc
@@ -41603,7 +41603,7 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 		if plyr.Fdamagecount != 0 && plyr.Fattacker != 0 && plyr.Fattacker != plyr.Fmo {
 			// being attacked
 			priority = 7
-			if plyr.Fhealth-st_oldhealth > int32(ST_MUCHPAIN) {
+			if plyr.Fhealth-st_oldhealth > ST_MUCHPAIN {
 				st_facecount = 1 * TICRATE
 				st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
 			} else {
@@ -41625,7 +41625,7 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 				} else {
 					if i != 0 {
 						// turn face right
-						st_faceindex += int32(ST_NUMSTRAIGHTFACES)
+						st_faceindex += ST_NUMSTRAIGHTFACES
 					} else {
 						// turn face left
 						st_faceindex += ST_NUMSTRAIGHTFACES + 1
@@ -41637,7 +41637,7 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 	if priority < 7 {
 		// getting hurt because of your own damn stupidity
 		if plyr.Fdamagecount != 0 {
-			if plyr.Fhealth-st_oldhealth > int32(ST_MUCHPAIN) {
+			if plyr.Fhealth-st_oldhealth > ST_MUCHPAIN {
 				priority = 7
 				st_facecount = 1 * TICRATE
 				st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
@@ -41935,12 +41935,12 @@ func ST_loadUnloadGraphics(tls *libc.TLS, callback func(*libc.TLS, uintptr, uint
 	facenum = 0
 	i = 0
 	for {
-		if !(i < int32(ST_NUMPAINFACES)) {
+		if !(i < ST_NUMPAINFACES) {
 			break
 		}
 		j = 0
 		for {
-			if !(j < int32(ST_NUMSTRAIGHTFACES)) {
+			if !(j < ST_NUMSTRAIGHTFACES) {
 				break
 			}
 			snprintf_ccgo(bp, 9, 27909, i, j)
@@ -42025,37 +42025,37 @@ func ST_initData(tls *libc.TLS) {
 
 func ST_createWidgets(tls *libc.TLS) {
 	// ready weapon ammo
-	STlib_initNum(&w_ready, int32(ST_AMMOX), int32(ST_AMMOY), uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMOWIDTH))
+	STlib_initNum(&w_ready, ST_AMMOX, int32(ST_AMMOY), uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMOWIDTH))
 	// the last weapon type
 	w_ready.Fdata = plyr.Freadyweapon
 	// health percentage
-	STlib_initPercent(&w_health, int32(ST_HEALTHX), int32(ST_HEALTHY), uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fhealth)), uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
+	STlib_initPercent(&w_health, ST_HEALTHX, int32(ST_HEALTHY), uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fhealth)), uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
 	// arms background
-	STlib_initBinIcon(&w_armsbg, int32(ST_ARMSBGX), int32(ST_ARMSBGY), armsbg, uintptr(unsafe.Pointer(&st_notdeathmatch)), uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initBinIcon(&w_armsbg, ST_ARMSBGX, int32(ST_ARMSBGY), armsbg, uintptr(unsafe.Pointer(&st_notdeathmatch)), uintptr(unsafe.Pointer(&st_statusbaron)))
 	// weapons owned
 	for i := int32(0); i < 6; i++ {
-		STlib_initMultIcon(&w_arms[i], ST_ARMSX+i%3*ST_ARMSXSPACE, int32(ST_ARMSY)+i/int32(3)*int32(ST_ARMSYSPACE), uintptr(unsafe.Pointer(&arms))+uintptr(i)*16, uintptr(unsafe.Pointer(&plyr.Fweaponowned[i+1])), uintptr(unsafe.Pointer(&st_armson)))
+		STlib_initMultIcon(&w_arms[i], ST_ARMSX+i%3*ST_ARMSXSPACE, ST_ARMSY+i/int32(3)*int32(ST_ARMSYSPACE), uintptr(unsafe.Pointer(&arms))+uintptr(i)*16, uintptr(unsafe.Pointer(&plyr.Fweaponowned[i+1])), uintptr(unsafe.Pointer(&st_armson)))
 	}
 	// frags sum
-	STlib_initNum(&w_frags, int32(ST_FRAGSX), int32(ST_FRAGSY), uintptr(unsafe.Pointer(&tallnum)), uintptr(unsafe.Pointer(&st_fragscount)), uintptr(unsafe.Pointer(&st_fragson)), int32(ST_FRAGSWIDTH))
+	STlib_initNum(&w_frags, ST_FRAGSX, int32(ST_FRAGSY), uintptr(unsafe.Pointer(&tallnum)), uintptr(unsafe.Pointer(&st_fragscount)), uintptr(unsafe.Pointer(&st_fragson)), int32(ST_FRAGSWIDTH))
 	// faces
-	STlib_initMultIcon(&w_faces, int32(ST_FACESX), int32(ST_FACESY), uintptr(unsafe.Pointer(&faces)), uintptr(unsafe.Pointer(&st_faceindex)), uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initMultIcon(&w_faces, ST_FACESX, int32(ST_FACESY), uintptr(unsafe.Pointer(&faces)), uintptr(unsafe.Pointer(&st_faceindex)), uintptr(unsafe.Pointer(&st_statusbaron)))
 	// armor percentage - should be colored later
-	STlib_initPercent(&w_armor, int32(ST_ARMORX), int32(ST_ARMORY), uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Farmorpoints)), uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
+	STlib_initPercent(&w_armor, ST_ARMORX, int32(ST_ARMORY), uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Farmorpoints)), uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
 	// keyboxes 0-2
-	STlib_initMultIcon(&w_keyboxes[0], int32(ST_KEY0X), int32(ST_KEY0Y), uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes)), uintptr(unsafe.Pointer(&st_statusbaron)))
-	STlib_initMultIcon(&w_keyboxes[1], int32(ST_KEY1X), int32(ST_KEY1Y), uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+1*4, uintptr(unsafe.Pointer(&st_statusbaron)))
-	STlib_initMultIcon(&w_keyboxes[2], int32(ST_KEY2X), int32(ST_KEY2Y), uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+2*4, uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initMultIcon(&w_keyboxes[0], ST_KEY0X, int32(ST_KEY0Y), uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes)), uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initMultIcon(&w_keyboxes[1], ST_KEY1X, int32(ST_KEY1Y), uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+1*4, uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initMultIcon(&w_keyboxes[2], ST_KEY2X, int32(ST_KEY2Y), uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+2*4, uintptr(unsafe.Pointer(&st_statusbaron)))
 	// ammo count (all four kinds)
-	STlib_initNum(&w_ammo[0], int32(ST_AMMO0X), int32(ST_AMMO0Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[0])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
-	STlib_initNum(&w_ammo[1], int32(ST_AMMO1X), int32(ST_AMMO1Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[1])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
-	STlib_initNum(&w_ammo[2], int32(ST_AMMO2X), int32(ST_AMMO2Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[2])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
-	STlib_initNum(&w_ammo[3], int32(ST_AMMO3X), int32(ST_AMMO3Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[3])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
+	STlib_initNum(&w_ammo[0], ST_AMMO0X, int32(ST_AMMO0Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[0])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
+	STlib_initNum(&w_ammo[1], ST_AMMO1X, int32(ST_AMMO1Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[1])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
+	STlib_initNum(&w_ammo[2], ST_AMMO2X, int32(ST_AMMO2Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[2])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
+	STlib_initNum(&w_ammo[3], ST_AMMO3X, int32(ST_AMMO3Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[3])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
 	// max ammo count (all four kinds)
-	STlib_initNum(&w_maxammo[0], int32(ST_MAXAMMO0X), int32(ST_MAXAMMO0Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[0])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
-	STlib_initNum(&w_maxammo[1], int32(ST_MAXAMMO1X), int32(ST_MAXAMMO1Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[1])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
-	STlib_initNum(&w_maxammo[2], int32(ST_MAXAMMO2X), int32(ST_MAXAMMO2Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[2])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
-	STlib_initNum(&w_maxammo[3], int32(ST_MAXAMMO3X), int32(ST_MAXAMMO3Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[3])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
+	STlib_initNum(&w_maxammo[0], ST_MAXAMMO0X, int32(ST_MAXAMMO0Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[0])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
+	STlib_initNum(&w_maxammo[1], ST_MAXAMMO1X, int32(ST_MAXAMMO1Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[1])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
+	STlib_initNum(&w_maxammo[2], ST_MAXAMMO2X, int32(ST_MAXAMMO2Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[2])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
+	STlib_initNum(&w_maxammo[3], ST_MAXAMMO3X, int32(ST_MAXAMMO3Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[3])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
 }
 
 var st_stopped int32 = 1
