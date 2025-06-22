@@ -42025,37 +42025,37 @@ func ST_initData(tls *libc.TLS) {
 
 func ST_createWidgets(tls *libc.TLS) {
 	// ready weapon ammo
-	STlib_initNum(&w_ready, ST_AMMOX, int32(ST_AMMOY), uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMOWIDTH))
+	STlib_initNum(&w_ready, ST_AMMOX, ST_AMMOY, uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_AMMOWIDTH)
 	// the last weapon type
 	w_ready.Fdata = plyr.Freadyweapon
 	// health percentage
-	STlib_initPercent(&w_health, ST_HEALTHX, int32(ST_HEALTHY), uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fhealth)), uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
+	STlib_initPercent(&w_health, ST_HEALTHX, ST_HEALTHY, uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fhealth)), uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
 	// arms background
-	STlib_initBinIcon(&w_armsbg, ST_ARMSBGX, int32(ST_ARMSBGY), armsbg, uintptr(unsafe.Pointer(&st_notdeathmatch)), uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initBinIcon(&w_armsbg, ST_ARMSBGX, ST_ARMSBGY, armsbg, uintptr(unsafe.Pointer(&st_notdeathmatch)), uintptr(unsafe.Pointer(&st_statusbaron)))
 	// weapons owned
 	for i := int32(0); i < 6; i++ {
-		STlib_initMultIcon(&w_arms[i], ST_ARMSX+i%3*ST_ARMSXSPACE, ST_ARMSY+i/int32(3)*int32(ST_ARMSYSPACE), uintptr(unsafe.Pointer(&arms))+uintptr(i)*16, uintptr(unsafe.Pointer(&plyr.Fweaponowned[i+1])), uintptr(unsafe.Pointer(&st_armson)))
+		STlib_initMultIcon(&w_arms[i], ST_ARMSX+i%3*ST_ARMSXSPACE, ST_ARMSY+i/int32(3)*ST_ARMSYSPACE, uintptr(unsafe.Pointer(&arms))+uintptr(i)*16, uintptr(unsafe.Pointer(&plyr.Fweaponowned[i+1])), uintptr(unsafe.Pointer(&st_armson)))
 	}
 	// frags sum
-	STlib_initNum(&w_frags, ST_FRAGSX, int32(ST_FRAGSY), uintptr(unsafe.Pointer(&tallnum)), uintptr(unsafe.Pointer(&st_fragscount)), uintptr(unsafe.Pointer(&st_fragson)), int32(ST_FRAGSWIDTH))
+	STlib_initNum(&w_frags, ST_FRAGSX, ST_FRAGSY, uintptr(unsafe.Pointer(&tallnum)), uintptr(unsafe.Pointer(&st_fragscount)), uintptr(unsafe.Pointer(&st_fragson)), ST_FRAGSWIDTH)
 	// faces
-	STlib_initMultIcon(&w_faces, ST_FACESX, int32(ST_FACESY), uintptr(unsafe.Pointer(&faces)), uintptr(unsafe.Pointer(&st_faceindex)), uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initMultIcon(&w_faces, ST_FACESX, ST_FACESY, uintptr(unsafe.Pointer(&faces)), uintptr(unsafe.Pointer(&st_faceindex)), uintptr(unsafe.Pointer(&st_statusbaron)))
 	// armor percentage - should be colored later
-	STlib_initPercent(&w_armor, ST_ARMORX, int32(ST_ARMORY), uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Farmorpoints)), uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
+	STlib_initPercent(&w_armor, ST_ARMORX, ST_ARMORY, uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Farmorpoints)), uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
 	// keyboxes 0-2
-	STlib_initMultIcon(&w_keyboxes[0], ST_KEY0X, int32(ST_KEY0Y), uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes)), uintptr(unsafe.Pointer(&st_statusbaron)))
-	STlib_initMultIcon(&w_keyboxes[1], ST_KEY1X, int32(ST_KEY1Y), uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+1*4, uintptr(unsafe.Pointer(&st_statusbaron)))
-	STlib_initMultIcon(&w_keyboxes[2], ST_KEY2X, int32(ST_KEY2Y), uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+2*4, uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initMultIcon(&w_keyboxes[0], ST_KEY0X, ST_KEY0Y, uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes)), uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initMultIcon(&w_keyboxes[1], ST_KEY1X, ST_KEY1Y, uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+1*4, uintptr(unsafe.Pointer(&st_statusbaron)))
+	STlib_initMultIcon(&w_keyboxes[2], ST_KEY2X, ST_KEY2Y, uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+2*4, uintptr(unsafe.Pointer(&st_statusbaron)))
 	// ammo count (all four kinds)
-	STlib_initNum(&w_ammo[0], ST_AMMO0X, int32(ST_AMMO0Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[0])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
-	STlib_initNum(&w_ammo[1], ST_AMMO1X, int32(ST_AMMO1Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[1])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
-	STlib_initNum(&w_ammo[2], ST_AMMO2X, int32(ST_AMMO2Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[2])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
-	STlib_initNum(&w_ammo[3], ST_AMMO3X, int32(ST_AMMO3Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[3])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
+	STlib_initNum(&w_ammo[0], ST_AMMO0X, ST_AMMO0Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[0])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_AMMO0WIDTH)
+	STlib_initNum(&w_ammo[1], ST_AMMO1X, ST_AMMO1Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[1])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_AMMO0WIDTH)
+	STlib_initNum(&w_ammo[2], ST_AMMO2X, ST_AMMO2Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[2])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_AMMO0WIDTH)
+	STlib_initNum(&w_ammo[3], ST_AMMO3X, ST_AMMO3Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[3])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_AMMO0WIDTH)
 	// max ammo count (all four kinds)
-	STlib_initNum(&w_maxammo[0], ST_MAXAMMO0X, int32(ST_MAXAMMO0Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[0])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
-	STlib_initNum(&w_maxammo[1], ST_MAXAMMO1X, int32(ST_MAXAMMO1Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[1])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
-	STlib_initNum(&w_maxammo[2], ST_MAXAMMO2X, int32(ST_MAXAMMO2Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[2])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
-	STlib_initNum(&w_maxammo[3], ST_MAXAMMO3X, int32(ST_MAXAMMO3Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[3])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
+	STlib_initNum(&w_maxammo[0], ST_MAXAMMO0X, ST_MAXAMMO0Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[0])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_MAXAMMO0WIDTH)
+	STlib_initNum(&w_maxammo[1], ST_MAXAMMO1X, ST_MAXAMMO1Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[1])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_MAXAMMO0WIDTH)
+	STlib_initNum(&w_maxammo[2], ST_MAXAMMO2X, ST_MAXAMMO2Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[2])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_MAXAMMO0WIDTH)
+	STlib_initNum(&w_maxammo[3], ST_MAXAMMO3X, ST_MAXAMMO3Y, uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[3])), uintptr(unsafe.Pointer(&st_statusbaron)), ST_MAXAMMO0WIDTH)
 }
 
 var st_stopped int32 = 1
