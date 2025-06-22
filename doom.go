@@ -37997,20 +37997,20 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	drawsegs[ds_index].Fmaskedtexturecol = libc.UintptrFromInt32(0)
 	if !(backsector != nil) {
 		// single sided line
-		midtexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr((*side_t)(unsafe.Pointer(sidedef)).Fmidtexture)*4))
+		midtexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr(sidedef.Fmidtexture)*4))
 		// a single sided line is terminal, so it must mark ends
 		v8 = 1
 		markceiling = v8
 		markfloor = v8
-		if int32((*line_t)(unsafe.Pointer(linedef)).Fflags)&ML_DONTPEGBOTTOM != 0 {
-			vtop = (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr((*side_t)(unsafe.Pointer(sidedef)).Fmidtexture)*4))
+		if int32(linedef.Fflags)&ML_DONTPEGBOTTOM != 0 {
+			vtop = (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr(sidedef.Fmidtexture)*4))
 			// bottom of texture at bottom
 			rw_midtexturemid = vtop - viewz
 		} else {
 			// top of texture at top
 			rw_midtexturemid = worldtop
 		}
-		rw_midtexturemid += (*side_t)(unsafe.Pointer(sidedef)).Frowoffset
+		rw_midtexturemid += sidedef.Frowoffset
 		drawsegs[ds_index].Fsilhouette = int32(SIL_BOTH)
 		drawsegs[ds_index].Fsprtopclip = uintptr(unsafe.Pointer(&screenheightarray))
 		drawsegs[ds_index].Fsprbottomclip = uintptr(unsafe.Pointer(&negonearray))
@@ -38078,20 +38078,20 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		}
 		if worldhigh < worldtop {
 			// top texture
-			toptexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr((*side_t)(unsafe.Pointer(sidedef)).Ftoptexture)*4))
-			if int32((*line_t)(unsafe.Pointer(linedef)).Fflags)&ML_DONTPEGTOP != 0 {
+			toptexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr(sidedef.Ftoptexture)*4))
+			if int32(linedef.Fflags)&ML_DONTPEGTOP != 0 {
 				// top of texture at top
 				rw_toptexturemid = worldtop
 			} else {
-				vtop = (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr((*side_t)(unsafe.Pointer(sidedef)).Ftoptexture)*4))
+				vtop = (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr(sidedef.Ftoptexture)*4))
 				// bottom of texture
 				rw_toptexturemid = vtop - viewz
 			}
 		}
 		if worldlow > worldbottom {
 			// bottom texture
-			bottomtexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr((*side_t)(unsafe.Pointer(sidedef)).Fbottomtexture)*4))
-			if int32((*line_t)(unsafe.Pointer(linedef)).Fflags)&ML_DONTPEGBOTTOM != 0 {
+			bottomtexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr(sidedef.Fbottomtexture)*4))
+			if int32(linedef.Fflags)&ML_DONTPEGBOTTOM != 0 {
 				// bottom of texture at bottom
 				// top of texture at top
 				rw_bottomtexturemid = worldtop
@@ -38099,10 +38099,10 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 				rw_bottomtexturemid = worldlow
 			}
 		}
-		rw_toptexturemid += (*side_t)(unsafe.Pointer(sidedef)).Frowoffset
-		rw_bottomtexturemid += (*side_t)(unsafe.Pointer(sidedef)).Frowoffset
+		rw_toptexturemid += sidedef.Frowoffset
+		rw_bottomtexturemid += sidedef.Frowoffset
 		// allocate space for masked texture tables
-		if (*side_t)(unsafe.Pointer(sidedef)).Fmidtexture != 0 {
+		if sidedef.Fmidtexture != 0 {
 			// masked midtexture
 			maskedtexture = 1
 			v11 = lastopening - uintptr(rw_x)*2
@@ -38126,7 +38126,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		if rw_normalangle-libc.Uint32FromInt32(rw_angle1) < uint32(ANG18013) {
 			rw_offset = -rw_offset
 		}
-		rw_offset += (*side_t)(unsafe.Pointer(sidedef)).Ftextureoffset + (*seg_t)(unsafe.Pointer(curline)).Foffset
+		rw_offset += sidedef.Ftextureoffset + (*seg_t)(unsafe.Pointer(curline)).Foffset
 		rw_centerangle = uint32(ANG909) + viewangle - rw_normalangle
 		// calculate light table
 		//  use different light tables
