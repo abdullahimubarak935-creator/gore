@@ -25547,7 +25547,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_bluecard)*4)) != 0) {
 			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23860)
 		}
-		P_GiveCard(tls, player, int32(it_bluecard))
+		P_GiveCard(tls, player, it_bluecard)
 		if !(netgame != 0) {
 			break
 		}
@@ -25556,7 +25556,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_yellowcard)*4)) != 0) {
 			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23886)
 		}
-		P_GiveCard(tls, player, int32(it_yellowcard))
+		P_GiveCard(tls, player, it_yellowcard)
 		if !(netgame != 0) {
 			break
 		}
@@ -25565,7 +25565,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_redcard)*4)) != 0) {
 			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23914)
 		}
-		P_GiveCard(tls, player, int32(it_redcard))
+		P_GiveCard(tls, player, it_redcard)
 		if !(netgame != 0) {
 			break
 		}
@@ -25574,7 +25574,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_blueskull)*4)) != 0) {
 			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23939)
 		}
-		P_GiveCard(tls, player, int32(it_blueskull))
+		P_GiveCard(tls, player, it_blueskull)
 		if !(netgame != 0) {
 			break
 		}
@@ -25583,7 +25583,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_yellowskull)*4)) != 0) {
 			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23967)
 		}
-		P_GiveCard(tls, player, int32(it_yellowskull))
+		P_GiveCard(tls, player, it_yellowskull)
 		if !(netgame != 0) {
 			break
 		}
@@ -25592,7 +25592,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(*(*boolean)(unsafe.Pointer(player + 80 + uintptr(it_redskull)*4)) != 0) {
 			(*player_t)(unsafe.Pointer(player)).Fmessage = __ccgo_ts(23997)
 		}
-		P_GiveCard(tls, player, int32(it_redskull))
+		P_GiveCard(tls, player, it_redskull)
 		if !(netgame != 0) {
 			break
 		}
