@@ -5098,7 +5098,7 @@ func doomgeneric_Tick(tls *libc.TLS) {
 //	//  D_DoomLoop
 //	//
 func D_DoomLoop(tls *libc.TLS) {
-	if bfgedition != 0 && (demorecording != 0 || gameaction == int32(ga_playdemo) || netgame != 0) {
+	if bfgedition != 0 && (demorecording != 0 || gameaction == ga_playdemo || netgame != 0) {
 		fprintf_ccgo(os.Stdout, 1666)
 	}
 	if demorecording != 0 {
@@ -5165,7 +5165,7 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 	advancedemo = 0
 	usergame = 0 // no save / end game here
 	paused = 0
-	gameaction = int32(ga_nothing)
+	gameaction = ga_nothing
 	// The Ultimate Doom executable changed the demo sequence to add
 	// a DEMO4 demo.  Final Doom was based on Ultimate, so also
 	// includes this change; however, the Final Doom IWADs do not
@@ -5236,7 +5236,7 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 //	// D_StartTitle
 //	//
 func D_StartTitle() {
-	gameaction = int32(ga_nothing)
+	gameaction = ga_nothing
 	demosequence = -1
 	D_AdvanceDemo()
 }
@@ -6161,7 +6161,7 @@ func D_DoomMain(tls *libc.TLS) {
 		M_StringCopy(bp, P_SaveGameFile(tls, startloadgame), uint64(256))
 		G_LoadGame(tls, bp)
 	}
-	if gameaction != int32(ga_loadgame) {
+	if gameaction != ga_loadgame {
 		if autostart != 0 || netgame != 0 {
 			G_InitNew(tls, startskill, startepisode, startmap)
 		} else {
@@ -6561,7 +6561,7 @@ func F_StartFinale(tls *libc.TLS) {
 	var screen uintptr
 	var v1, v2, v4, v5, v6, v7 int32
 	var v8 bool
-	gameaction = int32(ga_nothing)
+	gameaction = ga_nothing
 	gamestate = int32(GS_FINALE)
 	viewactive = 0
 	automapactive = 0
@@ -6663,7 +6663,7 @@ func F_Ticker(tls *libc.TLS) {
 			if gamemap == 30 {
 				F_StartCast(tls)
 			} else {
-				gameaction = int32(ga_worlddone)
+				gameaction = ga_worlddone
 			}
 		}
 	}
@@ -7956,7 +7956,7 @@ func G_DoLoadLevel(tls *libc.TLS) {
 	}
 	P_SetupLevel(tls, gameepisode, gamemap, 0, gameskill)
 	displayplayer = consoleplayer // view the guy you are playing
-	gameaction = int32(ga_nothing)
+	gameaction = ga_nothing
 	Z_CheckHeap(tls)
 	// clear cmd building stuff
 	xmemset(uintptr(unsafe.Pointer(&gamekeydown)), 0, uint64(1024))
@@ -8053,7 +8053,7 @@ func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 		return 1
 	}
 	// any other key pops up menu if in demos
-	if gameaction == int32(ga_nothing) && !(singledemo != 0) && (demoplayback != 0 || gamestate == int32(GS_DEMOSCREEN)) {
+	if gameaction == ga_nothing && !(singledemo != 0) && (demoplayback != 0 || gamestate == int32(GS_DEMOSCREEN)) {
 		if ev.Ftype1 == ev_keydown || ev.Ftype1 == ev_mouse && ev.Fdata1 != 0 || ev.Ftype1 == ev_joystick && ev.Fdata1 != 0 {
 			M_StartControlPanel(tls)
 			return 1
@@ -8149,29 +8149,29 @@ func G_Ticker(tls *libc.TLS) {
 		i++
 	}
 	// do things to change the game state
-	for gameaction != int32(ga_nothing) {
+	for gameaction != ga_nothing {
 		switch gameaction {
-		case int32(ga_loadlevel):
+		case ga_loadlevel:
 			G_DoLoadLevel(tls)
-		case int32(ga_newgame):
+		case ga_newgame:
 			G_DoNewGame(tls)
-		case int32(ga_loadgame):
+		case ga_loadgame:
 			G_DoLoadGame(tls)
-		case int32(ga_savegame):
+		case ga_savegame:
 			G_DoSaveGame(tls)
-		case int32(ga_playdemo):
+		case ga_playdemo:
 			G_DoPlayDemo(tls)
-		case int32(ga_completed):
+		case ga_completed:
 			G_DoCompleted(tls)
-		case int32(ga_victory):
+		case ga_victory:
 			F_StartFinale(tls)
-		case int32(ga_worlddone):
+		case ga_worlddone:
 			G_DoWorldDone(tls)
-		case int32(ga_screenshot):
+		case ga_screenshot:
 			V_ScreenShot(tls, __ccgo_ts(13723))
 			players[consoleplayer].Fmessage = __ccgo_ts(13735)
-			gameaction = int32(ga_nothing)
-		case int32(ga_nothing):
+			gameaction = ga_nothing
+		case ga_nothing:
 			break
 		}
 	}
@@ -8243,7 +8243,7 @@ func G_Ticker(tls *libc.TLS) {
 						M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(13798), uint64(32))
 					}
 					savegameslot = libc.Int32FromUint8(players[i].Fcmd.Fbuttons) & int32(BTS_SAVEMASK) >> int32(BTS_SAVESHIFT)
-					gameaction = int32(ga_savegame)
+					gameaction = ga_savegame
 					break
 				}
 			}
@@ -8460,7 +8460,7 @@ func G_DoReborn(tls *libc.TLS, playernum int32) {
 	var i int32
 	if !(netgame != 0) {
 		// reload the level from scratch
-		gameaction = int32(ga_loadlevel)
+		gameaction = ga_loadlevel
 	} else {
 		// respawn at the start
 		// first dissasociate the corpse
@@ -8497,7 +8497,7 @@ func G_DoReborn(tls *libc.TLS, playernum int32) {
 }
 
 func G_ScreenShot(tls *libc.TLS) {
-	gameaction = int32(ga_screenshot)
+	gameaction = ga_screenshot
 }
 
 func init() {
@@ -8578,7 +8578,7 @@ func init() {
 
 func G_ExitLevel(tls *libc.TLS) {
 	secretexit = 0
-	gameaction = int32(ga_completed)
+	gameaction = ga_completed
 }
 
 // C documentation
@@ -8591,12 +8591,12 @@ func G_SecretExitLevel(tls *libc.TLS) {
 	} else {
 		secretexit = 1
 	}
-	gameaction = int32(ga_completed)
+	gameaction = ga_completed
 }
 
 func G_DoCompleted(tls *libc.TLS) {
 	var i int32
-	gameaction = int32(ga_nothing)
+	gameaction = ga_nothing
 	i = 0
 	for {
 		if !(i < int32(MAXPLAYERS)) {
@@ -8617,7 +8617,7 @@ func G_DoCompleted(tls *libc.TLS) {
 		// Chex Quest ends after 5 levels, rather than 8.
 		if gameversion == int32(exe_chex) {
 			if gamemap == 5 {
-				gameaction = int32(ga_victory)
+				gameaction = ga_victory
 				return
 			}
 		} else {
@@ -8630,7 +8630,7 @@ func G_DoCompleted(tls *libc.TLS) {
 			goto _4
 		_2:
 			;
-			gameaction = int32(ga_victory)
+			gameaction = ga_victory
 			return
 		_3:
 			;
@@ -8656,7 +8656,7 @@ func G_DoCompleted(tls *libc.TLS) {
 	//#if 0  Hmmm - why?
 	if gamemap == 8 && gamemode != int32(commercial) {
 		// victory
-		gameaction = int32(ga_victory)
+		gameaction = ga_victory
 		return
 	}
 	if gamemap == 9 && gamemode != int32(commercial) {
@@ -8765,7 +8765,7 @@ func G_DoCompleted(tls *libc.TLS) {
 //	// G_WorldDone
 //	//
 func G_WorldDone(tls *libc.TLS) {
-	gameaction = int32(ga_worlddone)
+	gameaction = ga_worlddone
 	if secretexit != 0 {
 		players[consoleplayer].Fdidsecret = 1
 	}
@@ -8795,18 +8795,18 @@ func G_DoWorldDone(tls *libc.TLS) {
 	gamestate = int32(GS_LEVEL)
 	gamemap = wminfo.Fnext + 1
 	G_DoLoadLevel(tls)
-	gameaction = int32(ga_nothing)
+	gameaction = ga_nothing
 	viewactive = 1
 }
 
 func G_LoadGame(tls *libc.TLS, name uintptr) {
 	M_StringCopy(uintptr(unsafe.Pointer(&savename)), name, uint64(256))
-	gameaction = int32(ga_loadgame)
+	gameaction = ga_loadgame
 }
 
 func G_DoLoadGame(tls *libc.TLS) {
 	var savedleveltime int32
-	gameaction = int32(ga_nothing)
+	gameaction = ga_nothing
 	save_stream = libc.Xfopen(tls, uintptr(unsafe.Pointer(&savename)), __ccgo_ts(13884))
 	if save_stream == libc.UintptrFromInt32(0) {
 		return
@@ -8892,7 +8892,7 @@ func G_DoSaveGame(tls *libc.TLS) {
 	// file, overwriting the old savegame if there was one there.
 	libc.Xremove(tls, savegame_file)
 	libc.Xrename(tls, temp_savegame_file, savegame_file)
-	gameaction = int32(ga_nothing)
+	gameaction = ga_nothing
 	M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(14092), uint64(32))
 	players[consoleplayer].Fmessage = __ccgo_ts(14093)
 	// draw the pattern into the back screen
@@ -8903,7 +8903,7 @@ func G_DeferedInitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 	d_skill = skill
 	d_episode = episode
 	d_map = map1
-	gameaction = int32(ga_newgame)
+	gameaction = ga_newgame
 }
 
 func G_DoNewGame(tls *libc.TLS) {
@@ -8922,7 +8922,7 @@ func G_DoNewGame(tls *libc.TLS) {
 	nomonsters = 0
 	consoleplayer = 0
 	G_InitNew(tls, d_skill, d_episode, d_map)
-	gameaction = int32(ga_nothing)
+	gameaction = ga_nothing
 }
 
 func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
@@ -9297,7 +9297,7 @@ func G_BeginRecording(tls *libc.TLS) {
 
 func G_DeferedPlayDemo(tls *libc.TLS, name uintptr) {
 	defdemoname = name
-	gameaction = int32(ga_playdemo)
+	gameaction = ga_playdemo
 }
 
 // Generate a string describing a demo version
@@ -9337,7 +9337,7 @@ func G_DoPlayDemo(tls *libc.TLS) {
 	var demoversion, episode, i, map1 int32
 	var v1, v10, v12, v2, v3, v4, v5, v6, v7, v8, v9 uintptr
 	var skill skill_t
-	gameaction = int32(ga_nothing)
+	gameaction = ga_nothing
 	v1 = W_CacheLumpName(tls, defdemoname, int32(PU_STATIC))
 	demo_p = v1
 	demobuffer = v1
@@ -9420,7 +9420,7 @@ func G_TimeDemo(tls *libc.TLS, name uintptr) {
 	timingdemo = 1
 	singletics = 1
 	defdemoname = name
-	gameaction = int32(ga_playdemo)
+	gameaction = ga_playdemo
 }
 
 /*
