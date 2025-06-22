@@ -40974,7 +40974,7 @@ const ST_X = 0
 // C documentation
 //
 //	// main player in game
-var plyr uintptr
+var plyr *player_t
 
 // C documentation
 //
@@ -41284,26 +41284,26 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			if !(netgame != 0) && gameskill != int32(sk_nightmare) {
 				// 'dqd' cheat for toggleable god mode
 				if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_god)), int8(ev.Fdata2)) != 0 {
-					*(*int32)(unsafe.Pointer(plyr + 208)) ^= int32(CF_GODMODE)
-					if (*player_t)(unsafe.Pointer(plyr)).Fcheats&int32(CF_GODMODE) != 0 {
-						if (*player_t)(unsafe.Pointer(plyr)).Fmo != 0 {
-							(*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fhealth = 100
+					plyr.Fcheats ^= int32(CF_GODMODE)
+					if plyr.Fcheats&int32(CF_GODMODE) != 0 {
+						if plyr.Fmo != 0 {
+							(*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fhealth = 100
 						}
-						(*player_t)(unsafe.Pointer(plyr)).Fhealth = int32(DEH_DEFAULT_GOD_MODE_HEALTH)
-						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27550)
+						plyr.Fhealth = int32(DEH_DEFAULT_GOD_MODE_HEALTH)
+						plyr.Fmessage = __ccgo_ts(27550)
 					} else {
-						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27573)
+						plyr.Fmessage = __ccgo_ts(27573)
 					}
 				} else {
 					if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_ammonokey)), int8(ev.Fdata2)) != 0 {
-						(*player_t)(unsafe.Pointer(plyr)).Farmorpoints = int32(DEH_DEFAULT_IDFA_ARMOR)
-						(*player_t)(unsafe.Pointer(plyr)).Farmortype = int32(DEH_DEFAULT_IDFA_ARMOR_CLASS)
+						plyr.Farmorpoints = int32(DEH_DEFAULT_IDFA_ARMOR)
+						plyr.Farmortype = int32(DEH_DEFAULT_IDFA_ARMOR_CLASS)
 						i = 0
 						for {
 							if !(i < int32(NUMWEAPONS)) {
 								break
 							}
-							*(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(i)*4)) = 1
+							plyr.Fweaponowned[i] = 1
 							goto _1
 						_1:
 							;
@@ -41314,23 +41314,23 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 							if !(i < int32(NUMAMMO)) {
 								break
 							}
-							*(*int32)(unsafe.Pointer(plyr + 168 + uintptr(i)*4)) = *(*int32)(unsafe.Pointer(plyr + 184 + uintptr(i)*4))
+							plyr.Fammo[i] = plyr.Fmaxammo[i]
 							goto _2
 						_2:
 							;
 							i++
 						}
-						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27597)
+						plyr.Fmessage = __ccgo_ts(27597)
 					} else {
 						if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_ammo)), int8(ev.Fdata2)) != 0 {
-							(*player_t)(unsafe.Pointer(plyr)).Farmorpoints = int32(DEH_DEFAULT_IDKFA_ARMOR)
-							(*player_t)(unsafe.Pointer(plyr)).Farmortype = int32(DEH_DEFAULT_IDKFA_ARMOR_CLASS)
+							plyr.Farmorpoints = int32(DEH_DEFAULT_IDKFA_ARMOR)
+							plyr.Farmortype = int32(DEH_DEFAULT_IDKFA_ARMOR_CLASS)
 							i = 0
 							for {
 								if !(i < int32(NUMWEAPONS)) {
 									break
 								}
-								*(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(i)*4)) = 1
+								plyr.Fweaponowned[i] = 1
 								goto _3
 							_3:
 								;
@@ -41341,7 +41341,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 								if !(i < int32(NUMAMMO)) {
 									break
 								}
-								*(*int32)(unsafe.Pointer(plyr + 168 + uintptr(i)*4)) = *(*int32)(unsafe.Pointer(plyr + 184 + uintptr(i)*4))
+								plyr.Fammo[i] = plyr.Fmaxammo[i]
 								goto _4
 							_4:
 								;
@@ -41352,16 +41352,16 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 								if !(i < int32(NUMCARDS)) {
 									break
 								}
-								*(*boolean)(unsafe.Pointer(plyr + 80 + uintptr(i)*4)) = 1
+								plyr.Fcards[i] = 1
 								goto _5
 							_5:
 								;
 								i++
 							}
-							(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27618)
+							plyr.Fmessage = __ccgo_ts(27618)
 						} else {
 							if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_mus)), int8(ev.Fdata2)) != 0 {
-								(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27640)
+								plyr.Fmessage = __ccgo_ts(27640)
 								cht_GetParam(uintptr(unsafe.Pointer(&cheat_mus)), bp)
 								// Note: The original v1.9 had a bug that tried to play back
 								// the Doom II music regardless of gamemode.  This was fixed
@@ -41370,14 +41370,14 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 								if gamemode == int32(commercial) || gameversion < int32(exe_ultimate) {
 									musnum = int32(mus_runnin) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10) + int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('0') - 1
 									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('0') > 35 {
-										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27653)
+										plyr.Fmessage = __ccgo_ts(27653)
 									} else {
 										S_ChangeMusic(tls, musnum, 1)
 									}
 								} else {
 									musnum = int32(mus_e1m1) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*int32(9) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('1'))
 									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*int32(9)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('1') > 31 {
-										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27653)
+										plyr.Fmessage = __ccgo_ts(27653)
 									} else {
 										S_ChangeMusic(tls, musnum, 1)
 									}
@@ -41409,11 +41409,11 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 									// Noclip cheat.
 									// For Doom 1, use the idspipsopd cheat; for all others, use
 									// idclip
-									*(*int32)(unsafe.Pointer(plyr + 208)) ^= int32(CF_NOCLIP)
-									if (*player_t)(unsafe.Pointer(plyr)).Fcheats&int32(CF_NOCLIP) != 0 {
-										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27674)
+									plyr.Fcheats ^= int32(CF_NOCLIP)
+									if plyr.Fcheats&int32(CF_NOCLIP) != 0 {
+										plyr.Fmessage = __ccgo_ts(27674)
 									} else {
-										(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27694)
+										plyr.Fmessage = __ccgo_ts(27694)
 									}
 								}
 							}
@@ -41427,16 +41427,16 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 						break
 					}
 					if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_powerup))+uintptr(i)*72, int8(ev.Fdata2)) != 0 {
-						if !(*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(i)*4)) != 0) {
-							P_GivePower(plyr, i)
+						if plyr.Fpowers[i] == 0 {
+							P_GivePower((uintptr)(unsafe.Pointer(plyr)), i)
 						} else {
 							if i != int32(pw_strength) {
-								*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(i)*4)) = 1
+								plyr.Fpowers[i] = 1
 							} else {
-								*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(i)*4)) = 0
+								plyr.Fpowers[i] = 0
 							}
 						}
-						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27715)
+						plyr.Fmessage = __ccgo_ts(27715)
 					}
 					goto _11
 				_11:
@@ -41445,16 +41445,16 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 				}
 				// 'behold' power-up menu
 				if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_powerup))+6*72, int8(ev.Fdata2)) != 0 {
-					(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27732)
+					plyr.Fmessage = __ccgo_ts(27732)
 				} else {
 					if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_choppers)), int8(ev.Fdata2)) != 0 {
-						*(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(wp_chainsaw)*4)) = 1
-						*(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_invulnerability)*4)) = 1
-						(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27778)
+						plyr.Fweaponowned[wp_chainsaw] = 1
+						plyr.Fpowers[pw_invulnerability] = 1
+						plyr.Fmessage = __ccgo_ts(27778)
 					} else {
 						if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_mypos)), int8(ev.Fdata2)) != 0 {
 							M_snprintf(tls, uintptr(unsafe.Pointer(&buf)), uint64(52), __ccgo_ts(27800), libc.VaList(bp+16, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fangle, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy))
-							(*player_t)(unsafe.Pointer(plyr)).Fmessage = uintptr(unsafe.Pointer(&buf))
+							plyr.Fmessage = uintptr(unsafe.Pointer(&buf))
 						}
 					}
 				}
@@ -41496,7 +41496,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 					return 0
 				}
 				// So be it.
-				(*player_t)(unsafe.Pointer(plyr)).Fmessage = __ccgo_ts(27825)
+				plyr.Fmessage = __ccgo_ts(27825)
 				G_DeferedInitNew(tls, gameskill, epsd, map1)
 			}
 		}
@@ -41508,10 +41508,10 @@ var buf [52]int8
 
 func ST_calcPainOffset(tls *libc.TLS) (r int32) {
 	var health, v1 int32
-	if (*player_t)(unsafe.Pointer(plyr)).Fhealth > 100 {
+	if plyr.Fhealth > 100 {
 		v1 = 100
 	} else {
-		v1 = (*player_t)(unsafe.Pointer(plyr)).Fhealth
+		v1 = plyr.Fhealth
 	}
 	health = v1
 	if health != oldhealth {
@@ -41539,14 +41539,14 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 	var i, v2 int32
 	if priority < 10 {
 		// dead
-		if !((*player_t)(unsafe.Pointer(plyr)).Fhealth != 0) {
+		if !(plyr.Fhealth != 0) {
 			priority = 9
 			st_faceindex = ST_NUMPAINFACES*(ST_NUMSTRAIGHTFACES+ST_NUMTURNFACES+ST_NUMSPECIALFACES) + 1
 			st_facecount = 1
 		}
 	}
 	if priority < 9 {
-		if (*player_t)(unsafe.Pointer(plyr)).Fbonuscount != 0 {
+		if plyr.Fbonuscount != 0 {
 			// picking up bonus
 			doevilgrin = 0
 			i = 0
@@ -41554,9 +41554,9 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 				if !(i < int32(NUMWEAPONS)) {
 					break
 				}
-				if oldweaponsowned[i] != *(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(i)*4)) {
+				if oldweaponsowned[i] != plyr.Fweaponowned[i] {
 					doevilgrin = 1
-					oldweaponsowned[i] = *(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(i)*4))
+					oldweaponsowned[i] = plyr.Fweaponowned[i]
 				}
 				goto _1
 			_1:
@@ -41572,21 +41572,21 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 		}
 	}
 	if priority < 8 {
-		if (*player_t)(unsafe.Pointer(plyr)).Fdamagecount != 0 && (*player_t)(unsafe.Pointer(plyr)).Fattacker != 0 && (*player_t)(unsafe.Pointer(plyr)).Fattacker != (*player_t)(unsafe.Pointer(plyr)).Fmo {
+		if plyr.Fdamagecount != 0 && plyr.Fattacker != 0 && plyr.Fattacker != plyr.Fmo {
 			// being attacked
 			priority = 7
-			if (*player_t)(unsafe.Pointer(plyr)).Fhealth-st_oldhealth > int32(ST_MUCHPAIN) {
+			if plyr.Fhealth-st_oldhealth > int32(ST_MUCHPAIN) {
 				st_facecount = 1 * TICRATE
 				st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
 			} else {
-				badguyangle = R_PointToAngle2((*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fy, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fattacker)).Fx, (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fattacker)).Fy)
-				if badguyangle > (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fangle {
+				badguyangle = R_PointToAngle2((*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fy, (*mobj_t)(unsafe.Pointer(plyr.Fattacker)).Fx, (*mobj_t)(unsafe.Pointer(plyr.Fattacker)).Fy)
+				if badguyangle > (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fangle {
 					// whether right or left
-					diffang = badguyangle - (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fangle
+					diffang = badguyangle - (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fangle
 					i = libc.BoolInt32(diffang > uint32(ANG18015))
 				} else {
 					// whether left or right
-					diffang = (*mobj_t)(unsafe.Pointer((*player_t)(unsafe.Pointer(plyr)).Fmo)).Fangle - badguyangle
+					diffang = (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fangle - badguyangle
 					i = libc.BoolInt32(diffang <= uint32(ANG18015))
 				} // confusing, aint it?
 				st_facecount = 1 * TICRATE
@@ -41608,8 +41608,8 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 	}
 	if priority < 7 {
 		// getting hurt because of your own damn stupidity
-		if (*player_t)(unsafe.Pointer(plyr)).Fdamagecount != 0 {
-			if (*player_t)(unsafe.Pointer(plyr)).Fhealth-st_oldhealth > int32(ST_MUCHPAIN) {
+		if plyr.Fdamagecount != 0 {
+			if plyr.Fhealth-st_oldhealth > int32(ST_MUCHPAIN) {
 				priority = 7
 				st_facecount = 1 * TICRATE
 				st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
@@ -41622,7 +41622,7 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 	}
 	if priority < 6 {
 		// rapid firing
-		if (*player_t)(unsafe.Pointer(plyr)).Fattackdown != 0 {
+		if plyr.Fattackdown != 0 {
 			if lastattackdown == -1 {
 				lastattackdown = 2 * TICRATE
 			} else {
@@ -41641,7 +41641,7 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 	}
 	if priority < 5 {
 		// invulnerability
-		if (*player_t)(unsafe.Pointer(plyr)).Fcheats&int32(CF_GODMODE) != 0 || *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_invulnerability)*4)) != 0 {
+		if plyr.Fcheats&int32(CF_GODMODE) != 0 || plyr.Fpowers[pw_invulnerability] != 0 {
 			priority = 4
 			st_faceindex = ST_NUMPAINFACES * (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + ST_NUMSPECIALFACES)
 			st_facecount = 1
@@ -41665,10 +41665,10 @@ func ST_updateWidgets(tls *libc.TLS) {
 	// must redirect the pointer if the ready weapon has changed.
 	//  if (w_ready.data != plyr->readyweapon)
 	//  {
-	if weaponinfo[(*player_t)(unsafe.Pointer(plyr)).Freadyweapon].Fammo == int32(am_noammo) {
+	if weaponinfo[plyr.Freadyweapon].Fammo == int32(am_noammo) {
 		w_ready.Fnum = uintptr(unsafe.Pointer(&largeammo))
 	} else {
-		w_ready.Fnum = plyr + 168 + uintptr(weaponinfo[(*player_t)(unsafe.Pointer(plyr)).Freadyweapon].Fammo)*4
+		w_ready.Fnum = uintptr(unsafe.Pointer(&plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo]))
 	}
 	//{
 	// static int tic=0;
@@ -41679,7 +41679,7 @@ func ST_updateWidgets(tls *libc.TLS) {
 	//   dir = 1;
 	// tic++;
 	// }
-	w_ready.Fdata = (*player_t)(unsafe.Pointer(plyr)).Freadyweapon
+	w_ready.Fdata = plyr.Freadyweapon
 	// if (*w_ready.on)
 	//  STlib_updateNum(&w_ready, true);
 	// refresh weapon change
@@ -41690,13 +41690,13 @@ func ST_updateWidgets(tls *libc.TLS) {
 		if !(i < 3) {
 			break
 		}
-		if *(*boolean)(unsafe.Pointer(plyr + 80 + uintptr(i)*4)) != 0 {
+		if plyr.Fcards[i] != 0 {
 			v2 = i
 		} else {
 			v2 = -1
 		}
 		keyboxes[i] = v2
-		if *(*boolean)(unsafe.Pointer(plyr + 80 + uintptr(i+int32(3))*4)) != 0 {
+		if plyr.Fcards[i+int32(3)] != 0 {
 			keyboxes[i] = i + 3
 		}
 		goto _1
@@ -41719,9 +41719,9 @@ func ST_updateWidgets(tls *libc.TLS) {
 			break
 		}
 		if i != consoleplayer {
-			st_fragscount += *(*int32)(unsafe.Pointer(plyr + 108 + uintptr(i)*4))
+			st_fragscount += plyr.Ffrags[i]
 		} else {
-			st_fragscount -= *(*int32)(unsafe.Pointer(plyr + 108 + uintptr(i)*4))
+			st_fragscount -= plyr.Ffrags[i]
 		}
 		goto _3
 	_3:
@@ -41735,7 +41735,7 @@ var largeammo int32 = 1994
 func ST_Ticker(tls *libc.TLS) {
 	st_randomnumber = M_Random()
 	ST_updateWidgets(tls)
-	st_oldhealth = (*player_t)(unsafe.Pointer(plyr)).Fhealth
+	st_oldhealth = plyr.Fhealth
 }
 
 var st_palette int32 = 0
@@ -41743,10 +41743,10 @@ var st_palette int32 = 0
 func ST_doPaletteStuff(tls *libc.TLS) {
 	var bzc, cnt, palette int32
 	var pal uintptr
-	cnt = (*player_t)(unsafe.Pointer(plyr)).Fdamagecount
-	if *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_strength)*4)) != 0 {
+	cnt = plyr.Fdamagecount
+	if plyr.Fpowers[pw_strength] != 0 {
 		// slowly fade the berzerk out
-		bzc = 12 - *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_strength)*4))>>int32(6)
+		bzc = 12 - plyr.Fpowers[pw_strength]>>6
 		if bzc > cnt {
 			cnt = bzc
 		}
@@ -41762,9 +41762,9 @@ func ST_doPaletteStuff(tls *libc.TLS) {
 		}
 		palette += int32(STARTREDPALS)
 	} else {
-		if (*player_t)(unsafe.Pointer(plyr)).Fbonuscount != 0 {
-			if (*player_t)(unsafe.Pointer(plyr)).Fbonuscount >= 4 {
-				palette = ((*player_t)(unsafe.Pointer(plyr)).Fbonuscount + 7) >> 3
+		if plyr.Fbonuscount != 0 {
+			if plyr.Fbonuscount >= 4 {
+				palette = (plyr.Fbonuscount + 7) >> 3
 				if palette >= int32(NUMBONUSPALS) {
 					palette = NUMBONUSPALS - 1
 				}
@@ -41773,7 +41773,7 @@ func ST_doPaletteStuff(tls *libc.TLS) {
 			}
 			palette += int32(STARTBONUSPALS)
 		} else {
-			if *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_ironfeet)*4)) > 4*32 || *(*int32)(unsafe.Pointer(plyr + 56 + uintptr(pw_ironfeet)*4))&int32(8) != 0 {
+			if plyr.Fpowers[pw_ironfeet] > 4*32 || plyr.Fpowers[pw_ironfeet]&int32(8) != 0 {
 				palette = int32(RADIATIONPAL)
 			} else {
 				palette = 0
@@ -41965,7 +41965,7 @@ func ST_loadData(tls *libc.TLS) {
 func ST_initData(tls *libc.TLS) {
 	var i int32
 	st_firsttime = 1
-	plyr = uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328
+	plyr = &players[consoleplayer]
 	st_statusbaron = 1
 	st_faceindex = 0
 	st_palette = -1
@@ -41975,7 +41975,7 @@ func ST_initData(tls *libc.TLS) {
 		if !(i < int32(NUMWEAPONS)) {
 			break
 		}
-		oldweaponsowned[i] = *(*boolean)(unsafe.Pointer(plyr + 132 + uintptr(i)*4))
+		oldweaponsowned[i] = plyr.Fweaponowned[i]
 		goto _2
 	_2:
 		;
@@ -41997,37 +41997,37 @@ func ST_initData(tls *libc.TLS) {
 
 func ST_createWidgets(tls *libc.TLS) {
 	// ready weapon ammo
-	STlib_initNum(&w_ready, int32(ST_AMMOX), int32(ST_AMMOY), uintptr(unsafe.Pointer(&tallnum)), plyr+168+uintptr(weaponinfo[(*player_t)(unsafe.Pointer(plyr)).Freadyweapon].Fammo)*4, uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMOWIDTH))
+	STlib_initNum(&w_ready, int32(ST_AMMOX), int32(ST_AMMOY), uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMOWIDTH))
 	// the last weapon type
-	w_ready.Fdata = (*player_t)(unsafe.Pointer(plyr)).Freadyweapon
+	w_ready.Fdata = plyr.Freadyweapon
 	// health percentage
-	STlib_initPercent(&w_health, int32(ST_HEALTHX), int32(ST_HEALTHY), uintptr(unsafe.Pointer(&tallnum)), plyr+44, uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
+	STlib_initPercent(&w_health, int32(ST_HEALTHX), int32(ST_HEALTHY), uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fhealth)), uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
 	// arms background
 	STlib_initBinIcon(&w_armsbg, int32(ST_ARMSBGX), int32(ST_ARMSBGY), armsbg, uintptr(unsafe.Pointer(&st_notdeathmatch)), uintptr(unsafe.Pointer(&st_statusbaron)))
 	// weapons owned
 	for i := int32(0); i < 6; i++ {
-		STlib_initMultIcon(&w_arms[i], ST_ARMSX+i%3*ST_ARMSXSPACE, int32(ST_ARMSY)+i/int32(3)*int32(ST_ARMSYSPACE), uintptr(unsafe.Pointer(&arms))+uintptr(i)*16, plyr+132+uintptr(i+1)*4, uintptr(unsafe.Pointer(&st_armson)))
+		STlib_initMultIcon(&w_arms[i], ST_ARMSX+i%3*ST_ARMSXSPACE, int32(ST_ARMSY)+i/int32(3)*int32(ST_ARMSYSPACE), uintptr(unsafe.Pointer(&arms))+uintptr(i)*16, uintptr(unsafe.Pointer(&plyr.Fweaponowned[i+1])), uintptr(unsafe.Pointer(&st_armson)))
 	}
 	// frags sum
 	STlib_initNum(&w_frags, int32(ST_FRAGSX), int32(ST_FRAGSY), uintptr(unsafe.Pointer(&tallnum)), uintptr(unsafe.Pointer(&st_fragscount)), uintptr(unsafe.Pointer(&st_fragson)), int32(ST_FRAGSWIDTH))
 	// faces
 	STlib_initMultIcon(&w_faces, int32(ST_FACESX), int32(ST_FACESY), uintptr(unsafe.Pointer(&faces)), uintptr(unsafe.Pointer(&st_faceindex)), uintptr(unsafe.Pointer(&st_statusbaron)))
 	// armor percentage - should be colored later
-	STlib_initPercent(&w_armor, int32(ST_ARMORX), int32(ST_ARMORY), uintptr(unsafe.Pointer(&tallnum)), plyr+48, uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
+	STlib_initPercent(&w_armor, int32(ST_ARMORX), int32(ST_ARMORY), uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Farmorpoints)), uintptr(unsafe.Pointer(&st_statusbaron)), tallpercent)
 	// keyboxes 0-2
 	STlib_initMultIcon(&w_keyboxes[0], int32(ST_KEY0X), int32(ST_KEY0Y), uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes)), uintptr(unsafe.Pointer(&st_statusbaron)))
 	STlib_initMultIcon(&w_keyboxes[1], int32(ST_KEY1X), int32(ST_KEY1Y), uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+1*4, uintptr(unsafe.Pointer(&st_statusbaron)))
 	STlib_initMultIcon(&w_keyboxes[2], int32(ST_KEY2X), int32(ST_KEY2Y), uintptr(unsafe.Pointer(&keys)), uintptr(unsafe.Pointer(&keyboxes))+2*4, uintptr(unsafe.Pointer(&st_statusbaron)))
 	// ammo count (all four kinds)
-	STlib_initNum(&w_ammo[0], int32(ST_AMMO0X), int32(ST_AMMO0Y), uintptr(unsafe.Pointer(&shortnum)), plyr+168, uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
-	STlib_initNum(&w_ammo[1], int32(ST_AMMO1X), int32(ST_AMMO1Y), uintptr(unsafe.Pointer(&shortnum)), plyr+168+1*4, uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
-	STlib_initNum(&w_ammo[2], int32(ST_AMMO2X), int32(ST_AMMO2Y), uintptr(unsafe.Pointer(&shortnum)), plyr+168+2*4, uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
-	STlib_initNum(&w_ammo[3], int32(ST_AMMO3X), int32(ST_AMMO3Y), uintptr(unsafe.Pointer(&shortnum)), plyr+168+3*4, uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
+	STlib_initNum(&w_ammo[0], int32(ST_AMMO0X), int32(ST_AMMO0Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[0])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
+	STlib_initNum(&w_ammo[1], int32(ST_AMMO1X), int32(ST_AMMO1Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[1])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
+	STlib_initNum(&w_ammo[2], int32(ST_AMMO2X), int32(ST_AMMO2Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[2])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
+	STlib_initNum(&w_ammo[3], int32(ST_AMMO3X), int32(ST_AMMO3Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[3])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_AMMO0WIDTH))
 	// max ammo count (all four kinds)
-	STlib_initNum(&w_maxammo[0], int32(ST_MAXAMMO0X), int32(ST_MAXAMMO0Y), uintptr(unsafe.Pointer(&shortnum)), plyr+184, uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
-	STlib_initNum(&w_maxammo[1], int32(ST_MAXAMMO1X), int32(ST_MAXAMMO1Y), uintptr(unsafe.Pointer(&shortnum)), plyr+184+1*4, uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
-	STlib_initNum(&w_maxammo[2], int32(ST_MAXAMMO2X), int32(ST_MAXAMMO2Y), uintptr(unsafe.Pointer(&shortnum)), plyr+184+2*4, uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
-	STlib_initNum(&w_maxammo[3], int32(ST_MAXAMMO3X), int32(ST_MAXAMMO3Y), uintptr(unsafe.Pointer(&shortnum)), plyr+184+3*4, uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
+	STlib_initNum(&w_maxammo[0], int32(ST_MAXAMMO0X), int32(ST_MAXAMMO0Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[0])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
+	STlib_initNum(&w_maxammo[1], int32(ST_MAXAMMO1X), int32(ST_MAXAMMO1Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[1])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
+	STlib_initNum(&w_maxammo[2], int32(ST_MAXAMMO2X), int32(ST_MAXAMMO2Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[2])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
+	STlib_initNum(&w_maxammo[3], int32(ST_MAXAMMO3X), int32(ST_MAXAMMO3Y), uintptr(unsafe.Pointer(&shortnum)), (uintptr)(unsafe.Pointer(&plyr.Fmaxammo[3])), uintptr(unsafe.Pointer(&st_statusbaron)), int32(ST_MAXAMMO0WIDTH))
 }
 
 var st_stopped int32 = 1
