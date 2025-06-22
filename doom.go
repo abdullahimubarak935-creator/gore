@@ -1766,19 +1766,7 @@ type mobj_t struct {
 	Ftracer       uintptr
 }
 
-type screen_mode_t struct {
-	Fwidth        int32
-	Fheight       int32
-	FInitMode     uintptr
-	FDrawScreen   uintptr
-	Fpoor_quality boolean
-}
-
 type grabmouse_callback_t = uintptr
-
-//type color struct {
-//F__ccgo0 uint32
-//}
 
 type patch_t struct {
 	Fwidth      int16
