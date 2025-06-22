@@ -1873,8 +1873,8 @@ type seg_t struct {
 	Fv2          uintptr
 	Foffset      fixed_t
 	Fangle       angle_t
-	Fsidedef     uintptr
-	Flinedef     uintptr
+	Fsidedef     *side_t
+	Flinedef     *line_t
 	Ffrontsector *sector_t
 	Fbacksector  *sector_t
 }
@@ -24977,7 +24977,8 @@ func T_MoveFloor(tls *libc.TLS, floor *floormove_t) {
 //	// HANDLE FLOOR TYPES
 //	//
 func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
-	var floor, side uintptr
+	var floor uintptr
+	var side *side_t
 	var sec *sector_t
 	var i, minsize, rtn, secnum, v1 int32
 	secnum = -1
@@ -25101,7 +25102,7 @@ func EV_DoFloor(tls *libc.TLS, line uintptr, floortype floor_e) (r int32) {
 					break
 				}
 				if twoSided(tls, secnum, i) != 0 {
-					if sectorIndex((*side_t)(unsafe.Pointer(getSide(tls, secnum, i, 0))).Fsector) == secnum {
+					if sectorIndex(getSide(tls, secnum, i, 0).Fsector) == secnum {
 						sec = getSector(tls, secnum, i, 1)
 						if sec.Ffloorheight == (*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight {
 							(*floormove_t)(unsafe.Pointer(floor)).Ftexture = sec.Ffloorpic
@@ -31414,7 +31415,8 @@ var null_sector sector_t
 //	// P_LoadSegs
 //	//
 func P_LoadSegs(tls *libc.TLS, lump int32) {
-	var data, ldef, li, ml uintptr
+	var data, li, ml uintptr
+	var ldef *line_t
 	var i, linedef, side, sidenum int32
 	numsegs = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(12))
 	segs = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numsegs)*uint64(56)), int32(PU_LEVEL), uintptr(0))
@@ -31432,13 +31434,13 @@ func P_LoadSegs(tls *libc.TLS, lump int32) {
 		(*seg_t)(unsafe.Pointer(li)).Fangle = libc.Uint32FromInt32(int32((*mapseg_t)(unsafe.Pointer(ml)).Fangle) << 16)
 		(*seg_t)(unsafe.Pointer(li)).Foffset = int32((*mapseg_t)(unsafe.Pointer(ml)).Foffset) << 16
 		linedef = int32((*mapseg_t)(unsafe.Pointer(ml)).Flinedef)
-		ldef = lines + uintptr(linedef)*88
+		ldef = (*line_t)(unsafe.Pointer(lines + uintptr(linedef)*88))
 		(*seg_t)(unsafe.Pointer(li)).Flinedef = ldef
 		side = int32((*mapseg_t)(unsafe.Pointer(ml)).Fside)
-		(*seg_t)(unsafe.Pointer(li)).Fsidedef = sides + uintptr(*(*int16)(unsafe.Pointer(ldef + 30 + uintptr(side)*2)))*24
-		(*seg_t)(unsafe.Pointer(li)).Ffrontsector = (*(*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(ldef + 30 + uintptr(side)*2)))*24))).Fsector
+		(*seg_t)(unsafe.Pointer(li)).Fsidedef = (*side_t)(unsafe.Pointer(sides + uintptr(ldef.Fsidenum[side])*24))
+		(*seg_t)(unsafe.Pointer(li)).Ffrontsector = (*(*side_t)(unsafe.Pointer(sides + uintptr(ldef.Fsidenum[side])*24))).Fsector
 		if int32((*line_t)(unsafe.Pointer(ldef)).Fflags)&ML_TWOSIDED != 0 {
-			sidenum = int32(*(*int16)(unsafe.Pointer(ldef + 30 + uintptr(side^int32(1))*2)))
+			sidenum = int32(ldef.Fsidenum[side^int32(1)])
 			// If the sidenum is out of range, this may be a "glass hack"
 			// impassible window.  Point at side #0 (this may not be
 			// the correct Vanilla behavior; however, it seems to work for
@@ -32166,7 +32168,8 @@ func P_InterceptVector2(tls *libc.TLS, v2 uintptr, v1 uintptr) (r fixed_t) {
 //	//
 func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 	bp := alloc(48)
-	var line, seg, sub, v1, v2 uintptr
+	var seg, sub, v1, v2 uintptr
+	var line *line_t
 	var front, back *sector_t
 	var count, s1, s2 int32
 	var frac, openbottom, opentop, slope fixed_t
@@ -32183,12 +32186,12 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 		}
 		line = (*seg_t)(unsafe.Pointer(seg)).Flinedef
 		// allready checked other side?
-		if (*line_t)(unsafe.Pointer(line)).Fvalidcount == validcount {
+		if line.Fvalidcount == validcount {
 			goto _1
 		}
-		(*line_t)(unsafe.Pointer(line)).Fvalidcount = validcount
-		v1 = (*line_t)(unsafe.Pointer(line)).Fv1
-		v2 = (*line_t)(unsafe.Pointer(line)).Fv2
+		line.Fvalidcount = validcount
+		v1 = line.Fv1
+		v2 = line.Fv2
 		s1 = P_DivlineSide(tls, (*vertex_t)(unsafe.Pointer(v1)).Fx, (*vertex_t)(unsafe.Pointer(v1)).Fy, uintptr(unsafe.Pointer(&strace)))
 		s2 = P_DivlineSide(tls, (*vertex_t)(unsafe.Pointer(v2)).Fx, (*vertex_t)(unsafe.Pointer(v2)).Fy, uintptr(unsafe.Pointer(&strace)))
 		// line isn't crossed?
@@ -32207,12 +32210,12 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 		}
 		// Backsector may be NULL if this is an "impassible
 		// glass" hack line.
-		if (*line_t)(unsafe.Pointer(line)).Fbacksector == nil {
+		if line.Fbacksector == nil {
 			return 0
 		}
 		// stop because it is not two sided anyway
 		// might do this after updating validcount?
-		if !(int32((*line_t)(unsafe.Pointer(line)).Fflags)&ML_TWOSIDED != 0) {
+		if !(int32(line.Fflags)&ML_TWOSIDED != 0) {
 			return 0
 		}
 		// crosses a two sided line
@@ -32592,8 +32595,8 @@ func P_InitPicAnims(tls *libc.TLS) {
 //	//  given the number of the current sector,
 //	//  the line number, and the side (0/1) that you want.
 //	//
-func getSide(tls *libc.TLS, currentSector int32, line int32, side int32) (r uintptr) {
-	return sides + uintptr(*(*int16)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*(*sector_t)(unsafe.Pointer(sectors + uintptr(currentSector)*128))).Flines + uintptr(line)*8)) + 30 + uintptr(side)*2)))*24
+func getSide(tls *libc.TLS, currentSector int32, line int32, side int32) *side_t {
+	return (*side_t)(unsafe.Pointer(sides + uintptr(*(*int16)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer((*(*sector_t)(unsafe.Pointer(sectors + uintptr(currentSector)*128))).Flines + uintptr(line)*8)) + 30 + uintptr(side)*2)))*24))
 }
 
 // C documentation
@@ -37939,7 +37942,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	var hyp, sineval, vtop, v3, v4 fixed_t
 	var lightnum, v2, v5, v6 int32
 	var v10, v7, v8 boolean
-	var v11, v9, p1 uintptr
+	var v11, v9 uintptr
 	// don't overflow and crash
 	if ds_index >= len(drawsegs) {
 		return
@@ -37950,8 +37953,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 	sidedef = (*seg_t)(unsafe.Pointer(curline)).Fsidedef
 	linedef = (*seg_t)(unsafe.Pointer(curline)).Flinedef
 	// mark the segment as visible for auto map
-	p1 = linedef + 24
-	*(*int16)(unsafe.Pointer(p1)) = int16(int32(*(*int16)(unsafe.Pointer(p1))) | ML_MAPPED)
+	linedef.Fflags |= ML_MAPPED
 	// calculate rw_distance for scale calculation
 	rw_normalangle = (*seg_t)(unsafe.Pointer(curline)).Fangle + uint32(ANG909)
 	offsetangle = libc.Uint32FromInt32(xabs(libc.Int32FromUint32(rw_normalangle - libc.Uint32FromInt32(rw_angle1))))
@@ -47281,7 +47283,7 @@ var levelTimer boolean
 
 var leveltime int32
 
-var linedef uintptr
+var linedef *line_t
 
 var lines uintptr
 
@@ -47875,7 +47877,7 @@ var showMessages int32
 
 var show_endoom int32
 
-var sidedef uintptr
+var sidedef *side_t
 
 var sidemove [2]fixed_t
 
