@@ -1846,8 +1846,8 @@ type side_t struct {
 type slopetype_t = int32
 
 type line_t struct {
-	Fv1          uintptr
-	Fv2          uintptr
+	Fv1          *vertex_t
+	Fv2          *vertex_t
 	Fdx          fixed_t
 	Fdy          fixed_t
 	Fflags       int16
@@ -1869,8 +1869,8 @@ type subsector_t struct {
 }
 
 type seg_t struct {
-	Fv1          uintptr
-	Fv2          uintptr
+	Fv1          *vertex_t
+	Fv2          *vertex_t
 	Foffset      fixed_t
 	Fangle       angle_t
 	Fsidedef     *side_t
@@ -2766,18 +2766,18 @@ func AM_findMinMaxBoundaries() {
 		if !(i < numvertexes) {
 			break
 		}
-		if (*(*vertex_t)(unsafe.Pointer(vertexes + uintptr(i)*8))).Fx < min_x {
-			min_x = (*(*vertex_t)(unsafe.Pointer(vertexes + uintptr(i)*8))).Fx
+		if vertexes[i].Fx < min_x {
+			min_x = vertexes[i].Fx
 		} else {
-			if (*(*vertex_t)(unsafe.Pointer(vertexes + uintptr(i)*8))).Fx > max_x {
-				max_x = (*(*vertex_t)(unsafe.Pointer(vertexes + uintptr(i)*8))).Fx
+			if vertexes[i].Fx > max_x {
+				max_x = vertexes[i].Fx
 			}
 		}
-		if (*(*vertex_t)(unsafe.Pointer(vertexes + uintptr(i)*8))).Fy < min_y {
-			min_y = (*(*vertex_t)(unsafe.Pointer(vertexes + uintptr(i)*8))).Fy
+		if vertexes[i].Fy < min_y {
+			min_y = vertexes[i].Fy
 		} else {
-			if (*(*vertex_t)(unsafe.Pointer(vertexes + uintptr(i)*8))).Fy > max_y {
-				max_y = (*(*vertex_t)(unsafe.Pointer(vertexes + uintptr(i)*8))).Fy
+			if vertexes[i].Fy > max_y {
+				max_y = vertexes[i].Fy
 			}
 		}
 		goto _3
@@ -3559,10 +3559,10 @@ func AM_drawGrid(color int32) {
 func AM_drawWalls() {
 	for i := int32(0); i < numlines; i++ {
 		line := &lines[i]
-		l.Fa.Fx = (*vertex_t)(unsafe.Pointer(line.Fv1)).Fx
-		l.Fa.Fy = (*vertex_t)(unsafe.Pointer(line.Fv1)).Fy
-		l.Fb.Fx = (*vertex_t)(unsafe.Pointer(line.Fv2)).Fx
-		l.Fb.Fy = (*vertex_t)(unsafe.Pointer(line.Fv2)).Fy
+		l.Fa.Fx = line.Fv1.Fx
+		l.Fa.Fy = line.Fv1.Fy
+		l.Fb.Fx = line.Fv2.Fx
+		l.Fb.Fy = line.Fv2.Fy
 		if cheating != 0 || int32(line.Fflags)&ML_MAPPED != 0 {
 			if int32(line.Fflags)&ML_DONTDRAW != 0 && !(cheating != 0) {
 				continue
@@ -27412,19 +27412,19 @@ func P_AproxDistance(dx fixed_t, dy fixed_t) (r fixed_t) {
 func P_PointOnLineSide(x fixed_t, y fixed_t, line *line_t) (r int32) {
 	var dx, dy, left, right fixed_t
 	if !(line.Fdx != 0) {
-		if x <= (*vertex_t)(unsafe.Pointer(line.Fv1)).Fx {
+		if x <= line.Fv1.Fx {
 			return libc.BoolInt32(line.Fdy > 0)
 		}
 		return libc.BoolInt32(line.Fdy < 0)
 	}
 	if !(line.Fdy != 0) {
-		if y <= (*vertex_t)(unsafe.Pointer(line.Fv1)).Fy {
+		if y <= line.Fv1.Fy {
 			return libc.BoolInt32(line.Fdx < 0)
 		}
 		return libc.BoolInt32(line.Fdx > 0)
 	}
-	dx = x - (*vertex_t)(unsafe.Pointer(line.Fv1)).Fx
-	dy = y - (*vertex_t)(unsafe.Pointer(line.Fv1)).Fy
+	dx = x - line.Fv1.Fx
+	dy = y - line.Fv1.Fy
 	left = FixedMul(line.Fdy>>int32(FRACBITS), dx)
 	right = FixedMul(dy, line.Fdx>>int32(FRACBITS))
 	if right < left {
@@ -27446,15 +27446,15 @@ func P_BoxOnLineSide(tmbox uintptr, ld *line_t) (r int32) {
 	p2 = 0
 	switch ld.Fslopetype {
 	case ST_HORIZONTAL:
-		p1 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXTOP)*4)) > (*vertex_t)(unsafe.Pointer(ld.Fv1)).Fy)
-		p2 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXBOTTOM)*4)) > (*vertex_t)(unsafe.Pointer(ld.Fv1)).Fy)
+		p1 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXTOP)*4)) > ld.Fv1.Fy)
+		p2 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXBOTTOM)*4)) > ld.Fv1.Fy)
 		if ld.Fdx < 0 {
 			p1 ^= 1
 			p2 ^= 1
 		}
 	case ST_VERTICAL:
-		p1 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXRIGHT)*4)) < (*vertex_t)(unsafe.Pointer(ld.Fv1)).Fx)
-		p2 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXLEFT)*4)) < (*vertex_t)(unsafe.Pointer(ld.Fv1)).Fx)
+		p1 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXRIGHT)*4)) < ld.Fv1.Fx)
+		p2 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXLEFT)*4)) < ld.Fv1.Fx)
 		if ld.Fdy < 0 {
 			p1 ^= 1
 			p2 ^= 1
@@ -27516,8 +27516,8 @@ func P_PointOnDivlineSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
 //	// P_MakeDivline
 //	//
 func P_MakeDivline(li *line_t, dl uintptr) {
-	(*divline_t)(unsafe.Pointer(dl)).Fx = (*vertex_t)(unsafe.Pointer(li.Fv1)).Fx
-	(*divline_t)(unsafe.Pointer(dl)).Fy = (*vertex_t)(unsafe.Pointer(li.Fv1)).Fy
+	(*divline_t)(unsafe.Pointer(dl)).Fx = li.Fv1.Fx
+	(*divline_t)(unsafe.Pointer(dl)).Fy = li.Fv1.Fy
 	(*divline_t)(unsafe.Pointer(dl)).Fdx = li.Fdx
 	(*divline_t)(unsafe.Pointer(dl)).Fdy = li.Fdy
 }
@@ -27750,8 +27750,8 @@ func PIT_AddLineIntercepts(tls *libc.TLS, ld *line_t) (r boolean) {
 	var s1, s2 int32
 	// avoid precision problems with two routines
 	if trace.Fdx > 1<<FRACBITS*16 || trace.Fdy > 1<<FRACBITS*16 || trace.Fdx < -(1<<FRACBITS)*16 || trace.Fdy < -(1<<FRACBITS)*16 {
-		s1 = P_PointOnDivlineSide((*vertex_t)(unsafe.Pointer(ld.Fv1)).Fx, (*vertex_t)(unsafe.Pointer(ld.Fv1)).Fy, uintptr(unsafe.Pointer(&trace)))
-		s2 = P_PointOnDivlineSide((*vertex_t)(unsafe.Pointer(ld.Fv2)).Fx, (*vertex_t)(unsafe.Pointer(ld.Fv2)).Fy, uintptr(unsafe.Pointer(&trace)))
+		s1 = P_PointOnDivlineSide(ld.Fv1.Fx, ld.Fv1.Fy, uintptr(unsafe.Pointer(&trace)))
+		s2 = P_PointOnDivlineSide(ld.Fv2.Fx, ld.Fv2.Fy, uintptr(unsafe.Pointer(&trace)))
 	} else {
 		s1 = P_PointOnLineSide(trace.Fx, trace.Fy, ld)
 		s2 = P_PointOnLineSide(trace.Fx+trace.Fdx, trace.Fy+trace.Fdy, ld)
@@ -31344,31 +31344,21 @@ var totallines int32
 //	// P_LoadVertexes
 //	//
 func P_LoadVertexes(tls *libc.TLS, lump int32) {
-	var data, li, ml uintptr
-	var i int32
+	var data, ml uintptr
 	// Determine number of lumps:
 	//  total lump length / vertex record length.
 	numvertexes = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(4))
 	// Allocate zone memory for buffer.
-	vertexes = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numvertexes)*uint64(8)), int32(PU_LEVEL), uintptr(0))
+	vertexes = make([]vertex_t, numvertexes)
 	// Load data into cache.
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
 	ml = data
-	li = vertexes
 	// Copy and convert vertex coordinates,
 	// internal representation as fixed.
-	i = 0
-	for {
-		if !(i < numvertexes) {
-			break
-		}
-		(*vertex_t)(unsafe.Pointer(li)).Fx = int32((*mapvertex_t)(unsafe.Pointer(ml)).Fx) << int32(FRACBITS)
-		(*vertex_t)(unsafe.Pointer(li)).Fy = int32((*mapvertex_t)(unsafe.Pointer(ml)).Fy) << int32(FRACBITS)
-		goto _1
-	_1:
-		;
-		i++
-		li += 8
+	for i := int32(0); i < numvertexes; i++ {
+		li := &vertexes[i]
+		li.Fx = int32((*mapvertex_t)(unsafe.Pointer(ml)).Fx) << int32(FRACBITS)
+		li.Fy = int32((*mapvertex_t)(unsafe.Pointer(ml)).Fy) << int32(FRACBITS)
 		ml += 4
 	}
 	// Free buffer memory.
@@ -31414,8 +31404,8 @@ func P_LoadSegs(tls *libc.TLS, lump int32) {
 		if !(i < numsegs) {
 			break
 		}
-		(*seg_t)(unsafe.Pointer(li)).Fv1 = vertexes + uintptr((*mapseg_t)(unsafe.Pointer(ml)).Fv1)*8
-		(*seg_t)(unsafe.Pointer(li)).Fv2 = vertexes + uintptr((*mapseg_t)(unsafe.Pointer(ml)).Fv2)*8
+		(*seg_t)(unsafe.Pointer(li)).Fv1 = &vertexes[(*mapseg_t)(unsafe.Pointer(ml)).Fv1]
+		(*seg_t)(unsafe.Pointer(li)).Fv2 = &vertexes[(*mapseg_t)(unsafe.Pointer(ml)).Fv2]
 		(*seg_t)(unsafe.Pointer(li)).Fangle = libc.Uint32FromInt32(int32((*mapseg_t)(unsafe.Pointer(ml)).Fangle) << 16)
 		(*seg_t)(unsafe.Pointer(li)).Foffset = int32((*mapseg_t)(unsafe.Pointer(ml)).Foffset) << 16
 		linedef = int32((*mapseg_t)(unsafe.Pointer(ml)).Flinedef)
@@ -31614,7 +31604,8 @@ func P_LoadThings(tls *libc.TLS, lump int32) {
 //	// Also counts secret lines for intermissions.
 //	//
 func P_LoadLineDefs(tls *libc.TLS, lump int32) {
-	var data, mld, v1, v2, v21, v3 uintptr
+	var data, mld uintptr
+	var v1, v2, v21, v3 *vertex_t
 	var i int32
 	numlines = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(14))
 	lines = make([]line_t, numlines)
@@ -31625,14 +31616,14 @@ func P_LoadLineDefs(tls *libc.TLS, lump int32) {
 		ld.Fflags = (*maplinedef_t)(unsafe.Pointer(mld)).Fflags
 		ld.Fspecial = (*maplinedef_t)(unsafe.Pointer(mld)).Fspecial
 		ld.Ftag = (*maplinedef_t)(unsafe.Pointer(mld)).Ftag
-		v21 = vertexes + uintptr((*maplinedef_t)(unsafe.Pointer(mld)).Fv1)*8
+		v21 = &vertexes[(*maplinedef_t)(unsafe.Pointer(mld)).Fv1]
 		ld.Fv1 = v21
 		v1 = v21
-		v3 = vertexes + uintptr((*maplinedef_t)(unsafe.Pointer(mld)).Fv2)*8
+		v3 = &vertexes[(*maplinedef_t)(unsafe.Pointer(mld)).Fv2]
 		ld.Fv2 = v3
 		v2 = v3
-		ld.Fdx = (*vertex_t)(unsafe.Pointer(v2)).Fx - (*vertex_t)(unsafe.Pointer(v1)).Fx
-		ld.Fdy = (*vertex_t)(unsafe.Pointer(v2)).Fy - (*vertex_t)(unsafe.Pointer(v1)).Fy
+		ld.Fdx = v2.Fx - v1.Fx
+		ld.Fdy = v2.Fy - v1.Fy
 		if !(ld.Fdx != 0) {
 			ld.Fslopetype = ST_VERTICAL
 		} else {
@@ -31646,19 +31637,19 @@ func P_LoadLineDefs(tls *libc.TLS, lump int32) {
 				}
 			}
 		}
-		if (*vertex_t)(unsafe.Pointer(v1)).Fx < (*vertex_t)(unsafe.Pointer(v2)).Fx {
-			ld.Fbbox[BOXLEFT] = (*vertex_t)(unsafe.Pointer(v1)).Fx
-			ld.Fbbox[BOXRIGHT] = (*vertex_t)(unsafe.Pointer(v2)).Fx
+		if v1.Fx < v2.Fx {
+			ld.Fbbox[BOXLEFT] = v1.Fx
+			ld.Fbbox[BOXRIGHT] = v2.Fx
 		} else {
-			ld.Fbbox[BOXLEFT] = (*vertex_t)(unsafe.Pointer(v2)).Fx
-			ld.Fbbox[BOXRIGHT] = (*vertex_t)(unsafe.Pointer(v1)).Fx
+			ld.Fbbox[BOXLEFT] = v2.Fx
+			ld.Fbbox[BOXRIGHT] = v1.Fx
 		}
-		if (*vertex_t)(unsafe.Pointer(v1)).Fy < (*vertex_t)(unsafe.Pointer(v2)).Fy {
-			ld.Fbbox[BOXBOTTOM] = (*vertex_t)(unsafe.Pointer(v1)).Fy
-			ld.Fbbox[BOXTOP] = (*vertex_t)(unsafe.Pointer(v2)).Fy
+		if v1.Fy < v2.Fy {
+			ld.Fbbox[BOXBOTTOM] = v1.Fy
+			ld.Fbbox[BOXTOP] = v2.Fy
 		} else {
-			ld.Fbbox[BOXBOTTOM] = (*vertex_t)(unsafe.Pointer(v2)).Fy
-			ld.Fbbox[BOXTOP] = (*vertex_t)(unsafe.Pointer(v1)).Fy
+			ld.Fbbox[BOXBOTTOM] = v2.Fy
+			ld.Fbbox[BOXTOP] = v1.Fy
 		}
 		ld.Fsidenum[0] = *(*int16)(unsafe.Pointer(mld + 10))
 		ld.Fsidenum[1] = *(*int16)(unsafe.Pointer(mld + 10 + 1*2))
@@ -31827,8 +31818,8 @@ func P_GroupLines(tls *libc.TLS) {
 				break
 			}
 			li := sector.Flines[j]
-			M_AddToBox(bp, (*vertex_t)(unsafe.Pointer(li.Fv1)).Fx, (*vertex_t)(unsafe.Pointer(li.Fv1)).Fy)
-			M_AddToBox(bp, (*vertex_t)(unsafe.Pointer(li.Fv2)).Fx, (*vertex_t)(unsafe.Pointer(li.Fv2)).Fy)
+			M_AddToBox(bp, li.Fv1.Fx, li.Fv1.Fy)
+			M_AddToBox(bp, li.Fv2.Fx, li.Fv2.Fy)
 			goto _6
 		_6:
 			;
@@ -32119,7 +32110,8 @@ func P_InterceptVector2(tls *libc.TLS, v2 uintptr, v1 uintptr) (r fixed_t) {
 //	//
 func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 	bp := alloc(48)
-	var seg, sub, v1, v2 uintptr
+	var seg, sub uintptr
+	var v1, v2 *vertex_t
 	var line *line_t
 	var front, back *sector_t
 	var count, s1, s2 int32
@@ -32143,16 +32135,16 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 		line.Fvalidcount = validcount
 		v1 = line.Fv1
 		v2 = line.Fv2
-		s1 = P_DivlineSide(tls, (*vertex_t)(unsafe.Pointer(v1)).Fx, (*vertex_t)(unsafe.Pointer(v1)).Fy, uintptr(unsafe.Pointer(&strace)))
-		s2 = P_DivlineSide(tls, (*vertex_t)(unsafe.Pointer(v2)).Fx, (*vertex_t)(unsafe.Pointer(v2)).Fy, uintptr(unsafe.Pointer(&strace)))
+		s1 = P_DivlineSide(tls, v1.Fx, v1.Fy, uintptr(unsafe.Pointer(&strace)))
+		s2 = P_DivlineSide(tls, v2.Fx, v2.Fy, uintptr(unsafe.Pointer(&strace)))
 		// line isn't crossed?
 		if s1 == s2 {
 			goto _1
 		}
-		(*(*divline_t)(unsafe.Pointer(bp))).Fx = (*vertex_t)(unsafe.Pointer(v1)).Fx
-		(*(*divline_t)(unsafe.Pointer(bp))).Fy = (*vertex_t)(unsafe.Pointer(v1)).Fy
-		(*(*divline_t)(unsafe.Pointer(bp))).Fdx = (*vertex_t)(unsafe.Pointer(v2)).Fx - (*vertex_t)(unsafe.Pointer(v1)).Fx
-		(*(*divline_t)(unsafe.Pointer(bp))).Fdy = (*vertex_t)(unsafe.Pointer(v2)).Fy - (*vertex_t)(unsafe.Pointer(v1)).Fy
+		(*(*divline_t)(unsafe.Pointer(bp))).Fx = v1.Fx
+		(*(*divline_t)(unsafe.Pointer(bp))).Fy = v1.Fy
+		(*(*divline_t)(unsafe.Pointer(bp))).Fdx = v2.Fx - v1.Fx
+		(*(*divline_t)(unsafe.Pointer(bp))).Fdy = v2.Fy - v1.Fy
 		s1 = P_DivlineSide(tls, strace.Fx, strace.Fy, bp)
 		s2 = P_DivlineSide(tls, t2x, t2y, bp)
 		// line isn't crossed?
@@ -34972,8 +34964,8 @@ func R_AddLine(tls *libc.TLS, line uintptr) {
 	var x1, x2 int32
 	curline = line
 	// OPTIMIZE: quickly reject orthogonal back sides.
-	angle1 = R_PointToAngle((*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv1)).Fx, (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv1)).Fy)
-	angle2 = R_PointToAngle((*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv2)).Fx, (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv2)).Fy)
+	angle1 = R_PointToAngle((*seg_t)(unsafe.Pointer(line)).Fv1.Fx, (*seg_t)(unsafe.Pointer(line)).Fv1.Fy)
+	angle2 = R_PointToAngle((*seg_t)(unsafe.Pointer(line)).Fv2.Fx, (*seg_t)(unsafe.Pointer(line)).Fv2.Fy)
 	// Clip to view edges.
 	// OPTIMIZE: make constant out of 2*clipangle (FIELDOFVIEW).
 	span = angle1 - angle2
@@ -36800,10 +36792,10 @@ func R_PointOnSide(x fixed_t, y fixed_t, node *node_t) (r int32) {
 
 func R_PointOnSegSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
 	var dx, dy, ldx, ldy, left, lx, ly, right fixed_t
-	lx = (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv1)).Fx
-	ly = (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv1)).Fy
-	ldx = (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv2)).Fx - lx
-	ldy = (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(line)).Fv2)).Fy - ly
+	lx = (*seg_t)(unsafe.Pointer(line)).Fv1.Fx
+	ly = (*seg_t)(unsafe.Pointer(line)).Fv1.Fy
+	ldx = (*seg_t)(unsafe.Pointer(line)).Fv2.Fx - lx
+	ldy = (*seg_t)(unsafe.Pointer(line)).Fv2.Fy - ly
 	if !(ldx != 0) {
 		if x <= lx {
 			return libc.BoolInt32(ldy > 0)
@@ -37659,10 +37651,10 @@ func R_RenderMaskedSegRange(tls *libc.TLS, ds *drawseg_t, x1 int32, x2 int32) {
 	backsector = (*seg_t)(unsafe.Pointer(curline)).Fbacksector
 	texnum = *(*int32)(unsafe.Pointer(texturetranslation + uintptr((*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fsidedef)).Fmidtexture)*4))
 	lightnum = int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
-	if (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fv1)).Fy == (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fv2)).Fy {
+	if (*seg_t)(unsafe.Pointer(curline)).Fv1.Fy == (*seg_t)(unsafe.Pointer(curline)).Fv2.Fy {
 		lightnum--
 	} else {
-		if (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fv1)).Fx == (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fv2)).Fx {
+		if (*seg_t)(unsafe.Pointer(curline)).Fv1.Fx == (*seg_t)(unsafe.Pointer(curline)).Fv2.Fx {
 			lightnum++
 		}
 	}
@@ -37914,7 +37906,7 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		offsetangle = uint32(ANG909)
 	}
 	distangle = uint32(ANG909) - offsetangle
-	hyp = R_PointToDist((*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fv1)).Fx, (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fv1)).Fy)
+	hyp = R_PointToDist((*seg_t)(unsafe.Pointer(curline)).Fv1.Fx, (*seg_t)(unsafe.Pointer(curline)).Fv1.Fy)
 	sineval = finesine[distangle>>int32(ANGLETOFINESHIFT)]
 	rw_distance = FixedMul(hyp, sineval)
 	v2 = start
@@ -38087,10 +38079,10 @@ func R_StoreWallRange(tls *libc.TLS, start int32, stop int32) {
 		// OPTIMIZE: get rid of LIGHTSEGSHIFT globally
 		if !(fixedcolormap != 0) {
 			lightnum = int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
-			if (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fv1)).Fy == (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fv2)).Fy {
+			if (*seg_t)(unsafe.Pointer(curline)).Fv1.Fy == (*seg_t)(unsafe.Pointer(curline)).Fv2.Fy {
 				lightnum--
 			} else {
-				if (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fv1)).Fx == (*vertex_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fv2)).Fx {
+				if (*seg_t)(unsafe.Pointer(curline)).Fv1.Fx == (*seg_t)(unsafe.Pointer(curline)).Fv2.Fx {
 					lightnum++
 				}
 			}
@@ -48313,7 +48305,7 @@ var vanilla_keyboard_mapping int32
 
 var vanilla_savegame_limit int32
 
-var vertexes uintptr
+var vertexes []vertex_t
 
 var viewactive boolean
 
