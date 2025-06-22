@@ -3756,7 +3756,7 @@ func AM_Drawer(tls *libc.TLS) {
 
 func init() {
 	gamemode = int32(indetermined)
-	gameversion = int32(exe_final2)
+	gameversion = exe_final2
 	doom1_endmsg = [8]uintptr{
 		0: __ccgo_ts(103),
 		1: __ccgo_ts(150),
@@ -5173,7 +5173,7 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 	// when it reaches this point in the demo sequence.
 	// However! There is an alternate version of Final Doom that
 	// includes a fixed executable.
-	if gameversion == int32(exe_ultimate) || gameversion == int32(exe_final) {
+	if gameversion == exe_ultimate || gameversion == exe_final {
 		demosequence = (demosequence + 1) % 7
 	} else {
 		demosequence = (demosequence + 1) % 6
@@ -5586,47 +5586,47 @@ var gameversions = [10]struct {
 	0: {
 		Fdescription: __ccgo_ts(3722),
 		Fcmdline:     __ccgo_ts(3733),
-		Fversion:     int32(exe_doom_1_666),
+		Fversion:     exe_doom_1_666,
 	},
 	1: {
 		Fdescription: __ccgo_ts(3739),
 		Fcmdline:     __ccgo_ts(3753),
-		Fversion:     int32(exe_doom_1_7),
+		Fversion:     exe_doom_1_7,
 	},
 	2: {
 		Fdescription: __ccgo_ts(3757),
 		Fcmdline:     __ccgo_ts(3766),
-		Fversion:     int32(exe_doom_1_8),
+		Fversion:     exe_doom_1_8,
 	},
 	3: {
 		Fdescription: __ccgo_ts(3770),
 		Fcmdline:     __ccgo_ts(3779),
-		Fversion:     int32(exe_doom_1_9),
+		Fversion:     exe_doom_1_9,
 	},
 	4: {
 		Fdescription: __ccgo_ts(1077),
 		Fcmdline:     __ccgo_ts(3783),
-		Fversion:     int32(exe_hacx),
+		Fversion:     exe_hacx,
 	},
 	5: {
 		Fdescription: __ccgo_ts(3788),
 		Fcmdline:     __ccgo_ts(3802),
-		Fversion:     int32(exe_ultimate),
+		Fversion:     exe_ultimate,
 	},
 	6: {
 		Fdescription: __ccgo_ts(3811),
 		Fcmdline:     __ccgo_ts(3822),
-		Fversion:     int32(exe_final),
+		Fversion:     exe_final,
 	},
 	7: {
 		Fdescription: __ccgo_ts(3828),
 		Fcmdline:     __ccgo_ts(3845),
-		Fversion:     int32(exe_final2),
+		Fversion:     exe_final2,
 	},
 	8: {
 		Fdescription: __ccgo_ts(1057),
 		Fcmdline:     __ccgo_ts(3852),
-		Fversion:     int32(exe_chex),
+		Fversion:     exe_chex,
 	},
 	9: {},
 }
@@ -5677,30 +5677,30 @@ func InitGameVersion(tls *libc.TLS) {
 		// Determine automatically
 		if gamemission == int32(pack_chex) {
 			// chex.exe - identified by iwad filename
-			gameversion = int32(exe_chex)
+			gameversion = exe_chex
 		} else {
 			if gamemission == int32(pack_hacx) {
 				// hacx.exe: identified by iwad filename
-				gameversion = int32(exe_hacx)
+				gameversion = exe_hacx
 			} else {
 				if gamemode == int32(shareware) || gamemode == int32(registered) {
 					// original
-					gameversion = int32(exe_doom_1_9)
+					gameversion = exe_doom_1_9
 					// TODO: Detect IWADs earlier than Doom v1.9.
 				} else {
 					if gamemode == int32(retail) {
-						gameversion = int32(exe_ultimate)
+						gameversion = exe_ultimate
 					} else {
 						if gamemode == int32(commercial) {
 							if gamemission == int32(doom2) {
-								gameversion = int32(exe_doom_1_9)
+								gameversion = exe_doom_1_9
 							} else {
 								// Final Doom: tnt or plutonia
 								// Defaults to emulating the first Final Doom executable,
 								// which has the crash in the demo loop; however, having
 								// this as the default should mean that it plays back
 								// most demos correctly.
-								gameversion = int32(exe_final)
+								gameversion = exe_final
 							}
 						}
 					}
@@ -5709,11 +5709,11 @@ func InitGameVersion(tls *libc.TLS) {
 		}
 	}
 	// The original exe does not support retail - 4th episode not supported
-	if gameversion < int32(exe_ultimate) && gamemode == int32(retail) {
+	if gameversion < exe_ultimate && gamemode == int32(retail) {
 		gamemode = int32(registered)
 	}
 	// EXEs prior to the Final Doom exes do not support Final Doom.
-	if gameversion < int32(exe_final) && gamemode == int32(commercial) && (gamemission == int32(pack_tnt) || gamemission == int32(pack_plut)) {
+	if gameversion < exe_final && gamemode == int32(commercial) && (gamemission == int32(pack_tnt) || gamemission == int32(pack_plut)) {
 		gamemission = int32(doom2)
 	}
 }
@@ -6588,7 +6588,7 @@ func F_StartFinale(tls *libc.TLS) {
 		}
 		screen = uintptr(unsafe.Pointer(&textscreens)) + uintptr(i)*32
 		// Hack for Chex Quest
-		if gameversion == int32(exe_chex) && (*textscreen_t)(unsafe.Pointer(screen)).Fmission == int32(doom) {
+		if gameversion == exe_chex && (*textscreen_t)(unsafe.Pointer(screen)).Fmission == int32(doom) {
 			(*textscreen_t)(unsafe.Pointer(screen)).Flevel = 5
 		}
 		if gamemission == int32(pack_chex) {
@@ -7922,7 +7922,7 @@ func G_DoLoadLevel(tls *libc.TLS) {
 	skyflatnum = R_FlatNumForName(tls, __ccgo_ts(13679))
 	// The "Sky never changes in Doom II" bug was fixed in
 	// the id Anthology version of doom2.exe for Final Doom.
-	if gamemode == int32(commercial) && (gameversion == int32(exe_final2) || gameversion == int32(exe_chex)) {
+	if gamemode == int32(commercial) && (gameversion == exe_final2 || gameversion == exe_chex) {
 		if gamemap < 12 {
 			skytexturename = __ccgo_ts(13686)
 		} else {
@@ -8615,7 +8615,7 @@ func G_DoCompleted(tls *libc.TLS) {
 	}
 	if gamemode != int32(commercial) {
 		// Chex Quest ends after 5 levels, rather than 8.
-		if gameversion == int32(exe_chex) {
+		if gameversion == exe_chex {
 			if gamemap == 5 {
 				gameaction = ga_victory
 				return
@@ -8962,7 +8962,7 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 	if skill > int32(sk_nightmare) {
 		skill = int32(sk_nightmare)
 	}
-	if gameversion >= int32(exe_ultimate) {
+	if gameversion >= exe_ultimate {
 		if episode == 0 {
 			episode = 4
 		}
@@ -9217,16 +9217,16 @@ func G_RecordDemo(tls *libc.TLS, name uintptr) {
 //	// Get the demo version code appropriate for the version set in gameversion.
 func G_VanillaVersionCode(tls *libc.TLS) (r int32) {
 	switch gameversion {
-	case int32(exe_doom_1_2):
+	case exe_doom_1_2:
 		I_Error(tls, __ccgo_ts(14119), 0)
 		fallthrough
-	case int32(exe_doom_1_666):
+	case exe_doom_1_666:
 		return 106
-	case int32(exe_doom_1_7):
+	case exe_doom_1_7:
 		return 107
-	case int32(exe_doom_1_8):
+	case exe_doom_1_8:
 		return 108
-	case int32(exe_doom_1_9):
+	case exe_doom_1_9:
 		fallthrough
 	default: // All other versions are variants on v1.9:
 		return 109
@@ -9999,7 +9999,7 @@ func HU_Start(tls *libc.TLS) {
 	}
 	// Chex.exe always uses the episode 1 level title
 	// eg. E2M1 gives the title for E1M1
-	if gameversion == int32(exe_chex) {
+	if gameversion == exe_chex {
 		s = mapnames[gamemap-1]
 	}
 	// dehacked substitution to get modified level name
@@ -20843,15 +20843,15 @@ func M_DrawReadThis1(tls *libc.TLS) {
 	inhelpscreens = 1
 	// Different versions of Doom 1.9 work differently
 	switch gameversion {
-	case int32(exe_doom_1_666):
+	case exe_doom_1_666:
 		fallthrough
-	case int32(exe_doom_1_7):
+	case exe_doom_1_7:
 		fallthrough
-	case int32(exe_doom_1_8):
+	case exe_doom_1_8:
 		fallthrough
-	case int32(exe_doom_1_9):
+	case exe_doom_1_9:
 		fallthrough
-	case int32(exe_hacx):
+	case exe_hacx:
 		if gamemode == int32(commercial) {
 			// Doom 2
 			lumpname = __ccgo_ts(22501)
@@ -20864,16 +20864,16 @@ func M_DrawReadThis1(tls *libc.TLS) {
 			skullx = 280
 			skully = 185
 		}
-	case int32(exe_ultimate):
+	case exe_ultimate:
 		fallthrough
-	case int32(exe_chex):
+	case exe_chex:
 		// Ultimate Doom always displays "HELP1".
 		// Chex Quest version also uses "HELP1", even though it is based
 		// on Final Doom.
 		lumpname = __ccgo_ts(22506)
-	case int32(exe_final):
+	case exe_final:
 		fallthrough
-	case int32(exe_final2):
+	case exe_final2:
 		// Final Doom always displays "HELP".
 		lumpname = __ccgo_ts(22501)
 	default:
@@ -20968,7 +20968,7 @@ func M_NewGame(tls *libc.TLS, choice int32) {
 		return
 	}
 	// Chex Quest disabled the episode select screen, as did Doom II.
-	if gamemode == int32(commercial) || gameversion == int32(exe_chex) {
+	if gamemode == int32(commercial) || gameversion == exe_chex {
 		M_SetupNextMenu(tls, uintptr(unsafe.Pointer(&NewDef)))
 	} else {
 		M_SetupNextMenu(tls, uintptr(unsafe.Pointer(&EpiDef)))
@@ -21094,7 +21094,7 @@ func M_ReadThis(tls *libc.TLS, choice int32) {
 func M_ReadThis2(tls *libc.TLS, choice int32) {
 	// Doom 1.9 had two menus when playing Doom 1
 	// All others had only one
-	if gameversion <= int32(exe_doom_1_9) && gamemode != int32(commercial) {
+	if gameversion <= exe_doom_1_9 && gamemode != int32(commercial) {
 		choice = 0
 		M_SetupNextMenu(tls, uintptr(unsafe.Pointer(&ReadDef2)))
 	} else {
@@ -21941,7 +21941,7 @@ func M_Init(tls *libc.TLS) {
 	// three episodes; if we're emulating one of those then don't try
 	// to show episode four. If we are, then do show episode four
 	// (should crash if missing).
-	if gameversion < int32(exe_ultimate) {
+	if gameversion < exe_ultimate {
 		EpiDef.Fnumitems--
 	}
 	//opldev = M_CheckParm("-opldev") > 0;
@@ -24445,7 +24445,7 @@ func A_Explode(tls *libc.TLS, thingy uintptr) {
 // was to break uac_dead.wad
 
 func CheckBossEnd(tls *libc.TLS, motype mobjtype_t) (r boolean) {
-	if gameversion < int32(exe_ultimate) {
+	if gameversion < exe_ultimate {
 		if gamemap != 8 {
 			return 0
 		}
@@ -25843,7 +25843,7 @@ func P_KillMobj(tls *libc.TLS, source uintptr, target uintptr) {
 	}
 	//	I_StartSound (&actor->r, actor->info->deathsound);
 	// In Chex Quest, monsters don't drop items.
-	if gameversion == int32(exe_chex) {
+	if gameversion == exe_chex {
 		return
 	}
 	// Drop stuff.
@@ -28360,7 +28360,7 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 		//
 		// So we need to check that this is either retail or commercial
 		// (but not doom2)
-		correct_lost_soul_bounce = libc.BoolInt32(gameversion >= int32(exe_ultimate))
+		correct_lost_soul_bounce = libc.BoolInt32(gameversion >= exe_ultimate)
 		if correct_lost_soul_bounce != 0 && (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_SKULLFLY) != 0 {
 			// the skull slammed into something
 			(*mobj_t)(unsafe.Pointer(mo)).Fmomz = -(*mobj_t)(unsafe.Pointer(mo)).Fmomz
@@ -34504,7 +34504,7 @@ func EV_Teleport(tls *libc.TLS, line uintptr, side int32, thing uintptr) (r int3
 				// when teleporting. This quirk is unique to this
 				// particular version; the later version included in
 				// some versions of the Id Anthology fixed this.
-				if gameversion != int32(exe_final) {
+				if gameversion != exe_final {
 					(*mobj_t)(unsafe.Pointer(thing)).Fz = (*mobj_t)(unsafe.Pointer(thing)).Ffloorz
 				}
 				if (*mobj_t)(unsafe.Pointer(thing)).Fplayer != 0 {
@@ -41395,7 +41395,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 								// the Doom II music regardless of gamemode.  This was fixed
 								// in the Ultimate Doom executable so that it would work for
 								// the Doom 1 music as well.
-								if gamemode == int32(commercial) || gameversion < int32(exe_ultimate) {
+								if gamemode == int32(commercial) || gameversion < exe_ultimate {
 									musnum = int32(mus_runnin) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10) + int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('0') - 1
 									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('0') > 35 {
 										plyr.Fmessage = __ccgo_ts(27653)
@@ -41498,7 +41498,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 					map1 = int32((*(*[3]int8)(unsafe.Pointer(bp + 3)))[int32(1)]) - int32('0')
 				}
 				// Chex.exe always warps to episode 1.
-				if gameversion == int32(exe_chex) {
+				if gameversion == exe_chex {
 					epsd = 1
 				}
 				// Catch invalid maps.
@@ -41812,7 +41812,7 @@ func ST_doPaletteStuff(tls *libc.TLS) {
 	// radiation suit palette is used to tint the screen green,
 	// as though the player is being covered in goo by an
 	// attacking flemoid.
-	if gameversion == int32(exe_chex) && palette >= int32(STARTREDPALS) && palette < STARTREDPALS+NUMREDPALS {
+	if gameversion == exe_chex && palette >= int32(STARTREDPALS) && palette < STARTREDPALS+NUMREDPALS {
 		palette = int32(RADIATIONPAL)
 	}
 	if palette != st_palette {
