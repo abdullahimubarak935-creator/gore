@@ -23188,23 +23188,23 @@ const DI_NODIR = 8
 
 func init() {
 	opposite = [9]dirtype_t{
-		0: int32(DI_WEST),
-		1: int32(DI_SOUTHWEST),
-		2: int32(DI_SOUTH),
-		3: int32(DI_SOUTHEAST),
-		5: int32(DI_NORTHEAST),
-		6: int32(DI_NORTH),
-		7: int32(DI_NORTHWEST),
-		8: int32(DI_NODIR),
+		0: DI_WEST,
+		1: DI_SOUTHWEST,
+		2: DI_SOUTH,
+		3: DI_SOUTHEAST,
+		5: DI_NORTHEAST,
+		6: DI_NORTH,
+		7: DI_NORTHWEST,
+		8: DI_NODIR,
 	}
 }
 
 func init() {
 	diags = [4]dirtype_t{
-		0: int32(DI_NORTHWEST),
-		1: int32(DI_NORTHEAST),
-		2: int32(DI_SOUTHWEST),
-		3: int32(DI_SOUTHEAST),
+		0: DI_NORTHWEST,
+		1: DI_NORTHEAST,
+		2: DI_SOUTHWEST,
+		3: DI_SOUTHEAST,
 	}
 }
 
@@ -23363,7 +23363,7 @@ func P_Move(tls *libc.TLS, actor uintptr) (r boolean) {
 	var ld uintptr
 	var tryx, tryy fixed_t
 	var v1 int32
-	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir == int32(DI_NODIR) {
+	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir == DI_NODIR {
 		return 0
 	}
 	if libc.Uint32FromInt32((*mobj_t)(unsafe.Pointer(actor)).Fmovedir) >= uint32(8) {
@@ -23387,7 +23387,7 @@ func P_Move(tls *libc.TLS, actor uintptr) (r boolean) {
 		if !(numspechit != 0) {
 			return 0
 		}
-		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = int32(DI_NODIR)
+		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = DI_NODIR
 		good = 0
 		for {
 			v1 = numspechit
@@ -23447,25 +23447,25 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 	deltax = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - (*mobj_t)(unsafe.Pointer(actor)).Fx
 	deltay = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - (*mobj_t)(unsafe.Pointer(actor)).Fy
 	if deltax > 10*(1<<FRACBITS) {
-		d[int32(1)] = int32(DI_EAST)
+		d[int32(1)] = DI_EAST
 	} else {
 		if deltax < -10*(1<<FRACBITS) {
-			d[int32(1)] = int32(DI_WEST)
+			d[int32(1)] = DI_WEST
 		} else {
-			d[int32(1)] = int32(DI_NODIR)
+			d[int32(1)] = DI_NODIR
 		}
 	}
 	if deltay < -10*(1<<FRACBITS) {
-		d[int32(2)] = int32(DI_SOUTH)
+		d[int32(2)] = DI_SOUTH
 	} else {
 		if deltay > 10*(1<<FRACBITS) {
-			d[int32(2)] = int32(DI_NORTH)
+			d[int32(2)] = DI_NORTH
 		} else {
-			d[int32(2)] = int32(DI_NODIR)
+			d[int32(2)] = DI_NODIR
 		}
 	}
 	// try direct route
-	if d[int32(1)] != int32(DI_NODIR) && d[int32(2)] != int32(DI_NODIR) {
+	if d[int32(1)] != DI_NODIR && d[int32(2)] != DI_NODIR {
 		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = diags[libc.BoolInt32(deltay < 0)<<int32(1)+libc.BoolInt32(deltax > 0)]
 		if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir != turnaround && P_TryWalk(tls, actor) != 0 {
 			return
@@ -23478,19 +23478,19 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 		d[int32(2)] = tdir
 	}
 	if d[int32(1)] == turnaround {
-		d[int32(1)] = int32(DI_NODIR)
+		d[int32(1)] = DI_NODIR
 	}
 	if d[int32(2)] == turnaround {
-		d[int32(2)] = int32(DI_NODIR)
+		d[int32(2)] = DI_NODIR
 	}
-	if d[int32(1)] != int32(DI_NODIR) {
+	if d[int32(1)] != DI_NODIR {
 		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = d[int32(1)]
 		if P_TryWalk(tls, actor) != 0 {
 			// either moved forward or attacked
 			return
 		}
 	}
-	if d[int32(2)] != int32(DI_NODIR) {
+	if d[int32(2)] != DI_NODIR {
 		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = d[int32(2)]
 		if P_TryWalk(tls, actor) != 0 {
 			return
@@ -23498,7 +23498,7 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 	}
 	// there is no direct path to the player,
 	// so pick another direction.
-	if olddir != int32(DI_NODIR) {
+	if olddir != DI_NODIR {
 		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = olddir
 		if P_TryWalk(tls, actor) != 0 {
 			return
@@ -23506,9 +23506,9 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 	}
 	// randomly determine direction of search
 	if P_Random()&int32(1) != 0 {
-		tdir = int32(DI_EAST)
+		tdir = DI_EAST
 		for {
-			if !(tdir <= int32(DI_SOUTHEAST)) {
+			if !(tdir <= DI_SOUTHEAST) {
 				break
 			}
 			if tdir != turnaround {
@@ -23523,9 +23523,9 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 			tdir++
 		}
 	} else {
-		tdir = int32(DI_SOUTHEAST)
+		tdir = DI_SOUTHEAST
 		for {
-			if !(tdir != int32(DI_EAST)-1) {
+			if !(tdir != DI_EAST-1) {
 				break
 			}
 			if tdir != turnaround {
@@ -23540,13 +23540,13 @@ func P_NewChaseDir(tls *libc.TLS, actor uintptr) {
 			tdir--
 		}
 	}
-	if turnaround != int32(DI_NODIR) {
+	if turnaround != DI_NODIR {
 		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = turnaround
 		if P_TryWalk(tls, actor) != 0 {
 			return
 		}
 	}
-	(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = int32(DI_NODIR) // can not move
+	(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = DI_NODIR // can not move
 }
 
 // C documentation
@@ -24096,7 +24096,7 @@ func A_VileChase(tls *libc.TLS, actor uintptr) {
 	var bx, by, xh, xl, yh, yl int32
 	var temp uintptr
 	var info *mobjinfo_t
-	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir != int32(DI_NODIR) {
+	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir != DI_NODIR {
 		// check for corpses to raise
 		viletryx = (*mobj_t)(unsafe.Pointer(actor)).Fx + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*xspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
 		viletryy = (*mobj_t)(unsafe.Pointer(actor)).Fy + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*yspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
