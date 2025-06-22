@@ -9740,7 +9740,7 @@ func init() {
 	}
 }
 
-var plr1 uintptr
+var plr1 *player_t
 var w_title hu_textline_t
 var w_chat hu_itext_t
 var always_off = 0
@@ -9937,7 +9937,7 @@ func HU_Start(tls *libc.TLS) {
 	if headsupactive != 0 {
 		HU_Stop()
 	}
-	plr1 = uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328
+	plr1 = &players[consoleplayer]
 	message_on = 0
 	message_dontfuckwithme = 0
 	message_nottobefuckedwith = 0
@@ -10027,9 +10027,9 @@ func HU_Ticker(tls *libc.TLS) {
 	}
 	if showMessages != 0 || message_dontfuckwithme != 0 {
 		// display message if necessary
-		if (*player_t)(unsafe.Pointer(plr1)).Fmessage != 0 && !(message_nottobefuckedwith != 0) || (*player_t)(unsafe.Pointer(plr1)).Fmessage != 0 && message_dontfuckwithme != 0 {
-			HUlib_addMessageToSText(&w_message, uintptr(0), (*player_t)(unsafe.Pointer(plr1)).Fmessage)
-			(*player_t)(unsafe.Pointer(plr1)).Fmessage = uintptr(0)
+		if plr1.Fmessage != 0 && !(message_nottobefuckedwith != 0) || plr1.Fmessage != 0 && message_dontfuckwithme != 0 {
+			HUlib_addMessageToSText(&w_message, uintptr(0), plr1.Fmessage)
+			plr1.Fmessage = uintptr(0)
 			message_on = 1
 			message_counter = 4 * TICRATE
 			message_nottobefuckedwith = message_dontfuckwithme
@@ -10086,7 +10086,7 @@ var tail = 0
 
 func HU_queueChatChar(c int8) {
 	if (head+1)&(QUEUESIZE-1) == tail {
-		(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17504)
+		plr1.Fmessage = __ccgo_ts(17504)
 	} else {
 		chatchars[head] = c
 		head = (head + 1) & (QUEUESIZE - 1)
@@ -10164,18 +10164,18 @@ func HU_Responder(ev *event_t) (r boolean) {
 								if i == consoleplayer {
 									num_nobrainers++
 									if num_nobrainers < 3 {
-										(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17521)
+										plr1.Fmessage = __ccgo_ts(17521)
 									} else {
 										if num_nobrainers < 6 {
-											(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17544)
+											plr1.Fmessage = __ccgo_ts(17544)
 										} else {
 											if num_nobrainers < 9 {
-												(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17557)
+												plr1.Fmessage = __ccgo_ts(17557)
 											} else {
 												if num_nobrainers < 32 {
-													(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17576)
+													plr1.Fmessage = __ccgo_ts(17576)
 												} else {
-													(*player_t)(unsafe.Pointer(plr1)).Fmessage = __ccgo_ts(17594)
+													plr1.Fmessage = __ccgo_ts(17594)
 												}
 											}
 										}
@@ -10212,7 +10212,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 			// leave chat mode and notify that it was sent
 			chat_on = 0
 			M_StringCopy(uintptr(unsafe.Pointer(&lastmessage)), chat_macros[c], uint64(81))
-			(*player_t)(unsafe.Pointer(plr1)).Fmessage = uintptr(unsafe.Pointer(&lastmessage))
+			plr1.Fmessage = uintptr(unsafe.Pointer(&lastmessage))
 			eatkey = 1
 		} else {
 			c = libc.Uint8FromInt32(ev.Fdata2)
@@ -10227,7 +10227,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 				chat_on = 0
 				if w_chat.Fl.Flen1 != 0 {
 					M_StringCopy(uintptr(unsafe.Pointer(&lastmessage)), uintptr(unsafe.Pointer(&w_chat))+20, uint64(81))
-					(*player_t)(unsafe.Pointer(plr1)).Fmessage = uintptr(unsafe.Pointer(&lastmessage))
+					plr1.Fmessage = uintptr(unsafe.Pointer(&lastmessage))
 				}
 			} else {
 				if libc.Int32FromUint8(c) == int32(KEY_ESCAPE) {
