@@ -92,7 +92,7 @@ func (d *doomTestHeadless) GetKey(event *DoomKeyEvent) bool {
 	delta := now - d.lastEventTick
 	if d.keys[0].ticks <= delta {
 		*event = d.keys[0].event
-		d.t.Logf("Key event: %#v, delta=%d (%d remaining)", *event, delta, len(d.keys)-1)
+		//d.t.Logf("Key event: %#v, delta=%d (%d remaining)", *event, delta, len(d.keys)-1)
 		d.keys = d.keys[1:]
 		d.lastEventTick = now
 		return true
@@ -135,7 +135,7 @@ func (d *doomTestHeadless) InsertKeyChange(Key uint8, pressed bool) {
 
 // Run the demo at super speed to make sure it all goes ok
 func TestDoomDemo(t *testing.T) {
-	dg_speed_ratio = 50.0 // Run at 50x speed
+	dg_speed_ratio = 100.0 // Run at 50x speed
 	game := &doomTestHeadless{
 		t:     t,
 		start: time.Now(),
@@ -155,7 +155,7 @@ func TestDoomDemo(t *testing.T) {
 }
 
 func TestLoadSave(t *testing.T) {
-	dg_speed_ratio = 50.0 // Run at 50x speed
+	dg_speed_ratio = 100.0 // Run at 50x speed
 	game := &doomTestHeadless{
 		t:     t,
 		start: time.Now(),
@@ -256,7 +256,7 @@ func TestLoadSave(t *testing.T) {
 }
 
 func TestDoomRandom(t *testing.T) {
-	dg_speed_ratio = 50.0 // Run at 50x speed
+	dg_speed_ratio = 100.0 // Run at 50x speed
 	game := &doomTestHeadless{
 		t:     t,
 		start: time.Now(),
@@ -265,17 +265,17 @@ func TestDoomRandom(t *testing.T) {
 	defer game.Close()
 	go func() {
 		// Let things get settled
-		time.Sleep(50 * time.Millisecond)
+		time.Sleep(20 * time.Millisecond)
 		// Start a game
 		game.InsertKey(KEY_ESCAPE) // Open menu
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(2 * time.Millisecond)
 		game.InsertKey(KEY_ENTER)
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(2 * time.Millisecond)
 		game.InsertKey(KEY_ENTER)
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(2 * time.Millisecond)
 		game.InsertKey(KEY_ENTER) // Start new game
 
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(10 * time.Millisecond)
 		keys := []uint8{
 			KEY_UPARROW1, KEY_DOWNARROW1, KEY_LEFTARROW1,
 			KEY_RIGHTARROW1, KEY_FIRE1, KEY_USE1,
@@ -287,7 +287,7 @@ func TestDoomRandom(t *testing.T) {
 			change := rand.Intn(len(keys))
 			key := keys[change]
 			game.InsertKeyChange(key, true)
-			time.Sleep(10 * time.Millisecond)
+			time.Sleep(2 * time.Millisecond)
 			game.InsertKeyChange(key, false)
 			time.Sleep(1 * time.Millisecond)
 		}
