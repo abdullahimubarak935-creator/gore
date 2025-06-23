@@ -3120,7 +3120,7 @@ func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 					}
 				}
 			}
-			if !(deathmatch != 0) && cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_amap)), int8(ev.Fdata2)) != 0 {
+			if !(deathmatch != 0) && cht_CheckCheat(&cheat_amap, int8(ev.Fdata2)) != 0 {
 				rc = 0
 				cheating = (cheating + 1) % 3
 			}
@@ -18841,43 +18841,43 @@ func M_AddToBox(box uintptr, x fixed_t, y fixed_t) {
 //	// Called in st_stuff module, which handles the input.
 //	// Returns a 1 if the cheat was successful, 0 if failed.
 //	//
-func cht_CheckCheat(cht uintptr, key int8) (r int32) {
+func cht_CheckCheat(cht *cheatseq_t, key int8) (r int32) {
 	var v1 int32
 	// if we make a short sequence on a cheat with parameters, this
 	// will not work in vanilla doom.  behave the same.
-	if (*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars > 0 && xstrlen(cht) < (*cheatseq_t)(unsafe.Pointer(cht)).Fsequence_len {
+	if cht.Fparameter_chars > 0 && xstrlen(uintptr(unsafe.Pointer(&cht.Fsequence[0]))) < cht.Fsequence_len {
 		return 0
 	}
-	if (*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read < xstrlen(cht) {
+	if cht.Fchars_read < xstrlen(uintptr(unsafe.Pointer(&cht.Fsequence[0]))) {
 		// still reading characters from the cheat code
 		// and verifying.  reset back to the beginning
 		// if a key is wrong
-		if int32(key) == int32(*(*int8)(unsafe.Pointer(cht + uintptr((*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read)))) {
-			(*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read++
+		if int32(key) == int32(*(*int8)(unsafe.Pointer(&cht.Fsequence[cht.Fchars_read]))) {
+			cht.Fchars_read++
 		} else {
-			(*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read = uint64(0)
+			cht.Fchars_read = uint64(0)
 		}
-		(*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read = 0
+		cht.Fparam_chars_read = 0
 	} else {
-		if (*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read < (*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars {
+		if cht.Fparam_chars_read < cht.Fparameter_chars {
 			// we have passed the end of the cheat sequence and are
 			// entering parameters now
-			*(*int8)(unsafe.Pointer(cht + 60 + uintptr((*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read))) = key
-			(*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read++
+			cht.Fparameter_buf[cht.Fparam_chars_read] = key
+			cht.Fparam_chars_read++
 		}
 	}
-	if (*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read >= xstrlen(cht) && (*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read >= (*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars {
+	if cht.Fchars_read >= xstrlen(uintptr(unsafe.Pointer(&cht.Fsequence[0]))) && cht.Fparam_chars_read >= cht.Fparameter_chars {
 		v1 = 0
-		(*cheatseq_t)(unsafe.Pointer(cht)).Fparam_chars_read = v1
-		(*cheatseq_t)(unsafe.Pointer(cht)).Fchars_read = libc.Uint64FromInt32(v1)
+		cht.Fparam_chars_read = v1
+		cht.Fchars_read = libc.Uint64FromInt32(v1)
 		return 1
 	}
 	// cheat not matched yet
 	return 0
 }
 
-func cht_GetParam(cht uintptr, buffer uintptr) {
-	xmemcpy(buffer, cht+60, libc.Uint64FromInt32((*cheatseq_t)(unsafe.Pointer(cht)).Fparameter_chars))
+func cht_GetParam(cht *cheatseq_t, buffer uintptr) {
+	xmemcpy(buffer, (uintptr)(unsafe.Pointer(&cht.Fparameter_buf[0])), libc.Uint64FromInt32(cht.Fparameter_chars))
 }
 
 const EISDIR = 21
@@ -41174,7 +41174,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 		if ev.Ftype1 == ev_keydown {
 			if !(netgame != 0) && gameskill != int32(sk_nightmare) {
 				// 'dqd' cheat for toggleable god mode
-				if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_god)), int8(ev.Fdata2)) != 0 {
+				if cht_CheckCheat(&cheat_god, int8(ev.Fdata2)) != 0 {
 					plyr.Fcheats ^= int32(CF_GODMODE)
 					if plyr.Fcheats&int32(CF_GODMODE) != 0 {
 						if plyr.Fmo != 0 {
@@ -41186,7 +41186,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 						plyr.Fmessage = __ccgo_ts(27573)
 					}
 				} else {
-					if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_ammonokey)), int8(ev.Fdata2)) != 0 {
+					if cht_CheckCheat(&cheat_ammonokey, int8(ev.Fdata2)) != 0 {
 						plyr.Farmorpoints = int32(DEH_DEFAULT_IDFA_ARMOR)
 						plyr.Farmortype = int32(DEH_DEFAULT_IDFA_ARMOR_CLASS)
 						i = 0
@@ -41213,7 +41213,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 						}
 						plyr.Fmessage = __ccgo_ts(27597)
 					} else {
-						if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_ammo)), int8(ev.Fdata2)) != 0 {
+						if cht_CheckCheat(&cheat_ammo, int8(ev.Fdata2)) != 0 {
 							plyr.Farmorpoints = int32(DEH_DEFAULT_IDKFA_ARMOR)
 							plyr.Farmortype = int32(DEH_DEFAULT_IDKFA_ARMOR_CLASS)
 							i = 0
@@ -41251,9 +41251,9 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 							}
 							plyr.Fmessage = __ccgo_ts(27618)
 						} else {
-							if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_mus)), int8(ev.Fdata2)) != 0 {
+							if cht_CheckCheat(&cheat_mus, int8(ev.Fdata2)) != 0 {
 								plyr.Fmessage = __ccgo_ts(27640)
-								cht_GetParam(uintptr(unsafe.Pointer(&cheat_mus)), bp)
+								cht_GetParam(&cheat_mus, bp)
 								// Note: The original v1.9 had a bug that tried to play back
 								// the Doom II music regardless of gamemode.  This was fixed
 								// in the Ultimate Doom executable so that it would work for
@@ -41284,7 +41284,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 									}
 									v6 = v7
 								}
-								if v10 = v6 == int32(doom) && cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_noclip)), int8(ev.Fdata2)) != 0; !v10 {
+								if v10 = v6 == int32(doom) && cht_CheckCheat(&cheat_noclip, int8(ev.Fdata2)) != 0; !v10 {
 									if gamemission == int32(pack_chex) {
 										v8 = int32(doom)
 									} else {
@@ -41296,7 +41296,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 										v8 = v9
 									}
 								}
-								if v10 || v8 != int32(doom) && cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_commercial_noclip)), int8(ev.Fdata2)) != 0 {
+								if v10 || v8 != int32(doom) && cht_CheckCheat(&cheat_commercial_noclip, int8(ev.Fdata2)) != 0 {
 									// Noclip cheat.
 									// For Doom 1, use the idspipsopd cheat; for all others, use
 									// idclip
@@ -41317,7 +41317,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 					if !(i < 6) {
 						break
 					}
-					if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_powerup))+uintptr(i)*72, int8(ev.Fdata2)) != 0 {
+					if cht_CheckCheat(&cheat_powerup[i], int8(ev.Fdata2)) != 0 {
 						if plyr.Fpowers[i] == 0 {
 							P_GivePower((uintptr)(unsafe.Pointer(plyr)), i)
 						} else {
@@ -41335,15 +41335,15 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 					i++
 				}
 				// 'behold' power-up menu
-				if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_powerup))+6*72, int8(ev.Fdata2)) != 0 {
+				if cht_CheckCheat(&cheat_powerup[6], int8(ev.Fdata2)) != 0 {
 					plyr.Fmessage = __ccgo_ts(27732)
 				} else {
-					if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_choppers)), int8(ev.Fdata2)) != 0 {
+					if cht_CheckCheat(&cheat_choppers, int8(ev.Fdata2)) != 0 {
 						plyr.Fweaponowned[wp_chainsaw] = 1
 						plyr.Fpowers[pw_invulnerability] = 1
 						plyr.Fmessage = __ccgo_ts(27778)
 					} else {
-						if cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_mypos)), int8(ev.Fdata2)) != 0 {
+						if cht_CheckCheat(&cheat_mypos, int8(ev.Fdata2)) != 0 {
 							M_snprintf(tls, uintptr(unsafe.Pointer(&buf)), uint64(52), __ccgo_ts(27800), libc.VaList(bp+16, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fangle, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy))
 							plyr.Fmessage = uintptr(unsafe.Pointer(&buf))
 						}
@@ -41351,8 +41351,8 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 				}
 			}
 			// 'clev' change-level cheat
-			if !(netgame != 0) && cht_CheckCheat(uintptr(unsafe.Pointer(&cheat_clev)), int8(ev.Fdata2)) != 0 {
-				cht_GetParam(uintptr(unsafe.Pointer(&cheat_clev)), bp+3)
+			if !(netgame != 0) && cht_CheckCheat(&cheat_clev, int8(ev.Fdata2)) != 0 {
+				cht_GetParam(&cheat_clev, bp+3)
 				if gamemode == int32(commercial) {
 					epsd = 1
 					map1 = (int32((*(*[3]int8)(unsafe.Pointer(bp + 3)))[0])-int32('0'))*int32(10) + int32((*(*[3]int8)(unsafe.Pointer(bp + 3)))[int32(1)]) - int32('0')
