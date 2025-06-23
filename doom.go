@@ -47187,15 +47187,13 @@ var linedef *line_t
 
 var lines []line_t
 
-// TODO: ANDRE/GORE: This is a hack to allow the
+// TODO: ANDRE/GORE: This is a hack to allow easy conversion of addresses into indexs
 func lineIndex(l *line_t) int32 {
-	for i, line := range lines {
-		if line == *l {
-			return int32(i)
-		}
+	idx := int32((uintptr(unsafe.Pointer(l)) - uintptr(unsafe.Pointer(&lines[0]))) / unsafe.Sizeof(line_t{}))
+	if idx < 0 || idx >= int32(len(lines)) {
+		log.Fatalf("lineIndex: line %p out of bounds, %d lines length %d", l, idx, len(lines))
 	}
-	log.Fatalf("lineIndex: line %p not found in lines", l)
-	return -1 // unreachable
+	return idx
 }
 
 var linespeciallist [64]*line_t
@@ -47575,13 +47573,11 @@ var playeringame [4]boolean
 var players [4]player_t
 
 func playerIndex(p *player_t) int32 {
-	for i := int32(0); i < 4; i++ {
-		if &players[i] == p {
-			return i
-		}
+	idx := int32((uintptr(unsafe.Pointer(p)) - uintptr(unsafe.Pointer(&players[0]))) / unsafe.Sizeof(player_t{}))
+	if idx < 0 || idx >= int32(len(players)) {
+		log.Fatalf("playerIndex: player %p out of bounds, %d players length %d", p, idx, len(players))
 	}
-	log.Fatalf("playerIndex: player %p not found in players", p)
-	return -1 // unreachable
+	return idx
 }
 
 var playerstarts [4]mapthing_t
@@ -47740,15 +47736,11 @@ var sectors []sector_t
 
 // TODO: ANDRE/GORE: Faster way do to pointer division to determine offset?
 func sectorIndex(sector *sector_t) int32 {
-	if sector == nil {
-		return -1
+	idx := int32((uintptr(unsafe.Pointer(sector)) - uintptr(unsafe.Pointer(&sectors[0]))) / unsafe.Sizeof(sector_t{}))
+	if idx < 0 || idx >= int32(len(sectors)) {
+		log.Fatalf("sectorIndex: sector %p out of bounds, %d sectors length %d", sector, idx, len(sectors))
 	}
-	for i := int32(0); i < numsectors; i++ {
-		if sector == &sectors[i] {
-			return i
-		}
-	}
-	return -1
+	return idx
 }
 
 var segs uintptr
@@ -48058,13 +48050,11 @@ var starttime int32
 var states [967]state_t
 
 func stateIndex(s *state_t) int32 {
-	for i := 0; i < len(states); i++ {
-		if &states[i] == s {
-			return int32(i)
-		}
+	idx := int32((uintptr(unsafe.Pointer(s)) - uintptr(unsafe.Pointer(&states[0]))) / unsafe.Sizeof(state_t{}))
+	if idx < 0 || idx >= int32(len(states)) {
+		log.Fatalf("stateIndex: state %p out of bounds, %d states length %d", s, idx, len(states))
 	}
-	log.Fatalf("stateIndex: state %p not found in states", s)
-	return -1 // unreachable
+	return idx
 }
 
 var stdc_wad_file wad_file_class_t
