@@ -8311,7 +8311,8 @@ func G_PlayerReborn(player int32) {
 
 func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 	var an, i int32
-	var mo, ss uintptr
+	var mo uintptr
+	var ss *subsector_t
 	var x, xa, y, ya, v2 fixed_t
 	if !(players[playernum].Fmo != 0) {
 		// first spawn of level, before corpses
@@ -8391,7 +8392,7 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 		xa = v2
 		break
 	}
-	mo = P_SpawnMobj(tls, x+int32(20)*xa, y+int32(20)*ya, (*subsector_t)(unsafe.Pointer(ss)).Fsector.Ffloorheight, int32(MT_TFOG))
+	mo = P_SpawnMobj(tls, x+int32(20)*xa, y+int32(20)*ya, ss.Fsector.Ffloorheight, int32(MT_TFOG))
 	if players[consoleplayer].Fviewz != 1 {
 		S_StartSound(tls, mo, int32(sfx_telept))
 	} // don't start sound on first frame
@@ -26319,7 +26320,7 @@ func PIT_StompThing(tls *libc.TLS, thing uintptr) (r boolean) {
 //	//
 func P_TeleportMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 	var bx, by, xh, xl, yh, yl int32
-	var newsubsec uintptr
+	var newsubsec *subsector_t
 	var v1 fixed_t
 	// kill anything occupying the position
 	tmthing = thing
@@ -26336,10 +26337,10 @@ func P_TeleportMove(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boole
 	// that contains the point.
 	// Any contacted lines the step closer together
 	// will adjust them.
-	v1 = (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer(newsubsec)).Fsector)).Ffloorheight
+	v1 = (*sector_t)(unsafe.Pointer(newsubsec.Fsector)).Ffloorheight
 	tmdropoffz = v1
 	tmfloorz = v1
-	tmceilingz = (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer(newsubsec)).Fsector)).Fceilingheight
+	tmceilingz = (*sector_t)(unsafe.Pointer(newsubsec.Fsector)).Fceilingheight
 	validcount++
 	numspechit = 0
 	// stomp on any things contacted
@@ -26550,7 +26551,7 @@ func PIT_CheckThing(tls *libc.TLS, thing uintptr) (r boolean) {
 //	//
 func P_CheckPosition(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 	var bx, by, xh, xl, yh, yl int32
-	var newsubsec uintptr
+	var newsubsec *subsector_t
 	var v1 fixed_t
 	tmthing = thing
 	tmflags = (*mobj_t)(unsafe.Pointer(thing)).Fflags
@@ -26566,10 +26567,10 @@ func P_CheckPosition(tls *libc.TLS, thing uintptr, x fixed_t, y fixed_t) (r bool
 	// that contains the point.
 	// Any contacted lines the step closer together
 	// will adjust them.
-	v1 = (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer(newsubsec)).Fsector)).Ffloorheight
+	v1 = (*sector_t)(unsafe.Pointer(newsubsec.Fsector)).Ffloorheight
 	tmdropoffz = v1
 	tmfloorz = v1
-	tmceilingz = (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer(newsubsec)).Fsector)).Fceilingheight
+	tmceilingz = (*sector_t)(unsafe.Pointer(newsubsec.Fsector)).Fceilingheight
 	validcount++
 	numspechit = 0
 	if tmflags&int32(MF_NOCLIP) != 0 {
@@ -27622,14 +27623,15 @@ func P_UnsetThingPosition(thing uintptr) {
 //	//
 func P_SetThingPosition(thing uintptr) {
 	var blockx, blocky int32
-	var link, ss, v1 uintptr
+	var link, v1 uintptr
+	var ss *subsector_t
 	var sec *sector_t
 	// link into subsector
 	ss = R_PointInSubsector((*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy)
-	(*mobj_t)(unsafe.Pointer(thing)).Fsubsector = (*subsector_t)(unsafe.Pointer(ss))
+	(*mobj_t)(unsafe.Pointer(thing)).Fsubsector = ss
 	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_NOSECTOR) != 0) {
 		// invisible things don't go into the sector links
-		sec = (*subsector_t)(unsafe.Pointer(ss)).Fsector
+		sec = ss.Fsector
 		(*mobj_t)(unsafe.Pointer(thing)).Fsprev = libc.UintptrFromInt32(0)
 		(*mobj_t)(unsafe.Pointer(thing)).Fsnext = sec.Fthinglist
 		if sec.Fthinglist != 0 {
@@ -28397,7 +28399,8 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 //	// P_NightmareRespawn
 //	//
 func P_NightmareRespawn(tls *libc.TLS, mobj uintptr) {
-	var mo, mthing, ss uintptr
+	var mo, mthing uintptr
+	var ss *subsector_t
 	var x, y, z fixed_t
 	x = int32((*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint.Fx) << int32(FRACBITS)
 	y = int32((*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint.Fy) << int32(FRACBITS)
@@ -28412,7 +28415,7 @@ func P_NightmareRespawn(tls *libc.TLS, mobj uintptr) {
 	S_StartSound(tls, mo, int32(sfx_telept))
 	// spawn a teleport fog at the new spot
 	ss = R_PointInSubsector(x, y)
-	mo = P_SpawnMobj(tls, x, y, (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer(ss)).Fsector)).Ffloorheight, int32(MT_TFOG))
+	mo = P_SpawnMobj(tls, x, y, (*sector_t)(unsafe.Pointer(ss.Fsector)).Ffloorheight, int32(MT_TFOG))
 	S_StartSound(tls, mo, int32(sfx_telept))
 	// spawn the new monster
 	mthing = mobj + 204
@@ -28560,7 +28563,8 @@ func P_RemoveMobj(tls *libc.TLS, mobj uintptr) {
 //	//
 func P_RespawnSpecials(tls *libc.TLS) {
 	var i int32
-	var mo, mthing, ss uintptr
+	var mo, mthing uintptr
+	var ss *subsector_t
 	var x, y, z fixed_t
 	// only respawn items in deathmatch
 	if deathmatch != 2 {
@@ -28579,7 +28583,7 @@ func P_RespawnSpecials(tls *libc.TLS) {
 	y = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy) << int32(FRACBITS)
 	// spawn a teleport fog at the new spot
 	ss = R_PointInSubsector(x, y)
-	mo = P_SpawnMobj(tls, x, y, (*sector_t)(unsafe.Pointer((*subsector_t)(unsafe.Pointer(ss)).Fsector)).Ffloorheight, int32(MT_IFOG))
+	mo = P_SpawnMobj(tls, x, y, (*sector_t)(unsafe.Pointer(ss.Fsector)).Ffloorheight, int32(MT_IFOG))
 	S_StartSound(tls, mo, int32(sfx_itmbk))
 	// find which type to spawn
 	i = 0
@@ -31445,26 +31449,14 @@ func P_LoadSegs(tls *libc.TLS, lump int32) {
 //	// P_LoadSubsectors
 //	//
 func P_LoadSubsectors(tls *libc.TLS, lump int32) {
-	var data, ms, ss uintptr
-	var i int32
+	var data, ms uintptr
 	numsubsectors = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(4))
-	subsectors = Z_Malloc(tls, libc.Int32FromUint64(libc.Uint64FromInt32(numsubsectors)*uint64(16)), int32(PU_LEVEL), uintptr(0))
+	subsectors = make([]subsector_t, numsubsectors)
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
 	ms = data
-	xmemset(subsectors, 0, libc.Uint64FromInt32(numsubsectors)*uint64(16))
-	ss = subsectors
-	i = 0
-	for {
-		if !(i < numsubsectors) {
-			break
-		}
-		(*subsector_t)(unsafe.Pointer(ss)).Fnumlines = (*mapsubsector_t)(unsafe.Pointer(ms)).Fnumsegs
-		(*subsector_t)(unsafe.Pointer(ss)).Ffirstline = (*mapsubsector_t)(unsafe.Pointer(ms)).Ffirstseg
-		goto _1
-	_1:
-		;
-		i++
-		ss += 16
+	for i := int32(0); i < numsubsectors; i++ {
+		subsectors[i].Fnumlines = (*mapsubsector_t)(unsafe.Pointer(ms)).Fnumsegs
+		subsectors[i].Ffirstline = (*mapsubsector_t)(unsafe.Pointer(ms)).Ffirstseg
 		ms += 4
 	}
 	W_ReleaseLumpNum(tls, lump)
@@ -31748,21 +31740,12 @@ func P_LoadBlockMap(tls *libc.TLS, lump int32) {
 func P_GroupLines(tls *libc.TLS) {
 	bp := alloc(16)
 	var block, i, j, v10, v7, v8, v9 int32
-	var seg, ss uintptr
+	var seg uintptr
 	// look up sector number for each subsector
-	ss = subsectors
-	i = 0
-	for {
-		if !(i < numsubsectors) {
-			break
-		}
-		seg = segs + uintptr((*subsector_t)(unsafe.Pointer(ss)).Ffirstline)*56
-		(*subsector_t)(unsafe.Pointer(ss)).Fsector = (*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(seg)).Fsidedef)).Fsector
-		goto _1
-	_1:
-		;
-		i++
-		ss += 16
+	for i := int32(0); i < numsubsectors; i++ {
+		ss := &subsectors[i]
+		seg = segs + uintptr(ss.Ffirstline)*56
+		ss.Fsector = (*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(seg)).Fsidedef)).Fsector
 	}
 	// count number of lines in each sector
 	totallines = 0
@@ -32110,7 +32093,7 @@ func P_InterceptVector2(tls *libc.TLS, v2 uintptr, v1 uintptr) (r fixed_t) {
 //	//
 func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 	bp := alloc(48)
-	var seg, sub uintptr
+	var seg uintptr
 	var v1, v2 *vertex_t
 	var line *line_t
 	var front, back *sector_t
@@ -32119,10 +32102,10 @@ func P_CrossSubsector(tls *libc.TLS, num int32) (r boolean) {
 	if num >= numsubsectors {
 		I_Error(tls, __ccgo_ts(25239), num, numsubsectors)
 	}
-	sub = subsectors + uintptr(num)*16
+	sub := &subsectors[num]
 	// check lines
-	count = int32((*subsector_t)(unsafe.Pointer(sub)).Fnumlines)
-	seg = segs + uintptr((*subsector_t)(unsafe.Pointer(sub)).Ffirstline)*56
+	count = int32(sub.Fnumlines)
+	seg = segs + uintptr(sub.Ffirstline)*56
 	for {
 		if !(count != 0) {
 			break
@@ -35177,14 +35160,14 @@ func R_CheckBBox(tls *libc.TLS, bspcoord uintptr) (r boolean) {
 //	//
 func R_Subsector(tls *libc.TLS, num int32) {
 	var count, v1 int32
-	var line, sub uintptr
+	var line uintptr
 	if num >= numsubsectors {
 		I_Error(tls, __ccgo_ts(25894), num, numsubsectors)
 	}
-	sub = subsectors + uintptr(num)*16
-	frontsector = (*subsector_t)(unsafe.Pointer(sub)).Fsector
-	count = int32((*subsector_t)(unsafe.Pointer(sub)).Fnumlines)
-	line = segs + uintptr((*subsector_t)(unsafe.Pointer(sub)).Ffirstline)*56
+	sub := &subsectors[num]
+	frontsector = sub.Fsector
+	count = int32(sub.Fnumlines)
+	line = segs + uintptr(sub.Ffirstline)*56
 	if (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight < viewz {
 		floorplane = R_FindPlane(tls, (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight, int32((*sector_t)(unsafe.Pointer(frontsector)).Ffloorpic), int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel))
 	} else {
@@ -37251,11 +37234,11 @@ func R_Init(tls *libc.TLS) {
 //	//
 //	// R_PointInSubsector
 //	//
-func R_PointInSubsector(x fixed_t, y fixed_t) (r uintptr) {
+func R_PointInSubsector(x fixed_t, y fixed_t) *subsector_t {
 	var nodenum, side int32
 	// single subsector is a special case
 	if !(numnodes != 0) {
-		return subsectors
+		return &subsectors[0]
 	}
 	nodenum = numnodes - 1
 	for !(nodenum&NF_SUBSECTOR5 != 0) {
@@ -37263,7 +37246,7 @@ func R_PointInSubsector(x fixed_t, y fixed_t) (r uintptr) {
 		side = R_PointOnSide(x, y, node)
 		nodenum = libc.Int32FromUint16(node.Fchildren[side])
 	}
-	return subsectors + uintptr(nodenum & ^NF_SUBSECTOR5)*16
+	return &subsectors[nodenum & ^NF_SUBSECTOR5]
 }
 
 // C documentation
@@ -48109,7 +48092,7 @@ var strace divline_t
 //	//
 var sttminus uintptr
 
-var subsectors uintptr
+var subsectors []subsector_t
 
 var switchlist [100]int32
 
