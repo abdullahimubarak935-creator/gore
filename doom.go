@@ -31468,31 +31468,22 @@ func P_LoadSubsectors(tls *libc.TLS, lump int32) {
 //	// P_LoadSectors
 //	//
 func P_LoadSectors(tls *libc.TLS, lump int32) {
-	var data, ms uintptr
-	var i int32
+	var data uintptr
 	numsectors = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(26))
 	sectors = make([]sector_t, numsectors)
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
-	ms = data
-	i = 0
-	for {
-		if !(i < numsectors) {
-			break
-		}
+	mapsectors := unsafe.Slice((*mapsector_t)(unsafe.Pointer(data)), numsectors)
+	for i := int32(0); i < numsectors; i++ {
+		ms := &mapsectors[i]
 		ss := &sectors[i]
-		ss.Ffloorheight = int32((*mapsector_t)(unsafe.Pointer(ms)).Ffloorheight) << int32(FRACBITS)
-		ss.Fceilingheight = int32((*mapsector_t)(unsafe.Pointer(ms)).Fceilingheight) << int32(FRACBITS)
-		ss.Ffloorpic = int16(R_FlatNumForName(tls, ms+4))
-		ss.Fceilingpic = int16(R_FlatNumForName(tls, ms+12))
-		ss.Flightlevel = (*mapsector_t)(unsafe.Pointer(ms)).Flightlevel
-		ss.Fspecial = (*mapsector_t)(unsafe.Pointer(ms)).Fspecial
-		ss.Ftag = (*mapsector_t)(unsafe.Pointer(ms)).Ftag
+		ss.Ffloorheight = int32(ms.Ffloorheight) << int32(FRACBITS)
+		ss.Fceilingheight = int32(ms.Fceilingheight) << int32(FRACBITS)
+		ss.Ffloorpic = int16(R_FlatNumForName(tls, (uintptr)(unsafe.Pointer(&ms.Ffloorpic))))
+		ss.Fceilingpic = int16(R_FlatNumForName(tls, (uintptr)(unsafe.Pointer(&ms.Fceilingpic))))
+		ss.Flightlevel = ms.Flightlevel
+		ss.Fspecial = ms.Fspecial
+		ss.Ftag = ms.Ftag
 		ss.Fthinglist = libc.UintptrFromInt32(0)
-		goto _1
-	_1:
-		;
-		i++
-		ms += 26
 	}
 	W_ReleaseLumpNum(tls, lump)
 }
