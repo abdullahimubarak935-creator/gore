@@ -1,6 +1,7 @@
 package gore
 
 import (
+	"bufio"
 	"fmt"
 	"image"
 	"image/png"
@@ -36,6 +37,18 @@ func (d *doomTestHeadless) Close() {
 	}
 }
 
+type bufferedWriteCloser struct {
+	*bufio.Writer
+	io.Closer
+}
+
+func (b *bufferedWriteCloser) Close() error {
+	if err := b.Writer.Flush(); err != nil {
+		return fmt.Errorf("error flushing buffer: %w", err)
+	}
+	return b.Closer.Close()
+}
+
 func ffmpegSaver(filename string) (io.WriteCloser, error) {
 	args := []string{
 		"ffmpeg",
@@ -66,7 +79,11 @@ func ffmpegSaver(filename string) (io.WriteCloser, error) {
 	if err := cmd.Start(); err != nil {
 		return nil, err
 	}
-	return stdin, nil
+	// We don't want ffmpeg compression to slow down the game, so just use a lot of memory instead
+	return &bufferedWriteCloser{
+		Writer: bufio.NewWriterSize(stdin, 256*1024*1024),
+		Closer: stdin,
+	}, nil
 }
 
 func (d *doomTestHeadless) DrawFrame(frame *image.RGBA) {
@@ -178,7 +195,6 @@ func (d *doomTestHeadless) InsertKeySequence(keys ...uint8) {
 
 func (d *doomTestHeadless) InsertKeyChange(Key uint8, pressed bool) {
 	d.lock.Lock()
-	defer d.lock.Unlock()
 	d.keys = append(d.keys, delayedKeyEvent{
 		event: DoomKeyEvent{
 			Pressed: pressed,
@@ -186,6 +202,17 @@ func (d *doomTestHeadless) InsertKeyChange(Key uint8, pressed bool) {
 		},
 		ticks: 0, // Insert immediately
 	})
+	d.lock.Unlock()
+	// Wait for it to leave the queue
+	for {
+		d.lock.Lock()
+		inuse := len(d.keys) > 0
+		d.lock.Unlock()
+		time.Sleep(1 * time.Millisecond) // Wait a bit before checking again
+		if !inuse {
+			break
+		}
+	}
 }
 
 // Run the demo at super speed to make sure it all goes ok
