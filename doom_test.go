@@ -395,3 +395,43 @@ func TestDoomMap(t *testing.T) {
 	}()
 	Run(game, []string{"-iwad", "doom1.wad"})
 }
+
+func TestWeapons(t *testing.T) {
+	dg_speed_ratio = 100.0 // Run at 50x speed
+	game := &doomTestHeadless{
+		t:     t,
+		start: time.Now(),
+		keys:  nil,
+	}
+	defer game.Close()
+	go func() {
+		// Let things get settled
+		time.Sleep(20 * time.Millisecond)
+		// Start a game
+		game.InsertKey(KEY_ESCAPE) // Open menu
+		game.InsertKey(KEY_ENTER)
+		game.InsertKey(KEY_ENTER)
+		game.InsertKey(KEY_ENTER) // Start new game
+
+		time.Sleep(10 * time.Millisecond)
+		game.InsertKeySequence('i', 'd', 'f', 'a') // Give all weapons
+
+		// Test weapon switching - BFG & Plasma gun aren't available in the shareware wad
+		for i := uint8(1); i <= 5; i++ {
+			game.InsertKey('0' + i)
+			time.Sleep(10 * time.Millisecond) // Wait to simulate weapon switch
+			// Fire
+			game.InsertKeyChange(KEY_FIRE1, true)
+			time.Sleep(20 * time.Millisecond) // Wait to simulate firing
+			game.InsertKeyChange(KEY_FIRE1, false)
+			t.Logf("Switched to weapon %d", i)
+		}
+
+		// Exit
+		game.InsertKey(KEY_ESCAPE)   // Open menu
+		game.InsertKey(KEY_UPARROW1) // Go to quit
+		game.InsertKey(KEY_ENTER)    // Confirm quit
+		game.InsertKey('y')          // Confirm exit
+	}()
+	Run(game, []string{"-iwad", "doom1.wad"})
+}
