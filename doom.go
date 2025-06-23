@@ -8309,7 +8309,7 @@ func G_PlayerReborn(player int32) {
 	}
 }
 
-func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
+func G_CheckSpot(tls *libc.TLS, playernum int32, mthing *mapthing_t) (r boolean) {
 	var an, i int32
 	var mo uintptr
 	var ss *subsector_t
@@ -8321,7 +8321,7 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 			if !(i < playernum) {
 				break
 			}
-			if (*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fx == int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx)<<int32(FRACBITS) && (*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fy == int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy)<<int32(FRACBITS) {
+			if (*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fx == int32(mthing.Fx)<<int32(FRACBITS) && (*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fy == int32(mthing.Fy)<<int32(FRACBITS) {
 				return 0
 			}
 			goto _1
@@ -8331,8 +8331,8 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 		}
 		return 1
 	}
-	x = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx) << int32(FRACBITS)
-	y = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy) << int32(FRACBITS)
+	x = int32(mthing.Fx) << int32(FRACBITS)
+	y = int32(mthing.Fy) << int32(FRACBITS)
 	if !(P_CheckPosition(tls, players[playernum].Fmo, x, y) != 0) {
 		return 0
 	}
@@ -8362,7 +8362,7 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 	// This calculation overflows in Vanilla Doom, but here we deliberately
 	// avoid integer overflow as it is undefined behavior, so the value of
 	// 'an' will always be positive.
-	an = ANG451 >> ANGLETOFINESHIFT * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / 45)
+	an = ANG451 >> ANGLETOFINESHIFT * (int32(mthing.Fangle) / 45)
 	switch an {
 	case 4096: // -4096:
 		xa = finetangent[int32(2048)] // finecosine[-4096]
@@ -8408,7 +8408,7 @@ func G_CheckSpot(tls *libc.TLS, playernum int32, mthing uintptr) (r boolean) {
 //	//
 func G_DeathMatchSpawnPlayer(tls *libc.TLS, playernum int32) {
 	var i, j, selections int32
-	selections = int32((int64(deathmatch_p) - int64(uintptr(unsafe.Pointer(&deathmatchstarts)))) / 10)
+	selections = int32(deathmatch_pos)
 	if selections < 4 {
 		I_Error(tls, __ccgo_ts(13841), selections)
 	}
@@ -8418,9 +8418,9 @@ func G_DeathMatchSpawnPlayer(tls *libc.TLS, playernum int32) {
 			break
 		}
 		i = P_Random() % selections
-		if G_CheckSpot(tls, playernum, uintptr(unsafe.Pointer(&deathmatchstarts))+uintptr(i)*10) != 0 {
+		if G_CheckSpot(tls, playernum, &deathmatchstarts[i]) != 0 {
 			deathmatchstarts[i].Ftype1 = int16(playernum + 1)
-			P_SpawnPlayer(tls, uintptr(unsafe.Pointer(&deathmatchstarts))+uintptr(i)*10)
+			P_SpawnPlayer(tls, &deathmatchstarts[i])
 			return
 		}
 		goto _1
@@ -8429,7 +8429,7 @@ func G_DeathMatchSpawnPlayer(tls *libc.TLS, playernum int32) {
 		j++
 	}
 	// no good spot, so the player will probably get stuck
-	P_SpawnPlayer(tls, uintptr(unsafe.Pointer(&playerstarts))+uintptr(playernum)*10)
+	P_SpawnPlayer(tls, &playerstarts[playernum])
 }
 
 // C documentation
@@ -8451,8 +8451,8 @@ func G_DoReborn(tls *libc.TLS, playernum int32) {
 			G_DeathMatchSpawnPlayer(tls, playernum)
 			return
 		}
-		if G_CheckSpot(tls, playernum, uintptr(unsafe.Pointer(&playerstarts))+uintptr(playernum)*10) != 0 {
-			P_SpawnPlayer(tls, uintptr(unsafe.Pointer(&playerstarts))+uintptr(playernum)*10)
+		if G_CheckSpot(tls, playernum, &playerstarts[playernum]) != 0 {
+			P_SpawnPlayer(tls, &playerstarts[playernum])
 			return
 		}
 		// try to spawn at one of the other players spots
@@ -8461,9 +8461,9 @@ func G_DoReborn(tls *libc.TLS, playernum int32) {
 			if !(i < int32(MAXPLAYERS)) {
 				break
 			}
-			if G_CheckSpot(tls, playernum, uintptr(unsafe.Pointer(&playerstarts))+uintptr(i)*10) != 0 {
+			if G_CheckSpot(tls, playernum, &playerstarts[i]) != 0 {
 				playerstarts[i].Ftype1 = int16(playernum + 1) // fake as other player
-				P_SpawnPlayer(tls, uintptr(unsafe.Pointer(&playerstarts))+uintptr(i)*10)
+				P_SpawnPlayer(tls, &playerstarts[i])
 				playerstarts[i].Ftype1 = int16(i + 1) // restore
 				return
 			}
@@ -8473,7 +8473,7 @@ func G_DoReborn(tls *libc.TLS, playernum int32) {
 			;
 			i++
 		}
-		P_SpawnPlayer(tls, uintptr(unsafe.Pointer(&playerstarts))+uintptr(playernum)*10)
+		P_SpawnPlayer(tls, &playerstarts[playernum])
 	}
 }
 
@@ -28399,7 +28399,8 @@ func P_ZMovement(tls *libc.TLS, mo uintptr) {
 //	// P_NightmareRespawn
 //	//
 func P_NightmareRespawn(tls *libc.TLS, mobj uintptr) {
-	var mo, mthing uintptr
+	var mo uintptr
+	var mthing *mapthing_t
 	var ss *subsector_t
 	var x, y, z fixed_t
 	x = int32((*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint.Fx) << int32(FRACBITS)
@@ -28418,7 +28419,7 @@ func P_NightmareRespawn(tls *libc.TLS, mobj uintptr) {
 	mo = P_SpawnMobj(tls, x, y, (*sector_t)(unsafe.Pointer(ss.Fsector)).Ffloorheight, int32(MT_TFOG))
 	S_StartSound(tls, mo, int32(sfx_telept))
 	// spawn the new monster
-	mthing = mobj + 204
+	mthing = &((*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint)
 	// spawn it
 	if (*mobj_t)(unsafe.Pointer(mobj)).Finfo.Fflags&int32(MF_SPAWNCEILING) != 0 {
 		z = int32(INT_MAX11)
@@ -28428,8 +28429,8 @@ func P_NightmareRespawn(tls *libc.TLS, mobj uintptr) {
 	// inherit attributes from deceased one
 	mo = P_SpawnMobj(tls, x, y, z, (*mobj_t)(unsafe.Pointer(mobj)).Ftype1)
 	(*mobj_t)(unsafe.Pointer(mo)).Fspawnpoint = (*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint
-	(*mobj_t)(unsafe.Pointer(mo)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / 45))
-	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Foptions)&int32(MTF_AMBUSH) != 0 {
+	(*mobj_t)(unsafe.Pointer(mo)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32(mthing.Fangle) / 45))
+	if int32(mthing.Foptions)&int32(MTF_AMBUSH) != 0 {
 		*(*int32)(unsafe.Pointer(mo + 160)) |= int32(MF_AMBUSH)
 	}
 	(*mobj_t)(unsafe.Pointer(mo)).Freactiontime = 18
@@ -28563,7 +28564,8 @@ func P_RemoveMobj(tls *libc.TLS, mobj uintptr) {
 //	//
 func P_RespawnSpecials(tls *libc.TLS) {
 	var i int32
-	var mo, mthing uintptr
+	var mo uintptr
+	var mthing *mapthing_t
 	var ss *subsector_t
 	var x, y, z fixed_t
 	// only respawn items in deathmatch
@@ -28578,9 +28580,9 @@ func P_RespawnSpecials(tls *libc.TLS) {
 	if leveltime-itemrespawntime[iquetail] < 30*TICRATE {
 		return
 	}
-	mthing = uintptr(unsafe.Pointer(&itemrespawnque)) + uintptr(iquetail)*10
-	x = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx) << int32(FRACBITS)
-	y = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy) << int32(FRACBITS)
+	mthing = &itemrespawnque[iquetail]
+	x = int32(mthing.Fx) << int32(FRACBITS)
+	y = int32(mthing.Fy) << int32(FRACBITS)
 	// spawn a teleport fog at the new spot
 	ss = R_PointInSubsector(x, y)
 	mo = P_SpawnMobj(tls, x, y, (*sector_t)(unsafe.Pointer(ss.Fsector)).Ffloorheight, int32(MT_IFOG))
@@ -28591,7 +28593,7 @@ func P_RespawnSpecials(tls *libc.TLS) {
 		if !(i < int32(NUMMOBJTYPES)) {
 			break
 		}
-		if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) == mobjinfo[i].Fdoomednum {
+		if int32(mthing.Ftype1) == mobjinfo[i].Fdoomednum {
 			break
 		}
 		goto _1
@@ -28606,8 +28608,8 @@ func P_RespawnSpecials(tls *libc.TLS) {
 		z = -1 - 0x7fffffff
 	}
 	mo = P_SpawnMobj(tls, x, y, z, i)
-	(*mobj_t)(unsafe.Pointer(mo)).Fspawnpoint = *(*mapthing_t)(unsafe.Pointer(mthing))
-	(*mobj_t)(unsafe.Pointer(mo)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / 45))
+	(*mobj_t)(unsafe.Pointer(mo)).Fspawnpoint = *mthing
+	(*mobj_t)(unsafe.Pointer(mo)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32(mthing.Fangle) / 45))
 	// pull it from the que
 	iquetail = (iquetail + 1) & (ITEMQUESIZE - 1)
 }
@@ -28620,30 +28622,30 @@ func P_RespawnSpecials(tls *libc.TLS) {
 //	// Most of the player structure stays unchanged
 //	//  between levels.
 //	//
-func P_SpawnPlayer(tls *libc.TLS, mthing uintptr) {
+func P_SpawnPlayer(tls *libc.TLS, mthing *mapthing_t) {
 	var i int32
 	var mobj, p uintptr
 	var x, y, z fixed_t
-	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) == 0 {
+	if int32(mthing.Ftype1) == 0 {
 		return
 	}
 	// not playing?
-	if !(playeringame[int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1)-1] != 0) {
+	if !(playeringame[int32(mthing.Ftype1)-1] != 0) {
 		return
 	}
-	p = uintptr(unsafe.Pointer(&players)) + uintptr(int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1)-1)*328
+	p = uintptr(unsafe.Pointer(&players)) + uintptr(int32(mthing.Ftype1)-1)*328
 	if (*player_t)(unsafe.Pointer(p)).Fplayerstate == int32(PST_REBORN) {
-		G_PlayerReborn(int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) - 1)
+		G_PlayerReborn(int32(mthing.Ftype1) - 1)
 	}
-	x = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx) << int32(FRACBITS)
-	y = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy) << int32(FRACBITS)
+	x = int32(mthing.Fx) << int32(FRACBITS)
+	y = int32(mthing.Fy) << int32(FRACBITS)
 	z = -1 - 0x7fffffff
 	mobj = P_SpawnMobj(tls, x, y, z, int32(MT_PLAYER))
 	// set color translations for player sprites
-	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) > 1 {
-		*(*int32)(unsafe.Pointer(mobj + 160)) |= (int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) - 1) << int32(MF_TRANSSHIFT)
+	if int32(mthing.Ftype1) > 1 {
+		*(*int32)(unsafe.Pointer(mobj + 160)) |= (int32(mthing.Ftype1) - 1) << int32(MF_TRANSSHIFT)
 	}
-	(*mobj_t)(unsafe.Pointer(mobj)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / 45))
+	(*mobj_t)(unsafe.Pointer(mobj)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32(mthing.Fangle) / 45))
 	(*mobj_t)(unsafe.Pointer(mobj)).Fplayer = p
 	(*mobj_t)(unsafe.Pointer(mobj)).Fhealth = (*player_t)(unsafe.Pointer(p)).Fhealth
 	(*player_t)(unsafe.Pointer(p)).Fmo = mobj
@@ -28671,7 +28673,7 @@ func P_SpawnPlayer(tls *libc.TLS, mthing uintptr) {
 			i++
 		}
 	}
-	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1)-1 == consoleplayer {
+	if int32(mthing.Ftype1)-1 == consoleplayer {
 		// wake up the status bar
 		ST_Start(tls)
 		// wake up the heads up text
@@ -28686,34 +28688,34 @@ func P_SpawnPlayer(tls *libc.TLS, mthing uintptr) {
 //	// The fields of the mapthing should
 //	// already be in host byte order.
 //	//
-func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
+func P_SpawnMapThing(tls *libc.TLS, mthing *mapthing_t) {
 	var bit, i int32
 	var mobj uintptr
 	var x, y, z fixed_t
 	// count deathmatch start positions
-	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) == 11 {
-		if deathmatch_p < uintptr(unsafe.Pointer(&deathmatchstarts))+10*10 {
-			xmemcpy(deathmatch_p, mthing, uint64(10))
-			deathmatch_p += 10
+	if int32(mthing.Ftype1) == 11 {
+		if deathmatch_pos < len(deathmatchstarts) {
+			deathmatchstarts[deathmatch_pos] = *mthing
+			deathmatch_pos++
 		}
 		return
 	}
-	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) <= 0 {
+	if int32(mthing.Ftype1) <= 0 {
 		// Thing type 0 is actually "player -1 start".
 		// For some reason, Vanilla Doom accepts/ignores this.
 		return
 	}
 	// check for players specially
-	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) <= 4 {
+	if int32(mthing.Ftype1) <= 4 {
 		// save spots for respawning in network games
-		playerstarts[int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1)-1] = *(*mapthing_t)(unsafe.Pointer(mthing))
+		playerstarts[int32(mthing.Ftype1)-1] = *mthing
 		if !(deathmatch != 0) {
 			P_SpawnPlayer(tls, mthing)
 		}
 		return
 	}
 	// check for apropriate skill level
-	if !(netgame != 0) && int32((*mapthing_t)(unsafe.Pointer(mthing)).Foptions)&int32(16) != 0 {
+	if !(netgame != 0) && int32(mthing.Foptions)&int32(16) != 0 {
 		return
 	}
 	if gameskill == int32(sk_baby) {
@@ -28725,7 +28727,7 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 			bit = 1 << (gameskill - 1)
 		}
 	}
-	if !(int32((*mapthing_t)(unsafe.Pointer(mthing)).Foptions)&bit != 0) {
+	if !(int32(mthing.Foptions)&bit != 0) {
 		return
 	}
 	// find which type to spawn
@@ -28734,7 +28736,7 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 		if !(i < int32(NUMMOBJTYPES)) {
 			break
 		}
-		if int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1) == mobjinfo[i].Fdoomednum {
+		if int32(mthing.Ftype1) == mobjinfo[i].Fdoomednum {
 			break
 		}
 		goto _1
@@ -28743,7 +28745,7 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 		i++
 	}
 	if i == int32(NUMMOBJTYPES) {
-		I_Error(tls, __ccgo_ts(24810), int32((*mapthing_t)(unsafe.Pointer(mthing)).Ftype1), int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx), int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy))
+		I_Error(tls, __ccgo_ts(24810), int32(mthing.Ftype1), int32(mthing.Fx), int32(mthing.Fy))
 	}
 	// don't spawn keycards and players in deathmatch
 	if deathmatch != 0 && mobjinfo[i].Fflags&int32(MF_NOTDMATCH) != 0 {
@@ -28754,15 +28756,15 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 		return
 	}
 	// spawn it
-	x = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fx) << int32(FRACBITS)
-	y = int32((*mapthing_t)(unsafe.Pointer(mthing)).Fy) << int32(FRACBITS)
+	x = int32(mthing.Fx) << int32(FRACBITS)
+	y = int32(mthing.Fy) << int32(FRACBITS)
 	if mobjinfo[i].Fflags&int32(MF_SPAWNCEILING) != 0 {
 		z = int32(INT_MAX11)
 	} else {
 		z = -1 - 0x7fffffff
 	}
 	mobj = P_SpawnMobj(tls, x, y, z, i)
-	(*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint = *(*mapthing_t)(unsafe.Pointer(mthing))
+	(*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint = *mthing
 	if (*mobj_t)(unsafe.Pointer(mobj)).Ftics > 0 {
 		(*mobj_t)(unsafe.Pointer(mobj)).Ftics = 1 + P_Random()%(*mobj_t)(unsafe.Pointer(mobj)).Ftics
 	}
@@ -28772,8 +28774,8 @@ func P_SpawnMapThing(tls *libc.TLS, mthing uintptr) {
 	if (*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_COUNTITEM) != 0 {
 		totalitems++
 	}
-	(*mobj_t)(unsafe.Pointer(mobj)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32((*mapthing_t)(unsafe.Pointer(mthing)).Fangle) / 45))
-	if int32((*mapthing_t)(unsafe.Pointer(mthing)).Foptions)&int32(MTF_AMBUSH) != 0 {
+	(*mobj_t)(unsafe.Pointer(mobj)).Fangle = libc.Uint32FromInt32(int32(ANG453) * (int32(mthing.Fangle) / 45))
+	if int32(mthing.Foptions)&int32(MTF_AMBUSH) != 0 {
 		*(*int32)(unsafe.Pointer(mobj + 160)) |= int32(MF_AMBUSH)
 	}
 }
@@ -29983,30 +29985,30 @@ func saveg_writep(tls *libc.TLS, p uintptr) {
 // mapthing_t
 //
 
-func saveg_read_mapthing_t(tls *libc.TLS, str uintptr) {
+func saveg_read_mapthing_t(tls *libc.TLS, str *mapthing_t) {
 	// short x;
-	(*mapthing_t)(unsafe.Pointer(str)).Fx = saveg_read16(tls)
+	str.Fx = saveg_read16(tls)
 	// short y;
-	(*mapthing_t)(unsafe.Pointer(str)).Fy = saveg_read16(tls)
+	str.Fy = saveg_read16(tls)
 	// short angle;
-	(*mapthing_t)(unsafe.Pointer(str)).Fangle = saveg_read16(tls)
+	str.Fangle = saveg_read16(tls)
 	// short type;
-	(*mapthing_t)(unsafe.Pointer(str)).Ftype1 = saveg_read16(tls)
+	str.Ftype1 = saveg_read16(tls)
 	// short options;
-	(*mapthing_t)(unsafe.Pointer(str)).Foptions = saveg_read16(tls)
+	str.Foptions = saveg_read16(tls)
 }
 
-func saveg_write_mapthing_t(tls *libc.TLS, str uintptr) {
+func saveg_write_mapthing_t(tls *libc.TLS, str *mapthing_t) {
 	// short x;
-	saveg_write16(tls, (*mapthing_t)(unsafe.Pointer(str)).Fx)
+	saveg_write16(tls, str.Fx)
 	// short y;
-	saveg_write16(tls, (*mapthing_t)(unsafe.Pointer(str)).Fy)
+	saveg_write16(tls, str.Fy)
 	// short angle;
-	saveg_write16(tls, (*mapthing_t)(unsafe.Pointer(str)).Fangle)
+	saveg_write16(tls, str.Fangle)
 	// short type;
-	saveg_write16(tls, (*mapthing_t)(unsafe.Pointer(str)).Ftype1)
+	saveg_write16(tls, str.Ftype1)
 	// short options;
-	saveg_write16(tls, (*mapthing_t)(unsafe.Pointer(str)).Foptions)
+	saveg_write16(tls, str.Foptions)
 }
 
 //
@@ -30130,7 +30132,7 @@ func saveg_read_mobj_t(tls *libc.TLS, str uintptr) {
 	// int lastlook;
 	(*mobj_t)(unsafe.Pointer(str)).Flastlook = saveg_read32(tls)
 	// mapthing_t spawnpoint;
-	saveg_read_mapthing_t(tls, str+204)
+	saveg_read_mapthing_t(tls, &(*mobj_t)(unsafe.Pointer(str)).Fspawnpoint)
 	// struct mobj_t* tracer;
 	(*mobj_t)(unsafe.Pointer(str)).Ftracer = saveg_readp(tls)
 }
@@ -30207,7 +30209,7 @@ func saveg_write_mobj_t(tls *libc.TLS, str uintptr) {
 	// int lastlook;
 	saveg_write32(tls, (*mobj_t)(unsafe.Pointer(str)).Flastlook)
 	// mapthing_t spawnpoint;
-	saveg_write_mapthing_t(tls, str+204)
+	saveg_write_mapthing_t(tls, &(*mobj_t)(unsafe.Pointer(str)).Fspawnpoint)
 	// struct mobj_t* tracer;
 	saveg_writep(tls, (*mobj_t)(unsafe.Pointer(str)).Ftracer)
 }
@@ -31469,7 +31471,7 @@ func P_LoadSubsectors(tls *libc.TLS, lump int32) {
 //	//
 func P_LoadSectors(tls *libc.TLS, lump int32) {
 	var data uintptr
-	numsectors = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(26))
+	numsectors = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(unsafe.Sizeof(mapsector_t{})))
 	sectors = make([]sector_t, numsectors)
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
 	mapsectors := unsafe.Slice((*mapsector_t)(unsafe.Pointer(data)), numsectors)
@@ -31522,22 +31524,18 @@ func P_LoadNodes(tls *libc.TLS, lump int32) {
 //	// P_LoadThings
 //	//
 func P_LoadThings(tls *libc.TLS, lump int32) {
-	bp := alloc(16)
-	var data, mt uintptr
-	var i, numthings int32
+	var data uintptr
+	var numthings int32
 	var spawn boolean
 	data = W_CacheLumpNum(tls, lump, int32(PU_STATIC))
-	numthings = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(10))
-	mt = data
-	i = 0
-	for {
-		if !(i < numthings) {
-			break
-		}
+	numthings = libc.Int32FromUint64(libc.Uint64FromInt32(W_LumpLength(tls, libc.Uint32FromInt32(lump))) / uint64(unsafe.Sizeof(mapthing_t{})))
+	mthings := unsafe.Slice((*mapthing_t)(unsafe.Pointer(data)), numthings)
+	for i := int32(0); i < numthings; i++ {
+		mt := &mthings[i]
 		spawn = 1
 		// Do not spawn cool, new monsters if !commercial
 		if gamemode != int32(commercial) {
-			switch int32((*mapthing_t)(unsafe.Pointer(mt)).Ftype1) {
+			switch int32(mt.Ftype1) {
 			case 68: // Arachnotron
 				fallthrough
 			case 64: // Archvile
@@ -31565,17 +31563,14 @@ func P_LoadThings(tls *libc.TLS, lump int32) {
 			break
 		}
 		// Do spawn all other stuff.
-		(*(*mapthing_t)(unsafe.Pointer(bp))).Fx = (*mapthing_t)(unsafe.Pointer(mt)).Fx
-		(*(*mapthing_t)(unsafe.Pointer(bp))).Fy = (*mapthing_t)(unsafe.Pointer(mt)).Fy
-		(*(*mapthing_t)(unsafe.Pointer(bp))).Fangle = (*mapthing_t)(unsafe.Pointer(mt)).Fangle
-		(*(*mapthing_t)(unsafe.Pointer(bp))).Ftype1 = (*mapthing_t)(unsafe.Pointer(mt)).Ftype1
-		(*(*mapthing_t)(unsafe.Pointer(bp))).Foptions = (*mapthing_t)(unsafe.Pointer(mt)).Foptions
+		bp := &mapthing_t{
+			Fx:       mt.Fx,
+			Fy:       mt.Fy,
+			Fangle:   mt.Fangle,
+			Ftype1:   mt.Ftype1,
+			Foptions: mt.Foptions,
+		}
 		P_SpawnMapThing(tls, bp)
-		goto _1
-	_1:
-		;
-		i++
-		mt += 10
 	}
 	W_ReleaseLumpNum(tls, lump)
 }
@@ -31969,7 +31964,7 @@ func P_SetupLevel(tls *libc.TLS, episode int32, map1 int32, playermask int32, sk
 	P_GroupLines(tls)
 	P_LoadReject(tls, lumpnum+ML_REJECT)
 	bodyqueslot = 0
-	deathmatch_p = uintptr(unsafe.Pointer(&deathmatchstarts))
+	deathmatch_pos = 0
 	P_LoadThings(tls, lumpnum+ML_THINGS)
 	// if deathmatch, randomly spawn the active players
 	if deathmatch != 0 {
@@ -46703,7 +46698,7 @@ var dclick_use int32
 
 var deathmatch int32
 
-var deathmatch_p uintptr
+var deathmatch_pos int
 
 // Maintain single and multi player starting spots.
 
