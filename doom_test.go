@@ -383,9 +383,20 @@ func TestDoomMap(t *testing.T) {
 		game.InsertKey(KEY_ENTER)
 		game.InsertKey(KEY_ENTER)
 		game.InsertKey(KEY_ENTER) // Start new game
-
 		time.Sleep(10 * time.Millisecond)
-		time.Sleep(100 * time.Millisecond)
+
+		// Move a bit
+		game.InsertKeyChange(KEY_UPARROW1, true) // Move up
+		time.Sleep(10 * time.Millisecond)        // Move up for a bit
+		game.InsertKeyChange(KEY_TAB, true)      // Open map
+		time.Sleep(10 * time.Millisecond)
+		game.InsertKeyChange(KEY_UPARROW1, false)  // Stop moving
+		time.Sleep(10 * time.Millisecond)          // Wait a bit
+		game.InsertKeyChange(KEY_LEFTARROW1, true) // Turn for a bit
+		time.Sleep(10 * time.Millisecond)
+		game.InsertKeyChange(KEY_LEFTARROW1, false) // Turn for a bit
+		time.Sleep(10 * time.Millisecond)
+		game.InsertKeyChange(KEY_TAB, false) // close map
 
 		// Exit
 		game.InsertKey(KEY_ESCAPE)   // Open menu
