@@ -2,6 +2,8 @@
 # We're not clearing out the state properly on `Run` at the moment, so all the
 # tests need to be in a separate process
 
+set -ex
+
 if [ -n "$1" ] ; then
 	echo "Running tests in $1"
 	go test -v -count 1 -run "^${1}\$" .
