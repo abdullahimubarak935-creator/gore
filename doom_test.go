@@ -232,7 +232,7 @@ func TestLoadSave(t *testing.T) {
 		time.Sleep(20 * time.Millisecond) // Let things get settled
 		// Start a new game
 		game.InsertKeySequence(KEY_ESCAPE, KEY_ENTER, KEY_ENTER, KEY_ENTER)
-		time.Sleep(2 * time.Millisecond) // Wait for the game to start
+		time.Sleep(5 * time.Millisecond) // Wait for the game to start
 		// Move around in the game a bit
 		game.InsertKeyChange(KEY_UPARROW1, true)
 		time.Sleep(20 * time.Millisecond) // Move up for a bit
@@ -240,7 +240,7 @@ func TestLoadSave(t *testing.T) {
 		game.InsertKeyChange(KEY_LEFTARROW1, true)
 		time.Sleep(20 * time.Millisecond) // Move left for a bit
 		game.InsertKeyChange(KEY_LEFTARROW1, false)
-		time.Sleep(1 * time.Millisecond)
+		time.Sleep(10 * time.Millisecond)
 		// Grab a screenshot
 		img1 := game.GetScreen()
 		// Go to the menu and save
