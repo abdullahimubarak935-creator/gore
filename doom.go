@@ -289,18 +289,18 @@ const PU_LEVSPEC = 6
 const PU_PURGELEVEL = 7
 const PU_CACHE = 8
 
-type GameMission_t = int32
+type GameMission_t int32
 
-const doom = 0
-const doom2 = 1
-const pack_tnt = 2
-const pack_plut = 3
-const pack_chex = 4
-const pack_hacx = 5
-const heretic = 6
-const hexen = 7
-const strife = 8
-const none = 9
+const doom GameMission_t = 0
+const doom2 GameMission_t = 1
+const pack_tnt GameMission_t = 2
+const pack_plut GameMission_t = 3
+const pack_chex GameMission_t = 4
+const pack_hacx GameMission_t = 5
+const heretic GameMission_t = 6
+const hexen GameMission_t = 7
+const strife GameMission_t = 8
+const none GameMission_t = 9
 
 type GameMode_t int32
 
@@ -310,32 +310,32 @@ const commercial GameMode_t = 2
 const retail GameMode_t = 3
 const indetermined GameMode_t = 4
 
-type GameVersion_t = int32
+type GameVersion_t int32
 
-const exe_doom_1_2 = 0
-const exe_doom_1_666 = 1
-const exe_doom_1_7 = 2
-const exe_doom_1_8 = 3
-const exe_doom_1_9 = 4
-const exe_hacx = 5
-const exe_ultimate = 6
-const exe_final = 7
-const exe_final2 = 8
-const exe_chex = 9
+const exe_doom_1_2 GameVersion_t = 0
+const exe_doom_1_666 GameVersion_t = 1
+const exe_doom_1_7 GameVersion_t = 2
+const exe_doom_1_8 GameVersion_t = 3
+const exe_doom_1_9 GameVersion_t = 4
+const exe_hacx GameVersion_t = 5
+const exe_ultimate GameVersion_t = 6
+const exe_final GameVersion_t = 7
+const exe_final2 GameVersion_t = 8
+const exe_chex GameVersion_t = 9
 
-type skill_t = int32
+type skill_t int32
 
-const sk_baby = 0
-const sk_easy = 1
-const sk_medium = 2
-const sk_nightmare = 4
+const sk_baby skill_t = 0
+const sk_easy skill_t = 1
+const sk_medium skill_t = 2
+const sk_nightmare skill_t = 4
 
-type gamestate_t = int32
+type gamestate_t int32
 
-const GS_LEVEL = 0
-const GS_INTERMISSION = 1
-const GS_FINALE = 2
-const GS_DEMOSCREEN = 3
+const GS_LEVEL gamestate_t = 0
+const GS_INTERMISSION gamestate_t = 1
+const GS_FINALE gamestate_t = 2
+const GS_DEMOSCREEN gamestate_t = 3
 
 type gameaction_t = int32
 
@@ -2003,7 +2003,7 @@ type ticcmd_t struct {
 
 type net_connect_data_t struct {
 	Fgamemode     GameMode_t
-	Fgamemission  int32
+	Fgamemission  GameMission_t
 	Flowres_turn  int32
 	Fdrone        int32
 	Fmax_players  int32
@@ -2022,8 +2022,8 @@ type net_gamesettings_t struct {
 	Ffast_monsters    int32
 	Frespawn_monsters int32
 	Fmap1             int32
-	Fskill            int32
-	Fgameversion      int32
+	Fskill            skill_t
+	Fgameversion      GameVersion_t
 	Flowres_turn      int32
 	Fnew_sync         int32
 	Ftimelimit        int32
@@ -3883,19 +3883,19 @@ type iwad_t struct {
 var iwads = [14]iwad_t{
 	0: {
 		Fname:        __ccgo_ts_str(911),
-		Fmission:     int32(doom2),
+		Fmission:     doom2,
 		Fmode:        commercial,
 		Fdescription: __ccgo_ts(921),
 	},
 	1: {
 		Fname:        __ccgo_ts_str(929),
-		Fmission:     int32(pack_plut),
+		Fmission:     pack_plut,
 		Fmode:        commercial,
 		Fdescription: __ccgo_ts(942),
 	},
 	2: {
 		Fname:        __ccgo_ts_str(974),
-		Fmission:     int32(pack_tnt),
+		Fmission:     pack_tnt,
 		Fmode:        commercial,
 		Fdescription: __ccgo_ts(982),
 	},
@@ -3910,24 +3910,24 @@ var iwads = [14]iwad_t{
 	},
 	5: {
 		Fname:        __ccgo_ts_str(1048),
-		Fmission:     int32(pack_chex),
+		Fmission:     pack_chex,
 		Fdescription: __ccgo_ts(1057),
 	},
 	6: {
 		Fname:        __ccgo_ts_str(1068),
-		Fmission:     int32(pack_hacx),
+		Fmission:     pack_hacx,
 		Fmode:        commercial,
 		Fdescription: __ccgo_ts(1077),
 	},
 	7: {
 		Fname:        __ccgo_ts_str(1082),
-		Fmission:     int32(doom2),
+		Fmission:     doom2,
 		Fmode:        commercial,
 		Fdescription: __ccgo_ts(1093),
 	},
 	8: {
 		Fname:        __ccgo_ts_str(1100),
-		Fmission:     int32(doom2),
+		Fmission:     doom2,
 		Fmode:        commercial,
 		Fdescription: __ccgo_ts(1114),
 	},
@@ -3938,24 +3938,24 @@ var iwads = [14]iwad_t{
 	},
 	10: {
 		Fname:        __ccgo_ts_str(1164),
-		Fmission:     int32(heretic),
+		Fmission:     heretic,
 		Fmode:        retail,
 		Fdescription: __ccgo_ts(1176),
 	},
 	11: {
 		Fname:        __ccgo_ts_str(1184),
-		Fmission:     int32(heretic),
+		Fmission:     heretic,
 		Fdescription: __ccgo_ts(1197),
 	},
 	12: {
 		Fname:        __ccgo_ts_str(1215),
-		Fmission:     int32(hexen),
+		Fmission:     hexen,
 		Fmode:        commercial,
 		Fdescription: __ccgo_ts(1225),
 	},
 	13: {
 		Fname:        __ccgo_ts_str(1231),
-		Fmission:     int32(strife),
+		Fmission:     strife,
 		Fmode:        commercial,
 		Fdescription: __ccgo_ts(1243),
 	},
@@ -4049,7 +4049,7 @@ func SearchDirectoryForIWAD(dir string, mask int32, mission *GameMission_t) stri
 func IdentifyIWADByName(name string, mask int32) (r GameMission_t) {
 	var i uint64
 	var mission GameMission_t
-	mission = int32(none)
+	mission = none
 	i = uint64(0)
 	for {
 		if !(i < 336/24) {
@@ -4847,7 +4847,7 @@ func D_ProcessEvents(tls *libc.TLS) {
 }
 
 func init() {
-	wipegamestate = int32(GS_DEMOSCREEN)
+	wipegamestate = GS_DEMOSCREEN
 }
 
 func D_Display(tls *libc.TLS) {
@@ -4871,12 +4871,12 @@ func D_Display(tls *libc.TLS) {
 	} else {
 		wipe = 0
 	}
-	if gamestate == int32(GS_LEVEL) && gametic != 0 {
+	if gamestate == GS_LEVEL && gametic != 0 {
 		HU_Erase()
 	}
 	// do buffered drawing
 	switch gamestate {
-	case int32(GS_LEVEL):
+	case GS_LEVEL:
 		if !(gametic != 0) {
 			break
 		}
@@ -4891,34 +4891,34 @@ func D_Display(tls *libc.TLS) {
 		} // just put away the help screen
 		ST_Drawer(tls, libc.BoolUint32(viewheight == 200), redrawsbar)
 		fullscreen = libc.BoolUint32(viewheight == 200)
-	case int32(GS_INTERMISSION):
+	case GS_INTERMISSION:
 		WI_Drawer(tls)
-	case int32(GS_FINALE):
+	case GS_FINALE:
 		F_Drawer(tls)
-	case int32(GS_DEMOSCREEN):
+	case GS_DEMOSCREEN:
 		D_PageDrawer(tls)
 		break
 	}
 	// draw buffered stuff to screen
 	I_UpdateNoBlit()
 	// draw the view directly
-	if gamestate == int32(GS_LEVEL) && !(automapactive != 0) && gametic != 0 {
+	if gamestate == GS_LEVEL && !(automapactive != 0) && gametic != 0 {
 		R_RenderPlayerView(tls, &players[displayplayer])
 	}
-	if gamestate == int32(GS_LEVEL) && gametic != 0 {
+	if gamestate == GS_LEVEL && gametic != 0 {
 		HU_Drawer(tls)
 	}
 	// clean up border stuff
-	if gamestate != oldgamestate1 && gamestate != int32(GS_LEVEL) {
+	if gamestate != oldgamestate1 && gamestate != GS_LEVEL {
 		I_SetPalette(W_CacheLumpName(tls, __ccgo_ts(1490), int32(PU_CACHE)))
 	}
 	// see if the border needs to be initially drawn
-	if gamestate == int32(GS_LEVEL) && oldgamestate1 != int32(GS_LEVEL) {
+	if gamestate == GS_LEVEL && oldgamestate1 != GS_LEVEL {
 		viewactivestate = 0   // view was not active
 		R_FillBackScreen(tls) // draw the pattern into the back screen
 	}
 	// see if the border needs to be updated to the screen
-	if gamestate == int32(GS_LEVEL) && !(automapactive != 0) && scaledviewwidth != 320 {
+	if gamestate == GS_LEVEL && !(automapactive != 0) && scaledviewwidth != 320 {
 		if menuactive != 0 || menuactivestate != 0 || !(viewactivestate != 0) {
 			borderdrawcount = 3
 		}
@@ -4979,7 +4979,7 @@ var inhelpscreensstate boolean
 
 var fullscreen boolean
 
-var oldgamestate1 int32 = -1
+var oldgamestate1 gamestate_t = -1
 
 var borderdrawcount int32
 
@@ -5044,7 +5044,7 @@ func D_GrabMouseCallback() (r boolean) {
 		return 0
 	}
 	// only grab mouse when playing levels (but not demos)
-	return libc.BoolUint32(gamestate == int32(GS_LEVEL) && !(demoplayback != 0) && !(advancedemo != 0))
+	return libc.BoolUint32(gamestate == GS_LEVEL && !(demoplayback != 0) && !(advancedemo != 0))
 }
 
 func doomgeneric_Tick(tls *libc.TLS) {
@@ -5149,7 +5149,7 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 		} else {
 			pagetic = 170
 		}
-		gamestate = int32(GS_DEMOSCREEN)
+		gamestate = GS_DEMOSCREEN
 		pagename = __ccgo_ts(1896)
 		if gamemode == commercial {
 			S_StartMusic(tls, int32(mus_dm2ttl))
@@ -5160,12 +5160,12 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 		G_DeferedPlayDemo(__ccgo_ts(1905))
 	case 2:
 		pagetic = 200
-		gamestate = int32(GS_DEMOSCREEN)
+		gamestate = GS_DEMOSCREEN
 		pagename = __ccgo_ts(1911)
 	case 3:
 		G_DeferedPlayDemo(__ccgo_ts(1918))
 	case 4:
-		gamestate = int32(GS_DEMOSCREEN)
+		gamestate = GS_DEMOSCREEN
 		if gamemode == commercial {
 			pagetic = TICRATE * 11
 			pagename = __ccgo_ts(1896)
@@ -5312,19 +5312,19 @@ func SetMissionForPackName(tls *libc.TLS, pack_name uintptr) {
 
 var packs = [3]struct {
 	Fname    uintptr
-	Fmission int32
+	Fmission GameMission_t
 }{
 	0: {
 		Fname:    __ccgo_ts(2533),
-		Fmission: int32(doom2),
+		Fmission: doom2,
 	},
 	1: {
 		Fname:    __ccgo_ts(2539),
-		Fmission: int32(pack_tnt),
+		Fmission: pack_tnt,
 	},
 	2: {
 		Fname:    __ccgo_ts(2543),
-		Fmission: int32(pack_plut),
+		Fmission: pack_plut,
 	},
 }
 
@@ -5334,24 +5334,25 @@ var packs = [3]struct {
 
 func D_IdentifyVersion(tls *libc.TLS) {
 	var i uint32
-	var p, v2, v3 int32
+	var p int32
+	var v2, v3 GameMission_t
 	// gamemission is set up by the D_FindIWAD function.  But if
 	// we specify '-iwad', we have to identify using
 	// IdentifyIWADByName.  However, if the iwad does not match
 	// any known IWAD name, we may have a dilemma.  Try to
 	// identify by its contents.
-	if gamemission == int32(none) {
+	if gamemission == none {
 		i = uint32(0)
 		for {
 			if !(i < numlumps) {
 				break
 			}
 			if !(xstrncasecmp(lumpinfo+uintptr(i)*40, __ccgo_ts(2613), uint64(8)) != 0) {
-				gamemission = int32(doom2)
+				gamemission = doom2
 				break
 			} else {
 				if !(xstrncasecmp(lumpinfo+uintptr(i)*40, __ccgo_ts(2619), uint64(8)) != 0) {
-					gamemission = int32(doom)
+					gamemission = doom
 					break
 				}
 			}
@@ -5360,23 +5361,23 @@ func D_IdentifyVersion(tls *libc.TLS) {
 			;
 			i++
 		}
-		if gamemission == int32(none) {
+		if gamemission == none {
 			// Still no idea.  I don't think this is going to work.
 			I_Error(tls, __ccgo_ts(2624), 0)
 		}
 	}
 	// Make sure gamemode is set up correctly
-	if gamemission == int32(pack_chex) {
-		v2 = int32(doom)
+	if gamemission == pack_chex {
+		v2 = doom
 	} else {
-		if gamemission == int32(pack_hacx) {
-			v3 = int32(doom2)
+		if gamemission == pack_hacx {
+			v3 = doom2
 		} else {
 			v3 = gamemission
 		}
 		v2 = v3
 	}
-	if v2 == int32(doom) {
+	if v2 == doom {
 		// Doom 1.  But which version?
 		if W_CheckNumForName(__ccgo_ts(2654)) > 0 {
 			// Ultimate Doom
@@ -5412,21 +5413,20 @@ func D_IdentifyVersion(tls *libc.TLS) {
 
 func D_SetGameDescription(tls *libc.TLS) {
 	var is_freedm, is_freedoom boolean
-	var v1, v2, v3, v4, v5, v6, v7, v8 int32
+	var v7, v5, v3, v1 GameMission_t
 	is_freedoom = libc.BoolUint32(W_CheckNumForName(__ccgo_ts(2670)) >= 0)
 	is_freedm = libc.BoolUint32(W_CheckNumForName(__ccgo_ts(2679)) >= 0)
 	gamedescription = __ccgo_ts(2686)
-	if gamemission == int32(pack_chex) {
-		v1 = int32(doom)
+	if gamemission == pack_chex {
+		v1 = doom
 	} else {
-		if gamemission == int32(pack_hacx) {
-			v2 = int32(doom2)
+		if gamemission == pack_hacx {
+			v1 = doom2
 		} else {
-			v2 = gamemission
+			v1 = gamemission
 		}
-		v1 = v2
 	}
-	if v1 == int32(doom) {
+	if v1 == doom {
 		// Doom 1.  But which version?
 		if is_freedoom != 0 {
 			gamedescription = GetGameName(tls, __ccgo_ts(1146))
@@ -5453,43 +5453,40 @@ func D_SetGameDescription(tls *libc.TLS) {
 				gamedescription = GetGameName(tls, __ccgo_ts(1114))
 			}
 		} else {
-			if gamemission == int32(pack_chex) {
-				v3 = int32(doom)
+			if gamemission == pack_chex {
+				v3 = doom
 			} else {
-				if gamemission == int32(pack_hacx) {
-					v4 = int32(doom2)
+				if gamemission == pack_hacx {
+					v3 = doom2
 				} else {
-					v4 = gamemission
+					v3 = gamemission
 				}
-				v3 = v4
 			}
-			if v3 == int32(doom2) {
+			if v3 == doom2 {
 				gamedescription = GetGameName(tls, __ccgo_ts(2743))
 			} else {
-				if gamemission == int32(pack_chex) {
-					v5 = int32(doom)
+				if gamemission == pack_chex {
+					v5 = doom
 				} else {
-					if gamemission == int32(pack_hacx) {
-						v6 = int32(doom2)
+					if gamemission == pack_hacx {
+						v5 = doom2
 					} else {
-						v6 = gamemission
+						v5 = gamemission
 					}
-					v5 = v6
 				}
-				if v5 == int32(pack_plut) {
+				if v5 == pack_plut {
 					gamedescription = GetGameName(tls, __ccgo_ts(2765))
 				} else {
-					if gamemission == int32(pack_chex) {
-						v7 = int32(doom)
+					if gamemission == pack_chex {
+						v7 = doom
 					} else {
-						if gamemission == int32(pack_hacx) {
-							v8 = int32(doom2)
+						if gamemission == pack_hacx {
+							v7 = doom2
 						} else {
-							v8 = gamemission
+							v7 = gamemission
 						}
-						v7 = v8
 					}
-					if v7 == int32(pack_tnt) {
+					if v7 == pack_tnt {
 						gamedescription = GetGameName(tls, __ccgo_ts(2793))
 					}
 				}
@@ -5638,11 +5635,11 @@ func InitGameVersion(tls *libc.TLS) {
 		}
 	} else {
 		// Determine automatically
-		if gamemission == int32(pack_chex) {
+		if gamemission == pack_chex {
 			// chex.exe - identified by iwad filename
 			gameversion = exe_chex
 		} else {
-			if gamemission == int32(pack_hacx) {
+			if gamemission == pack_hacx {
 				// hacx.exe: identified by iwad filename
 				gameversion = exe_hacx
 			} else {
@@ -5655,7 +5652,7 @@ func InitGameVersion(tls *libc.TLS) {
 						gameversion = exe_ultimate
 					} else {
 						if gamemode == commercial {
-							if gamemission == int32(doom2) {
+							if gamemission == doom2 {
 								gameversion = exe_doom_1_9
 							} else {
 								// Final Doom: tnt or plutonia
@@ -5676,8 +5673,8 @@ func InitGameVersion(tls *libc.TLS) {
 		gamemode = registered
 	}
 	// EXEs prior to the Final Doom exes do not support Final Doom.
-	if gameversion < exe_final && gamemode == commercial && (gamemission == int32(pack_tnt) || gamemission == int32(pack_plut)) {
-		gamemission = int32(doom2)
+	if gameversion < exe_final && gamemode == commercial && (gamemission == pack_tnt || gamemission == pack_plut) {
+		gamemission = doom2
 	}
 }
 
@@ -5824,7 +5821,7 @@ func D_DoomMain(tls *libc.TLS) {
 	modifiedgame = 0
 	fprintf_ccgo(os.Stdout, 4380)
 	D_AddFile(tls, iwadfile)
-	W_CheckCorrectIWAD(tls, int32(doom))
+	W_CheckCorrectIWAD(tls, doom)
 	// Now that we've loaded the IWAD, we can figure out what gamemission
 	// we're playing and which version of Vanilla Doom we need to emulate.
 	D_IdentifyVersion(tls)
@@ -5975,7 +5972,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Initial netgame startup. Connect to server etc.
 	D_ConnectNetGame()
 	// get skill / episode / map from parms
-	startskill = int32(sk_medium)
+	startskill = sk_medium
 	startepisode = 1
 	startmap = 1
 	autostart = 0
@@ -5988,7 +5985,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	p = M_CheckParmWithArgs(__ccgo_ts(5027), 1)
 	if p != 0 {
-		startskill = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('1')
+		startskill = skill_t(int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('1'))
 		autostart = 1
 	}
 	//!
@@ -6136,27 +6133,27 @@ func D_DoomMain(tls *libc.TLS) {
 
 func D_GameMissionString(mission GameMission_t) (r uintptr) {
 	switch mission {
-	case int32(none):
+	case none:
 		fallthrough
 	default:
 		return __ccgo_ts(5369)
-	case int32(doom):
+	case doom:
 		return __ccgo_ts(5374)
-	case int32(doom2):
+	case doom2:
 		return __ccgo_ts(2533)
-	case int32(pack_tnt):
+	case pack_tnt:
 		return __ccgo_ts(2539)
-	case int32(pack_plut):
+	case pack_plut:
 		return __ccgo_ts(2543)
-	case int32(pack_hacx):
+	case pack_hacx:
 		return __ccgo_ts(3783)
-	case int32(pack_chex):
+	case pack_chex:
 		return __ccgo_ts(3852)
-	case int32(heretic):
+	case heretic:
 		return __ccgo_ts(5379)
-	case int32(hexen):
+	case hexen:
 		return __ccgo_ts(5387)
-	case int32(strife):
+	case strife:
 		return __ccgo_ts(5393)
 	}
 	return r
@@ -6383,126 +6380,126 @@ var textscreens = [22]textscreen_t{
 		Ftext:       __ccgo_ts(7182),
 	},
 	4: {
-		Fmission:    int32(doom2),
+		Fmission:    doom2,
 		Fepisode:    1,
 		Flevel:      6,
 		Fbackground: __ccgo_ts(7686),
 		Ftext:       __ccgo_ts(7694),
 	},
 	5: {
-		Fmission:    int32(doom2),
+		Fmission:    doom2,
 		Fepisode:    1,
 		Flevel:      11,
 		Fbackground: __ccgo_ts(8100),
 		Ftext:       __ccgo_ts(8108),
 	},
 	6: {
-		Fmission:    int32(doom2),
+		Fmission:    doom2,
 		Fepisode:    1,
 		Flevel:      20,
 		Fbackground: __ccgo_ts(8726),
 		Ftext:       __ccgo_ts(8734),
 	},
 	7: {
-		Fmission:    int32(doom2),
+		Fmission:    doom2,
 		Fepisode:    1,
 		Flevel:      30,
 		Fbackground: __ccgo_ts(9047),
 		Ftext:       __ccgo_ts(9055),
 	},
 	8: {
-		Fmission:    int32(doom2),
+		Fmission:    doom2,
 		Fepisode:    1,
 		Flevel:      15,
 		Fbackground: __ccgo_ts(9550),
 		Ftext:       __ccgo_ts(9558),
 	},
 	9: {
-		Fmission:    int32(doom2),
+		Fmission:    doom2,
 		Fepisode:    1,
 		Flevel:      31,
 		Fbackground: __ccgo_ts(9723),
 		Ftext:       __ccgo_ts(9731),
 	},
 	10: {
-		Fmission:    int32(pack_tnt),
+		Fmission:    pack_tnt,
 		Fepisode:    1,
 		Flevel:      6,
 		Fbackground: __ccgo_ts(7686),
 		Ftext:       __ccgo_ts(9824),
 	},
 	11: {
-		Fmission:    int32(pack_tnt),
+		Fmission:    pack_tnt,
 		Fepisode:    1,
 		Flevel:      11,
 		Fbackground: __ccgo_ts(8100),
 		Ftext:       __ccgo_ts(10214),
 	},
 	12: {
-		Fmission:    int32(pack_tnt),
+		Fmission:    pack_tnt,
 		Fepisode:    1,
 		Flevel:      20,
 		Fbackground: __ccgo_ts(8726),
 		Ftext:       __ccgo_ts(10525),
 	},
 	13: {
-		Fmission:    int32(pack_tnt),
+		Fmission:    pack_tnt,
 		Fepisode:    1,
 		Flevel:      30,
 		Fbackground: __ccgo_ts(9047),
 		Ftext:       __ccgo_ts(10835),
 	},
 	14: {
-		Fmission:    int32(pack_tnt),
+		Fmission:    pack_tnt,
 		Fepisode:    1,
 		Flevel:      15,
 		Fbackground: __ccgo_ts(9550),
 		Ftext:       __ccgo_ts(11221),
 	},
 	15: {
-		Fmission:    int32(pack_tnt),
+		Fmission:    pack_tnt,
 		Fepisode:    1,
 		Flevel:      31,
 		Fbackground: __ccgo_ts(9723),
 		Ftext:       __ccgo_ts(11395),
 	},
 	16: {
-		Fmission:    int32(pack_plut),
+		Fmission:    pack_plut,
 		Fepisode:    1,
 		Flevel:      6,
 		Fbackground: __ccgo_ts(7686),
 		Ftext:       __ccgo_ts(11749),
 	},
 	17: {
-		Fmission:    int32(pack_plut),
+		Fmission:    pack_plut,
 		Fepisode:    1,
 		Flevel:      11,
 		Fbackground: __ccgo_ts(8100),
 		Ftext:       __ccgo_ts(12183),
 	},
 	18: {
-		Fmission:    int32(pack_plut),
+		Fmission:    pack_plut,
 		Fepisode:    1,
 		Flevel:      20,
 		Fbackground: __ccgo_ts(8726),
 		Ftext:       __ccgo_ts(12377),
 	},
 	19: {
-		Fmission:    int32(pack_plut),
+		Fmission:    pack_plut,
 		Fepisode:    1,
 		Flevel:      30,
 		Fbackground: __ccgo_ts(9047),
 		Ftext:       __ccgo_ts(12706),
 	},
 	20: {
-		Fmission:    int32(pack_plut),
+		Fmission:    pack_plut,
 		Fepisode:    1,
 		Flevel:      15,
 		Fbackground: __ccgo_ts(9550),
 		Ftext:       __ccgo_ts(13167),
 	},
 	21: {
-		Fmission:    int32(pack_plut),
+		Fmission:    pack_plut,
 		Fepisode:    1,
 		Flevel:      31,
 		Fbackground: __ccgo_ts(9723),
@@ -6518,23 +6515,22 @@ var textscreens = [22]textscreen_t{
 func F_StartFinale(tls *libc.TLS) {
 	var i uint64
 	var screen uintptr
-	var v1, v2, v4, v5, v6, v7 int32
+	var v1, v4, v6 GameMission_t
 	var v8 bool
 	gameaction = ga_nothing
-	gamestate = int32(GS_FINALE)
+	gamestate = GS_FINALE
 	viewactive = 0
 	automapactive = 0
-	if gamemission == int32(pack_chex) {
-		v1 = int32(doom)
+	if gamemission == pack_chex {
+		v1 = doom
 	} else {
-		if gamemission == int32(pack_hacx) {
-			v2 = int32(doom2)
+		if gamemission == pack_hacx {
+			v1 = doom2
 		} else {
-			v2 = gamemission
+			v1 = gamemission
 		}
-		v1 = v2
 	}
-	if v1 == int32(doom) {
+	if v1 == doom {
 		S_ChangeMusic(tls, int32(mus_victor), 1)
 	} else {
 		S_ChangeMusic(tls, int32(mus_read_m), 1)
@@ -6547,32 +6543,30 @@ func F_StartFinale(tls *libc.TLS) {
 		}
 		screen = uintptr(unsafe.Pointer(&textscreens)) + uintptr(i)*32
 		// Hack for Chex Quest
-		if gameversion == exe_chex && (*textscreen_t)(unsafe.Pointer(screen)).Fmission == int32(doom) {
+		if gameversion == exe_chex && (*textscreen_t)(unsafe.Pointer(screen)).Fmission == doom {
 			(*textscreen_t)(unsafe.Pointer(screen)).Flevel = 5
 		}
-		if gamemission == int32(pack_chex) {
-			v4 = int32(doom)
+		if gamemission == pack_chex {
+			v4 = doom
 		} else {
-			if gamemission == int32(pack_hacx) {
-				v5 = int32(doom2)
+			if gamemission == pack_hacx {
+				v4 = doom2
 			} else {
-				v5 = gamemission
+				v4 = gamemission
 			}
-			v4 = v5
 		}
-		if v8 = v4 == (*textscreen_t)(unsafe.Pointer(screen)).Fmission; v8 {
-			if gamemission == int32(pack_chex) {
-				v6 = int32(doom)
+		if v8 = (v4 == (*textscreen_t)(unsafe.Pointer(screen)).Fmission); v8 {
+			if gamemission == pack_chex {
+				v6 = doom
 			} else {
-				if gamemission == int32(pack_hacx) {
-					v7 = int32(doom2)
+				if gamemission == pack_hacx {
+					v6 = doom2
 				} else {
-					v7 = gamemission
+					v6 = gamemission
 				}
-				v6 = v7
 			}
 		}
-		if v8 && (v6 != int32(doom) || gameepisode == (*textscreen_t)(unsafe.Pointer(screen)).Fepisode) && gamemap == (*textscreen_t)(unsafe.Pointer(screen)).Flevel {
+		if v8 && (v6 != doom || gameepisode == (*textscreen_t)(unsafe.Pointer(screen)).Fepisode) && gamemap == (*textscreen_t)(unsafe.Pointer(screen)).Flevel {
 			finaletext = (*textscreen_t)(unsafe.Pointer(screen)).Ftext
 			finaleflat = (*textscreen_t)(unsafe.Pointer(screen)).Fbackground
 		}
@@ -7561,26 +7555,25 @@ func init() {
 }
 
 func WeaponSelectable(weapon weapontype_t) (r boolean) {
-	var v1, v2 int32
+	var v1 GameMission_t
 	var v3 bool
 	// Can't select the super shotgun in Doom 1.
 	if v3 = weapon == wp_supershotgun; v3 {
-		if gamemission == int32(pack_chex) {
-			v1 = int32(doom)
+		if gamemission == pack_chex {
+			v1 = doom
 		} else {
-			if gamemission == int32(pack_hacx) {
-				v2 = int32(doom2)
+			if gamemission == pack_hacx {
+				v1 = doom2
 			} else {
-				v2 = gamemission
+				v1 = gamemission
 			}
-			v1 = v2
 		}
 	}
-	if v3 && v1 == int32(doom) {
+	if v3 && v1 == doom {
 		return 0
 	}
 	// These weapons aren't available in shareware.
-	if (weapon == wp_plasma || weapon == wp_bfg) && gamemission == int32(doom) && gamemode == shareware {
+	if (weapon == wp_plasma || weapon == wp_bfg) && gamemission == doom && gamemode == shareware {
 		return 0
 	}
 	// Can't select a weapon if we don't own it.
@@ -7722,7 +7715,7 @@ func G_BuildTiccmd(tls *libc.TLS, cmd *ticcmd_t, maketic int32) {
 	// If the previous or next weapon button is pressed, the
 	// next_weapon variable is set to change weapons when
 	// we generate a ticcmd.  Choose a new weapon.
-	if gamestate == int32(GS_LEVEL) && next_weapon != 0 {
+	if gamestate == GS_LEVEL && next_weapon != 0 {
 		i = G_NextWeapon(next_weapon)
 		cmd.Fbuttons |= BT_CHANGE
 		cmd.Fbuttons |= uint8(i << BT_WEAPONSHIFT)
@@ -7876,10 +7869,10 @@ func G_DoLoadLevel(tls *libc.TLS) {
 		skytexturename = skytexturename
 		skytexture = R_TextureNumForName(tls, skytexturename)
 	}
-	if wipegamestate == int32(GS_LEVEL) {
+	if wipegamestate == GS_LEVEL {
 		wipegamestate = -1
 	} // force a wipe
-	gamestate = int32(GS_LEVEL)
+	gamestate = GS_LEVEL
 	i = 0
 	for {
 		if !(i < int32(MAXPLAYERS)) {
@@ -7983,7 +7976,7 @@ func SetMouseButtons(buttons_mask uint32) {
 //	//
 func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	// allow spy mode changes even during the demo
-	if gamestate == int32(GS_LEVEL) && ev.Ftype1 == ev_keydown && ev.Fdata1 == key_spy && (singledemo != 0 || !(deathmatch != 0)) {
+	if gamestate == GS_LEVEL && ev.Ftype1 == ev_keydown && ev.Fdata1 == key_spy && (singledemo != 0 || !(deathmatch != 0)) {
 		// spy mode
 		for cond := true; cond; cond = !(playeringame[displayplayer] != 0) && displayplayer != consoleplayer {
 			displayplayer++
@@ -7994,14 +7987,14 @@ func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 		return 1
 	}
 	// any other key pops up menu if in demos
-	if gameaction == ga_nothing && !(singledemo != 0) && (demoplayback != 0 || gamestate == int32(GS_DEMOSCREEN)) {
+	if gameaction == ga_nothing && !(singledemo != 0) && (demoplayback != 0 || gamestate == GS_DEMOSCREEN) {
 		if ev.Ftype1 == ev_keydown || ev.Ftype1 == ev_mouse && ev.Fdata1 != 0 || ev.Ftype1 == ev_joystick && ev.Fdata1 != 0 {
 			M_StartControlPanel(tls)
 			return 1
 		}
 		return 0
 	}
-	if gamestate == int32(GS_LEVEL) {
+	if gamestate == GS_LEVEL {
 		if HU_Responder(ev) != 0 {
 			return 1
 		} // chat ate the event
@@ -8012,7 +8005,7 @@ func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			return 1
 		} // automap ate it
 	}
-	if gamestate == int32(GS_FINALE) {
+	if gamestate == GS_FINALE {
 		if F_Responder(tls, ev) != 0 {
 			return 1
 		} // finale ate the event
@@ -8193,22 +8186,22 @@ func G_Ticker(tls *libc.TLS) {
 		i++
 	}
 	// Have we just finished displaying an intermission screen?
-	if oldgamestate == int32(GS_INTERMISSION) && gamestate != int32(GS_INTERMISSION) {
+	if oldgamestate == GS_INTERMISSION && gamestate != GS_INTERMISSION {
 		WI_End(tls)
 	}
 	oldgamestate = gamestate
 	// do main actions
 	switch gamestate {
-	case int32(GS_LEVEL):
+	case GS_LEVEL:
 		P_Ticker(tls)
 		ST_Ticker()
 		AM_Ticker()
 		HU_Ticker(tls)
-	case int32(GS_INTERMISSION):
+	case GS_INTERMISSION:
 		WI_Ticker(tls)
-	case int32(GS_FINALE):
+	case GS_FINALE:
 		F_Ticker(tls)
-	case int32(GS_DEMOSCREEN):
+	case GS_DEMOSCREEN:
 		D_PageTicker()
 		break
 	}
@@ -8692,7 +8685,7 @@ func G_DoCompleted(tls *libc.TLS) {
 		;
 		i++
 	}
-	gamestate = int32(GS_INTERMISSION)
+	gamestate = GS_INTERMISSION
 	viewactive = 0
 	automapactive = 0
 	StatCopy(uintptr(unsafe.Pointer(&wminfo)))
@@ -8732,7 +8725,7 @@ func G_WorldDone(tls *libc.TLS) {
 }
 
 func G_DoWorldDone(tls *libc.TLS) {
-	gamestate = int32(GS_LEVEL)
+	gamestate = GS_LEVEL
 	gamemap = wminfo.Fnext + 1
 	G_DoLoadLevel(tls)
 	gameaction = ga_nothing
@@ -8905,8 +8898,8 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 			episode = 3;
 		    }
 	*/
-	if skill > int32(sk_nightmare) {
-		skill = int32(sk_nightmare)
+	if skill > sk_nightmare {
+		skill = sk_nightmare
 	}
 	if gameversion >= exe_ultimate {
 		if episode == 0 {
@@ -8930,12 +8923,12 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 		map1 = 9
 	}
 	M_ClearRandom()
-	if skill == int32(sk_nightmare) || respawnparm != 0 {
+	if skill == sk_nightmare || respawnparm != 0 {
 		respawnmonsters = 1
 	} else {
 		respawnmonsters = 0
 	}
-	if fastparm != 0 || skill == int32(sk_nightmare) && gameskill != int32(sk_nightmare) {
+	if fastparm != 0 || skill == sk_nightmare && gameskill != sk_nightmare {
 		i = int32(S_SARG_RUN1)
 		for {
 			if !(i <= int32(S_SARG_PAIN2)) {
@@ -8951,7 +8944,7 @@ func G_InitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
 		mobjinfo[int32(MT_HEADSHOT)].Fspeed = 20 * (1 << FRACBITS)
 		mobjinfo[int32(MT_TROOPSHOT)].Fspeed = 20 * (1 << FRACBITS)
 	} else {
-		if skill != int32(sk_nightmare) && gameskill == int32(sk_nightmare) {
+		if skill != sk_nightmare && gameskill == sk_nightmare {
 			i = int32(S_SARG_RUN1)
 			for {
 				if !(i <= int32(S_SARG_PAIN2)) {
@@ -9199,7 +9192,7 @@ func G_BeginRecording(tls *libc.TLS) {
 	}
 	v3 = demo_p
 	demo_p++
-	*(*uint8)(unsafe.Pointer(v3)) = libc.Uint8FromInt32(gameskill)
+	*(*uint8)(unsafe.Pointer(v3)) = uint8(gameskill)
 	v4 = demo_p
 	demo_p++
 	*(*uint8)(unsafe.Pointer(v4)) = libc.Uint8FromInt32(gameepisode)
@@ -9297,7 +9290,7 @@ func G_DoPlayDemo(tls *libc.TLS) {
 	}
 	v3 = demo_p
 	demo_p++
-	skill = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v3)))
+	skill = skill_t(*(*uint8)(unsafe.Pointer(v3)))
 	v4 = demo_p
 	demo_p++
 	episode = libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(v4)))
@@ -9898,7 +9891,8 @@ func HU_Stop() {
 }
 
 func HU_Start(tls *libc.TLS) {
-	var i, v1, v2 int32
+	var i int32
+	var v1 GameMission_t
 	var s, v3 uintptr
 	if headsupactive != 0 {
 		HU_Stop()
@@ -9912,24 +9906,23 @@ func HU_Start(tls *libc.TLS) {
 	HUlib_initSText(&w_message, HU_MSGX, HU_MSGY, int32(HU_MSGHEIGHT), uintptr(unsafe.Pointer(&hu_font)), int32('!'), &message_on)
 	// create the map title widget
 	HUlib_initTextLine(&w_title, HU_TITLEX, 167-int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight), uintptr(unsafe.Pointer(&hu_font)), int32('!'))
-	if gamemission == int32(pack_chex) {
-		v1 = int32(doom)
+	if gamemission == pack_chex {
+		v1 = doom
 	} else {
-		if gamemission == int32(pack_hacx) {
-			v2 = int32(doom2)
+		if gamemission == pack_hacx {
+			v1 = doom2
 		} else {
-			v2 = gamemission
+			v1 = gamemission
 		}
-		v1 = v2
 	}
 	switch v1 {
-	case int32(doom):
+	case doom:
 		s = mapnames[(gameepisode-1)*int32(9)+gamemap-1]
-	case int32(doom2):
+	case doom2:
 		s = mapnames_commercial[gamemap-1]
-	case int32(pack_plut):
+	case pack_plut:
 		s = mapnames_commercial[gamemap-1+int32(32)]
-	case int32(pack_tnt):
+	case pack_tnt:
 		s = mapnames_commercial[gamemap-1+int32(64)]
 	default:
 		s = __ccgo_ts(17490)
@@ -20108,7 +20101,8 @@ func init() {
 }
 
 const hurtme = 2
-const nightmare = 4
+
+// const nightmare = 4
 const newg_end = 5
 
 func init() {
@@ -20637,7 +20631,7 @@ func M_SaveGame(tls *libc.TLS, choice int32) {
 		M_StartMessage(tls, __ccgo_ts(22227), uintptr(0), 0)
 		return
 	}
-	if gamestate != int32(GS_LEVEL) {
+	if gamestate != GS_LEVEL {
 		return
 	}
 	M_SetupNextMenu(tls, uintptr(unsafe.Pointer(&SaveDef)))
@@ -20656,7 +20650,7 @@ func M_QuickSave(tls *libc.TLS) {
 		S_StartSound(tls, uintptr(0), int32(sfx_oof))
 		return
 	}
-	if gamestate != int32(GS_LEVEL) {
+	if gamestate != GS_LEVEL {
 		return
 	}
 	if quickSaveSlot < 0 {
@@ -20850,12 +20844,12 @@ func M_VerifyNightmare(tls *libc.TLS, key int32) {
 	if key != key_menu_confirm {
 		return
 	}
-	G_DeferedInitNew(int32(nightmare), epi+int32(1), 1)
+	G_DeferedInitNew(sk_nightmare, epi+int32(1), 1)
 	M_ClearMenus(tls)
 }
 
-func M_ChooseSkill(tls *libc.TLS, choice int32) {
-	if choice == int32(nightmare) {
+func M_ChooseSkill(tls *libc.TLS, choice skill_t) {
+	if choice == sk_nightmare {
 		M_StartMessage(tls, __ccgo_ts(22639), __ccgo_fp(M_VerifyNightmare), 1)
 		return
 	}
@@ -21017,18 +21011,17 @@ func M_QuitResponse(tls *libc.TLS, key int32) {
 
 func M_SelectEndMessage(tls *libc.TLS) (r uintptr) {
 	var endmsg uintptr
-	var v1, v2 int32
-	if gamemission == int32(pack_chex) {
-		v1 = int32(doom)
+	var v1 GameMission_t
+	if gamemission == pack_chex {
+		v1 = doom
 	} else {
-		if gamemission == int32(pack_hacx) {
-			v2 = int32(doom2)
+		if gamemission == pack_hacx {
+			v1 = doom2
 		} else {
-			v2 = gamemission
+			v1 = gamemission
 		}
-		v1 = v2
 	}
-	if v1 == int32(doom) {
+	if v1 == doom {
 		// Doom 1
 		endmsg = uintptr(unsafe.Pointer(&doom1_endmsg))
 	} else {
@@ -23539,7 +23532,7 @@ func A_Chase(tls *libc.TLS, actor uintptr) {
 	// do not attack twice in a row
 	if (*mobj_t)(unsafe.Pointer(actor)).Fflags&int32(MF_JUSTATTACKED) != 0 {
 		*(*int32)(unsafe.Pointer(actor + 160)) &= ^int32(MF_JUSTATTACKED)
-		if gameskill != int32(sk_nightmare) && !(fastparm != 0) {
+		if gameskill != sk_nightmare && !(fastparm != 0) {
 			P_NewChaseDir(tls, actor)
 		}
 		return
@@ -23554,7 +23547,7 @@ func A_Chase(tls *libc.TLS, actor uintptr) {
 	}
 	// check for missile attack
 	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fmissilestate != 0 {
-		if gameskill < int32(sk_nightmare) && !(fastparm != 0) && (*mobj_t)(unsafe.Pointer(actor)).Fmovecount != 0 {
+		if gameskill < sk_nightmare && !(fastparm != 0) && (*mobj_t)(unsafe.Pointer(actor)).Fmovecount != 0 {
 			goto nomissile
 		}
 		if !(P_CheckMissileRange(tls, actor) != 0) {
@@ -24474,7 +24467,7 @@ func A_BrainDie(tls *libc.TLS, mo uintptr) {
 func A_BrainSpit(tls *libc.TLS, mo uintptr) {
 	var newmobj, targ uintptr
 	easy ^= 1
-	if gameskill <= int32(sk_easy) && !(easy != 0) {
+	if gameskill <= sk_easy && !(easy != 0) {
 		return
 	}
 	// shoot a cube at current target
@@ -25080,7 +25073,7 @@ func P_GiveAmmo(tls *libc.TLS, player *player_t, ammo ammotype_t, num int32) (r 
 	} else {
 		num = clipammo[ammo] / 2
 	}
-	if gameskill == int32(sk_baby) || gameskill == int32(sk_nightmare) {
+	if gameskill == sk_baby || gameskill == sk_nightmare {
 		// give double ammo in trainer mode,
 		// you'll need in nightmare
 		num <<= 1
@@ -25698,7 +25691,7 @@ func P_DamageMobj(tls *libc.TLS, target uintptr, inflictor uintptr, source uintp
 		(*mobj_t)(unsafe.Pointer(target)).Fmomx = v1
 	}
 	player = (*mobj_t)(unsafe.Pointer(target)).Fplayer
-	if player != nil && gameskill == int32(sk_baby) {
+	if player != nil && gameskill == sk_baby {
 		damage >>= 1
 	} // take half damage in trainer mode
 	// Some close combat weapons should not
@@ -28332,7 +28325,7 @@ func P_SpawnMobj(tls *libc.TLS, x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_
 	(*mobj_t)(unsafe.Pointer(mobj)).Fheight = info.Fheight
 	(*mobj_t)(unsafe.Pointer(mobj)).Fflags = info.Fflags
 	(*mobj_t)(unsafe.Pointer(mobj)).Fhealth = info.Fspawnhealth
-	if gameskill != int32(sk_nightmare) {
+	if gameskill != sk_nightmare {
 		(*mobj_t)(unsafe.Pointer(mobj)).Freactiontime = info.Freactiontime
 	}
 	(*mobj_t)(unsafe.Pointer(mobj)).Flastlook = P_Random() % int32(MAXPLAYERS)
@@ -28541,10 +28534,10 @@ func P_SpawnMapThing(tls *libc.TLS, mthing *mapthing_t) {
 	if !(netgame != 0) && int32(mthing.Foptions)&int32(16) != 0 {
 		return
 	}
-	if gameskill == int32(sk_baby) {
+	if gameskill == sk_baby {
 		bit = 1
 	} else {
-		if gameskill == int32(sk_nightmare) {
+		if gameskill == sk_nightmare {
 			bit = 4
 		} else {
 			bit = 1 << (gameskill - 1)
@@ -30688,7 +30681,7 @@ func P_WriteSaveGameHeader(tls *libc.TLS, description uintptr) {
 		;
 		i++
 	}
-	saveg_write8(tls, libc.Uint8FromInt32(gameskill))
+	saveg_write8(tls, uint8(gameskill))
 	saveg_write8(tls, libc.Uint8FromInt32(gameepisode))
 	saveg_write8(tls, libc.Uint8FromInt32(gamemap))
 	i = 0
@@ -30743,7 +30736,7 @@ func P_ReadSaveGameHeader(tls *libc.TLS) (r boolean) {
 	if xstrcmp(bp+16, bp) != 0 {
 		return 0
 	} // bad version
-	gameskill = libc.Int32FromUint8(saveg_read8(tls))
+	gameskill = skill_t(saveg_read8(tls))
 	gameepisode = libc.Int32FromUint8(saveg_read8(tls))
 	gamemap = libc.Int32FromUint8(saveg_read8(tls))
 	i = 0
@@ -40965,7 +40958,8 @@ func ST_refreshBackground(tls *libc.TLS) {
 //	//  intercept cheats.
 func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 	bp := alloc(48)
-	var epsd, i, map1, musnum, v6, v7, v8, v9 int32
+	var epsd, i, map1, musnum int32
+	var v6, v8 GameMission_t
 	var v10 bool
 	// Filter automap on/off.
 	if ev.Ftype1 == ev_keyup && libc.Uint32FromInt32(ev.Fdata1)&uint32(0xffff0000) == libc.Uint32FromInt32(libc.Int32FromUint8('a')<<24+libc.Int32FromUint8('m')<<16) {
@@ -40978,7 +40972,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 		}
 	} else {
 		if ev.Ftype1 == ev_keydown {
-			if !(netgame != 0) && gameskill != int32(sk_nightmare) {
+			if !(netgame != 0) && gameskill != sk_nightmare {
 				// 'dqd' cheat for toggleable god mode
 				if cht_CheckCheat(&cheat_god, int8(ev.Fdata2)) != 0 {
 					plyr.Fcheats ^= int32(CF_GODMODE)
@@ -41080,29 +41074,27 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 									}
 								}
 							} else {
-								if gamemission == int32(pack_chex) {
-									v6 = int32(doom)
+								if gamemission == pack_chex {
+									v6 = doom
 								} else {
-									if gamemission == int32(pack_hacx) {
-										v7 = int32(doom2)
+									if gamemission == pack_hacx {
+										v6 = doom2
 									} else {
-										v7 = gamemission
+										v6 = gamemission
 									}
-									v6 = v7
 								}
-								if v10 = v6 == int32(doom) && cht_CheckCheat(&cheat_noclip, int8(ev.Fdata2)) != 0; !v10 {
-									if gamemission == int32(pack_chex) {
-										v8 = int32(doom)
+								if v10 = v6 == doom && cht_CheckCheat(&cheat_noclip, int8(ev.Fdata2)) != 0; !v10 {
+									if gamemission == pack_chex {
+										v8 = doom
 									} else {
-										if gamemission == int32(pack_hacx) {
-											v9 = int32(doom2)
+										if gamemission == pack_hacx {
+											v8 = doom2
 										} else {
-											v9 = gamemission
+											v8 = gamemission
 										}
-										v8 = v9
 									}
 								}
-								if v10 || v8 != int32(doom) && cht_CheckCheat(&cheat_commercial_noclip, int8(ev.Fdata2)) != 0 {
+								if v10 || v8 != doom && cht_CheckCheat(&cheat_commercial_noclip, int8(ev.Fdata2)) != 0 {
 									// Noclip cheat.
 									// For Doom 1, use the idspipsopd cheat; for all others, use
 									// idclip
@@ -45126,15 +45118,15 @@ var unique_lumps = [4]struct {
 		Flumpname: __ccgo_ts(28907),
 	},
 	1: {
-		Fmission:  int32(heretic),
+		Fmission:  heretic,
 		Flumpname: __ccgo_ts(28914),
 	},
 	2: {
-		Fmission:  int32(hexen),
+		Fmission:  hexen,
 		Flumpname: __ccgo_ts(28921),
 	},
 	3: {
-		Fmission:  int32(strife),
+		Fmission:  strife,
 		Flumpname: __ccgo_ts(28928),
 	},
 }
