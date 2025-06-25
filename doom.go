@@ -5226,11 +5226,10 @@ var banners = [7]string{
 // Otherwise, use the name given
 //
 
-func GetGameName(gamename uintptr) (r uintptr) {
+func GetGameName(gamename string) string {
 	var deh_sub string
-	var gamename_size, i uint64
+	var i uint64
 	var version, v2, v3, v6, v7 int32
-	var v5, v9 bool
 	i = uint64(0)
 	for {
 		if !(i < 56/8) {
@@ -5242,33 +5241,31 @@ func GetGameName(gamename uintptr) (r uintptr) {
 			// Has been replaced.
 			// We need to expand via printf to include the Doom version number
 			// We also need to cut off spaces to get the basic name
-			gamename_size = uint64(len(deh_sub) + 10)
-			gamename = Z_Malloc(int32(gamename_size), int32(PU_STATIC), uintptr(0))
 			version = G_VanillaVersionCode()
-			M_snprintf(gamename, gamename_size, deh_sub, version/int32(100), version%int32(100))
+			gamename = fmt.Sprintf(deh_sub, version/int32(100), version%int32(100))
 			for {
-				if v5 = int32(*(*int8)(unsafe.Pointer(gamename))) != int32('\000'); v5 {
-					v2 = int32(*(*int8)(unsafe.Pointer(gamename)))
+				if len(gamename) >= 1 {
+					v2 = int32(gamename[0])
 					v3 = libc.BoolInt32(v2 == int32(' ') || uint32(v2)-uint32('\t') < uint32(5))
 					goto _4
 				_4:
 				}
-				if !(v5 && v3 != 0) {
+				if !(len(gamename) >= 1 && v3 != 0) {
 					break
 				}
-				xmemmove(gamename, gamename+uintptr(1), gamename_size-uint64(1))
+				gamename = gamename[1:]
 			}
 			for {
-				if v9 = int32(*(*int8)(unsafe.Pointer(gamename))) != int32('\000'); v9 {
-					v6 = int32(*(*int8)(unsafe.Pointer(gamename + uintptr(xstrlen(gamename)-uint64(1)))))
+				if len(gamename) >= 1 {
+					v6 = int32(gamename[len(gamename)-1])
 					v7 = libc.BoolInt32(v6 == int32(' ') || uint32(v6)-uint32('\t') < uint32(5))
 					goto _8
 				_8:
 				}
-				if !(v9 && v7 != 0) {
+				if !(len(gamename) >= 1 && v7 != 0) {
 					break
 				}
-				*(*int8)(unsafe.Pointer(gamename + uintptr(xstrlen(gamename)-uint64(1)))) = int8('\000')
+				gamename = gamename[:len(gamename)-1]
 			}
 			return gamename
 		}
@@ -5417,7 +5414,7 @@ func D_SetGameDescription() {
 	var v7, v5, v3, v1 GameMission_t
 	is_freedoom = libc.BoolUint32(W_CheckNumForName(__ccgo_ts(2670)) >= 0)
 	is_freedm = libc.BoolUint32(W_CheckNumForName(__ccgo_ts(2679)) >= 0)
-	gamedescription = __ccgo_ts(2686)
+	gamedescription = __ccgo_ts_str(2686)
 	if gamemission == pack_chex {
 		v1 = doom
 	} else {
@@ -5430,17 +5427,17 @@ func D_SetGameDescription() {
 	if v1 == doom {
 		// Doom 1.  But which version?
 		if is_freedoom != 0 {
-			gamedescription = GetGameName(__ccgo_ts(1146))
+			gamedescription = GetGameName(__ccgo_ts_str(1146))
 		} else {
 			if gamemode == retail {
 				// Ultimate Doom
-				gamedescription = GetGameName(__ccgo_ts(2694))
+				gamedescription = GetGameName(__ccgo_ts_str(2694))
 			} else {
 				if gamemode == registered {
-					gamedescription = GetGameName(__ccgo_ts(2712))
+					gamedescription = GetGameName(__ccgo_ts_str(2712))
 				} else {
 					if gamemode == shareware {
-						gamedescription = GetGameName(__ccgo_ts(2728))
+						gamedescription = GetGameName(__ccgo_ts_str(2728))
 					}
 				}
 			}
@@ -5449,9 +5446,9 @@ func D_SetGameDescription() {
 		// Doom 2 of some kind.  But which mission?
 		if is_freedoom != 0 {
 			if is_freedm != 0 {
-				gamedescription = GetGameName(__ccgo_ts(1093))
+				gamedescription = GetGameName(__ccgo_ts_str(1093))
 			} else {
-				gamedescription = GetGameName(__ccgo_ts(1114))
+				gamedescription = GetGameName(__ccgo_ts_str(1114))
 			}
 		} else {
 			if gamemission == pack_chex {
@@ -5464,7 +5461,7 @@ func D_SetGameDescription() {
 				}
 			}
 			if v3 == doom2 {
-				gamedescription = GetGameName(__ccgo_ts(2743))
+				gamedescription = GetGameName(__ccgo_ts_str(2743))
 			} else {
 				if gamemission == pack_chex {
 					v5 = doom
@@ -5476,7 +5473,7 @@ func D_SetGameDescription() {
 					}
 				}
 				if v5 == pack_plut {
-					gamedescription = GetGameName(__ccgo_ts(2765))
+					gamedescription = GetGameName(__ccgo_ts_str(2765))
 				} else {
 					if gamemission == pack_chex {
 						v7 = doom
@@ -5488,7 +5485,7 @@ func D_SetGameDescription() {
 						}
 					}
 					if v7 == pack_tnt {
-						gamedescription = GetGameName(__ccgo_ts(2793))
+						gamedescription = GetGameName(__ccgo_ts_str(2793))
 					}
 				}
 			}
@@ -5724,7 +5721,7 @@ func D_DoomMain() {
 	var i, p, v1 int32
 	I_AtExit(D_Endoom, 0)
 	// print banner
-	I_PrintBanner(__ccgo_ts(4001))
+	I_PrintBanner(__ccgo_ts_str(4001))
 	fprintf_ccgo(os.Stdout, 4018)
 	Z_Init()
 	//!
@@ -9380,7 +9377,7 @@ func G_CheckDemoStatus() {
 	if timingdemo != 0 {
 		endtime = I_GetTime()
 		realtics = endtime - starttime
-		fps = float32(gametic) * libc.Float32FromInt32(TICRATE) / float32(realtics)
+		fps = float32(gametic) * float32(TICRATE) / float32(realtics)
 		// Prevent recursive calls
 		timingdemo = 0
 		demoplayback = 0
@@ -18382,21 +18379,12 @@ func I_ZoneBase(size uintptr) (r uintptr) {
 	return zonemem
 }
 
-func I_PrintBanner(msg uintptr) {
-	var i, spaces int32
-	spaces = int32(uint64(35) - xstrlen(msg)/uint64(2))
-	i = 0
-	for {
-		if !(i < spaces) {
-			break
-		}
+func I_PrintBanner(msg string) {
+	spaces := 35 - len(msg)/2
+	for i := 0; i < spaces; i++ {
 		fmt.Print(" ")
-		goto _1
-	_1:
-		;
-		i++
 	}
-	fmt.Printf("%s\n", libc.GoString(msg))
+	fmt.Printf("%s\n", msg)
 }
 
 func I_PrintDivider() {
@@ -18415,7 +18403,7 @@ func I_PrintDivider() {
 	fmt.Print("\n")
 }
 
-func I_PrintStartupBanner(gamedescription uintptr) {
+func I_PrintStartupBanner(gamedescription string) {
 	I_PrintDivider()
 	I_PrintBanner(gamedescription)
 	I_PrintDivider()
@@ -45769,8 +45757,8 @@ func I_BeginRead() {
 func I_EndRead() {
 }
 
-func I_SetWindowTitle(title uintptr) {
-	dg_frontend.SetTitle(libc.GoString(title))
+func I_SetWindowTitle(title string) {
+	dg_frontend.SetTitle(title)
 }
 
 func I_GraphicsCheckCommandLine() {
@@ -46546,7 +46534,7 @@ var fuzzpos int32
 
 var gameaction gameaction_t
 
-var gamedescription uintptr
+var gamedescription string
 
 var gameepisode int32
 
