@@ -8615,12 +8615,12 @@ func G_DoCompleted() {
 		if !(i < int32(MAXPLAYERS)) {
 			break
 		}
-		(*(*wbplayerstruct_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&wminfo)) + 40 + uintptr(i)*40))).Fin = playeringame[i]
-		(*(*wbplayerstruct_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&wminfo)) + 40 + uintptr(i)*40))).Fskills = players[i].Fkillcount
-		(*(*wbplayerstruct_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&wminfo)) + 40 + uintptr(i)*40))).Fsitems = players[i].Fitemcount
-		(*(*wbplayerstruct_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&wminfo)) + 40 + uintptr(i)*40))).Fssecret = players[i].Fsecretcount
-		(*(*wbplayerstruct_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&wminfo)) + 40 + uintptr(i)*40))).Fstime = leveltime
-		xmemcpy(uintptr(unsafe.Pointer(&wminfo))+40+uintptr(i)*40+20, uintptr(unsafe.Pointer(&players))+uintptr(i)*328+108, uint64(16))
+		wminfo.Fplyr[i].Fin = playeringame[i]
+		wminfo.Fplyr[i].Fskills = players[i].Fkillcount
+		wminfo.Fplyr[i].Fsitems = players[i].Fitemcount
+		wminfo.Fplyr[i].Fssecret = players[i].Fsecretcount
+		wminfo.Fplyr[i].Fstime = leveltime
+		wminfo.Fplyr[i].Ffrags = players[i].Ffrags
 		goto _9
 	_9:
 		;
@@ -42658,17 +42658,17 @@ func WI_drawLF() {
 	bp := alloc(48)
 	var y int32
 	y = int32(WI_TITLEY)
-	if gamemode != commercial || (*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast < NUMCMAPS {
+	if gamemode != commercial || wbs.Flast < NUMCMAPS {
 		// draw <LevelName>
-		V_DrawPatch((int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast)*8)))).Fwidth))/int32(2), y, *(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast)*8)))
+		V_DrawPatch((int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Flast)*8)))).Fwidth))/int32(2), y, *(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Flast)*8)))
 		// draw "Finished!"
-		y += 5 * int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast)*8)))).Fheight) / 4
+		y += 5 * int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Flast)*8)))).Fheight) / 4
 		V_DrawPatch((int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(finished)).Fwidth))/int32(2), y, finished)
 	} else {
-		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast == NUMCMAPS {
+		if wbs.Flast == NUMCMAPS {
 			// MAP33 - nothing is displayed!
 		} else {
-			if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast > NUMCMAPS {
+			if wbs.Flast > NUMCMAPS {
 				// > MAP33.  Doom bombs out here with a Bad V_DrawPatch error.
 				// I'm pretty sure that doom2.exe is just reading into random
 				// bits of memory at this point, but let's try to be accurate
@@ -42694,8 +42694,8 @@ func WI_drawEL() {
 	// draw "Entering"
 	V_DrawPatch((int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(entering)).Fwidth))/int32(2), y, entering)
 	// draw level
-	y += 5 * int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext)*8)))).Fheight) / 4
-	V_DrawPatch((int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext)*8)))).Fwidth))/int32(2), y, *(*uintptr)(unsafe.Pointer(lnames + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext)*8)))
+	y += 5 * int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Fnext)*8)))).Fheight) / 4
+	V_DrawPatch((int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Fnext)*8)))).Fwidth))/int32(2), y, *(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Fnext)*8)))
 }
 
 func WI_drawOnLnode(n int32, c uintptr) {
@@ -42704,8 +42704,8 @@ func WI_drawOnLnode(n int32, c uintptr) {
 	fits = 0
 	i = 0
 	for cond := true; cond; cond = !(fits != 0) && i != 2 && *(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)) != uintptr(0) {
-		left = (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fx - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Fleftoffset)
-		top = (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fy - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Ftopoffset)
+		left = (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr(wbs.Fepsd)*72 + uintptr(n)*8))).Fx - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Fleftoffset)
+		top = (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr(wbs.Fepsd)*72 + uintptr(n)*8))).Fy - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Ftopoffset)
 		right = left + int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Fwidth)
 		bottom = top + int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Fheight)
 		if left >= 0 && right < int32(SCREENWIDTH) && top >= 0 && bottom < int32(SCREENHEIGHT) {
@@ -42715,7 +42715,7 @@ func WI_drawOnLnode(n int32, c uintptr) {
 		}
 	}
 	if fits != 0 && i < 2 {
-		V_DrawPatch((*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fx, (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)*72 + uintptr(n)*8))).Fy, *(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))
+		V_DrawPatch((*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr(wbs.Fepsd)*72 + uintptr(n)*8))).Fx, (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr(wbs.Fepsd)*72 + uintptr(n)*8))).Fy, *(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))
 	} else {
 		// DEBUG
 		fprintf_ccgo(os.Stdout, 28344, n+1)
@@ -42728,15 +42728,15 @@ func WI_initAnimatedBack() {
 	if gamemode == commercial {
 		return
 	}
-	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > 2 {
+	if wbs.Fepsd > 2 {
 		return
 	}
 	i = 0
 	for {
-		if !(i < NUMANIMS[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd]) {
+		if !(i < NUMANIMS[wbs.Fepsd]) {
 			break
 		}
-		a = &anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd][i]
+		a = &anims1[wbs.Fepsd][i]
 		// init variables
 		(*anim_t1)(unsafe.Pointer(a)).Fctr = -1
 		// specify the next time to draw it
@@ -42764,15 +42764,15 @@ func WI_updateAnimatedBack() {
 	if gamemode == commercial {
 		return
 	}
-	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > 2 {
+	if wbs.Fepsd > 2 {
 		return
 	}
 	i = 0
 	for {
-		if !(i < NUMANIMS[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd]) {
+		if !(i < NUMANIMS[wbs.Fepsd]) {
 			break
 		}
-		a = &anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd][i]
+		a = &anims1[wbs.Fepsd][i]
 		if bcnt == (*anim_t1)(unsafe.Pointer(a)).Fnexttic {
 			switch (*anim_t1)(unsafe.Pointer(a)).Ftype1 {
 			case ANIM_ALWAYS:
@@ -42791,7 +42791,7 @@ func WI_updateAnimatedBack() {
 				}
 			case ANIM_LEVEL:
 				// gawd-awful hack for level anims
-				if !(state == StatCount && i == 7) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext == a.Fdata1 {
+				if !(state == StatCount && i == 7) && wbs.Fnext == a.Fdata1 {
 					a.Fctr++
 					if a.Fctr == a.Fnanims {
 						a.Fctr--
@@ -42814,15 +42814,15 @@ func WI_drawAnimatedBack() {
 	if gamemode == commercial {
 		return
 	}
-	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > 2 {
+	if wbs.Fepsd > 2 {
 		return
 	}
 	i = 0
 	for {
-		if !(i < NUMANIMS[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd]) {
+		if !(i < NUMANIMS[wbs.Fepsd]) {
 			break
 		}
-		a = &anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd][i]
+		a = &anims1[wbs.Fepsd][i]
 		if a.Fctr >= 0 {
 			V_DrawPatch(a.Floc.Fx, a.Floc.Fy, a.Fp[a.Fctr])
 		}
@@ -42972,14 +42972,14 @@ func WI_drawShowNextLoc() {
 	// draw animated background
 	WI_drawAnimatedBack()
 	if gamemode != commercial {
-		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > 2 {
+		if wbs.Fepsd > 2 {
 			WI_drawEL()
 			return
 		}
-		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast == 8 {
-			v1 = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext - 1
+		if wbs.Flast == 8 {
+			v1 = wbs.Fnext - 1
 		} else {
-			v1 = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Flast
+			v1 = wbs.Flast
 		}
 		last = v1
 		// draw a splat on taken cities.
@@ -42995,16 +42995,16 @@ func WI_drawShowNextLoc() {
 			i++
 		}
 		// splat the secret level?
-		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fdidsecret != 0 {
+		if wbs.Fdidsecret != 0 {
 			WI_drawOnLnode(8, uintptr(unsafe.Pointer(&splat)))
 		}
 		// draw flashing ptr
 		if snl_pointeron != 0 {
-			WI_drawOnLnode((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext, uintptr(unsafe.Pointer(&yah)))
+			WI_drawOnLnode(wbs.Fnext, uintptr(unsafe.Pointer(&yah)))
 		}
 	}
 	// draws which level you are entering..
-	if gamemode != commercial || (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext != 30 {
+	if gamemode != commercial || wbs.Fnext != 30 {
 		WI_drawEL()
 	}
 }
@@ -43307,9 +43307,9 @@ func WI_updateNetgameStats() {
 			if !(playeringame[i] != 0) {
 				goto _1
 			}
-			cnt_kills[i] = plrs[i].Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
-			cnt_items[i] = plrs[i].Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
-			cnt_secret[i] = plrs[i].Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
+			cnt_kills[i] = plrs[i].Fskills * 100 / wbs.Fmaxkills
+			cnt_items[i] = plrs[i].Fsitems * 100 / wbs.Fmaxitems
+			cnt_secret[i] = plrs[i].Fssecret * 100 / wbs.Fmaxsecret
 			if dofrags != 0 {
 				cnt_frags[i] = WI_fragSum(i)
 			}
@@ -43335,8 +43335,8 @@ func WI_updateNetgameStats() {
 				goto _2
 			}
 			*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_kills)) + uintptr(i)*4)) += 2
-			if cnt_kills[i] >= plrs[i].Fskills*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills {
-				cnt_kills[i] = plrs[i].Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
+			if cnt_kills[i] >= plrs[i].Fskills*int32(100)/wbs.Fmaxkills {
+				cnt_kills[i] = plrs[i].Fskills * 100 / wbs.Fmaxkills
 			} else {
 				stillticking = 1
 			}
@@ -43364,8 +43364,8 @@ func WI_updateNetgameStats() {
 					goto _3
 				}
 				*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_items)) + uintptr(i)*4)) += 2
-				if cnt_items[i] >= plrs[i].Fsitems*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems {
-					cnt_items[i] = plrs[i].Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
+				if cnt_items[i] >= plrs[i].Fsitems*int32(100)/wbs.Fmaxitems {
+					cnt_items[i] = plrs[i].Fsitems * 100 / wbs.Fmaxitems
 				} else {
 					stillticking = 1
 				}
@@ -43393,8 +43393,8 @@ func WI_updateNetgameStats() {
 						goto _4
 					}
 					*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_secret)) + uintptr(i)*4)) += 2
-					if cnt_secret[i] >= plrs[i].Fssecret*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret {
-						cnt_secret[i] = plrs[i].Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
+					if cnt_secret[i] >= plrs[i].Fssecret*int32(100)/wbs.Fmaxsecret {
+						cnt_secret[i] = plrs[i].Fssecret * 100 / wbs.Fmaxsecret
 					} else {
 						stillticking = 1
 					}
@@ -43535,11 +43535,11 @@ func WI_updateStats() {
 	WI_updateAnimatedBack()
 	if acceleratestage != 0 && sp_state != 10 {
 		acceleratestage = 0
-		cnt_kills[0] = plrs[me].Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
-		cnt_items[0] = plrs[me].Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
-		cnt_secret[0] = plrs[me].Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
+		cnt_kills[0] = plrs[me].Fskills * 100 / wbs.Fmaxkills
+		cnt_items[0] = plrs[me].Fsitems * 100 / wbs.Fmaxitems
+		cnt_secret[0] = plrs[me].Fssecret * 100 / wbs.Fmaxsecret
 		cnt_time = plrs[me].Fstime / int32(TICRATE)
-		cnt_par = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpartime / int32(TICRATE)
+		cnt_par = wbs.Fpartime / int32(TICRATE)
 		S_StartSound(uintptr(0), int32(sfx_barexp))
 		sp_state = 10
 	}
@@ -43548,8 +43548,8 @@ func WI_updateStats() {
 		if !(bcnt&3 != 0) {
 			S_StartSound(uintptr(0), int32(sfx_pistol))
 		}
-		if cnt_kills[0] >= plrs[me].Fskills*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills {
-			cnt_kills[0] = plrs[me].Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
+		if cnt_kills[0] >= plrs[me].Fskills*int32(100)/wbs.Fmaxkills {
+			cnt_kills[0] = plrs[me].Fskills * 100 / wbs.Fmaxkills
 			S_StartSound(uintptr(0), int32(sfx_barexp))
 			sp_state++
 		}
@@ -43559,8 +43559,8 @@ func WI_updateStats() {
 			if !(bcnt&3 != 0) {
 				S_StartSound(uintptr(0), int32(sfx_pistol))
 			}
-			if cnt_items[0] >= plrs[me].Fsitems*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems {
-				cnt_items[0] = plrs[me].Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
+			if cnt_items[0] >= plrs[me].Fsitems*int32(100)/wbs.Fmaxitems {
+				cnt_items[0] = plrs[me].Fsitems * 100 / wbs.Fmaxitems
 				S_StartSound(uintptr(0), int32(sfx_barexp))
 				sp_state++
 			}
@@ -43570,8 +43570,8 @@ func WI_updateStats() {
 				if !(bcnt&3 != 0) {
 					S_StartSound(uintptr(0), int32(sfx_pistol))
 				}
-				if cnt_secret[0] >= plrs[me].Fssecret*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret {
-					cnt_secret[0] = plrs[me].Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
+				if cnt_secret[0] >= plrs[me].Fssecret*int32(100)/wbs.Fmaxsecret {
+					cnt_secret[0] = plrs[me].Fssecret * 100 / wbs.Fmaxsecret
 					S_StartSound(uintptr(0), int32(sfx_barexp))
 					sp_state++
 				}
@@ -43585,8 +43585,8 @@ func WI_updateStats() {
 						cnt_time = plrs[me].Fstime / int32(TICRATE)
 					}
 					cnt_par += 3
-					if cnt_par >= (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpartime/int32(TICRATE) {
-						cnt_par = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpartime / int32(TICRATE)
+					if cnt_par >= wbs.Fpartime/int32(TICRATE) {
+						cnt_par = wbs.Fpartime / int32(TICRATE)
 						if cnt_time >= plrs[me].Fstime/int32(TICRATE) {
 							S_StartSound(uintptr(0), int32(sfx_barexp))
 							sp_state++
@@ -43633,7 +43633,7 @@ func WI_drawStats() {
 	WI_drawPercent(SCREENWIDTH-SP_STATSX, int32(SP_STATSY)+int32(2)*lh, cnt_secret[0])
 	V_DrawPatch(int32(SP_TIMEX), SCREENHEIGHT-32, timepatch)
 	WI_drawTime(SCREENWIDTH/2-SP_TIMEX, SCREENHEIGHT-32, cnt_time)
-	if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd < 3 {
+	if wbs.Fepsd < 3 {
 		V_DrawPatch(SCREENWIDTH/2+SP_TIMEX, SCREENHEIGHT-32, par)
 		WI_drawTime(SCREENWIDTH-SP_TIMEX, SCREENHEIGHT-32, cnt_par)
 	}
@@ -43724,7 +43724,7 @@ func WI_loadUnloadData(callback func(uintptr, uintptr)) {
 			if !(i < int32(NUMMAPS)) {
 				break
 			}
-			snprintf_ccgo(bp1, 9, 28389, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, i)
+			snprintf_ccgo(bp1, 9, 28389, wbs.Fepsd, i)
 			callback(bp1, lnames+uintptr(i)*8)
 			goto _2
 		_2:
@@ -43737,22 +43737,22 @@ func WI_loadUnloadData(callback func(uintptr, uintptr)) {
 		callback(__ccgo_ts(28405), uintptr(unsafe.Pointer(&yah))+1*8)
 		// splat
 		callback(__ccgo_ts(28412), uintptr(unsafe.Pointer(&splat)))
-		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd < 3 {
+		if wbs.Fepsd < 3 {
 			j = 0
 			for {
-				if !(j < NUMANIMS[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd]) {
+				if !(j < NUMANIMS[wbs.Fepsd]) {
 					break
 				}
-				a = &anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd][j]
+				a = &anims1[wbs.Fepsd][j]
 				i = 0
 				for {
 					if !(i < a.Fnanims) {
 						break
 					}
 					// MONDO HACK!
-					if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd != 1 || j != 8 {
+					if wbs.Fepsd != 1 || j != 8 {
 						// animations
-						snprintf_ccgo(bp1, 9, 28420, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, j, i)
+						snprintf_ccgo(bp1, 9, 28420, wbs.Fepsd, j, i)
 						callback(bp1, a.Fp[i])
 					} else {
 						// HACK ALERT!
@@ -43844,10 +43844,10 @@ func WI_loadUnloadData(callback func(uintptr, uintptr)) {
 	if gamemode == commercial {
 		M_StringCopy(bp1, __ccgo_ts(1951), uint64(9))
 	} else {
-		if gamemode == retail && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd == 3 {
+		if gamemode == retail && wbs.Fepsd == 3 {
 			M_StringCopy(bp1, __ccgo_ts(1951), uint64(9))
 		} else {
-			snprintf_ccgo(bp1, 9, 28577, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd)
+			snprintf_ccgo(bp1, 9, 28577, wbs.Fepsd)
 		}
 	}
 	// Draw backdrop and save to a temporary buffer
@@ -43914,19 +43914,19 @@ func WI_initVariables(wbstartstruct *wbstartstruct_t) {
 	v1 = 0
 	bcnt = v1
 	cnt = v1
-	me = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpnum
+	me = wbs.Fpnum
 	plrs = wbs.Fplyr[:]
-	if !((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills != 0) {
-		(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills = 1
+	if !(wbs.Fmaxkills != 0) {
+		wbs.Fmaxkills = 1
 	}
-	if !((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems != 0) {
-		(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems = 1
+	if !(wbs.Fmaxitems != 0) {
+		wbs.Fmaxitems = 1
 	}
-	if !((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret != 0) {
-		(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret = 1
+	if !(wbs.Fmaxsecret != 0) {
+		wbs.Fmaxsecret = 1
 	}
 	if gamemode != retail {
-		if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd > 2 {
+		if wbs.Fepsd > 2 {
 			*(*int32)(unsafe.Pointer(wbs)) -= 3
 		}
 	}
