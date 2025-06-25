@@ -42511,15 +42511,15 @@ var epsd2animinfo = [6]anim_t1{
 }
 
 var NUMANIMS = [4]int32{
-	0: int32(720 / 72),
-	1: int32(648 / 72),
-	2: int32(432 / 72),
+	0: int32(len(epsd0animinfo)),
+	1: int32(len(epsd1animinfo)),
+	2: int32(len(epsd2animinfo)),
 }
 
-var anims1 = [4]uintptr{
-	0: uintptr(unsafe.Pointer(&epsd0animinfo)),
-	1: uintptr(unsafe.Pointer(&epsd1animinfo)),
-	2: uintptr(unsafe.Pointer(&epsd2animinfo)),
+var anims1 = [4][]anim_t1{
+	0: epsd0animinfo[:],
+	1: epsd1animinfo[:],
+	2: epsd2animinfo[:],
 }
 
 //
@@ -42755,7 +42755,7 @@ func WI_drawOnLnode(n int32, c uintptr) {
 }
 
 func WI_initAnimatedBack() {
-	var a uintptr
+	var a *anim_t1
 	var i int32
 	if gamemode == commercial {
 		return
@@ -42768,18 +42768,18 @@ func WI_initAnimatedBack() {
 		if !(i < NUMANIMS[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd]) {
 			break
 		}
-		a = anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd] + uintptr(i)*72
+		a = &anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd][i]
 		// init variables
 		(*anim_t1)(unsafe.Pointer(a)).Fctr = -1
 		// specify the next time to draw it
-		if (*anim_t1)(unsafe.Pointer(a)).Ftype1 == ANIM_ALWAYS {
-			(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + 1 + M_Random()%(*anim_t1)(unsafe.Pointer(a)).Fperiod
+		if a.Ftype1 == ANIM_ALWAYS {
+			a.Fnexttic = bcnt + 1 + M_Random()%a.Fperiod
 		} else {
-			if (*anim_t1)(unsafe.Pointer(a)).Ftype1 == ANIM_RANDOM {
-				(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + 1 + (*anim_t1)(unsafe.Pointer(a)).Fdata2 + M_Random()%(*anim_t1)(unsafe.Pointer(a)).Fdata1
+			if a.Ftype1 == ANIM_RANDOM {
+				a.Fnexttic = bcnt + 1 + a.Fdata2 + M_Random()%a.Fdata1
 			} else {
-				if (*anim_t1)(unsafe.Pointer(a)).Ftype1 == ANIM_LEVEL {
-					(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + 1
+				if a.Ftype1 == ANIM_LEVEL {
+					a.Fnexttic = bcnt + 1
 				}
 			}
 		}
@@ -42791,8 +42791,8 @@ func WI_initAnimatedBack() {
 }
 
 func WI_updateAnimatedBack() {
-	var a, v3 uintptr
-	var i, v2 int32
+	var a *anim_t1
+	var i int32
 	if gamemode == commercial {
 		return
 	}
@@ -42804,33 +42804,31 @@ func WI_updateAnimatedBack() {
 		if !(i < NUMANIMS[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd]) {
 			break
 		}
-		a = anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd] + uintptr(i)*72
+		a = &anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd][i]
 		if bcnt == (*anim_t1)(unsafe.Pointer(a)).Fnexttic {
 			switch (*anim_t1)(unsafe.Pointer(a)).Ftype1 {
 			case ANIM_ALWAYS:
-				v3 = a + 64
-				*(*int32)(unsafe.Pointer(v3))++
-				v2 = *(*int32)(unsafe.Pointer(v3))
-				if v2 >= (*anim_t1)(unsafe.Pointer(a)).Fnanims {
-					(*anim_t1)(unsafe.Pointer(a)).Fctr = 0
+				a.Fctr++
+				if a.Fctr >= a.Fnanims {
+					a.Fctr = 0
 				}
-				(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + (*anim_t1)(unsafe.Pointer(a)).Fperiod
+				a.Fnexttic = bcnt + a.Fperiod
 			case ANIM_RANDOM:
-				(*anim_t1)(unsafe.Pointer(a)).Fctr++
-				if (*anim_t1)(unsafe.Pointer(a)).Fctr == (*anim_t1)(unsafe.Pointer(a)).Fnanims {
-					(*anim_t1)(unsafe.Pointer(a)).Fctr = -1
-					(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + (*anim_t1)(unsafe.Pointer(a)).Fdata2 + M_Random()%(*anim_t1)(unsafe.Pointer(a)).Fdata1
+				a.Fctr++
+				if a.Fctr == a.Fnanims {
+					a.Fctr = -1
+					a.Fnexttic = bcnt + a.Fdata2 + M_Random()%a.Fdata1
 				} else {
-					(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + (*anim_t1)(unsafe.Pointer(a)).Fperiod
+					a.Fnexttic = bcnt + a.Fperiod
 				}
 			case ANIM_LEVEL:
 				// gawd-awful hack for level anims
-				if !(state == StatCount && i == 7) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext == (*anim_t1)(unsafe.Pointer(a)).Fdata1 {
-					(*anim_t1)(unsafe.Pointer(a)).Fctr++
-					if (*anim_t1)(unsafe.Pointer(a)).Fctr == (*anim_t1)(unsafe.Pointer(a)).Fnanims {
-						(*anim_t1)(unsafe.Pointer(a)).Fctr--
+				if !(state == StatCount && i == 7) && (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fnext == a.Fdata1 {
+					a.Fctr++
+					if a.Fctr == a.Fnanims {
+						a.Fctr--
 					}
-					(*anim_t1)(unsafe.Pointer(a)).Fnexttic = bcnt + (*anim_t1)(unsafe.Pointer(a)).Fperiod
+					a.Fnexttic = bcnt + a.Fperiod
 				}
 				break
 			}
@@ -42843,7 +42841,7 @@ func WI_updateAnimatedBack() {
 }
 
 func WI_drawAnimatedBack() {
-	var a uintptr
+	var a *anim_t1
 	var i int32
 	if gamemode == commercial {
 		return
@@ -42856,9 +42854,9 @@ func WI_drawAnimatedBack() {
 		if !(i < NUMANIMS[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd]) {
 			break
 		}
-		a = anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd] + uintptr(i)*72
-		if (*anim_t1)(unsafe.Pointer(a)).Fctr >= 0 {
-			V_DrawPatch((*anim_t1)(unsafe.Pointer(a)).Floc.Fx, (*anim_t1)(unsafe.Pointer(a)).Floc.Fy, *(*uintptr)(unsafe.Pointer(a + 32 + uintptr((*anim_t1)(unsafe.Pointer(a)).Fctr)*8)))
+		a = &anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd][i]
+		if a.Fctr >= 0 {
+			V_DrawPatch(a.Floc.Fx, a.Floc.Fy, a.Fp[a.Fctr])
 		}
 		goto _1
 	_1:
@@ -43737,7 +43735,7 @@ func WI_Ticker() {
 
 func WI_loadUnloadData(callback func(uintptr, uintptr)) {
 	bp1 := alloc(48)
-	var a uintptr
+	var a *anim_t1
 	var i, j int32
 	if gamemode == commercial {
 		i = 0
@@ -43777,20 +43775,20 @@ func WI_loadUnloadData(callback func(uintptr, uintptr)) {
 				if !(j < NUMANIMS[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd]) {
 					break
 				}
-				a = anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd] + uintptr(j)*72
+				a = &anims1[(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd][j]
 				i = 0
 				for {
-					if !(i < (*anim_t1)(unsafe.Pointer(a)).Fnanims) {
+					if !(i < a.Fnanims) {
 						break
 					}
 					// MONDO HACK!
 					if (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd != 1 || j != 8 {
 						// animations
 						snprintf_ccgo(bp1, 9, 28420, (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fepsd, j, i)
-						callback(bp1, a+32+uintptr(i)*8)
+						callback(bp1, a.Fp[i])
 					} else {
 						// HACK ALERT!
-						*(*uintptr)(unsafe.Pointer(a + 32 + uintptr(i)*8)) = *(*uintptr)(unsafe.Pointer(anims1[int32(1)] + 4*72 + 32 + uintptr(i)*8))
+						a.Fp[i] = anims1[int32(1)][4].Fp[i]
 					}
 					goto _4
 				_4:
