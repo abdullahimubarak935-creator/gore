@@ -4157,7 +4157,7 @@ func D_FindIWAD(mask int32, mission *GameMission_t) string {
 	iwadparm = M_CheckParmWithArgs(__ccgo_ts(1275), 1)
 	if iwadparm != 0 {
 		// Search through IWAD dirs for an IWAD with the given name.
-		iwadfile = libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(iwadparm+int32(1))*8)))
+		iwadfile = myargs[iwadparm+1]
 		result = D_FindWADByName(iwadfile)
 		if result == "" {
 			I_Error(__ccgo_ts(1281), iwadfile)
@@ -5158,13 +5158,13 @@ func D_DoAdvanceDemo() {
 			S_StartMusic(int32(mus_intro))
 		}
 	case 1:
-		G_DeferedPlayDemo(__ccgo_ts(1905))
+		G_DeferedPlayDemo(__ccgo_ts_str(1905))
 	case 2:
 		pagetic = 200
 		gamestate = GS_DEMOSCREEN
 		pagename = __ccgo_ts(1911)
 	case 3:
-		G_DeferedPlayDemo(__ccgo_ts(1918))
+		G_DeferedPlayDemo(__ccgo_ts_str(1918))
 	case 4:
 		gamestate = GS_DEMOSCREEN
 		if gamemode == commercial {
@@ -5180,12 +5180,12 @@ func D_DoAdvanceDemo() {
 			}
 		}
 	case 5:
-		G_DeferedPlayDemo(__ccgo_ts(1930))
+		G_DeferedPlayDemo(__ccgo_ts_str(1930))
 		break
 		// THE DEFINITIVE DOOM Special Edition demo
 		fallthrough
 	case 6:
-		G_DeferedPlayDemo(__ccgo_ts(1936))
+		G_DeferedPlayDemo(__ccgo_ts_str(1936))
 		break
 	}
 	// The Doom 3: BFG Edition version of doom2.wad does not have a
@@ -5280,14 +5280,14 @@ func GetGameName(gamename uintptr) (r uintptr) {
 	return gamename
 }
 
-func SetMissionForPackName(pack_name uintptr) {
+func SetMissionForPackName(pack_name string) {
 	var i int32
 	i = 0
 	for {
 		if !(libc.Uint64FromInt32(i) < 48/16) {
 			break
 		}
-		if !(xstrcasecmp(pack_name, packs[i].Fname) != 0) {
+		if strings.EqualFold(pack_name, packs[i].Fname) {
 			gamemission = packs[i].Fmission
 			return
 		}
@@ -5302,7 +5302,7 @@ func SetMissionForPackName(pack_name uintptr) {
 		if !(libc.Uint64FromInt32(i) < 48/16) {
 			break
 		}
-		fprintf_ccgo(os.Stdout, 2578, libc.GoString(packs[i].Fname))
+		fprintf_ccgo(os.Stdout, 2578, packs[i].Fname)
 		goto _2
 	_2:
 		;
@@ -5312,19 +5312,19 @@ func SetMissionForPackName(pack_name uintptr) {
 }
 
 var packs = [3]struct {
-	Fname    uintptr
+	Fname    string
 	Fmission GameMission_t
 }{
 	0: {
-		Fname:    __ccgo_ts(2533),
+		Fname:    __ccgo_ts_str(2533),
 		Fmission: doom2,
 	},
 	1: {
-		Fname:    __ccgo_ts(2539),
+		Fname:    __ccgo_ts_str(2539),
 		Fmission: pack_tnt,
 	},
 	2: {
-		Fname:    __ccgo_ts(2543),
+		Fname:    __ccgo_ts_str(2543),
 		Fmission: pack_plut,
 	},
 }
@@ -5405,7 +5405,7 @@ func D_IdentifyVersion() {
 		//
 		p = M_CheckParmWithArgs(__ccgo_ts(2664), 1)
 		if p > 0 {
-			SetMissionForPackName(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+			SetMissionForPackName(myargs[p+1])
 		}
 	}
 }
@@ -5541,52 +5541,52 @@ func PrintDehackedBanners() {
 
 var gameversions = [10]struct {
 	Fdescription uintptr
-	Fcmdline     uintptr
+	Fcmdline     string
 	Fversion     GameVersion_t
 }{
 	0: {
 		Fdescription: __ccgo_ts(3722),
-		Fcmdline:     __ccgo_ts(3733),
+		Fcmdline:     __ccgo_ts_str(3733),
 		Fversion:     exe_doom_1_666,
 	},
 	1: {
 		Fdescription: __ccgo_ts(3739),
-		Fcmdline:     __ccgo_ts(3753),
+		Fcmdline:     __ccgo_ts_str(3753),
 		Fversion:     exe_doom_1_7,
 	},
 	2: {
 		Fdescription: __ccgo_ts(3757),
-		Fcmdline:     __ccgo_ts(3766),
+		Fcmdline:     __ccgo_ts_str(3766),
 		Fversion:     exe_doom_1_8,
 	},
 	3: {
 		Fdescription: __ccgo_ts(3770),
-		Fcmdline:     __ccgo_ts(3779),
+		Fcmdline:     __ccgo_ts_str(3779),
 		Fversion:     exe_doom_1_9,
 	},
 	4: {
 		Fdescription: __ccgo_ts(1077),
-		Fcmdline:     __ccgo_ts(3783),
+		Fcmdline:     __ccgo_ts_str(3783),
 		Fversion:     exe_hacx,
 	},
 	5: {
 		Fdescription: __ccgo_ts(3788),
-		Fcmdline:     __ccgo_ts(3802),
+		Fcmdline:     __ccgo_ts_str(3802),
 		Fversion:     exe_ultimate,
 	},
 	6: {
 		Fdescription: __ccgo_ts(3811),
-		Fcmdline:     __ccgo_ts(3822),
+		Fcmdline:     __ccgo_ts_str(3822),
 		Fversion:     exe_final,
 	},
 	7: {
 		Fdescription: __ccgo_ts(3828),
-		Fcmdline:     __ccgo_ts(3845),
+		Fcmdline:     __ccgo_ts_str(3845),
 		Fversion:     exe_final2,
 	},
 	8: {
 		Fdescription: __ccgo_ts(1057),
-		Fcmdline:     __ccgo_ts(3852),
+		Fcmdline:     __ccgo_ts_str(3852),
 		Fversion:     exe_chex,
 	},
 	9: {},
@@ -5610,7 +5610,7 @@ func InitGameVersion() {
 			if !(gameversions[i].Fdescription != uintptr(0)) {
 				break
 			}
-			if !(xstrcmp(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), gameversions[i].Fcmdline) != 0) {
+			if strings.EqualFold(myargs[p+1], gameversions[i].Fcmdline) {
 				gameversion = gameversions[i].Fversion
 				break
 			}
@@ -5626,13 +5626,13 @@ func InitGameVersion() {
 				if !(gameversions[i].Fdescription != uintptr(0)) {
 					break
 				}
-				fprintf_ccgo(os.Stdout, 3896, libc.GoString(gameversions[i].Fcmdline), libc.GoString(gameversions[i].Fdescription))
+				fprintf_ccgo(os.Stdout, 3896, gameversions[i].Fcmdline, libc.GoString(gameversions[i].Fdescription))
 				goto _2
 			_2:
 				;
 				i++
 			}
-			I_Error(__ccgo_ts(3906), *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+			I_Error(__ccgo_ts(3906), myargs[p+1])
 		}
 	} else {
 		// Determine automatically
@@ -5720,7 +5720,8 @@ func D_Endoom() {
 //	//
 func D_DoomMain() {
 	bp := alloc(480)
-	var i, p, scale, v1 int32
+	var argDemoName string
+	var i, p, v1 int32
 	I_AtExit(D_Endoom, 0)
 	// print banner
 	I_PrintBanner(__ccgo_ts(4001))
@@ -5787,9 +5788,9 @@ func D_DoomMain() {
 	v1 = M_CheckParm(__ccgo_ts(4144))
 	p = v1
 	if v1 != 0 {
-		scale = 200
-		if p < myargc-1 {
-			scale = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+		scale := 200
+		if p < int32(len(myargs)-1) {
+			scale, _ = strconv.Atoi(myargs[p+1])
 		}
 		if scale < 10 {
 			scale = 10
@@ -5798,10 +5799,10 @@ func D_DoomMain() {
 			scale = 400
 		}
 		fprintf_ccgo(os.Stdout, 4151, scale)
-		forwardmove[0] = forwardmove[0] * scale / 100
-		forwardmove[int32(1)] = forwardmove[int32(1)] * scale / 100
-		sidemove[0] = sidemove[0] * scale / 100
-		sidemove[int32(1)] = sidemove[int32(1)] * scale / 100
+		forwardmove[0] = forwardmove[0] * int32(scale) / 100
+		forwardmove[int32(1)] = forwardmove[int32(1)] * int32(scale) / 100
+		sidemove[0] = sidemove[0] * int32(scale) / 100
+		sidemove[int32(1)] = sidemove[int32(1)] * int32(scale) / 100
 	}
 	// init subsystems
 	fprintf_ccgo(os.Stdout, 4170)
@@ -5879,18 +5880,18 @@ func D_DoomMain() {
 		// With Vanilla you have to specify the file without extension,
 		// but make that optional.
 		var name string
-		if M_StringEndsWith(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(4476)) != 0 {
-			name = libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+		if strings.HasSuffix(myargs[p+1], __ccgo_ts_str(4476)) {
+			name = myargs[p+1]
 		} else {
-			name = fmt.Sprintf(__ccgo_ts_str(4481), libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))
+			name = fmt.Sprintf(__ccgo_ts_str(4481), myargs[p+1])
 		}
 		if D_AddFile(name) != 0 {
-			M_StringCopy(bp+256, lumpinfo+uintptr(numlumps-uint32(1))*40, uint64(9))
+			argDemoName = libc.GoString(lumpinfo + uintptr(numlumps-uint32(1))*40)
 		} else {
 			// If file failed to load, still continue trying to play
 			// the demo in the same way as Vanilla Doom.  This makes
 			// tricks like "-playdemo demo1" possible.
-			M_StringCopy(bp+256, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uint64(9))
+			argDemoName = myargs[p+1]
 		}
 		fprintf_ccgo(os.Stdout, 4488, libc.GoString(bp))
 	}
@@ -5986,7 +5987,7 @@ func D_DoomMain() {
 	//
 	p = M_CheckParmWithArgs(__ccgo_ts(5027), 1)
 	if p != 0 {
-		startskill = skill_t(int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('1'))
+		startskill = skill_t(myargs[p+1][0] - '1')
 		autostart = 1
 	}
 	//!
@@ -5997,7 +5998,7 @@ func D_DoomMain() {
 	//
 	p = M_CheckParmWithArgs(__ccgo_ts(5034), 1)
 	if p != 0 {
-		startepisode = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('0')
+		startepisode = int32(myargs[p+1][0] - '0')
 		startmap = 1
 		autostart = 1
 	}
@@ -6011,7 +6012,8 @@ func D_DoomMain() {
 	//
 	p = M_CheckParmWithArgs(__ccgo_ts(5043), 1)
 	if p != 0 {
-		timelimit = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+		v, _ := strconv.Atoi(myargs[p+1])
+		timelimit = int32(v)
 	}
 	//!
 	// @category net
@@ -6033,11 +6035,12 @@ func D_DoomMain() {
 	p = M_CheckParmWithArgs(__ccgo_ts(5055), 1)
 	if p != 0 {
 		if gamemode == commercial {
-			startmap = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+			v, _ := strconv.Atoi(myargs[p+1])
+			startmap = int32(v)
 		} else {
-			startepisode = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))) - int32('0')
-			if p+int32(2) < myargc {
-				startmap = int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(2))*8))))) - int32('0')
+			startepisode = int32(myargs[p+1][0] - '0')
+			if p+int32(2) < int32(len(myargs)) {
+				startmap = int32(myargs[p+2][0] - '0')
 			} else {
 				startmap = 1
 			}
@@ -6064,7 +6067,8 @@ func D_DoomMain() {
 	//
 	p = M_CheckParmWithArgs(__ccgo_ts(5061), 1)
 	if p != 0 {
-		startloadgame = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+		v, _ := strconv.Atoi(myargs[p+1])
+		startloadgame = int32(v)
 	} else {
 		// Not loading a game
 		startloadgame = -1
@@ -6103,19 +6107,19 @@ func D_DoomMain() {
 	//
 	p = M_CheckParmWithArgs(__ccgo_ts(5361), 1)
 	if p != 0 {
-		G_RecordDemo(libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))
+		G_RecordDemo(myargs[p+1])
 		autostart = 1
 	}
 	p = M_CheckParmWithArgs(__ccgo_ts(4456), 1)
 	if p != 0 {
 		singledemo = 1 // quit after one demo
-		G_DeferedPlayDemo(bp + 256)
+		G_DeferedPlayDemo(argDemoName)
 		D_DoomLoop()
 		return
 	}
 	p = M_CheckParmWithArgs(__ccgo_ts(4466), 1)
 	if p != 0 {
-		G_TimeDemo(bp + 256)
+		G_TimeDemo(argDemoName)
 		D_DoomLoop()
 		return
 	}
@@ -9140,7 +9144,8 @@ func G_RecordDemo(name string) {
 	//
 	i = M_CheckParmWithArgs(__ccgo_ts(14110), 1)
 	if i != 0 {
-		maxsize = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))) * 1024
+		v, _ := strconv.Atoi(myargs[i+1])
+		maxsize = int32(v) * 1024
 	}
 	demobuffer = Z_Malloc(maxsize, int32(PU_STATIC), uintptr(0))
 	demoend = demobuffer + uintptr(maxsize)
@@ -9230,7 +9235,7 @@ func G_BeginRecording() {
 	}
 }
 
-func G_DeferedPlayDemo(name uintptr) {
+func G_DeferedPlayDemo(name string) {
 	defdemoname = name
 	gameaction = ga_playdemo
 }
@@ -9272,7 +9277,8 @@ func G_DoPlayDemo() {
 	var v1, v10, v12, v2, v3, v4, v5, v6, v7, v8, v9 uintptr
 	var skill skill_t
 	gameaction = ga_nothing
-	v1 = W_CacheLumpName(defdemoname, int32(PU_STATIC))
+	cName := []byte(defdemoname)
+	v1 = W_CacheLumpName((uintptr)(unsafe.Pointer(&cName[0])), int32(PU_STATIC))
 	demo_p = v1
 	demobuffer = v1
 	v2 = demo_p
@@ -9344,7 +9350,7 @@ func G_DoPlayDemo() {
 //	//
 //	// G_TimeDemo
 //	//
-func G_TimeDemo(name uintptr) {
+func G_TimeDemo(name string) {
 	//!
 	// @vanilla
 	//
@@ -9381,7 +9387,8 @@ func G_CheckDemoStatus() {
 		I_Error(__ccgo_ts(14466), gametic, realtics, float64(fps))
 	}
 	if demoplayback != 0 {
-		W_ReleaseLumpName(defdemoname)
+		cName := []byte(defdemoname)
+		W_ReleaseLumpName((uintptr)(unsafe.Pointer(&cName[0])))
 		demoplayback = 0
 		netdemo = 0
 		netgame = 0
@@ -18363,7 +18370,8 @@ func I_ZoneBase(size uintptr) (r uintptr) {
 	//
 	p = M_CheckParmWithArgs(__ccgo_ts(18874), 1)
 	if p > 0 {
-		default_ram = xatoi(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+		v, _ := strconv.Atoi(myargs[p+1])
+		default_ram = int32(v)
 		min_ram = default_ram
 	} else {
 		default_ram = int32(DEFAULT_RAM)
@@ -18539,13 +18547,13 @@ func I_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
 		//
 		p = M_CheckParmWithArgs(__ccgo_ts(19334), 1)
 		if p > 0 {
-			if !(xstrcasecmp(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19342)) != 0) {
+			if strings.EqualFold(myargs[p+1], __ccgo_ts_str(19342)) {
 				dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dos622))
 			}
-			if !(xstrcasecmp(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19349)) != 0) {
+			if strings.EqualFold(myargs[p+1], __ccgo_ts_str(19349)) {
 				dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_win98))
 			} else {
-				if !(xstrcasecmp(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(19355)) != 0) {
+				if strings.EqualFold(myargs[p+1], __ccgo_ts_str(19355)) {
 					dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dosbox))
 				} else {
 					i = 0
@@ -18554,11 +18562,10 @@ func I_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
 							break
 						}
 						p++
-						if p >= myargc || int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8))))) == int32('-') {
+						if p >= int32(len(myargs)) || myargs[p][0] == '-' {
 							break
 						}
-						var f int32
-						M_StrToInt(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8)), &f)
+						f, _ := strconv.Atoi(myargs[p])
 						v2 = i
 						i++
 						mem_dump_custom[v2] = uint8(f)
@@ -18636,10 +18643,10 @@ func M_CheckParmWithArgs(check uintptr, num_args int32) (r int32) {
 	var i int32
 	i = 1
 	for {
-		if !(i < myargc-num_args) {
+		if !(i < int32(len(myargs))-num_args) {
 			break
 		}
-		if !(xstrcasecmp(check, *(*uintptr)(unsafe.Pointer(myargv + uintptr(i)*8))) != 0) {
+		if strings.EqualFold(myargs[i], libc.GoString(check)) {
 			return i
 		}
 		goto _1
@@ -18676,10 +18683,10 @@ func M_FindResponseFile() {
 	var i int32
 	i = 1
 	for {
-		if !(i < myargc) {
+		if !(i < int32(len(myargs))) {
 			break
 		}
-		if int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(i)*8))))) == int32('@') {
+		if myargs[i][0] == '@' {
 			LoadResponseFile(i)
 		}
 		goto _1
@@ -19588,7 +19595,7 @@ func M_LoadDefaults() {
 	//
 	i = M_CheckParmWithArgs(__ccgo_ts(21869), 1)
 	if i != 0 {
-		doom_defaults.Ffilename = libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8)))
+		doom_defaults.Ffilename = myargs[i+1]
 		fprintf_ccgo(os.Stdout, 21877, doom_defaults.Ffilename)
 	} else {
 		doom_defaults.Ffilename = configdir + default_main_config
@@ -19602,7 +19609,7 @@ func M_LoadDefaults() {
 	//
 	i = M_CheckParmWithArgs(__ccgo_ts(21917), 1)
 	if i != 0 {
-		extra_defaults.Ffilename = libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8)))
+		extra_defaults.Ffilename = myargs[i+1]
 		fprintf_ccgo(os.Stdout, 21930, extra_defaults.Ffilename)
 	} else {
 		extra_defaults.Ffilename = configdir + default_extra_config
@@ -27136,7 +27143,8 @@ func SpechitOverrun(ld *line_t) {
 		//
 		p = M_CheckParmWithArgs(__ccgo_ts(24727), 1)
 		if p > 0 {
-			M_StrToInt(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), &baseaddr)
+			v, _ := strconv.Atoi(myargs[p+1])
+			baseaddr = int32(v)
 		} else {
 			baseaddr = DEFAULT_SPECHIT_MAGIC
 		}
@@ -33135,8 +33143,10 @@ func DonutOverrun(s3_floorheight uintptr, s3_floorpic uintptr, line *line_t, pil
 			// 0000:0000    (00 00 00 00) 65 04 70 00-(16 00)
 			// DOSBox under XP:
 			// 0000:0000    (00 00 00 F1) ?? ?? ?? 00-(07 00)
-			M_StrToInt(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), &tmp_s3_floorheight)
-			M_StrToInt(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(2))*8)), &tmp_s3_floorpic)
+			v, _ := strconv.Atoi(myargs[p+1])
+			tmp_s3_floorheight = int32(v)
+			v, _ = strconv.Atoi(myargs[p+2])
+			tmp_s3_floorpic = int32(v)
 			if tmp_s3_floorpic >= numflats {
 				fprintf_ccgo(os.Stderr, 25438, numflats, DONUT_FLOORPIC_DEFAULT)
 				tmp_s3_floorpic = int32(DONUT_FLOORPIC_DEFAULT)
@@ -44708,10 +44718,10 @@ func W_ParseCommandLine() (r boolean) {
 		for {
 			p++
 			v1 = p
-			if !(v1 != myargc && int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8))))) != int32('-')) {
+			if !(v1 != int32(len(myargs)) && myargs[p][0] != '-') {
 				break
 			}
-			filename = D_TryFindWADByName(libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8))))
+			filename = D_TryFindWADByName(myargs[p])
 			fprintf_ccgo(os.Stdout, 2817, filename)
 			W_AddFile(filename)
 		}
@@ -45781,10 +45791,9 @@ func I_DisplayFPSDots(dots_on boolean) {
 func I_CheckIsScreensaver() {
 }
 
-func doomgeneric_Create(argc int32, argv uintptr) {
+func doomgeneric_Create(args []string) {
 	// save arguments
-	myargc = argc
-	myargv = argv
+	myargs = args
 	M_FindResponseFile()
 
 	DG_ScreenBuffer = image.NewRGBA(image.Rect(0, 0, SCREENWIDTH, SCREENHEIGHT))
@@ -45800,29 +45809,11 @@ func Run(fg DoomFrontend, args []string) {
 	start_time = time.Now()
 
 	// Convert command line arguments to C strings.
-	argc := int32(len(args))
-	argv := make([]uintptr, argc+2, argc+2)
-	for i, arg := range args {
-		argp, err := libc.CString(arg)
-		if err != nil {
-			log.Fatalf("Failed to convert argument %d to C string: %v", i, err)
-		}
-
-		argv[i+1] = argp
-	}
-	arg0, err := libc.CString("doom")
-	if err != nil {
-		log.Fatalf("Failed to convert argument 0 to C string: %v", err)
-	}
-	argv[0] = arg0
-	argv[argc+1] = 0
-	doomgeneric_Create(argc+1, (uintptr)(unsafe.Pointer(&argv[0])))
+	args = append([]string{"doom"}, args...) // prepend "doom" as argv[0]
+	doomgeneric_Create(args)
 	for !dg_exiting {
 		doomgeneric_Tick()
 	}
-	// HACK: This avoid the GC from collecting the argv array
-	// before the program exits, which would cause a crash.
-	log.Printf("done with args %d %#v", argc+1, argv)
 	dg_frontend = nil
 }
 
@@ -46383,7 +46374,7 @@ var deathmatchstarts [10]mapthing_t
 // G_PlayDemo
 //
 
-var defdemoname uintptr
+var defdemoname string
 
 var demo_p uintptr
 
@@ -47048,9 +47039,7 @@ var mousey int32
 
 var musicVolume int32
 
-var myargc int32
-
-var myargv uintptr
+var myargs []string
 
 // C documentation
 //
