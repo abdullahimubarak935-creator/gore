@@ -3241,7 +3241,7 @@ func AM_Ticker() {
 //	// Clear automap frame buffer.
 //	//
 func AM_clearFB(color uint8) {
-	xmemset(fb, color, libc.Uint64FromInt32(f_w*f_h))
+	xmemset(fb, color, uint64(f_w*f_h))
 }
 
 // C documentation
@@ -3458,7 +3458,7 @@ func AM_drawFline(fl *fline_t, color int32) {
 	if ax > ay {
 		d = ay - ax/int32(2)
 		for 1 != 0 {
-			*(*uint8)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = libc.Uint8FromInt32(color)
+			*(*uint8)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = uint8(color)
 			if x == fl.Fb.Fx {
 				return
 			}
@@ -3472,7 +3472,7 @@ func AM_drawFline(fl *fline_t, color int32) {
 	} else {
 		d = ax - ay/int32(2)
 		for 1 != 0 {
-			*(*uint8)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = libc.Uint8FromInt32(color)
+			*(*uint8)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = uint8(color)
 			if y == fl.Fb.Fy {
 				return
 			}
@@ -3718,7 +3718,7 @@ func AM_drawMarks() {
 }
 
 func AM_drawCrosshair(color int32) {
-	*(*uint8)(unsafe.Pointer(fb + uintptr(f_w*(f_h+int32(1))/int32(2)))) = libc.Uint8FromInt32(color) // single point for now
+	*(*uint8)(unsafe.Pointer(fb + uintptr(f_w*(f_h+int32(1))/int32(2)))) = uint8(color) // single point for now
 }
 
 func AM_Drawer() {
@@ -5284,7 +5284,7 @@ func SetMissionForPackName(pack_name string) {
 	var i int32
 	i = 0
 	for {
-		if !(libc.Uint64FromInt32(i) < 48/16) {
+		if !(uint64(i) < 48/16) {
 			break
 		}
 		if strings.EqualFold(pack_name, packs[i].Fname) {
@@ -5299,7 +5299,7 @@ func SetMissionForPackName(pack_name string) {
 	fprintf_ccgo(os.Stdout, 2552)
 	i = 0
 	for {
-		if !(libc.Uint64FromInt32(i) < 48/16) {
+		if !(uint64(i) < 48/16) {
 			break
 		}
 		fprintf_ccgo(os.Stdout, 2578, packs[i].Fname)
@@ -6668,7 +6668,7 @@ func F_TextWrite() {
 			x++
 		}
 		if SCREENWIDTH&63 != 0 {
-			xmemcpy(dest, src+uintptr(y&63<<6), libc.Uint64FromInt32(SCREENWIDTH&63))
+			xmemcpy(dest, src+uintptr(y&63<<6), uint64(SCREENWIDTH&63))
 			dest += uintptr(SCREENWIDTH & 63)
 		}
 		goto _1
@@ -7207,11 +7207,11 @@ func wipe_shittyColMajorXform(array uintptr, width int32, height int32) {
 		;
 		y++
 	}
-	xmemcpy(array, (uintptr)(unsafe.Pointer(&dest[0])), libc.Uint64FromInt32(width*height*int32(2)))
+	xmemcpy(array, (uintptr)(unsafe.Pointer(&dest[0])), uint64(width*height*int32(2)))
 }
 
 func wipe_initColorXForm(width int32, height int32, ticks int32) (r int32) {
-	xmemcpy(wipe_scr, wipe_scr_start, libc.Uint64FromInt32(width*height))
+	xmemcpy(wipe_scr, wipe_scr_start, uint64(width*height))
 	return 0
 }
 
@@ -7229,7 +7229,7 @@ func wipe_doColorXForm(width int32, height int32, ticks int32) (r int32) {
 				if newval < int32(*(*uint8)(unsafe.Pointer(e))) {
 					*(*uint8)(unsafe.Pointer(w)) = *(*uint8)(unsafe.Pointer(e))
 				} else {
-					*(*uint8)(unsafe.Pointer(w)) = libc.Uint8FromInt32(newval)
+					*(*uint8)(unsafe.Pointer(w)) = uint8(newval)
 				}
 				changed = 1
 			} else {
@@ -7238,7 +7238,7 @@ func wipe_doColorXForm(width int32, height int32, ticks int32) (r int32) {
 					if newval > int32(*(*uint8)(unsafe.Pointer(e))) {
 						*(*uint8)(unsafe.Pointer(w)) = *(*uint8)(unsafe.Pointer(e))
 					} else {
-						*(*uint8)(unsafe.Pointer(w)) = libc.Uint8FromInt32(newval)
+						*(*uint8)(unsafe.Pointer(w)) = uint8(newval)
 					}
 					changed = 1
 				}
@@ -7259,14 +7259,14 @@ var y_screen uintptr
 func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 	var i, r int32
 	// copy start screen to main screen
-	xmemcpy(wipe_scr, wipe_scr_start, libc.Uint64FromInt32(width*height))
+	xmemcpy(wipe_scr, wipe_scr_start, uint64(width*height))
 	// makes this wipe faster (in theory)
 	// to have stuff in column-major format
 	wipe_shittyColMajorXform(wipe_scr_start, width/int32(2), height)
 	wipe_shittyColMajorXform(wipe_scr_end, width/int32(2), height)
 	// setup initial column positions
 	// (y<0 => not ready to scroll yet)
-	y_screen = Z_Malloc(int32(libc.Uint64FromInt32(width)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	y_screen = Z_Malloc(int32(uint64(width)*uint64(4)), int32(PU_STATIC), uintptr(0))
 	*(*int32)(unsafe.Pointer(y_screen)) = -(M_Random() % 16)
 	i = 1
 	for {
@@ -7604,7 +7604,7 @@ func G_NextWeapon(direction int32) (r int32) {
 	}
 	i = 0
 	for {
-		if !(libc.Uint64FromInt32(i) < 72/8) {
+		if !(uint64(i) < 72/8) {
 			break
 		}
 		if weapon_order_table[i].Fweapon == weapon {
@@ -7619,7 +7619,7 @@ func G_NextWeapon(direction int32) (r int32) {
 	start_i = i
 	for cond := true; cond; cond = i != start_i && !(WeaponSelectable(weapon_order_table[i].Fweapon) != 0) {
 		i += direction
-		i = int32((libc.Uint64FromInt32(i) + 72/8) % (72 / 8))
+		i = int32((uint64(i) + 72/8) % (72 / 8))
 	}
 	return weapon_order_table[i].Fweapon_num
 }
@@ -7708,7 +7708,7 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 		side += sidemove[speed]
 	}
 	// buttons
-	cmd.Fchatchar = libc.Uint8FromInt8(HU_dequeueChatChar())
+	cmd.Fchatchar = uint8(HU_dequeueChatChar())
 	if gamekeydown[key_fire] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebfire)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybfire)*4)) != 0 {
 		cmd.Fbuttons |= BT_ATTACK
 	}
@@ -7728,7 +7728,7 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 		// Check weapon keys.
 		i = 0
 		for {
-			if !(libc.Uint64FromInt32(i) < 64/8) {
+			if !(uint64(i) < 64/8) {
 				break
 			}
 			key = *(*int32)(unsafe.Pointer(weapon_keys[i]))
@@ -7824,11 +7824,11 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	// special buttons
 	if sendpause != 0 {
 		sendpause = 0
-		cmd.Fbuttons = libc.Uint8FromInt32(int32(BT_SPECIAL) | int32(BTS_PAUSE))
+		cmd.Fbuttons = uint8(int32(BT_SPECIAL) | int32(BTS_PAUSE))
 	}
 	if sendsave != 0 {
 		sendsave = 0
-		cmd.Fbuttons = libc.Uint8FromInt32(int32(BT_SPECIAL) | int32(BTS_SAVEGAME) | savegameslot<<int32(BTS_SAVESHIFT))
+		cmd.Fbuttons = uint8(int32(BT_SPECIAL) | int32(BTS_SAVEGAME) | savegameslot<<int32(BTS_SAVESHIFT))
 	}
 	// low-res turning
 	if lowres_turn != 0 {
@@ -8148,9 +8148,9 @@ func G_Ticker() {
 					I_Error(__ccgo_ts(13760), int32(cmd.Fconsistancy), libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))))
 				}
 				if players[i].Fmo != 0 {
-					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = libc.Uint8FromInt32((*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fx)
+					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = uint8((*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fx)
 				} else {
-					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = libc.Uint8FromInt32(rndindex)
+					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = uint8(rndindex)
 				}
 			}
 		}
@@ -9073,7 +9073,7 @@ func IncreaseDemoBuffer() {
 	new_demobuffer = Z_Malloc(new_length, int32(PU_STATIC), uintptr(0))
 	new_demop = new_demobuffer + uintptr(int64(demo_p)-int64(demobuffer))
 	// Copy over the old data
-	xmemcpy(new_demobuffer, demobuffer, libc.Uint64FromInt32(current_length))
+	xmemcpy(new_demobuffer, demobuffer, uint64(current_length))
 	// Free the old buffer and point the demo pointers at the new buffer.
 	Z_Free(demobuffer)
 	demobuffer = new_demobuffer
@@ -9089,22 +9089,22 @@ func G_WriteDemoTiccmd(cmd *ticcmd_t) {
 	demo_start = demo_p
 	v1 = demo_p
 	demo_p++
-	*(*uint8)(unsafe.Pointer(v1)) = libc.Uint8FromInt8(cmd.Fforwardmove)
+	*(*uint8)(unsafe.Pointer(v1)) = uint8(cmd.Fforwardmove)
 	v2 = demo_p
 	demo_p++
-	*(*uint8)(unsafe.Pointer(v2)) = libc.Uint8FromInt8(cmd.Fsidemove)
+	*(*uint8)(unsafe.Pointer(v2)) = uint8(cmd.Fsidemove)
 	// If this is a longtics demo, record in higher resolution
 	if longtics != 0 {
 		v3 = demo_p
 		demo_p++
-		*(*uint8)(unsafe.Pointer(v3)) = libc.Uint8FromInt32(int32(cmd.Fangleturn) & 0xff)
+		*(*uint8)(unsafe.Pointer(v3)) = uint8(int32(cmd.Fangleturn) & 0xff)
 		v4 = demo_p
 		demo_p++
-		*(*uint8)(unsafe.Pointer(v4)) = libc.Uint8FromInt32(int32(cmd.Fangleturn) >> 8 & int32(0xff))
+		*(*uint8)(unsafe.Pointer(v4)) = uint8(int32(cmd.Fangleturn) >> 8 & int32(0xff))
 	} else {
 		v5 = demo_p
 		demo_p++
-		*(*uint8)(unsafe.Pointer(v5)) = libc.Uint8FromInt32(int32(cmd.Fangleturn) >> 8)
+		*(*uint8)(unsafe.Pointer(v5)) = uint8(int32(cmd.Fangleturn) >> 8)
 	}
 	v6 = demo_p
 	demo_p++
@@ -9194,20 +9194,20 @@ func G_BeginRecording() {
 	} else {
 		v2 = demo_p
 		demo_p++
-		*(*uint8)(unsafe.Pointer(v2)) = libc.Uint8FromInt32(G_VanillaVersionCode())
+		*(*uint8)(unsafe.Pointer(v2)) = uint8(G_VanillaVersionCode())
 	}
 	v3 = demo_p
 	demo_p++
 	*(*uint8)(unsafe.Pointer(v3)) = uint8(gameskill)
 	v4 = demo_p
 	demo_p++
-	*(*uint8)(unsafe.Pointer(v4)) = libc.Uint8FromInt32(gameepisode)
+	*(*uint8)(unsafe.Pointer(v4)) = uint8(gameepisode)
 	v5 = demo_p
 	demo_p++
-	*(*uint8)(unsafe.Pointer(v5)) = libc.Uint8FromInt32(gamemap)
+	*(*uint8)(unsafe.Pointer(v5)) = uint8(gamemap)
 	v6 = demo_p
 	demo_p++
-	*(*uint8)(unsafe.Pointer(v6)) = libc.Uint8FromInt32(deathmatch)
+	*(*uint8)(unsafe.Pointer(v6)) = uint8(deathmatch)
 	v7 = demo_p
 	demo_p++
 	*(*uint8)(unsafe.Pointer(v7)) = uint8(respawnparm)
@@ -9219,7 +9219,7 @@ func G_BeginRecording() {
 	*(*uint8)(unsafe.Pointer(v9)) = uint8(nomonsters)
 	v10 = demo_p
 	demo_p++
-	*(*uint8)(unsafe.Pointer(v10)) = libc.Uint8FromInt32(consoleplayer)
+	*(*uint8)(unsafe.Pointer(v10)) = uint8(consoleplayer)
 	i = 0
 	for {
 		if !(i < int32(MAXPLAYERS)) {
@@ -9496,7 +9496,7 @@ func HUlib_drawTextLine(l *hu_textline_t, drawcursor boolean) {
 		if !(i < l.Flen1) {
 			break
 		}
-		c = libc.Uint8FromInt32(xtoupper(int32(l.Fl[i])))
+		c = uint8(xtoupper(int32(l.Fl[i])))
 		if int32(c) != int32(' ') && libc.Int32FromUint8(c) >= l.Fsc && libc.Int32FromUint8(c) <= int32('_') {
 			w = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(l.Ff + uintptr(int32(c)-l.Fsc)*8)))).Fwidth)
 			if x+w > int32(SCREENWIDTH) {
@@ -9650,7 +9650,7 @@ func HUlib_resetIText(it *hu_itext_t) {
 //	// wrapper function for handling general keyed input.
 //	// returns true if it ate the key
 func HUlib_keyInIText(it *hu_itext_t, ch uint8) (r boolean) {
-	ch = libc.Uint8FromInt32(xtoupper(int32(ch)))
+	ch = uint8(xtoupper(int32(ch)))
 	if int32(ch) >= int32(' ') && libc.Int32FromUint8(ch) <= int32('_') {
 		HUlib_addCharToTextLine(&it.Fl, int8(ch))
 	} else {
@@ -10021,7 +10021,7 @@ func HU_Ticker() {
 				if int32(c) <= int32(HU_BROADCAST) {
 					chat_dest[i] = c
 				} else {
-					rc = int32(HUlib_keyInIText(&w_inputbuffer[i], libc.Uint8FromInt8(c)))
+					rc = int32(HUlib_keyInIText(&w_inputbuffer[i], uint8(c)))
 					if rc != 0 && int32(c) == int32(KEY_ENTER) {
 						if w_inputbuffer[i].Fl.Flen1 != 0 && (int32(chat_dest[i]) == consoleplayer+int32(1) || int32(chat_dest[i]) == int32(HU_BROADCAST)) {
 							HUlib_addMessageToSText(&w_message, player_names[i], libc.GoString(uintptr(unsafe.Pointer(&w_inputbuffer[i].Fl.Fl[0]))))
@@ -10161,7 +10161,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 	} else {
 		// send a macro
 		if altdown != 0 {
-			c = libc.Uint8FromInt32(ev.Fdata1 - int32('0'))
+			c = uint8(ev.Fdata1 - int32('0'))
 			if int32(c) > 9 {
 				return 0
 			}
@@ -10182,7 +10182,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 			plr1.Fmessage = lastmessage
 			eatkey = 1
 		} else {
-			c = libc.Uint8FromInt32(ev.Fdata2)
+			c = uint8(ev.Fdata2)
 			eatkey = HUlib_keyInIText(&w_chat, c)
 			if eatkey != 0 {
 				// static unsigned char buf[20]; // DEBUG
@@ -18350,7 +18350,7 @@ func AutoAllocMemory(size uintptr, default_ram int32, min_ram int32) (r uintptr)
 		}
 		// Try to allocate the zone memory.
 		*(*int32)(unsafe.Pointer(size)) = default_ram * 1024 * 1024
-		zonemem = xmalloc(libc.Uint64FromInt32(*(*int32)(unsafe.Pointer(size))))
+		zonemem = xmalloc(uint64(*(*int32)(unsafe.Pointer(size))))
 		// Failed to allocate?  Reduce zone size until we reach a size
 		// that is acceptable.
 		if zonemem == uintptr(0) {
@@ -18584,7 +18584,7 @@ func I_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
 		*(*uint8)(unsafe.Pointer(value)) = *(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))
 		return 1
 	case 2:
-		*(*uint16)(unsafe.Pointer(value)) = libc.Uint16FromInt32(int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8))
+		*(*uint16)(unsafe.Pointer(value)) = uint16(int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8))
 		return 1
 	case 4:
 		*(*uint32)(unsafe.Pointer(value)) = uint32(int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(2)))))<<int32(16) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(3)))))<<int32(24))
@@ -18768,7 +18768,7 @@ func cht_CheckCheat(cht *cheatseq_t, key int8) (r int32) {
 	if cht.Fchars_read >= xstrlen(uintptr(unsafe.Pointer(&cht.Fsequence[0]))) && cht.Fparam_chars_read >= cht.Fparameter_chars {
 		v1 = 0
 		cht.Fparam_chars_read = v1
-		cht.Fchars_read = libc.Uint64FromInt32(v1)
+		cht.Fchars_read = uint64(v1)
 		return 1
 	}
 	// cheat not matched yet
@@ -18776,7 +18776,7 @@ func cht_CheckCheat(cht *cheatseq_t, key int8) (r int32) {
 }
 
 func cht_GetParam(cht *cheatseq_t, buffer uintptr) {
-	xmemcpy(buffer, (uintptr)(unsafe.Pointer(&cht.Fparameter_buf[0])), libc.Uint64FromInt32(cht.Fparameter_chars))
+	xmemcpy(buffer, (uintptr)(unsafe.Pointer(&cht.Fparameter_buf[0])), uint64(cht.Fparameter_chars))
 }
 
 const EISDIR = 21
@@ -21685,7 +21685,7 @@ func M_Drawer() {
 	// DRAW MENU
 	x = (*menu_t)(unsafe.Pointer(currentMenu)).Fx
 	y2 = (*menu_t)(unsafe.Pointer(currentMenu)).Fy
-	max = libc.Uint32FromInt16((*menu_t)(unsafe.Pointer(currentMenu)).Fnumitems)
+	max = uint32((*menu_t)(unsafe.Pointer(currentMenu)).Fnumitems)
 	i = uint32(0)
 	for {
 		if !(i < max) {
@@ -29696,8 +29696,8 @@ func saveg_read16() (r int16) {
 }
 
 func saveg_write16(value int16) {
-	saveg_write8(libc.Uint8FromInt32(int32(value) & int32(0xff)))
-	saveg_write8(libc.Uint8FromInt32(int32(value) >> int32(8) & int32(0xff)))
+	saveg_write8(uint8(int32(value) & int32(0xff)))
+	saveg_write8(uint8(int32(value) >> int32(8) & int32(0xff)))
 }
 
 func saveg_read32() (r int32) {
@@ -29710,10 +29710,10 @@ func saveg_read32() (r int32) {
 }
 
 func saveg_write32(value int32) {
-	saveg_write8(libc.Uint8FromInt32(value & int32(0xff)))
-	saveg_write8(libc.Uint8FromInt32(value >> int32(8) & int32(0xff)))
-	saveg_write8(libc.Uint8FromInt32(value >> int32(16) & int32(0xff)))
-	saveg_write8(libc.Uint8FromInt32(value >> int32(24) & int32(0xff)))
+	saveg_write8(uint8(value & int32(0xff)))
+	saveg_write8(uint8(value >> int32(8) & int32(0xff)))
+	saveg_write8(uint8(value >> int32(16) & int32(0xff)))
+	saveg_write8(uint8(value >> int32(24) & int32(0xff)))
 }
 
 // Pad to 4-byte boundaries
@@ -30015,7 +30015,7 @@ func saveg_read_ticcmd_t(str *ticcmd_t) {
 	// short angleturn;
 	str.Fangleturn = saveg_read16()
 	// short consistancy;
-	str.Fconsistancy = libc.Uint8FromInt16(saveg_read16())
+	str.Fconsistancy = uint8(saveg_read16())
 	// byte chatchar;
 	str.Fchatchar = saveg_read8()
 	// byte buttons;
@@ -30024,9 +30024,9 @@ func saveg_read_ticcmd_t(str *ticcmd_t) {
 
 func saveg_write_ticcmd_t(str *ticcmd_t) {
 	// signed char forwardmove;
-	saveg_write8(libc.Uint8FromInt8(str.Fforwardmove))
+	saveg_write8(uint8(str.Fforwardmove))
 	// signed char sidemove;
-	saveg_write8(libc.Uint8FromInt8(str.Fsidemove))
+	saveg_write8(uint8(str.Fsidemove))
 	// short angleturn;
 	saveg_write16(str.Fangleturn)
 	// short consistancy;
@@ -30639,7 +30639,7 @@ func P_WriteSaveGameHeader(description uintptr) {
 		if !(int32(*(*int8)(unsafe.Pointer(description + uintptr(i)))) != int32('\000')) {
 			break
 		}
-		saveg_write8(libc.Uint8FromInt8(*(*int8)(unsafe.Pointer(description + uintptr(i)))))
+		saveg_write8(uint8(*(*int8)(unsafe.Pointer(description + uintptr(i)))))
 		goto _1
 	_1:
 		;
@@ -30662,15 +30662,15 @@ func P_WriteSaveGameHeader(description uintptr) {
 		if !(i < int32(VERSIONSIZE)) {
 			break
 		}
-		saveg_write8(libc.Uint8FromInt8((*(*[16]int8)(unsafe.Pointer(bp)))[i]))
+		saveg_write8(uint8((*(*[16]int8)(unsafe.Pointer(bp)))[i]))
 		goto _3
 	_3:
 		;
 		i++
 	}
 	saveg_write8(uint8(gameskill))
-	saveg_write8(libc.Uint8FromInt32(gameepisode))
-	saveg_write8(libc.Uint8FromInt32(gamemap))
+	saveg_write8(uint8(gameepisode))
+	saveg_write8(uint8(gamemap))
 	i = 0
 	for {
 		if !(i < int32(MAXPLAYERS)) {
@@ -30682,9 +30682,9 @@ func P_WriteSaveGameHeader(description uintptr) {
 		;
 		i++
 	}
-	saveg_write8(libc.Uint8FromInt32(leveltime >> int32(16) & int32(0xff)))
-	saveg_write8(libc.Uint8FromInt32(leveltime >> int32(8) & int32(0xff)))
-	saveg_write8(libc.Uint8FromInt32(leveltime & int32(0xff)))
+	saveg_write8(uint8(leveltime >> int32(16) & int32(0xff)))
+	saveg_write8(uint8(leveltime >> int32(8) & int32(0xff)))
+	saveg_write8(uint8(leveltime & int32(0xff)))
 }
 
 //
@@ -31146,7 +31146,7 @@ func P_LoadVertexes(lump int32) {
 	var data, ml uintptr
 	// Determine number of lumps:
 	//  total lump length / vertex record length.
-	numvertexes = int32(libc.Uint64FromInt32(W_LumpLength(uint32(lump))) / uint64(4))
+	numvertexes = int32(uint64(W_LumpLength(uint32(lump))) / uint64(4))
 	// Allocate zone memory for buffer.
 	vertexes = make([]vertex_t, numvertexes)
 	// Load data into cache.
@@ -31192,9 +31192,9 @@ func P_LoadSegs(lump int32) {
 	var data, li, ml uintptr
 	var ldef *line_t
 	var i, linedef, side, sidenum int32
-	numsegs = int32(libc.Uint64FromInt32(W_LumpLength(uint32(lump))) / uint64(12))
-	segs = Z_Malloc(int32(libc.Uint64FromInt32(numsegs)*uint64(56)), int32(PU_LEVEL), uintptr(0))
-	xmemset(segs, 0, libc.Uint64FromInt32(numsegs)*uint64(56))
+	numsegs = int32(uint64(W_LumpLength(uint32(lump))) / uint64(12))
+	segs = Z_Malloc(int32(uint64(numsegs)*uint64(56)), int32(PU_LEVEL), uintptr(0))
+	xmemset(segs, 0, uint64(numsegs)*uint64(56))
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
 	ml = data
 	li = segs
@@ -31245,7 +31245,7 @@ func P_LoadSegs(lump int32) {
 //	//
 func P_LoadSubsectors(lump int32) {
 	var data, ms uintptr
-	numsubsectors = int32(libc.Uint64FromInt32(W_LumpLength(uint32(lump))) / uint64(4))
+	numsubsectors = int32(uint64(W_LumpLength(uint32(lump))) / uint64(4))
 	subsectors = make([]subsector_t, numsubsectors)
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
 	ms = data
@@ -31264,7 +31264,7 @@ func P_LoadSubsectors(lump int32) {
 //	//
 func P_LoadSectors(lump int32) {
 	var data uintptr
-	numsectors = int32(libc.Uint64FromInt32(W_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapsector_t{})))
+	numsectors = int32(uint64(W_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapsector_t{})))
 	sectors = make([]sector_t, numsectors)
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
 	mapsectors := unsafe.Slice((*mapsector_t)(unsafe.Pointer(data)), numsectors)
@@ -31290,7 +31290,7 @@ func P_LoadSectors(lump int32) {
 //	//
 func P_LoadNodes(lump int32) {
 	var data uintptr
-	numnodes = int32(libc.Uint64FromInt32(W_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapnode_t{})))
+	numnodes = int32(uint64(W_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapnode_t{})))
 	nodes = make([]node_t, numnodes)
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
 	mapnodes := unsafe.Slice((*mapnode_t)(unsafe.Pointer(data)), numnodes)
@@ -31321,7 +31321,7 @@ func P_LoadThings(lump int32) {
 	var numthings int32
 	var spawn boolean
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
-	numthings = int32(libc.Uint64FromInt32(W_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapthing_t{})))
+	numthings = int32(uint64(W_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapthing_t{})))
 	mthings := unsafe.Slice((*mapthing_t)(unsafe.Pointer(data)), numthings)
 	for i := int32(0); i < numthings; i++ {
 		mt := &mthings[i]
@@ -31378,7 +31378,7 @@ func P_LoadLineDefs(lump int32) {
 	var data, mld uintptr
 	var v1, v2, v21, v3 *vertex_t
 	var i int32
-	numlines = int32(libc.Uint64FromInt32(W_LumpLength(uint32(lump))) / uint64(14))
+	numlines = int32(uint64(W_LumpLength(uint32(lump))) / uint64(14))
 	lines = make([]line_t, numlines)
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
 	mld = data
@@ -31447,9 +31447,9 @@ func P_LoadLineDefs(lump int32) {
 func P_LoadSideDefs(lump int32) {
 	var data, msd, sd uintptr
 	var i int32
-	numsides = int32(libc.Uint64FromInt32(W_LumpLength(uint32(lump))) / uint64(30))
-	sides = Z_Malloc(int32(libc.Uint64FromInt32(numsides)*uint64(24)), int32(PU_LEVEL), uintptr(0))
-	xmemset(sides, 0, libc.Uint64FromInt32(numsides)*uint64(24))
+	numsides = int32(uint64(W_LumpLength(uint32(lump))) / uint64(30))
+	sides = Z_Malloc(int32(uint64(numsides)*uint64(24)), int32(PU_LEVEL), uintptr(0))
+	xmemset(sides, 0, uint64(numsides)*uint64(24))
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
 	msd = data
 	sd = sides
@@ -31504,9 +31504,9 @@ func P_LoadBlockMap(lump int32) {
 	bmapwidth = int32(*(*int16)(unsafe.Pointer(blockmaplump + 2*2)))
 	bmapheight = int32(*(*int16)(unsafe.Pointer(blockmaplump + 3*2)))
 	// Clear out mobj chains
-	count = int32(uint64(8) * libc.Uint64FromInt32(bmapwidth) * libc.Uint64FromInt32(bmapheight))
+	count = int32(uint64(8) * uint64(bmapwidth) * uint64(bmapheight))
 	blocklinks = Z_Malloc(count, int32(PU_LEVEL), uintptr(0))
-	xmemset(blocklinks, 0, libc.Uint64FromInt32(count))
+	xmemset(blocklinks, 0, uint64(count))
 }
 
 // C documentation
@@ -35117,7 +35117,7 @@ func R_DrawColumnInCache(patch uintptr, cache uintptr, originy int32, cacheheigh
 			count = cacheheight - position
 		}
 		if count > 0 {
-			xmemcpy(cache+uintptr(position), source, libc.Uint64FromInt32(count))
+			xmemcpy(cache+uintptr(position), source, uint64(count))
 		}
 		patch = patch + uintptr((*column_t)(unsafe.Pointer(patch)).Flength) + libc.UintptrFromInt32(4)
 	}
@@ -35203,7 +35203,7 @@ func R_GenerateLookup(texnum int32) {
 	// Fill in the lump / offset, so columns
 	//  with only a single patch are all done.
 	*(*uintptr)(unsafe.Pointer(bp)) = Z_Malloc(int32((*texture_t)(unsafe.Pointer(texture)).Fwidth), int32(PU_STATIC), bp)
-	xmemset(*(*uintptr)(unsafe.Pointer(bp)), 0, libc.Uint64FromInt16((*texture_t)(unsafe.Pointer(texture)).Fwidth))
+	xmemset(*(*uintptr)(unsafe.Pointer(bp)), 0, uint64((*texture_t)(unsafe.Pointer(texture)).Fwidth))
 	patch = texture + 28
 	i = 0
 	patch = texture + 28
@@ -35228,7 +35228,7 @@ func R_GenerateLookup(texnum int32) {
 			}
 			*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))++
 			*(*int16)(unsafe.Pointer(collump + uintptr(x)*2)) = int16((*texpatch_t)(unsafe.Pointer(patch)).Fpatch)
-			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = libc.Uint16FromInt32(*(*int32)(unsafe.Pointer(realpatch + 8 + uintptr(x-x1)*4)) + 3)
+			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = uint16(*(*int32)(unsafe.Pointer(realpatch + 8 + uintptr(x-x1)*4)) + 3)
 			goto _2
 		_2:
 			;
@@ -35253,7 +35253,7 @@ func R_GenerateLookup(texnum int32) {
 		if int32(*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))) > 1 {
 			// Use the cached block.
 			*(*int16)(unsafe.Pointer(collump + uintptr(x)*2)) = int16(-1)
-			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = libc.Uint16FromInt32(*(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)))
+			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = uint16(*(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)))
 			if *(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)) > int32(0x10000)-int32((*texture_t)(unsafe.Pointer(texture)).Fheight) {
 				I_Error(__ccgo_ts(25985), texnum)
 			}
@@ -35289,8 +35289,8 @@ func R_GetColumn(tex int32, col int32) (r uintptr) {
 func GenerateTextureHashTable() {
 	var i, key int32
 	var rover uintptr
-	textures_hashtable = Z_Malloc(int32(uint64(8)*libc.Uint64FromInt32(numtextures)), int32(PU_STATIC), uintptr(0))
-	xmemset(textures_hashtable, 0, uint64(8)*libc.Uint64FromInt32(numtextures))
+	textures_hashtable = Z_Malloc(int32(uint64(8)*uint64(numtextures)), int32(PU_STATIC), uintptr(0))
+	xmemset(textures_hashtable, 0, uint64(8)*uint64(numtextures))
 	// Add all textures to hash table
 	i = 0
 	for {
@@ -35335,7 +35335,7 @@ func R_InitTextures() {
 	names = W_CacheLumpName(__ccgo_ts(26022), int32(PU_STATIC))
 	nummappatches = *(*int32)(unsafe.Pointer(names))
 	name_p = names + uintptr(4)
-	patchlookup = Z_Malloc(int32(libc.Uint64FromInt32(nummappatches)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	patchlookup = Z_Malloc(int32(uint64(nummappatches)*uint64(4)), int32(PU_STATIC), uintptr(0))
 	i = 0
 	for {
 		if !(i < nummappatches) {
@@ -35367,13 +35367,13 @@ func R_InitTextures() {
 		maxoff2 = 0
 	}
 	numtextures = numtextures1 + numtextures2
-	textures = Z_Malloc(int32(libc.Uint64FromInt32(numtextures)*uint64(8)), int32(PU_STATIC), uintptr(0))
-	texturecolumnlump = Z_Malloc(int32(libc.Uint64FromInt32(numtextures)*uint64(8)), int32(PU_STATIC), uintptr(0))
-	texturecolumnofs = Z_Malloc(int32(libc.Uint64FromInt32(numtextures)*uint64(8)), int32(PU_STATIC), uintptr(0))
-	texturecomposite = Z_Malloc(int32(libc.Uint64FromInt32(numtextures)*uint64(8)), int32(PU_STATIC), uintptr(0))
-	texturecompositesize = Z_Malloc(int32(libc.Uint64FromInt32(numtextures)*uint64(4)), int32(PU_STATIC), uintptr(0))
-	texturewidthmask = Z_Malloc(int32(libc.Uint64FromInt32(numtextures)*uint64(4)), int32(PU_STATIC), uintptr(0))
-	textureheight = Z_Malloc(int32(libc.Uint64FromInt32(numtextures)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	textures = Z_Malloc(int32(uint64(numtextures)*uint64(8)), int32(PU_STATIC), uintptr(0))
+	texturecolumnlump = Z_Malloc(int32(uint64(numtextures)*uint64(8)), int32(PU_STATIC), uintptr(0))
+	texturecolumnofs = Z_Malloc(int32(uint64(numtextures)*uint64(8)), int32(PU_STATIC), uintptr(0))
+	texturecomposite = Z_Malloc(int32(uint64(numtextures)*uint64(8)), int32(PU_STATIC), uintptr(0))
+	texturecompositesize = Z_Malloc(int32(uint64(numtextures)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	texturewidthmask = Z_Malloc(int32(uint64(numtextures)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	textureheight = Z_Malloc(int32(uint64(numtextures)*uint64(4)), int32(PU_STATIC), uintptr(0))
 	totalwidth = 0
 	//	Really complex printing shit...
 	temp1 = W_GetNumForName(__ccgo_ts(26047)) // P_???????
@@ -35427,7 +35427,7 @@ func R_InitTextures() {
 			I_Error(__ccgo_ts(26069), 0)
 		}
 		mtexture = maptex + uintptr(offset)
-		v6 = Z_Malloc(int32(uint64(40)+uint64(8)*libc.Uint64FromInt32(int32((*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount)-1)), int32(PU_STATIC), uintptr(0))
+		v6 = Z_Malloc(int32(uint64(40)+uint64(8)*uint64(int32((*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount)-1)), int32(PU_STATIC), uintptr(0))
 		*(*uintptr)(unsafe.Pointer(textures + uintptr(i)*8)) = v6
 		texture = v6
 		(*texture_t)(unsafe.Pointer(texture)).Fwidth = (*maptexture_t)(unsafe.Pointer(mtexture)).Fwidth
@@ -35454,8 +35454,8 @@ func R_InitTextures() {
 			mpatch += 10
 			patch += 8
 		}
-		*(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(i)*8)) = Z_Malloc(int32(libc.Uint64FromInt16((*texture_t)(unsafe.Pointer(texture)).Fwidth)*uint64(2)), int32(PU_STATIC), uintptr(0))
-		*(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(i)*8)) = Z_Malloc(int32(libc.Uint64FromInt16((*texture_t)(unsafe.Pointer(texture)).Fwidth)*uint64(2)), int32(PU_STATIC), uintptr(0))
+		*(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(i)*8)) = Z_Malloc(int32(uint64((*texture_t)(unsafe.Pointer(texture)).Fwidth)*uint64(2)), int32(PU_STATIC), uintptr(0))
+		*(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(i)*8)) = Z_Malloc(int32(uint64((*texture_t)(unsafe.Pointer(texture)).Fwidth)*uint64(2)), int32(PU_STATIC), uintptr(0))
 		j = 1
 		for j*int32(2) <= int32((*texture_t)(unsafe.Pointer(texture)).Fwidth) {
 			j <<= 1
@@ -35487,7 +35487,7 @@ func R_InitTextures() {
 		i++
 	}
 	// Create translation table for global animation.
-	texturetranslation = Z_Malloc(int32(libc.Uint64FromInt32(numtextures+1)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	texturetranslation = Z_Malloc(int32(uint64(numtextures+1)*uint64(4)), int32(PU_STATIC), uintptr(0))
 	i = 0
 	for {
 		if !(i < numtextures) {
@@ -35513,7 +35513,7 @@ func R_InitFlats() {
 	lastflat = W_GetNumForName(__ccgo_ts(26159)) - 1
 	numflats = lastflat - firstflat + 1
 	// Create translation table for global animation.
-	flattranslation = Z_Malloc(int32(libc.Uint64FromInt32(numflats+1)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	flattranslation = Z_Malloc(int32(uint64(numflats+1)*uint64(4)), int32(PU_STATIC), uintptr(0))
 	i = 0
 	for {
 		if !(i < numflats) {
@@ -35541,9 +35541,9 @@ func R_InitSpriteLumps() {
 	firstspritelump = W_GetNumForName(__ccgo_ts(26047)) + 1
 	lastspritelump = W_GetNumForName(__ccgo_ts(26055)) - 1
 	numspritelumps = lastspritelump - firstspritelump + 1
-	spritewidth = Z_Malloc(int32(libc.Uint64FromInt32(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
-	spriteoffset = Z_Malloc(int32(libc.Uint64FromInt32(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
-	spritetopoffset = Z_Malloc(int32(libc.Uint64FromInt32(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	spritewidth = Z_Malloc(int32(uint64(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	spriteoffset = Z_Malloc(int32(uint64(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	spritetopoffset = Z_Malloc(int32(uint64(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
 	i = 0
 	for {
 		if !(i < numspritelumps) {
@@ -35661,7 +35661,7 @@ func R_PrecacheLevel() {
 	}
 	// Precache flats.
 	flatpresent = Z_Malloc(numflats, int32(PU_STATIC), uintptr(0))
-	xmemset(flatpresent, 0, libc.Uint64FromInt32(numflats))
+	xmemset(flatpresent, 0, uint64(numflats))
 	i = 0
 	for {
 		if !(i < numsectors) {
@@ -35692,7 +35692,7 @@ func R_PrecacheLevel() {
 	Z_Free(flatpresent)
 	// Precache textures.
 	texturepresent = Z_Malloc(numtextures, int32(PU_STATIC), uintptr(0))
-	xmemset(texturepresent, 0, libc.Uint64FromInt32(numtextures))
+	xmemset(texturepresent, 0, uint64(numtextures))
 	i = 0
 	for {
 		if !(i < numsides) {
@@ -35742,7 +35742,7 @@ func R_PrecacheLevel() {
 	Z_Free(texturepresent)
 	// Precache sprites.
 	spritepresent = Z_Malloc(numsprites, int32(PU_STATIC), uintptr(0))
-	xmemset(spritepresent, 0, libc.Uint64FromInt32(numsprites))
+	xmemset(spritepresent, 0, uint64(numsprites))
 	th = thinkercap.Fnext
 	for {
 		if !(th != uintptr(unsafe.Pointer(&thinkercap))) {
@@ -36167,12 +36167,12 @@ func R_InitTranslationTables() {
 		}
 		if i >= int32(0x70) && i <= int32(0x7f) {
 			// map green ramp to gray, brown, red
-			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i))) = libc.Uint8FromInt32(int32(0x60) + i&int32(0xf))
-			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(256)))) = libc.Uint8FromInt32(int32(0x40) + i&int32(0xf))
-			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(512)))) = libc.Uint8FromInt32(int32(0x20) + i&int32(0xf))
+			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i))) = uint8(int32(0x60) + i&int32(0xf))
+			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(256)))) = uint8(int32(0x40) + i&int32(0xf))
+			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(512)))) = uint8(int32(0x20) + i&int32(0xf))
 		} else {
 			// Keep all other colors as is.
-			v3 = libc.Uint8FromInt32(i)
+			v3 = uint8(i)
 			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(512)))) = v3
 			v2 = v3
 			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(256)))) = v2
@@ -36376,7 +36376,7 @@ func R_FillBackScreen() {
 			x++
 		}
 		if SCREENWIDTH&63 != 0 {
-			xmemcpy(dest, src+uintptr(y&63<<6), libc.Uint64FromInt32(SCREENWIDTH&63))
+			xmemcpy(dest, src+uintptr(y&63<<6), uint64(SCREENWIDTH&63))
 			dest += uintptr(SCREENWIDTH & 63)
 		}
 		goto _1
@@ -36454,7 +36454,7 @@ func R_VideoErase(ofs uint32, count int32) {
 	//  a 32bit CPU, as GNU GCC/Linux libc did
 	//  at one point.
 	if background_buffer != uintptr(0) {
-		xmemcpy(I_VideoBuffer+uintptr(ofs), background_buffer+uintptr(ofs), libc.Uint64FromInt32(count))
+		xmemcpy(I_VideoBuffer+uintptr(ofs), background_buffer+uintptr(ofs), uint64(count))
 	}
 }
 
@@ -36633,7 +36633,7 @@ func R_PointToAngle(x fixed_t, y fixed_t) (r angle_t) {
 			// y>= 0
 			if x > y {
 				// octant 3
-				return libc.Uint32FromUint32(ANG18011) - 1 - tantoangle[SlopeDiv(uint32(y), uint32(x))]
+				return uint32(ANG18011) - 1 - tantoangle[SlopeDiv(uint32(y), uint32(x))]
 			} else {
 				// octant 2
 				return uint32(ANG909) + tantoangle[SlopeDiv(uint32(x), uint32(y))]
@@ -36646,7 +36646,7 @@ func R_PointToAngle(x fixed_t, y fixed_t) (r angle_t) {
 				return uint32(ANG18011) + tantoangle[SlopeDiv(uint32(y), uint32(x))]
 			} else {
 				// octant 5
-				return libc.Uint32FromUint32(ANG2705) - 1 - tantoangle[SlopeDiv(uint32(x), uint32(y))]
+				return uint32(ANG2705) - 1 - tantoangle[SlopeDiv(uint32(x), uint32(y))]
 			}
 		}
 	}
@@ -37041,7 +37041,7 @@ func R_SetupFrame(player *player_t) {
 	viewsin = finesine[viewangle>>int32(ANGLETOFINESHIFT)]
 	viewcos = finecosine[viewangle>>int32(ANGLETOFINESHIFT)]
 	if player.Ffixedcolormap != 0 {
-		fixedcolormap = colormaps + uintptr(libc.Uint64FromInt32(player.Ffixedcolormap*int32(256))*uint64(1))
+		fixedcolormap = colormaps + uintptr(uint64(player.Ffixedcolormap*int32(256))*uint64(1))
 		walllights = uintptr(unsafe.Pointer(&scalelightfixed))
 		i = 0
 		for {
@@ -37896,12 +37896,12 @@ func R_StoreWallRange(start int32, stop int32) {
 	R_RenderSegLoop()
 	// save sprite clipping info
 	if (drawsegs[ds_index].Fsilhouette&int32(SIL_TOP) != 0 || maskedtexture != 0) && !(drawsegs[ds_index].Fsprtopclip != 0) {
-		xmemcpy(lastopening, uintptr(unsafe.Pointer(&ceilingclip))+uintptr(start)*2, libc.Uint64FromInt32(int32(2)*(rw_stopx-start)))
+		xmemcpy(lastopening, uintptr(unsafe.Pointer(&ceilingclip))+uintptr(start)*2, uint64(int32(2)*(rw_stopx-start)))
 		drawsegs[ds_index].Fsprtopclip = lastopening - uintptr(start)*2
 		lastopening += uintptr(rw_stopx-start) * 2
 	}
 	if (drawsegs[ds_index].Fsilhouette&int32(SIL_BOTTOM) != 0 || maskedtexture != 0) && !(drawsegs[ds_index].Fsprbottomclip != 0) {
-		xmemcpy(lastopening, uintptr(unsafe.Pointer(&floorclip))+uintptr(start)*2, libc.Uint64FromInt32(int32(2)*(rw_stopx-start)))
+		xmemcpy(lastopening, uintptr(unsafe.Pointer(&floorclip))+uintptr(start)*2, uint64(int32(2)*(rw_stopx-start)))
 		drawsegs[ds_index].Fsprbottomclip = lastopening - uintptr(start)*2
 		lastopening += uintptr(rw_stopx-start) * 2
 	}
@@ -38013,7 +38013,7 @@ func R_InitSpriteDefs(namelist uintptr) {
 	if !(numsprites != 0) {
 		return
 	}
-	sprites = Z_Malloc(int32(libc.Uint64FromInt32(numsprites)*uint64(16)), int32(PU_STATIC), uintptr(0))
+	sprites = Z_Malloc(int32(uint64(numsprites)*uint64(16)), int32(PU_STATIC), uintptr(0))
 	start = firstspritelump - 1
 	end = lastspritelump + 1
 	// scan all the lump names for each of the names,
@@ -38113,8 +38113,8 @@ func R_InitSpriteDefs(namelist uintptr) {
 		}
 		// allocate space for the frames present and copy sprtemp to it
 		(*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fnumframes = maxframe
-		(*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes = Z_Malloc(int32(libc.Uint64FromInt32(maxframe)*uint64(28)), int32(PU_STATIC), uintptr(0))
-		xmemcpy((*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes, uintptr(unsafe.Pointer(&sprtemp)), libc.Uint64FromInt32(maxframe)*uint64(28))
+		(*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes = Z_Malloc(int32(uint64(maxframe)*uint64(28)), int32(PU_STATIC), uintptr(0))
+		xmemcpy((*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes, uintptr(unsafe.Pointer(&sprtemp)), uint64(maxframe)*uint64(28))
 		goto _1
 	_1:
 		;
@@ -41793,7 +41793,7 @@ func S_Init(sfxVolume int32, musicVolume int32) {
 	// Allocating the internal channels for mixing
 	// (the maximum numer of sounds rendered
 	// simultaneously) within zone memory.
-	channels = Z_Malloc(int32(libc.Uint64FromInt32(snd_channels)*uint64(24)), int32(PU_STATIC), uintptr(0))
+	channels = Z_Malloc(int32(uint64(snd_channels)*uint64(24)), int32(PU_STATIC), uintptr(0))
 	// Free all channels for use
 	i = 0
 	for {
@@ -42314,7 +42314,7 @@ func V_CopyRect(srcx int32, srcy int32, source uintptr, width int32, height int3
 		if !(height > 0) {
 			break
 		}
-		xmemcpy(dest, src, libc.Uint64FromInt32(width))
+		xmemcpy(dest, src, uint64(width))
 		src += uintptr(SCREENWIDTH)
 		dest += uintptr(SCREENWIDTH)
 		goto _1
@@ -42449,7 +42449,7 @@ func V_DrawBlock(x int32, y int32, width int32, height int32, src uintptr) {
 		if !(v1 != 0) {
 			break
 		}
-		xmemcpy(dest, src, libc.Uint64FromInt32(width))
+		xmemcpy(dest, src, uint64(width))
 		src += uintptr(width)
 		dest += uintptr(SCREENWIDTH)
 	}
@@ -42472,7 +42472,7 @@ func V_DrawFilledBox(x int32, y int32, w int32, h int32, c int32) {
 			}
 			v3 = buf1
 			buf1++
-			*(*uint8)(unsafe.Pointer(v3)) = libc.Uint8FromInt32(c)
+			*(*uint8)(unsafe.Pointer(v3)) = uint8(c)
 			goto _2
 		_2:
 			;
@@ -42497,7 +42497,7 @@ func V_DrawHorizLine(x int32, y int32, w int32, c int32) {
 		}
 		v2 = buf
 		buf++
-		*(*uint8)(unsafe.Pointer(v2)) = libc.Uint8FromInt32(c)
+		*(*uint8)(unsafe.Pointer(v2)) = uint8(c)
 		goto _1
 	_1:
 		;
@@ -42514,7 +42514,7 @@ func V_DrawVertLine(x int32, y int32, h int32, c int32) {
 		if !(y1 < h) {
 			break
 		}
-		*(*uint8)(unsafe.Pointer(buf)) = libc.Uint8FromInt32(c)
+		*(*uint8)(unsafe.Pointer(buf)) = uint8(c)
 		buf += uintptr(SCREENWIDTH)
 		goto _1
 	_1:
@@ -42591,14 +42591,14 @@ func WritePCXfile(filename string, data uintptr, width int32, height int32, pale
 	(*pcx_t)(unsafe.Pointer(pcx)).Fbits_per_pixel = 8        // 256 color
 	(*pcx_t)(unsafe.Pointer(pcx)).Fxmin = uint16(0)
 	(*pcx_t)(unsafe.Pointer(pcx)).Fymin = uint16(0)
-	(*pcx_t)(unsafe.Pointer(pcx)).Fxmax = libc.Uint16FromInt16(int16(width - 1))
-	(*pcx_t)(unsafe.Pointer(pcx)).Fymax = libc.Uint16FromInt16(int16(height - 1))
-	(*pcx_t)(unsafe.Pointer(pcx)).Fhres = libc.Uint16FromInt16(int16(width))
-	(*pcx_t)(unsafe.Pointer(pcx)).Fvres = libc.Uint16FromInt16(int16(height))
+	(*pcx_t)(unsafe.Pointer(pcx)).Fxmax = uint16(int16(width - 1))
+	(*pcx_t)(unsafe.Pointer(pcx)).Fymax = uint16(int16(height - 1))
+	(*pcx_t)(unsafe.Pointer(pcx)).Fhres = uint16(int16(width))
+	(*pcx_t)(unsafe.Pointer(pcx)).Fvres = uint16(int16(height))
 	xmemset(pcx+16, 0, uint64(48))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fcolor_planes = 1 // chunky image
-	(*pcx_t)(unsafe.Pointer(pcx)).Fbytes_per_line = libc.Uint16FromInt16(int16(width))
-	(*pcx_t)(unsafe.Pointer(pcx)).Fpalette_type = libc.Uint16FromInt16(int16(2)) // not a grey scale
+	(*pcx_t)(unsafe.Pointer(pcx)).Fbytes_per_line = uint16(int16(width))
+	(*pcx_t)(unsafe.Pointer(pcx)).Fpalette_type = uint16(int16(2)) // not a grey scale
 	xmemset(pcx+70, 0, uint64(58))
 	// pack the image
 	pack = pcx + 128
@@ -44545,9 +44545,9 @@ func WI_loadCallback(name uintptr, variable uintptr) {
 func WI_loadData() {
 	if gamemode == commercial {
 		NUMCMAPS = 32
-		lnames = Z_Malloc(int32(uint64(8)*libc.Uint64FromInt32(NUMCMAPS)), int32(PU_STATIC), uintptr(0))
+		lnames = Z_Malloc(int32(uint64(8)*uint64(NUMCMAPS)), int32(PU_STATIC), uintptr(0))
 	} else {
-		lnames = Z_Malloc(int32(8*libc.Uint64FromInt32(NUMMAPS)), int32(PU_STATIC), uintptr(0))
+		lnames = Z_Malloc(int32(8*uint64(NUMMAPS)), int32(PU_STATIC), uintptr(0))
 	}
 	WI_loadUnloadData(WI_loadCallback)
 	// These two graphics are special cased because we're sharing
@@ -44864,9 +44864,9 @@ func W_AddFile(filename string) *os.File {
 		}
 		(*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps = (*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps
 		(*(*wadinfo_t)(unsafe.Pointer(bp))).Finfotableofs = (*(*wadinfo_t)(unsafe.Pointer(bp))).Finfotableofs
-		length = int32(libc.Uint64FromInt32((*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps) * uint64(16))
+		length = int32(uint64((*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps) * uint64(16))
 		fileinfo = Z_Malloc(length, int32(PU_STATIC), uintptr(0))
-		W_Read(wad_file, uint32((*(*wadinfo_t)(unsafe.Pointer(bp))).Finfotableofs), fileinfo, libc.Uint64FromInt32(length))
+		W_Read(wad_file, uint32((*(*wadinfo_t)(unsafe.Pointer(bp))).Finfotableofs), fileinfo, uint64(length))
 		newnumlumps += (*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps
 	}
 	// Increase size of numlumps array to accomodate the new file.
@@ -44990,7 +44990,7 @@ func W_ReadLump(lump uint32, dest uintptr) {
 	}
 	l = lumpinfo + uintptr(lump)*40
 	I_BeginRead()
-	c = int32(W_Read((*lumpinfo_t)(unsafe.Pointer(l)).Fwad_file, uint32((*lumpinfo_t)(unsafe.Pointer(l)).Fposition), dest, libc.Uint64FromInt32((*lumpinfo_t)(unsafe.Pointer(l)).Fsize)))
+	c = int32(W_Read((*lumpinfo_t)(unsafe.Pointer(l)).Fwad_file, uint32((*lumpinfo_t)(unsafe.Pointer(l)).Fposition), dest, uint64((*lumpinfo_t)(unsafe.Pointer(l)).Fsize)))
 	if c < (*lumpinfo_t)(unsafe.Pointer(l)).Fsize {
 		I_Error(__ccgo_ts(28793), c, (*lumpinfo_t)(unsafe.Pointer(l)).Fsize, lump)
 	}
@@ -45124,7 +45124,7 @@ func W_CheckCorrectIWAD(mission GameMission_t) {
 	var i, lumpnum int32
 	i = 0
 	for {
-		if !(libc.Uint64FromInt32(i) < 64/16) {
+		if !(uint64(i) < 64/16) {
 			break
 		}
 		if mission != unique_lumps[i].Fmission {
@@ -45242,7 +45242,7 @@ func Z_Init() {
 	(*memblock_t)(unsafe.Pointer(block)).Fprev = v3
 	// free block
 	(*memblock_t)(unsafe.Pointer(block)).Ftag = int32(PU_FREE)
-	(*memblock_t)(unsafe.Pointer(block)).Fsize = int32(libc.Uint64FromInt32((*memzone_t)(unsafe.Pointer(mainzone)).Fsize) - uint64(56))
+	(*memblock_t)(unsafe.Pointer(block)).Fsize = int32(uint64((*memzone_t)(unsafe.Pointer(mainzone)).Fsize) - uint64(56))
 }
 
 // C documentation
@@ -45295,7 +45295,7 @@ func Z_Free(ptr uintptr) {
 func Z_Malloc(size int32, tag int32, user uintptr) (r uintptr) {
 	var base, newblock, result, rover, start, v1 uintptr
 	var extra int32
-	size = int32((libc.Uint64FromInt32(size) + uint64(8) - uint64(1)) & 0xffff_fff8)
+	size = int32((uint64(size) + uint64(8) - uint64(1)) & 0xffff_fff8)
 	// scan through the block list,
 	// looking for the first free block
 	// of sufficient size,
