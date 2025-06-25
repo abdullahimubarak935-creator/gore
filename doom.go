@@ -7069,7 +7069,7 @@ func F_DrawPatchCol(x int32, patch uintptr, col int32) {
 			*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(v2))
 			dest += uintptr(SCREENWIDTH)
 		}
-		column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + libc.UintptrFromInt32(4)
+		column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + uintptr(4)
 	}
 }
 
@@ -34601,7 +34601,7 @@ func R_ClipSolidWallSegment(first int32, last int32) {
 			next = newend
 			newend += 8
 			for next != start {
-				*(*cliprange_t)(unsafe.Pointer(next)) = *(*cliprange_t)(unsafe.Pointer(next - libc.UintptrFromInt32(1)*8))
+				*(*cliprange_t)(unsafe.Pointer(next)) = *(*cliprange_t)(unsafe.Pointer(next - uintptr(1)*8))
 				next -= 8
 			}
 			(*cliprange_t)(unsafe.Pointer(next)).Ffirst = first
@@ -34618,9 +34618,9 @@ func R_ClipSolidWallSegment(first int32, last int32) {
 		return
 	}
 	next = start
-	for last >= (*cliprange_t)(unsafe.Pointer(next+libc.UintptrFromInt32(1)*8)).Ffirst-1 {
+	for last >= (*cliprange_t)(unsafe.Pointer(next+uintptr(1)*8)).Ffirst-1 {
 		// There is a fragment between two posts.
-		R_StoreWallRange((*cliprange_t)(unsafe.Pointer(next)).Flast+int32(1), (*cliprange_t)(unsafe.Pointer(next+libc.UintptrFromInt32(1)*8)).Ffirst-1)
+		R_StoreWallRange((*cliprange_t)(unsafe.Pointer(next)).Flast+int32(1), (*cliprange_t)(unsafe.Pointer(next+uintptr(1)*8)).Ffirst-1)
 		next += 8
 		if last <= (*cliprange_t)(unsafe.Pointer(next)).Flast {
 			// Bottom is contained in next.
@@ -34686,9 +34686,9 @@ func R_ClipPassWallSegment(first int32, last int32) {
 	if last <= (*cliprange_t)(unsafe.Pointer(start)).Flast {
 		return
 	}
-	for last >= (*cliprange_t)(unsafe.Pointer(start+libc.UintptrFromInt32(1)*8)).Ffirst-1 {
+	for last >= (*cliprange_t)(unsafe.Pointer(start+uintptr(1)*8)).Ffirst-1 {
 		// There is a fragment between two posts.
-		R_StoreWallRange((*cliprange_t)(unsafe.Pointer(start)).Flast+int32(1), (*cliprange_t)(unsafe.Pointer(start+libc.UintptrFromInt32(1)*8)).Ffirst-1)
+		R_StoreWallRange((*cliprange_t)(unsafe.Pointer(start)).Flast+int32(1), (*cliprange_t)(unsafe.Pointer(start+uintptr(1)*8)).Ffirst-1)
 		start += 8
 		if last <= (*cliprange_t)(unsafe.Pointer(start)).Flast {
 			return
@@ -35119,7 +35119,7 @@ func R_DrawColumnInCache(patch uintptr, cache uintptr, originy int32, cacheheigh
 		if count > 0 {
 			xmemcpy(cache+uintptr(position), source, uint64(count))
 		}
-		patch = patch + uintptr((*column_t)(unsafe.Pointer(patch)).Flength) + libc.UintptrFromInt32(4)
+		patch = patch + uintptr((*column_t)(unsafe.Pointer(patch)).Flength) + uintptr(4)
 	}
 }
 
@@ -37471,7 +37471,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 			sprtopscreen = centeryfrac - FixedMul(dc_texturemid, spryscale)
 			dc_iscale = int32(uint32(0xffffffff) / uint32(spryscale))
 			// draw the texture
-			col = R_GetColumn(texnum, int32(*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2)))) - libc.UintptrFromInt32(3)
+			col = R_GetColumn(texnum, int32(*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2)))) - uintptr(3)
 			R_DrawMaskedColumn(col)
 			*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2)) = int16(SHRT_MAX1)
 		}
@@ -38190,7 +38190,7 @@ func R_DrawMaskedColumn(column uintptr) {
 			//  or (SHADOW) R_DrawFuzzColumn.
 			(*(*func())(unsafe.Pointer(&struct{ uintptr }{colfunc})))()
 		}
-		column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + libc.UintptrFromInt32(4)
+		column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + uintptr(4)
 		goto _1
 	_1:
 	}
@@ -38555,7 +38555,7 @@ func R_SortVisSprites() {
 	}
 	vissprites[0].Fprev = bp
 	(*(*vissprite_t)(unsafe.Pointer(bp))).Fnext = uintptr(unsafe.Pointer(&vissprites))
-	(*vissprite_t)(unsafe.Pointer(vissprite_p - libc.UintptrFromInt32(1)*80)).Fnext = bp
+	(*vissprite_t)(unsafe.Pointer(vissprite_p - uintptr(1)*80)).Fnext = bp
 	(*(*vissprite_t)(unsafe.Pointer(bp))).Fprev = vissprite_p - uintptr(1)*80
 	// pull the vissprites out by scale
 	v3 = uintptr(unsafe.Pointer(&vsprsortedhead))
@@ -42362,7 +42362,7 @@ func V_DrawPatch(x int32, y int32, patch uintptr) {
 				*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(v3))
 				dest += uintptr(SCREENWIDTH)
 			}
-			column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + libc.UintptrFromInt32(4)
+			column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + uintptr(4)
 		}
 		goto _1
 	_1:
@@ -42411,7 +42411,7 @@ func V_DrawPatchFlipped(x int32, y int32, patch uintptr) {
 				*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(v3))
 				dest += uintptr(SCREENWIDTH)
 			}
-			column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + libc.UintptrFromInt32(4)
+			column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + uintptr(4)
 		}
 		goto _1
 	_1:
@@ -45229,7 +45229,7 @@ func Z_Init() {
 	mainzone = I_ZoneBase(bp)
 	(*memzone_t)(unsafe.Pointer(mainzone)).Fsize = *(*int32)(unsafe.Pointer(bp))
 	// set the entire zone to one free block
-	v2 = mainzone + libc.UintptrFromInt64(56)
+	v2 = mainzone + uintptr(56)
 	block = v2
 	v1 = v2
 	(*memzone_t)(unsafe.Pointer(mainzone)).Fblocklist.Fprev = v1
@@ -45252,7 +45252,7 @@ func Z_Init() {
 //	//
 func Z_Free(ptr uintptr) {
 	var block, other uintptr
-	block = ptr - libc.UintptrFromInt64(40)
+	block = ptr - uintptr(40)
 	if (*memblock_t)(unsafe.Pointer(block)).Fid != int32(ZONEID) {
 		I_Error(__ccgo_ts(29075), 0)
 	}
@@ -45353,7 +45353,7 @@ func Z_Malloc(size int32, tag int32, user uintptr) (r uintptr) {
 	}
 	(*memblock_t)(unsafe.Pointer(base)).Fuser = user
 	(*memblock_t)(unsafe.Pointer(base)).Ftag = tag
-	result = base + libc.UintptrFromInt64(40)
+	result = base + uintptr(40)
 	if (*memblock_t)(unsafe.Pointer(base)).Fuser != 0 {
 		*(*uintptr)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(base)).Fuser)) = result
 	}
@@ -45427,7 +45427,7 @@ func Z_CheckHeap() {
 //	//
 func Z_ChangeTag2(ptr uintptr, tag int32, file uintptr, line int32) {
 	var block uintptr
-	block = ptr - libc.UintptrFromInt64(40)
+	block = ptr - uintptr(40)
 	if (*memblock_t)(unsafe.Pointer(block)).Fid != int32(ZONEID) {
 		I_Error(__ccgo_ts(29588), file, line)
 	}
@@ -45439,7 +45439,7 @@ func Z_ChangeTag2(ptr uintptr, tag int32, file uintptr, line int32) {
 
 func Z_ChangeUser(ptr uintptr, user uintptr) {
 	var block uintptr
-	block = ptr - libc.UintptrFromInt64(40)
+	block = ptr - uintptr(40)
 	if (*memblock_t)(unsafe.Pointer(block)).Fid != int32(ZONEID) {
 		I_Error(__ccgo_ts(29693), 0)
 	}
