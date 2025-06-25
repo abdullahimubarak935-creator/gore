@@ -3872,7 +3872,7 @@ type iwad_t struct {
 	Fname        string
 	Fmission     GameMission_t
 	Fmode        GameMode_t
-	Fdescription uintptr
+	Fdescription string
 }
 
 //
@@ -3885,79 +3885,79 @@ var iwads = [14]iwad_t{
 		Fname:        __ccgo_ts_str(911),
 		Fmission:     doom2,
 		Fmode:        commercial,
-		Fdescription: __ccgo_ts(921),
+		Fdescription: __ccgo_ts_str(921),
 	},
 	1: {
 		Fname:        __ccgo_ts_str(929),
 		Fmission:     pack_plut,
 		Fmode:        commercial,
-		Fdescription: __ccgo_ts(942),
+		Fdescription: __ccgo_ts_str(942),
 	},
 	2: {
 		Fname:        __ccgo_ts_str(974),
 		Fmission:     pack_tnt,
 		Fmode:        commercial,
-		Fdescription: __ccgo_ts(982),
+		Fdescription: __ccgo_ts_str(982),
 	},
 	3: {
 		Fname:        __ccgo_ts_str(1009),
 		Fmode:        retail,
-		Fdescription: __ccgo_ts(1018),
+		Fdescription: __ccgo_ts_str(1018),
 	},
 	4: {
 		Fname:        __ccgo_ts_str(1023),
-		Fdescription: __ccgo_ts(1033),
+		Fdescription: __ccgo_ts_str(1033),
 	},
 	5: {
 		Fname:        __ccgo_ts_str(1048),
 		Fmission:     pack_chex,
-		Fdescription: __ccgo_ts(1057),
+		Fdescription: __ccgo_ts_str(1057),
 	},
 	6: {
 		Fname:        __ccgo_ts_str(1068),
 		Fmission:     pack_hacx,
 		Fmode:        commercial,
-		Fdescription: __ccgo_ts(1077),
+		Fdescription: __ccgo_ts_str(1077),
 	},
 	7: {
 		Fname:        __ccgo_ts_str(1082),
 		Fmission:     doom2,
 		Fmode:        commercial,
-		Fdescription: __ccgo_ts(1093),
+		Fdescription: __ccgo_ts_str(1093),
 	},
 	8: {
 		Fname:        __ccgo_ts_str(1100),
 		Fmission:     doom2,
 		Fmode:        commercial,
-		Fdescription: __ccgo_ts(1114),
+		Fdescription: __ccgo_ts_str(1114),
 	},
 	9: {
 		Fname:        __ccgo_ts_str(1132),
 		Fmode:        retail,
-		Fdescription: __ccgo_ts(1146),
+		Fdescription: __ccgo_ts_str(1146),
 	},
 	10: {
 		Fname:        __ccgo_ts_str(1164),
 		Fmission:     heretic,
 		Fmode:        retail,
-		Fdescription: __ccgo_ts(1176),
+		Fdescription: __ccgo_ts_str(1176),
 	},
 	11: {
 		Fname:        __ccgo_ts_str(1184),
 		Fmission:     heretic,
-		Fdescription: __ccgo_ts(1197),
+		Fdescription: __ccgo_ts_str(1197),
 	},
 	12: {
 		Fname:        __ccgo_ts_str(1215),
 		Fmission:     hexen,
 		Fmode:        commercial,
-		Fdescription: __ccgo_ts(1225),
+		Fdescription: __ccgo_ts_str(1225),
 	},
 	13: {
 		Fname:        __ccgo_ts_str(1231),
 		Fmission:     strife,
 		Fmode:        commercial,
-		Fdescription: __ccgo_ts(1243),
+		Fdescription: __ccgo_ts_str(1243),
 	},
 }
 
@@ -4211,13 +4211,13 @@ func D_SaveGameIWADName(gamemission GameMission_t) string {
 	return __ccgo_ts_str(1353)
 }
 
-func D_SuggestGameName(mission GameMission_t, mode GameMode_t) (r uintptr) {
+func D_SuggestGameName(mission GameMission_t, mode GameMode_t) string {
 	for i := 0; i < len(iwads); i++ {
 		if iwads[i].Fmission == mission && (mode == indetermined || iwads[i].Fmode == mode) {
 			return iwads[i].Fdescription
 		}
 	}
-	return __ccgo_ts(1365)
+	return __ccgo_ts_str(1365)
 }
 
 // The complete set of data for a particular tic.
@@ -6131,32 +6131,32 @@ func D_DoomMain(tls *libc.TLS) {
 	D_DoomLoop(tls)
 }
 
-func D_GameMissionString(mission GameMission_t) (r uintptr) {
+func D_GameMissionString(mission GameMission_t) string {
 	switch mission {
 	case none:
 		fallthrough
 	default:
-		return __ccgo_ts(5369)
+		return __ccgo_ts_str(5369)
 	case doom:
-		return __ccgo_ts(5374)
+		return __ccgo_ts_str(5374)
 	case doom2:
-		return __ccgo_ts(2533)
+		return __ccgo_ts_str(2533)
 	case pack_tnt:
-		return __ccgo_ts(2539)
+		return __ccgo_ts_str(2539)
 	case pack_plut:
-		return __ccgo_ts(2543)
+		return __ccgo_ts_str(2543)
 	case pack_hacx:
-		return __ccgo_ts(3783)
+		return __ccgo_ts_str(3783)
 	case pack_chex:
-		return __ccgo_ts(3852)
+		return __ccgo_ts_str(3852)
 	case heretic:
-		return __ccgo_ts(5379)
+		return __ccgo_ts_str(5379)
 	case hexen:
-		return __ccgo_ts(5387)
+		return __ccgo_ts_str(5387)
 	case strife:
-		return __ccgo_ts(5393)
+		return __ccgo_ts_str(5393)
 	}
-	return r
+	return ""
 }
 
 const ANG2701 = 3221225472
@@ -45141,7 +45141,7 @@ func W_CheckCorrectIWAD(tls *libc.TLS, mission GameMission_t) {
 		if mission != unique_lumps[i].Fmission {
 			lumpnum = W_CheckNumForName(unique_lumps[i].Flumpname)
 			if lumpnum >= 0 {
-				I_Error(tls, __ccgo_ts(28935), D_SuggestGameName(unique_lumps[i].Fmission, indetermined), __ccgo_ts(29063), D_GameMissionString(mission), __ccgo_ts(29063), D_GameMissionString(unique_lumps[i].Fmission))
+				I_Error(tls, __ccgo_ts(28935), D_SuggestGameName(unique_lumps[i].Fmission, indetermined), __ccgo_ts_str(29063), D_GameMissionString(mission), __ccgo_ts_str(29063), D_GameMissionString(unique_lumps[i].Fmission))
 			}
 		}
 		goto _1
