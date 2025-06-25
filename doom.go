@@ -19937,7 +19937,7 @@ type menuitem_t struct {
 type menu_t struct {
 	Fnumitems  int16
 	FprevMenu  *menu_t
-	Fmenuitems uintptr
+	Fmenuitems []menuitem_t
 	Froutine   func()
 	Fx         int16
 	Fy         int16
@@ -19999,7 +19999,7 @@ func init() {
 func init() {
 	MainDef = menu_t{
 		Fnumitems:  int16(main_end),
-		Fmenuitems: uintptr(unsafe.Pointer(&MainMenu)),
+		Fmenuitems: MainMenu[:],
 		Fx:         97,
 		Fy:         64,
 	}
@@ -20049,7 +20049,7 @@ func init() {
 	EpiDef = menu_t{
 		Fnumitems:  int16(ep_end),
 		FprevMenu:  &MainDef,
-		Fmenuitems: uintptr(unsafe.Pointer(&EpisodeMenu)),
+		Fmenuitems: EpisodeMenu[:],
 		Fx:         48,
 		Fy:         63,
 	}
@@ -20108,7 +20108,7 @@ func init() {
 	NewDef = menu_t{
 		Fnumitems:  int16(newg_end),
 		FprevMenu:  &EpiDef,
-		Fmenuitems: uintptr(unsafe.Pointer(&NewGameMenu)),
+		Fmenuitems: NewGameMenu[:],
 		Fx:         48,
 		Fy:         63,
 		FlastOn:    int16(hurtme),
@@ -20183,7 +20183,7 @@ func init() {
 	OptionsDef = menu_t{
 		Fnumitems:  int16(opt_end),
 		FprevMenu:  &MainDef,
-		Fmenuitems: uintptr(unsafe.Pointer(&OptionsMenu)),
+		Fmenuitems: OptionsMenu[:],
 		Fx:         60,
 		Fy:         37,
 	}
@@ -20214,7 +20214,7 @@ func init() {
 	ReadDef1 = menu_t{
 		Fnumitems:  int16(read1_end),
 		FprevMenu:  &MainDef,
-		Fmenuitems: uintptr(unsafe.Pointer(&ReadMenu1)),
+		Fmenuitems: ReadMenu1[:],
 		Fx:         280,
 		Fy:         185,
 	}
@@ -20245,7 +20245,7 @@ func init() {
 	ReadDef2 = menu_t{
 		Fnumitems:  int16(read2_end),
 		FprevMenu:  &ReadDef1,
-		Fmenuitems: uintptr(unsafe.Pointer(&ReadMenu2)),
+		Fmenuitems: ReadMenu2[:],
 		Fx:         330,
 		Fy:         175,
 	}
@@ -20293,7 +20293,7 @@ func init() {
 	SoundDef = menu_t{
 		Fnumitems:  int16(sound_end),
 		FprevMenu:  &OptionsDef,
-		Fmenuitems: uintptr(unsafe.Pointer(&SoundMenu)),
+		Fmenuitems: SoundMenu[:],
 		Fx:         80,
 		Fy:         64,
 	}
@@ -20355,7 +20355,7 @@ func init() {
 	LoadDef = menu_t{
 		Fnumitems:  int16(load_end),
 		FprevMenu:  &MainDef,
-		Fmenuitems: uintptr(unsafe.Pointer(&LoadMenu)),
+		Fmenuitems: LoadMenu[:],
 		Fx:         80,
 		Fy:         54,
 	}
@@ -20415,7 +20415,7 @@ func init() {
 	SaveDef = menu_t{
 		Fnumitems:  int16(load_end),
 		FprevMenu:  &MainDef,
-		Fmenuitems: uintptr(unsafe.Pointer(&SaveMenu)),
+		Fmenuitems: SaveMenu[:],
 		Fx:         80,
 		Fy:         54,
 	}
@@ -21436,7 +21436,7 @@ func M_Responder(ev *event_t) (r boolean) {
 	// Keys usable within menu
 	if key == key_menu_down {
 		// Move down to next item
-		for cond := true; cond; cond = int32((*(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32))).Fstatus) == -1 {
+		for cond := true; cond; cond = int32(currentMenu.Fmenuitems[itemOn].Fstatus) == -1 {
 			if int32(itemOn)+int32(1) > int32(currentMenu.Fnumitems)-1 {
 				itemOn = 0
 			} else {
@@ -21448,7 +21448,7 @@ func M_Responder(ev *event_t) (r boolean) {
 	} else {
 		if key == key_menu_up {
 			// Move back up to previous item
-			for cond := true; cond; cond = int32((*(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32))).Fstatus) == -1 {
+			for cond := true; cond; cond = int32(currentMenu.Fmenuitems[itemOn].Fstatus) == -1 {
 				if !(itemOn != 0) {
 					itemOn = int16(int32(currentMenu.Fnumitems) - 1)
 				} else {
@@ -21460,29 +21460,29 @@ func M_Responder(ev *event_t) (r boolean) {
 		} else {
 			if key == key_menu_left {
 				// Slide slider left
-				if (*(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32))).Froutine != nil && int32((*(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32))).Fstatus) == 2 {
+				if currentMenu.Fmenuitems[itemOn].Froutine != nil && int32(currentMenu.Fmenuitems[itemOn].Fstatus) == 2 {
 					S_StartSound(uintptr(0), int32(sfx_stnmov))
-					(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32)).Froutine(0)
+					currentMenu.Fmenuitems[itemOn].Froutine(0)
 				}
 				return 1
 			} else {
 				if key == key_menu_right {
 					// Slide slider right
-					if (*(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32))).Froutine != nil && int32((*(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32))).Fstatus) == 2 {
+					if currentMenu.Fmenuitems[itemOn].Froutine != nil && int32(currentMenu.Fmenuitems[itemOn].Fstatus) == 2 {
 						S_StartSound(uintptr(0), int32(sfx_stnmov))
-						(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32)).Froutine(1)
+						currentMenu.Fmenuitems[itemOn].Froutine(1)
 					}
 					return 1
 				} else {
 					if key == key_menu_forward {
 						// Activate menu item
-						if (*(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32))).Froutine != nil && (*(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32))).Fstatus != 0 {
+						if currentMenu.Fmenuitems[itemOn].Froutine != nil && currentMenu.Fmenuitems[itemOn].Fstatus != 0 {
 							currentMenu.FlastOn = itemOn
-							if int32((*(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32))).Fstatus) == 2 {
-								(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32)).Froutine(1) // right arrow
+							if int32(currentMenu.Fmenuitems[itemOn].Fstatus) == 2 {
+								currentMenu.Fmenuitems[itemOn].Froutine(1) // right arrow
 								S_StartSound(uintptr(0), int32(sfx_stnmov))
 							} else {
-								(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(itemOn)*32)).Froutine(int32(itemOn))
+								currentMenu.Fmenuitems[itemOn].Froutine(int32(itemOn))
 								S_StartSound(uintptr(0), int32(sfx_pistol))
 							}
 						}
@@ -21511,7 +21511,7 @@ func M_Responder(ev *event_t) (r boolean) {
 										if !(i < int32(currentMenu.Fnumitems)) {
 											break
 										}
-										if int32((*(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(i)*32))).FalphaKey) == ch {
+										if int32(currentMenu.Fmenuitems[i].FalphaKey) == ch {
 											itemOn = int16(i)
 											S_StartSound(uintptr(0), int32(sfx_pstop))
 											return 1
@@ -21526,7 +21526,7 @@ func M_Responder(ev *event_t) (r boolean) {
 										if !(i <= int32(itemOn)) {
 											break
 										}
-										if int32((*(*menuitem_t)(unsafe.Pointer(currentMenu.Fmenuitems + uintptr(i)*32))).FalphaKey) == ch {
+										if int32(currentMenu.Fmenuitems[i].FalphaKey) == ch {
 											itemOn = int16(i)
 											S_StartSound(uintptr(0), int32(sfx_pstop))
 											return 1
@@ -21640,7 +21640,7 @@ func M_Drawer() {
 		if !(i < max) {
 			break
 		}
-		name = currentMenu.Fmenuitems + uintptr(i)*32 + 2
+		name = (uintptr)(unsafe.Pointer(&currentMenu.Fmenuitems[i].Fname[0]))
 		if *(*int8)(unsafe.Pointer(name)) != 0 {
 			V_DrawPatchDirect(int32(x), int32(y2), W_CacheLumpName(name, int32(PU_CACHE)))
 		}
