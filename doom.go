@@ -18474,31 +18474,12 @@ func I_Error(error1 uintptr, args ...any) {
 // DOSBox under XP:
 // 0000:0000  (00 00 00 F1) ?? ?? ?? 00-(07 00)
 
-var mem_dump_dos622 = [10]uint8{
-	0: uint8(0x57),
-	1: uint8(0x92),
-	2: uint8(0x19),
-	4: uint8(0xF4),
-	5: uint8(0x06),
-	6: uint8(0x70),
-	8: uint8(0x16),
-}
-var mem_dump_win98 = [10]uint8{
-	0: uint8(0x9E),
-	1: uint8(0x0F),
-	2: uint8(0xC9),
-	4: uint8(0x65),
-	5: uint8(0x04),
-	6: uint8(0x70),
-	8: uint8(0x16),
-}
-var mem_dump_dosbox = [10]uint8{
-	3: uint8(0xF1),
-	8: uint8(0x07),
-}
-var mem_dump_custom [10]uint8
+var mem_dump_dos622 = [DOS_MEM_DUMP_SIZE]uint8{0x57, 0x92, 0x19, 0x00, 0xF4, 0x06, 0x70, 0x00, 0x16, 0x00}
+var mem_dump_win98 = [DOS_MEM_DUMP_SIZE]uint8{0x9e, 0x0f, 0xc9, 0x00, 0x65, 0x04, 0x70, 0x00, 0x16, 0x00}
+var mem_dump_dosbox = [DOS_MEM_DUMP_SIZE]uint8{0x00, 0x00, 0x00, 0xf1, 0x00, 0x00, 0x00, 0x00, 0x07, 0x00}
+var mem_dump_custom [DOS_MEM_DUMP_SIZE]uint8
 
-var dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dos622))
+var dos_mem_dump []byte = mem_dump_dos622[:]
 
 func I_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
 	var i, p, v2 int32
@@ -18516,13 +18497,13 @@ func I_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
 		p = M_CheckParmWithArgs(__ccgo_ts(19334), 1)
 		if p > 0 {
 			if strings.EqualFold(myargs[p+1], __ccgo_ts_str(19342)) {
-				dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dos622))
+				dos_mem_dump = mem_dump_dos622[:]
 			}
 			if strings.EqualFold(myargs[p+1], __ccgo_ts_str(19349)) {
-				dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_win98))
+				dos_mem_dump = mem_dump_win98[:]
 			} else {
 				if strings.EqualFold(myargs[p+1], __ccgo_ts_str(19355)) {
-					dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dosbox))
+					dos_mem_dump = mem_dump_dosbox[:]
 				} else {
 					i = 0
 					for {
@@ -18542,20 +18523,20 @@ func I_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
 						;
 						i++
 					}
-					dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_custom))
+					dos_mem_dump = mem_dump_custom[:]
 				}
 			}
 		}
 	}
 	switch size {
 	case 1:
-		*(*uint8)(unsafe.Pointer(value)) = *(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))
+		*(*uint8)(unsafe.Pointer(value)) = dos_mem_dump[offset]
 		return 1
 	case 2:
-		*(*uint16)(unsafe.Pointer(value)) = uint16(int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8))
+		*(*uint16)(unsafe.Pointer(value)) = uint16(int32(dos_mem_dump[offset]) | int32(dos_mem_dump[offset+1])<<int32(8))
 		return 1
 	case 4:
-		*(*uint32)(unsafe.Pointer(value)) = uint32(int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8) | int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(2)))))<<int32(16) | int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(3)))))<<int32(24))
+		*(*uint32)(unsafe.Pointer(value)) = uint32(int32(dos_mem_dump[offset]) | int32(dos_mem_dump[offset+1])<<8 | int32(dos_mem_dump[offset+2])<<16 | int32(dos_mem_dump[offset+3])<<24)
 		return 1
 	}
 	return 0
