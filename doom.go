@@ -41,14 +41,14 @@ func alloc(size int) uintptr {
 // Once we're done with libc, this should go
 var dg_alloced = make(map[uintptr][]byte)
 
-func xmalloc(tls *libc.TLS, n uint64) uintptr {
+func xmalloc(n uint64) uintptr {
 	data := make([]byte, n)
 	res := uintptr(unsafe.Pointer(&data[0]))
 	dg_alloced[res] = data
 	return res
 }
 
-func xfree(tls *libc.TLS, ptr uintptr) {
+func xfree(ptr uintptr) {
 	delete(dg_alloced, ptr)
 }
 
@@ -3981,7 +3981,7 @@ func DirIsFile(path string, filename string) (r boolean) {
 // file, returning the full path to the IWAD if found, or NULL
 // if not found.
 
-func CheckDirectoryHasIWAD(tls *libc.TLS, dir string, iwadname string) string {
+func CheckDirectoryHasIWAD(dir string, iwadname string) string {
 	var filename string
 	// As a special case, the "directory" may refer directly to an
 	// IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
@@ -4005,7 +4005,7 @@ func CheckDirectoryHasIWAD(tls *libc.TLS, dir string, iwadname string) string {
 // Search a directory to try to find an IWAD
 // Returns the location of the IWAD if found, otherwise NULL.
 
-func SearchDirectoryForIWAD(tls *libc.TLS, dir string, mask int32, mission *GameMission_t) string {
+func SearchDirectoryForIWAD(dir string, mask int32, mission *GameMission_t) string {
 	var filename string
 	var i uint64
 	i = uint64(0)
@@ -4016,7 +4016,7 @@ func SearchDirectoryForIWAD(tls *libc.TLS, dir string, mask int32, mission *Game
 		if 1<<iwads[i].Fmission&mask == 0 {
 			goto _1
 		}
-		filename = CheckDirectoryHasIWAD(tls, dir, iwads[i].Fname)
+		filename = CheckDirectoryHasIWAD(dir, iwads[i].Fname)
 		if filename != "" {
 			*mission = iwads[i].Fmission
 			return filename
@@ -4032,7 +4032,7 @@ func SearchDirectoryForIWAD(tls *libc.TLS, dir string, mask int32, mission *Game
 // When given an IWAD with the '-iwad' parameter,
 // attempt to identify it by its name.
 
-func IdentifyIWADByName(tls *libc.TLS, name string, mask int32) (r GameMission_t) {
+func IdentifyIWADByName(name string, mask int32) (r GameMission_t) {
 	var i uint64
 	var mission GameMission_t
 	mission = int32(none)
@@ -4073,7 +4073,7 @@ func BuildIWADDirList() {
 // Searches WAD search paths for an WAD with a specific filename.
 //
 
-func D_FindWADByName(tls *libc.TLS, name string) string {
+func D_FindWADByName(name string) string {
 	var i int32
 	// Absolute path?
 	if M_FileExists(name) != 0 {
@@ -4113,8 +4113,8 @@ func D_FindWADByName(tls *libc.TLS, name string) string {
 // if not found.
 //
 
-func D_TryFindWADByName(tls *libc.TLS, filename string) string {
-	result := D_FindWADByName(tls, filename)
+func D_TryFindWADByName(filename string) string {
+	result := D_FindWADByName(filename)
 	if result != "" {
 		return result
 	} else {
@@ -4143,11 +4143,11 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission *GameMission_t) string {
 	if iwadparm != 0 {
 		// Search through IWAD dirs for an IWAD with the given name.
 		iwadfile = libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(iwadparm+int32(1))*8)))
-		result = D_FindWADByName(tls, iwadfile)
+		result = D_FindWADByName(iwadfile)
 		if result == "" {
 			I_Error(tls, __ccgo_ts(1281), iwadfile)
 		}
-		*mission = IdentifyIWADByName(tls, result, mask)
+		*mission = IdentifyIWADByName(result, mask)
 	} else {
 		// Search through the list and look for an IWAD
 		fprintf_ccgo(os.Stdout, 1307)
@@ -4158,7 +4158,7 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission *GameMission_t) string {
 			if !(result == "" && i < num_iwad_dirs) {
 				break
 			}
-			result = SearchDirectoryForIWAD(tls, iwad_dirs[i], mask, mission)
+			result = SearchDirectoryForIWAD(iwad_dirs[i], mask, mission)
 			goto _1
 		_1:
 			;
@@ -4286,7 +4286,7 @@ func BuildNewTic(tls *libc.TLS) (r boolean) {
 	bp := alloc(16)
 	var gameticdiv int32
 	gameticdiv = gametic / ticdup
-	I_StartTic(tls)
+	I_StartTic()
 	loop_interface.FProcessEvents(tls)
 	// Always run the menu
 	loop_interface.FRunMenu(tls)
@@ -4373,7 +4373,7 @@ func D_StartNetGame(settings *net_gamesettings_t, callback netgame_startup_callb
 	new_sync = libc.Uint32FromInt32(settings.Fnew_sync)
 }
 
-func D_InitNetGame(tls *libc.TLS, connect_data *net_connect_data_t) (r boolean) {
+func D_InitNetGame(connect_data *net_connect_data_t) (r boolean) {
 	// Call D_QuitNetGame on exit:
 	I_AtExit(D_QuitNetGame, 1)
 	player_class = connect_data.Fplayer_class
@@ -4895,7 +4895,7 @@ func D_Display(tls *libc.TLS) {
 		break
 	}
 	// draw buffered stuff to screen
-	I_UpdateNoBlit(tls)
+	I_UpdateNoBlit()
 	// draw the view directly
 	if gamestate == int32(GS_LEVEL) && !(automapactive != 0) && gametic != 0 {
 		R_RenderPlayerView(tls, &players[displayplayer])
@@ -4960,7 +4960,7 @@ func D_Display(tls *libc.TLS) {
 		}
 		wipestart = nowtime
 		done = libc.Uint32FromInt32(wipe_ScreenWipe(tls, int32(wipe_Melt), 0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT), tics))
-		I_UpdateNoBlit(tls)
+		I_UpdateNoBlit()
 		M_Drawer(tls)    // menu is drawn even on top of wipes
 		I_FinishUpdate() // page flip or blit buffer
 	}
@@ -5044,7 +5044,7 @@ func D_GrabMouseCallback() (r boolean) {
 
 func doomgeneric_Tick(tls *libc.TLS) {
 	// frame syncronous IO operations
-	I_StartFrame(tls)
+	I_StartFrame()
 	TryRunTics(tls)                                 // will run at least one tic
 	S_UpdateSounds(tls, players[consoleplayer].Fmo) // move positional sounds
 	// Update display, next frame, with current state.
@@ -5152,13 +5152,13 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 			S_StartMusic(tls, int32(mus_intro))
 		}
 	case 1:
-		G_DeferedPlayDemo(tls, __ccgo_ts(1905))
+		G_DeferedPlayDemo(__ccgo_ts(1905))
 	case 2:
 		pagetic = 200
 		gamestate = int32(GS_DEMOSCREEN)
 		pagename = __ccgo_ts(1911)
 	case 3:
-		G_DeferedPlayDemo(tls, __ccgo_ts(1918))
+		G_DeferedPlayDemo(__ccgo_ts(1918))
 	case 4:
 		gamestate = int32(GS_DEMOSCREEN)
 		if gamemode == int32(commercial) {
@@ -5174,17 +5174,17 @@ func D_DoAdvanceDemo(tls *libc.TLS) {
 			}
 		}
 	case 5:
-		G_DeferedPlayDemo(tls, __ccgo_ts(1930))
+		G_DeferedPlayDemo(__ccgo_ts(1930))
 		break
 		// THE DEFINITIVE DOOM Special Edition demo
 		fallthrough
 	case 6:
-		G_DeferedPlayDemo(tls, __ccgo_ts(1936))
+		G_DeferedPlayDemo(__ccgo_ts(1936))
 		break
 	}
 	// The Doom 3: BFG Edition version of doom2.wad does not have a
 	// TITLETPIC lump. Use INTERPIC instead as a workaround.
-	if bfgedition != 0 && !(xstrcasecmp(pagename, __ccgo_ts(1896)) != 0) && W_CheckNumForName(tls, __ccgo_ts(1942)) < 0 {
+	if bfgedition != 0 && !(xstrcasecmp(pagename, __ccgo_ts(1896)) != 0) && W_CheckNumForName(__ccgo_ts(1942)) < 0 {
 		pagename = __ccgo_ts(1951)
 	}
 }
@@ -5374,11 +5374,11 @@ func D_IdentifyVersion(tls *libc.TLS) {
 	}
 	if v2 == int32(doom) {
 		// Doom 1.  But which version?
-		if W_CheckNumForName(tls, __ccgo_ts(2654)) > 0 {
+		if W_CheckNumForName(__ccgo_ts(2654)) > 0 {
 			// Ultimate Doom
 			gamemode = int32(retail)
 		} else {
-			if W_CheckNumForName(tls, __ccgo_ts(2659)) > 0 {
+			if W_CheckNumForName(__ccgo_ts(2659)) > 0 {
 				gamemode = int32(registered)
 			} else {
 				gamemode = int32(shareware)
@@ -5409,8 +5409,8 @@ func D_IdentifyVersion(tls *libc.TLS) {
 func D_SetGameDescription(tls *libc.TLS) {
 	var is_freedm, is_freedoom boolean
 	var v1, v2, v3, v4, v5, v6, v7, v8 int32
-	is_freedoom = libc.BoolUint32(W_CheckNumForName(tls, __ccgo_ts(2670)) >= 0)
-	is_freedm = libc.BoolUint32(W_CheckNumForName(tls, __ccgo_ts(2679)) >= 0)
+	is_freedoom = libc.BoolUint32(W_CheckNumForName(__ccgo_ts(2670)) >= 0)
+	is_freedm = libc.BoolUint32(W_CheckNumForName(__ccgo_ts(2679)) >= 0)
 	gamedescription = __ccgo_ts(2686)
 	if gamemission == int32(pack_chex) {
 		v1 = int32(doom)
@@ -5808,7 +5808,7 @@ func D_DoomMain(tls *libc.TLS) {
 	fprintf_ccgo(os.Stdout, 4197)
 	M_SetConfigFilenames(__ccgo_ts_str(4236), __ccgo_ts_str(4248))
 	D_BindVariables(tls)
-	M_LoadDefaults(tls)
+	M_LoadDefaults()
 	// Save configuration at exit.
 	I_AtExit(M_SaveDefaults, 0)
 	// Find main IWAD file and load it.
@@ -5832,7 +5832,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// of doom2.wad is missing the TITLEPIC lump.
 	// We specifically check for DMENUPIC here, before PWADs have been
 	// loaded which could probably include a lump of that name.
-	if W_CheckNumForName(tls, __ccgo_ts(4404)) >= 0 {
+	if W_CheckNumForName(__ccgo_ts(4404)) >= 0 {
 		fprintf_ccgo(os.Stdout, 4413)
 		bfgedition = 1
 		// BFG Edition changes the names of the secret levels to
@@ -5941,7 +5941,7 @@ func D_DoomMain(tls *libc.TLS) {
 				if !(i < 23) {
 					break
 				}
-				if W_CheckNumForName(tls, bp+265+uintptr(i)*8) < 0 {
+				if W_CheckNumForName(bp+265+uintptr(i)*8) < 0 {
 					I_Error(tls, __ccgo_ts(4562), 0)
 				}
 				goto _2
@@ -5951,7 +5951,7 @@ func D_DoomMain(tls *libc.TLS) {
 			}
 		}
 	}
-	if W_CheckNumForName(tls, __ccgo_ts(4599)) >= 0 || W_CheckNumForName(tls, __ccgo_ts(4608)) >= 0 {
+	if W_CheckNumForName(__ccgo_ts(4599)) >= 0 || W_CheckNumForName(__ccgo_ts(4608)) >= 0 {
 		I_PrintDivider(tls)
 		fprintf_ccgo(os.Stdout, 4615)
 	}
@@ -5960,7 +5960,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Freedoom's IWADs are Boom-compatible, which means they usually
 	// don't work in Vanilla (though FreeDM is okay). Show a warning
 	// message and give a link to the website.
-	if W_CheckNumForName(tls, __ccgo_ts(2670)) >= 0 && W_CheckNumForName(tls, __ccgo_ts(2679)) < 0 {
+	if W_CheckNumForName(__ccgo_ts(2670)) >= 0 && W_CheckNumForName(__ccgo_ts(2679)) < 0 {
 		fprintf_ccgo(os.Stdout, 4767)
 		I_PrintDivider(tls)
 	}
@@ -5969,7 +5969,7 @@ func D_DoomMain(tls *libc.TLS) {
 	I_InitSound(tls, 1)
 	I_InitMusic(tls)
 	// Initial netgame startup. Connect to server etc.
-	D_ConnectNetGame(tls)
+	D_ConnectNetGame()
 	// get skill / episode / map from parms
 	startskill = int32(sk_medium)
 	startepisode = 1
@@ -6076,7 +6076,7 @@ func D_DoomMain(tls *libc.TLS) {
 	fprintf_ccgo(os.Stdout, 5172)
 	S_Init(tls, sfxVolume*int32(8), musicVolume*int32(8))
 	fprintf_ccgo(os.Stdout, 5199)
-	D_CheckNetGame(tls)
+	D_CheckNetGame()
 	PrintGameVersion()
 	fprintf_ccgo(os.Stdout, 5246)
 	HU_Init(tls)
@@ -6085,7 +6085,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// If Doom II without a MAP01 lump, this is a store demo.
 	// Moved this here so that MAP01 isn't constantly looked up
 	// in the main loop.
-	if gamemode == int32(commercial) && W_CheckNumForName(tls, __ccgo_ts(5312)) < 0 {
+	if gamemode == int32(commercial) && W_CheckNumForName(__ccgo_ts(5312)) < 0 {
 		storedemo = 1
 	}
 	if M_CheckParmWithArgs(__ccgo_ts(5318), 1) != 0 {
@@ -6107,18 +6107,18 @@ func D_DoomMain(tls *libc.TLS) {
 	p = M_CheckParmWithArgs(__ccgo_ts(4456), 1)
 	if p != 0 {
 		singledemo = 1 // quit after one demo
-		G_DeferedPlayDemo(tls, bp+256)
+		G_DeferedPlayDemo(bp + 256)
 		D_DoomLoop(tls)
 		return
 	}
 	p = M_CheckParmWithArgs(__ccgo_ts(4466), 1)
 	if p != 0 {
-		G_TimeDemo(tls, bp+256)
+		G_TimeDemo(bp + 256)
 		D_DoomLoop(tls)
 		return
 	}
 	if startloadgame >= 0 {
-		G_LoadGame(tls, P_SaveGameFile(tls, startloadgame))
+		G_LoadGame(P_SaveGameFile(tls, startloadgame))
 	}
 	if gameaction != ga_loadgame {
 		if autostart != 0 || netgame != 0 {
@@ -6240,7 +6240,7 @@ func LoadGameSettings(settings *net_gamesettings_t) {
 // Save the game settings from global variables to the specified
 // game settings structure.
 
-func SaveGameSettings(tls *libc.TLS, settings *net_gamesettings_t) {
+func SaveGameSettings(settings *net_gamesettings_t) {
 	// Fill in game settings structure with appropriate parameters
 	// for the new game
 	settings.Fdeathmatch = deathmatch
@@ -6256,7 +6256,7 @@ func SaveGameSettings(tls *libc.TLS, settings *net_gamesettings_t) {
 	settings.Flowres_turn = libc.BoolInt32(M_CheckParm(__ccgo_ts(5361)) > 0 && M_CheckParm(__ccgo_ts(5530)) == 0)
 }
 
-func InitConnectData(tls *libc.TLS, connect_data *net_connect_data_t) {
+func InitConnectData(connect_data *net_connect_data_t) {
 	connect_data.Fmax_players = int32(MAXPLAYERS)
 	connect_data.Fdrone = 0
 	//!
@@ -6286,15 +6286,15 @@ func InitConnectData(tls *libc.TLS, connect_data *net_connect_data_t) {
 	// Are we recording a demo? Possibly set lowres turn mode
 	connect_data.Flowres_turn = libc.BoolInt32(M_CheckParm(__ccgo_ts(5361)) > 0 && M_CheckParm(__ccgo_ts(5530)) == 0)
 	// Read checksums of our WAD directory and dehacked information
-	W_Checksum(tls, uintptr(unsafe.Pointer(&connect_data.Fwad_sha1sum)))
+	W_Checksum(uintptr(unsafe.Pointer(&connect_data.Fwad_sha1sum)))
 	// Are we playing with the Freedoom IWAD?
-	connect_data.Fis_freedoom = libc.BoolInt32(W_CheckNumForName(tls, __ccgo_ts(2670)) >= 0)
+	connect_data.Fis_freedoom = libc.BoolInt32(W_CheckNumForName(__ccgo_ts(2670)) >= 0)
 }
 
-func D_ConnectNetGame(tls *libc.TLS) {
+func D_ConnectNetGame() {
 	connect_data := &net_connect_data_t{}
-	InitConnectData(tls, connect_data)
-	netgame = D_InitNetGame(tls, connect_data)
+	InitConnectData(connect_data)
+	netgame = D_InitNetGame(connect_data)
 	//!
 	// @category net
 	//
@@ -6313,13 +6313,13 @@ func D_ConnectNetGame(tls *libc.TLS) {
 //	// D_CheckNetGame
 //	// Works out player numbers among the net participants
 //	//
-func D_CheckNetGame(tls *libc.TLS) {
+func D_CheckNetGame() {
 	settings := &net_gamesettings_t{}
 	if netgame != 0 {
 		autostart = 1
 	}
 	D_RegisterLoopCallbacks(&doom_loop_interface)
-	SaveGameSettings(tls, settings)
+	SaveGameSettings(settings)
 	D_StartNetGame(settings, libc.UintptrFromInt32(0))
 	LoadGameSettings(settings)
 	fprintf_ccgo(os.Stdout, 5563, startskill, deathmatch, startmap, startepisode)
@@ -7185,9 +7185,8 @@ var wipe_scr_end uintptr
 var wipe_scr uintptr
 
 func wipe_shittyColMajorXform(tls *libc.TLS, array uintptr, width int32, height int32) {
-	var dest uintptr
 	var x, y int32
-	dest = Z_Malloc(tls, width*height*int32(2), int32(PU_STATIC), uintptr(0))
+	dest := make([]int16, width*height)
 	y = 0
 	for {
 		if !(y < height) {
@@ -7198,7 +7197,7 @@ func wipe_shittyColMajorXform(tls *libc.TLS, array uintptr, width int32, height 
 			if !(x < width) {
 				break
 			}
-			*(*int16)(unsafe.Pointer(dest + uintptr(x*height+y)*2)) = *(*int16)(unsafe.Pointer(array + uintptr(y*width+x)*2))
+			dest[x*height+y] = *(*int16)(unsafe.Pointer(array + uintptr(y*width+x)*2))
 			goto _2
 		_2:
 			;
@@ -7209,8 +7208,7 @@ func wipe_shittyColMajorXform(tls *libc.TLS, array uintptr, width int32, height 
 		;
 		y++
 	}
-	xmemcpy(array, dest, libc.Uint64FromInt32(width*height*int32(2)))
-	Z_Free(tls, dest)
+	xmemcpy(array, (uintptr)(unsafe.Pointer(&dest[0])), libc.Uint64FromInt32(width*height*int32(2)))
 }
 
 func wipe_initColorXForm(tls *libc.TLS, width int32, height int32, ticks int32) (r int32) {
@@ -7380,13 +7378,13 @@ func wipe_exitMelt(tls *libc.TLS, width int32, height int32, ticks int32) (r int
 
 func wipe_StartScreen(tls *libc.TLS, x int32, y int32, width int32, height int32) (r int32) {
 	wipe_scr_start = Z_Malloc(tls, SCREENWIDTH*SCREENHEIGHT, int32(PU_STATIC), libc.UintptrFromInt32(0))
-	I_ReadScreen(tls, wipe_scr_start)
+	I_ReadScreen(wipe_scr_start)
 	return 0
 }
 
 func wipe_EndScreen(tls *libc.TLS, x int32, y int32, width int32, height int32) (r int32) {
 	wipe_scr_end = Z_Malloc(tls, SCREENWIDTH*SCREENHEIGHT, int32(PU_STATIC), libc.UintptrFromInt32(0))
-	I_ReadScreen(tls, wipe_scr_end)
+	I_ReadScreen(wipe_scr_end)
 	V_DrawBlock(tls, x, y, width, height, wipe_scr_start) // restore start scr.
 	return 0
 }
@@ -7562,7 +7560,7 @@ func init() {
 	vanilla_demo_limit = 1
 }
 
-func WeaponSelectable(tls *libc.TLS, weapon weapontype_t) (r boolean) {
+func WeaponSelectable(weapon weapontype_t) (r boolean) {
 	var v1, v2 int32
 	var v3 bool
 	// Can't select the super shotgun in Doom 1.
@@ -7597,7 +7595,7 @@ func WeaponSelectable(tls *libc.TLS, weapon weapontype_t) (r boolean) {
 	return 1
 }
 
-func G_NextWeapon(tls *libc.TLS, direction int32) (r int32) {
+func G_NextWeapon(direction int32) (r int32) {
 	var i, start_i int32
 	var weapon weapontype_t
 	// Find index in the table.
@@ -7621,7 +7619,7 @@ func G_NextWeapon(tls *libc.TLS, direction int32) (r int32) {
 	}
 	// Switch weapon. Don't loop forever.
 	start_i = i
-	for cond := true; cond; cond = i != start_i && !(WeaponSelectable(tls, weapon_order_table[i].Fweapon) != 0) {
+	for cond := true; cond; cond = i != start_i && !(WeaponSelectable(weapon_order_table[i].Fweapon) != 0) {
 		i += direction
 		i = libc.Int32FromUint64((libc.Uint64FromInt32(i) + libc.Uint64FromInt64(72)/libc.Uint64FromInt64(8)) % (libc.Uint64FromInt64(72) / libc.Uint64FromInt64(8)))
 	}
@@ -7732,7 +7730,7 @@ func G_BuildTiccmd(tls *libc.TLS, cmd uintptr, maketic int32) {
 	// next_weapon variable is set to change weapons when
 	// we generate a ticcmd.  Choose a new weapon.
 	if gamestate == int32(GS_LEVEL) && next_weapon != 0 {
-		i = G_NextWeapon(tls, next_weapon)
+		i = G_NextWeapon(next_weapon)
 		p8 = cmd + 5
 		*(*uint8)(unsafe.Pointer(p8)) = uint8(int32(*(*uint8)(unsafe.Pointer(p8))) | int32(BT_CHANGE))
 		p9 = cmd + 5
@@ -7939,7 +7937,7 @@ func G_DoLoadLevel(tls *libc.TLS) {
 	}
 }
 
-func SetJoyButtons(tls *libc.TLS, buttons_mask uint32) {
+func SetJoyButtons(buttons_mask uint32) {
 	var button_on, i int32
 	i = 0
 	for {
@@ -7966,7 +7964,7 @@ func SetJoyButtons(tls *libc.TLS, buttons_mask uint32) {
 	}
 }
 
-func SetMouseButtons(tls *libc.TLS, buttons_mask uint32) {
+func SetMouseButtons(buttons_mask uint32) {
 	var button_on uint32
 	var i int32
 	i = 0
@@ -8067,12 +8065,12 @@ func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 		}
 		return 0 // always let key up events filter down
 	case ev_mouse:
-		SetMouseButtons(tls, libc.Uint32FromInt32(ev.Fdata1))
+		SetMouseButtons(libc.Uint32FromInt32(ev.Fdata1))
 		mousex = ev.Fdata2 * (mouseSensitivity + 5) / 10
 		mousey = ev.Fdata3 * (mouseSensitivity + 5) / 10
 		return 1 // eat events
 	case ev_joystick:
-		SetJoyButtons(tls, libc.Uint32FromInt32(ev.Fdata1))
+		SetJoyButtons(libc.Uint32FromInt32(ev.Fdata1))
 		joyxmove = ev.Fdata2
 		joyymove = ev.Fdata3
 		joystrafemove = ev.Fdata4
@@ -8221,7 +8219,7 @@ func G_Ticker(tls *libc.TLS) {
 	switch gamestate {
 	case int32(GS_LEVEL):
 		P_Ticker(tls)
-		ST_Ticker(tls)
+		ST_Ticker()
 		AM_Ticker()
 		HU_Ticker(tls)
 	case int32(GS_INTERMISSION):
@@ -8242,7 +8240,7 @@ var turbomessage [80]int8
 //	// G_PlayerFinishLevel
 //	// Can when a player completes a level.
 //	//
-func G_PlayerFinishLevel(tls *libc.TLS, player int32) {
+func G_PlayerFinishLevel(player int32) {
 	p := &players[player]
 	clear(p.Fpowers[:])
 	clear(p.Fcards[:])
@@ -8456,7 +8454,7 @@ func G_DoReborn(tls *libc.TLS, playernum int32) {
 	}
 }
 
-func G_ScreenShot(tls *libc.TLS) {
+func G_ScreenShot() {
 	gameaction = ga_screenshot
 }
 
@@ -8536,7 +8534,7 @@ func init() {
 	}
 }
 
-func G_ExitLevel(tls *libc.TLS) {
+func G_ExitLevel() {
 	secretexit = 0
 	gameaction = ga_completed
 }
@@ -8546,7 +8544,7 @@ func G_ExitLevel(tls *libc.TLS) {
 //	// Here's for the german edition.
 func G_SecretExitLevel(tls *libc.TLS) {
 	// IF NO WOLF3D LEVELS, NO SECRET EXIT!
-	if gamemode == int32(commercial) && W_CheckNumForName(tls, __ccgo_ts(13878)) < 0 {
+	if gamemode == int32(commercial) && W_CheckNumForName(__ccgo_ts(13878)) < 0 {
 		secretexit = 0
 	} else {
 		secretexit = 1
@@ -8563,7 +8561,7 @@ func G_DoCompleted(tls *libc.TLS) {
 			break
 		}
 		if playeringame[i] != 0 {
-			G_PlayerFinishLevel(tls, i)
+			G_PlayerFinishLevel(i)
 		}
 		goto _1
 	_1:
@@ -8759,7 +8757,7 @@ func G_DoWorldDone(tls *libc.TLS) {
 	viewactive = 1
 }
 
-func G_LoadGame(tls *libc.TLS, name string) {
+func G_LoadGame(name string) {
 	savename = name
 	gameaction = ga_loadgame
 }
@@ -8805,7 +8803,7 @@ func G_DoLoadGame(tls *libc.TLS) {
 //	// Called by the menu task.
 //	// Description is a 24 byte text string
 //	//
-func G_SaveGame(tls *libc.TLS, slot int32, description uintptr) {
+func G_SaveGame(slot int32, description uintptr) {
 	savegameslot = slot
 	M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), description, uint64(32))
 	sendsave = 1
@@ -8865,7 +8863,7 @@ func G_DoSaveGame(tls *libc.TLS) {
 	R_FillBackScreen(tls)
 }
 
-func G_DeferedInitNew(tls *libc.TLS, skill skill_t, episode int32, map1 int32) {
+func G_DeferedInitNew(skill skill_t, episode int32, map1 int32) {
 	d_skill = skill
 	d_episode = episode
 	d_map = map1
@@ -9257,7 +9255,7 @@ func G_BeginRecording(tls *libc.TLS) {
 	}
 }
 
-func G_DeferedPlayDemo(tls *libc.TLS, name uintptr) {
+func G_DeferedPlayDemo(name uintptr) {
 	defdemoname = name
 	gameaction = ga_playdemo
 }
@@ -9372,7 +9370,7 @@ func G_DoPlayDemo(tls *libc.TLS) {
 //	//
 //	// G_TimeDemo
 //	//
-func G_TimeDemo(tls *libc.TLS, name uintptr) {
+func G_TimeDemo(name uintptr) {
 	//!
 	// @vanilla
 	//
@@ -18392,7 +18390,7 @@ func AutoAllocMemory(tls *libc.TLS, size uintptr, default_ram int32, min_ram int
 		}
 		// Try to allocate the zone memory.
 		*(*int32)(unsafe.Pointer(size)) = default_ram * 1024 * 1024
-		zonemem = xmalloc(tls, libc.Uint64FromInt32(*(*int32)(unsafe.Pointer(size))))
+		zonemem = xmalloc(libc.Uint64FromInt32(*(*int32)(unsafe.Pointer(size))))
 		// Failed to allocate?  Reduce zone size until we reach a size
 		// that is acceptable.
 		if zonemem == libc.UintptrFromInt32(0) {
@@ -19596,10 +19594,10 @@ func SearchCollection(tls *libc.TLS, collection uintptr, name uintptr) (r uintpt
 	return libc.UintptrFromInt32(0)
 }
 
-func SaveDefaultCollection(tls *libc.TLS, collection uintptr) {
+func SaveDefaultCollection(collection *default_collection_t) {
 }
 
-func LoadDefaultCollection(tls *libc.TLS, collection uintptr) {
+func LoadDefaultCollection(collection *default_collection_t) {
 }
 
 // Set the default filenames to use for configuration files.
@@ -19614,15 +19612,15 @@ func M_SetConfigFilenames(main_config string, extra_config string) {
 //
 
 func M_SaveDefaults(tls *libc.TLS) {
-	SaveDefaultCollection(tls, uintptr(unsafe.Pointer(&doom_defaults)))
-	SaveDefaultCollection(tls, uintptr(unsafe.Pointer(&extra_defaults)))
+	SaveDefaultCollection(&doom_defaults)
+	SaveDefaultCollection(&extra_defaults)
 }
 
 //
 // M_LoadDefaults
 //
 
-func M_LoadDefaults(tls *libc.TLS) {
+func M_LoadDefaults() {
 	var i int32
 	// check for a custom default file
 	//!
@@ -19653,8 +19651,8 @@ func M_LoadDefaults(tls *libc.TLS) {
 	} else {
 		extra_defaults.Ffilename = configdir + default_extra_config
 	}
-	LoadDefaultCollection(tls, uintptr(unsafe.Pointer(&doom_defaults)))
-	LoadDefaultCollection(tls, uintptr(unsafe.Pointer(&extra_defaults)))
+	LoadDefaultCollection(&doom_defaults)
+	LoadDefaultCollection(&extra_defaults)
 }
 
 // Get a configuration file variable by its name
@@ -20596,7 +20594,7 @@ func M_DrawSaveLoadBorder(tls *libc.TLS, x int32, y int32) {
 //	// User wants to load this game
 //	//
 func M_LoadSelect(tls *libc.TLS, choice int32) {
-	G_LoadGame(tls, P_SaveGameFile(tls, choice))
+	G_LoadGame(P_SaveGameFile(tls, choice))
 	M_ClearMenus(tls)
 }
 
@@ -20646,7 +20644,7 @@ func M_DrawSave(tls *libc.TLS) {
 //	// M_Responder calls this when user is finished
 //	//
 func M_DoSave(tls *libc.TLS, slot int32) {
-	G_SaveGame(tls, slot, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(slot)*24)
+	G_SaveGame(slot, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(slot)*24)
 	M_ClearMenus(tls)
 	// PICK QUICKSAVE SLOT YET?
 	if quickSaveSlot == -int32(2) {
@@ -20893,7 +20891,7 @@ func M_VerifyNightmare(tls *libc.TLS, key int32) {
 	if key != key_menu_confirm {
 		return
 	}
-	G_DeferedInitNew(tls, int32(nightmare), epi+int32(1), 1)
+	G_DeferedInitNew(int32(nightmare), epi+int32(1), 1)
 	M_ClearMenus(tls)
 }
 
@@ -20902,7 +20900,7 @@ func M_ChooseSkill(tls *libc.TLS, choice int32) {
 		M_StartMessage(tls, __ccgo_ts(22639), __ccgo_fp(M_VerifyNightmare), 1)
 		return
 	}
-	G_DeferedInitNew(tls, choice, epi+int32(1), 1)
+	G_DeferedInitNew(choice, epi+int32(1), 1)
 	M_ClearMenus(tls)
 }
 
@@ -21433,7 +21431,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 		return 1
 	}
 	if devparm != 0 && key == key_menu_help || key != 0 && key == key_menu_screenshot {
-		G_ScreenShot(tls)
+		G_ScreenShot()
 		return 1
 	}
 	// F-Keys
@@ -21967,7 +21965,7 @@ func M_StringJoin(tls *libc.TLS, s uintptr, va uintptr) (r uintptr) {
 		goto _1
 	_1:
 	}
-	result = xmalloc(tls, result_len)
+	result = xmalloc(result_len)
 	if result == libc.UintptrFromInt32(0) {
 		I_Error(tls, __ccgo_ts(23298), 0)
 		return libc.UintptrFromInt32(0)
@@ -24423,7 +24421,7 @@ func A_BossDeath(tls *libc.TLS, mo uintptr) {
 			}
 		}
 	}
-	G_ExitLevel(tls)
+	G_ExitLevel()
 }
 
 func A_Hoof(tls *libc.TLS, mo uintptr) {
@@ -24526,7 +24524,7 @@ func A_BrainExplode(tls *libc.TLS, mo uintptr) {
 }
 
 func A_BrainDie(tls *libc.TLS, mo uintptr) {
-	G_ExitLevel(tls)
+	G_ExitLevel()
 }
 
 func A_BrainSpit(tls *libc.TLS, mo uintptr) {
@@ -32339,13 +32337,13 @@ func P_InitPicAnims(tls *libc.TLS) {
 		endname = uintptr(unsafe.Pointer(&animdefs)) + uintptr(i)*28 + 4
 		if animdefs[i].Fistexture != 0 {
 			// different episode ?
-			if R_CheckTextureNumForName(tls, startname) == -1 {
+			if R_CheckTextureNumForName(startname) == -1 {
 				continue
 			}
 			lastanim.Fpicnum = R_TextureNumForName(tls, endname)
 			lastanim.Fbasepic = R_TextureNumForName(tls, startname)
 		} else {
-			if W_CheckNumForName(tls, startname) == -1 {
+			if W_CheckNumForName(startname) == -1 {
 				continue
 			}
 			lastanim.Fpicnum = R_FlatNumForName(tls, endname)
@@ -32827,7 +32825,7 @@ func P_CrossSpecialLine(tls *libc.TLS, linenum int32, side int32, thing uintptr)
 		line.Fspecial = 0
 	case 52:
 		// EXIT!
-		G_ExitLevel(tls)
+		G_ExitLevel()
 	case 53:
 		// Perpetual Platform Raise
 		EV_DoPlat(tls, line, int32(perpetualRaise), 0)
@@ -33093,7 +33091,7 @@ func P_PlayerInSpecialSector(tls *libc.TLS, player *player_t) {
 			P_DamageMobj(tls, player.Fmo, libc.UintptrFromInt32(0), libc.UintptrFromInt32(0), 20)
 		}
 		if player.Fhealth <= 10 {
-			G_ExitLevel(tls)
+			G_ExitLevel()
 		}
 	default:
 		I_Error(tls, __ccgo_ts(25387), int32(sector.Fspecial))
@@ -33107,7 +33105,7 @@ func P_UpdateSpecials(tls *libc.TLS) {
 	if levelTimer == 1 {
 		levelTimeCount--
 		if !(levelTimeCount != 0) {
-			G_ExitLevel(tls)
+			G_ExitLevel()
 		}
 	}
 	//	ANIMATE FLATS AND TEXTURES GLOBALLY
@@ -33889,7 +33887,7 @@ func P_UseSpecialLine(tls *libc.TLS, thing uintptr, line *line_t, side int32) (r
 	case 11:
 		// Exit level
 		P_ChangeSwitchTexture(tls, line, 0)
-		G_ExitLevel(tls)
+		G_ExitLevel()
 	case 14:
 		// Raise Floor 32 and change texture
 		if EV_DoPlat(tls, line, int32(raiseAndChange), 32) != 0 {
@@ -35376,7 +35374,7 @@ func GenerateTextureHashTable(tls *libc.TLS) {
 		// entries with the same name, the first one in the array
 		// wins. The new entry must therefore be added at the end
 		// of the hash chain, so that earlier entries win.
-		key = libc.Int32FromUint32(W_LumpNameHash(tls, *(*uintptr)(unsafe.Pointer(textures + uintptr(i)*8))) % libc.Uint32FromInt32(numtextures))
+		key = libc.Int32FromUint32(W_LumpNameHash(*(*uintptr)(unsafe.Pointer(textures + uintptr(i)*8))) % libc.Uint32FromInt32(numtextures))
 		rover = textures_hashtable + uintptr(key)*8
 		for *(*uintptr)(unsafe.Pointer(rover)) != libc.UintptrFromInt32(0) {
 			rover = *(*uintptr)(unsafe.Pointer(rover)) + 16
@@ -35414,7 +35412,7 @@ func R_InitTextures(tls *libc.TLS) {
 			break
 		}
 		M_StringCopy(bp, name_p+uintptr(i*int32(8)), uint64(9))
-		*(*int32)(unsafe.Pointer(patchlookup + uintptr(i)*4)) = W_CheckNumForName(tls, bp)
+		*(*int32)(unsafe.Pointer(patchlookup + uintptr(i)*4)) = W_CheckNumForName(bp)
 		goto _1
 	_1:
 		;
@@ -35429,7 +35427,7 @@ func R_InitTextures(tls *libc.TLS) {
 	numtextures1 = *(*int32)(unsafe.Pointer(maptex))
 	maxoff = W_LumpLength(tls, libc.Uint32FromInt32(W_GetNumForName(tls, __ccgo_ts(26029))))
 	directory = maptex + uintptr(1)*4
-	if W_CheckNumForName(tls, __ccgo_ts(26038)) != -1 {
+	if W_CheckNumForName(__ccgo_ts(26038)) != -1 {
 		maptex2 = W_CacheLumpName(tls, __ccgo_ts(26038), int32(PU_STATIC))
 		numtextures2 = *(*int32)(unsafe.Pointer(maptex2))
 		maxoff2 = W_LumpLength(tls, libc.Uint32FromInt32(W_GetNumForName(tls, __ccgo_ts(26038))))
@@ -35675,7 +35673,7 @@ func R_InitData(tls *libc.TLS) {
 func R_FlatNumForName(tls *libc.TLS, name uintptr) (r int32) {
 	bp := alloc(32)
 	var i int32
-	i = W_CheckNumForName(tls, name)
+	i = W_CheckNumForName(name)
 	if i == -1 {
 		(*(*[9]int8)(unsafe.Pointer(bp)))[int32(8)] = 0
 		xmemcpy(bp, name, uint64(8))
@@ -35691,14 +35689,14 @@ func R_FlatNumForName(tls *libc.TLS, name uintptr) (r int32) {
 //	// Check whether texture is available.
 //	// Filter out NoTexture indicator.
 //	//
-func R_CheckTextureNumForName(tls *libc.TLS, name uintptr) (r int32) {
+func R_CheckTextureNumForName(name uintptr) (r int32) {
 	var key int32
 	var texture uintptr
 	// "NoTexture" marker.
 	if int32(*(*int8)(unsafe.Pointer(name))) == int32('-') {
 		return 0
 	}
-	key = libc.Int32FromUint32(W_LumpNameHash(tls, name) % libc.Uint32FromInt32(numtextures))
+	key = libc.Int32FromUint32(W_LumpNameHash(name) % libc.Uint32FromInt32(numtextures))
 	texture = *(*uintptr)(unsafe.Pointer(textures_hashtable + uintptr(key)*8))
 	for texture != libc.UintptrFromInt32(0) {
 		if !(xstrncasecmp(texture, name, uint64(8)) != 0) {
@@ -35718,7 +35716,7 @@ func R_CheckTextureNumForName(tls *libc.TLS, name uintptr) (r int32) {
 //	//
 func R_TextureNumForName(tls *libc.TLS, name uintptr) (r int32) {
 	var i int32
-	i = R_CheckTextureNumForName(tls, name)
+	i = R_CheckTextureNumForName(name)
 	if i == -1 {
 		I_Error(tls, __ccgo_ts(26205), name)
 	}
@@ -41248,7 +41246,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 				}
 				// So be it.
 				plyr.Fmessage = __ccgo_ts(27825)
-				G_DeferedInitNew(tls, gameskill, epsd, map1)
+				G_DeferedInitNew(gameskill, epsd, map1)
 			}
 		}
 	}
@@ -41257,7 +41255,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 
 var buf [52]int8
 
-func ST_calcPainOffset(tls *libc.TLS) (r int32) {
+func ST_calcPainOffset() (r int32) {
 	var health, v1 int32
 	if plyr.Fhealth > 100 {
 		v1 = 100
@@ -41284,7 +41282,7 @@ var oldhealth int32 = -1
 //	// the precedence of expressions is:
 //	//  dead > evil grin > turned head > straight ahead
 //	//
-func ST_updateFaceWidget(tls *libc.TLS) {
+func ST_updateFaceWidget() {
 	var badguyangle, diffang angle_t
 	var doevilgrin boolean
 	var i, v2 int32
@@ -41318,7 +41316,7 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 				// evil grin if just picked up weapon
 				priority = 8
 				st_facecount = 2 * TICRATE
-				st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1)
+				st_faceindex = ST_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1)
 			}
 		}
 	}
@@ -41328,7 +41326,7 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 			priority = 7
 			if plyr.Fhealth-st_oldhealth > ST_MUCHPAIN {
 				st_facecount = 1 * TICRATE
-				st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
+				st_faceindex = ST_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
 			} else {
 				badguyangle = R_PointToAngle2((*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fy, (*mobj_t)(unsafe.Pointer(plyr.Fattacker)).Fx, (*mobj_t)(unsafe.Pointer(plyr.Fattacker)).Fy)
 				if badguyangle > (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fangle {
@@ -41341,7 +41339,7 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 					i = libc.BoolInt32(diffang <= uint32(ANG18015))
 				} // confusing, aint it?
 				st_facecount = 1 * TICRATE
-				st_faceindex = ST_calcPainOffset(tls)
+				st_faceindex = ST_calcPainOffset()
 				if diffang < uint32(ANG457) {
 					// head-on
 					st_faceindex += ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1 + 1
@@ -41363,11 +41361,11 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 			if plyr.Fhealth-st_oldhealth > ST_MUCHPAIN {
 				priority = 7
 				st_facecount = 1 * TICRATE
-				st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
+				st_faceindex = ST_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
 			} else {
 				priority = 6
 				st_facecount = 1 * TICRATE
-				st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1 + 1)
+				st_faceindex = ST_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1 + 1)
 			}
 		}
 	}
@@ -41381,7 +41379,7 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 				v2 = lastattackdown
 				if !(v2 != 0) {
 					priority = 5
-					st_faceindex = ST_calcPainOffset(tls) + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1 + 1)
+					st_faceindex = ST_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1 + 1)
 					st_facecount = 1
 					lastattackdown = 1
 				}
@@ -41400,7 +41398,7 @@ func ST_updateFaceWidget(tls *libc.TLS) {
 	}
 	// look left or look right if the facecount has timed out
 	if !(st_facecount != 0) {
-		st_faceindex = ST_calcPainOffset(tls) + st_randomnumber%int32(3)
+		st_faceindex = ST_calcPainOffset() + st_randomnumber%int32(3)
 		st_facecount = TICRATE / 2
 		priority = 0
 	}
@@ -41411,7 +41409,7 @@ var lastattackdown int32 = -1
 
 var priority int32
 
-func ST_updateWidgets(tls *libc.TLS) {
+func ST_updateWidgets() {
 	var i, v2 int32
 	// must redirect the pointer if the ready weapon has changed.
 	//  if (w_ready.data != plyr->readyweapon)
@@ -41456,7 +41454,7 @@ func ST_updateWidgets(tls *libc.TLS) {
 		i++
 	}
 	// refresh everything if this is him coming back to life
-	ST_updateFaceWidget(tls)
+	ST_updateFaceWidget()
 	// used by the w_armsbg widget
 	st_notdeathmatch = libc.BoolUint32(!(deathmatch != 0))
 	// used by w_arms[] widgets
@@ -41483,9 +41481,9 @@ func ST_updateWidgets(tls *libc.TLS) {
 
 var largeammo int32 = 1994
 
-func ST_Ticker(tls *libc.TLS) {
+func ST_Ticker() {
 	st_randomnumber = M_Random()
-	ST_updateWidgets(tls)
+	ST_updateWidgets()
 	st_oldhealth = plyr.Fhealth
 }
 
@@ -41746,7 +41744,7 @@ func ST_initData(tls *libc.TLS) {
 	STlib_init(tls)
 }
 
-func ST_createWidgets(tls *libc.TLS) {
+func ST_createWidgets() {
 	// ready weapon ammo
 	STlib_initNum(&w_ready, ST_AMMOX, ST_AMMOY, uintptr(unsafe.Pointer(&tallnum)), (uintptr)(unsafe.Pointer(&plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo])), &st_statusbaron, ST_AMMOWIDTH)
 	// the last weapon type
@@ -41788,7 +41786,7 @@ func ST_Start(tls *libc.TLS) {
 		ST_Stop(tls)
 	}
 	ST_initData(tls)
-	ST_createWidgets(tls)
+	ST_createWidgets()
 	st_stopped = 0
 }
 
@@ -42065,7 +42063,7 @@ func S_GetChannel(tls *libc.TLS, origin uintptr, sfxinfo *sfxinfo_t) (r int32) {
 // Otherwise, modifies parameters and returns 1.
 //
 
-func S_AdjustSoundParams(tls *libc.TLS, listener uintptr, source uintptr, vol uintptr, sep uintptr) (r int32) {
+func S_AdjustSoundParams(listener uintptr, source uintptr, vol uintptr, sep uintptr) (r int32) {
 	var adx, ady, approx_dist fixed_t
 	var angle angle_t
 	var v1 int32
@@ -42135,7 +42133,7 @@ func S_StartSound(tls *libc.TLS, origin_p uintptr, sfx_id int32) {
 	// Check to see if it is audible,
 	//  and if not, modify the params
 	if origin != 0 && origin != players[consoleplayer].Fmo {
-		rc = S_AdjustSoundParams(tls, players[consoleplayer].Fmo, origin, bp+4, bp)
+		rc = S_AdjustSoundParams(players[consoleplayer].Fmo, origin, bp+4, bp)
 		if (*mobj_t)(unsafe.Pointer(origin)).Fx == (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx && (*mobj_t)(unsafe.Pointer(origin)).Fy == (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy {
 			*(*int32)(unsafe.Pointer(bp)) = int32(NORM_SEP)
 		}
@@ -42214,7 +42212,7 @@ func S_UpdateSounds(tls *libc.TLS, listener uintptr) {
 				// check non-local sounds for distance clipping
 				//  or modify their params
 				if (*channel_t)(unsafe.Pointer(c)).Forigin != 0 && listener != (*channel_t)(unsafe.Pointer(c)).Forigin {
-					audible = S_AdjustSoundParams(tls, listener, (*channel_t)(unsafe.Pointer(c)).Forigin, bp, bp+4)
+					audible = S_AdjustSoundParams(listener, (*channel_t)(unsafe.Pointer(c)).Forigin, bp, bp+4)
 					if !(audible != 0) {
 						S_StopChannel(tls, cnum)
 					} else {
@@ -43478,7 +43476,7 @@ func WI_drawOnLnode(tls *libc.TLS, n int32, c uintptr) {
 	}
 }
 
-func WI_initAnimatedBack(tls *libc.TLS) {
+func WI_initAnimatedBack() {
 	var a uintptr
 	var i int32
 	if gamemode == int32(commercial) {
@@ -43514,7 +43512,7 @@ func WI_initAnimatedBack(tls *libc.TLS) {
 	}
 }
 
-func WI_updateAnimatedBack(tls *libc.TLS) {
+func WI_updateAnimatedBack() {
 	var a, v3 uintptr
 	var i, v2 int32
 	if gamemode == int32(commercial) {
@@ -43690,7 +43688,7 @@ func WI_initNoState() {
 
 func WI_updateNoState(tls *libc.TLS) {
 	var v1 int32
-	WI_updateAnimatedBack(tls)
+	WI_updateAnimatedBack()
 	cnt--
 	v1 = cnt
 	if !(v1 != 0) {
@@ -43705,16 +43703,16 @@ func WI_updateNoState(tls *libc.TLS) {
 
 var snl_pointeron = uint32(0)
 
-func WI_initShowNextLoc(tls *libc.TLS) {
+func WI_initShowNextLoc() {
 	state = ShowNextLoc
 	acceleratestage = 0
 	cnt = SHOWNEXTLOCDELAY * TICRATE
-	WI_initAnimatedBack(tls)
+	WI_initAnimatedBack()
 }
 
-func WI_updateShowNextLoc(tls *libc.TLS) {
+func WI_updateShowNextLoc() {
 	var v1 int32
-	WI_updateAnimatedBack(tls)
+	WI_updateAnimatedBack()
 	cnt--
 	v1 = cnt
 	if !(v1 != 0) || acceleratestage != 0 {
@@ -43799,7 +43797,7 @@ var dm_state int32
 var dm_frags [4][4]int32
 var dm_totals [4]int32
 
-func WI_initDeathmatchStats(tls *libc.TLS) {
+func WI_initDeathmatchStats() {
 	var i, j int32
 	state = StatCount
 	acceleratestage = 0
@@ -43831,13 +43829,13 @@ func WI_initDeathmatchStats(tls *libc.TLS) {
 		;
 		i++
 	}
-	WI_initAnimatedBack(tls)
+	WI_initAnimatedBack()
 }
 
 func WI_updateDeathmatchStats(tls *libc.TLS) {
 	var i, j, v5 int32
 	var stillticking boolean
-	WI_updateAnimatedBack(tls)
+	WI_updateAnimatedBack()
 	if acceleratestage != 0 && dm_state != 4 {
 		acceleratestage = 0
 		i = 0
@@ -43928,7 +43926,7 @@ func WI_updateDeathmatchStats(tls *libc.TLS) {
 				if gamemode == int32(commercial) {
 					WI_initNoState()
 				} else {
-					WI_initShowNextLoc(tls)
+					WI_initShowNextLoc()
 				}
 			}
 		} else {
@@ -44020,7 +44018,7 @@ var cnt_frags [4]int32
 var dofrags int32
 var ng_state int32
 
-func WI_initNetgameStats(tls *libc.TLS) {
+func WI_initNetgameStats() {
 	var i, v2, v3, v4 int32
 	state = StatCount
 	acceleratestage = 0
@@ -44048,13 +44046,13 @@ func WI_initNetgameStats(tls *libc.TLS) {
 		i++
 	}
 	dofrags = libc.BoolInt32(!!(dofrags != 0))
-	WI_initAnimatedBack(tls)
+	WI_initAnimatedBack()
 }
 
 func WI_updateNetgameStats(tls *libc.TLS) {
 	var fsum, i, v6, v7 int32
 	var stillticking boolean
-	WI_updateAnimatedBack(tls)
+	WI_updateAnimatedBack()
 	if acceleratestage != 0 && ng_state != 10 {
 		acceleratestage = 0
 		i = 0
@@ -44203,7 +44201,7 @@ func WI_updateNetgameStats(tls *libc.TLS) {
 							if gamemode == int32(commercial) {
 								WI_initNoState()
 							} else {
-								WI_initShowNextLoc(tls)
+								WI_initShowNextLoc()
 							}
 						}
 					} else {
@@ -44271,7 +44269,7 @@ func WI_drawNetgameStats(tls *libc.TLS) {
 
 var sp_state int32
 
-func WI_initStats(tls *libc.TLS) {
+func WI_initStats() {
 	var v1, v2, v3 int32
 	state = StatCount
 	acceleratestage = 0
@@ -44285,12 +44283,12 @@ func WI_initStats(tls *libc.TLS) {
 	cnt_par = v3
 	cnt_time = v3
 	cnt_pause = int32(TICRATE)
-	WI_initAnimatedBack(tls)
+	WI_initAnimatedBack()
 }
 
 func WI_updateStats(tls *libc.TLS) {
 	var v1 int32
-	WI_updateAnimatedBack(tls)
+	WI_updateAnimatedBack()
 	if acceleratestage != 0 && sp_state != 10 {
 		acceleratestage = 0
 		cnt_kills[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
@@ -44357,7 +44355,7 @@ func WI_updateStats(tls *libc.TLS) {
 							if gamemode == int32(commercial) {
 								WI_initNoState()
 							} else {
-								WI_initShowNextLoc(tls)
+								WI_initShowNextLoc()
 							}
 						}
 					} else {
@@ -44397,7 +44395,7 @@ func WI_drawStats(tls *libc.TLS) {
 	}
 }
 
-func WI_checkForAccelerate(tls *libc.TLS) {
+func WI_checkForAccelerate() {
 	// check for button presses to skip delays
 	for i := 0; i < MAXPLAYERS; i++ {
 		if playeringame[i] != 0 {
@@ -44436,7 +44434,7 @@ func WI_Ticker(tls *libc.TLS) {
 			S_ChangeMusic(tls, int32(mus_inter), 1)
 		}
 	}
-	WI_checkForAccelerate(tls)
+	WI_checkForAccelerate()
 	switch state {
 	case StatCount:
 		if deathmatch != 0 {
@@ -44449,7 +44447,7 @@ func WI_Ticker(tls *libc.TLS) {
 			}
 		}
 	case ShowNextLoc:
-		WI_updateShowNextLoc(tls)
+		WI_updateShowNextLoc()
 	case NoState:
 		WI_updateNoState(tls)
 		break
@@ -44556,7 +44554,7 @@ func WI_loadUnloadData(tls *libc.TLS, callback func(*libc.TLS, uintptr, uintptr)
 	// "secret"
 	callback(tls, __ccgo_ts(28483), uintptr(unsafe.Pointer(&sp_secret)))
 	// french wad uses WIOBJ (?)
-	if W_CheckNumForName(tls, __ccgo_ts(28491)) >= 0 {
+	if W_CheckNumForName(__ccgo_ts(28491)) >= 0 {
 		// "items"
 		if netgame != 0 && !(deathmatch != 0) {
 			callback(tls, __ccgo_ts(28491), uintptr(unsafe.Pointer(&items)))
@@ -44665,7 +44663,7 @@ func WI_Drawer(tls *libc.TLS) {
 	}
 }
 
-func WI_initVariables(tls *libc.TLS, wbstartstruct uintptr) {
+func WI_initVariables(wbstartstruct uintptr) {
 	var v1 int32
 	wbs = wbstartstruct
 	acceleratestage = 0
@@ -44691,60 +44689,46 @@ func WI_initVariables(tls *libc.TLS, wbstartstruct uintptr) {
 }
 
 func WI_Start(tls *libc.TLS, wbstartstruct uintptr) {
-	WI_initVariables(tls, wbstartstruct)
+	WI_initVariables(wbstartstruct)
 	WI_loadData(tls)
 	if deathmatch != 0 {
-		WI_initDeathmatchStats(tls)
+		WI_initDeathmatchStats()
 	} else {
 		if netgame != 0 {
-			WI_initNetgameStats(tls)
+			WI_initNetgameStats()
 		} else {
-			WI_initStats(tls)
+			WI_initStats()
 		}
 	}
 }
 
-var open_wadfiles = libc.UintptrFromInt32(0)
-var num_open_wadfiles int32 = 0
+var open_wadfiles []*os.File
 
-func GetFileNumber(tls *libc.TLS, handle *os.File) (r int32) {
-	var i, result int32
-	i = 0
-	for {
-		if !(i < num_open_wadfiles) {
-			break
+func GetFileNumber(handle *os.File) (r int32) {
+	for i := 0; i < len(open_wadfiles); i++ {
+		if open_wadfiles[i] == handle {
+			return int32(i)
 		}
-		if *(*uintptr)(unsafe.Pointer(open_wadfiles + uintptr(i)*8)) == handle.Fd() {
-			return i
-		}
-		goto _1
-	_1:
-		;
-		i++
 	}
-	// Not found in list.  This is a new file we haven't seen yet.
-	// Allocate another slot for this file.
-	open_wadfiles = libc.Xrealloc(tls, open_wadfiles, uint64(8)*libc.Uint64FromInt32(num_open_wadfiles+1))
-	*(*uintptr)(unsafe.Pointer(open_wadfiles + uintptr(num_open_wadfiles)*8)) = handle.Fd()
-	result = num_open_wadfiles
-	num_open_wadfiles++
-	return result
+
+	open_wadfiles = append(open_wadfiles, handle)
+	return int32(len(open_wadfiles) - 1)
 }
 
-func ChecksumAddLump(tls *libc.TLS, sha1_context uintptr, lump uintptr) {
+func ChecksumAddLump(sha1_context uintptr, lump uintptr) {
 	bp := alloc(16)
 	M_StringCopy(bp, lump, uint64(9))
 	SHA1_UpdateString(sha1_context, bp)
-	SHA1_UpdateInt32(sha1_context, libc.Uint32FromInt32(GetFileNumber(tls, (*lumpinfo_t)(unsafe.Pointer(lump)).Fwad_file)))
+	SHA1_UpdateInt32(sha1_context, libc.Uint32FromInt32(GetFileNumber((*lumpinfo_t)(unsafe.Pointer(lump)).Fwad_file)))
 	SHA1_UpdateInt32(sha1_context, libc.Uint32FromInt32((*lumpinfo_t)(unsafe.Pointer(lump)).Fposition))
 	SHA1_UpdateInt32(sha1_context, libc.Uint32FromInt32((*lumpinfo_t)(unsafe.Pointer(lump)).Fsize))
 }
 
-func W_Checksum(tls *libc.TLS, digest uintptr) {
+func W_Checksum(digest uintptr) {
 	bp := alloc(96)
 	var i uint32
 	SHA1_Init(bp)
-	num_open_wadfiles = 0
+	open_wadfiles = nil
 	// Go through each entry in the WAD directory, adding information
 	// about each entry to the SHA1 hash.
 	i = uint32(0)
@@ -44752,7 +44736,7 @@ func W_Checksum(tls *libc.TLS, digest uintptr) {
 		if !(i < numlumps) {
 			break
 		}
-		ChecksumAddLump(tls, bp, lumpinfo+uintptr(i)*40)
+		ChecksumAddLump(bp, lumpinfo+uintptr(i)*40)
 		goto _1
 	_1:
 		;
@@ -44809,7 +44793,7 @@ func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
 			if !(v1 != myargc && int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8))))) != int32('-')) {
 				break
 			}
-			filename = D_TryFindWADByName(tls, libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8))))
+			filename = D_TryFindWADByName(libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8))))
 			fprintf_ccgo(os.Stdout, 2817, filename)
 			W_AddFile(tls, filename)
 		}
@@ -44836,7 +44820,7 @@ var lumphash uintptr
 
 // Hash function used for lump names.
 
-func W_LumpNameHash(tls *libc.TLS, s uintptr) (r uint32) {
+func W_LumpNameHash(s uintptr) (r uint32) {
 	var i, result uint32
 	// This is the djb2 string hash function, modded to work on strings
 	// that have a maximum length of 8.
@@ -44890,7 +44874,7 @@ func ExtendLumpInfo(tls *libc.TLS, newnumlumps int32) {
 		i++
 	}
 	// All done.
-	xfree(tls, lumpinfo)
+	xfree(lumpinfo)
 	lumpinfo = newlumpinfo
 	numlumps = libc.Uint32FromInt32(newnumlumps)
 }
@@ -44993,13 +44977,13 @@ func W_AddFile(tls *libc.TLS, filename string) *os.File {
 // Returns -1 if name not found.
 //
 
-func W_CheckNumForName(tls *libc.TLS, name uintptr) (r int32) {
+func W_CheckNumForName(name uintptr) (r int32) {
 	var hash, i int32
 	var lump_p uintptr
 	// Do we have a hash table yet?
 	if lumphash != libc.UintptrFromInt32(0) {
 		// We do! Excellent.
-		hash = libc.Int32FromUint32(W_LumpNameHash(tls, name) % numlumps)
+		hash = libc.Int32FromUint32(W_LumpNameHash(name) % numlumps)
 		lump_p = *(*uintptr)(unsafe.Pointer(lumphash + uintptr(hash)*8))
 		for {
 			if !(lump_p != libc.UintptrFromInt32(0)) {
@@ -45043,7 +45027,7 @@ func W_CheckNumForName(tls *libc.TLS, name uintptr) (r int32) {
 //	//
 func W_GetNumForName(tls *libc.TLS, name uintptr) (r int32) {
 	var i int32
-	i = W_CheckNumForName(tls, name)
+	i = W_CheckNumForName(name)
 	if i < 0 {
 		I_Error(tls, __ccgo_ts(28706), name)
 	}
@@ -45169,7 +45153,7 @@ func W_GenerateHashTable(tls *libc.TLS) {
 			if !(i < numlumps) {
 				break
 			}
-			hash = W_LumpNameHash(tls, lumpinfo+uintptr(i)*40) % numlumps
+			hash = W_LumpNameHash(lumpinfo+uintptr(i)*40) % numlumps
 			// Hook into the hash table
 			(*(*lumpinfo_t)(unsafe.Pointer(lumpinfo + uintptr(i)*40))).Fnext = *(*uintptr)(unsafe.Pointer(lumphash + uintptr(hash)*8))
 			*(*uintptr)(unsafe.Pointer(lumphash + uintptr(hash)*8)) = lumpinfo + uintptr(i)*40
@@ -45216,7 +45200,7 @@ func W_CheckCorrectIWAD(tls *libc.TLS, mission GameMission_t) {
 			break
 		}
 		if mission != unique_lumps[i].Fmission {
-			lumpnum = W_CheckNumForName(tls, unique_lumps[i].Flumpname)
+			lumpnum = W_CheckNumForName(unique_lumps[i].Flumpname)
 			if lumpnum >= 0 {
 				I_Error(tls, __ccgo_ts(28935), D_SuggestGameName(unique_lumps[i].Fmission, int32(indetermined)), __ccgo_ts(29063), D_GameMissionString(mission), __ccgo_ts(29063), D_GameMissionString(unique_lumps[i].Fmission))
 			}
@@ -45682,7 +45666,7 @@ var shiftxform = [128]uint8{
 
 // Get the equivalent ASCII (Unicode?) character for a keypress.
 
-func GetTypedChar(tls *libc.TLS, key uint8) (r uint8) {
+func GetTypedChar(key uint8) (r uint8) {
 	// Is shift held down?  If so, perform a translation.
 	if shiftdown > 0 {
 		if key >= 0 && key < 128 {
@@ -45694,7 +45678,7 @@ func GetTypedChar(tls *libc.TLS, key uint8) (r uint8) {
 	return key
 }
 
-func UpdateShiftStatus(tls *libc.TLS, pressed int32, key uint8) {
+func UpdateShiftStatus(pressed int32, key uint8) {
 	var change int32
 	if pressed != 0 {
 		change = 1
@@ -45711,7 +45695,7 @@ type DoomKeyEvent struct {
 	Key     uint8
 }
 
-func I_GetEvent(tls *libc.TLS) {
+func I_GetEvent() {
 	var bp event_t
 	var event DoomKeyEvent
 	for dg_frontend.GetKey(&event) {
@@ -45720,14 +45704,14 @@ func I_GetEvent(tls *libc.TLS) {
 			pressed = 1
 		}
 
-		UpdateShiftStatus(tls, pressed, event.Key)
+		UpdateShiftStatus(pressed, event.Key)
 		// process event
 		if event.Pressed {
 			// data1 has the key pressed, data2 has the character
 			// (shift-translated, etc)
 			bp.Ftype1 = ev_keydown
 			bp.Fdata1 = int32(event.Key)
-			bp.Fdata2 = libc.Int32FromUint8(GetTypedChar(tls, event.Key))
+			bp.Fdata2 = libc.Int32FromUint8(GetTypedChar(event.Key))
 			if bp.Fdata1 != 0 {
 				D_PostEvent(&bp)
 			}
@@ -45757,7 +45741,7 @@ func I_GetEvent(tls *libc.TLS) {
 	*/
 }
 
-func I_InitInput(tls *libc.TLS) {
+func I_InitInput() {
 }
 
 const INT_MAX19 = 2147483647
@@ -45772,17 +45756,17 @@ func init() {
 func I_InitGraphics(tls *libc.TLS) {
 	/* Allocate screen to draw to */
 	I_VideoBuffer = Z_Malloc(tls, SCREENWIDTH*SCREENHEIGHT, int32(PU_STATIC), libc.UintptrFromInt32(0)) // For DOOM to draw on
-	I_InitInput(tls)
+	I_InitInput()
 }
 
-func I_StartFrame(tls *libc.TLS) {
+func I_StartFrame() {
 }
 
-func I_StartTic(tls *libc.TLS) {
-	I_GetEvent(tls)
+func I_StartTic() {
+	I_GetEvent()
 }
 
-func I_UpdateNoBlit(tls *libc.TLS) {
+func I_UpdateNoBlit() {
 }
 
 //
@@ -45811,7 +45795,7 @@ func I_FinishUpdate() {
 //	//
 //	// I_ReadScreen
 //	//
-func I_ReadScreen(tls *libc.TLS, scr uintptr) {
+func I_ReadScreen(scr uintptr) {
 	xmemcpy(scr, I_VideoBuffer, libc.Uint64FromInt32(SCREENWIDTH*SCREENHEIGHT))
 }
 
