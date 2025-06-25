@@ -9,6 +9,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
@@ -3741,25 +3742,25 @@ func AM_Drawer(tls *libc.TLS) {
 func init() {
 	gamemode = indetermined
 	gameversion = exe_final2
-	doom1_endmsg = [8]uintptr{
-		0: __ccgo_ts(103),
-		1: __ccgo_ts(150),
-		2: __ccgo_ts(200),
-		3: __ccgo_ts(251),
-		4: __ccgo_ts(302),
-		5: __ccgo_ts(359),
-		6: __ccgo_ts(414),
-		7: __ccgo_ts(470),
+	doom1_endmsg = [8]string{
+		0: __ccgo_ts_str(103),
+		1: __ccgo_ts_str(150),
+		2: __ccgo_ts_str(200),
+		3: __ccgo_ts_str(251),
+		4: __ccgo_ts_str(302),
+		5: __ccgo_ts_str(359),
+		6: __ccgo_ts_str(414),
+		7: __ccgo_ts_str(470),
 	}
-	doom2_endmsg = [8]uintptr{
-		0: __ccgo_ts(103),
-		1: __ccgo_ts(505),
-		2: __ccgo_ts(555),
-		3: __ccgo_ts(628),
-		4: __ccgo_ts(680),
-		5: __ccgo_ts(734),
-		6: __ccgo_ts(792),
-		7: __ccgo_ts(852),
+	doom2_endmsg = [8]string{
+		0: __ccgo_ts_str(103),
+		1: __ccgo_ts_str(505),
+		2: __ccgo_ts_str(555),
+		3: __ccgo_ts_str(628),
+		4: __ccgo_ts_str(680),
+		5: __ccgo_ts_str(734),
+		6: __ccgo_ts_str(792),
+		7: __ccgo_ts_str(852),
 	}
 }
 
@@ -18456,6 +18457,9 @@ func I_Error(tls *libc.TLS, error1 uintptr, args ...any) {
 	}
 	fmt.Fprintf(os.Stderr, string(strBytes[:strLen]), args...)
 	fprintf_ccgo(os.Stderr, 19324)
+
+	debug.PrintStack()
+
 	// Shutdown. Here might be other errors.
 	for i := len(exit_funcs) - 1; i >= 0; i-- {
 		// Call the exit function.
@@ -20510,7 +20514,7 @@ func M_DrawLoad(tls *libc.TLS) {
 			break
 		}
 		M_DrawSaveLoadBorder(tls, int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i)
-		M_WriteText(tls, int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24)
+		M_WriteText(tls, int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, libc.GoString(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24))
 		goto _1
 	_1:
 		;
@@ -20558,7 +20562,7 @@ func M_LoadSelect(tls *libc.TLS, choice int32) {
 //	//
 func M_LoadGame(tls *libc.TLS, choice int32) {
 	if netgame != 0 {
-		M_StartMessage(tls, __ccgo_ts(22164), uintptr(0), 0)
+		M_StartMessage(tls, __ccgo_ts_str(22164), uintptr(0), 0)
 		return
 	}
 	M_SetupNextMenu(tls, uintptr(unsafe.Pointer(&LoadDef)))
@@ -20579,15 +20583,15 @@ func M_DrawSave(tls *libc.TLS) {
 			break
 		}
 		M_DrawSaveLoadBorder(tls, int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i)
-		M_WriteText(tls, int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24)
+		M_WriteText(tls, int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, libc.GoString(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24))
 		goto _1
 	_1:
 		;
 		i++
 	}
 	if saveStringEnter != 0 {
-		i = M_StringWidth(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24)
-		M_WriteText(tls, int32(LoadDef.Fx)+i, int32(LoadDef.Fy)+int32(LINEHEIGHT)*saveSlot, __ccgo_ts(22225))
+		i = M_StringWidth(tls, libc.GoString(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24))
+		M_WriteText(tls, int32(LoadDef.Fx)+i, int32(LoadDef.Fy)+int32(LINEHEIGHT)*saveSlot, __ccgo_ts_str(22225))
 	}
 }
 
@@ -20628,7 +20632,7 @@ func M_SaveSelect(tls *libc.TLS, choice int32) {
 //	//
 func M_SaveGame(tls *libc.TLS, choice int32) {
 	if !(usergame != 0) {
-		M_StartMessage(tls, __ccgo_ts(22227), uintptr(0), 0)
+		M_StartMessage(tls, __ccgo_ts_str(22227), uintptr(0), 0)
 		return
 	}
 	if gamestate != GS_LEVEL {
@@ -20660,8 +20664,8 @@ func M_QuickSave(tls *libc.TLS) {
 		quickSaveSlot = -int32(2) // means to pick a slot now
 		return
 	}
-	snprintf_ccgo(uintptr(unsafe.Pointer(&tempstring)), 80, 22279, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24)
-	M_StartMessage(tls, uintptr(unsafe.Pointer(&tempstring)), __ccgo_fp(M_QuickSaveResponse), 1)
+	tempstring := fmt.Sprintf(__ccgo_ts_str(22279), libc.GoString(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
+	M_StartMessage(tls, tempstring, __ccgo_fp(M_QuickSaveResponse), 1)
 }
 
 // C documentation
@@ -20678,15 +20682,15 @@ func M_QuickLoadResponse(tls *libc.TLS, key int32) {
 
 func M_QuickLoad(tls *libc.TLS) {
 	if netgame != 0 {
-		M_StartMessage(tls, __ccgo_ts(22332), uintptr(0), 0)
+		M_StartMessage(tls, __ccgo_ts_str(22332), uintptr(0), 0)
 		return
 	}
 	if quickSaveSlot < 0 {
-		M_StartMessage(tls, __ccgo_ts(22384), uintptr(0), 0)
+		M_StartMessage(tls, __ccgo_ts_str(22384), uintptr(0), 0)
 		return
 	}
-	snprintf_ccgo(uintptr(unsafe.Pointer(&tempstring)), 80, 22439, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24)
-	M_StartMessage(tls, uintptr(unsafe.Pointer(&tempstring)), __ccgo_fp(M_QuickLoadResponse), 1)
+	tempstring := fmt.Sprintf(__ccgo_ts_str(22439), libc.GoString(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
+	M_StartMessage(tls, tempstring, __ccgo_fp(M_QuickLoadResponse), 1)
 }
 
 // C documentation
@@ -20825,7 +20829,7 @@ func M_DrawNewGame(tls *libc.TLS) {
 
 func M_NewGame(tls *libc.TLS, choice int32) {
 	if netgame != 0 && !(demoplayback != 0) {
-		M_StartMessage(tls, __ccgo_ts(22564), uintptr(0), 0)
+		M_StartMessage(tls, __ccgo_ts_str(22564), uintptr(0), 0)
 		return
 	}
 	// Chex Quest disabled the episode select screen, as did Doom II.
@@ -20850,7 +20854,7 @@ func M_VerifyNightmare(tls *libc.TLS, key int32) {
 
 func M_ChooseSkill(tls *libc.TLS, choice skill_t) {
 	if choice == sk_nightmare {
-		M_StartMessage(tls, __ccgo_ts(22639), __ccgo_fp(M_VerifyNightmare), 1)
+		M_StartMessage(tls, __ccgo_ts_str(22639), __ccgo_fp(M_VerifyNightmare), 1)
 		return
 	}
 	G_DeferedInitNew(choice, epi+int32(1), 1)
@@ -20859,7 +20863,7 @@ func M_ChooseSkill(tls *libc.TLS, choice skill_t) {
 
 func M_Episode(tls *libc.TLS, choice int32) {
 	if gamemode == shareware && choice != 0 {
-		M_StartMessage(tls, __ccgo_ts(22711), uintptr(0), 0)
+		M_StartMessage(tls, __ccgo_ts_str(22711), uintptr(0), 0)
 		M_SetupNextMenu(tls, uintptr(unsafe.Pointer(&ReadDef1)))
 		return
 	}
@@ -20936,10 +20940,10 @@ func M_EndGame(tls *libc.TLS, choice int32) {
 		return
 	}
 	if netgame != 0 {
-		M_StartMessage(tls, __ccgo_ts(22917), uintptr(0), 0)
+		M_StartMessage(tls, __ccgo_ts_str(22917), uintptr(0), 0)
 		return
 	}
-	M_StartMessage(tls, __ccgo_ts(22956), __ccgo_fp(M_EndGameResponse), 1)
+	M_StartMessage(tls, __ccgo_ts_str(22956), __ccgo_fp(M_EndGameResponse), 1)
 }
 
 // C documentation
@@ -21009,8 +21013,8 @@ func M_QuitResponse(tls *libc.TLS, key int32) {
 	I_Quit(tls)
 }
 
-func M_SelectEndMessage(tls *libc.TLS) (r uintptr) {
-	var endmsg uintptr
+func M_SelectEndMessage() string {
+	var endmsg []string
 	var v1 GameMission_t
 	if gamemission == pack_chex {
 		v1 = doom
@@ -21023,17 +21027,17 @@ func M_SelectEndMessage(tls *libc.TLS) (r uintptr) {
 	}
 	if v1 == doom {
 		// Doom 1
-		endmsg = uintptr(unsafe.Pointer(&doom1_endmsg))
+		endmsg = doom1_endmsg[:]
 	} else {
 		// Doom 2
-		endmsg = uintptr(unsafe.Pointer(&doom2_endmsg))
+		endmsg = doom2_endmsg[:]
 	}
-	return *(*uintptr)(unsafe.Pointer(endmsg + uintptr(gametic%int32(NUM_QUITMESSAGES))*8))
+	return endmsg[gametic%int32(NUM_QUITMESSAGES)]
 }
 
 func M_QuitDOOM(tls *libc.TLS, choice int32) {
-	snprintf_ccgo(uintptr(unsafe.Pointer(&endstring)), 160, 23010, libc.GoString(M_SelectEndMessage(tls)))
-	M_StartMessage(tls, uintptr(unsafe.Pointer(&endstring)), __ccgo_fp(M_QuitResponse), 1)
+	endstring = M_SelectEndMessage()
+	M_StartMessage(tls, endstring, __ccgo_fp(M_QuitResponse), 1)
 }
 
 func M_ChangeSensitivity(tls *libc.TLS, choice int32) {
@@ -21104,7 +21108,7 @@ func M_DrawThermo(tls *libc.TLS, x int32, y int32, thermWidth int32, thermDot in
 	V_DrawPatchDirect(tls, x+int32(8)+thermDot*int32(8), y, W_CacheLumpName(tls, __ccgo_ts(23090), int32(PU_CACHE)))
 }
 
-func M_StartMessage(tls *libc.TLS, string1 uintptr, routine uintptr, input boolean) {
+func M_StartMessage(tls *libc.TLS, string1 string, routine uintptr, input boolean) {
 	messageLastMenuActive = libc.Int32FromUint32(menuactive)
 	messageToPrint = 1
 	messageString = string1
@@ -21119,25 +21123,16 @@ func M_StartMessage(tls *libc.TLS, string1 uintptr, routine uintptr, input boole
 //	//
 //	// Find string width from hu_font chars
 //	//
-func M_StringWidth(tls *libc.TLS, string1 uintptr) (r int32) {
+func M_StringWidth(tls *libc.TLS, string1 string) (r int32) {
 	var c, w int32
-	var i uint64
 	w = 0
-	i = uint64(0)
-	for {
-		if !(i < xstrlen(string1)) {
-			break
-		}
-		c = xtoupper(int32(*(*int8)(unsafe.Pointer(string1 + uintptr(i))))) - int32('!')
+	for i := 0; i < len(string1); i++ {
+		c = xtoupper(int32(string1[i])) - int32('!')
 		if c < 0 || c >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1 {
 			w += 4
 		} else {
 			w += int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return w
 }
@@ -21147,23 +21142,14 @@ func M_StringWidth(tls *libc.TLS, string1 uintptr) (r int32) {
 //	//
 //	//      Find string height from hu_font chars
 //	//
-func M_StringHeight(tls *libc.TLS, string1 uintptr) (r int32) {
+func M_StringHeight(tls *libc.TLS, string1 string) (r int32) {
 	var h, height int32
-	var i uint64
 	height = int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight)
 	h = height
-	i = uint64(0)
-	for {
-		if !(i < xstrlen(string1)) {
-			break
-		}
-		if int32(*(*int8)(unsafe.Pointer(string1 + uintptr(i)))) == int32('\n') {
+	for i := 0; i < len(string1); i++ {
+		if string1[i] == '\n' {
 			h += height
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return h
 }
@@ -21173,16 +21159,12 @@ func M_StringHeight(tls *libc.TLS, string1 uintptr) (r int32) {
 //	//
 //	//      Write a string using the hu_font
 //	//
-func M_WriteText(tls *libc.TLS, x int32, y int32, string1 uintptr) {
+func M_WriteText(tls *libc.TLS, x int32, y int32, string1 string) {
 	var c, cx, cy, w int32
-	var ch, v1 uintptr
-	ch = string1
 	cx = x
 	cy = y
-	for 1 != 0 {
-		v1 = ch
-		ch++
-		c = int32(*(*int8)(unsafe.Pointer(v1)))
+	for i := 0; i < len(string1); i++ {
+		c = int32(string1[i])
 		if !(c != 0) {
 			break
 		}
@@ -21356,7 +21338,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 			if ch != int32(' ') && (ch-int32('!') < 0 || ch-int32('!') >= libc.Int32FromUint8('_')-libc.Int32FromUint8('!')+1) {
 				break
 			}
-			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24) < (SAVESTRINGSIZE-2)*8 {
+			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(tls, libc.GoString(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24)) < (SAVESTRINGSIZE-2)*8 {
 				v1 = saveCharIndex
 				saveCharIndex++
 				*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(saveSlot)*24 + uintptr(v1))) = int8(ch)
@@ -21646,7 +21628,7 @@ func M_StartControlPanel(tls *libc.TLS) {
 //	// but before it has been blitted.
 //	//
 func M_Drawer(tls *libc.TLS) {
-	bp := alloc(80)
+	var bp string
 	var foundnewline, start int32
 	var i, max uint32
 	var name uintptr
@@ -21655,18 +21637,15 @@ func M_Drawer(tls *libc.TLS) {
 	if messageToPrint != 0 {
 		start = 0
 		y2 = int16(SCREENHEIGHT/2 - M_StringHeight(tls, messageString)/int32(2))
-		for int32(*(*int8)(unsafe.Pointer(messageString + uintptr(start)))) != int32('\000') {
+		for start < int32(len(messageString)) {
 			foundnewline = 0
 			i = uint32(0)
 			for {
-				if !(uint64(i) < xstrlen(messageString+uintptr(start))) {
+				if !(uint64(i) < uint64(len(messageString[start:]))) {
 					break
 				}
-				if int32(*(*int8)(unsafe.Pointer(messageString + uintptr(libc.Uint32FromInt32(start)+i)))) == int32('\n') {
-					M_StringCopy(bp, messageString+uintptr(start), uint64(80))
-					if uint64(i) < uint64(80) {
-						(*(*[80]int8)(unsafe.Pointer(bp)))[i] = int8('\000')
-					}
+				if messageString[start+int32(i)] == '\n' {
+					bp = messageString[start : start+int32(i)]
 					foundnewline = 1
 					start = int32(uint32(start) + (i + 1))
 					break
@@ -21677,8 +21656,8 @@ func M_Drawer(tls *libc.TLS) {
 				i++
 			}
 			if !(foundnewline != 0) {
-				M_StringCopy(bp, messageString+uintptr(start), uint64(80))
-				start = int32(uint64(start) + xstrlen(bp))
+				bp = messageString[start:]
+				start = int32(uint64(start) + uint64(len(bp)))
 			}
 			x = int16(SCREENWIDTH/2 - M_StringWidth(tls, bp)/int32(2))
 			M_WriteText(tls, int32(x), int32(y2), bp)
@@ -21773,7 +21752,7 @@ func M_Init(tls *libc.TLS) {
 	skullAnimCounter = 10
 	screenSize = screenblocks - 3
 	messageToPrint = 0
-	messageString = uintptr(0)
+	messageString = ""
 	messageLastMenuActive = libc.Int32FromUint32(menuactive)
 	quickSaveSlot = -1
 	// Here we could catch other version dependencies,
@@ -46446,9 +46425,9 @@ var displayplayer int32
 
 var distscale [320]fixed_t
 
-var doom1_endmsg [8]uintptr
+var doom1_endmsg [NUM_QUITMESSAGES]string
 
-var doom2_endmsg [8]uintptr
+var doom2_endmsg [NUM_QUITMESSAGES]string
 
 var drawsegs [256]drawseg_t
 
@@ -46493,7 +46472,7 @@ var ds_ystep fixed_t
 
 var earlyout boolean
 
-var endstring [160]int8
+var endstring string
 
 // C documentation
 //
@@ -46987,7 +46966,7 @@ var messageRoutine uintptr
 // C documentation
 //
 //	// ...and here is the message string!
-var messageString uintptr
+var messageString string
 
 // C documentation
 //
@@ -47798,7 +47777,6 @@ var tantoangle [2049]angle_t
 //	//
 //	//      M_QuickSave
 //	//
-var tempstring [80]int8
 
 // if true, load all graphics at start
 
