@@ -144,24 +144,6 @@ func xstrcasecmp(s1, s2 uintptr) int32 {
 	return xstrncasecmp(s1, s2, 0xffff_ffff_ffff_ffff) // max uint64
 }
 
-func xstrdup(s uintptr) uintptr {
-	if s == 0 {
-		return 0
-	}
-	l := xstrlen(s)
-	d := alloc(int(l + 1))
-	return xmemcpy(d, s, l+1)
-}
-
-func xatoi(nptr uintptr) int32 {
-	val := libc.GoString(nptr)
-	ret, err := strconv.Atoi(val)
-	if err != nil {
-		panic(fmt.Sprintf("xatoi: %s", err.Error()))
-	}
-	return int32(ret)
-}
-
 func xtoupper(c int32) int32 {
 	if c >= 'a' && c <= 'z' {
 		return c - ('a' - 'A')
@@ -185,18 +167,6 @@ func xmemcpy(dest, src uintptr, n uint64) (r uintptr) {
 		destSlice := unsafe.Slice((*byte)(unsafe.Pointer(dest)), n)
 		copy(destSlice, srcSlice)
 	}
-	return dest
-}
-
-func xmemmove(dest, src uintptr, n uint64) uintptr {
-	if n == 0 {
-		return dest
-	}
-
-	destSlice := unsafe.Slice((*byte)(unsafe.Pointer(dest)), n)
-	srcSlice := unsafe.Slice((*byte)(unsafe.Pointer(src)), n)
-	copy(destSlice, srcSlice)
-
 	return dest
 }
 
