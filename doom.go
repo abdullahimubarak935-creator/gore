@@ -7470,15 +7470,15 @@ func init() {
 
 // + slow turn
 
-var weapon_keys = [8]uintptr{
-	0: uintptr(unsafe.Pointer(&key_weapon1)),
-	1: uintptr(unsafe.Pointer(&key_weapon2)),
-	2: uintptr(unsafe.Pointer(&key_weapon3)),
-	3: uintptr(unsafe.Pointer(&key_weapon4)),
-	4: uintptr(unsafe.Pointer(&key_weapon5)),
-	5: uintptr(unsafe.Pointer(&key_weapon6)),
-	6: uintptr(unsafe.Pointer(&key_weapon7)),
-	7: uintptr(unsafe.Pointer(&key_weapon8)),
+var weapon_keys = [8]int32{
+	0: key_weapon1,
+	1: key_weapon2,
+	2: key_weapon3,
+	3: key_weapon4,
+	4: key_weapon5,
+	5: key_weapon6,
+	6: key_weapon7,
+	7: key_weapon8,
 }
 
 // Set to -1 or +1 to switch to the previous or next weapon.
@@ -7632,7 +7632,7 @@ func G_NextWeapon(direction int32) (r int32) {
 func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	var bstrafe, strafe boolean
 	var desired_angleturn int16
-	var forward, i, key, side, speed, tspeed, v1, v16 int32
+	var forward, i, side, speed, tspeed, v1, v16 int32
 	*cmd = ticcmd_t{}
 	cmd.Fconsistancy = *(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(consoleplayer)*128 + uintptr(maketic%int32(BACKUPTICS))))
 	strafe = libc.BoolUint32(gamekeydown[key_strafe] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
@@ -7723,21 +7723,12 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 		cmd.Fbuttons |= uint8(i << BT_WEAPONSHIFT)
 	} else {
 		// Check weapon keys.
-		i = 0
-		for {
-			if !(uint64(i) < 64/8) {
-				break
-			}
-			key = *(*int32)(unsafe.Pointer(weapon_keys[i]))
-			if gamekeydown[key] != 0 {
+		for i := 0; i < len(weapon_keys); i++ {
+			if gamekeydown[weapon_keys[i]] != 0 {
 				cmd.Fbuttons |= BT_CHANGE
 				cmd.Fbuttons |= uint8(i << BT_WEAPONSHIFT)
 				break
 			}
-			goto _10
-		_10:
-			;
-			i++
 		}
 	}
 	next_weapon = 0
@@ -8208,8 +8199,6 @@ func G_Ticker() {
 		break
 	}
 }
-
-var turbomessage [80]int8
 
 // C documentation
 //
