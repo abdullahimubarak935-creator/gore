@@ -1,7 +1,9 @@
 package gore
 
 import (
+	"crypto/sha1"
 	"fmt"
+	"hash"
 	"image"
 	"image/color"
 	"io"
@@ -269,17 +271,6 @@ const TICRATE = 35
 const VDOORWAIT = 150
 
 type va_list = uintptr
-
-type sha1_context_t struct {
-	Fh0      uint32
-	Fh1      uint32
-	Fh2      uint32
-	Fh3      uint32
-	Fh4      uint32
-	Fnblocks uint32
-	Fbuf     [64]uint8
-	Fcount   int32
-}
 
 type sha1_digest_t = [20]uint8
 
@@ -6276,7 +6267,7 @@ func InitConnectData(connect_data *net_connect_data_t) {
 	// Are we recording a demo? Possibly set lowres turn mode
 	connect_data.Flowres_turn = libc.BoolInt32(M_CheckParm(__ccgo_ts(5361)) > 0 && M_CheckParm(__ccgo_ts(5530)) == 0)
 	// Read checksums of our WAD directory and dehacked information
-	W_Checksum(uintptr(unsafe.Pointer(&connect_data.Fwad_sha1sum)))
+	W_Checksum(&connect_data.Fwad_sha1sum)
 	// Are we playing with the Freedoom IWAD?
 	connect_data.Fis_freedoom = libc.BoolInt32(W_CheckNumForName(__ccgo_ts(2670)) >= 0)
 }
@@ -38742,617 +38733,27 @@ func R_DrawMasked() {
 	}
 }
 
-func SHA1_Init(hd uintptr) {
-	(*sha1_context_t)(unsafe.Pointer(hd)).Fh0 = uint32(0x67452301)
-	(*sha1_context_t)(unsafe.Pointer(hd)).Fh1 = uint32(0xefcdab89)
-	(*sha1_context_t)(unsafe.Pointer(hd)).Fh2 = uint32(0x98badcfe)
-	(*sha1_context_t)(unsafe.Pointer(hd)).Fh3 = uint32(0x10325476)
-	(*sha1_context_t)(unsafe.Pointer(hd)).Fh4 = uint32(0xc3d2e1f0)
-	(*sha1_context_t)(unsafe.Pointer(hd)).Fnblocks = uint32(0)
-	(*sha1_context_t)(unsafe.Pointer(hd)).Fcount = 0
-}
-
-// C documentation
-//
-//	/****************
-//	 * Transform the message X which consists of 16 32-bit-words
-//	 */
-func Transform(hd uintptr, data uintptr) {
-	bp := alloc(64)
-	var a, b, c, d, e, tm, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, v32, v33, v34, v35, v36, v37, v38, v39, v40, v41, v42, v43, v44, v45, v46, v47, v48, v49, v50, v51, v52, v53, v54, v55, v56, v57, v58, v59, v6, v60, v61, v62, v63, v64, v65, v66, v67, v68, v69, v7, v8, v9 uint32
-	var i int32
-	var p2, v2, v3, v4, v5 uintptr
-	/* get values from the chaining vars */
-	a = (*sha1_context_t)(unsafe.Pointer(hd)).Fh0
-	b = (*sha1_context_t)(unsafe.Pointer(hd)).Fh1
-	c = (*sha1_context_t)(unsafe.Pointer(hd)).Fh2
-	d = (*sha1_context_t)(unsafe.Pointer(hd)).Fh3
-	e = (*sha1_context_t)(unsafe.Pointer(hd)).Fh4
-	i = 0
-	p2 = bp
-	for {
-		if !(i < 16) {
-			break
-		}
-		v2 = data
-		data++
-		*(*uint8)(unsafe.Pointer(p2 + 3)) = *(*uint8)(unsafe.Pointer(v2))
-		v3 = data
-		data++
-		*(*uint8)(unsafe.Pointer(p2 + 2)) = *(*uint8)(unsafe.Pointer(v3))
-		v4 = data
-		data++
-		*(*uint8)(unsafe.Pointer(p2 + 1)) = *(*uint8)(unsafe.Pointer(v4))
-		v5 = data
-		data++
-		*(*uint8)(unsafe.Pointer(p2)) = *(*uint8)(unsafe.Pointer(v5))
-		goto _1
-	_1:
-		;
-		i++
-		p2 += uintptr(4)
-	}
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(d^b&(c^d))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[0])))
-	b = b<<30 | b>>(32-30)
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(c^a&(b^c))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(1)])))
-	a = a<<30 | a>>(32-30)
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(b^e&(a^b))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(2)])))
-	e = e<<30 | e>>(32-30)
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(a^d&(e^a))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(3)])))
-	d = d<<30 | d>>(32-30)
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(e^c&(d^e))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(4)])))
-	c = c<<30 | c>>(32-30)
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(d^b&(c^d))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(5)])))
-	b = b<<30 | b>>(32-30)
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(c^a&(b^c))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(6)])))
-	a = a<<30 | a>>(32-30)
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(b^e&(a^b))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(7)])))
-	e = e<<30 | e>>(32-30)
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(a^d&(e^a))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(8)])))
-	d = d<<30 | d>>(32-30)
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(e^c&(d^e))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(9)])))
-	c = c<<30 | c>>(32-30)
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(d^b&(c^d))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(10)])))
-	b = b<<30 | b>>(32-30)
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(c^a&(b^c))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(11)])))
-	a = a<<30 | a>>(32-30)
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(b^e&(a^b))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(12)])))
-	e = e<<30 | e>>(32-30)
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(a^d&(e^a))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(13)])))
-	d = d<<30 | d>>(32-30)
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(e^c&(d^e))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(14)])))
-	c = c<<30 | c>>(32-30)
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(d^b&(c^d))) + (0x5A827999) + int64((*(*[16]uint32)(unsafe.Pointer(bp)))[int32(15)])))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[16&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(16-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(16-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(16-3)&0x0f]
-	v6 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[16&0x0f] = v6
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(c^a&(b^c))) + (0x5A827999) + int64(v6)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[17&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(17-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(17-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(17-3)&0x0f]
-	v7 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[17&0x0f] = v7
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(b^e&(a^b))) + (0x5A827999) + int64(v7)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[18&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(18-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(18-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(18-3)&0x0f]
-	v8 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[18&0x0f] = v8
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(a^d&(e^a))) + (0x5A827999) + int64(v8)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[19&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(19-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(19-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(19-3)&0x0f]
-	v9 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[19&0x0f] = v9
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(e^c&(d^e))) + (0x5A827999) + int64(v9)))
-	c = c<<30 | c>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[20&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(20-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(20-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(20-3)&0x0f]
-	v10 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[20&0x0f] = v10
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(b^c^d)) + (0x6ED9EBA1) + int64(v10)))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[21&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(21-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(21-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(21-3)&0x0f]
-	v11 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[21&0x0f] = v11
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(a^b^c)) + (0x6ED9EBA1) + int64(v11)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[22&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(22-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(22-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(22-3)&0x0f]
-	v12 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[22&0x0f] = v12
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(e^a^b)) + (0x6ED9EBA1) + int64(v12)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[23&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(23-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(23-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(23-3)&0x0f]
-	v13 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[23&0x0f] = v13
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(d^e^a)) + (0x6ED9EBA1) + int64(v13)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[24&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(24-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(24-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(24-3)&0x0f]
-	v14 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[24&0x0f] = v14
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(c^d^e)) + (0x6ED9EBA1) + int64(v14)))
-	c = c<<30 | c>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[25&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(25-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(25-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(25-3)&0x0f]
-	v15 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[25&0x0f] = v15
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(b^c^d)) + (0x6ED9EBA1) + int64(v15)))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[26&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(26-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(26-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(26-3)&0x0f]
-	v16 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[26&0x0f] = v16
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(a^b^c)) + (0x6ED9EBA1) + int64(v16)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[27&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(27-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(27-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(27-3)&0x0f]
-	v17 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[27&0x0f] = v17
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(e^a^b)) + (0x6ED9EBA1) + int64(v17)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[28&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(28-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(28-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(28-3)&0x0f]
-	v18 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[28&0x0f] = v18
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(d^e^a)) + (0x6ED9EBA1) + int64(v18)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[29&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(29-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(29-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(29-3)&0x0f]
-	v19 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[29&0x0f] = v19
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(c^d^e)) + (0x6ED9EBA1) + int64(v19)))
-	c = c<<30 | c>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[30&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(30-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(30-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(30-3)&0x0f]
-	v20 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[30&0x0f] = v20
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(b^c^d)) + (0x6ED9EBA1) + int64(v20)))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[31&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(31-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(31-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(31-3)&0x0f]
-	v21 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[31&0x0f] = v21
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(a^b^c)) + (0x6ED9EBA1) + int64(v21)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[32&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(32-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(32-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(32-3)&0x0f]
-	v22 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[32&0x0f] = v22
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(e^a^b)) + (0x6ED9EBA1) + int64(v22)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[33&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(33-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(33-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(33-3)&0x0f]
-	v23 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[33&0x0f] = v23
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(d^e^a)) + (0x6ED9EBA1) + int64(v23)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[34&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(34-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(34-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(34-3)&0x0f]
-	v24 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[34&0x0f] = v24
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(c^d^e)) + (0x6ED9EBA1) + int64(v24)))
-	c = c<<30 | c>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[35&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(35-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(35-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(35-3)&0x0f]
-	v25 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[35&0x0f] = v25
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(b^c^d)) + (0x6ED9EBA1) + int64(v25)))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[36&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(36-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(36-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(36-3)&0x0f]
-	v26 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[36&0x0f] = v26
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(a^b^c)) + (0x6ED9EBA1) + int64(v26)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[37&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(37-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(37-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(37-3)&0x0f]
-	v27 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[37&0x0f] = v27
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(e^a^b)) + (0x6ED9EBA1) + int64(v27)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[38&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(38-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(38-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(38-3)&0x0f]
-	v28 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[38&0x0f] = v28
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(d^e^a)) + (0x6ED9EBA1) + int64(v28)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[39&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(39-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(39-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(39-3)&0x0f]
-	v29 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[39&0x0f] = v29
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(c^d^e)) + (0x6ED9EBA1) + int64(v29)))
-	c = c<<30 | c>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[40&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(40-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(40-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(40-3)&0x0f]
-	v30 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[40&0x0f] = v30
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(b&c|d&(b|c))) + (0x8F1BBCDC) + int64(v30)))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[41&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(41-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(41-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(41-3)&0x0f]
-	v31 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[41&0x0f] = v31
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(a&b|c&(a|b))) + (0x8F1BBCDC) + int64(v31)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[42&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(42-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(42-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(42-3)&0x0f]
-	v32 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[42&0x0f] = v32
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(e&a|b&(e|a))) + (0x8F1BBCDC) + int64(v32)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[43&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(43-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(43-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(43-3)&0x0f]
-	v33 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[43&0x0f] = v33
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(d&e|a&(d|e))) + (0x8F1BBCDC) + int64(v33)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[44&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(44-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(44-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(44-3)&0x0f]
-	v34 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[44&0x0f] = v34
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(c&d|e&(c|d))) + (0x8F1BBCDC) + int64(v34)))
-	c = c<<30 | c>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[45&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(45-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(45-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(45-3)&0x0f]
-	v35 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[45&0x0f] = v35
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(b&c|d&(b|c))) + (0x8F1BBCDC) + int64(v35)))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[46&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(46-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(46-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(46-3)&0x0f]
-	v36 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[46&0x0f] = v36
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(a&b|c&(a|b))) + (0x8F1BBCDC) + int64(v36)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[47&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(47-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(47-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(47-3)&0x0f]
-	v37 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[47&0x0f] = v37
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(e&a|b&(e|a))) + (0x8F1BBCDC) + int64(v37)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[48&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(48-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(48-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(48-3)&0x0f]
-	v38 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[48&0x0f] = v38
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(d&e|a&(d|e))) + (0x8F1BBCDC) + int64(v38)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[49&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(49-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(49-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(49-3)&0x0f]
-	v39 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[49&0x0f] = v39
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(c&d|e&(c|d))) + (0x8F1BBCDC) + int64(v39)))
-	c = c<<30 | c>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[50&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(50-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(50-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(50-3)&0x0f]
-	v40 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[50&0x0f] = v40
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(b&c|d&(b|c))) + (0x8F1BBCDC) + int64(v40)))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[51&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(51-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(51-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(51-3)&0x0f]
-	v41 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[51&0x0f] = v41
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(a&b|c&(a|b))) + (0x8F1BBCDC) + int64(v41)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[52&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(52-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(52-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(52-3)&0x0f]
-	v42 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[52&0x0f] = v42
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(e&a|b&(e|a))) + (0x8F1BBCDC) + int64(v42)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[53&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(53-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(53-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(53-3)&0x0f]
-	v43 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[53&0x0f] = v43
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(d&e|a&(d|e))) + (0x8F1BBCDC) + int64(v43)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[54&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(54-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(54-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(54-3)&0x0f]
-	v44 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[54&0x0f] = v44
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(c&d|e&(c|d))) + (0x8F1BBCDC) + int64(v44)))
-	c = c<<30 | c>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[55&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(55-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(55-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(55-3)&0x0f]
-	v45 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[55&0x0f] = v45
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(b&c|d&(b|c))) + (0x8F1BBCDC) + int64(v45)))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[56&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(56-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(56-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(56-3)&0x0f]
-	v46 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[56&0x0f] = v46
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(a&b|c&(a|b))) + (0x8F1BBCDC) + int64(v46)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[57&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(57-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(57-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(57-3)&0x0f]
-	v47 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[57&0x0f] = v47
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(e&a|b&(e|a))) + (0x8F1BBCDC) + int64(v47)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[58&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(58-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(58-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(58-3)&0x0f]
-	v48 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[58&0x0f] = v48
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(d&e|a&(d|e))) + (0x8F1BBCDC) + int64(v48)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[59&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(59-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(59-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(59-3)&0x0f]
-	v49 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[59&0x0f] = v49
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(c&d|e&(c|d))) + (0x8F1BBCDC) + int64(v49)))
-	c = c<<30 | c>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[60&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(60-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(60-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(60-3)&0x0f]
-	v50 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[60&0x0f] = v50
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(b^c^d)) + (0xCA62C1D6) + int64(v50)))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[61&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(61-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(61-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(61-3)&0x0f]
-	v51 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[61&0x0f] = v51
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(a^b^c)) + (0xCA62C1D6) + int64(v51)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[62&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(62-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(62-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(62-3)&0x0f]
-	v52 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[62&0x0f] = v52
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(e^a^b)) + (0xCA62C1D6) + int64(v52)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[63&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(63-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(63-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(63-3)&0x0f]
-	v53 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[63&0x0f] = v53
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(d^e^a)) + (0xCA62C1D6) + int64(v53)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[64&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(64-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(64-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(64-3)&0x0f]
-	v54 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[64&0x0f] = v54
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(c^d^e)) + (0xCA62C1D6) + int64(v54)))
-	c = c<<30 | c>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[65&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(65-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(65-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(65-3)&0x0f]
-	v55 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[65&0x0f] = v55
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(b^c^d)) + (0xCA62C1D6) + int64(v55)))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[66&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(66-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(66-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(66-3)&0x0f]
-	v56 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[66&0x0f] = v56
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(a^b^c)) + (0xCA62C1D6) + int64(v56)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[67&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(67-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(67-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(67-3)&0x0f]
-	v57 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[67&0x0f] = v57
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(e^a^b)) + (0xCA62C1D6) + int64(v57)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[68&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(68-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(68-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(68-3)&0x0f]
-	v58 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[68&0x0f] = v58
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(d^e^a)) + (0xCA62C1D6) + int64(v58)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[69&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(69-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(69-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(69-3)&0x0f]
-	v59 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[69&0x0f] = v59
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(c^d^e)) + (0xCA62C1D6) + int64(v59)))
-	c = c<<30 | c>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[70&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(70-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(70-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(70-3)&0x0f]
-	v60 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[70&0x0f] = v60
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(b^c^d)) + (0xCA62C1D6) + int64(v60)))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[71&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(71-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(71-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(71-3)&0x0f]
-	v61 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[71&0x0f] = v61
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(a^b^c)) + (0xCA62C1D6) + int64(v61)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[72&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(72-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(72-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(72-3)&0x0f]
-	v62 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[72&0x0f] = v62
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(e^a^b)) + (0xCA62C1D6) + int64(v62)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[73&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(73-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(73-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(73-3)&0x0f]
-	v63 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[73&0x0f] = v63
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(d^e^a)) + (0xCA62C1D6) + int64(v63)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[74&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(74-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(74-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(74-3)&0x0f]
-	v64 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[74&0x0f] = v64
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(c^d^e)) + (0xCA62C1D6) + int64(v64)))
-	c = c<<30 | c>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[75&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(75-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(75-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(75-3)&0x0f]
-	v65 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[75&0x0f] = v65
-	e = uint32(int64(e) + (int64(a<<5|a>>(32-5)+(b^c^d)) + (0xCA62C1D6) + int64(v65)))
-	b = b<<30 | b>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[76&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(76-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(76-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(76-3)&0x0f]
-	v66 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[76&0x0f] = v66
-	d = uint32(int64(d) + (int64(e<<5|e>>(32-5)+(a^b^c)) + (0xCA62C1D6) + int64(v66)))
-	a = a<<30 | a>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[77&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(77-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(77-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(77-3)&0x0f]
-	v67 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[77&0x0f] = v67
-	c = uint32(int64(c) + (int64(d<<5|d>>(32-5)+(e^a^b)) + (0xCA62C1D6) + int64(v67)))
-	e = e<<30 | e>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[78&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(78-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(78-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(78-3)&0x0f]
-	v68 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[78&0x0f] = v68
-	b = uint32(int64(b) + (int64(c<<5|c>>(32-5)+(d^e^a)) + (0xCA62C1D6) + int64(v68)))
-	d = d<<30 | d>>(32-30)
-	tm = (*(*[16]uint32)(unsafe.Pointer(bp)))[79&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(79-14)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(79-8)&0x0f] ^ (*(*[16]uint32)(unsafe.Pointer(bp)))[(79-3)&0x0f]
-	v69 = tm<<1 | tm>>(32-1)
-	(*(*[16]uint32)(unsafe.Pointer(bp)))[79&0x0f] = v69
-	a = uint32(int64(a) + (int64(b<<5|b>>(32-5)+(c^d^e)) + (0xCA62C1D6) + int64(v69)))
-	c = c<<30 | c>>(32-30)
-	/* update chainig vars */
-	*(*uint32)(unsafe.Pointer(hd)) += a
-	*(*uint32)(unsafe.Pointer(hd + 4)) += b
-	*(*uint32)(unsafe.Pointer(hd + 8)) += c
-	*(*uint32)(unsafe.Pointer(hd + 12)) += d
-	*(*uint32)(unsafe.Pointer(hd + 16)) += e
-}
-
 // C documentation
 //
 //	/* Update the message digest with the contents
 //	 * of INBUF with length INLEN.
 //	 */
-func SHA1_Update(hd uintptr, inbuf uintptr, inlen uint64) {
-	var v2, v6 int32
-	var v3, v4, v7, v8 uintptr
-	if (*sha1_context_t)(unsafe.Pointer(hd)).Fcount == 64 {
-		/* flush the buffer */
-		Transform(hd, hd+24)
-		(*sha1_context_t)(unsafe.Pointer(hd)).Fcount = 0
-		(*sha1_context_t)(unsafe.Pointer(hd)).Fnblocks++
-	}
-	if !(inbuf != 0) {
-		return
-	}
-	if (*sha1_context_t)(unsafe.Pointer(hd)).Fcount != 0 {
-		for {
-			if !(inlen != 0 && (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < 64) {
-				break
-			}
-			v3 = hd + 88
-			v2 = *(*int32)(unsafe.Pointer(v3))
-			*(*int32)(unsafe.Pointer(v3))++
-			v4 = inbuf
-			inbuf++
-			*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v2))) = *(*uint8)(unsafe.Pointer(v4))
-			goto _1
-		_1:
-			;
-			inlen--
-		}
-		SHA1_Update(hd, uintptr(0), uint64(0))
-		if !(inlen != 0) {
-			return
-		}
-	}
-	for inlen >= uint64(64) {
-		Transform(hd, inbuf)
-		(*sha1_context_t)(unsafe.Pointer(hd)).Fcount = 0
-		(*sha1_context_t)(unsafe.Pointer(hd)).Fnblocks++
-		inlen -= uint64(64)
-		inbuf += uintptr(64)
-	}
-	for {
-		if !(inlen != 0 && (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < 64) {
-			break
-		}
-		v7 = hd + 88
-		v6 = *(*int32)(unsafe.Pointer(v7))
-		*(*int32)(unsafe.Pointer(v7))++
-		v8 = inbuf
-		inbuf++
-		*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v6))) = *(*uint8)(unsafe.Pointer(v8))
-		goto _5
-	_5:
-		;
-		inlen--
-	}
+func SHA1_Update(sha hash.Hash, inbuf uintptr, inlen uint64) {
+	inBufBytes := unsafe.Slice((*byte)(unsafe.Pointer(inbuf)), inlen)
+	sha.Write(inBufBytes)
 }
 
-/* The routine final terminates the computation and
- * returns the digest.
- * The handle is prepared for a new cycle, but adding bytes to the
- * handle will the destroy the returned buffer.
- * Returns: 20 bytes representing the digest.
- */
-
-func SHA1_Final(digest uintptr, hd uintptr) {
-	var lsb, msb, t uint32
-	var p, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v2, v20, v21, v22, v23, v24, v25, v26, v27, v28, v4, v6, v8, v9 uintptr
-	var v1, v3, v5, v7 int32
-	SHA1_Update(hd, uintptr(0), uint64(0)) /* flush */
-	t = (*sha1_context_t)(unsafe.Pointer(hd)).Fnblocks
-	/* multiply by 64 to make a byte count */
-	lsb = t << 6
-	msb = t >> 26
-	/* add the count */
-	t = lsb
-	lsb += uint32((*sha1_context_t)(unsafe.Pointer(hd)).Fcount)
-	if lsb < t {
-		msb++
-	}
-	/* multiply by 8 to make a bit count */
-	t = lsb
-	lsb <<= uint32(3)
-	msb <<= uint32(3)
-	msb |= t >> 29
-	if (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < 56 {
-		/* enough room */
-		v2 = hd + 88
-		v1 = *(*int32)(unsafe.Pointer(v2))
-		*(*int32)(unsafe.Pointer(v2))++
-		*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v1))) = uint8(0x80) /* pad */
-		for (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < 56 {
-			v4 = hd + 88
-			v3 = *(*int32)(unsafe.Pointer(v4))
-			*(*int32)(unsafe.Pointer(v4))++
-			*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v3))) = uint8(0)
-		} /* pad */
-	} else {
-		/* need one extra block */
-		v6 = hd + 88
-		v5 = *(*int32)(unsafe.Pointer(v6))
-		*(*int32)(unsafe.Pointer(v6))++
-		*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v5))) = uint8(0x80) /* pad character */
-		for (*sha1_context_t)(unsafe.Pointer(hd)).Fcount < 64 {
-			v8 = hd + 88
-			v7 = *(*int32)(unsafe.Pointer(v8))
-			*(*int32)(unsafe.Pointer(v8))++
-			*(*uint8)(unsafe.Pointer(hd + 24 + uintptr(v7))) = uint8(0)
-		}
-		SHA1_Update(hd, uintptr(0), uint64(0)) /* flush */
-		xmemset(hd+24, 0, uint64(56))          /* fill next block with zeroes */
-	}
-	/* append the 64 bit count */
-	*(*uint8)(unsafe.Pointer(hd + 24 + 56)) = uint8(msb >> 24)
-	*(*uint8)(unsafe.Pointer(hd + 24 + 57)) = uint8(msb >> 16)
-	*(*uint8)(unsafe.Pointer(hd + 24 + 58)) = uint8(msb >> 8)
-	*(*uint8)(unsafe.Pointer(hd + 24 + 59)) = uint8(msb)
-	*(*uint8)(unsafe.Pointer(hd + 24 + 60)) = uint8(lsb >> 24)
-	*(*uint8)(unsafe.Pointer(hd + 24 + 61)) = uint8(lsb >> 16)
-	*(*uint8)(unsafe.Pointer(hd + 24 + 62)) = uint8(lsb >> 8)
-	*(*uint8)(unsafe.Pointer(hd + 24 + 63)) = uint8(lsb)
-	Transform(hd, hd+24)
-	p = hd + 24
-	v9 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v9)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> 24)
-	v10 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v10)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> 16)
-	v11 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v11)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0 >> 8)
-	v12 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v12)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh0)
-	v13 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v13)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> 24)
-	v14 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v14)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> 16)
-	v15 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v15)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1 >> 8)
-	v16 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v16)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh1)
-	v17 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v17)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> 24)
-	v18 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v18)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> 16)
-	v19 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v19)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2 >> 8)
-	v20 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v20)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh2)
-	v21 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v21)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> 24)
-	v22 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v22)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> 16)
-	v23 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v23)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3 >> 8)
-	v24 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v24)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh3)
-	v25 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v25)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> 24)
-	v26 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v26)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> 16)
-	v27 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v27)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4 >> 8)
-	v28 = p
-	p++
-	*(*uint8)(unsafe.Pointer(v28)) = uint8((*sha1_context_t)(unsafe.Pointer(hd)).Fh4)
-	xmemcpy(digest, hd+24, uint64(20))
-}
-
-func SHA1_UpdateInt32(context uintptr, val uint32) {
+func SHA1_UpdateInt32(sha hash.Hash, val uint32) {
 	bp := alloc(16)
 	(*(*[4]uint8)(unsafe.Pointer(bp)))[0] = uint8(val >> 24 & uint32(0xff))
 	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(1)] = uint8(val >> 16 & uint32(0xff))
 	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(2)] = uint8(val >> 8 & uint32(0xff))
 	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(3)] = uint8(val & uint32(0xff))
-	SHA1_Update(context, bp, uint64(4))
+	SHA1_Update(sha, bp, uint64(4))
 }
 
-func SHA1_UpdateString(context uintptr, str uintptr) {
-	SHA1_Update(context, str, xstrlen(str)+uint64(1))
+func SHA1_UpdateString(sha hash.Hash, str uintptr) {
+	SHA1_Update(sha, str, xstrlen(str)+uint64(1))
 }
 
 func init() {
@@ -44592,19 +43993,20 @@ func GetFileNumber(handle *os.File) (r int32) {
 	return int32(len(open_wadfiles) - 1)
 }
 
-func ChecksumAddLump(sha1_context uintptr, lump uintptr) {
+func ChecksumAddLump(sha hash.Hash, lump uintptr) {
 	bp := alloc(16)
 	M_StringCopy(bp, lump, uint64(9))
-	SHA1_UpdateString(sha1_context, bp)
-	SHA1_UpdateInt32(sha1_context, uint32(GetFileNumber((*lumpinfo_t)(unsafe.Pointer(lump)).Fwad_file)))
-	SHA1_UpdateInt32(sha1_context, uint32((*lumpinfo_t)(unsafe.Pointer(lump)).Fposition))
-	SHA1_UpdateInt32(sha1_context, uint32((*lumpinfo_t)(unsafe.Pointer(lump)).Fsize))
+	SHA1_UpdateString(sha, bp)
+	SHA1_UpdateInt32(sha, uint32(GetFileNumber((*lumpinfo_t)(unsafe.Pointer(lump)).Fwad_file)))
+	SHA1_UpdateInt32(sha, uint32((*lumpinfo_t)(unsafe.Pointer(lump)).Fposition))
+	SHA1_UpdateInt32(sha, uint32((*lumpinfo_t)(unsafe.Pointer(lump)).Fsize))
 }
 
-func W_Checksum(digest uintptr) {
-	bp := alloc(96)
+func W_Checksum(digest *sha1_digest_t) {
+	//bp := alloc(96)
 	var i uint32
-	SHA1_Init(bp)
+	//SHA1_Init(bp)
+	sha := sha1.New()
 	open_wadfiles = nil
 	// Go through each entry in the WAD directory, adding information
 	// about each entry to the SHA1 hash.
@@ -44613,13 +44015,13 @@ func W_Checksum(digest uintptr) {
 		if !(i < numlumps) {
 			break
 		}
-		ChecksumAddLump(bp, lumpinfo+uintptr(i)*40)
+		ChecksumAddLump(sha, lumpinfo+uintptr(i)*40)
 		goto _1
 	_1:
 		;
 		i++
 	}
-	SHA1_Final(digest, bp)
+	copy(digest[:], sha.Sum(nil))
 }
 
 func W_OpenFile(path string) *os.File {
