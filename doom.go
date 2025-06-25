@@ -83,6 +83,24 @@ func xstrcmp(s1, s2 uintptr) int32 {
 	}
 }
 
+func xstrncmp(s1, s2 uintptr, n uint64) int32 {
+	var ch1, ch2 byte
+	for ; n != 0; n-- {
+		ch1 = *(*byte)(unsafe.Pointer(s1))
+		s1++
+		ch2 = *(*byte)(unsafe.Pointer(s2))
+		s2++
+		if ch1 != ch2 {
+			return int32(ch1) - int32(ch2)
+		}
+
+		if ch1 == 0 {
+			return 0
+		}
+	}
+	return 0
+}
+
 func xstrncpy(dest, src uintptr, n uint64) (r uintptr) {
 	r = dest
 	for c := *(*int8)(unsafe.Pointer(src)); c != 0 && n > 0; n-- {
@@ -3008,7 +3026,6 @@ func AM_maxOutWindowScale() {
 //	// Handle events (user inputs) in automap mode
 //	//
 func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
-	bp := alloc(32)
 	var key, rc int32
 	rc = 0
 	if !(automapactive != 0) {
@@ -3089,7 +3106,7 @@ func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 													}
 												} else {
 													if key == key_map_mark {
-														M_snprintf(tls, uintptr(unsafe.Pointer(&buffer)), uint64(20), __ccgo_ts(57), libc.VaList(bp+8, __ccgo_ts(63), markpointnum))
+														M_snprintf(uintptr(unsafe.Pointer(&buffer)), uint64(20), __ccgo_ts_str(57), __ccgo_ts_str(63), markpointnum)
 														plr.Fmessage = uintptr(unsafe.Pointer(&buffer))
 														AM_addMark()
 													} else {
@@ -5014,7 +5031,7 @@ func D_BindVariables(tls *libc.TLS) {
 		if !(i < 10) {
 			break
 		}
-		M_snprintf(tls, bp, uint64(12), __ccgo_ts(1654), libc.VaList(bp+24, i))
+		M_snprintf(bp, uint64(12), __ccgo_ts_str(1654), i)
 		M_BindVariable(tls, bp, uintptr(unsafe.Pointer(&chat_macros))+uintptr(i)*8)
 		goto _1
 	_1:
@@ -5205,14 +5222,14 @@ func D_StartTitle() {
 // These are from the original source: some of them are perhaps
 // not used in any dehacked patches
 
-var banners = [7]uintptr{
-	0: __ccgo_ts(1960),
-	1: __ccgo_ts(2041),
-	2: __ccgo_ts(2126),
-	3: __ccgo_ts(2212),
-	4: __ccgo_ts(2291),
-	5: __ccgo_ts(2373),
-	6: __ccgo_ts(2452),
+var banners = [7]string{
+	0: __ccgo_ts_str(1960),
+	1: __ccgo_ts_str(2041),
+	2: __ccgo_ts_str(2126),
+	3: __ccgo_ts_str(2212),
+	4: __ccgo_ts_str(2291),
+	5: __ccgo_ts_str(2373),
+	6: __ccgo_ts_str(2452),
 }
 
 //
@@ -5221,8 +5238,7 @@ var banners = [7]uintptr{
 //
 
 func GetGameName(tls *libc.TLS, gamename uintptr) (r uintptr) {
-	bp := alloc(32)
-	var deh_sub uintptr
+	var deh_sub string
 	var gamename_size, i uint64
 	var version, v2, v3, v6, v7 int32
 	var v5, v9 bool
@@ -5237,10 +5253,10 @@ func GetGameName(tls *libc.TLS, gamename uintptr) (r uintptr) {
 			// Has been replaced.
 			// We need to expand via printf to include the Doom version number
 			// We also need to cut off spaces to get the basic name
-			gamename_size = xstrlen(deh_sub) + uint64(10)
+			gamename_size = uint64(len(deh_sub) + 10)
 			gamename = Z_Malloc(tls, libc.Int32FromUint64(gamename_size), int32(PU_STATIC), uintptr(0))
 			version = G_VanillaVersionCode(tls)
-			M_snprintf(tls, gamename, gamename_size, deh_sub, libc.VaList(bp+8, version/int32(100), version%int32(100)))
+			M_snprintf(gamename, gamename_size, deh_sub, version/int32(100), version%int32(100))
 			for {
 				if v5 = int32(*(*int8)(unsafe.Pointer(gamename))) != int32('\000'); v5 {
 					v2 = int32(*(*int8)(unsafe.Pointer(gamename)))
@@ -8072,7 +8088,6 @@ func G_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 //	// Make ticcmd_ts for the players.
 //	//
 func G_Ticker(tls *libc.TLS) {
-	bp := alloc(32)
 	var buf, i int32
 	var cmd *ticcmd_t
 	// do player reborns if needed
@@ -8143,7 +8158,7 @@ func G_Ticker(tls *libc.TLS) {
 				turbodetected[i] = 1
 			}
 			if gametic&int32(31) == 0 && gametic>>int32(5)%int32(MAXPLAYERS) == i && turbodetected[i] != 0 {
-				M_snprintf(tls, uintptr(unsafe.Pointer(&turbomessage)), uint64(80), __ccgo_ts(13747), libc.VaList(bp+8, player_names[i]))
+				M_snprintf(uintptr(unsafe.Pointer(&turbomessage)), uint64(80), __ccgo_ts_str(13747), libc.GoString(player_names[i]))
 				players[consoleplayer].Fmessage = uintptr(unsafe.Pointer(&turbomessage))
 				turbodetected[i] = 0
 			}
@@ -9246,7 +9261,6 @@ func G_DeferedPlayDemo(name uintptr) {
 // Generate a string describing a demo version
 
 func DemoVersionDescription(tls *libc.TLS, version int32) (r uintptr) {
-	bp := alloc(32)
 	switch version {
 	case 104:
 		return __ccgo_ts(14158)
@@ -9268,7 +9282,7 @@ func DemoVersionDescription(tls *libc.TLS, version int32) (r uintptr) {
 	if version >= 0 && version <= 4 {
 		return __ccgo_ts(14201)
 	} else {
-		M_snprintf(tls, uintptr(unsafe.Pointer(&resultbuf)), uint64(16), __ccgo_ts(14216), libc.VaList(bp+8, version/int32(100), version%int32(100)))
+		M_snprintf(uintptr(unsafe.Pointer(&resultbuf)), uint64(16), __ccgo_ts_str(14216), version/int32(100), version%int32(100))
 		return uintptr(unsafe.Pointer(&resultbuf))
 	}
 	return r
@@ -18021,7 +18035,7 @@ func I_BindJoystickVariables(tls *libc.TLS) {
 		if !(i < int32(NUM_VIRTUAL_BUTTONS)) {
 			break
 		}
-		M_snprintf(tls, bp, uint64(32), __ccgo_ts(18442), libc.VaList(bp+40, i))
+		M_snprintf(bp, uint64(32), __ccgo_ts_str(18442), i)
 		M_BindVariable(tls, bp, uintptr(unsafe.Pointer(&joystick_physical_buttons))+uintptr(i)*4)
 		goto _1
 	_1:
@@ -18533,7 +18547,6 @@ var mem_dump_custom [10]uint8
 var dos_mem_dump = uintptr(unsafe.Pointer(&mem_dump_dos622))
 
 func I_GetMemoryValue(tls *libc.TLS, offset uint32, value uintptr, size int32) (r boolean) {
-	bp := alloc(16)
 	var i, p, v2 int32
 	if firsttime != 0 {
 		firsttime = 0
@@ -18566,10 +18579,11 @@ func I_GetMemoryValue(tls *libc.TLS, offset uint32, value uintptr, size int32) (
 						if p >= myargc || int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8))))) == int32('-') {
 							break
 						}
-						M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8)), bp)
+						var f int32
+						M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8)), &f)
 						v2 = i
 						i++
-						mem_dump_custom[v2] = libc.Uint8FromInt32(*(*int32)(unsafe.Pointer(bp)))
+						mem_dump_custom[v2] = uint8(f)
 						goto _1
 					_1:
 						;
@@ -19910,7 +19924,7 @@ func M_BindChatControls(tls *libc.TLS, num_players uint32) {
 		if !(i < num_players) {
 			break
 		}
-		M_snprintf(tls, bp, uint64(32), __ccgo_ts(22078), libc.VaList(bp+40, i+uint32(1)))
+		M_snprintf(bp, uint64(32), __ccgo_ts_str(22078), i+1)
 		M_BindVariable(tls, bp, uintptr(unsafe.Pointer(&key_multi_msgplayer))+uintptr(i)*4)
 		goto _1
 	_1:
@@ -21862,9 +21876,14 @@ func M_TempFile(tls *libc.TLS, s string) string {
 	return __ccgo_ts_str(23139) + __ccgo_ts_str(1252) + s
 }
 
-func M_StrToInt(tls *libc.TLS, str uintptr, result uintptr) (r boolean) {
-	bp := alloc(16)
-	return libc.BoolUint32(libc.Xsscanf(tls, str, __ccgo_ts(23144), libc.VaList(bp+8, result)) == 1 || libc.Xsscanf(tls, str, __ccgo_ts(23150), libc.VaList(bp+8, result)) == 1 || libc.Xsscanf(tls, str, __ccgo_ts(23156), libc.VaList(bp+8, result)) == 1 || libc.Xsscanf(tls, str, __ccgo_ts(23161), libc.VaList(bp+8, result)) == 1)
+func M_StrToInt(tls *libc.TLS, str uintptr, result *int32) (r boolean) {
+	gStr := libc.GoString(str)
+	val, err := strconv.Atoi(gStr)
+	*result = int32(val)
+	if err != nil {
+		return 0
+	}
+	return 1
 }
 
 func M_ExtractFileBase(tls *libc.TLS, path string, dest uintptr) {
@@ -21948,38 +21967,18 @@ func M_StringJoin(tls *libc.TLS, s uintptr, va uintptr) (r uintptr) {
 	return result
 }
 
-// On Windows, vsnprintf() is _vsnprintf().
-
-// C documentation
-//
-//	// Safe, portable vsnprintf().
-func M_vsnprintf(tls *libc.TLS, buf uintptr, buf_len uint64, s uintptr, args va_list) (r int32) {
-	var result int32
-	if buf_len < uint64(1) {
-		return 0
-	}
-	// Windows (and other OSes?) has a vsnprintf() that doesn't always
-	// append a trailing \0. So we must do it, and write into a buffer
-	// that is one byte shorter; otherwise this function is unsafe.
-	result = libc.X__builtin_vsnprintf(tls, buf, buf_len, s, args)
-	// If truncated, change the final char in the buffer to a \0.
-	// A negative result indicates a truncated buffer on Windows.
-	if result < 0 || libc.Uint64FromInt32(result) >= buf_len {
-		*(*int8)(unsafe.Pointer(buf + uintptr(buf_len-uint64(1)))) = int8('\000')
-		result = libc.Int32FromUint64(buf_len - uint64(1))
-	}
-	return result
-}
-
 // C documentation
 //
 //	// Safe, portable snprintf().
-func M_snprintf(tls *libc.TLS, buf uintptr, buf_len uint64, s uintptr, va uintptr) (r int32) {
-	var args va_list
-	var result int32
-	args = va
-	result = M_vsnprintf(tls, buf, buf_len, s, args)
-	return result
+func M_snprintf(buf uintptr, buf_len uint64, s string, args ...any) (r int32) {
+	val := fmt.Sprintf(s, args...)
+	i := 0
+	bufBytes := unsafe.Slice((*byte)(unsafe.Pointer(buf)), int(buf_len))
+	for ; i < len(val) && i < int(buf_len-1); i++ {
+		bufBytes[i] = val[i]
+	}
+	bufBytes[i] = 0 // Null-terminate the string
+	return int32(i)
 }
 
 //
@@ -27170,9 +27169,9 @@ func P_ChangeSector(tls *libc.TLS, sector *sector_t, crunch boolean) (r boolean)
 // PrBoom plus port.  A big thanks to Andrey for this.
 
 func SpechitOverrun(tls *libc.TLS, ld *line_t) {
-	var addr uint32
+	var addr int32
 	var p int32
-	if baseaddr == uint32(0) {
+	if baseaddr == 0 {
 		// This is the first time we have had an overrun.  Work out
 		// what base address we are going to use.
 		// Allow a spechit value to be specified on the command line.
@@ -27184,13 +27183,13 @@ func SpechitOverrun(tls *libc.TLS, ld *line_t) {
 		//
 		p = M_CheckParmWithArgs(__ccgo_ts(24727), 1)
 		if p > 0 {
-			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uintptr(unsafe.Pointer(&baseaddr)))
+			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), &baseaddr)
 		} else {
-			baseaddr = uint32(DEFAULT_SPECHIT_MAGIC)
+			baseaddr = DEFAULT_SPECHIT_MAGIC
 		}
 	}
 	// Calculate address used in doom2.exe
-	addr = baseaddr + uint32(lineIndex(ld))*0x3E
+	addr = baseaddr + int32(lineIndex(ld))*0x3E
 	switch numspechit {
 	case 9:
 		fallthrough
@@ -27199,18 +27198,18 @@ func SpechitOverrun(tls *libc.TLS, ld *line_t) {
 	case 11:
 		fallthrough
 	case 12:
-		tmbbox[numspechit-int32(9)] = libc.Int32FromUint32(addr)
+		tmbbox[numspechit-int32(9)] = addr
 	case 13:
-		crushchange = addr
+		crushchange = boolean(addr)
 	case 14:
-		nofit = addr
+		nofit = boolean(addr)
 	default:
 		fprintf_ccgo(os.Stderr, 24736, numspechit)
 		break
 	}
 }
 
-var baseaddr uint32
+var baseaddr int32
 
 const INT_MAX11 = 2147483647
 
@@ -30692,7 +30691,7 @@ func P_WriteSaveGameHeader(tls *libc.TLS, description uintptr) {
 		i++
 	}
 	xmemset(bp, 0, uint64(16))
-	M_snprintf(tls, bp, uint64(16), __ccgo_ts(25058), libc.VaList(bp+24, G_VanillaVersionCode(tls)))
+	M_snprintf(bp, uint64(16), __ccgo_ts_str(25058), G_VanillaVersionCode(tls))
 	i = 0
 	for {
 		if !(i < int32(VERSIONSIZE)) {
@@ -30755,7 +30754,7 @@ func P_ReadSaveGameHeader(tls *libc.TLS) (r boolean) {
 		i++
 	}
 	xmemset(bp, 0, uint64(16))
-	M_snprintf(tls, bp, uint64(16), __ccgo_ts(25058), libc.VaList(bp+40, G_VanillaVersionCode(tls)))
+	M_snprintf(bp, uint64(16), __ccgo_ts_str(25058), G_VanillaVersionCode(tls))
 	if xstrcmp(bp+16, bp) != 0 {
 		return 0
 	} // bad version
@@ -33179,8 +33178,8 @@ func DonutOverrun(tls *libc.TLS, s3_floorheight uintptr, s3_floorpic uintptr, li
 			// 0000:0000    (00 00 00 00) 65 04 70 00-(16 00)
 			// DOSBox under XP:
 			// 0000:0000    (00 00 00 F1) ?? ?? ?? 00-(07 00)
-			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uintptr(unsafe.Pointer(&tmp_s3_floorheight)))
-			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(2))*8)), uintptr(unsafe.Pointer(&tmp_s3_floorpic)))
+			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), &tmp_s3_floorheight)
+			M_StrToInt(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(2))*8)), &tmp_s3_floorpic)
 			if tmp_s3_floorpic >= numflats {
 				fprintf_ccgo(os.Stderr, 25438, numflats, DONUT_FLOORPIC_DEFAULT)
 				tmp_s3_floorpic = int32(DONUT_FLOORPIC_DEFAULT)
@@ -41166,7 +41165,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 						plyr.Fmessage = __ccgo_ts(27778)
 					} else {
 						if cht_CheckCheat(&cheat_mypos, int8(ev.Fdata2)) != 0 {
-							M_snprintf(tls, uintptr(unsafe.Pointer(&buf)), uint64(52), __ccgo_ts(27800), libc.VaList(bp+16, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fangle, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy))
+							M_snprintf(uintptr(unsafe.Pointer(&buf)), uint64(52), __ccgo_ts_str(27800), (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fangle, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy)
 							plyr.Fmessage = uintptr(unsafe.Pointer(&buf))
 						}
 					}
@@ -42239,7 +42238,7 @@ func S_ChangeMusic(tls *libc.TLS, musicnum int32, looping int32) {
 	S_StopMusic(tls)
 	// get lumpnum if neccessary
 	if !(music.Flumpnum != 0) {
-		M_snprintf(tls, bp, uint64(9), __ccgo_ts(28083), libc.VaList(bp+24, music.Fname))
+		M_snprintf(bp, uint64(9), __ccgo_ts_str(28083), libc.GoString(music.Fname))
 		music.Flumpnum = W_GetNumForName(tls, bp)
 	}
 	music.Fdata = W_CacheLumpNum(tls, music.Flumpnum, int32(PU_STATIC))
@@ -44810,7 +44809,7 @@ func ExtendLumpInfo(tls *libc.TLS, newnumlumps int32) {
 	var i uint32
 	var newlumpinfo uintptr
 	var nextlumpnum int32
-	newlumpinfo = libc.Xcalloc(tls, libc.Uint64FromInt32(newnumlumps), uint64(40))
+	newlumpinfo = xmalloc(uint64(newnumlumps * 40))
 	if newlumpinfo == libc.UintptrFromInt32(0) {
 		I_Error(tls, __ccgo_ts(28605), 0)
 	}
@@ -44891,9 +44890,9 @@ func W_AddFile(tls *libc.TLS, filename string) *os.File {
 	} else {
 		// WAD file
 		W_Read(wad_file, uint32(0), bp, uint64(12))
-		if libc.Xstrncmp(tls, bp, __ccgo_ts(28654), uint64(4)) != 0 {
+		if xstrncmp(bp, __ccgo_ts(28654), uint64(4)) != 0 {
 			// Homebrew levels?
-			if libc.Xstrncmp(tls, bp, __ccgo_ts(28659), uint64(4)) != 0 {
+			if xstrncmp(bp, __ccgo_ts(28659), uint64(4)) != 0 {
 				I_Error(tls, __ccgo_ts(28664), filename)
 			}
 			// ???modifiedgame = true;
