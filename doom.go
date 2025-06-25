@@ -19938,7 +19938,7 @@ type menu_t struct {
 	Fnumitems  int16
 	FprevMenu  *menu_t
 	Fmenuitems uintptr
-	Froutine   uintptr
+	Froutine   func()
 	Fx         int16
 	Fy         int16
 	FlastOn    int16
@@ -21628,8 +21628,8 @@ func M_Drawer() {
 	if !(menuactive != 0) {
 		return
 	}
-	if currentMenu.Froutine != 0 {
-		(*(*func())(unsafe.Pointer(&struct{ uintptr }{currentMenu.Froutine})))()
+	if currentMenu.Froutine != nil {
+		currentMenu.Froutine()
 	} // call Draw routine
 	// DRAW MENU
 	x = currentMenu.Fx
