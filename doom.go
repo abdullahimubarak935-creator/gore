@@ -26464,7 +26464,7 @@ func P_HitSlideLine(ld *line_t) {
 		tmxmove = 0
 		return
 	}
-	side = P_PointOnLineSide((*mobj_t)(unsafe.Pointer(slidemo)).Fx, (*mobj_t)(unsafe.Pointer(slidemo)).Fy, ld)
+	side = P_PointOnLineSide(slidemo.Fx, slidemo.Fy, ld)
 	lineangle = R_PointToAngle2(0, 0, ld.Fdx, ld.Fdy)
 	if side == 1 {
 		lineangle += uint32(ANG1805)
@@ -26495,7 +26495,7 @@ func PTR_SlideTraverse(in *intercept_t) (r boolean) {
 	}
 	li = in.Fd.Fthing
 	if !(int32(li.Fflags)&ML_TWOSIDED != 0) {
-		if P_PointOnLineSide((*mobj_t)(unsafe.Pointer(slidemo)).Fx, (*mobj_t)(unsafe.Pointer(slidemo)).Fy, li) != 0 {
+		if P_PointOnLineSide(slidemo.Fx, slidemo.Fy, li) != 0 {
 			// don't hit the back side
 			return 1
 		}
@@ -26503,13 +26503,13 @@ func PTR_SlideTraverse(in *intercept_t) (r boolean) {
 	}
 	// set openrange, opentop, openbottom
 	P_LineOpening(li)
-	if openrange < (*mobj_t)(unsafe.Pointer(slidemo)).Fheight {
+	if openrange < slidemo.Fheight {
 		goto isblocking
 	} // doesn't fit
-	if opentop-(*mobj_t)(unsafe.Pointer(slidemo)).Fz < (*mobj_t)(unsafe.Pointer(slidemo)).Fheight {
+	if opentop-slidemo.Fz < slidemo.Fheight {
 		goto isblocking
 	} // mobj is too high
-	if openbottom-(*mobj_t)(unsafe.Pointer(slidemo)).Fz > 24*(1<<FRACBITS) {
+	if openbottom-slidemo.Fz > 24*(1<<FRACBITS) {
 		goto isblocking
 	} // too big a step up
 	// this line doesn't block movement
@@ -26540,7 +26540,7 @@ isblocking:
 func P_SlideMove(mo uintptr) {
 	var hitcount, v1 int32
 	var leadx, leady, newx, newy, trailx, traily fixed_t
-	slidemo = mo
+	slidemo = (*mobj_t)(unsafe.Pointer(mo))
 	hitcount = 0
 	goto retry
 retry:
@@ -46845,7 +46845,7 @@ var skytexture int32
 
 var skytexturemid int32
 
-var slidemo uintptr
+var slidemo *mobj_t
 
 // Maximum number of bytes to dedicate to allocated sound effects.
 // (Default: 64MB)
