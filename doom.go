@@ -2881,7 +2881,7 @@ func AM_initVariables() {
 
 var st_notify = event_t{
 	Ftype1: ev_keyup,
-	Fdata1: int32('a')<<24 + libc.Int32FromUint8('m')<<16 | libc.Int32FromUint8('e')<<8,
+	Fdata1: int32('a')<<24 + int32('m')<<16 | int32('e')<<8,
 }
 
 // C documentation
@@ -2973,7 +2973,7 @@ func AM_Stop() {
 
 var st_notify1 = event_t{
 	Fdata1: ev_keyup,
-	Fdata2: int32('a')<<24 + libc.Int32FromUint8('m')<<16 | libc.Int32FromUint8('x')<<8,
+	Fdata2: int32('a')<<24 + int32('m')<<16 | int32('x')<<8,
 }
 
 // C documentation
@@ -6701,7 +6701,7 @@ func F_TextWrite() {
 			goto _3
 		}
 		c = xtoupper(c) - int32('!')
-		if c < 0 || c > int32('_')-libc.Int32FromUint8('!')+1 {
+		if c < 0 || c > int32('_')-int32('!')+1 {
 			cx += 4
 			goto _3
 		}
@@ -6991,7 +6991,7 @@ func F_CastPrint(text uintptr) {
 			break
 		}
 		c = xtoupper(c) - int32('!')
-		if c < 0 || c > int32('_')-libc.Int32FromUint8('!')+1 {
+		if c < 0 || c > int32('_')-int32('!')+1 {
 			width += 4
 			continue
 		}
@@ -7009,7 +7009,7 @@ func F_CastPrint(text uintptr) {
 			break
 		}
 		c = xtoupper(c) - int32('!')
-		if c < 0 || c > int32('_')-libc.Int32FromUint8('!')+1 {
+		if c < 0 || c > int32('_')-int32('!')+1 {
 			cx += 4
 			continue
 		}
@@ -7223,8 +7223,8 @@ func wipe_doColorXForm(width int32, height int32, ticks int32) (r int32) {
 	w = wipe_scr
 	e = wipe_scr_end
 	for w != wipe_scr+uintptr(width*height) {
-		if int32(*(*uint8)(unsafe.Pointer(w))) != libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(e))) {
-			if int32(*(*uint8)(unsafe.Pointer(w))) > libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(e))) {
+		if int32(*(*uint8)(unsafe.Pointer(w))) != int32(*(*uint8)(unsafe.Pointer(e))) {
+			if int32(*(*uint8)(unsafe.Pointer(w))) > int32(*(*uint8)(unsafe.Pointer(e))) {
 				newval = int32(*(*uint8)(unsafe.Pointer(w))) - ticks
 				if newval < int32(*(*uint8)(unsafe.Pointer(e))) {
 					*(*uint8)(unsafe.Pointer(w)) = *(*uint8)(unsafe.Pointer(e))
@@ -7233,7 +7233,7 @@ func wipe_doColorXForm(width int32, height int32, ticks int32) (r int32) {
 				}
 				changed = 1
 			} else {
-				if int32(*(*uint8)(unsafe.Pointer(w))) < libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(e))) {
+				if int32(*(*uint8)(unsafe.Pointer(w))) < int32(*(*uint8)(unsafe.Pointer(e))) {
 					newval = int32(*(*uint8)(unsafe.Pointer(w))) + ticks
 					if newval > int32(*(*uint8)(unsafe.Pointer(e))) {
 						*(*uint8)(unsafe.Pointer(w)) = *(*uint8)(unsafe.Pointer(e))
@@ -8144,8 +8144,8 @@ func G_Ticker() {
 				turbodetected[i] = 0
 			}
 			if netgame != 0 && !(netdemo != 0) && !(gametic%ticdup != 0) {
-				if gametic > int32(BACKUPTICS) && int32(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))) != libc.Int32FromUint8(cmd.Fconsistancy) {
-					I_Error(__ccgo_ts(13760), int32(cmd.Fconsistancy), libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))))
+				if gametic > int32(BACKUPTICS) && int32(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))) != int32(cmd.Fconsistancy) {
+					I_Error(__ccgo_ts(13760), int32(cmd.Fconsistancy), int32(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))))
 				}
 				if players[i].Fmo != 0 {
 					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = uint8((*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fx)
@@ -9497,7 +9497,7 @@ func HUlib_drawTextLine(l *hu_textline_t, drawcursor boolean) {
 			break
 		}
 		c = uint8(xtoupper(int32(l.Fl[i])))
-		if int32(c) != int32(' ') && libc.Int32FromUint8(c) >= l.Fsc && libc.Int32FromUint8(c) <= int32('_') {
+		if int32(c) != int32(' ') && int32(c) >= l.Fsc && int32(c) <= int32('_') {
 			w = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(l.Ff + uintptr(int32(c)-l.Fsc)*8)))).Fwidth)
 			if x+w > int32(SCREENWIDTH) {
 				break
@@ -9651,7 +9651,7 @@ func HUlib_resetIText(it *hu_itext_t) {
 //	// returns true if it ate the key
 func HUlib_keyInIText(it *hu_itext_t, ch uint8) (r boolean) {
 	ch = uint8(xtoupper(int32(ch)))
-	if int32(ch) >= int32(' ') && libc.Int32FromUint8(ch) <= int32('_') {
+	if int32(ch) >= int32(' ') && int32(ch) <= int32('_') {
 		HUlib_addCharToTextLine(&it.Fl, int8(ch))
 	} else {
 		if int32(ch) == int32(KEY_BACKSPACE1) {
@@ -9880,7 +9880,7 @@ func HU_Init() {
 	j = int32('!')
 	i = 0
 	for {
-		if !(i < int32('_')-libc.Int32FromUint8('!')+1) {
+		if !(i < int32('_')-int32('!')+1) {
 			break
 		}
 		v2 = j
@@ -18584,10 +18584,10 @@ func I_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
 		*(*uint8)(unsafe.Pointer(value)) = *(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))
 		return 1
 	case 2:
-		*(*uint16)(unsafe.Pointer(value)) = uint16(int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8))
+		*(*uint16)(unsafe.Pointer(value)) = uint16(int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8))
 		return 1
 	case 4:
-		*(*uint32)(unsafe.Pointer(value)) = uint32(int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(2)))))<<int32(16) | libc.Int32FromUint8(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(3)))))<<int32(24))
+		*(*uint32)(unsafe.Pointer(value)) = uint32(int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset)))) | int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(1)))))<<int32(8) | int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(2)))))<<int32(16) | int32(*(*uint8)(unsafe.Pointer(dos_mem_dump + uintptr(offset+uint32(3)))))<<int32(24))
 		return 1
 	}
 	return 0
@@ -21135,7 +21135,7 @@ func M_StringWidth(string1 string) (r int32) {
 	w = 0
 	for i := 0; i < len(string1); i++ {
 		c = xtoupper(int32(string1[i])) - int32('!')
-		if c < 0 || c >= int32('_')-libc.Int32FromUint8('!')+1 {
+		if c < 0 || c >= int32('_')-int32('!')+1 {
 			w += 4
 		} else {
 			w += int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
@@ -21181,7 +21181,7 @@ func M_WriteText(x int32, y int32, string1 string) {
 			continue
 		}
 		c = xtoupper(c) - int32('!')
-		if c < 0 || c >= int32('_')-libc.Int32FromUint8('!')+1 {
+		if c < 0 || c >= int32('_')-int32('!')+1 {
 			cx += 4
 			continue
 		}
@@ -21342,7 +21342,7 @@ func M_Responder(ev *event_t) (r boolean) {
 				ch = key
 			}
 			ch = xtoupper(ch)
-			if ch != int32(' ') && (ch-int32('!') < 0 || ch-int32('!') >= int32('_')-libc.Int32FromUint8('!')+1) {
+			if ch != int32(' ') && (ch-int32('!') < 0 || ch-int32('!') >= int32('_')-int32('!')+1) {
 				break
 			}
 			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(libc.GoString(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24)) < (SAVESTRINGSIZE-2)*8 {
@@ -30741,7 +30741,7 @@ func P_ReadSaveGameHeader() (r boolean) {
 	a = saveg_read8()
 	b = saveg_read8()
 	c = saveg_read8()
-	leveltime = int32(a)<<int32(16) + libc.Int32FromUint8(b)<<int32(8) + libc.Int32FromUint8(c)
+	leveltime = int32(a)<<int32(16) + int32(b)<<int32(8) + int32(c)
 	return 1
 }
 
@@ -40951,11 +40951,11 @@ func ST_Responder(ev *event_t) (r boolean) {
 	var v6, v8 GameMission_t
 	var v10 bool
 	// Filter automap on/off.
-	if ev.Ftype1 == ev_keyup && uint32(ev.Fdata1)&uint32(0xffff0000) == uint32(int32('a')<<24+libc.Int32FromUint8('m')<<16) {
+	if ev.Ftype1 == ev_keyup && uint32(ev.Fdata1)&uint32(0xffff0000) == uint32(int32('a')<<24+int32('m')<<16) {
 		switch ev.Fdata1 {
-		case int32('a')<<24 + libc.Int32FromUint8('m')<<16 | libc.Int32FromUint8('e')<<8:
+		case int32('a')<<24 + int32('m')<<16 | int32('e')<<8:
 			st_firsttime = 1
-		case int32('a')<<24 + libc.Int32FromUint8('m')<<16 | libc.Int32FromUint8('x')<<8:
+		case int32('a')<<24 + int32('m')<<16 | int32('x')<<8:
 			//	fprintf(stderr, "AM exited\n");
 			break
 		}
