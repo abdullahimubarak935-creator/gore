@@ -8,7 +8,9 @@ import (
 	"log"
 	"math"
 	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 	"unsafe"
 
@@ -3853,7 +3855,7 @@ func init() {
 const MAX_IWAD_DIRS = 128
 
 type iwad_t struct {
-	Fname        uintptr
+	Fname        string
 	Fmission     GameMission_t
 	Fmode        GameMode_t
 	Fdescription uintptr
@@ -3866,79 +3868,79 @@ type iwad_t struct {
 
 var iwads = [14]iwad_t{
 	0: {
-		Fname:        __ccgo_ts(911),
+		Fname:        __ccgo_ts_str(911),
 		Fmission:     int32(doom2),
 		Fmode:        int32(commercial),
 		Fdescription: __ccgo_ts(921),
 	},
 	1: {
-		Fname:        __ccgo_ts(929),
+		Fname:        __ccgo_ts_str(929),
 		Fmission:     int32(pack_plut),
 		Fmode:        int32(commercial),
 		Fdescription: __ccgo_ts(942),
 	},
 	2: {
-		Fname:        __ccgo_ts(974),
+		Fname:        __ccgo_ts_str(974),
 		Fmission:     int32(pack_tnt),
 		Fmode:        int32(commercial),
 		Fdescription: __ccgo_ts(982),
 	},
 	3: {
-		Fname:        __ccgo_ts(1009),
+		Fname:        __ccgo_ts_str(1009),
 		Fmode:        int32(retail),
 		Fdescription: __ccgo_ts(1018),
 	},
 	4: {
-		Fname:        __ccgo_ts(1023),
+		Fname:        __ccgo_ts_str(1023),
 		Fdescription: __ccgo_ts(1033),
 	},
 	5: {
-		Fname:        __ccgo_ts(1048),
+		Fname:        __ccgo_ts_str(1048),
 		Fmission:     int32(pack_chex),
 		Fdescription: __ccgo_ts(1057),
 	},
 	6: {
-		Fname:        __ccgo_ts(1068),
+		Fname:        __ccgo_ts_str(1068),
 		Fmission:     int32(pack_hacx),
 		Fmode:        int32(commercial),
 		Fdescription: __ccgo_ts(1077),
 	},
 	7: {
-		Fname:        __ccgo_ts(1082),
+		Fname:        __ccgo_ts_str(1082),
 		Fmission:     int32(doom2),
 		Fmode:        int32(commercial),
 		Fdescription: __ccgo_ts(1093),
 	},
 	8: {
-		Fname:        __ccgo_ts(1100),
+		Fname:        __ccgo_ts_str(1100),
 		Fmission:     int32(doom2),
 		Fmode:        int32(commercial),
 		Fdescription: __ccgo_ts(1114),
 	},
 	9: {
-		Fname:        __ccgo_ts(1132),
+		Fname:        __ccgo_ts_str(1132),
 		Fmode:        int32(retail),
 		Fdescription: __ccgo_ts(1146),
 	},
 	10: {
-		Fname:        __ccgo_ts(1164),
+		Fname:        __ccgo_ts_str(1164),
 		Fmission:     int32(heretic),
 		Fmode:        int32(retail),
 		Fdescription: __ccgo_ts(1176),
 	},
 	11: {
-		Fname:        __ccgo_ts(1184),
+		Fname:        __ccgo_ts_str(1184),
 		Fmission:     int32(heretic),
 		Fdescription: __ccgo_ts(1197),
 	},
 	12: {
-		Fname:        __ccgo_ts(1215),
+		Fname:        __ccgo_ts_str(1215),
 		Fmission:     int32(hexen),
 		Fmode:        int32(commercial),
 		Fdescription: __ccgo_ts(1225),
 	},
 	13: {
-		Fname:        __ccgo_ts(1231),
+		Fname:        __ccgo_ts_str(1231),
 		Fmission:     int32(strife),
 		Fmode:        int32(commercial),
 		Fdescription: __ccgo_ts(1243),
@@ -3950,10 +3952,10 @@ var iwads = [14]iwad_t{
 // "128 IWAD search directories should be enough for anybody".
 
 var iwad_dirs_built int32 = 0
-var iwad_dirs [128]uintptr
+var iwad_dirs [128]string
 var num_iwad_dirs int32 = 0
 
-func AddIWADDir(dir uintptr) {
+func AddIWADDir(dir string) {
 	if num_iwad_dirs < int32(MAX_IWAD_DIRS) {
 		iwad_dirs[num_iwad_dirs] = dir
 		num_iwad_dirs++
@@ -3968,45 +3970,43 @@ func AddIWADDir(dir uintptr) {
 // Returns true if the specified path is a path to a file
 // of the specified name.
 
-func DirIsFile(path uintptr, filename uintptr) (r boolean) {
-	var filename_len, path_len uint64
-	path_len = xstrlen(path)
-	filename_len = xstrlen(filename)
-	return libc.BoolUint32(path_len >= filename_len+uint64(1) && int32(*(*int8)(unsafe.Pointer(path + uintptr(path_len-filename_len-uint64(1))))) == int32('/') && !(xstrcasecmp(path+uintptr(path_len-filename_len), filename) != 0))
+func DirIsFile(path string, filename string) (r boolean) {
+	if strings.HasPrefix(filename, path) && path[len(path)-1] == '/' {
+		return 1
+	}
+	return 0
 }
 
 // Check if the specified directory contains the specified IWAD
 // file, returning the full path to the IWAD if found, or NULL
 // if not found.
 
-func CheckDirectoryHasIWAD(tls *libc.TLS, dir uintptr, iwadname uintptr) (r uintptr) {
-	bp := alloc(32)
-	var filename uintptr
+func CheckDirectoryHasIWAD(tls *libc.TLS, dir string, iwadname string) string {
+	var filename string
 	// As a special case, the "directory" may refer directly to an
 	// IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
-	if DirIsFile(dir, iwadname) != 0 && M_FileExists(tls, dir) != 0 {
-		return xstrdup(dir)
+	if DirIsFile(dir, iwadname) != 0 && M_FileExists(dir) != 0 {
+		return dir
 	}
 	// Construct the full path to the IWAD if it is located in
 	// this directory, and check if it exists.
-	if !(xstrcmp(dir, __ccgo_ts(1250)) != 0) {
-		filename = xstrdup(iwadname)
+	if dir == __ccgo_ts_str(1250) {
+		filename = iwadname
 	} else {
-		filename = M_StringJoin(tls, dir, libc.VaList(bp+8, __ccgo_ts(1252), iwadname, libc.UintptrFromInt32(0)))
+		filename = dir + __ccgo_ts_str(1252) + iwadname
 	}
-	fprintf_ccgo(os.Stdout, 1254, libc.GoString(filename))
-	if M_FileExists(tls, filename) != 0 {
+	fprintf_ccgo(os.Stdout, 1254, filename)
+	if M_FileExists(filename) != 0 {
 		return filename
 	}
-	xfree(tls, filename)
-	return libc.UintptrFromInt32(0)
+	return ""
 }
 
 // Search a directory to try to find an IWAD
 // Returns the location of the IWAD if found, otherwise NULL.
 
-func SearchDirectoryForIWAD(tls *libc.TLS, dir uintptr, mask int32, mission uintptr) (r uintptr) {
-	var filename uintptr
+func SearchDirectoryForIWAD(tls *libc.TLS, dir string, mask int32, mission uintptr) string {
+	var filename string
 	var i uint64
 	i = uint64(0)
 	for {
@@ -4017,7 +4017,7 @@ func SearchDirectoryForIWAD(tls *libc.TLS, dir uintptr, mask int32, mission uint
 			goto _1
 		}
 		filename = CheckDirectoryHasIWAD(tls, dir, iwads[i].Fname)
-		if filename != libc.UintptrFromInt32(0) {
+		if filename != "" {
 			*(*GameMission_t)(unsafe.Pointer(mission)) = iwads[i].Fmission
 			return filename
 		}
@@ -4026,20 +4026,15 @@ func SearchDirectoryForIWAD(tls *libc.TLS, dir uintptr, mask int32, mission uint
 		;
 		i++
 	}
-	return libc.UintptrFromInt32(0)
+	return ""
 }
 
 // When given an IWAD with the '-iwad' parameter,
 // attempt to identify it by its name.
 
-func IdentifyIWADByName(tls *libc.TLS, name uintptr, mask int32) (r GameMission_t) {
+func IdentifyIWADByName(tls *libc.TLS, name string, mask int32) (r GameMission_t) {
 	var i uint64
 	var mission GameMission_t
-	var p uintptr
-	p = libc.Xstrrchr(tls, name, int32('/'))
-	if p != libc.UintptrFromInt32(0) {
-		name = p + uintptr(1)
-	}
 	mission = int32(none)
 	i = uint64(0)
 	for {
@@ -4052,7 +4047,7 @@ func IdentifyIWADByName(tls *libc.TLS, name uintptr, mask int32) (r GameMission_
 			goto _1
 		}
 		// Check if it ends in this IWAD name.
-		if !(xstrcasecmp(name, iwads[i].Fname) != 0) {
+		if name == iwads[i].Fname {
 			mission = iwads[i].Fmission
 			break
 		}
@@ -4069,7 +4064,7 @@ func IdentifyIWADByName(tls *libc.TLS, name uintptr, mask int32) (r GameMission_
 //
 
 func BuildIWADDirList() {
-	AddIWADDir(__ccgo_ts(1250))
+	AddIWADDir(__ccgo_ts_str(1250))
 	// Don't run this function again.
 	iwad_dirs_built = 1
 }
@@ -4078,12 +4073,10 @@ func BuildIWADDirList() {
 // Searches WAD search paths for an WAD with a specific filename.
 //
 
-func D_FindWADByName(tls *libc.TLS, name uintptr) (r uintptr) {
-	bp := alloc(32)
+func D_FindWADByName(tls *libc.TLS, name string) string {
 	var i int32
-	var path uintptr
 	// Absolute path?
-	if M_FileExists(tls, name) != 0 {
+	if M_FileExists(name) != 0 {
 		return name
 	}
 	BuildIWADDirList()
@@ -4096,22 +4089,21 @@ func D_FindWADByName(tls *libc.TLS, name uintptr) (r uintptr) {
 		// As a special case, if this is in DOOMWADDIR or DOOMWADPATH,
 		// the "directory" may actually refer directly to an IWAD
 		// file.
-		if DirIsFile(iwad_dirs[i], name) != 0 && M_FileExists(tls, iwad_dirs[i]) != 0 {
-			return xstrdup(iwad_dirs[i])
+		if DirIsFile(iwad_dirs[i], name) != 0 && M_FileExists(iwad_dirs[i]) != 0 {
+			return iwad_dirs[i]
 		}
 		// Construct a string for the full path
-		path = M_StringJoin(tls, iwad_dirs[i], libc.VaList(bp+8, __ccgo_ts(1252), name, libc.UintptrFromInt32(0)))
-		if M_FileExists(tls, path) != 0 {
+		path := iwad_dirs[i] + __ccgo_ts_str(1252)
+		if M_FileExists(path) != 0 {
 			return path
 		}
-		xfree(tls, path)
 		goto _1
 	_1:
 		;
 		i++
 	}
 	// File not found
-	return libc.UintptrFromInt32(0)
+	return ""
 }
 
 //
@@ -4121,15 +4113,13 @@ func D_FindWADByName(tls *libc.TLS, name uintptr) (r uintptr) {
 // if not found.
 //
 
-func D_TryFindWADByName(tls *libc.TLS, filename uintptr) (r uintptr) {
-	var result uintptr
-	result = D_FindWADByName(tls, filename)
-	if result != libc.UintptrFromInt32(0) {
+func D_TryFindWADByName(tls *libc.TLS, filename string) string {
+	result := D_FindWADByName(tls, filename)
+	if result != "" {
 		return result
 	} else {
 		return filename
 	}
-	return r
 }
 
 //
@@ -4139,9 +4129,10 @@ func D_TryFindWADByName(tls *libc.TLS, filename uintptr) (r uintptr) {
 // should be executed (notably loading PWADs).
 //
 
-func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
+func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) string {
 	var i, iwadparm int32
-	var iwadfile, result uintptr
+	var result string
+	var iwadfile string
 	// Check for the -iwad parameter
 	//!
 	// Specify an IWAD file to use.
@@ -4151,20 +4142,20 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
 	iwadparm = M_CheckParmWithArgs(__ccgo_ts(1275), 1)
 	if iwadparm != 0 {
 		// Search through IWAD dirs for an IWAD with the given name.
-		iwadfile = *(*uintptr)(unsafe.Pointer(myargv + uintptr(iwadparm+int32(1))*8))
+		iwadfile = libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(iwadparm+int32(1))*8)))
 		result = D_FindWADByName(tls, iwadfile)
-		if result == libc.UintptrFromInt32(0) {
-			I_Error(tls, __ccgo_ts(1281), libc.GoString(iwadfile))
+		if result == "" {
+			I_Error(tls, __ccgo_ts(1281), iwadfile)
 		}
 		*(*GameMission_t)(unsafe.Pointer(mission)) = IdentifyIWADByName(tls, result, mask)
 	} else {
 		// Search through the list and look for an IWAD
 		fprintf_ccgo(os.Stdout, 1307)
-		result = libc.UintptrFromInt32(0)
+		result = ""
 		BuildIWADDirList()
 		i = 0
 		for {
-			if !(result == libc.UintptrFromInt32(0) && i < num_iwad_dirs) {
+			if !(result == "" && i < num_iwad_dirs) {
 				break
 			}
 			result = SearchDirectoryForIWAD(tls, iwad_dirs[i], mask, mission)
@@ -4181,7 +4172,7 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) (r uintptr) {
 // Get the IWAD name used for savegames.
 //
 
-func D_SaveGameIWADName(gamemission GameMission_t) (r uintptr) {
+func D_SaveGameIWADName(gamemission GameMission_t) string {
 	var i uint64
 	// Determine the IWAD name to use for savegames.
 	// This determines the directory the savegame files get put into.
@@ -4203,7 +4194,7 @@ func D_SaveGameIWADName(gamemission GameMission_t) (r uintptr) {
 		i++
 	}
 	// Default fallback:
-	return __ccgo_ts(1353)
+	return __ccgo_ts_str(1353)
 }
 
 func D_SuggestGameName(mission GameMission_t, mode GameMode_t) (r uintptr) {
@@ -5503,9 +5494,9 @@ func D_SetGameDescription(tls *libc.TLS) {
 	}
 }
 
-func D_AddFile(tls *libc.TLS, filename uintptr) (r boolean) {
+func D_AddFile(tls *libc.TLS, filename string) (r boolean) {
 	var handle *os.File
-	fprintf_ccgo(os.Stdout, 2817, libc.GoString(filename))
+	fprintf_ccgo(os.Stdout, 2817, filename)
 	handle = W_AddFile(tls, filename)
 	return libc.BoolUint32(handle != nil)
 }
@@ -5783,7 +5774,7 @@ func D_DoomMain(tls *libc.TLS) {
 	}
 	// find which dir to use for config files
 	// Auto-detect the configuration dir.
-	M_SetConfigDir(tls, libc.UintptrFromInt32(0))
+	M_SetConfigDir(tls, "")
 	//!
 	// @arg <x>
 	// @vanilla
@@ -5815,7 +5806,7 @@ func D_DoomMain(tls *libc.TLS) {
 	V_Init()
 	// Load configuration files before initialising other subsystems.
 	fprintf_ccgo(os.Stdout, 4197)
-	M_SetConfigFilenames(tls, __ccgo_ts(4236), __ccgo_ts(4248))
+	M_SetConfigFilenames(__ccgo_ts_str(4236), __ccgo_ts_str(4248))
 	D_BindVariables(tls)
 	M_LoadDefaults(tls)
 	// Save configuration at exit.
@@ -5823,7 +5814,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Find main IWAD file and load it.
 	iwadfile = D_FindIWAD(tls, 1<<int32(doom)|1<<int32(doom2)|1<<int32(pack_tnt)|1<<int32(pack_plut)|1<<int32(pack_chex)|1<<int32(pack_hacx), uintptr(unsafe.Pointer(&gamemission)))
 	// None found?
-	if iwadfile == libc.UintptrFromInt32(0) {
+	if iwadfile == "" {
 		I_Error(tls, __ccgo_ts(4268), 0)
 	}
 	modifiedgame = 0
@@ -5885,12 +5876,13 @@ func D_DoomMain(tls *libc.TLS) {
 	if p != 0 {
 		// With Vanilla you have to specify the file without extension,
 		// but make that optional.
+		var name string
 		if M_StringEndsWith(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), __ccgo_ts(4476)) != 0 {
-			M_StringCopy(bp, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)), uint64(256))
+			name = libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
 		} else {
-			snprintf_ccgo(bp, 256, 4481, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+			name = fmt.Sprintf(__ccgo_ts_str(4481), libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))
 		}
-		if D_AddFile(tls, bp) != 0 {
+		if D_AddFile(tls, name) != 0 {
 			M_StringCopy(bp+256, lumpinfo+uintptr(numlumps-uint32(1))*40, uint64(9))
 		} else {
 			// If file failed to load, still continue trying to play
@@ -6109,7 +6101,7 @@ func D_DoomMain(tls *libc.TLS) {
 	//
 	p = M_CheckParmWithArgs(__ccgo_ts(5361), 1)
 	if p != 0 {
-		G_RecordDemo(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8)))
+		G_RecordDemo(tls, libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p+int32(1))*8))))
 		autostart = 1
 	}
 	p = M_CheckParmWithArgs(__ccgo_ts(4456), 1)
@@ -6126,8 +6118,7 @@ func D_DoomMain(tls *libc.TLS) {
 		return
 	}
 	if startloadgame >= 0 {
-		M_StringCopy(bp, P_SaveGameFile(tls, startloadgame), uint64(256))
-		G_LoadGame(tls, bp)
+		G_LoadGame(tls, P_SaveGameFile(tls, startloadgame))
 	}
 	if gameaction != ga_loadgame {
 		if autostart != 0 || netgame != 0 {
@@ -8136,7 +8127,7 @@ func G_Ticker(tls *libc.TLS) {
 		case ga_worlddone:
 			G_DoWorldDone(tls)
 		case ga_screenshot:
-			V_ScreenShot(tls, __ccgo_ts(13723))
+			V_ScreenShot(tls, __ccgo_ts_str(13723))
 			players[consoleplayer].Fmessage = __ccgo_ts(13735)
 			gameaction = ga_nothing
 		case ga_nothing:
@@ -8768,21 +8759,24 @@ func G_DoWorldDone(tls *libc.TLS) {
 	viewactive = 1
 }
 
-func G_LoadGame(tls *libc.TLS, name uintptr) {
-	M_StringCopy(uintptr(unsafe.Pointer(&savename)), name, uint64(256))
+func G_LoadGame(tls *libc.TLS, name string) {
+	savename = name
 	gameaction = ga_loadgame
 }
 
 func G_DoLoadGame(tls *libc.TLS) {
 	var savedleveltime int32
+	var err error
 	gameaction = ga_nothing
-	save_stream = libc.Xfopen(tls, uintptr(unsafe.Pointer(&savename)), __ccgo_ts(13884))
-	if save_stream == libc.UintptrFromInt32(0) {
+	save_stream, err = os.Open(savename)
+	if err != nil {
+		log.Printf("G_DoLoadGame: error opening savegame file %s: %v\n", savename, err)
 		return
 	}
+	defer save_stream.Close()
 	savegame_error = 0
 	if !(P_ReadSaveGameHeader(tls) != 0) {
-		libc.Xfclose(tls, save_stream)
+		save_stream.Close()
 		return
 	}
 	savedleveltime = leveltime
@@ -8797,7 +8791,6 @@ func G_DoLoadGame(tls *libc.TLS) {
 	if !(P_ReadSaveGameEOF(tls) != 0) {
 		I_Error(tls, __ccgo_ts(13887), 0)
 	}
-	libc.Xfclose(tls, save_stream)
 	if setsizeneeded != 0 {
 		R_ExecuteSetViewSize(tls)
 	}
@@ -8819,21 +8812,24 @@ func G_SaveGame(tls *libc.TLS, slot int32, description uintptr) {
 }
 
 func G_DoSaveGame(tls *libc.TLS) {
-	var recovery_savegame_file, savegame_file, temp_savegame_file uintptr
-	recovery_savegame_file = libc.UintptrFromInt32(0)
+	var recovery_savegame_file, savegame_file, temp_savegame_file string
+	recovery_savegame_file = ""
 	temp_savegame_file = P_TempSaveGameFile(tls)
 	savegame_file = P_SaveGameFile(tls, savegameslot)
 	// Open the savegame file for writing.  We write to a temporary file
 	// and then rename it at the end if it was successfully written.
 	// This prevents an existing savegame from being overwritten by
 	// a corrupted one, or if a savegame buffer overrun occurs.
-	save_stream = libc.Xfopen(tls, temp_savegame_file, __ccgo_ts(13900))
-	if save_stream == libc.UintptrFromInt32(0) {
+	var err error
+	save_stream, err = os.OpenFile(temp_savegame_file, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		log.Printf("G_DoSaveGame: error opening savegame file %s: %v\n", temp_savegame_file, err)
 		// Failed to save the game, so we're going to have to abort. But
 		// to be nice, save to somewhere else before we call I_Error().
-		recovery_savegame_file = M_TempFile(tls, __ccgo_ts(13903))
-		save_stream = libc.Xfopen(tls, recovery_savegame_file, __ccgo_ts(13900))
-		if save_stream == libc.UintptrFromInt32(0) {
+		recovery_savegame_file = M_TempFile(tls, __ccgo_ts_str(13903))
+		save_stream, err = os.OpenFile(recovery_savegame_file, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		if err != nil {
+			log.Printf("G_DoSaveGame: error opening recovery savegame file %s: %v\n", recovery_savegame_file, err)
 			I_Error(tls, __ccgo_ts(13916), temp_savegame_file, recovery_savegame_file)
 		}
 	}
@@ -8846,12 +8842,13 @@ func G_DoSaveGame(tls *libc.TLS) {
 	P_WriteSaveGameEOF(tls)
 	// Enforce the same savegame size limit as in Vanilla Doom,
 	// except if the vanilla_savegame_limit setting is turned off.
-	if vanilla_savegame_limit != 0 && libc.Xftell(tls, save_stream) > int64(SAVEGAMESIZE) {
+	pos, err := save_stream.Seek(0, io.SeekCurrent)
+	if vanilla_savegame_limit != 0 && pos > SAVEGAMESIZE {
 		I_Error(tls, __ccgo_ts(13970), 0)
 	}
 	// Finish up, close the savegame file.
-	libc.Xfclose(tls, save_stream)
-	if recovery_savegame_file != libc.UintptrFromInt32(0) {
+	save_stream.Close()
+	if recovery_savegame_file != "" {
 		// We failed to save to the normal location, but we wrote a
 		// recovery file to the temp directory. Now we can bomb out
 		// with an error.
@@ -8859,8 +8856,8 @@ func G_DoSaveGame(tls *libc.TLS) {
 	}
 	// Now rename the temporary savegame file to the actual savegame
 	// file, overwriting the old savegame if there was one there.
-	libc.Xremove(tls, savegame_file)
-	libc.Xrename(tls, temp_savegame_file, savegame_file)
+	os.Remove(savegame_file) // remove the old savegame file
+	os.Rename(temp_savegame_file, savegame_file)
 	gameaction = ga_nothing
 	M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(14092), uint64(32))
 	players[consoleplayer].Fmessage = __ccgo_ts(14093)
@@ -9156,14 +9153,10 @@ func G_WriteDemoTiccmd(tls *libc.TLS, cmd uintptr) {
 //	//
 //	// G_RecordDemo
 //	//
-func G_RecordDemo(tls *libc.TLS, name uintptr) {
-	bp := alloc(16)
-	var demoname_size uint64
+func G_RecordDemo(tls *libc.TLS, name string) {
 	var i, maxsize int32
 	usergame = 0
-	demoname_size = xstrlen(name) + uint64(5)
-	demoname = Z_Malloc(tls, libc.Int32FromUint64(demoname_size), int32(PU_STATIC), libc.UintptrFromInt32(0))
-	M_snprintf(tls, demoname, demoname_size, __ccgo_ts(4481), libc.VaList(bp+8, name))
+	demoname = fmt.Sprintf(__ccgo_ts_str(4481), name)
 	maxsize = int32(0x20000)
 	//!
 	// @arg <size>
@@ -9441,7 +9434,7 @@ func G_CheckDemoStatus(tls *libc.TLS) {
 		v3 = demo_p
 		demo_p++
 		*(*uint8)(unsafe.Pointer(v3)) = uint8(DEMOMARKER)
-		M_WriteFile(tls, demoname, demobuffer, int32(int64(demo_p)-int64(demobuffer)))
+		M_WriteFile(demoname, demobuffer, int32(int64(demo_p)-int64(demobuffer)))
 		Z_Free(tls, demobuffer)
 		demorecording = 0
 		I_Error(tls, __ccgo_ts(14508), demoname)
@@ -18438,13 +18431,13 @@ func I_PrintBanner(tls *libc.TLS, msg uintptr) {
 		if !(i < spaces) {
 			break
 		}
-		libc.Xputchar(tls, int32(' '))
+		fmt.Print(" ")
 		goto _1
 	_1:
 		;
 		i++
 	}
-	libc.Xputs(tls, msg)
+	fmt.Printf("%s\n", libc.GoString(msg))
 }
 
 func I_PrintDivider(tls *libc.TLS) {
@@ -18454,13 +18447,13 @@ func I_PrintDivider(tls *libc.TLS) {
 		if !(i < 75) {
 			break
 		}
-		libc.Xputchar(tls, int32('='))
+		fmt.Print("=")
 		goto _1
 	_1:
 		;
 		i++
 	}
-	libc.Xputchar(tls, int32('\n'))
+	fmt.Print("\n")
 }
 
 func I_PrintStartupBanner(tls *libc.TLS, gamedescription uintptr) {
@@ -18492,49 +18485,6 @@ func I_Quit(tls *libc.TLS) {
 		exit_funcs[i].Ffunc(tls)
 	}
 }
-
-// Escape special characters in the given string so that they can be
-// safely enclosed in shell quotes.
-
-func EscapeShellString(tls *libc.TLS, string1 uintptr) (r1 uintptr) {
-	var r, result, s uintptr
-	// In the worst case, every character might be escaped.
-	result = xmalloc(tls, xstrlen(string1)*uint64(2)+uint64(3))
-	r = result
-	// Enclosing quotes.
-	*(*int8)(unsafe.Pointer(r)) = int8('"')
-	r++
-	s = string1
-	for {
-		if !(int32(*(*int8)(unsafe.Pointer(s))) != int32('\000')) {
-			break
-		}
-		// From the bash manual:
-		//
-		//  "Enclosing characters in double quotes preserves the literal
-		//   value of all characters within the quotes, with the exception
-		//   of $, `, \, and, when history expansion is enabled, !."
-		//
-		// Therefore, escape these characters by prefixing with a backslash.
-		if libc.Xstrchr(tls, __ccgo_ts(19236), int32(*(*int8)(unsafe.Pointer(s)))) != libc.UintptrFromInt32(0) {
-			*(*int8)(unsafe.Pointer(r)) = int8('\\')
-			r++
-		}
-		*(*int8)(unsafe.Pointer(r)) = *(*int8)(unsafe.Pointer(s))
-		r++
-		goto _1
-	_1:
-		;
-		s++
-	}
-	// Enclosing quotes.
-	*(*int8)(unsafe.Pointer(r)) = int8('"')
-	r++
-	*(*int8)(unsafe.Pointer(r)) = int8('\000')
-	return result
-}
-
-var errorboxpath_size uint64
 
 //
 // I_Error
@@ -18879,8 +18829,8 @@ const KEY_UPARROW1 = 173
 
 // Default filenames for configuration files.
 
-var default_main_config uintptr
-var default_extra_config uintptr
+var default_main_config string
+var default_extra_config string
 
 type default_type_t = int32
 
@@ -18901,7 +18851,7 @@ type default_t struct {
 type default_collection_t struct {
 	Fdefaults    uintptr
 	Fnumdefaults int32
-	Ffilename    uintptr
+	Ffilename    string
 }
 
 //! @begin_config_file default
@@ -19654,7 +19604,7 @@ func LoadDefaultCollection(tls *libc.TLS, collection uintptr) {
 
 // Set the default filenames to use for configuration files.
 
-func M_SetConfigFilenames(tls *libc.TLS, main_config uintptr, extra_config uintptr) {
+func M_SetConfigFilenames(main_config string, extra_config string) {
 	default_main_config = main_config
 	default_extra_config = extra_config
 }
@@ -19673,7 +19623,6 @@ func M_SaveDefaults(tls *libc.TLS) {
 //
 
 func M_LoadDefaults(tls *libc.TLS) {
-	bp := alloc(32)
 	var i int32
 	// check for a custom default file
 	//!
@@ -19685,12 +19634,12 @@ func M_LoadDefaults(tls *libc.TLS) {
 	//
 	i = M_CheckParmWithArgs(__ccgo_ts(21869), 1)
 	if i != 0 {
-		doom_defaults.Ffilename = *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))
-		fprintf_ccgo(os.Stdout, 21877, libc.GoString(doom_defaults.Ffilename))
+		doom_defaults.Ffilename = libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8)))
+		fprintf_ccgo(os.Stdout, 21877, doom_defaults.Ffilename)
 	} else {
-		doom_defaults.Ffilename = M_StringJoin(tls, configdir, libc.VaList(bp+8, default_main_config, libc.UintptrFromInt32(0)))
+		doom_defaults.Ffilename = configdir + default_main_config
 	}
-	fprintf_ccgo(os.Stdout, 21896, libc.GoString(doom_defaults.Ffilename))
+	fprintf_ccgo(os.Stdout, 21896, doom_defaults.Ffilename)
 	//!
 	// @arg <file>
 	//
@@ -19699,10 +19648,10 @@ func M_LoadDefaults(tls *libc.TLS) {
 	//
 	i = M_CheckParmWithArgs(__ccgo_ts(21917), 1)
 	if i != 0 {
-		extra_defaults.Ffilename = *(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8))
-		fprintf_ccgo(os.Stdout, 21930, libc.GoString(extra_defaults.Ffilename))
+		extra_defaults.Ffilename = libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(i+int32(1))*8)))
+		fprintf_ccgo(os.Stdout, 21930, extra_defaults.Ffilename)
 	} else {
-		extra_defaults.Ffilename = M_StringJoin(tls, configdir, libc.VaList(bp+8, default_extra_config, libc.UintptrFromInt32(0)))
+		extra_defaults.Ffilename = configdir + default_extra_config
 	}
 	LoadDefaultCollection(tls, uintptr(unsafe.Pointer(&doom_defaults)))
 	LoadDefaultCollection(tls, uintptr(unsafe.Pointer(&extra_defaults)))
@@ -19738,12 +19687,8 @@ func M_BindVariable(tls *libc.TLS, name uintptr, location uintptr) {
 // Get the path to the default configuration dir to use, if NULL
 // is passed to M_SetConfigDir.
 
-func GetDefaultConfigDir(tls *libc.TLS) (r uintptr) {
-	var result uintptr
-	result = xmalloc(tls, uint64(2))
-	*(*int8)(unsafe.Pointer(result)) = int8('.')
-	*(*int8)(unsafe.Pointer(result + 1)) = int8('\000')
-	return result
+func GetDefaultConfigDir() string {
+	return "."
 }
 
 //
@@ -19753,18 +19698,19 @@ func GetDefaultConfigDir(tls *libc.TLS) (r uintptr) {
 // files are stored - default.cfg, chocolate-doom.cfg, savegames, etc.
 //
 
-func M_SetConfigDir(tls *libc.TLS, dir uintptr) {
+func M_SetConfigDir(tls *libc.TLS, dir string) {
 	// Use the directory that was passed, or find the default.
-	if dir != libc.UintptrFromInt32(0) {
+	if dir != "" {
 		configdir = dir
 	} else {
-		configdir = GetDefaultConfigDir(tls)
-	}
-	if xstrcmp(configdir, __ccgo_ts(14092)) != 0 {
-		fprintf_ccgo(os.Stdout, 22005, libc.GoString(configdir))
+		configdir = GetDefaultConfigDir()
+
+		if configdir == "" {
+			fprintf_ccgo(os.Stdout, 22005, configdir)
+		}
 	}
 	// Make the directory if it doesn't already exist:
-	M_MakeDirectory(tls, configdir)
+	M_MakeDirectory(configdir)
 }
 
 //
@@ -19772,17 +19718,16 @@ func M_SetConfigDir(tls *libc.TLS, dir uintptr) {
 // Creates the directory as necessary.
 //
 
-func M_GetSaveGameDir(tls *libc.TLS, iwadname uintptr) (r uintptr) {
-	bp := alloc(32)
-	var savegamedir uintptr
+func M_GetSaveGameDir(tls *libc.TLS, iwadname string) string {
+	var savegamedir string
 	// If not "doing" a configuration directory (Windows), don't "do"
 	// a savegame directory, either.
-	if !(xstrcmp(configdir, __ccgo_ts(14092)) != 0) {
-		savegamedir = xstrdup(__ccgo_ts(14092))
+	if configdir == "" {
+		savegamedir = ""
 	} else {
-		savegamedir = M_StringJoin(tls, configdir, libc.VaList(bp+8, __ccgo_ts(1252), __ccgo_ts(22043), libc.UintptrFromInt32(0)))
-		M_MakeDirectory(tls, savegamedir)
-		fprintf_ccgo(os.Stdout, 22054, libc.GoString(savegamedir))
+		savegamedir = configdir + __ccgo_ts_str(1252) + __ccgo_ts_str(22043)
+		M_MakeDirectory(savegamedir)
+		fprintf_ccgo(os.Stdout, 22054, savegamedir)
 	}
 	return savegamedir
 }
@@ -20577,23 +20522,21 @@ func init() {
 //	//  read the strings from the savegame files
 //	//
 func M_ReadSaveStrings(tls *libc.TLS) {
-	bp := alloc(256)
-	var handle uintptr
 	var i int32
 	i = 0
 	for {
 		if !(i < int32(load_end)) {
 			break
 		}
-		M_StringCopy(bp, P_SaveGameFile(tls, i), uint64(256))
-		handle = libc.Xfopen(tls, bp, __ccgo_ts(13884))
-		if handle == libc.UintptrFromInt32(0) {
+		var err error
+		handle, err := os.Open(P_SaveGameFile(tls, i))
+		if err != nil {
 			M_StringCopy(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24, __ccgo_ts(22118), uint64(SAVESTRINGSIZE))
 			LoadMenu[i].Fstatus = 0
 			goto _1
 		}
-		libc.Xfread(tls, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24, uint64(1), uint64(SAVESTRINGSIZE), handle)
-		libc.Xfclose(tls, handle)
+		handle.Read(savegamestrings[i][:])
+		handle.Close()
 		LoadMenu[i].Fstatus = 1
 		goto _1
 	_1:
@@ -20653,9 +20596,7 @@ func M_DrawSaveLoadBorder(tls *libc.TLS, x int32, y int32) {
 //	// User wants to load this game
 //	//
 func M_LoadSelect(tls *libc.TLS, choice int32) {
-	bp := alloc(256)
-	M_StringCopy(bp, P_SaveGameFile(tls, choice), uint64(256))
-	G_LoadGame(tls, bp)
+	G_LoadGame(tls, P_SaveGameFile(tls, choice))
 	M_ClearMenus(tls)
 }
 
@@ -21925,40 +21866,26 @@ func M_Init(tls *libc.TLS) {
 // Create a directory
 //
 
-func M_MakeDirectory(tls *libc.TLS, path uintptr) {
-	libc.Xmkdir(tls, path, 0755)
+func M_MakeDirectory(path string) {
+	os.MkdirAll(path, 0755)
 }
 
 // Check if a file exists
 
-func M_FileExists(tls *libc.TLS, filename uintptr) (r boolean) {
-	var fstream uintptr
-	fstream = libc.Xfopen(tls, filename, __ccgo_ts(23115))
-	if fstream != libc.UintptrFromInt32(0) {
-		libc.Xfclose(tls, fstream)
+func M_FileExists(filename string) (r boolean) {
+	if _, err := os.Stat(filename); err == nil {
 		return 1
-	} else {
-		// If we can't open because the file is a directory, the
-		// "file" exists at least!
-		return libc.BoolUint32(*(*int32)(unsafe.Pointer(libc.X__errno_location(tls))) == int32(EISDIR))
 	}
-	return r
+	return 0
 }
 
 //
 // M_WriteFile
 //
 
-func M_WriteFile(tls *libc.TLS, name uintptr, source uintptr, length int32) (r boolean) {
-	var count int32
-	var handle uintptr
-	handle = libc.Xfopen(tls, name, __ccgo_ts(13900))
-	if handle == libc.UintptrFromInt32(0) {
-		return 0
-	}
-	count = libc.Int32FromUint64(libc.Xfwrite(tls, source, uint64(1), libc.Uint64FromInt32(length), handle))
-	libc.Xfclose(tls, handle)
-	if count < length {
+func M_WriteFile(name string, source uintptr, length int32) (r boolean) {
+	sourceBytes := unsafe.Slice((*byte)(unsafe.Pointer(source)), int(length))
+	if err := os.WriteFile(name, sourceBytes, 0644); err != nil {
 		return 0
 	}
 	return 1
@@ -21969,12 +21896,8 @@ func M_WriteFile(tls *libc.TLS, name uintptr, source uintptr, length int32) (r b
 //
 // The returned value must be freed with Z_Free after use.
 
-func M_TempFile(tls *libc.TLS, s uintptr) (r uintptr) {
-	bp := alloc(32)
-	var tempdir uintptr
-	// In Unix, just use /tmp.
-	tempdir = __ccgo_ts(23139)
-	return M_StringJoin(tls, tempdir, libc.VaList(bp+8, __ccgo_ts(1252), s, libc.UintptrFromInt32(0)))
+func M_TempFile(tls *libc.TLS, s string) string {
+	return __ccgo_ts_str(23139) + __ccgo_ts_str(1252) + s
 }
 
 func M_StrToInt(tls *libc.TLS, str uintptr, result uintptr) (r boolean) {
@@ -21982,32 +21905,15 @@ func M_StrToInt(tls *libc.TLS, str uintptr, result uintptr) (r boolean) {
 	return libc.BoolUint32(libc.Xsscanf(tls, str, __ccgo_ts(23144), libc.VaList(bp+8, result)) == 1 || libc.Xsscanf(tls, str, __ccgo_ts(23150), libc.VaList(bp+8, result)) == 1 || libc.Xsscanf(tls, str, __ccgo_ts(23156), libc.VaList(bp+8, result)) == 1 || libc.Xsscanf(tls, str, __ccgo_ts(23161), libc.VaList(bp+8, result)) == 1)
 }
 
-func M_ExtractFileBase(tls *libc.TLS, path uintptr, dest uintptr) {
-	var filename, src, v2 uintptr
-	var length, v1 int32
-	src = path + uintptr(xstrlen(path)) - uintptr(1)
-	// back up until a \ or the start
-	for src != path && int32(*(*int8)(unsafe.Pointer(src - libc.UintptrFromInt32(1)))) != int32('/') {
-		src--
-	}
-	filename = src
+func M_ExtractFileBase(tls *libc.TLS, path string, dest uintptr) {
+	src := filepath.Base(path)
 	// Copy up to eight characters
 	// Note: Vanilla Doom exits with an error if a filename is specified
 	// with a base of more than eight characters.  To remove the 8.3
 	// filename limit, instead we simply truncate the name.
-	length = 0
 	xmemset(dest, 0, uint64(8))
-	for int32(*(*int8)(unsafe.Pointer(src))) != int32('\000') && int32(*(*int8)(unsafe.Pointer(src))) != int32('.') {
-		if length >= 8 {
-			fprintf_ccgo(os.Stdout, 23165, libc.GoString(filename), libc.GoString(dest))
-			break
-		}
-		v1 = length
-		length++
-		v2 = src
-		src++
-		*(*int8)(unsafe.Pointer(dest + uintptr(v1))) = int8(xtoupper(int32(*(*int8)(unsafe.Pointer(v2)))))
-	}
+	maxLen := uint64(min(len(src), 8))
+	xmemcpy(dest, uintptr(unsafe.Pointer(&[]byte(src)[0])), maxLen)
 }
 
 // Safe string copy function that works like OpenBSD's strlcpy().
@@ -29822,50 +29728,37 @@ const SAVEGAME_EOF = 29
 // the file has been successfully saved, it will be renamed to the
 // real file.
 
-func P_TempSaveGameFile(tls *libc.TLS) (r uintptr) {
-	bp := alloc(32)
-	if filename == libc.UintptrFromInt32(0) {
-		filename = M_StringJoin(tls, savegamedir, libc.VaList(bp+8, __ccgo_ts(24924), libc.UintptrFromInt32(0)))
+func P_TempSaveGameFile(tls *libc.TLS) string {
+	if filename == "" {
+		filename = savegamedir + __ccgo_ts_str(24924)
 	}
 	return filename
 }
 
-var filename = libc.UintptrFromInt32(0)
+var filename string
 
 // Get the filename of the save game file to use for the specified slot.
 
-func P_SaveGameFile(tls *libc.TLS, slot int32) (r uintptr) {
-	bp := alloc(64)
-	if filename1 == libc.UintptrFromInt32(0) {
-		filename_size = xstrlen(savegamedir) + uint64(32)
-		filename1 = xmalloc(tls, filename_size)
-	}
-	snprintf_ccgo(bp, 32, 24933, slot)
-	M_snprintf(tls, filename1, filename_size, __ccgo_ts(24947), libc.VaList(bp+40, savegamedir, bp))
-	return filename1
+func P_SaveGameFile(tls *libc.TLS, slot int32) string {
+	return fmt.Sprintf("%sdgsave%d.dsg", savegamedir, slot)
 }
-
-var filename1 = libc.UintptrFromInt32(0)
-
-var filename_size uint64
 
 // Endian-safe integer read/write functions
 
 func saveg_read8(tls *libc.TLS) (r uint8) {
-	bp := alloc(16)
-	if libc.Xfread(tls, bp, uint64(1), uint64(1), save_stream) < uint64(1) {
+	var val [1]byte
+	if _, err := save_stream.Read(val[:]); err != nil {
 		if !(savegame_error != 0) {
 			fprintf_ccgo(os.Stderr, 24952)
 			savegame_error = 1
 		}
 	}
-	return *(*uint8)(unsafe.Pointer(bp))
+	return val[0]
 }
 
 func saveg_write8(tls *libc.TLS, _value uint8) {
-	bp := alloc(16)
-	*(*uint8)(unsafe.Pointer(bp)) = _value
-	if libc.Xfwrite(tls, bp, uint64(1), uint64(1), save_stream) < uint64(1) {
+	val := [1]byte{_value}
+	if _, err := save_stream.Write(val[:]); err != nil {
 		if !(savegame_error != 0) {
 			fprintf_ccgo(os.Stderr, 25013)
 			savegame_error = 1
@@ -29905,9 +29798,8 @@ func saveg_write32(tls *libc.TLS, value int32) {
 
 func saveg_read_pad(tls *libc.TLS) {
 	var i, padding int32
-	var pos uint64
-	pos = libc.Uint64FromInt64(libc.Xftell(tls, save_stream))
-	padding = libc.Int32FromUint64((uint64(4) - pos&uint64(3)) & uint64(3))
+	pos, _ := save_stream.Seek(0, io.SeekCurrent)
+	padding = libc.Int32FromUint64((uint64(4) - uint64(pos)&uint64(3)) & uint64(3))
 	i = 0
 	for {
 		if !(i < padding) {
@@ -29923,9 +29815,8 @@ func saveg_read_pad(tls *libc.TLS) {
 
 func saveg_write_pad(tls *libc.TLS) {
 	var i, padding int32
-	var pos uint64
-	pos = libc.Uint64FromInt64(libc.Xftell(tls, save_stream))
-	padding = libc.Int32FromUint64((uint64(4) - pos&uint64(3)) & uint64(3))
+	pos, _ := save_stream.Seek(0, io.SeekCurrent)
+	padding = libc.Int32FromUint64((uint64(4) - uint64(pos)&uint64(3)) & uint64(3))
 	i = 0
 	for {
 		if !(i < padding) {
@@ -42764,7 +42655,7 @@ type pcx_t struct {
 // WritePCXfile
 //
 
-func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, height int32, palette uintptr) {
+func WritePCXfile(tls *libc.TLS, filename string, data uintptr, width int32, height int32, palette uintptr) {
 	var i, length int32
 	var pack, pcx, v10, v2, v3, v4, v5, v6, v7, v9 uintptr
 	pcx = Z_Malloc(tls, width*height*int32(2)+int32(1000), int32(PU_STATIC), libc.UintptrFromInt32(0))
@@ -42832,7 +42723,7 @@ func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, he
 	}
 	// write output file
 	length = int32(int64(pack) - int64(pcx))
-	M_WriteFile(tls, filename, pcx, length)
+	M_WriteFile(filename, pcx, length)
 	Z_Free(tls, pcx)
 }
 
@@ -42840,8 +42731,8 @@ func WritePCXfile(tls *libc.TLS, filename uintptr, data uintptr, width int32, he
 // V_ScreenShot
 //
 
-func V_ScreenShot(tls *libc.TLS, format uintptr) {
-	bp := alloc(48)
+func V_ScreenShot(tls *libc.TLS, format string) {
+	var bp string
 	var ext uintptr
 	var i int32
 	// find a file name to save it to
@@ -42851,8 +42742,9 @@ func V_ScreenShot(tls *libc.TLS, format uintptr) {
 		if !(i <= 99) {
 			break
 		}
-		M_snprintf(tls, bp, uint64(16), format, libc.VaList(bp+24, i, ext))
-		if !(M_FileExists(tls, bp) != 0) {
+
+		bp := fmt.Sprintf(format, i, ext)
+		if !(M_FileExists(bp) != 0) {
 			break // file doesn't exist
 		}
 		goto _1
@@ -44869,11 +44761,10 @@ func W_Checksum(tls *libc.TLS, digest uintptr) {
 	SHA1_Final(digest, bp)
 }
 
-func W_OpenFile(path uintptr) *os.File {
-	name := libc.GoString(path)
-	f, err := os.Open(name)
+func W_OpenFile(path string) *os.File {
+	f, err := os.Open(path)
 	if err != nil {
-		log.Printf("Error opening file %q: %v", name, err)
+		log.Printf("Error opening file %q: %v", path, err)
 		return nil
 	}
 	return f
@@ -44897,7 +44788,7 @@ func W_Read(wad *os.File, offset uint32, buffer uintptr, buffer_len uint64) (r u
 // Returns true if at least one file was added.
 
 func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
-	var filename uintptr
+	var filename string
 	var modifiedgame boolean
 	var p, v1 int32
 	modifiedgame = 0
@@ -44918,8 +44809,8 @@ func W_ParseCommandLine(tls *libc.TLS) (r boolean) {
 			if !(v1 != myargc && int32(*(*int8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8))))) != int32('-')) {
 				break
 			}
-			filename = D_TryFindWADByName(tls, *(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8)))
-			fprintf_ccgo(os.Stdout, 2817, libc.GoString(filename))
+			filename = D_TryFindWADByName(tls, libc.GoString(*(*uintptr)(unsafe.Pointer(myargv + uintptr(p)*8))))
+			fprintf_ccgo(os.Stdout, 2817, filename)
 			W_AddFile(tls, filename)
 		}
 	}
@@ -45018,25 +44909,25 @@ var wad_files = map[uintptr]*os.File{}
 // Other files are single lumps with the base filename
 //  for the lump name.
 
-func W_AddFile(tls *libc.TLS, filename uintptr) *os.File {
+func W_AddFile(tls *libc.TLS, filename string) *os.File {
 	bp := alloc(32)
 	var fileinfo, filerover, lump_p uintptr
 	var wad_file *os.File
 	var i uint32
 	var length, newnumlumps, startlump int32
 	// open the file and add to directory
-	stat, err := os.Stat(libc.GoString(filename))
+	stat, err := os.Stat(filename)
 	if err != nil {
-		log.Printf("Error stating file %q: %v", libc.GoString(filename), err)
+		log.Printf("Error stating file %q: %v", filename, err)
 		return nil
 	}
 	wad_file = W_OpenFile(filename)
 	if wad_file == nil {
-		fprintf_ccgo(os.Stdout, 28631, libc.GoString(filename))
+		fprintf_ccgo(os.Stdout, 28631, filename)
 		return nil
 	}
 	newnumlumps = libc.Int32FromUint32(numlumps)
-	if xstrcasecmp(filename+uintptr(xstrlen(filename))-uintptr(3), __ccgo_ts(28650)) != 0 {
+	if !strings.EqualFold(filepath.Ext(filename), ".wad") {
 		// single lump file
 		// fraggle: Swap the filepos and size here.  The WAD directory
 		// parsing code expects a little-endian directory, so will swap
@@ -46462,7 +46353,7 @@ var columnofs [1120]int32
 // Location where all configuration data is stored -
 // default.cfg, savegames, etc.
 
-var configdir uintptr
+var configdir string
 
 var consistancy [4][128]uint8
 
@@ -46599,7 +46490,7 @@ var demobuffer uintptr
 
 var demoend uintptr
 
-var demoname uintptr
+var demoname string
 
 var demoplayback boolean
 
@@ -46819,7 +46710,7 @@ var itemrespawntime [128]int32
 
 // location of IWAD and WAD files
 
-var iwadfile uintptr
+var iwadfile string
 
 //
 // Joystick controls
@@ -47591,17 +47482,17 @@ var saveStringEnter int32
 //	Refresh/render internal state variables (global).
 //
 
-var save_stream uintptr
+var save_stream *os.File
 
 var savegame_error boolean
 
 // Location where savegames are stored
 
-var savegamedir uintptr
+var savegamedir string
 
-var savegamestrings [10][24]int8
+var savegamestrings [10][SAVESTRINGSIZE]byte
 
-var savename [256]int8
+var savename string
 
 var scaledviewwidth int32
 
@@ -48339,6 +48230,18 @@ func __ccgo_ts(index int) uintptr {
 		panic("index not found in __ccgo_ts_map")
 	}
 	return uintptr(unsafe.Pointer(&val[0]))
+}
+
+func __ccgo_ts_str(index int) string {
+	val, ok := __ccgo_ts_map[index]
+	if !ok {
+		panic("index not found in __ccgo_ts_map")
+	}
+	if len(val) > 0 && val[len(val)-1] == 0 {
+		// Remove the null terminator for string representation
+		return string(val[:len(val)-1])
+	}
+	return string(val)
 }
 
 var __ccgo_ts_map = map[int][]byte{

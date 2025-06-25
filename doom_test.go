@@ -340,14 +340,18 @@ func TestDoomRandom(t *testing.T) {
 		}
 		// Press shift to run
 		game.InsertKeyChange(0x80+0x36, true)
-		// Do 10 seconds of random movement
-		for i := 0; i < 1000; i++ {
+		// Do some random movement
+		count := 1000
+		for i := 0; i < count; i++ {
 			change := rand.Intn(len(keys))
 			key := keys[change]
 			game.InsertKeyChange(key, true)
 			time.Sleep(2 * time.Millisecond)
 			game.InsertKeyChange(key, false)
 			time.Sleep(1 * time.Millisecond)
+			if i%100 == 0 {
+				t.Logf("%d/%d done", i, count)
+			}
 		}
 
 		// Exit
