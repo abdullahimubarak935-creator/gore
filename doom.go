@@ -2071,7 +2071,7 @@ type player_t struct {
 	Fkillcount       int32
 	Fitemcount       int32
 	Fsecretcount     int32
-	Fmessage         uintptr
+	Fmessage         string
 	Fdamagecount     int32
 	Fbonuscount      int32
 	Fattacker        uintptr
@@ -3092,27 +3092,26 @@ func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 												followplayer = libc.BoolInt32(!(followplayer != 0))
 												f_oldloc.Fx = int32(INT_MAX1)
 												if followplayer != 0 {
-													plr.Fmessage = __ccgo_ts(9)
+													plr.Fmessage = __ccgo_ts_str(9)
 												} else {
-													plr.Fmessage = __ccgo_ts(24)
+													plr.Fmessage = __ccgo_ts_str(24)
 												}
 											} else {
 												if key == key_map_grid {
 													grid = libc.BoolInt32(!(grid != 0))
 													if grid != 0 {
-														plr.Fmessage = __ccgo_ts(40)
+														plr.Fmessage = __ccgo_ts_str(40)
 													} else {
-														plr.Fmessage = __ccgo_ts(48)
+														plr.Fmessage = __ccgo_ts_str(48)
 													}
 												} else {
 													if key == key_map_mark {
-														M_snprintf(uintptr(unsafe.Pointer(&buffer)), uint64(20), __ccgo_ts_str(57), __ccgo_ts_str(63), markpointnum)
-														plr.Fmessage = uintptr(unsafe.Pointer(&buffer))
+														plr.Fmessage = fmt.Sprintf(__ccgo_ts_str(57), __ccgo_ts_str(63), markpointnum)
 														AM_addMark()
 													} else {
 														if key == key_map_clearmark {
 															AM_clearMarks()
-															plr.Fmessage = __ccgo_ts(75)
+															plr.Fmessage = __ccgo_ts_str(75)
 														} else {
 															rc = 0
 														}
@@ -3170,8 +3169,6 @@ func AM_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 }
 
 var bigstate int32
-
-var buffer [20]int8
 
 // C documentation
 //
@@ -6179,24 +6176,20 @@ const ANG901 = 1073741824
 
 // Called when a player leaves the game
 
-func PlayerQuitGame(tls *libc.TLS, player uintptr) {
-	var player_num uint32
-	var p1 uintptr
-	player_num = libc.Uint32FromInt64((int64(player) - int64(uintptr(unsafe.Pointer(&players)))) / 328)
+func PlayerQuitGame(tls *libc.TLS, player *player_t) {
+	player_num := playerIndex(player)
 	// Do this the same way as Vanilla Doom does, to allow dehacked
 	// replacements of this message
-	M_StringCopy(uintptr(unsafe.Pointer(&exitmsg)), __ccgo_ts(5400), uint64(80))
-	p1 = uintptr(unsafe.Pointer(&exitmsg)) + 7
-	*(*int8)(unsafe.Pointer(p1)) = int8(uint32(*(*int8)(unsafe.Pointer(p1))) + player_num)
+	exitmsg = fmt.Sprintf("Player %d left the game", player_num+1)
 	playeringame[player_num] = 0
-	players[consoleplayer].Fmessage = uintptr(unsafe.Pointer(&exitmsg))
+	players[consoleplayer].Fmessage = exitmsg
 	// TODO: check if it is sensible to do this:
 	if demorecording != 0 {
 		G_CheckDemoStatus(tls)
 	}
 }
 
-var exitmsg [80]int8
+var exitmsg string
 
 func RunTic(tls *libc.TLS, cmds []ticcmd_t, ingame []boolean) {
 	var i uint32
@@ -6207,7 +6200,7 @@ func RunTic(tls *libc.TLS, cmds []ticcmd_t, ingame []boolean) {
 			break
 		}
 		if !(demoplayback != 0) && playeringame[i] != 0 && ingame[i] == 0 {
-			PlayerQuitGame(tls, uintptr(unsafe.Pointer(&players))+uintptr(i)*328)
+			PlayerQuitGame(tls, &players[i])
 		}
 		goto _1
 	_1:
@@ -7933,7 +7926,7 @@ func G_DoLoadLevel(tls *libc.TLS) {
 	xmemset(uintptr(unsafe.Pointer(&mousearray)), 0, uint64(36))
 	xmemset(uintptr(unsafe.Pointer(&joyarray)), 0, uint64(84))
 	if testcontrols != 0 {
-		players[consoleplayer].Fmessage = __ccgo_ts(13701)
+		players[consoleplayer].Fmessage = __ccgo_ts_str(13701)
 	}
 }
 
@@ -8125,7 +8118,7 @@ func G_Ticker(tls *libc.TLS) {
 			G_DoWorldDone(tls)
 		case ga_screenshot:
 			V_ScreenShot(tls, __ccgo_ts_str(13723))
-			players[consoleplayer].Fmessage = __ccgo_ts(13735)
+			players[consoleplayer].Fmessage = __ccgo_ts_str(13735)
 			gameaction = ga_nothing
 		case ga_nothing:
 			break
@@ -8158,8 +8151,7 @@ func G_Ticker(tls *libc.TLS) {
 				turbodetected[i] = 1
 			}
 			if gametic&int32(31) == 0 && gametic>>int32(5)%int32(MAXPLAYERS) == i && turbodetected[i] != 0 {
-				M_snprintf(uintptr(unsafe.Pointer(&turbomessage)), uint64(80), __ccgo_ts_str(13747), libc.GoString(player_names[i]))
-				players[consoleplayer].Fmessage = uintptr(unsafe.Pointer(&turbomessage))
+				players[consoleplayer].Fmessage = fmt.Sprintf("%s is turbo!", libc.GoString(player_names[i]))
 				turbodetected[i] = 0
 			}
 			if netgame != 0 && !(netdemo != 0) && !(gametic%ticdup != 0) {
@@ -8857,7 +8849,7 @@ func G_DoSaveGame(tls *libc.TLS) {
 	os.Rename(temp_savegame_file, savegame_file)
 	gameaction = ga_nothing
 	M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(14092), uint64(32))
-	players[consoleplayer].Fmessage = __ccgo_ts(14093)
+	players[consoleplayer].Fmessage = __ccgo_ts_str(14093)
 	// draw the pattern into the back screen
 	R_FillBackScreen(tls)
 }
@@ -9595,8 +9587,8 @@ func HUlib_addLineToSText(s *hu_stext_t) {
 	}
 }
 
-func HUlib_addMessageToSText(s *hu_stext_t, prefix uintptr, msg uintptr) {
-	var v1, v2 uintptr
+func HUlib_addMessageToSText(s *hu_stext_t, prefix uintptr, msg string) {
+	var v1 uintptr
 	HUlib_addLineToSText(s)
 	if prefix != 0 {
 		for *(*int8)(unsafe.Pointer(prefix)) != 0 {
@@ -9605,10 +9597,8 @@ func HUlib_addMessageToSText(s *hu_stext_t, prefix uintptr, msg uintptr) {
 			HUlib_addCharToTextLine(&s.Fl[s.Fcl], *(*int8)(unsafe.Pointer(v1)))
 		}
 	}
-	for *(*int8)(unsafe.Pointer(msg)) != 0 {
-		v2 = msg
-		msg++
-		HUlib_addCharToTextLine(&s.Fl[s.Fcl], *(*int8)(unsafe.Pointer(v2)))
+	for i := 0; i < len(msg); i++ {
+		HUlib_addCharToTextLine(&s.Fl[s.Fcl], int8(msg[i]))
 	}
 }
 
@@ -10012,9 +10002,9 @@ func HU_Ticker(tls *libc.TLS) {
 	}
 	if showMessages != 0 || message_dontfuckwithme != 0 {
 		// display message if necessary
-		if plr1.Fmessage != 0 && !(message_nottobefuckedwith != 0) || plr1.Fmessage != 0 && message_dontfuckwithme != 0 {
+		if plr1.Fmessage != "" && !(message_nottobefuckedwith != 0) || plr1.Fmessage != "" && message_dontfuckwithme != 0 {
 			HUlib_addMessageToSText(&w_message, uintptr(0), plr1.Fmessage)
-			plr1.Fmessage = uintptr(0)
+			plr1.Fmessage = ""
 			message_on = 1
 			message_counter = 4 * TICRATE
 			message_nottobefuckedwith = message_dontfuckwithme
@@ -10042,7 +10032,7 @@ func HU_Ticker(tls *libc.TLS) {
 					rc = libc.Int32FromUint32(HUlib_keyInIText(&w_inputbuffer[i], libc.Uint8FromInt8(c)))
 					if rc != 0 && int32(c) == int32(KEY_ENTER) {
 						if w_inputbuffer[i].Fl.Flen1 != 0 && (int32(chat_dest[i]) == consoleplayer+int32(1) || int32(chat_dest[i]) == int32(HU_BROADCAST)) {
-							HUlib_addMessageToSText(&w_message, player_names[i], uintptr(unsafe.Pointer(&w_inputbuffer))+uintptr(i)*136+20)
+							HUlib_addMessageToSText(&w_message, player_names[i], libc.GoString(uintptr(unsafe.Pointer(&w_inputbuffer[i].Fl.Fl[0]))))
 							message_nottobefuckedwith = 1
 							message_on = 1
 							message_counter = 4 * TICRATE
@@ -10071,7 +10061,7 @@ var tail = 0
 
 func HU_queueChatChar(c int8) {
 	if (head+1)&(QUEUESIZE-1) == tail {
-		plr1.Fmessage = __ccgo_ts(17504)
+		plr1.Fmessage = __ccgo_ts_str(17504)
 	} else {
 		chatchars[head] = c
 		head = (head + 1) & (QUEUESIZE - 1)
@@ -10149,18 +10139,18 @@ func HU_Responder(ev *event_t) (r boolean) {
 								if i == consoleplayer {
 									num_nobrainers++
 									if num_nobrainers < 3 {
-										plr1.Fmessage = __ccgo_ts(17521)
+										plr1.Fmessage = __ccgo_ts_str(17521)
 									} else {
 										if num_nobrainers < 6 {
-											plr1.Fmessage = __ccgo_ts(17544)
+											plr1.Fmessage = __ccgo_ts_str(17544)
 										} else {
 											if num_nobrainers < 9 {
-												plr1.Fmessage = __ccgo_ts(17557)
+												plr1.Fmessage = __ccgo_ts_str(17557)
 											} else {
 												if num_nobrainers < 32 {
-													plr1.Fmessage = __ccgo_ts(17576)
+													plr1.Fmessage = __ccgo_ts_str(17576)
 												} else {
-													plr1.Fmessage = __ccgo_ts(17594)
+													plr1.Fmessage = __ccgo_ts_str(17594)
 												}
 											}
 										}
@@ -10196,8 +10186,8 @@ func HU_Responder(ev *event_t) (r boolean) {
 			HU_queueChatChar(int8(KEY_ENTER))
 			// leave chat mode and notify that it was sent
 			chat_on = 0
-			M_StringCopy(uintptr(unsafe.Pointer(&lastmessage)), chat_macros[c], uint64(81))
-			plr1.Fmessage = uintptr(unsafe.Pointer(&lastmessage))
+			lastmessage = libc.GoString(chat_macros[c])
+			plr1.Fmessage = lastmessage
 			eatkey = 1
 		} else {
 			c = libc.Uint8FromInt32(ev.Fdata2)
@@ -10211,8 +10201,8 @@ func HU_Responder(ev *event_t) (r boolean) {
 			if libc.Int32FromUint8(c) == int32(KEY_ENTER) {
 				chat_on = 0
 				if w_chat.Fl.Flen1 != 0 {
-					M_StringCopy(uintptr(unsafe.Pointer(&lastmessage)), uintptr(unsafe.Pointer(&w_chat))+20, uint64(81))
-					plr1.Fmessage = uintptr(unsafe.Pointer(&lastmessage))
+					lastmessage = libc.GoString(uintptr(unsafe.Pointer(&w_chat.Fl.Fl[0])))
+					plr1.Fmessage = lastmessage
 				}
 			} else {
 				if libc.Int32FromUint8(c) == int32(KEY_ESCAPE) {
@@ -10224,7 +10214,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 	return eatkey
 }
 
-var lastmessage [81]int8
+var lastmessage string
 
 var altdown boolean
 
@@ -19977,12 +19967,12 @@ func init() {
 	mouseSensitivity = 5
 	showMessages = 1
 	screenblocks = 10
-	gammamsg = [5][26]int8{
-		0: {'G', 'a', 'm', 'm', 'a', ' ', 'c', 'o', 'r', 'r', 'e', 'c', 't', 'i', 'o', 'n', ' ', 'O', 'F', 'F'},
-		1: {'G', 'a', 'm', 'm', 'a', ' ', 'c', 'o', 'r', 'r', 'e', 'c', 't', 'i', 'o', 'n', ' ', 'l', 'e', 'v', 'e', 'l', ' ', '1'},
-		2: {'G', 'a', 'm', 'm', 'a', ' ', 'c', 'o', 'r', 'r', 'e', 'c', 't', 'i', 'o', 'n', ' ', 'l', 'e', 'v', 'e', 'l', ' ', '2'},
-		3: {'G', 'a', 'm', 'm', 'a', ' ', 'c', 'o', 'r', 'r', 'e', 'c', 't', 'i', 'o', 'n', ' ', 'l', 'e', 'v', 'e', 'l', ' ', '3'},
-		4: {'G', 'a', 'm', 'm', 'a', ' ', 'c', 'o', 'r', 'r', 'e', 'c', 't', 'i', 'o', 'n', ' ', 'l', 'e', 'v', 'e', 'l', ' ', '4'},
+	gammamsg = [5]string{
+		"Gamma correction OFF",
+		"Gamma correction level 1",
+		"Gamma correction level 2",
+		"Gamma correction level 3",
+		"Gamma correction level 4",
 	}
 }
 
@@ -20933,9 +20923,9 @@ func M_ChangeMessages(tls *libc.TLS, choice int32) {
 	choice = 0
 	showMessages = 1 - showMessages
 	if !(showMessages != 0) {
-		players[consoleplayer].Fmessage = __ccgo_ts(22892)
+		players[consoleplayer].Fmessage = __ccgo_ts_str(22892)
 	} else {
-		players[consoleplayer].Fmessage = __ccgo_ts(22905)
+		players[consoleplayer].Fmessage = __ccgo_ts_str(22905)
 	}
 	message_dontfuckwithme = 1
 }
@@ -21081,9 +21071,9 @@ func M_ChangeDetail(choice int32) {
 	detailLevel = 1 - detailLevel
 	R_SetViewSize(screenblocks, detailLevel)
 	if !(detailLevel != 0) {
-		players[consoleplayer].Fmessage = __ccgo_ts(23040)
+		players[consoleplayer].Fmessage = __ccgo_ts_str(23040)
 	} else {
-		players[consoleplayer].Fmessage = __ccgo_ts(23052)
+		players[consoleplayer].Fmessage = __ccgo_ts_str(23052)
 	}
 }
 
@@ -21495,7 +21485,7 @@ func M_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 															if usegamma > 4 {
 																usegamma = 0
 															}
-															players[consoleplayer].Fmessage = uintptr(unsafe.Pointer(&gammamsg)) + uintptr(usegamma)*26
+															players[consoleplayer].Fmessage = gammamsg[usegamma]
 															I_SetPalette(W_CacheLumpName(tls, __ccgo_ts(1490), int32(PU_CACHE)))
 															return 1
 														}
@@ -22669,7 +22659,7 @@ func EV_DoLockedDoor(tls *libc.TLS, line *line_t, type1 vldoor_e, thing uintptr)
 			return 0
 		}
 		if !(p.Fcards[it_bluecard] != 0) && !(p.Fcards[it_blueskull] != 0) {
-			p.Fmessage = __ccgo_ts(23343)
+			p.Fmessage = __ccgo_ts_str(23343)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return 0
 		}
@@ -22680,7 +22670,7 @@ func EV_DoLockedDoor(tls *libc.TLS, line *line_t, type1 vldoor_e, thing uintptr)
 			return 0
 		}
 		if !(p.Fcards[it_redcard] != 0) && !(p.Fcards[it_redskull] != 0) {
-			p.Fmessage = __ccgo_ts(23387)
+			p.Fmessage = __ccgo_ts_str(23387)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return 0
 		}
@@ -22691,7 +22681,7 @@ func EV_DoLockedDoor(tls *libc.TLS, line *line_t, type1 vldoor_e, thing uintptr)
 			return 0
 		}
 		if !(p.Fcards[it_yellowcard] != 0) && !(p.Fcards[it_yellowskull] != 0) {
-			p.Fmessage = __ccgo_ts(23430)
+			p.Fmessage = __ccgo_ts_str(23430)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return 0
 		}
@@ -22789,7 +22779,7 @@ func EV_VerticalDoor(tls *libc.TLS, line *line_t, thing uintptr) {
 			return
 		}
 		if !(player.Fcards[it_bluecard] != 0) && !(player.Fcards[it_blueskull] != 0) {
-			player.Fmessage = __ccgo_ts(23476)
+			player.Fmessage = __ccgo_ts_str(23476)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return
 		}
@@ -22800,7 +22790,7 @@ func EV_VerticalDoor(tls *libc.TLS, line *line_t, thing uintptr) {
 			return
 		}
 		if !(player.Fcards[it_yellowcard] != 0) && !(player.Fcards[it_yellowskull] != 0) {
-			player.Fmessage = __ccgo_ts(23514)
+			player.Fmessage = __ccgo_ts_str(23514)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return
 		}
@@ -22811,7 +22801,7 @@ func EV_VerticalDoor(tls *libc.TLS, line *line_t, thing uintptr) {
 			return
 		}
 		if !(player.Fcards[it_redcard] != 0) && !(player.Fcards[it_redskull] != 0) {
-			player.Fmessage = __ccgo_ts(23554)
+			player.Fmessage = __ccgo_ts_str(23554)
 			S_StartSound(tls, libc.UintptrFromInt32(0), int32(sfx_oof))
 			return
 		}
@@ -25311,12 +25301,12 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(P_GiveArmor(tls, player, int32(DEH_DEFAULT_GREEN_ARMOR_CLASS)) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(23737)
+		player.Fmessage = __ccgo_ts_str(23737)
 	case SPR_ARM2:
 		if !(P_GiveArmor(tls, player, int32(DEH_DEFAULT_BLUE_ARMOR_CLASS)) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(23758)
+		player.Fmessage = __ccgo_ts_str(23758)
 		break
 		// bonus items
 		fallthrough
@@ -25326,7 +25316,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 			player.Fhealth = int32(DEH_DEFAULT_MAX_HEALTH)
 		}
 		(*mobj_t)(unsafe.Pointer(player.Fmo)).Fhealth = player.Fhealth
-		player.Fmessage = __ccgo_ts(23783)
+		player.Fmessage = __ccgo_ts_str(23783)
 	case SPR_BON2:
 		player.Farmorpoints++ // can go over 100%
 		if player.Farmorpoints > int32(DEH_DEFAULT_MAX_ARMOR) {
@@ -25337,14 +25327,14 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(player.Farmortype != 0) {
 			player.Farmortype = 1
 		}
-		player.Fmessage = __ccgo_ts(23809)
+		player.Fmessage = __ccgo_ts_str(23809)
 	case SPR_SOUL:
 		player.Fhealth += int32(DEH_DEFAULT_SOULSPHERE_HEALTH)
 		if player.Fhealth > int32(DEH_DEFAULT_MAX_SOULSPHERE) {
 			player.Fhealth = int32(DEH_DEFAULT_MAX_SOULSPHERE)
 		}
 		(*mobj_t)(unsafe.Pointer(player.Fmo)).Fhealth = player.Fhealth
-		player.Fmessage = __ccgo_ts(23835)
+		player.Fmessage = __ccgo_ts_str(23835)
 		sound = int32(sfx_getpow)
 	case SPR_MEGA:
 		if gamemode != int32(commercial) {
@@ -25355,7 +25345,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		// We always give armor type 2 for the megasphere; dehacked only
 		// affects the MegaArmor.
 		P_GiveArmor(tls, player, 2)
-		player.Fmessage = __ccgo_ts(23848)
+		player.Fmessage = __ccgo_ts_str(23848)
 		sound = int32(sfx_getpow)
 		break
 		// cards
@@ -25363,7 +25353,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		fallthrough
 	case SPR_BKEY:
 		if !(player.Fcards[it_bluecard] != 0) {
-			player.Fmessage = __ccgo_ts(23860)
+			player.Fmessage = __ccgo_ts_str(23860)
 		}
 		P_GiveCard(tls, player, it_bluecard)
 		if !(netgame != 0) {
@@ -25372,7 +25362,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		return
 	case SPR_YKEY:
 		if !(player.Fcards[it_yellowcard] != 0) {
-			player.Fmessage = __ccgo_ts(23886)
+			player.Fmessage = __ccgo_ts_str(23886)
 		}
 		P_GiveCard(tls, player, it_yellowcard)
 		if !(netgame != 0) {
@@ -25381,7 +25371,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		return
 	case SPR_RKEY:
 		if !(player.Fcards[it_redcard] != 0) {
-			player.Fmessage = __ccgo_ts(23914)
+			player.Fmessage = __ccgo_ts_str(23914)
 		}
 		P_GiveCard(tls, player, it_redcard)
 		if !(netgame != 0) {
@@ -25390,7 +25380,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		return
 	case SPR_BSKU:
 		if !(player.Fcards[it_blueskull] != 0) {
-			player.Fmessage = __ccgo_ts(23939)
+			player.Fmessage = __ccgo_ts_str(23939)
 		}
 		P_GiveCard(tls, player, it_blueskull)
 		if !(netgame != 0) {
@@ -25399,7 +25389,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		return
 	case SPR_YSKU:
 		if !(player.Fcards[it_yellowskull] != 0) {
-			player.Fmessage = __ccgo_ts(23967)
+			player.Fmessage = __ccgo_ts_str(23967)
 		}
 		P_GiveCard(tls, player, it_yellowskull)
 		if !(netgame != 0) {
@@ -25408,7 +25398,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		return
 	case SPR_RSKU:
 		if !(player.Fcards[it_redskull] != 0) {
-			player.Fmessage = __ccgo_ts(23997)
+			player.Fmessage = __ccgo_ts_str(23997)
 		}
 		P_GiveCard(tls, player, it_redskull)
 		if !(netgame != 0) {
@@ -25421,15 +25411,15 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(P_GiveBody(player, 10) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24024)
+		player.Fmessage = __ccgo_ts_str(24024)
 	case SPR_MEDI:
 		if !(P_GiveBody(player, 25) != 0) {
 			return
 		}
 		if player.Fhealth < 25 {
-			player.Fmessage = __ccgo_ts(24046)
+			player.Fmessage = __ccgo_ts_str(24046)
 		} else {
-			player.Fmessage = __ccgo_ts(24088)
+			player.Fmessage = __ccgo_ts_str(24088)
 		}
 		break
 		// power ups
@@ -25438,13 +25428,13 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(P_GivePower(player, int32(pw_invulnerability)) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24109)
+		player.Fmessage = __ccgo_ts_str(24109)
 		sound = int32(sfx_getpow)
 	case SPR_PSTR:
 		if !(P_GivePower(player, int32(pw_strength)) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24126)
+		player.Fmessage = __ccgo_ts_str(24126)
 		if player.Freadyweapon != wp_fist {
 			player.Fpendingweapon = wp_fist
 		}
@@ -25453,25 +25443,25 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(P_GivePower(player, int32(pw_invisibility)) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24135)
+		player.Fmessage = __ccgo_ts_str(24135)
 		sound = int32(sfx_getpow)
 	case SPR_SUIT:
 		if !(P_GivePower(player, int32(pw_ironfeet)) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24156)
+		player.Fmessage = __ccgo_ts_str(24156)
 		sound = int32(sfx_getpow)
 	case SPR_PMAP:
 		if !(P_GivePower(player, int32(pw_allmap)) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24181)
+		player.Fmessage = __ccgo_ts_str(24181)
 		sound = int32(sfx_getpow)
 	case SPR_PVIS:
 		if !(P_GivePower(player, int32(pw_infrared)) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24199)
+		player.Fmessage = __ccgo_ts_str(24199)
 		sound = int32(sfx_getpow)
 		break
 		// ammo
@@ -25486,42 +25476,42 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 				return
 			}
 		}
-		player.Fmessage = __ccgo_ts(24225)
+		player.Fmessage = __ccgo_ts_str(24225)
 	case SPR_AMMO:
 		if !(P_GiveAmmo(tls, player, int32(am_clip), 5) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24243)
+		player.Fmessage = __ccgo_ts_str(24243)
 	case SPR_ROCK:
 		if !(P_GiveAmmo(tls, player, int32(am_misl), 1) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24271)
+		player.Fmessage = __ccgo_ts_str(24271)
 	case SPR_BROK:
 		if !(P_GiveAmmo(tls, player, int32(am_misl), 5) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24291)
+		player.Fmessage = __ccgo_ts_str(24291)
 	case SPR_CELL:
 		if !(P_GiveAmmo(tls, player, int32(am_cell), 1) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24319)
+		player.Fmessage = __ccgo_ts_str(24319)
 	case SPR_CELP:
 		if !(P_GiveAmmo(tls, player, int32(am_cell), 5) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24345)
+		player.Fmessage = __ccgo_ts_str(24345)
 	case SPR_SHEL:
 		if !(P_GiveAmmo(tls, player, int32(am_shell), 1) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24376)
+		player.Fmessage = __ccgo_ts_str(24376)
 	case SPR_SBOX:
 		if !(P_GiveAmmo(tls, player, int32(am_shell), 5) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24404)
+		player.Fmessage = __ccgo_ts_str(24404)
 	case SPR_BPAK:
 		if !(player.Fbackpack != 0) {
 			i = 0
@@ -25548,7 +25538,7 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 			;
 			i++
 		}
-		player.Fmessage = __ccgo_ts(24439)
+		player.Fmessage = __ccgo_ts_str(24439)
 		break
 		// weapons
 		fallthrough
@@ -25556,43 +25546,43 @@ func P_TouchSpecialThing(tls *libc.TLS, special uintptr, toucher uintptr) {
 		if !(P_GiveWeapon(tls, player, wp_bfg, 0) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24474)
+		player.Fmessage = __ccgo_ts_str(24474)
 		sound = int32(sfx_wpnup)
 	case SPR_MGUN:
 		if !(P_GiveWeapon(tls, player, wp_chaingun, libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24505)
+		player.Fmessage = __ccgo_ts_str(24505)
 		sound = int32(sfx_wpnup)
 	case SPR_CSAW:
 		if !(P_GiveWeapon(tls, player, wp_chainsaw, 0) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24527)
+		player.Fmessage = __ccgo_ts_str(24527)
 		sound = int32(sfx_wpnup)
 	case SPR_LAUN:
 		if !(P_GiveWeapon(tls, player, wp_missile, 0) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24556)
+		player.Fmessage = __ccgo_ts_str(24556)
 		sound = int32(sfx_wpnup)
 	case SPR_PLAS:
 		if !(P_GiveWeapon(tls, player, wp_plasma, 0) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24585)
+		player.Fmessage = __ccgo_ts_str(24585)
 		sound = int32(sfx_wpnup)
 	case SPR_SHOT:
 		if !(P_GiveWeapon(tls, player, wp_shotgun, libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24609)
+		player.Fmessage = __ccgo_ts_str(24609)
 		sound = int32(sfx_wpnup)
 	case SPR_SGN2:
 		if !(P_GiveWeapon(tls, player, wp_supershotgun, libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
-		player.Fmessage = __ccgo_ts(24630)
+		player.Fmessage = __ccgo_ts_str(24630)
 		sound = int32(sfx_wpnup)
 	default:
 		I_Error(tls, __ccgo_ts(24657), 0)
@@ -28493,7 +28483,7 @@ func P_SpawnPlayer(tls *libc.TLS, mthing *mapthing_t) {
 	p.Fmo = mobj
 	p.Fplayerstate = int32(PST_LIVE)
 	p.Frefire = 0
-	p.Fmessage = libc.UintptrFromInt32(0)
+	p.Fmessage = ""
 	p.Fdamagecount = 0
 	p.Fbonuscount = 0
 	p.Fextralight = 0
@@ -30181,7 +30171,7 @@ func saveg_read_player_t(tls *libc.TLS, str *player_t) {
 	// int secretcount;
 	str.Fsecretcount = saveg_read32(tls)
 	// char* message;
-	str.Fmessage = saveg_readp(tls)
+	str.Fmessage = libc.GoString(saveg_readp(tls))
 	// int damagecount;
 	str.Fdamagecount = saveg_read32(tls)
 	// int bonuscount;
@@ -30317,7 +30307,11 @@ func saveg_write_player_t(tls *libc.TLS, str *player_t) {
 	// int secretcount;
 	saveg_write32(tls, str.Fsecretcount)
 	// char* message;
-	saveg_writep(tls, str.Fmessage)
+	if str.Fmessage == "" {
+		saveg_writep(tls, 0)
+	} else {
+		saveg_writep(tls, uintptr(unsafe.Pointer(&([]byte(str.Fmessage)[0]))))
+	}
 	// int damagecount;
 	saveg_write32(tls, str.Fdamagecount)
 	// int bonuscount;
@@ -30836,7 +30830,7 @@ func P_UnArchivePlayers(tls *libc.TLS) {
 		saveg_read_player_t(tls, &players[i])
 		// will be set when unarc thinker
 		players[i].Fmo = libc.UintptrFromInt32(0)
-		players[i].Fmessage = libc.UintptrFromInt32(0)
+		players[i].Fmessage = ""
 		players[i].Fattacker = libc.UintptrFromInt32(0)
 	}
 }
@@ -41002,9 +40996,9 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 							(*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fhealth = 100
 						}
 						plyr.Fhealth = int32(DEH_DEFAULT_GOD_MODE_HEALTH)
-						plyr.Fmessage = __ccgo_ts(27550)
+						plyr.Fmessage = __ccgo_ts_str(27550)
 					} else {
-						plyr.Fmessage = __ccgo_ts(27573)
+						plyr.Fmessage = __ccgo_ts_str(27573)
 					}
 				} else {
 					if cht_CheckCheat(&cheat_ammonokey, int8(ev.Fdata2)) != 0 {
@@ -41032,7 +41026,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 							;
 							i++
 						}
-						plyr.Fmessage = __ccgo_ts(27597)
+						plyr.Fmessage = __ccgo_ts_str(27597)
 					} else {
 						if cht_CheckCheat(&cheat_ammo, int8(ev.Fdata2)) != 0 {
 							plyr.Farmorpoints = int32(DEH_DEFAULT_IDKFA_ARMOR)
@@ -41070,10 +41064,10 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 								;
 								i++
 							}
-							plyr.Fmessage = __ccgo_ts(27618)
+							plyr.Fmessage = __ccgo_ts_str(27618)
 						} else {
 							if cht_CheckCheat(&cheat_mus, int8(ev.Fdata2)) != 0 {
-								plyr.Fmessage = __ccgo_ts(27640)
+								plyr.Fmessage = __ccgo_ts_str(27640)
 								cht_GetParam(&cheat_mus, bp)
 								// Note: The original v1.9 had a bug that tried to play back
 								// the Doom II music regardless of gamemode.  This was fixed
@@ -41082,14 +41076,14 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 								if gamemode == int32(commercial) || gameversion < exe_ultimate {
 									musnum = int32(mus_runnin) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10) + int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('0') - 1
 									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('0') > 35 {
-										plyr.Fmessage = __ccgo_ts(27653)
+										plyr.Fmessage = __ccgo_ts_str(27653)
 									} else {
 										S_ChangeMusic(tls, musnum, 1)
 									}
 								} else {
 									musnum = int32(mus_e1m1) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*int32(9) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('1'))
 									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*int32(9)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('1') > 31 {
-										plyr.Fmessage = __ccgo_ts(27653)
+										plyr.Fmessage = __ccgo_ts_str(27653)
 									} else {
 										S_ChangeMusic(tls, musnum, 1)
 									}
@@ -41123,9 +41117,9 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 									// idclip
 									plyr.Fcheats ^= int32(CF_NOCLIP)
 									if plyr.Fcheats&int32(CF_NOCLIP) != 0 {
-										plyr.Fmessage = __ccgo_ts(27674)
+										plyr.Fmessage = __ccgo_ts_str(27674)
 									} else {
-										plyr.Fmessage = __ccgo_ts(27694)
+										plyr.Fmessage = __ccgo_ts_str(27694)
 									}
 								}
 							}
@@ -41148,7 +41142,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 								plyr.Fpowers[i] = 0
 							}
 						}
-						plyr.Fmessage = __ccgo_ts(27715)
+						plyr.Fmessage = __ccgo_ts_str(27715)
 					}
 					goto _11
 				_11:
@@ -41157,16 +41151,15 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 				}
 				// 'behold' power-up menu
 				if cht_CheckCheat(&cheat_powerup[6], int8(ev.Fdata2)) != 0 {
-					plyr.Fmessage = __ccgo_ts(27732)
+					plyr.Fmessage = __ccgo_ts_str(27732)
 				} else {
 					if cht_CheckCheat(&cheat_choppers, int8(ev.Fdata2)) != 0 {
 						plyr.Fweaponowned[wp_chainsaw] = 1
 						plyr.Fpowers[pw_invulnerability] = 1
-						plyr.Fmessage = __ccgo_ts(27778)
+						plyr.Fmessage = __ccgo_ts_str(27778)
 					} else {
 						if cht_CheckCheat(&cheat_mypos, int8(ev.Fdata2)) != 0 {
-							M_snprintf(uintptr(unsafe.Pointer(&buf)), uint64(52), __ccgo_ts_str(27800), (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fangle, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy)
-							plyr.Fmessage = uintptr(unsafe.Pointer(&buf))
+							plyr.Fmessage = fmt.Sprintf(__ccgo_ts_str(27800), (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fangle, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy)
 						}
 					}
 				}
@@ -41208,7 +41201,7 @@ func ST_Responder(tls *libc.TLS, ev *event_t) (r boolean) {
 					return 0
 				}
 				// So be it.
-				plyr.Fmessage = __ccgo_ts(27825)
+				plyr.Fmessage = __ccgo_ts_str(27825)
 				G_DeferedInitNew(gameskill, epsd, map1)
 			}
 		}
@@ -46624,7 +46617,7 @@ var gametic int32
 
 var gameversion GameVersion_t
 
-var gammamsg [5][26]int8
+var gammamsg [5]string
 
 // C documentation
 var hu_font [63]uintptr
