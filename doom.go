@@ -8630,7 +8630,7 @@ func G_DoCompleted() {
 	viewactive = 0
 	automapactive = 0
 	StatCopy(uintptr(unsafe.Pointer(&wminfo)))
-	WI_Start(uintptr(unsafe.Pointer(&wminfo)))
+	WI_Start(&wminfo)
 }
 
 // C documentation
@@ -42521,9 +42521,9 @@ var state stateenum_t
 // C documentation
 //
 //	// contains information passed into intermission
-var wbs uintptr
+var wbs *wbstartstruct_t
 
-var plrs uintptr // wbs->plyr[]
+var plrs []wbplayerstruct_t // wbs->plyr[]
 
 // C documentation
 //
@@ -43023,7 +43023,7 @@ func WI_fragSum(playernum int32) (r int32) {
 			break
 		}
 		if playeringame[i] != 0 && i != playernum {
-			frags += *(*int32)(unsafe.Pointer(plrs + uintptr(playernum)*40 + 20 + uintptr(i)*4))
+			frags += plrs[playernum].Ffrags[i]
 		}
 		goto _1
 	_1:
@@ -43031,7 +43031,7 @@ func WI_fragSum(playernum int32) (r int32) {
 		i++
 	}
 	// JDC hack - negative frags.
-	frags -= *(*int32)(unsafe.Pointer(plrs + uintptr(playernum)*40 + 20 + uintptr(playernum)*4))
+	frags -= plrs[playernum].Ffrags[playernum]
 	// UNUSED if (frags < 0)
 	// 	frags = 0;
 	return frags
@@ -43094,7 +43094,7 @@ func WI_updateDeathmatchStats() {
 						break
 					}
 					if playeringame[j] != 0 {
-						*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = *(*int32)(unsafe.Pointer(plrs + uintptr(i)*40 + 20 + uintptr(j)*4))
+						*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = plrs[i].Ffrags[j]
 					}
 					goto _2
 				_2:
@@ -43127,8 +43127,8 @@ func WI_updateDeathmatchStats() {
 					if !(j < int32(MAXPLAYERS)) {
 						break
 					}
-					if playeringame[j] != 0 && *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) != *(*int32)(unsafe.Pointer(plrs + uintptr(i)*40 + 20 + uintptr(j)*4)) {
-						if *(*int32)(unsafe.Pointer(plrs + uintptr(i)*40 + 20 + uintptr(j)*4)) < 0 {
+					if playeringame[j] != 0 && *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) != plrs[i].Ffrags[j] {
+						if plrs[i].Ffrags[j] < 0 {
 							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4))--
 						} else {
 							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4))++
@@ -43307,9 +43307,9 @@ func WI_updateNetgameStats() {
 			if !(playeringame[i] != 0) {
 				goto _1
 			}
-			cnt_kills[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
-			cnt_items[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
-			cnt_secret[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
+			cnt_kills[i] = plrs[i].Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
+			cnt_items[i] = plrs[i].Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
+			cnt_secret[i] = plrs[i].Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
 			if dofrags != 0 {
 				cnt_frags[i] = WI_fragSum(i)
 			}
@@ -43335,8 +43335,8 @@ func WI_updateNetgameStats() {
 				goto _2
 			}
 			*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_kills)) + uintptr(i)*4)) += 2
-			if cnt_kills[i] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fskills*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills {
-				cnt_kills[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
+			if cnt_kills[i] >= plrs[i].Fskills*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills {
+				cnt_kills[i] = plrs[i].Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
 			} else {
 				stillticking = 1
 			}
@@ -43364,8 +43364,8 @@ func WI_updateNetgameStats() {
 					goto _3
 				}
 				*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_items)) + uintptr(i)*4)) += 2
-				if cnt_items[i] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fsitems*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems {
-					cnt_items[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
+				if cnt_items[i] >= plrs[i].Fsitems*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems {
+					cnt_items[i] = plrs[i].Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
 				} else {
 					stillticking = 1
 				}
@@ -43393,8 +43393,8 @@ func WI_updateNetgameStats() {
 						goto _4
 					}
 					*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_secret)) + uintptr(i)*4)) += 2
-					if cnt_secret[i] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fssecret*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret {
-						cnt_secret[i] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(i)*40))).Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
+					if cnt_secret[i] >= plrs[i].Fssecret*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret {
+						cnt_secret[i] = plrs[i].Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
 					} else {
 						stillticking = 1
 					}
@@ -43535,10 +43535,10 @@ func WI_updateStats() {
 	WI_updateAnimatedBack()
 	if acceleratestage != 0 && sp_state != 10 {
 		acceleratestage = 0
-		cnt_kills[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
-		cnt_items[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
-		cnt_secret[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
-		cnt_time = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fstime / int32(TICRATE)
+		cnt_kills[0] = plrs[me].Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
+		cnt_items[0] = plrs[me].Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
+		cnt_secret[0] = plrs[me].Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
+		cnt_time = plrs[me].Fstime / int32(TICRATE)
 		cnt_par = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpartime / int32(TICRATE)
 		S_StartSound(uintptr(0), int32(sfx_barexp))
 		sp_state = 10
@@ -43548,8 +43548,8 @@ func WI_updateStats() {
 		if !(bcnt&3 != 0) {
 			S_StartSound(uintptr(0), int32(sfx_pistol))
 		}
-		if cnt_kills[0] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fskills*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills {
-			cnt_kills[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
+		if cnt_kills[0] >= plrs[me].Fskills*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills {
+			cnt_kills[0] = plrs[me].Fskills * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills
 			S_StartSound(uintptr(0), int32(sfx_barexp))
 			sp_state++
 		}
@@ -43559,8 +43559,8 @@ func WI_updateStats() {
 			if !(bcnt&3 != 0) {
 				S_StartSound(uintptr(0), int32(sfx_pistol))
 			}
-			if cnt_items[0] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fsitems*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems {
-				cnt_items[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
+			if cnt_items[0] >= plrs[me].Fsitems*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems {
+				cnt_items[0] = plrs[me].Fsitems * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxitems
 				S_StartSound(uintptr(0), int32(sfx_barexp))
 				sp_state++
 			}
@@ -43570,8 +43570,8 @@ func WI_updateStats() {
 				if !(bcnt&3 != 0) {
 					S_StartSound(uintptr(0), int32(sfx_pistol))
 				}
-				if cnt_secret[0] >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fssecret*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret {
-					cnt_secret[0] = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
+				if cnt_secret[0] >= plrs[me].Fssecret*int32(100)/(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret {
+					cnt_secret[0] = plrs[me].Fssecret * 100 / (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxsecret
 					S_StartSound(uintptr(0), int32(sfx_barexp))
 					sp_state++
 				}
@@ -43581,13 +43581,13 @@ func WI_updateStats() {
 						S_StartSound(uintptr(0), int32(sfx_pistol))
 					}
 					cnt_time += 3
-					if cnt_time >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fstime/int32(TICRATE) {
-						cnt_time = (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fstime / int32(TICRATE)
+					if cnt_time >= plrs[me].Fstime/int32(TICRATE) {
+						cnt_time = plrs[me].Fstime / int32(TICRATE)
 					}
 					cnt_par += 3
 					if cnt_par >= (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpartime/int32(TICRATE) {
 						cnt_par = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpartime / int32(TICRATE)
-						if cnt_time >= (*(*wbplayerstruct_t)(unsafe.Pointer(plrs + uintptr(me)*40))).Fstime/int32(TICRATE) {
+						if cnt_time >= plrs[me].Fstime/int32(TICRATE) {
 							S_StartSound(uintptr(0), int32(sfx_barexp))
 							sp_state++
 						}
@@ -43907,7 +43907,7 @@ func WI_Drawer() {
 	}
 }
 
-func WI_initVariables(wbstartstruct uintptr) {
+func WI_initVariables(wbstartstruct *wbstartstruct_t) {
 	var v1 int32
 	wbs = wbstartstruct
 	acceleratestage = 0
@@ -43915,7 +43915,7 @@ func WI_initVariables(wbstartstruct uintptr) {
 	bcnt = v1
 	cnt = v1
 	me = (*wbstartstruct_t)(unsafe.Pointer(wbs)).Fpnum
-	plrs = wbs + 40
+	plrs = wbs.Fplyr[:]
 	if !((*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills != 0) {
 		(*wbstartstruct_t)(unsafe.Pointer(wbs)).Fmaxkills = 1
 	}
@@ -43932,7 +43932,7 @@ func WI_initVariables(wbstartstruct uintptr) {
 	}
 }
 
-func WI_Start(wbstartstruct uintptr) {
+func WI_Start(wbstartstruct *wbstartstruct_t) {
 	WI_initVariables(wbstartstruct)
 	WI_loadData()
 	if deathmatch != 0 {
