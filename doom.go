@@ -36759,7 +36759,7 @@ func R_InitLightTables() {
 			if level >= int32(NUMCOLORMAPS) {
 				level = NUMCOLORMAPS - 1
 			}
-			*(*uintptr)(unsafe.Pointer(uintptr(unsafe.Pointer(&zlight)) + uintptr(i)*1024 + uintptr(j)*8)) = colormaps + uintptr(level*int32(256))
+			zlight[i][j] = colormaps + uintptr(level*int32(256))
 			goto _2
 		_2:
 			;
@@ -37055,7 +37055,7 @@ func R_MapPlane(y int32, x1 int32, x2 int32) {
 		if index >= uint32(MAXLIGHTZ) {
 			index = uint32(MAXLIGHTZ - 1)
 		}
-		ds_colormap = *(*uintptr)(unsafe.Pointer(planezlight + uintptr(index)*8))
+		ds_colormap = planezlight[index]
 	}
 	ds_y = y
 	ds_x1 = x1
@@ -37245,7 +37245,7 @@ func R_DrawPlanes() {
 		if light < 0 {
 			light = 0
 		}
-		planezlight = uintptr(unsafe.Pointer(&zlight)) + uintptr(light)*1024
+		planezlight = zlight[light][:]
 		if int(pl.Fmaxx+1) < len(pl.Ftop) {
 			pl.Ftop[pl.Fmaxx+1] = 0xff
 		}
@@ -46552,7 +46552,7 @@ var planeheight fixed_t
 //	//
 //	// texture mapping
 //	//
-var planezlight uintptr
+var planezlight []uintptr
 
 // C documentation
 //
