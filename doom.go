@@ -2083,8 +2083,6 @@ type intercept_t struct {
 	}
 }
 
-type traverser_t = uintptr
-
 type fireflicker_t struct {
 	Fthinker  thinker_t
 	Fsector   *sector_t
@@ -23808,7 +23806,7 @@ func A_VileChase(actor uintptr) {
 				// Call PIT_VileCheck to check
 				// whether object is a corpse
 				// that canbe raised.
-				if !(P_BlockThingsIterator(bx, by, __ccgo_fp(PIT_VileCheck)) != 0) {
+				if !(P_BlockThingsIterator(bx, by, PIT_VileCheck) != 0) {
 					// got one!
 					temp = (*mobj_t)(unsafe.Pointer(actor)).Ftarget
 					(*mobj_t)(unsafe.Pointer(actor)).Ftarget = corpsehit
@@ -26070,7 +26068,7 @@ func P_TeleportMove(thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 			if !(by <= yh) {
 				break
 			}
-			if !(P_BlockThingsIterator(bx, by, __ccgo_fp(PIT_StompThing)) != 0) {
+			if !(P_BlockThingsIterator(bx, by, PIT_StompThing) != 0) {
 				return 0
 			}
 			goto _3
@@ -26307,7 +26305,7 @@ func P_CheckPosition(thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 			if !(by <= yh) {
 				break
 			}
-			if !(P_BlockThingsIterator(bx, by, __ccgo_fp(PIT_CheckThing)) != 0) {
+			if !(P_BlockThingsIterator(bx, by, PIT_CheckThing) != 0) {
 				return 0
 			}
 			goto _3
@@ -26335,7 +26333,7 @@ func P_CheckPosition(thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 			if !(by <= yh) {
 				break
 			}
-			if !(P_BlockLinesIterator(bx, by, __ccgo_fp(PIT_CheckLine)) != 0) {
+			if !(P_BlockLinesIterator(bx, by, PIT_CheckLine) != 0) {
 				return 0
 			}
 			goto _5
@@ -26568,9 +26566,9 @@ retry:
 		traily = (*mobj_t)(unsafe.Pointer(mo)).Fy + (*mobj_t)(unsafe.Pointer(mo)).Fradius
 	}
 	bestslidefrac = 1<<FRACBITS + 1
-	P_PathTraverse(leadx, leady, leadx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, leady+(*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(PT_ADDLINES), __ccgo_fp(PTR_SlideTraverse))
-	P_PathTraverse(trailx, leady, trailx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, leady+(*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(PT_ADDLINES), __ccgo_fp(PTR_SlideTraverse))
-	P_PathTraverse(leadx, traily, leadx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, traily+(*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(PT_ADDLINES), __ccgo_fp(PTR_SlideTraverse))
+	P_PathTraverse(leadx, leady, leadx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, leady+(*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(PT_ADDLINES), PTR_SlideTraverse)
+	P_PathTraverse(trailx, leady, trailx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, leady+(*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(PT_ADDLINES), PTR_SlideTraverse)
+	P_PathTraverse(leadx, traily, leadx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, traily+(*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(PT_ADDLINES), PTR_SlideTraverse)
 	// move up to the wall
 	if !(bestslidefrac == 1<<FRACBITS+1) {
 		goto _2
@@ -26619,7 +26617,7 @@ _2:
 //	// PTR_AimTraverse
 //	// Sets linetaget and aimslope when a target is aimed at.
 //	//
-func PTR_AimTraverse(in uintptr) (r boolean) {
+func PTR_AimTraverse(in *intercept_t) (r boolean) {
 	var dist, slope, thingbottomslope, thingtopslope fixed_t
 	var th uintptr
 	var li *line_t
@@ -26654,7 +26652,7 @@ func PTR_AimTraverse(in uintptr) (r boolean) {
 		return 1 // shot continues
 	}
 	// shoot a thing
-	th = *(*uintptr)(unsafe.Pointer(in + 8))
+	th = (uintptr)(unsafe.Pointer(in.Fd.Fthing))
 	if th == shootthing {
 		return 1
 	} // can't shoot self
@@ -26688,7 +26686,7 @@ func PTR_AimTraverse(in uintptr) (r boolean) {
 //	//
 //	// PTR_ShootTraverse
 //	//
-func PTR_ShootTraverse(in uintptr) (r boolean) {
+func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 	var dist, frac, slope, thingbottomslope, thingtopslope, x, y, z fixed_t
 	var th uintptr
 	var li *line_t
@@ -26755,7 +26753,7 @@ func PTR_ShootTraverse(in uintptr) (r boolean) {
 		return 0
 	}
 	// shoot a thing
-	th = *(*uintptr)(unsafe.Pointer(in + 8))
+	th = (uintptr)(unsafe.Pointer(in.Fd.Fthing))
 	if th == shootthing {
 		return 1
 	} // can't shoot self
@@ -26780,7 +26778,7 @@ func PTR_ShootTraverse(in uintptr) (r boolean) {
 	z = shootz + FixedMul(aimslope, FixedMul(frac, attackrange))
 	// Spawn bullet puffs or blod spots,
 	// depending on target type.
-	if (*mobj_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(in + 8)))).Fflags&int32(MF_NOBLOOD) != 0 {
+	if (*mobj_t)(unsafe.Pointer(in.Fd.Fthing)).Fflags&int32(MF_NOBLOOD) != 0 {
 		P_SpawnPuff(x, y, z)
 	} else {
 		P_SpawnBlood(x, y, z, la_damage)
@@ -26810,7 +26808,7 @@ func P_AimLineAttack(t1 uintptr, angle angle_t, distance fixed_t) (r fixed_t) {
 	bottomslope = -100 * (1 << FRACBITS) / 160
 	attackrange = distance
 	linetarget = uintptr(0)
-	P_PathTraverse((*mobj_t)(unsafe.Pointer(t1)).Fx, (*mobj_t)(unsafe.Pointer(t1)).Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, __ccgo_fp(PTR_AimTraverse))
+	P_PathTraverse((*mobj_t)(unsafe.Pointer(t1)).Fx, (*mobj_t)(unsafe.Pointer(t1)).Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, PTR_AimTraverse)
 	if linetarget != 0 {
 		return aimslope
 	}
@@ -26834,10 +26832,10 @@ func P_LineAttack(t1 uintptr, angle angle_t, distance fixed_t, slope fixed_t, da
 	shootz = (*mobj_t)(unsafe.Pointer(t1)).Fz + (*mobj_t)(unsafe.Pointer(t1)).Fheight>>1 + 8*(1<<FRACBITS)
 	attackrange = distance
 	aimslope = slope
-	P_PathTraverse((*mobj_t)(unsafe.Pointer(t1)).Fx, (*mobj_t)(unsafe.Pointer(t1)).Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, __ccgo_fp(PTR_ShootTraverse))
+	P_PathTraverse((*mobj_t)(unsafe.Pointer(t1)).Fx, (*mobj_t)(unsafe.Pointer(t1)).Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, PTR_ShootTraverse)
 }
 
-func PTR_UseTraverse(in uintptr) (r boolean) {
+func PTR_UseTraverse(in *intercept_t) (r boolean) {
 	var side int32
 	line := (*intercept_t)(unsafe.Pointer(in)).Fd.Fthing
 	if !(line.Fspecial != 0) {
@@ -26875,7 +26873,7 @@ func P_UseLines(player *player_t) {
 	y1 = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fy
 	x2 = x1 + 64*(1<<FRACBITS)>>FRACBITS*finecosine[angle]
 	y2 = y1 + 64*(1<<FRACBITS)>>FRACBITS*finesine[angle]
-	P_PathTraverse(x1, y1, x2, y2, int32(PT_ADDLINES), __ccgo_fp(PTR_UseTraverse))
+	P_PathTraverse(x1, y1, x2, y2, int32(PT_ADDLINES), PTR_UseTraverse)
 }
 
 // C documentation
@@ -26945,7 +26943,7 @@ func P_RadiusAttack(spot uintptr, source uintptr, damage int32) {
 			if !(x <= xh) {
 				break
 			}
-			P_BlockThingsIterator(x, y, __ccgo_fp(PIT_RadiusAttack))
+			P_BlockThingsIterator(x, y, PIT_RadiusAttack)
 			goto _2
 		_2:
 			;
@@ -27020,7 +27018,7 @@ func P_ChangeSector(sector *sector_t, crunch boolean) (r boolean) {
 			if !(y <= sector.Fblockbox[BOXTOP]) {
 				break
 			}
-			P_BlockThingsIterator(x, y, __ccgo_fp(PIT_ChangeSector))
+			P_BlockThingsIterator(x, y, PIT_ChangeSector)
 			goto _2
 		_2:
 			;
@@ -27392,7 +27390,7 @@ func P_SetThingPosition(thing uintptr) {
 //	// to P_BlockLinesIterator, then make one or more calls
 //	// to it.
 //	//
-func P_BlockLinesIterator(x int32, y int32, func1 uintptr) (r boolean) {
+func P_BlockLinesIterator(x int32, y int32, func1 func(*line_t) boolean) (r boolean) {
 	var list uintptr
 	var offset int32
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
@@ -27410,7 +27408,7 @@ func P_BlockLinesIterator(x int32, y int32, func1 uintptr) (r boolean) {
 			goto _1
 		} // line has already been checked
 		ld.Fvalidcount = validcount
-		if !((*(*func(*line_t) boolean)(unsafe.Pointer(&struct{ uintptr }{func1})))(ld) != 0) {
+		if !(func1(ld) != 0) {
 			return 0
 		}
 		goto _1
@@ -27426,7 +27424,7 @@ func P_BlockLinesIterator(x int32, y int32, func1 uintptr) (r boolean) {
 //	//
 //	// P_BlockThingsIterator
 //	//
-func P_BlockThingsIterator(x int32, y int32, func1 uintptr) (r boolean) {
+func P_BlockThingsIterator(x int32, y int32, func1 func(uintptr) boolean) (r boolean) {
 	var mobj uintptr
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
 		return 1
@@ -27436,7 +27434,7 @@ func P_BlockThingsIterator(x int32, y int32, func1 uintptr) (r boolean) {
 		if !(mobj != 0) {
 			break
 		}
-		if !((*(*func(uintptr) boolean)(unsafe.Pointer(&struct{ uintptr }{func1})))(mobj) != 0) {
+		if !(func1(mobj) != 0) {
 			return 0
 		}
 		goto _1
@@ -27543,7 +27541,7 @@ func PIT_AddThingIntercepts(thing uintptr) (r boolean) {
 //	// Returns true if the traverser function returns true
 //	// for all lines.
 //	//
-func P_TraverseIntercepts(func1 traverser_t, maxfrac fixed_t) (r boolean) {
+func P_TraverseIntercepts(func1 func(*intercept_t) boolean, maxfrac fixed_t) (r boolean) {
 	var count, v1 int32
 	var dist fixed_t
 	var in, scan uintptr
@@ -27573,7 +27571,7 @@ func P_TraverseIntercepts(func1 traverser_t, maxfrac fixed_t) (r boolean) {
 		if dist > maxfrac {
 			return 1
 		} // checked everything in range
-		if !((*(*func(uintptr) boolean)(unsafe.Pointer(&struct{ uintptr }{func1})))(in) != 0) {
+		if !(func1((*intercept_t)(unsafe.Pointer(in))) != 0) {
 			return 0
 		} // don't bother going farther
 		(*intercept_t)(unsafe.Pointer(in)).Ffrac = int32(INT_MAX11)
@@ -27740,7 +27738,7 @@ func InterceptsOverrun(num_intercepts int32, intercept uintptr) {
 //	// Returns true if the traverser function returns true
 //	// for all lines.
 //	//
-func P_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32, trav uintptr) (r boolean) {
+func P_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32, trav func(*intercept_t) boolean) (r boolean) {
 	var count, mapx, mapxstep, mapy, mapystep int32
 	var partial, xintercept, xstep, xt1, xt2, yintercept, ystep, yt1, yt2 fixed_t
 	earlyout = uint32(flags & int32(PT_EARLYOUT))
@@ -27807,12 +27805,12 @@ func P_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32,
 			break
 		}
 		if flags&int32(PT_ADDLINES) != 0 {
-			if !(P_BlockLinesIterator(mapx, mapy, __ccgo_fp(PIT_AddLineIntercepts)) != 0) {
+			if !(P_BlockLinesIterator(mapx, mapy, PIT_AddLineIntercepts) != 0) {
 				return 0
 			} // early out
 		}
 		if flags&int32(PT_ADDTHINGS) != 0 {
-			if !(P_BlockThingsIterator(mapx, mapy, __ccgo_fp(PIT_AddThingIntercepts)) != 0) {
+			if !(P_BlockThingsIterator(mapx, mapy, PIT_AddThingIntercepts) != 0) {
 				return 0
 			} // early out
 		}
