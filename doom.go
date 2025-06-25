@@ -5504,35 +5504,26 @@ func D_AddFile(filename string) (r boolean) {
 // Some dehacked mods replace these.  These are only displayed if they are
 // replaced by dehacked.
 
-var copyright_banners = [3]uintptr{
-	0: __ccgo_ts(2829),
-	1: __ccgo_ts(3245),
-	2: __ccgo_ts(3521),
+var copyright_banners = [3]string{
+	0: __ccgo_ts_str(2829),
+	1: __ccgo_ts_str(3245),
+	2: __ccgo_ts_str(3521),
 }
 
 // Prints a message only if it has been modified by dehacked.
 
 func PrintDehackedBanners() {
-	var deh_s uintptr
-	var i uint64
-	i = uint64(0)
-	for {
-		if !(i < 24/8) {
-			break
-		}
+	var deh_s string
+	for i := 0; i < len(copyright_banners); i++ {
 		deh_s = copyright_banners[i]
 		if deh_s != copyright_banners[i] {
-			fprintf_ccgo(os.Stdout, 3717, libc.GoString(deh_s))
 			// Make sure the modified banner always ends in a newline character.
 			// If it doesn't, add a newline.  This fixes av.wad.
-			if int32(*(*int8)(unsafe.Pointer(deh_s + uintptr(xstrlen(deh_s)-uint64(1))))) != int32('\n') {
-				fprintf_ccgo(os.Stdout, 3720)
+			if deh_s[len(deh_s)-1] != '\n' {
+				deh_s += "\n"
 			}
+			fprintf_ccgo(os.Stdout, 3717, deh_s)
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
