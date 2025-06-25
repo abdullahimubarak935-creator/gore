@@ -4005,7 +4005,7 @@ func CheckDirectoryHasIWAD(tls *libc.TLS, dir string, iwadname string) string {
 // Search a directory to try to find an IWAD
 // Returns the location of the IWAD if found, otherwise NULL.
 
-func SearchDirectoryForIWAD(tls *libc.TLS, dir string, mask int32, mission uintptr) string {
+func SearchDirectoryForIWAD(tls *libc.TLS, dir string, mask int32, mission *GameMission_t) string {
 	var filename string
 	var i uint64
 	i = uint64(0)
@@ -4018,7 +4018,7 @@ func SearchDirectoryForIWAD(tls *libc.TLS, dir string, mask int32, mission uintp
 		}
 		filename = CheckDirectoryHasIWAD(tls, dir, iwads[i].Fname)
 		if filename != "" {
-			*(*GameMission_t)(unsafe.Pointer(mission)) = iwads[i].Fmission
+			*mission = iwads[i].Fmission
 			return filename
 		}
 		goto _1
@@ -4129,7 +4129,7 @@ func D_TryFindWADByName(tls *libc.TLS, filename string) string {
 // should be executed (notably loading PWADs).
 //
 
-func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) string {
+func D_FindIWAD(tls *libc.TLS, mask int32, mission *GameMission_t) string {
 	var i, iwadparm int32
 	var result string
 	var iwadfile string
@@ -4147,7 +4147,7 @@ func D_FindIWAD(tls *libc.TLS, mask int32, mission uintptr) string {
 		if result == "" {
 			I_Error(tls, __ccgo_ts(1281), iwadfile)
 		}
-		*(*GameMission_t)(unsafe.Pointer(mission)) = IdentifyIWADByName(tls, result, mask)
+		*mission = IdentifyIWADByName(tls, result, mask)
 	} else {
 		// Search through the list and look for an IWAD
 		fprintf_ccgo(os.Stdout, 1307)
@@ -5812,7 +5812,7 @@ func D_DoomMain(tls *libc.TLS) {
 	// Save configuration at exit.
 	I_AtExit(M_SaveDefaults, 0)
 	// Find main IWAD file and load it.
-	iwadfile = D_FindIWAD(tls, 1<<int32(doom)|1<<int32(doom2)|1<<int32(pack_tnt)|1<<int32(pack_plut)|1<<int32(pack_chex)|1<<int32(pack_hacx), uintptr(unsafe.Pointer(&gamemission)))
+	iwadfile = D_FindIWAD(tls, 1<<int32(doom)|1<<int32(doom2)|1<<int32(pack_tnt)|1<<int32(pack_plut)|1<<int32(pack_chex)|1<<int32(pack_hacx), &gamemission)
 	// None found?
 	if iwadfile == "" {
 		I_Error(tls, __ccgo_ts(4268), 0)
