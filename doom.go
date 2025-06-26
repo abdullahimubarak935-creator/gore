@@ -16,8 +16,6 @@ import (
 	"strings"
 	"time"
 	"unsafe"
-
-	"modernc.org/libc"
 )
 
 type DoomFrontend interface {
@@ -168,6 +166,43 @@ func xmemcpy(dest, src uintptr, n uint64) (r uintptr) {
 		copy(destSlice, srcSlice)
 	}
 	return dest
+}
+
+func boolint32(b bool) int32 {
+	if b {
+		return 1
+	}
+	return 0
+}
+
+func booluint32(b bool) uint32 {
+	if b {
+		return 1
+	}
+	return 0
+}
+
+func gostring(s uintptr) string {
+	if s == 0 {
+		return ""
+	}
+
+	p := s
+	for *(*byte)(unsafe.Pointer(p)) != 0 {
+		p++
+	}
+	return string(unsafe.Slice((*byte)(unsafe.Pointer(s)), p-s))
+}
+
+func gostring_n(s uintptr, n int) string {
+	if s == 0 || n <= 0 {
+		return ""
+	}
+	p := s
+	for i := 0; i < n && *(*byte)(unsafe.Pointer(p)) != 0; i++ {
+		p++
+	}
+	return string(unsafe.Slice((*byte)(unsafe.Pointer(s)), p-s))
 }
 
 const AM_NUMMARKPOINTS = 10
@@ -396,6 +431,14 @@ type cheatseq_t struct {
 }
 
 type fixed_t = int32
+
+func float2fixed(f float32) fixed_t {
+	return fixed_t(f * float32(FRACUNIT))
+}
+
+func float2fixedinv(f float32) fixed_t {
+	return fixed_t(float32(FRACUNIT) / f)
+}
 
 type angle_t = uint32
 
@@ -2528,8 +2571,8 @@ func init() {
 	thintriangle_guy = [3]mline_t{
 		0: {
 			Fa: mpoint_t{
-				Fx: int32(-libc.Float64FromFloat64(0.5) * float64(1<<FRACBITS)),
-				Fy: int32(-libc.Float64FromFloat64(0.7) * float64(1<<FRACBITS)),
+				Fx: float2fixed(-0.5),
+				Fy: float2fixed(-(0.7)),
 			},
 			Fb: mpoint_t{
 				Fx: 1 << FRACBITS,
@@ -2540,18 +2583,18 @@ func init() {
 				Fx: 1 << FRACBITS,
 			},
 			Fb: mpoint_t{
-				Fx: int32(-libc.Float64FromFloat64(0.5) * float64(1<<FRACBITS)),
-				Fy: int32(libc.Float64FromFloat64(0.7) * float64(1<<FRACBITS)),
+				Fx: float2fixed(-(0.5)),
+				Fy: float2fixed((0.7)),
 			},
 		},
 		2: {
 			Fa: mpoint_t{
-				Fx: int32(-libc.Float64FromFloat64(0.5) * float64(1<<FRACBITS)),
-				Fy: int32(libc.Float64FromFloat64(0.7) * float64(1<<FRACBITS)),
+				Fx: float2fixed(-(0.5)),
+				Fy: float2fixed((0.7)),
 			},
 			Fb: mpoint_t{
-				Fx: int32(-libc.Float64FromFloat64(0.5) * float64(1<<FRACBITS)),
-				Fy: int32(-libc.Float64FromFloat64(0.7) * float64(1<<FRACBITS)),
+				Fx: float2fixed(-(0.5)),
+				Fy: float2fixed(-(0.7)),
 			},
 		},
 	}
@@ -2628,7 +2671,7 @@ var f_oldloc mpoint_t
 // C documentation
 //
 //	// used by MTOF to scale from map-to-frame-buffer coords
-var scale_mtof = int32(libc.Float64FromFloat64(0.2) * float64(1<<FRACBITS))
+var scale_mtof = float2fixed(0.2)
 
 // C documentation
 //
@@ -2911,7 +2954,7 @@ func AM_LevelInit() {
 	f_h = finit_height
 	AM_clearMarks()
 	AM_findMinMaxBoundaries()
-	scale_mtof = FixedDiv(min_scale_mtof, int32(libc.Float64FromFloat64(0.7)*float64(1<<FRACBITS)))
+	scale_mtof = FixedDiv(min_scale_mtof, float2fixed(0.7))
 	if scale_mtof > max_scale_mtof {
 		scale_mtof = min_scale_mtof
 	}
@@ -3027,12 +3070,12 @@ func AM_Responder(ev *event_t) (r boolean) {
 							}
 						} else {
 							if key == key_map_zoomout { // zoom out
-								mtof_zoommul = int32(float64(1<<FRACBITS) / libc.Float64FromFloat64(1.02))
-								ftom_zoommul = int32(libc.Float64FromFloat64(1.02) * float64(1<<FRACBITS))
+								mtof_zoommul = float2fixedinv(1.02)
+								ftom_zoommul = float2fixed(1.02)
 							} else {
 								if key == key_map_zoomin { // zoom in
-									mtof_zoommul = int32(libc.Float64FromFloat64(1.02) * float64(1<<FRACBITS))
-									ftom_zoommul = int32(float64(1<<FRACBITS) / libc.Float64FromFloat64(1.02))
+									mtof_zoommul = float2fixed(1.02)
+									ftom_zoommul = float2fixedinv(1.02)
 								} else {
 									if key == key_map_toggle {
 										bigstate = 0
@@ -3040,7 +3083,7 @@ func AM_Responder(ev *event_t) (r boolean) {
 										AM_Stop()
 									} else {
 										if key == key_map_maxzoom {
-											bigstate = libc.BoolInt32(!(bigstate != 0))
+											bigstate = boolint32(!(bigstate != 0))
 											if bigstate != 0 {
 												AM_saveScaleAndLoc()
 												AM_minOutWindowScale()
@@ -3049,7 +3092,7 @@ func AM_Responder(ev *event_t) (r boolean) {
 											}
 										} else {
 											if key == key_map_follow {
-												followplayer = libc.BoolInt32(!(followplayer != 0))
+												followplayer = boolint32(!(followplayer != 0))
 												f_oldloc.Fx = int32(INT_MAX1)
 												if followplayer != 0 {
 													plr.Fmessage = __ccgo_ts_str(9)
@@ -3058,7 +3101,7 @@ func AM_Responder(ev *event_t) (r boolean) {
 												}
 											} else {
 												if key == key_map_grid {
-													grid = libc.BoolInt32(!(grid != 0))
+													grid = boolint32(!(grid != 0))
 													if grid != 0 {
 														plr.Fmessage = __ccgo_ts_str(40)
 													} else {
@@ -4398,7 +4441,7 @@ func OldNetSync() {
 			lasttime--
 			// printf ("-");
 		}
-		frameskip[frameon&int32(3)] = libc.BoolInt32(oldnettics > recvtic)
+		frameskip[frameon&int32(3)] = boolint32(oldnettics > recvtic)
 		oldnettics = maketic
 		if frameskip[0] != 0 && frameskip[int32(1)] != 0 && frameskip[int32(2)] != 0 && frameskip[int32(3)] != 0 {
 			skiptics = 1
@@ -4421,7 +4464,7 @@ func PlayersInGame() (r boolean) {
 			if !(i < uint32(NET_MAXPLAYERS)) {
 				break
 			}
-			result = libc.BoolUint32(result != 0 || local_playeringame[i] != 0)
+			result = booluint32(result != 0 || local_playeringame[i] != 0)
 			goto _1
 		_1:
 			;
@@ -4849,8 +4892,8 @@ func D_Display() {
 		if inhelpscreensstate != 0 && !(inhelpscreens != 0) {
 			redrawsbar = 1
 		} // just put away the help screen
-		ST_Drawer(libc.BoolUint32(viewheight == 200), redrawsbar)
-		fullscreen = libc.BoolUint32(viewheight == 200)
+		ST_Drawer(booluint32(viewheight == 200), redrawsbar)
+		fullscreen = booluint32(viewheight == 200)
 	case GS_INTERMISSION:
 		WI_Drawer()
 	case GS_FINALE:
@@ -5004,7 +5047,7 @@ func D_GrabMouseCallback() (r boolean) {
 		return 0
 	}
 	// only grab mouse when playing levels (but not demos)
-	return libc.BoolUint32(gamestate == GS_LEVEL && !(demoplayback != 0) && !(advancedemo != 0))
+	return booluint32(gamestate == GS_LEVEL && !(demoplayback != 0) && !(advancedemo != 0))
 }
 
 func doomgeneric_Tick() {
@@ -5205,7 +5248,7 @@ func GetGameName(gamename string) string {
 			for {
 				if len(gamename) >= 1 {
 					v2 = int32(gamename[0])
-					v3 = libc.BoolInt32(v2 == int32(' ') || uint32(v2)-uint32('\t') < uint32(5))
+					v3 = boolint32(v2 == int32(' ') || uint32(v2)-uint32('\t') < uint32(5))
 					goto _4
 				_4:
 				}
@@ -5217,7 +5260,7 @@ func GetGameName(gamename string) string {
 			for {
 				if len(gamename) >= 1 {
 					v6 = int32(gamename[len(gamename)-1])
-					v7 = libc.BoolInt32(v6 == int32(' ') || uint32(v6)-uint32('\t') < uint32(5))
+					v7 = boolint32(v6 == int32(' ') || uint32(v6)-uint32('\t') < uint32(5))
 					goto _8
 				_8:
 				}
@@ -5371,8 +5414,8 @@ func D_IdentifyVersion() {
 func D_SetGameDescription() {
 	var is_freedm, is_freedoom boolean
 	var v7, v5, v3, v1 GameMission_t
-	is_freedoom = libc.BoolUint32(W_CheckNumForName(__ccgo_ts(2670)) >= 0)
-	is_freedm = libc.BoolUint32(W_CheckNumForName(__ccgo_ts(2679)) >= 0)
+	is_freedoom = booluint32(W_CheckNumForName(__ccgo_ts(2670)) >= 0)
+	is_freedm = booluint32(W_CheckNumForName(__ccgo_ts(2679)) >= 0)
 	gamedescription = __ccgo_ts_str(2686)
 	if gamemission == pack_chex {
 		v1 = doom
@@ -5456,7 +5499,7 @@ func D_AddFile(filename string) (r boolean) {
 	var handle *os.File
 	fprintf_ccgo(os.Stdout, 2817, filename)
 	handle = W_AddFile(filename)
-	return libc.BoolUint32(handle != nil)
+	return booluint32(handle != nil)
 }
 
 // Copyright message banners
@@ -5573,7 +5616,7 @@ func InitGameVersion() {
 				if !(gameversions[i].Fdescription != uintptr(0)) {
 					break
 				}
-				fprintf_ccgo(os.Stdout, 3896, gameversions[i].Fcmdline, libc.GoString(gameversions[i].Fdescription))
+				fprintf_ccgo(os.Stdout, 3896, gameversions[i].Fcmdline, gostring(gameversions[i].Fdescription))
 				goto _2
 			_2:
 				;
@@ -5634,7 +5677,7 @@ func PrintGameVersion() {
 			break
 		}
 		if gameversions[i].Fversion == gameversion {
-			fprintf_ccgo(os.Stdout, 3932, libc.GoString(gameversions[i].Fdescription))
+			fprintf_ccgo(os.Stdout, 3932, gostring(gameversions[i].Fdescription))
 			break
 		}
 		goto _1
@@ -5833,14 +5876,14 @@ func D_DoomMain() {
 			name = fmt.Sprintf(__ccgo_ts_str(4481), myargs[p+1])
 		}
 		if D_AddFile(name) != 0 {
-			argDemoName = libc.GoString(lumpinfo + uintptr(numlumps-uint32(1))*40)
+			argDemoName = gostring(lumpinfo + uintptr(numlumps-uint32(1))*40)
 		} else {
 			// If file failed to load, still continue trying to play
 			// the demo in the same way as Vanilla Doom.  This makes
 			// tricks like "-playdemo demo1" possible.
 			argDemoName = myargs[p+1]
 		}
-		fprintf_ccgo(os.Stdout, 4488, libc.GoString(bp))
+		fprintf_ccgo(os.Stdout, 4488, gostring(bp))
 	}
 	I_AtExit(G_CheckDemoStatus, 1)
 	// Generate the WAD hash table.  Speed things up a bit.
@@ -6182,7 +6225,7 @@ func LoadGameSettings(settings *net_gamesettings_t) {
 		fprintf_ccgo(os.Stdout, 5423)
 	}
 	for i := uint32(0); i < MAXPLAYERS; i++ {
-		playeringame[i] = libc.BoolUint32(i < uint32(settings.Fnum_players))
+		playeringame[i] = booluint32(i < uint32(settings.Fnum_players))
 	}
 }
 
@@ -6202,7 +6245,7 @@ func SaveGameSettings(settings *net_gamesettings_t) {
 	settings.Ffast_monsters = int32(fastparm)
 	settings.Frespawn_monsters = int32(respawnparm)
 	settings.Ftimelimit = timelimit
-	settings.Flowres_turn = libc.BoolInt32(M_CheckParm(__ccgo_ts(5361)) > 0 && M_CheckParm(__ccgo_ts(5530)) == 0)
+	settings.Flowres_turn = boolint32(M_CheckParm(__ccgo_ts(5361)) > 0 && M_CheckParm(__ccgo_ts(5530)) == 0)
 }
 
 func InitConnectData(connect_data *net_connect_data_t) {
@@ -6214,7 +6257,7 @@ func InitConnectData(connect_data *net_connect_data_t) {
 	// Run as the left screen in three screen mode.
 	//
 	if M_CheckParm(__ccgo_ts(5540)) > 0 {
-		viewangleoffset = int32(ANG901)
+		viewangleoffset = ANG901
 		connect_data.Fdrone = 1
 	}
 	//!
@@ -6223,7 +6266,7 @@ func InitConnectData(connect_data *net_connect_data_t) {
 	// Run as the right screen in three screen mode.
 	//
 	if M_CheckParm(__ccgo_ts(5546)) > 0 {
-		viewangleoffset = libc.Int32FromUint32(ANG2701)
+		viewangleoffset = ANG2701
 		connect_data.Fdrone = 1
 	}
 	//
@@ -6233,11 +6276,11 @@ func InitConnectData(connect_data *net_connect_data_t) {
 	connect_data.Fgamemode = gamemode
 	connect_data.Fgamemission = gamemission
 	// Are we recording a demo? Possibly set lowres turn mode
-	connect_data.Flowres_turn = libc.BoolInt32(M_CheckParm(__ccgo_ts(5361)) > 0 && M_CheckParm(__ccgo_ts(5530)) == 0)
+	connect_data.Flowres_turn = boolint32(M_CheckParm(__ccgo_ts(5361)) > 0 && M_CheckParm(__ccgo_ts(5530)) == 0)
 	// Read checksums of our WAD directory and dehacked information
 	W_Checksum(&connect_data.Fwad_sha1sum)
 	// Are we playing with the Freedoom IWAD?
-	connect_data.Fis_freedoom = libc.BoolInt32(W_CheckNumForName(__ccgo_ts(2670)) >= 0)
+	connect_data.Fis_freedoom = boolint32(W_CheckNumForName(__ccgo_ts(2670)) >= 0)
 }
 
 func D_ConnectNetGame() {
@@ -7194,7 +7237,7 @@ func wipe_doColorXForm(width int32, height int32, ticks int32) (r int32) {
 		w++
 		e++
 	}
-	return libc.BoolInt32(!(changed != 0))
+	return boolint32(!(changed != 0))
 }
 
 func wipe_exitColorXForm(width int32, height int32, ticks int32) (r int32) {
@@ -7353,7 +7396,7 @@ func wipe_ScreenWipe(wipeno int32, x int32, y int32, width int32, height int32, 
 		go1 = uint32(0)
 		wipes[wipeno*3+2](width, height, ticks)
 	}
-	return libc.BoolInt32(!(go1 != 0))
+	return boolint32(!(go1 != 0))
 }
 
 var wipes = [6]func(int32, int32, int32) int32{
@@ -7585,10 +7628,10 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	var forward, i, side, speed, tspeed, v1, v16 int32
 	*cmd = ticcmd_t{}
 	cmd.Fconsistancy = *(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(consoleplayer)*128 + uintptr(maketic%int32(BACKUPTICS))))
-	strafe = libc.BoolUint32(gamekeydown[key_strafe] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
+	strafe = booluint32(gamekeydown[key_strafe] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
 	// fraggle: support the old "joyb_speed = 31" hack which
 	// allowed an autorun effect
-	speed = libc.BoolInt32(key_speed >= int32(NUMKEYS) || joybspeed >= int32(MAX_JOY_BUTTONS) || gamekeydown[key_speed] != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybspeed)*4)) != 0)
+	speed = boolint32(key_speed >= int32(NUMKEYS) || joybspeed >= int32(MAX_JOY_BUTTONS) || gamekeydown[key_speed] != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybspeed)*4)) != 0)
 	v1 = 0
 	side = v1
 	forward = v1
@@ -7710,7 +7753,7 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 			}
 		}
 		// strafe double click
-		bstrafe = libc.BoolUint32(*(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
+		bstrafe = booluint32(*(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
 		if bstrafe != dclickstate2 && dclicktime2 > 1 {
 			dclickstate2 = bstrafe
 			if dclickstate2 != 0 {
@@ -7864,7 +7907,7 @@ func SetJoyButtons(buttons_mask uint32) {
 		if !(i < int32(MAX_JOY_BUTTONS)) {
 			break
 		}
-		button_on = libc.BoolInt32(buttons_mask&uint32(1<<i) != uint32(0))
+		button_on = boolint32(buttons_mask&uint32(1<<i) != uint32(0))
 		// Detect button press:
 		if !(*(*boolean)(unsafe.Pointer(joybuttons + uintptr(i)*4)) != 0) && button_on != 0 {
 			// Weapon cycling:
@@ -7892,7 +7935,7 @@ func SetMouseButtons(buttons_mask uint32) {
 		if !(i < int32(MAX_MOUSE_BUTTONS)) {
 			break
 		}
-		button_on = libc.BoolUint32(buttons_mask&uint32(1<<i) != uint32(0))
+		button_on = booluint32(buttons_mask&uint32(1<<i) != uint32(0))
 		// Detect button press:
 		if !(*(*boolean)(unsafe.Pointer(mousebuttons + uintptr(i)*4)) != 0) && button_on != 0 {
 			if i == mousebprevweapon {
@@ -8078,7 +8121,7 @@ func G_Ticker() {
 				turbodetected[i] = 1
 			}
 			if gametic&int32(31) == 0 && gametic>>int32(5)%int32(MAXPLAYERS) == i && turbodetected[i] != 0 {
-				players[consoleplayer].Fmessage = fmt.Sprintf("%s is turbo!", libc.GoString(player_names[i]))
+				players[consoleplayer].Fmessage = fmt.Sprintf("%s is turbo!", gostring(player_names[i]))
 				turbodetected[i] = 0
 			}
 			if netgame != 0 && !(netdemo != 0) && !(gametic%ticdup != 0) {
@@ -9118,9 +9161,9 @@ func G_BeginRecording() {
 	//
 	// Record a high resolution "Doom 1.91" demo.
 	//
-	longtics = libc.BoolUint32(M_CheckParm(__ccgo_ts(5530)) != 0)
+	longtics = booluint32(M_CheckParm(__ccgo_ts(5530)) != 0)
 	// If not recording a longtics demo, record in low res
-	lowres_turn = libc.BoolUint32(!(longtics != 0))
+	lowres_turn = booluint32(!(longtics != 0))
 	demo_p = demobuffer
 	// Save the right version code for this demo
 	if longtics != 0 {
@@ -9228,7 +9271,7 @@ func G_DoPlayDemo() {
 			longtics = 1
 		} else {
 			//I_Error(message, demoversion, G_VanillaVersionCode(),
-			fprintf_ccgo(os.Stdout, 14232, demoversion, G_VanillaVersionCode(), libc.GoString(DemoVersionDescription(demoversion)))
+			fprintf_ccgo(os.Stdout, 14232, demoversion, G_VanillaVersionCode(), gostring(DemoVersionDescription(demoversion)))
 		}
 	}
 	v3 = demo_p
@@ -9960,7 +10003,7 @@ func HU_Ticker() {
 					rc = int32(HUlib_keyInIText(&w_inputbuffer[i], uint8(c)))
 					if rc != 0 && int32(c) == int32(KEY_ENTER) {
 						if w_inputbuffer[i].Fl.Flen1 != 0 && (int32(chat_dest[i]) == consoleplayer+int32(1) || int32(chat_dest[i]) == int32(HU_BROADCAST)) {
-							HUlib_addMessageToSText(&w_message, player_names[i], libc.GoString(uintptr(unsafe.Pointer(&w_inputbuffer[i].Fl.Fl[0]))))
+							HUlib_addMessageToSText(&w_message, player_names[i], gostring(uintptr(unsafe.Pointer(&w_inputbuffer[i].Fl.Fl[0]))))
 							message_nottobefuckedwith = 1
 							message_on = 1
 							message_counter = 4 * TICRATE
@@ -10029,7 +10072,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 		return 0
 	} else {
 		if ev.Fdata1 == 0x80+0x38 {
-			altdown = libc.BoolUint32(ev.Ftype1 == ev_keydown)
+			altdown = booluint32(ev.Ftype1 == ev_keydown)
 			return 0
 		}
 	}
@@ -10114,7 +10157,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 			HU_queueChatChar(int8(KEY_ENTER))
 			// leave chat mode and notify that it was sent
 			chat_on = 0
-			lastmessage = libc.GoString(chat_macros[c])
+			lastmessage = gostring(chat_macros[c])
 			plr1.Fmessage = lastmessage
 			eatkey = 1
 		} else {
@@ -10129,7 +10172,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 			if int32(c) == int32(KEY_ENTER) {
 				chat_on = 0
 				if w_chat.Fl.Flen1 != 0 {
-					lastmessage = libc.GoString(uintptr(unsafe.Pointer(&w_chat.Fl.Fl[0])))
+					lastmessage = gostring(uintptr(unsafe.Pointer(&w_chat.Fl.Fl[0])))
 					plr1.Fmessage = lastmessage
 				}
 			} else {
@@ -18063,19 +18106,19 @@ func I_InitSound(use_sfx_prefix boolean) {
 	//
 	// Disable all sound output.
 	//
-	nosound = libc.BoolUint32(M_CheckParm(__ccgo_ts(18674)) > 0)
+	nosound = booluint32(M_CheckParm(__ccgo_ts(18674)) > 0)
 	//!
 	// @vanilla
 	//
 	// Disable sound effects.
 	//
-	nosfx = libc.BoolUint32(M_CheckParm(__ccgo_ts(18683)) > 0)
+	nosfx = booluint32(M_CheckParm(__ccgo_ts(18683)) > 0)
 	//!
 	// @vanilla
 	//
 	// Disable music.
 	//
-	nomusic = libc.BoolUint32(M_CheckParm(__ccgo_ts(18690)) > 0)
+	nomusic = booluint32(M_CheckParm(__ccgo_ts(18690)) > 0)
 	// Initialize the sound and music subsystems.
 	if !(nosound != 0) && !(screensaver_mode != 0) {
 		// This is kind of a hack. If native MIDI is enabled, set up
@@ -18403,7 +18446,7 @@ func I_Error(error1 uintptr, args ...any) {
 			exit_funcs[i].Ffunc()
 		}
 	}
-	exit_gui_popup = libc.BoolUint32(!(M_ParmExists(__ccgo_ts(19327)) != 0))
+	exit_gui_popup = booluint32(!(M_ParmExists(__ccgo_ts(19327)) != 0))
 	// Pop up a GUI dialog box to show the error message, if the
 	// game was not run from the console (and the user will
 	// therefore be unable to otherwise see the message).
@@ -18554,7 +18597,7 @@ func M_CheckParmWithArgs(check uintptr, num_args int32) (r int32) {
 		if !(i < int32(len(myargs))-num_args) {
 			break
 		}
-		if strings.EqualFold(myargs[i], libc.GoString(check)) {
+		if strings.EqualFold(myargs[i], gostring(check)) {
 			return i
 		}
 		goto _1
@@ -18573,7 +18616,7 @@ func M_CheckParmWithArgs(check uintptr, num_args int32) (r int32) {
 //
 
 func M_ParmExists(check uintptr) (r boolean) {
-	return libc.BoolUint32(M_CheckParm(check) != 0)
+	return booluint32(M_CheckParm(check) != 0)
 }
 
 func M_CheckParm(check uintptr) (r int32) {
@@ -20429,7 +20472,7 @@ func M_DrawLoad() {
 			break
 		}
 		M_DrawSaveLoadBorder(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i)
-		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, libc.GoString(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24))
+		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, gostring(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24))
 		goto _1
 	_1:
 		;
@@ -20498,14 +20541,14 @@ func M_DrawSave() {
 			break
 		}
 		M_DrawSaveLoadBorder(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i)
-		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, libc.GoString(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24))
+		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, gostring(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24))
 		goto _1
 	_1:
 		;
 		i++
 	}
 	if saveStringEnter != 0 {
-		i = M_StringWidth(libc.GoString(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(saveSlot)*24))
+		i = M_StringWidth(gostring(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(saveSlot)*24))
 		M_WriteText(int32(LoadDef.Fx)+i, int32(LoadDef.Fy)+int32(LINEHEIGHT)*saveSlot, __ccgo_ts_str(22225))
 	}
 }
@@ -20579,7 +20622,7 @@ func M_QuickSave() {
 		quickSaveSlot = -int32(2) // means to pick a slot now
 		return
 	}
-	tempstring := fmt.Sprintf(__ccgo_ts_str(22279), libc.GoString(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
+	tempstring := fmt.Sprintf(__ccgo_ts_str(22279), gostring(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
 	M_StartMessage(tempstring, __ccgo_fp(M_QuickSaveResponse), 1)
 }
 
@@ -20604,7 +20647,7 @@ func M_QuickLoad() {
 		M_StartMessage(__ccgo_ts_str(22384), uintptr(0), 0)
 		return
 	}
-	tempstring := fmt.Sprintf(__ccgo_ts_str(22439), libc.GoString(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
+	tempstring := fmt.Sprintf(__ccgo_ts_str(22439), gostring(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
 	M_StartMessage(tempstring, __ccgo_fp(M_QuickLoadResponse), 1)
 }
 
@@ -21106,7 +21149,7 @@ func M_WriteText(x int32, y int32, string1 string) {
 // jumping in the menus. Preserve this behavior for accuracy.
 
 func IsNullKey(key int32) (r boolean) {
-	return libc.BoolUint32(key == int32(KEY_PAUSE1) || key == 0x80+0x3a || key == 0x80+0x46 || key == 0x80+0x45)
+	return booluint32(key == int32(KEY_PAUSE1) || key == 0x80+0x3a || key == 0x80+0x46 || key == 0x80+0x45)
 }
 
 //
@@ -21253,7 +21296,7 @@ func M_Responder(ev *event_t) (r boolean) {
 			if ch != int32(' ') && (ch-int32('!') < 0 || ch-int32('!') >= int32('_')-int32('!')+1) {
 				break
 			}
-			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(libc.GoString(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24)) < (SAVESTRINGSIZE-2)*8 {
+			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(gostring(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24)) < (SAVESTRINGSIZE-2)*8 {
 				v1 = saveCharIndex
 				saveCharIndex++
 				*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(saveSlot)*24 + uintptr(v1))) = int8(ch)
@@ -21745,7 +21788,7 @@ func M_TempFile(s string) string {
 }
 
 func M_StrToInt(str uintptr, result *int32) (r boolean) {
-	gStr := libc.GoString(str)
+	gStr := gostring(str)
 	val, err := strconv.Atoi(gStr)
 	*result = int32(val)
 	if err != nil {
@@ -21777,62 +21820,7 @@ func M_StringCopy(dest uintptr, src uintptr, dest_size uint64) (r boolean) {
 		return 0
 	}
 	len1 = xstrlen(dest)
-	return libc.BoolUint32(int32(*(*int8)(unsafe.Pointer(src + uintptr(len1)))) == int32('\000'))
-}
-
-// Safe string concat function that works like OpenBSD's strlcat().
-// Returns true if string not truncated.
-
-func M_StringConcat(dest uintptr, src uintptr, dest_size uint64) (r boolean) {
-	var offset uint64
-	offset = xstrlen(dest)
-	if offset > dest_size {
-		offset = dest_size
-	}
-	return M_StringCopy(dest+uintptr(offset), src, dest_size-offset)
-}
-
-// Returns true if 's' ends with the specified suffix.
-
-func M_StringEndsWith(s uintptr, suffix uintptr) (r boolean) {
-	return libc.BoolUint32(xstrlen(s) >= xstrlen(suffix) && xstrcmp(s+uintptr(xstrlen(s))-uintptr(xstrlen(suffix)), suffix) == 0)
-}
-
-// Return a newly-malloced string with all the strings given as arguments
-// concatenated together.
-
-func M_StringJoin(s uintptr, va uintptr) (r uintptr) {
-	var args va_list
-	var result, v uintptr
-	var result_len uint64
-	result_len = xstrlen(s) + uint64(1)
-	args = va
-	for {
-		v = libc.VaUintptr(&args)
-		if v == uintptr(0) {
-			break
-		}
-		result_len += xstrlen(v)
-		goto _1
-	_1:
-	}
-	result = xmalloc(result_len)
-	if result == uintptr(0) {
-		I_Error(__ccgo_ts(23298), 0)
-		return uintptr(0)
-	}
-	M_StringCopy(result, s, result_len)
-	args = va
-	for {
-		v = libc.VaUintptr(&args)
-		if v == uintptr(0) {
-			break
-		}
-		M_StringConcat(result, v, result_len)
-		goto _2
-	_2:
-	}
-	return result
+	return booluint32(int32(*(*int8)(unsafe.Pointer(src + uintptr(len1)))) == int32('\000'))
 }
 
 // C documentation
@@ -23156,7 +23144,7 @@ func P_NewChaseDir(actor uintptr) {
 	}
 	// try direct route
 	if d[int32(1)] != DI_NODIR && d[int32(2)] != DI_NODIR {
-		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = diags[libc.BoolInt32(deltay < 0)<<int32(1)+libc.BoolInt32(deltax > 0)]
+		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = diags[boolint32(deltay < 0)<<int32(1)+boolint32(deltax > 0)]
 		if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir != turnaround && P_TryWalk(actor) != 0 {
 			return
 		}
@@ -24150,15 +24138,15 @@ func CheckBossEnd(motype mobjtype_t) (r boolean) {
 		// specific episode.
 		switch gameepisode {
 		case 1:
-			return libc.BoolUint32(gamemap == 8 && motype == int32(MT_BRUISER))
+			return booluint32(gamemap == 8 && motype == int32(MT_BRUISER))
 		case 2:
-			return libc.BoolUint32(gamemap == 8 && motype == int32(MT_CYBORG))
+			return booluint32(gamemap == 8 && motype == int32(MT_CYBORG))
 		case 3:
-			return libc.BoolUint32(gamemap == 8 && motype == int32(MT_SPIDER))
+			return booluint32(gamemap == 8 && motype == int32(MT_SPIDER))
 		case 4:
-			return libc.BoolUint32(gamemap == 6 && motype == int32(MT_CYBORG) || gamemap == 8 && motype == int32(MT_SPIDER))
+			return booluint32(gamemap == 6 && motype == int32(MT_CYBORG) || gamemap == 8 && motype == int32(MT_SPIDER))
 		default:
-			return libc.BoolUint32(gamemap == 8)
+			return booluint32(gamemap == 8)
 		}
 	}
 	return r
@@ -24725,7 +24713,7 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 			if (*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight > sec.Fceilingheight {
 				(*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight = sec.Fceilingheight
 			}
-			*(*fixed_t)(unsafe.Pointer(floor + 52)) -= 8 * (1 << FRACBITS) * libc.BoolInt32(floortype == int32(raiseFloorCrush))
+			*(*fixed_t)(unsafe.Pointer(floor + 52)) -= 8 * (1 << FRACBITS) * boolint32(floortype == int32(raiseFloorCrush))
 		case int32(raiseFloorTurbo):
 			(*floormove_t)(unsafe.Pointer(floor)).Fdirection = 1
 			(*floormove_t)(unsafe.Pointer(floor)).Fsector = sec
@@ -25064,7 +25052,7 @@ func P_GiveWeapon(player *player_t, weapon weapontype_t, dropped boolean) (r boo
 		player.Fweaponowned[weapon] = 1
 		player.Fpendingweapon = weapon
 	}
-	return libc.BoolUint32(gaveweapon != 0 || gaveammo != 0)
+	return booluint32(gaveweapon != 0 || gaveammo != 0)
 }
 
 // C documentation
@@ -25427,7 +25415,7 @@ func P_TouchSpecialThing(special uintptr, toucher uintptr) {
 		player.Fmessage = __ccgo_ts_str(24474)
 		sound = int32(sfx_wpnup)
 	case SPR_MGUN:
-		if !(P_GiveWeapon(player, wp_chaingun, libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
+		if !(P_GiveWeapon(player, wp_chaingun, booluint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24505)
@@ -25451,13 +25439,13 @@ func P_TouchSpecialThing(special uintptr, toucher uintptr) {
 		player.Fmessage = __ccgo_ts_str(24585)
 		sound = int32(sfx_wpnup)
 	case SPR_SHOT:
-		if !(P_GiveWeapon(player, wp_shotgun, libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
+		if !(P_GiveWeapon(player, wp_shotgun, booluint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24609)
 		sound = int32(sfx_wpnup)
 	case SPR_SGN2:
-		if !(P_GiveWeapon(player, wp_supershotgun, libc.BoolUint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
+		if !(P_GiveWeapon(player, wp_supershotgun, booluint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24630)
@@ -26201,7 +26189,7 @@ func PIT_CheckThing(thing uintptr) (r boolean) {
 			// sdh: Add deh_species_infighting here.  We can override the
 			// "monsters of the same species cant hurt each other" behavior
 			// through dehacked patches
-			if (*mobj_t)(unsafe.Pointer(thing)).Ftype1 != int32(MT_PLAYER) && libc.Bool(!(DEH_DEFAULT_SPECIES_INFIGHTING != 0)) {
+			if (*mobj_t)(unsafe.Pointer(thing)).Ftype1 != int32(MT_PLAYER) && (DEH_DEFAULT_SPECIES_INFIGHTING == 0) {
 				// Explode, but do no damage.
 				// Let players missile other players.
 				return 0
@@ -26209,7 +26197,7 @@ func PIT_CheckThing(thing uintptr) (r boolean) {
 		}
 		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SHOOTABLE) != 0) {
 			// didn't do any damage
-			return libc.BoolUint32(!((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SOLID) != 0))
+			return booluint32(!((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SOLID) != 0))
 		}
 		// damage / explode
 		damage = (P_Random()%int32(8) + 1) * (*mobj_t)(unsafe.Pointer(tmthing)).Finfo.Fdamage
@@ -26224,9 +26212,9 @@ func PIT_CheckThing(thing uintptr) (r boolean) {
 			// can remove thing
 			P_TouchSpecialThing(thing, tmthing)
 		}
-		return libc.BoolUint32(!(solid != 0))
+		return booluint32(!(solid != 0))
 	}
-	return libc.BoolUint32(!((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SOLID) != 0))
+	return booluint32(!((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SOLID) != 0))
 }
 
 //
@@ -26425,7 +26413,7 @@ func P_TryMove(thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 //	//
 func P_ThingHeightClip(thing uintptr) (r boolean) {
 	var onfloor boolean
-	onfloor = libc.BoolUint32((*mobj_t)(unsafe.Pointer(thing)).Fz == (*mobj_t)(unsafe.Pointer(thing)).Ffloorz)
+	onfloor = booluint32((*mobj_t)(unsafe.Pointer(thing)).Fz == (*mobj_t)(unsafe.Pointer(thing)).Ffloorz)
 	P_CheckPosition(thing, (*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy)
 	// what about stranding a monster partially off an edge?
 	(*mobj_t)(unsafe.Pointer(thing)).Ffloorz = tmfloorz
@@ -27125,15 +27113,15 @@ func P_PointOnLineSide(x fixed_t, y fixed_t, line *line_t) (r int32) {
 	var dx, dy, left, right fixed_t
 	if !(line.Fdx != 0) {
 		if x <= line.Fv1.Fx {
-			return libc.BoolInt32(line.Fdy > 0)
+			return boolint32(line.Fdy > 0)
 		}
-		return libc.BoolInt32(line.Fdy < 0)
+		return boolint32(line.Fdy < 0)
 	}
 	if !(line.Fdy != 0) {
 		if y <= line.Fv1.Fy {
-			return libc.BoolInt32(line.Fdx < 0)
+			return boolint32(line.Fdx < 0)
 		}
-		return libc.BoolInt32(line.Fdx > 0)
+		return boolint32(line.Fdx > 0)
 	}
 	dx = x - line.Fv1.Fx
 	dy = y - line.Fv1.Fy
@@ -27158,15 +27146,15 @@ func P_BoxOnLineSide(tmbox uintptr, ld *line_t) (r int32) {
 	p2 = 0
 	switch ld.Fslopetype {
 	case ST_HORIZONTAL:
-		p1 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXTOP)*4)) > ld.Fv1.Fy)
-		p2 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXBOTTOM)*4)) > ld.Fv1.Fy)
+		p1 = boolint32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXTOP)*4)) > ld.Fv1.Fy)
+		p2 = boolint32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXBOTTOM)*4)) > ld.Fv1.Fy)
 		if ld.Fdx < 0 {
 			p1 ^= 1
 			p2 ^= 1
 		}
 	case ST_VERTICAL:
-		p1 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXRIGHT)*4)) < ld.Fv1.Fx)
-		p2 = libc.BoolInt32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXLEFT)*4)) < ld.Fv1.Fx)
+		p1 = boolint32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXRIGHT)*4)) < ld.Fv1.Fx)
+		p2 = boolint32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXLEFT)*4)) < ld.Fv1.Fx)
 		if ld.Fdy < 0 {
 			p1 ^= 1
 			p2 ^= 1
@@ -27195,15 +27183,15 @@ func P_PointOnDivlineSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
 	var dx, dy, left, right fixed_t
 	if !((*divline_t)(unsafe.Pointer(line)).Fdx != 0) {
 		if x <= (*divline_t)(unsafe.Pointer(line)).Fx {
-			return libc.BoolInt32((*divline_t)(unsafe.Pointer(line)).Fdy > 0)
+			return boolint32((*divline_t)(unsafe.Pointer(line)).Fdy > 0)
 		}
-		return libc.BoolInt32((*divline_t)(unsafe.Pointer(line)).Fdy < 0)
+		return boolint32((*divline_t)(unsafe.Pointer(line)).Fdy < 0)
 	}
 	if !((*divline_t)(unsafe.Pointer(line)).Fdy != 0) {
 		if y <= (*divline_t)(unsafe.Pointer(line)).Fy {
-			return libc.BoolInt32((*divline_t)(unsafe.Pointer(line)).Fdx < 0)
+			return boolint32((*divline_t)(unsafe.Pointer(line)).Fdx < 0)
 		}
-		return libc.BoolInt32((*divline_t)(unsafe.Pointer(line)).Fdx > 0)
+		return boolint32((*divline_t)(unsafe.Pointer(line)).Fdx > 0)
 	}
 	dx = x - (*divline_t)(unsafe.Pointer(line)).Fx
 	dy = y - (*divline_t)(unsafe.Pointer(line)).Fy
@@ -27500,7 +27488,7 @@ func PIT_AddThingIntercepts(thing uintptr) (r boolean) {
 	var frac, x1, x2, y1, y2 fixed_t
 	var s1, s2 int32
 	var tracepositive boolean
-	tracepositive = libc.BoolUint32(trace.Fdx^trace.Fdy > 0)
+	tracepositive = booluint32(trace.Fdx^trace.Fdy > 0)
 	// check a corner to corner crossection for hit
 	if tracepositive != 0 {
 		x1 = (*mobj_t)(unsafe.Pointer(thing)).Fx - (*mobj_t)(unsafe.Pointer(thing)).Fradius
@@ -28048,7 +28036,7 @@ func P_ZMovement(mo uintptr) {
 		//
 		// So we need to check that this is either retail or commercial
 		// (but not doom2)
-		correct_lost_soul_bounce = libc.BoolInt32(gameversion >= exe_ultimate)
+		correct_lost_soul_bounce = boolint32(gameversion >= exe_ultimate)
 		if correct_lost_soul_bounce != 0 && (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_SKULLFLY) != 0 {
 			// the skull slammed into something
 			(*mobj_t)(unsafe.Pointer(mo)).Fmomz = -(*mobj_t)(unsafe.Pointer(mo)).Fmomz
@@ -29347,7 +29335,7 @@ func A_FirePistol(player *player_t, psp *pspdef_t) {
 	DecreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 1)
 	P_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
 	P_BulletSlope(player.Fmo)
-	P_GunShot(player.Fmo, libc.BoolUint32(!(player.Frefire != 0)))
+	P_GunShot(player.Fmo, booluint32(!(player.Frefire != 0)))
 }
 
 // C documentation
@@ -29419,7 +29407,7 @@ func A_FireCGun(player *player_t, psp *pspdef_t) {
 	newState := weaponinfo[player.Freadyweapon].Fflashstate + stateIndex(psp.Fstate) - S_CHAIN1
 	P_SetPsprite(player, int32(ps_flash), newState)
 	P_BulletSlope(player.Fmo)
-	P_GunShot(player.Fmo, libc.BoolUint32(!(player.Frefire != 0)))
+	P_GunShot(player.Fmo, booluint32(!(player.Frefire != 0)))
 }
 
 // C documentation
@@ -30050,7 +30038,7 @@ func saveg_read_player_t(str *player_t) {
 	// int secretcount;
 	str.Fsecretcount = saveg_read32()
 	// char* message;
-	str.Fmessage = libc.GoString(saveg_readp())
+	str.Fmessage = gostring(saveg_readp())
 	// int damagecount;
 	str.Fdamagecount = saveg_read32()
 	// int bonuscount;
@@ -30660,7 +30648,7 @@ func P_ReadSaveGameHeader() (r boolean) {
 func P_ReadSaveGameEOF() (r boolean) {
 	var value int32
 	value = int32(saveg_read8())
-	return libc.BoolUint32(value == int32(SAVEGAME_EOF))
+	return booluint32(value == int32(SAVEGAME_EOF))
 }
 
 //
@@ -31725,18 +31713,18 @@ func P_DivlineSide(x fixed_t, y fixed_t, node uintptr) (r int32) {
 			return 2
 		}
 		if x <= (*divline_t)(unsafe.Pointer(node)).Fx {
-			return libc.BoolInt32((*divline_t)(unsafe.Pointer(node)).Fdy > 0)
+			return boolint32((*divline_t)(unsafe.Pointer(node)).Fdy > 0)
 		}
-		return libc.BoolInt32((*divline_t)(unsafe.Pointer(node)).Fdy < 0)
+		return boolint32((*divline_t)(unsafe.Pointer(node)).Fdy < 0)
 	}
 	if !((*divline_t)(unsafe.Pointer(node)).Fdy != 0) {
 		if x == (*divline_t)(unsafe.Pointer(node)).Fy {
 			return 2
 		}
 		if y <= (*divline_t)(unsafe.Pointer(node)).Fy {
-			return libc.BoolInt32((*divline_t)(unsafe.Pointer(node)).Fdx < 0)
+			return boolint32((*divline_t)(unsafe.Pointer(node)).Fdx < 0)
 		}
-		return libc.BoolInt32((*divline_t)(unsafe.Pointer(node)).Fdx > 0)
+		return boolint32((*divline_t)(unsafe.Pointer(node)).Fdx > 0)
 	}
 	dx = x - (*divline_t)(unsafe.Pointer(node)).Fx
 	dy = y - (*divline_t)(unsafe.Pointer(node)).Fy
@@ -34285,7 +34273,7 @@ func P_MovePlayer(player *player_t) {
 	*(*angle_t)(unsafe.Pointer(player.Fmo + 56)) += uint32(int32(cmd.Fangleturn) << 16)
 	// Do not let the player control movement
 	//  if not onground.
-	onground = libc.BoolUint32((*mobj_t)(unsafe.Pointer(player.Fmo)).Fz <= (*mobj_t)(unsafe.Pointer(player.Fmo)).Ffloorz)
+	onground = booluint32((*mobj_t)(unsafe.Pointer(player.Fmo)).Fz <= (*mobj_t)(unsafe.Pointer(player.Fmo)).Ffloorz)
 	if cmd.Fforwardmove != 0 && onground != 0 {
 		P_Thrust(player, (*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle, int32(cmd.Fforwardmove)*int32(2048))
 	}
@@ -34314,7 +34302,7 @@ func P_DeathThink(player *player_t) {
 		player.Fviewheight = 6 * (1 << FRACBITS)
 	}
 	player.Fdeltaviewheight = 0
-	onground = libc.BoolUint32((*mobj_t)(unsafe.Pointer(player.Fmo)).Fz <= (*mobj_t)(unsafe.Pointer(player.Fmo)).Ffloorz)
+	onground = booluint32((*mobj_t)(unsafe.Pointer(player.Fmo)).Fz <= (*mobj_t)(unsafe.Pointer(player.Fmo)).Ffloorz)
 	P_CalcHeight(player)
 	if player.Fattacker != 0 && player.Fattacker != player.Fmo {
 		angle = R_PointToAngle2((*mobj_t)(unsafe.Pointer(player.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(player.Fmo)).Fy, (*mobj_t)(unsafe.Pointer(player.Fattacker)).Fx, (*mobj_t)(unsafe.Pointer(player.Fattacker)).Fy)
@@ -36427,15 +36415,15 @@ func R_PointOnSide(x fixed_t, y fixed_t, node *node_t) (r int32) {
 	var dx, dy, left, right fixed_t
 	if !(node.Fdx != 0) {
 		if x <= node.Fx {
-			return libc.BoolInt32(node.Fdy > 0)
+			return boolint32(node.Fdy > 0)
 		}
-		return libc.BoolInt32(node.Fdy < 0)
+		return boolint32(node.Fdy < 0)
 	}
 	if !(node.Fdy != 0) {
 		if y <= node.Fy {
-			return libc.BoolInt32(node.Fdx < 0)
+			return boolint32(node.Fdx < 0)
 		}
-		return libc.BoolInt32(node.Fdx > 0)
+		return boolint32(node.Fdx > 0)
 	}
 	dx = x - node.Fx
 	dy = y - node.Fy
@@ -36465,15 +36453,15 @@ func R_PointOnSegSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
 	ldy = (*seg_t)(unsafe.Pointer(line)).Fv2.Fy - ly
 	if !(ldx != 0) {
 		if x <= lx {
-			return libc.BoolInt32(ldy > 0)
+			return boolint32(ldy > 0)
 		}
-		return libc.BoolInt32(ldy < 0)
+		return boolint32(ldy < 0)
 	}
 	if !(ldy != 0) {
 		if y <= ly {
-			return libc.BoolInt32(ldx < 0)
+			return boolint32(ldx < 0)
 		}
-		return libc.BoolInt32(ldx > 0)
+		return boolint32(ldx > 0)
 	}
 	dx = x - lx
 	dy = y - ly
@@ -36943,7 +36931,7 @@ func R_SetupFrame(player *player_t) {
 	viewplayer = player
 	viewx = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fx
 	viewy = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fy
-	viewangle = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle + uint32(viewangleoffset)
+	viewangle = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle + viewangleoffset
 	extralight = player.Fextralight
 	viewz = player.Fviewz
 	viewsin = finesine[viewangle>>int32(ANGLETOFINESHIFT)]
@@ -39788,7 +39776,7 @@ func STlib_drawNum(n *st_number_t, refresh boolean) {
 		return
 	}
 	n.Foldnum = *(*int32)(unsafe.Pointer(n.Fnum))
-	neg = libc.BoolInt32(num < 0)
+	neg = boolint32(num < 0)
 	if neg != 0 {
 		if numdigits == 2 && num < -int32(9) {
 			num = -int32(9)
@@ -40579,11 +40567,11 @@ func ST_updateFaceWidget() {
 				if badguyangle > (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fangle {
 					// whether right or left
 					diffang = badguyangle - (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fangle
-					i = libc.BoolInt32(diffang > uint32(ANG18015))
+					i = boolint32(diffang > uint32(ANG18015))
 				} else {
 					// whether left or right
 					diffang = (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fangle - badguyangle
-					i = libc.BoolInt32(diffang <= uint32(ANG18015))
+					i = boolint32(diffang <= uint32(ANG18015))
 				} // confusing, aint it?
 				st_facecount = 1 * TICRATE
 				st_faceindex = ST_calcPainOffset()
@@ -40703,11 +40691,11 @@ func ST_updateWidgets() {
 	// refresh everything if this is him coming back to life
 	ST_updateFaceWidget()
 	// used by the w_armsbg widget
-	st_notdeathmatch = libc.BoolUint32(!(deathmatch != 0))
+	st_notdeathmatch = booluint32(!(deathmatch != 0))
 	// used by w_arms[] widgets
-	st_armson = libc.BoolUint32(st_statusbaron != 0 && !(deathmatch != 0))
+	st_armson = booluint32(st_statusbaron != 0 && !(deathmatch != 0))
 	// used by w_frags widget
-	st_fragson = libc.BoolUint32(deathmatch != 0 && st_statusbaron != 0)
+	st_fragson = booluint32(deathmatch != 0 && st_statusbaron != 0)
 	st_fragscount = 0
 	i = 0
 	for {
@@ -40792,9 +40780,9 @@ func ST_doPaletteStuff() {
 
 func ST_drawWidgets(refresh boolean) {
 	// used by w_arms[] widgets
-	st_armson = libc.BoolUint32(st_statusbaron != 0 && !(deathmatch != 0))
+	st_armson = booluint32(st_statusbaron != 0 && !(deathmatch != 0))
 	// used by w_frags widget
-	st_fragson = libc.BoolUint32(deathmatch != 0 && st_statusbaron != 0)
+	st_fragson = booluint32(deathmatch != 0 && st_statusbaron != 0)
 	STlib_updateNum(&w_ready, refresh)
 	for i := 0; i < 4; i++ {
 		STlib_updateNum(&w_ammo[i], refresh)
@@ -40827,8 +40815,8 @@ func ST_diffDraw() {
 }
 
 func ST_Drawer(fullscreen boolean, refresh boolean) {
-	st_statusbaron = libc.BoolUint32(!(fullscreen != 0) || automapactive != 0)
-	st_firsttime = libc.BoolUint32(st_firsttime != 0 || refresh != 0)
+	st_statusbaron = booluint32(!(fullscreen != 0) || automapactive != 0)
+	st_firsttime = booluint32(st_firsttime != 0 || refresh != 0)
 	// Do red-/gold-shifts from damage/items
 	ST_doPaletteStuff()
 	// If just after ST_Start(), refresh all
@@ -41352,7 +41340,7 @@ func S_AdjustSoundParams(listener uintptr, source uintptr, vol uintptr, sep uint
 			*(*int32)(unsafe.Pointer(vol)) = snd_SfxVolume * ((1200*(1<<FRACBITS) - approx_dist) >> int32(FRACBITS)) / ((1200*(1<<FRACBITS) - 200*(1<<FRACBITS)) >> FRACBITS)
 		}
 	}
-	return libc.BoolInt32(*(*int32)(unsafe.Pointer(vol)) > 0)
+	return boolint32(*(*int32)(unsafe.Pointer(vol)) > 0)
 }
 
 func S_StartSound(origin_p uintptr, sfx_id int32) {
@@ -41522,7 +41510,7 @@ func S_ChangeMusic(musicnum int32, looping int32) {
 	S_StopMusic()
 	// get lumpnum if neccessary
 	if !(music.Flumpnum != 0) {
-		M_snprintf(bp, uint64(9), __ccgo_ts_str(28083), libc.GoString(music.Fname))
+		M_snprintf(bp, uint64(9), __ccgo_ts_str(28083), gostring(music.Fname))
 		music.Flumpnum = W_GetNumForName(bp)
 	}
 	music.Fdata = W_CacheLumpNum(music.Flumpnum, int32(PU_STATIC))
@@ -42858,7 +42846,7 @@ func WI_drawNum(x int32, y int32, n int32, digits int32) (r int32) {
 			}
 		}
 	}
-	neg = libc.BoolInt32(n < 0)
+	neg = boolint32(n < 0)
 	if neg != 0 {
 		n = -n
 	}
@@ -42963,7 +42951,7 @@ func WI_updateShowNextLoc() {
 	if !(v1 != 0) || acceleratestage != 0 {
 		WI_initNoState()
 	} else {
-		snl_pointeron = libc.BoolUint32(cnt&31 < 20)
+		snl_pointeron = booluint32(cnt&31 < 20)
 	}
 }
 
@@ -43290,7 +43278,7 @@ func WI_initNetgameStats() {
 		;
 		i++
 	}
-	dofrags = libc.BoolInt32(!!(dofrags != 0))
+	dofrags = boolint32(!!(dofrags != 0))
 	WI_initAnimatedBack()
 }
 
@@ -43406,7 +43394,7 @@ func WI_updateNetgameStats() {
 				}
 				if !(stillticking != 0) {
 					S_StartSound(uintptr(0), int32(sfx_barexp))
-					ng_state += 1 + 2*libc.BoolInt32(!(dofrags != 0))
+					ng_state += 1 + 2*boolint32(!(dofrags != 0))
 				}
 			} else {
 				if ng_state == 8 {
@@ -43473,11 +43461,11 @@ func WI_drawNetgameStats() {
 	WI_drawAnimatedBack()
 	WI_drawLF()
 	// draw stat titles (top line)
-	V_DrawPatch(32+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+int32(NG_SPACINGX)-int32((*patch_t)(unsafe.Pointer(kills)).Fwidth), int32(NG_STATSY), kills)
-	V_DrawPatch(32+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+2*NG_SPACINGX-int32((*patch_t)(unsafe.Pointer(items)).Fwidth), int32(NG_STATSY), items)
-	V_DrawPatch(32+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+3*NG_SPACINGX-int32((*patch_t)(unsafe.Pointer(secret)).Fwidth), int32(NG_STATSY), secret)
+	V_DrawPatch(32+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*boolint32(!(dofrags != 0))+int32(NG_SPACINGX)-int32((*patch_t)(unsafe.Pointer(kills)).Fwidth), int32(NG_STATSY), kills)
+	V_DrawPatch(32+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*boolint32(!(dofrags != 0))+2*NG_SPACINGX-int32((*patch_t)(unsafe.Pointer(items)).Fwidth), int32(NG_STATSY), items)
+	V_DrawPatch(32+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*boolint32(!(dofrags != 0))+3*NG_SPACINGX-int32((*patch_t)(unsafe.Pointer(secret)).Fwidth), int32(NG_STATSY), secret)
 	if dofrags != 0 {
-		V_DrawPatch(32+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*libc.BoolInt32(!(dofrags != 0))+4*NG_SPACINGX-int32((*patch_t)(unsafe.Pointer(frags)).Fwidth), int32(NG_STATSY), frags)
+		V_DrawPatch(32+int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2)+int32(32)*boolint32(!(dofrags != 0))+4*NG_SPACINGX-int32((*patch_t)(unsafe.Pointer(frags)).Fwidth), int32(NG_STATSY), frags)
 	}
 	// draw stats
 	y = int32(NG_STATSY) + int32((*patch_t)(unsafe.Pointer(kills)).Fheight)
@@ -43489,7 +43477,7 @@ func WI_drawNetgameStats() {
 		if !(playeringame[i] != 0) {
 			goto _1
 		}
-		x = 32 + int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2) + 32*libc.BoolInt32(!(dofrags != 0))
+		x = 32 + int32((*patch_t)(unsafe.Pointer(star)).Fwidth)/int32(2) + 32*boolint32(!(dofrags != 0))
 		V_DrawPatch(x-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth), y, p[i])
 		if i == me {
 			V_DrawPatch(x-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth), y, star)
@@ -47271,7 +47259,7 @@ var viewangle angle_t
 
 // Fineangles in the SCREENWIDTH wide window.
 
-var viewangleoffset int32
+var viewangleoffset uint32
 
 // C documentation
 //
