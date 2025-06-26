@@ -6493,7 +6493,7 @@ var textscreens = [22]textscreen_t{
 //	//
 func F_StartFinale() {
 	var i uint64
-	var screen uintptr
+	var screen *textscreen_t
 	var v1, v4, v6 GameMission_t
 	var v8 bool
 	gameaction = ga_nothing
@@ -6520,10 +6520,10 @@ func F_StartFinale() {
 		if !(i < 704/32) {
 			break
 		}
-		screen = uintptr(unsafe.Pointer(&textscreens)) + uintptr(i)*32
+		screen = &textscreens[i]
 		// Hack for Chex Quest
-		if gameversion == exe_chex && (*textscreen_t)(unsafe.Pointer(screen)).Fmission == doom {
-			(*textscreen_t)(unsafe.Pointer(screen)).Flevel = 5
+		if gameversion == exe_chex && screen.Fmission == doom {
+			screen.Flevel = 5
 		}
 		if gamemission == pack_chex {
 			v4 = doom
@@ -6534,7 +6534,7 @@ func F_StartFinale() {
 				v4 = gamemission
 			}
 		}
-		if v8 = (v4 == (*textscreen_t)(unsafe.Pointer(screen)).Fmission); v8 {
+		if v8 = (v4 == screen.Fmission); v8 {
 			if gamemission == pack_chex {
 				v6 = doom
 			} else {
@@ -6545,9 +6545,9 @@ func F_StartFinale() {
 				}
 			}
 		}
-		if v8 && (v6 != doom || gameepisode == (*textscreen_t)(unsafe.Pointer(screen)).Fepisode) && gamemap == (*textscreen_t)(unsafe.Pointer(screen)).Flevel {
-			finaletext = (*textscreen_t)(unsafe.Pointer(screen)).Ftext
-			finaleflat = (*textscreen_t)(unsafe.Pointer(screen)).Fbackground
+		if v8 && (v6 != doom || gameepisode == screen.Fepisode) && gamemap == screen.Flevel {
+			finaletext = screen.Ftext
+			finaleflat = screen.Fbackground
 		}
 		goto _3
 	_3:
@@ -6555,8 +6555,6 @@ func F_StartFinale() {
 		i++
 	}
 	// Do dehacked substitutions of strings
-	finaletext = finaletext
-	finaleflat = finaleflat
 	finalestage = int32(F_STAGE_TEXT)
 	finalecount = 0
 }
