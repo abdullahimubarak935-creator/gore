@@ -8070,10 +8070,6 @@ func G_Ticker() {
 			F_StartFinale()
 		case ga_worlddone:
 			G_DoWorldDone()
-		case ga_screenshot:
-			V_ScreenShot(__ccgo_ts_str(13723))
-			players[consoleplayer].Fmessage = __ccgo_ts_str(13735)
-			gameaction = ga_nothing
 		case ga_nothing:
 			break
 		}
@@ -8395,10 +8391,6 @@ func G_DoReborn(playernum int32) {
 		}
 		P_SpawnPlayer(&playerstarts[playernum])
 	}
-}
-
-func G_ScreenShot() {
-	gameaction = ga_screenshot
 }
 
 func init() {
@@ -21297,10 +21289,6 @@ func M_Responder(ev *event_t) (r boolean) {
 		}
 		menuactive = 0
 		S_StartSound(uintptr(0), int32(sfx_swtchx))
-		return 1
-	}
-	if devparm != 0 && key == key_menu_help || key != 0 && key == key_menu_screenshot {
-		G_ScreenShot()
 		return 1
 	}
 	// F-Keys
@@ -41833,138 +41821,6 @@ func V_UseBuffer(buffer uintptr) {
 
 func V_RestoreBuffer() {
 	dest_screen = I_VideoBuffer
-}
-
-//
-// SCREEN SHOTS
-//
-
-type pcx_t struct {
-	Fmanufacturer   int8
-	Fversion        int8
-	Fencoding       int8
-	Fbits_per_pixel int8
-	Fxmin           uint16
-	Fymin           uint16
-	Fxmax           uint16
-	Fymax           uint16
-	Fhres           uint16
-	Fvres           uint16
-	Fpalette        [48]uint8
-	Freserved       int8
-	Fcolor_planes   int8
-	Fbytes_per_line uint16
-	Fpalette_type   uint16
-	Ffiller         [58]int8
-	Fdata           uint8
-}
-
-//
-// WritePCXfile
-//
-
-func WritePCXfile(filename string, data uintptr, width int32, height int32, palette uintptr) {
-	var i, length int32
-	var pack, pcx, v10, v2, v3, v4, v5, v6, v7, v9 uintptr
-	pcx = Z_Malloc(width*height*int32(2)+int32(1000), int32(PU_STATIC), uintptr(0))
-	(*pcx_t)(unsafe.Pointer(pcx)).Fmanufacturer = int8(0x0a) // PCX id
-	(*pcx_t)(unsafe.Pointer(pcx)).Fversion = 5               // 256 color
-	(*pcx_t)(unsafe.Pointer(pcx)).Fencoding = 1              // uncompressed
-	(*pcx_t)(unsafe.Pointer(pcx)).Fbits_per_pixel = 8        // 256 color
-	(*pcx_t)(unsafe.Pointer(pcx)).Fxmin = uint16(0)
-	(*pcx_t)(unsafe.Pointer(pcx)).Fymin = uint16(0)
-	(*pcx_t)(unsafe.Pointer(pcx)).Fxmax = uint16(int16(width - 1))
-	(*pcx_t)(unsafe.Pointer(pcx)).Fymax = uint16(int16(height - 1))
-	(*pcx_t)(unsafe.Pointer(pcx)).Fhres = uint16(int16(width))
-	(*pcx_t)(unsafe.Pointer(pcx)).Fvres = uint16(int16(height))
-	xmemset(pcx+16, 0, 48)
-	(*pcx_t)(unsafe.Pointer(pcx)).Fcolor_planes = 1 // chunky image
-	(*pcx_t)(unsafe.Pointer(pcx)).Fbytes_per_line = uint16(int16(width))
-	(*pcx_t)(unsafe.Pointer(pcx)).Fpalette_type = uint16(int16(2)) // not a grey scale
-	xmemset(pcx+70, 0, 58)
-	// pack the image
-	pack = pcx + 128
-	i = 0
-	for {
-		if !(i < width*height) {
-			break
-		}
-		if int32(*(*uint8)(unsafe.Pointer(data)))&int32(0xc0) != int32(0xc0) {
-			v2 = pack
-			pack++
-			v3 = data
-			data++
-			*(*uint8)(unsafe.Pointer(v2)) = *(*uint8)(unsafe.Pointer(v3))
-		} else {
-			v4 = pack
-			pack++
-			*(*uint8)(unsafe.Pointer(v4)) = uint8(0xc1)
-			v5 = pack
-			pack++
-			v6 = data
-			data++
-			*(*uint8)(unsafe.Pointer(v5)) = *(*uint8)(unsafe.Pointer(v6))
-		}
-		goto _1
-	_1:
-		;
-		i++
-	}
-	// write the palette
-	v7 = pack
-	pack++
-	*(*uint8)(unsafe.Pointer(v7)) = uint8(0x0c) // palette ID byte
-	i = 0
-	for {
-		if !(i < 768) {
-			break
-		}
-		v9 = pack
-		pack++
-		v10 = palette
-		palette++
-		*(*uint8)(unsafe.Pointer(v9)) = *(*uint8)(unsafe.Pointer(v10))
-		goto _8
-	_8:
-		;
-		i++
-	}
-	// write output file
-	length = int32(int64(pack) - int64(pcx))
-	M_WriteFile(filename, pcx, length)
-	Z_Free(pcx)
-}
-
-//
-// V_ScreenShot
-//
-
-func V_ScreenShot(format string) {
-	var bp string
-	var ext uintptr
-	var i int32
-	// find a file name to save it to
-	ext = __ccgo_ts(28304)
-	i = 0
-	for {
-		if !(i <= 99) {
-			break
-		}
-
-		bp := fmt.Sprintf(format, i, ext)
-		if !(M_FileExists(bp) != 0) {
-			break // file doesn't exist
-		}
-		goto _1
-	_1:
-		;
-		i++
-	}
-	if i == 100 {
-		I_Error(__ccgo_ts(28308), 0)
-	}
-	// save the pcx file
-	WritePCXfile(bp, I_VideoBuffer, int32(SCREENWIDTH), int32(SCREENHEIGHT), W_CacheLumpName(__ccgo_ts(1490), int32(PU_CACHE)))
 }
 
 func V_DrawMouseSpeedBox(speed int32) {
