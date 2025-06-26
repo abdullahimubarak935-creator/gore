@@ -38225,7 +38225,7 @@ func R_ProjectSprite(thing uintptr) {
 	vis.Fgy = (*mobj_t)(unsafe.Pointer(thing)).Fy
 	vis.Fgz = (*mobj_t)(unsafe.Pointer(thing)).Fz
 	vis.Fgzt = (*mobj_t)(unsafe.Pointer(thing)).Fz + *(*fixed_t)(unsafe.Pointer(spritetopoffset + uintptr(lump)*4))
-	vis.Ftexturemid = (*vissprite_t)(unsafe.Pointer(vis)).Fgzt - viewz
+	vis.Ftexturemid = vis.Fgzt - viewz
 	if x1 < 0 {
 		v1 = 0
 	} else {
@@ -38248,7 +38248,7 @@ func R_ProjectSprite(thing uintptr) {
 	}
 	if vis.Fx1 > x1 {
 
-		vis.Fstartfrac += (*vissprite_t)(unsafe.Pointer(vis)).Fxiscale * ((*vissprite_t)(unsafe.Pointer(vis)).Fx1 - x1)
+		vis.Fstartfrac += vis.Fxiscale * (vis.Fx1 - x1)
 	}
 	vis.Fpatch = lump
 	// get light level
@@ -38445,22 +38445,22 @@ func R_SortVisSprites() {
 	var bestscale fixed_t
 	var count, i int32
 	count = int32(vissprite_n)
-	(*(*vissprite_t)(unsafe.Pointer(bp))).Fprev = bp
-	(*(*vissprite_t)(unsafe.Pointer(bp))).Fnext = bp
+	bp.Fprev = bp
+	bp.Fnext = bp
 	if !(count != 0) {
 		return
 	}
 	for i := 0; i < vissprite_n; i++ {
 		ds := &vissprites[i]
 		if i < len(vissprites)-1 {
-			(*vissprite_t)(unsafe.Pointer(ds)).Fnext = &vissprites[i+1]
+			ds.Fnext = &vissprites[i+1]
 		} else {
-			(*vissprite_t)(unsafe.Pointer(ds)).Fnext = nil
+			ds.Fnext = nil
 		}
 		if i > 0 {
-			(*vissprite_t)(unsafe.Pointer(ds)).Fprev = &vissprites[i-1]
+			ds.Fprev = &vissprites[i-1]
 		} else {
-			(*vissprite_t)(unsafe.Pointer(ds)).Fprev = nil
+			ds.Fprev = nil
 		}
 	}
 	vissprites[0].Fprev = bp
@@ -38476,26 +38476,26 @@ func R_SortVisSprites() {
 			break
 		}
 		bestscale = int32(INT_MAX17)
-		best = (*(*vissprite_t)(unsafe.Pointer(bp))).Fnext
-		ds = (*(*vissprite_t)(unsafe.Pointer(bp))).Fnext
+		best = (*bp).Fnext
+		ds = (*bp).Fnext
 		for {
 			if !(ds != bp) {
 				break
 			}
-			if (*vissprite_t)(unsafe.Pointer(ds)).Fscale < bestscale {
-				bestscale = (*vissprite_t)(unsafe.Pointer(ds)).Fscale
+			if ds.Fscale < bestscale {
+				bestscale = ds.Fscale
 				best = ds
 			}
 			goto _5
 		_5:
 			;
-			ds = (*vissprite_t)(unsafe.Pointer(ds)).Fnext
+			ds = ds.Fnext
 		}
-		(*vissprite_t)(unsafe.Pointer((*vissprite_t)(unsafe.Pointer(best)).Fnext)).Fprev = (*vissprite_t)(unsafe.Pointer(best)).Fprev
-		(*vissprite_t)(unsafe.Pointer((*vissprite_t)(unsafe.Pointer(best)).Fprev)).Fnext = (*vissprite_t)(unsafe.Pointer(best)).Fnext
-		(*vissprite_t)(unsafe.Pointer(best)).Fnext = &vsprsortedhead
-		(*vissprite_t)(unsafe.Pointer(best)).Fprev = vsprsortedhead.Fprev
-		(*vissprite_t)(unsafe.Pointer(vsprsortedhead.Fprev)).Fnext = best
+		best.Fnext.Fprev = best.Fprev
+		best.Fprev.Fnext = best.Fnext
+		best.Fnext = &vsprsortedhead
+		best.Fprev = vsprsortedhead.Fprev
+		vsprsortedhead.Fprev.Fnext = best
 		vsprsortedhead.Fprev = best
 		goto _4
 	_4:
