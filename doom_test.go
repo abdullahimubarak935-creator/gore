@@ -249,6 +249,21 @@ func savePNG(filename string, img image.Image) error {
 	return nil
 }
 
+func loadPNG(filename string) (image.Image, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, fmt.Errorf("error opening PNG file: %w", err)
+	}
+	defer file.Close()
+
+	img, err := png.Decode(file)
+	if err != nil {
+		return nil, fmt.Errorf("error decoding PNG: %w", err)
+	}
+
+	return img, nil
+}
+
 func TestLoadSave(t *testing.T) {
 	dg_speed_ratio = 100.0 // Run at 50x speed
 	game := &doomTestHeadless{
@@ -364,7 +379,6 @@ func TestDoomRandom(t *testing.T) {
 }
 
 func TestDoomLevels(t *testing.T) {
-
 	dg_speed_ratio = 100.0 // Run at 50x speed
 	game := &doomTestHeadless{
 		t:     t,
@@ -387,6 +401,18 @@ func TestDoomLevels(t *testing.T) {
 			game.InsertKeySequence(sequence...)
 			time.Sleep(20 * time.Millisecond) // Wait for the level to load
 			t.Logf("Completed level E1M%d", i)
+			img1 := game.GetScreen()
+			knownGood, err := loadPNG(fmt.Sprintf("testdata/good_doom_test_e1m%d.png", i))
+			if err != nil {
+				t.Errorf("Error loading known good image for E1M%d: %v", i, err)
+				continue
+			}
+			diffImg, percent, err := diff.CompareImages(img1, knownGood)
+			if err != nil || percent > 2 {
+				t.Errorf("Level E1M%d screenshot does not match known good: %f%% difference", i, percent)
+				savePNG(fmt.Sprintf("doom_test_e1m%d.png", i), img1)
+				savePNG(fmt.Sprintf("doom_test_e1m%d_diff.png", i), diffImg)
+			}
 		}
 
 		// Exit
