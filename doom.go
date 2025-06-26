@@ -4015,7 +4015,7 @@ func CheckDirectoryHasIWAD(dir string, iwadname string) string {
 func SearchDirectoryForIWAD(dir string, mask int32, mission *GameMission_t) string {
 	var filename string
 	var i uint64
-	i = uint64(0)
+	i = 0
 	for {
 		if !(i < 336/24) {
 			break
@@ -4043,7 +4043,7 @@ func IdentifyIWADByName(name string, mask int32) (r GameMission_t) {
 	var i uint64
 	var mission GameMission_t
 	mission = none
-	i = uint64(0)
+	i = 0
 	for {
 		if !(i < 336/24) {
 			break
@@ -4185,7 +4185,7 @@ func D_SaveGameIWADName(gamemission GameMission_t) string {
 	// Note that we match on gamemission rather than on IWAD name.
 	// This ensures that doom1.wad and doom.wad saves are stored
 	// in the same place.
-	i = uint64(0)
+	i = 0
 	for {
 		if !(i < 336/24) {
 			break
@@ -5010,7 +5010,7 @@ func D_BindVariables() {
 		if !(i < 10) {
 			break
 		}
-		M_snprintf(bp, uint64(12), __ccgo_ts_str(1654), i)
+		M_snprintf(bp, 12, __ccgo_ts_str(1654), i)
 		M_BindVariable(bp, uintptr(unsafe.Pointer(&chat_macros))+uintptr(i)*8)
 		goto _1
 	_1:
@@ -5220,7 +5220,7 @@ func GetGameName(gamename string) string {
 	var deh_sub string
 	var i uint64
 	var version, v2, v3, v6, v7 int32
-	i = uint64(0)
+	i = 0
 	for {
 		if !(i < 56/8) {
 			break
@@ -6519,7 +6519,7 @@ func F_StartFinale() {
 		S_ChangeMusic(int32(mus_read_m), 1)
 	}
 	// Find the right screen and set the text and background
-	i = uint64(0)
+	i = 0
 	for {
 		if !(i < 704/32) {
 			break
@@ -6582,7 +6582,7 @@ func F_Ticker() {
 	// check for skipping
 	if gamemode == commercial && finalecount > 50 {
 		// go on to the next level
-		i = uint64(0)
+		i = 0
 		for {
 			if !(i < uint64(MAXPLAYERS)) {
 				break
@@ -6638,7 +6638,7 @@ func F_TextWrite() {
 			if !(x < SCREENWIDTH/64) {
 				break
 			}
-			xmemcpy(dest, src+uintptr(y&63<<6), uint64(64))
+			xmemcpy(dest, src+uintptr(y&63<<6), 64)
 			dest += uintptr(64)
 			goto _2
 		_2:
@@ -7244,7 +7244,7 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 	wipe_shittyColMajorXform(wipe_scr_end, width/int32(2), height)
 	// setup initial column positions
 	// (y<0 => not ready to scroll yet)
-	y_screen = Z_Malloc(int32(uint64(width)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	y_screen = Z_Malloc(int32(uint64(width)*4), int32(PU_STATIC), uintptr(0))
 	*(*int32)(unsafe.Pointer(y_screen)) = -(M_Random() % 16)
 	i = 1
 	for {
@@ -7856,7 +7856,7 @@ func G_DoLoadLevel() {
 		if playeringame[i] != 0 && players[i].Fplayerstate == int32(PST_DEAD) {
 			players[i].Fplayerstate = int32(PST_REBORN)
 		}
-		xmemset(uintptr(unsafe.Pointer(&players))+uintptr(i)*328+108, 0, uint64(16))
+		xmemset(uintptr(unsafe.Pointer(&players))+uintptr(i)*328+108, 0, 16)
 		goto _1
 	_1:
 		;
@@ -7867,7 +7867,7 @@ func G_DoLoadLevel() {
 	gameaction = ga_nothing
 	Z_CheckHeap()
 	// clear cmd building stuff
-	xmemset(uintptr(unsafe.Pointer(&gamekeydown)), 0, uint64(1024))
+	xmemset(uintptr(unsafe.Pointer(&gamekeydown)), 0, 1024)
 	v3 = 0
 	joystrafemove = v3
 	v2 = v3
@@ -7881,8 +7881,8 @@ func G_DoLoadLevel() {
 	v5 = v6
 	sendsave = v5
 	sendpause = v5
-	xmemset(uintptr(unsafe.Pointer(&mousearray)), 0, uint64(36))
-	xmemset(uintptr(unsafe.Pointer(&joyarray)), 0, uint64(84))
+	xmemset(uintptr(unsafe.Pointer(&mousearray)), 0, 36)
+	xmemset(uintptr(unsafe.Pointer(&joyarray)), 0, 84)
 	if testcontrols != 0 {
 		players[consoleplayer].Fmessage = __ccgo_ts_str(13701)
 	}
@@ -8146,7 +8146,7 @@ func G_Ticker() {
 					}
 				case int32(BTS_SAVEGAME):
 					if !(savedescription[0] != 0) {
-						M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(13798), uint64(32))
+						M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(13798), 32)
 					}
 					savegameslot = int32(players[i].Fcmd.Fbuttons) & int32(BTS_SAVEMASK) >> int32(BTS_SAVESHIFT)
 					gameaction = ga_savegame
@@ -8752,7 +8752,7 @@ func G_DoLoadGame() {
 //	//
 func G_SaveGame(slot int32, description uintptr) {
 	savegameslot = slot
-	M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), description, uint64(32))
+	M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), description, 32)
 	sendsave = 1
 }
 
@@ -8804,7 +8804,7 @@ func G_DoSaveGame() {
 	os.Remove(savegame_file) // remove the old savegame file
 	os.Rename(temp_savegame_file, savegame_file)
 	gameaction = ga_nothing
-	M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(14092), uint64(32))
+	M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(14092), 32)
 	players[consoleplayer].Fmessage = __ccgo_ts_str(14093)
 	// draw the pattern into the back screen
 	R_FillBackScreen()
@@ -9231,7 +9231,7 @@ func DemoVersionDescription(version int32) (r uintptr) {
 	if version >= 0 && version <= 4 {
 		return __ccgo_ts(14201)
 	} else {
-		M_snprintf(uintptr(unsafe.Pointer(&resultbuf)), uint64(16), __ccgo_ts_str(14216), version/int32(100), version%int32(100))
+		M_snprintf(uintptr(unsafe.Pointer(&resultbuf)), 16, __ccgo_ts_str(14216), version/int32(100), version%int32(100))
 		return uintptr(unsafe.Pointer(&resultbuf))
 	}
 	return r
@@ -17983,7 +17983,7 @@ func I_BindJoystickVariables() {
 		if !(i < int32(NUM_VIRTUAL_BUTTONS)) {
 			break
 		}
-		M_snprintf(bp, uint64(32), __ccgo_ts_str(18442), i)
+		M_snprintf(bp, 32, __ccgo_ts_str(18442), i)
 		M_BindVariable(bp, uintptr(unsafe.Pointer(&joystick_physical_buttons))+uintptr(i)*4)
 		goto _1
 	_1:
@@ -18692,7 +18692,7 @@ func cht_CheckCheat(cht *cheatseq_t, key int8) (r int32) {
 		if int32(key) == int32(*(*int8)(unsafe.Pointer(&cht.Fsequence[cht.Fchars_read]))) {
 			cht.Fchars_read++
 		} else {
-			cht.Fchars_read = uint64(0)
+			cht.Fchars_read = 0
 		}
 		cht.Fparam_chars_read = 0
 	} else {
@@ -19847,7 +19847,7 @@ func M_BindChatControls(num_players uint32) {
 		if !(i < num_players) {
 			break
 		}
-		M_snprintf(bp, uint64(32), __ccgo_ts_str(22078), i+1)
+		M_snprintf(bp, 32, __ccgo_ts_str(22078), i+1)
 		M_BindVariable(bp, uintptr(unsafe.Pointer(&key_multi_msgplayer))+uintptr(i)*4)
 		goto _1
 	_1:
@@ -21774,7 +21774,7 @@ func M_ExtractFileBase(path string, dest uintptr) {
 	// Note: Vanilla Doom exits with an error if a filename is specified
 	// with a base of more than eight characters.  To remove the 8.3
 	// filename limit, instead we simply truncate the name.
-	xmemset(dest, 0, uint64(8))
+	xmemset(dest, 0, 8)
 	maxLen := uint64(min(len(src), 8))
 	xmemcpy(dest, uintptr(unsafe.Pointer(&[]byte(src)[0])), maxLen)
 }
@@ -21784,9 +21784,9 @@ func M_ExtractFileBase(path string, dest uintptr) {
 
 func M_StringCopy(dest uintptr, src uintptr, dest_size uint64) (r boolean) {
 	var len1 uint64
-	if dest_size >= uint64(1) {
-		*(*int8)(unsafe.Pointer(dest + uintptr(dest_size-uint64(1)))) = int8('\000')
-		xstrncpy(dest, src, dest_size-uint64(1))
+	if dest_size >= 1 {
+		*(*int8)(unsafe.Pointer(dest + uintptr(dest_size-1))) = int8('\000')
+		xstrncpy(dest, src, dest_size-1)
 	} else {
 		return 0
 	}
@@ -28169,7 +28169,7 @@ func P_SpawnMobj(x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r uintptr) 
 	var mobj uintptr
 	var info *mobjinfo_t
 	mobj = Z_Malloc(224, int32(PU_LEVEL), uintptr(0))
-	xmemset(mobj, 0, uint64(224))
+	xmemset(mobj, 0, 224)
 	info = &mobjinfo[uintptr(type1)]
 	(*mobj_t)(unsafe.Pointer(mobj)).Ftype1 = type1
 	(*mobj_t)(unsafe.Pointer(mobj)).Finfo = info
@@ -29588,7 +29588,7 @@ func saveg_write32(value int32) {
 func saveg_read_pad() {
 	var i, padding int32
 	pos, _ := save_stream.Seek(0, io.SeekCurrent)
-	padding = int32((uint64(4) - uint64(pos)&uint64(3)) & uint64(3))
+	padding = int32((4 - uint64(pos)&uint64(3)) & uint64(3))
 	i = 0
 	for {
 		if !(i < padding) {
@@ -29605,7 +29605,7 @@ func saveg_read_pad() {
 func saveg_write_pad() {
 	var i, padding int32
 	pos, _ := save_stream.Seek(0, io.SeekCurrent)
-	padding = int32((uint64(4) - uint64(pos)&uint64(3)) & uint64(3))
+	padding = int32((4 - uint64(pos)&uint64(3)) & uint64(3))
 	i = 0
 	for {
 		if !(i < padding) {
@@ -30522,8 +30522,8 @@ func P_WriteSaveGameHeader(description uintptr) {
 		;
 		i++
 	}
-	xmemset(bp, 0, uint64(16))
-	M_snprintf(bp, uint64(16), __ccgo_ts_str(25058), G_VanillaVersionCode())
+	xmemset(bp, 0, 16)
+	M_snprintf(bp, 16, __ccgo_ts_str(25058), G_VanillaVersionCode())
 	i = 0
 	for {
 		if !(i < int32(VERSIONSIZE)) {
@@ -30585,8 +30585,8 @@ func P_ReadSaveGameHeader() (r boolean) {
 		;
 		i++
 	}
-	xmemset(bp, 0, uint64(16))
-	M_snprintf(bp, uint64(16), __ccgo_ts_str(25058), G_VanillaVersionCode())
+	xmemset(bp, 0, 16)
+	M_snprintf(bp, 16, __ccgo_ts_str(25058), G_VanillaVersionCode())
 	if xstrcmp(bp+16, bp) != 0 {
 		return 0
 	} // bad version
@@ -31013,7 +31013,7 @@ func P_LoadVertexes(lump int32) {
 	var data, ml uintptr
 	// Determine number of lumps:
 	//  total lump length / vertex record length.
-	numvertexes = int32(uint64(W_LumpLength(uint32(lump))) / uint64(4))
+	numvertexes = int32(uint64(W_LumpLength(uint32(lump))) / 4)
 	// Allocate zone memory for buffer.
 	vertexes = make([]vertex_t, numvertexes)
 	// Load data into cache.
@@ -31038,7 +31038,7 @@ func P_LoadVertexes(lump int32) {
 //	//
 func GetSectorAtNullAddress() (r *sector_t) {
 	if !(null_sector_is_initialized != 0) {
-		xmemset(uintptr(unsafe.Pointer(&null_sector)), 0, uint64(144))
+		xmemset(uintptr(unsafe.Pointer(&null_sector)), 0, 144)
 		I_GetMemoryValue(0, uintptr(unsafe.Pointer(&null_sector)), 4)
 		I_GetMemoryValue(4, uintptr(unsafe.Pointer(&null_sector))+4, 4)
 		null_sector_is_initialized = 1
@@ -31059,9 +31059,9 @@ func P_LoadSegs(lump int32) {
 	var data, li, ml uintptr
 	var ldef *line_t
 	var i, linedef, side, sidenum int32
-	numsegs = int32(uint64(W_LumpLength(uint32(lump))) / uint64(12))
-	segs = Z_Malloc(int32(uint64(numsegs)*uint64(56)), int32(PU_LEVEL), uintptr(0))
-	xmemset(segs, 0, uint64(numsegs)*uint64(56))
+	numsegs = int32(uint64(W_LumpLength(uint32(lump))) / 12)
+	segs = Z_Malloc(int32(uint64(numsegs)*56), int32(PU_LEVEL), uintptr(0))
+	xmemset(segs, 0, uint64(numsegs)*56)
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
 	ml = data
 	li = segs
@@ -31112,7 +31112,7 @@ func P_LoadSegs(lump int32) {
 //	//
 func P_LoadSubsectors(lump int32) {
 	var data, ms uintptr
-	numsubsectors = int32(uint64(W_LumpLength(uint32(lump))) / uint64(4))
+	numsubsectors = int32(uint64(W_LumpLength(uint32(lump))) / 4)
 	subsectors = make([]subsector_t, numsubsectors)
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
 	ms = data
@@ -31245,7 +31245,7 @@ func P_LoadLineDefs(lump int32) {
 	var data, mld uintptr
 	var v1, v2, v21, v3 *vertex_t
 	var i int32
-	numlines = int32(uint64(W_LumpLength(uint32(lump))) / uint64(14))
+	numlines = int32(uint64(W_LumpLength(uint32(lump))) / 14)
 	lines = make([]line_t, numlines)
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
 	mld = data
@@ -31314,9 +31314,9 @@ func P_LoadLineDefs(lump int32) {
 func P_LoadSideDefs(lump int32) {
 	var data, msd, sd uintptr
 	var i int32
-	numsides = int32(uint64(W_LumpLength(uint32(lump))) / uint64(30))
-	sides = Z_Malloc(int32(uint64(numsides)*uint64(24)), int32(PU_LEVEL), uintptr(0))
-	xmemset(sides, 0, uint64(numsides)*uint64(24))
+	numsides = int32(uint64(W_LumpLength(uint32(lump))) / 30)
+	sides = Z_Malloc(int32(uint64(numsides)*24), int32(PU_LEVEL), uintptr(0))
+	xmemset(sides, 0, uint64(numsides)*24)
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
 	msd = data
 	sd = sides
@@ -31371,7 +31371,7 @@ func P_LoadBlockMap(lump int32) {
 	bmapwidth = int32(*(*int16)(unsafe.Pointer(blockmaplump + 2*2)))
 	bmapheight = int32(*(*int16)(unsafe.Pointer(blockmaplump + 3*2)))
 	// Clear out mobj chains
-	count = int32(uint64(8) * uint64(bmapwidth) * uint64(bmapheight))
+	count = int32(8 * uint64(bmapwidth) * uint64(bmapheight))
 	blocklinks = Z_Malloc(count, int32(PU_LEVEL), uintptr(0))
 	xmemset(blocklinks, 0, uint64(count))
 }
@@ -31515,7 +31515,7 @@ func PadRejectArray(array uintptr, len1 uint32) {
 	dest = array
 	i = 0
 	for {
-		if !(i < len1 && uint64(i) < uint64(16)) {
+		if !(i < len1 && uint64(i) < 16) {
 			break
 		}
 		byte_num = i % 4
@@ -31528,7 +31528,7 @@ func PadRejectArray(array uintptr, len1 uint32) {
 	}
 	// We only have a limited pad size.  Print a warning if the
 	// REJECT lump is too small.
-	if uint64(len1) > uint64(16) {
+	if uint64(len1) > 16 {
 		fprintf_ccgo(os.Stderr, 25149, len1, 16)
 		// Pad remaining space with 0 (or 0xff, if specified on command line).
 		if M_CheckParm(__ccgo_ts(25206)) != 0 {
@@ -31536,7 +31536,7 @@ func PadRejectArray(array uintptr, len1 uint32) {
 		} else {
 			padvalue = 0x00
 		}
-		xmemset(array+uintptr(16), padvalue, uint64(len1)-uint64(16))
+		xmemset(array+uintptr(16), padvalue, uint64(len1)-16)
 	}
 }
 
@@ -32961,7 +32961,7 @@ func P_UpdateSpecials() {
 					break
 				}
 				S_StartSound(uintptr(unsafe.Pointer(&buttonlist))+uintptr(i)*32+24, int32(sfx_swtchn))
-				xmemset(uintptr(unsafe.Pointer(&buttonlist))+uintptr(i)*32, 0, uint64(32))
+				xmemset(uintptr(unsafe.Pointer(&buttonlist))+uintptr(i)*32, 0, 32)
 			}
 		}
 		goto _4
@@ -33242,7 +33242,7 @@ func P_SpawnSpecials() {
 		if !(i < int32(MAXBUTTONS)) {
 			break
 		}
-		xmemset(uintptr(unsafe.Pointer(&buttonlist))+uintptr(i)*32, 0, uint64(32))
+		xmemset(uintptr(unsafe.Pointer(&buttonlist))+uintptr(i)*32, 0, 32)
 		goto _5
 	_5:
 		;
@@ -35156,8 +35156,8 @@ func R_GetColumn(tex int32, col int32) (r uintptr) {
 func GenerateTextureHashTable() {
 	var i, key int32
 	var rover uintptr
-	textures_hashtable = Z_Malloc(int32(uint64(8)*uint64(numtextures)), int32(PU_STATIC), uintptr(0))
-	xmemset(textures_hashtable, 0, uint64(8)*uint64(numtextures))
+	textures_hashtable = Z_Malloc(int32(8*uint64(numtextures)), int32(PU_STATIC), uintptr(0))
+	xmemset(textures_hashtable, 0, 8*uint64(numtextures))
 	// Add all textures to hash table
 	i = 0
 	for {
@@ -35202,13 +35202,13 @@ func R_InitTextures() {
 	names = W_CacheLumpName(__ccgo_ts(26022), int32(PU_STATIC))
 	nummappatches = *(*int32)(unsafe.Pointer(names))
 	name_p = names + uintptr(4)
-	patchlookup = Z_Malloc(int32(uint64(nummappatches)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	patchlookup = Z_Malloc(int32(uint64(nummappatches)*4), int32(PU_STATIC), uintptr(0))
 	i = 0
 	for {
 		if !(i < nummappatches) {
 			break
 		}
-		M_StringCopy(bp, name_p+uintptr(i*int32(8)), uint64(9))
+		M_StringCopy(bp, name_p+uintptr(i*int32(8)), 9)
 		*(*int32)(unsafe.Pointer(patchlookup + uintptr(i)*4)) = W_CheckNumForName(bp)
 		goto _1
 	_1:
@@ -35234,13 +35234,13 @@ func R_InitTextures() {
 		maxoff2 = 0
 	}
 	numtextures = numtextures1 + numtextures2
-	textures = Z_Malloc(int32(uint64(numtextures)*uint64(8)), int32(PU_STATIC), uintptr(0))
-	texturecolumnlump = Z_Malloc(int32(uint64(numtextures)*uint64(8)), int32(PU_STATIC), uintptr(0))
-	texturecolumnofs = Z_Malloc(int32(uint64(numtextures)*uint64(8)), int32(PU_STATIC), uintptr(0))
-	texturecomposite = Z_Malloc(int32(uint64(numtextures)*uint64(8)), int32(PU_STATIC), uintptr(0))
-	texturecompositesize = Z_Malloc(int32(uint64(numtextures)*uint64(4)), int32(PU_STATIC), uintptr(0))
-	texturewidthmask = Z_Malloc(int32(uint64(numtextures)*uint64(4)), int32(PU_STATIC), uintptr(0))
-	textureheight = Z_Malloc(int32(uint64(numtextures)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	textures = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
+	texturecolumnlump = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
+	texturecolumnofs = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
+	texturecomposite = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
+	texturecompositesize = Z_Malloc(int32(uint64(numtextures)*4), int32(PU_STATIC), uintptr(0))
+	texturewidthmask = Z_Malloc(int32(uint64(numtextures)*4), int32(PU_STATIC), uintptr(0))
+	textureheight = Z_Malloc(int32(uint64(numtextures)*4), int32(PU_STATIC), uintptr(0))
 	totalwidth = 0
 	//	Really complex printing shit...
 	temp1 = W_GetNumForName(__ccgo_ts(26047)) // P_???????
@@ -35294,13 +35294,13 @@ func R_InitTextures() {
 			I_Error(__ccgo_ts(26069), 0)
 		}
 		mtexture = maptex + uintptr(offset)
-		v6 = Z_Malloc(int32(uint64(40)+uint64(8)*uint64(int32((*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount)-1)), int32(PU_STATIC), uintptr(0))
+		v6 = Z_Malloc(int32(40+uint64(8)*uint64(int32((*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount)-1)), int32(PU_STATIC), uintptr(0))
 		*(*uintptr)(unsafe.Pointer(textures + uintptr(i)*8)) = v6
 		texture = v6
 		(*texture_t)(unsafe.Pointer(texture)).Fwidth = (*maptexture_t)(unsafe.Pointer(mtexture)).Fwidth
 		(*texture_t)(unsafe.Pointer(texture)).Fheight = (*maptexture_t)(unsafe.Pointer(mtexture)).Fheight
 		(*texture_t)(unsafe.Pointer(texture)).Fpatchcount = (*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount
-		xmemcpy(texture, mtexture, uint64(8))
+		xmemcpy(texture, mtexture, 8)
 		mpatch = mtexture + 22
 		patch = texture + 28
 		j = 0
@@ -35321,8 +35321,8 @@ func R_InitTextures() {
 			mpatch += 10
 			patch += 8
 		}
-		*(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(i)*8)) = Z_Malloc(int32(uint64((*texture_t)(unsafe.Pointer(texture)).Fwidth)*uint64(2)), int32(PU_STATIC), uintptr(0))
-		*(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(i)*8)) = Z_Malloc(int32(uint64((*texture_t)(unsafe.Pointer(texture)).Fwidth)*uint64(2)), int32(PU_STATIC), uintptr(0))
+		*(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(i)*8)) = Z_Malloc(int32(uint64((*texture_t)(unsafe.Pointer(texture)).Fwidth)*2), int32(PU_STATIC), uintptr(0))
+		*(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(i)*8)) = Z_Malloc(int32(uint64((*texture_t)(unsafe.Pointer(texture)).Fwidth)*2), int32(PU_STATIC), uintptr(0))
 		j = 1
 		for j*int32(2) <= int32((*texture_t)(unsafe.Pointer(texture)).Fwidth) {
 			j <<= 1
@@ -35354,7 +35354,7 @@ func R_InitTextures() {
 		i++
 	}
 	// Create translation table for global animation.
-	texturetranslation = Z_Malloc(int32(uint64(numtextures+1)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	texturetranslation = Z_Malloc(int32(uint64(numtextures+1)*4), int32(PU_STATIC), uintptr(0))
 	i = 0
 	for {
 		if !(i < numtextures) {
@@ -35380,7 +35380,7 @@ func R_InitFlats() {
 	lastflat = W_GetNumForName(__ccgo_ts(26159)) - 1
 	numflats = lastflat - firstflat + 1
 	// Create translation table for global animation.
-	flattranslation = Z_Malloc(int32(uint64(numflats+1)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	flattranslation = Z_Malloc(int32(uint64(numflats+1)*4), int32(PU_STATIC), uintptr(0))
 	i = 0
 	for {
 		if !(i < numflats) {
@@ -35408,9 +35408,9 @@ func R_InitSpriteLumps() {
 	firstspritelump = W_GetNumForName(__ccgo_ts(26047)) + 1
 	lastspritelump = W_GetNumForName(__ccgo_ts(26055)) - 1
 	numspritelumps = lastspritelump - firstspritelump + 1
-	spritewidth = Z_Malloc(int32(uint64(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
-	spriteoffset = Z_Malloc(int32(uint64(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
-	spritetopoffset = Z_Malloc(int32(uint64(numspritelumps)*uint64(4)), int32(PU_STATIC), uintptr(0))
+	spritewidth = Z_Malloc(int32(uint64(numspritelumps)*4), int32(PU_STATIC), uintptr(0))
+	spriteoffset = Z_Malloc(int32(uint64(numspritelumps)*4), int32(PU_STATIC), uintptr(0))
+	spritetopoffset = Z_Malloc(int32(uint64(numspritelumps)*4), int32(PU_STATIC), uintptr(0))
 	i = 0
 	for {
 		if !(i < numspritelumps) {
@@ -35473,7 +35473,7 @@ func R_FlatNumForName(name uintptr) (r int32) {
 	i = W_CheckNumForName(name)
 	if i == -1 {
 		(*(*[9]int8)(unsafe.Pointer(bp)))[int32(8)] = 0
-		xmemcpy(bp, name, uint64(8))
+		xmemcpy(bp, name, 8)
 		I_Error(__ccgo_ts(26174), bp)
 	}
 	return i - firstflat
@@ -35496,7 +35496,7 @@ func R_CheckTextureNumForName(name uintptr) (r int32) {
 	key = int32(W_LumpNameHash(name) % uint32(numtextures))
 	texture = *(*uintptr)(unsafe.Pointer(textures_hashtable + uintptr(key)*8))
 	for texture != uintptr(0) {
-		if !(xstrncasecmp(texture, name, uint64(8)) != 0) {
+		if !(xstrncasecmp(texture, name, 8) != 0) {
 			return (*texture_t)(unsafe.Pointer(texture)).Findex
 		}
 		texture = (*texture_t)(unsafe.Pointer(texture)).Fnext
@@ -36235,7 +36235,7 @@ func R_FillBackScreen() {
 			if !(x < SCREENWIDTH/64) {
 				break
 			}
-			xmemcpy(dest, src+uintptr(y&63<<6), uint64(64))
+			xmemcpy(dest, src+uintptr(y&63<<6), 64)
 			dest += uintptr(64)
 			goto _2
 		_2:
@@ -36908,7 +36908,7 @@ func R_SetupFrame(player *player_t) {
 	viewsin = finesine[viewangle>>int32(ANGLETOFINESHIFT)]
 	viewcos = finecosine[viewangle>>int32(ANGLETOFINESHIFT)]
 	if player.Ffixedcolormap != 0 {
-		fixedcolormap = colormaps + uintptr(uint64(player.Ffixedcolormap*int32(256))*uint64(1))
+		fixedcolormap = colormaps + uintptr(uint64(player.Ffixedcolormap*int32(256))*1)
 		walllights = uintptr(unsafe.Pointer(&scalelightfixed))
 		i = 0
 		for {
@@ -37046,7 +37046,7 @@ func R_ClearPlanes() {
 	lastvisplane_index = 0
 	lastopening = uintptr(unsafe.Pointer(&openings))
 	// texture calculation
-	xmemset(uintptr(unsafe.Pointer(&cachedheight)), 0, uint64(800))
+	xmemset(uintptr(unsafe.Pointer(&cachedheight)), 0, 800)
 	// left to right mapping
 	angle = (viewangle - uint32(ANG909)) >> int32(ANGLETOFINESHIFT)
 	// scale will be unit scale at SCREENWIDTH/2 distance
@@ -37875,7 +37875,7 @@ func R_InitSpriteDefs(namelist []uintptr) {
 	if numsprites == 0 {
 		return
 	}
-	sprites = Z_Malloc(int32(uint64(numsprites)*uint64(16)), int32(PU_STATIC), uintptr(0))
+	sprites = Z_Malloc(int32(uint64(numsprites)*16), int32(PU_STATIC), uintptr(0))
 	start = firstspritelump - 1
 	end = lastspritelump + 1
 	// scan all the lump names for each of the names,
@@ -37976,8 +37976,8 @@ func R_InitSpriteDefs(namelist []uintptr) {
 		}
 		// allocate space for the frames present and copy sprtemp to it
 		(*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fnumframes = maxframe
-		(*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes = Z_Malloc(int32(uint64(maxframe)*uint64(28)), int32(PU_STATIC), uintptr(0))
-		xmemcpy((*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes, uintptr(unsafe.Pointer(&sprtemp)), uint64(maxframe)*uint64(28))
+		(*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes = Z_Malloc(int32(uint64(maxframe)*28), int32(PU_STATIC), uintptr(0))
+		xmemcpy((*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes, uintptr(unsafe.Pointer(&sprtemp)), uint64(maxframe)*28)
 		goto _1
 	_1:
 		;
@@ -38673,11 +38673,11 @@ func SHA1_UpdateInt32(sha hash.Hash, val uint32) {
 	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(1)] = uint8(val >> 16 & uint32(0xff))
 	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(2)] = uint8(val >> 8 & uint32(0xff))
 	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(3)] = uint8(val & uint32(0xff))
-	SHA1_Update(sha, bp, uint64(4))
+	SHA1_Update(sha, bp, 4)
 }
 
 func SHA1_UpdateString(sha hash.Hash, str uintptr) {
-	SHA1_Update(sha, str, xstrlen(str)+uint64(1))
+	SHA1_Update(sha, str, xstrlen(str)+1)
 }
 
 func init() {
@@ -39663,7 +39663,7 @@ var num_captured_stats int32 = 0
 
 func StatCopy(stats uintptr) {
 	if M_ParmExists(__ccgo_ts(5318)) != 0 && num_captured_stats < MAX_CAPTURES {
-		xmemcpy(uintptr(unsafe.Pointer(&captured_stats))+uintptr(num_captured_stats)*200, stats, uint64(200))
+		xmemcpy(uintptr(unsafe.Pointer(&captured_stats))+uintptr(num_captured_stats)*200, stats, 200)
 		num_captured_stats++
 	}
 }
@@ -41460,7 +41460,7 @@ func S_ChangeMusic(musicnum int32, looping int32) {
 	S_StopMusic()
 	// get lumpnum if neccessary
 	if !(music.Flumpnum != 0) {
-		M_snprintf(bp, uint64(9), __ccgo_ts_str(28083), gostring(music.Fname))
+		M_snprintf(bp, 9, __ccgo_ts_str(28083), gostring(music.Fname))
 		music.Flumpnum = W_GetNumForName(bp)
 	}
 	music.Fdata = W_CacheLumpNum(music.Flumpnum, int32(PU_STATIC))
@@ -41852,11 +41852,11 @@ func WritePCXfile(filename string, data uintptr, width int32, height int32, pale
 	(*pcx_t)(unsafe.Pointer(pcx)).Fymax = uint16(int16(height - 1))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fhres = uint16(int16(width))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fvres = uint16(int16(height))
-	xmemset(pcx+16, 0, uint64(48))
+	xmemset(pcx+16, 0, 48)
 	(*pcx_t)(unsafe.Pointer(pcx)).Fcolor_planes = 1 // chunky image
 	(*pcx_t)(unsafe.Pointer(pcx)).Fbytes_per_line = uint16(int16(width))
 	(*pcx_t)(unsafe.Pointer(pcx)).Fpalette_type = uint16(int16(2)) // not a grey scale
-	xmemset(pcx+70, 0, uint64(58))
+	xmemset(pcx+70, 0, 58)
 	// pack the image
 	pack = pcx + 128
 	i = 0
@@ -43781,10 +43781,10 @@ func WI_loadUnloadData(callback func(uintptr, uintptr)) {
 	}
 	// Background image
 	if gamemode == commercial {
-		M_StringCopy(bp1, __ccgo_ts(1951), uint64(9))
+		M_StringCopy(bp1, __ccgo_ts(1951), 9)
 	} else {
 		if gamemode == retail && wbs.Fepsd == 3 {
-			M_StringCopy(bp1, __ccgo_ts(1951), uint64(9))
+			M_StringCopy(bp1, __ccgo_ts(1951), 9)
 		} else {
 			snprintf_ccgo(bp1, 9, 28577, wbs.Fepsd)
 		}
@@ -43800,7 +43800,7 @@ func WI_loadCallback(name uintptr, variable uintptr) {
 func WI_loadData() {
 	if gamemode == commercial {
 		NUMCMAPS = 32
-		lnames = Z_Malloc(int32(uint64(8)*uint64(NUMCMAPS)), int32(PU_STATIC), uintptr(0))
+		lnames = Z_Malloc(int32(8*uint64(NUMCMAPS)), int32(PU_STATIC), uintptr(0))
 	} else {
 		lnames = Z_Malloc(int32(8*uint64(NUMMAPS)), int32(PU_STATIC), uintptr(0))
 	}
@@ -43900,7 +43900,7 @@ func GetFileNumber(handle *os.File) (r int32) {
 
 func ChecksumAddLump(sha hash.Hash, lump *lumpinfo_t) {
 	bp := alloc(16)
-	M_StringCopy(bp, lump.NamePtr(), uint64(9))
+	M_StringCopy(bp, lump.NamePtr(), 9)
 	SHA1_UpdateString(sha, bp)
 	SHA1_UpdateInt32(sha, uint32(GetFileNumber(lump.Fwad_file)))
 	SHA1_UpdateInt32(sha, uint32(lump.Fposition))
@@ -44082,17 +44082,17 @@ func W_AddFile(filename string) *os.File {
 		newnumlumps++
 	} else {
 		// WAD file
-		W_Read(wad_file, 0, bp, uint64(12))
-		if xstrncmp(bp, __ccgo_ts(28654), uint64(4)) != 0 {
+		W_Read(wad_file, 0, bp, 12)
+		if xstrncmp(bp, __ccgo_ts(28654), 4) != 0 {
 			// Homebrew levels?
-			if xstrncmp(bp, __ccgo_ts(28659), uint64(4)) != 0 {
+			if xstrncmp(bp, __ccgo_ts(28659), 4) != 0 {
 				I_Error(__ccgo_ts(28664), filename)
 			}
 			// ???modifiedgame = true;
 		}
 		(*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps = (*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps
 		(*(*wadinfo_t)(unsafe.Pointer(bp))).Finfotableofs = (*(*wadinfo_t)(unsafe.Pointer(bp))).Finfotableofs
-		length = int32(uint64((*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps) * uint64(16))
+		length = int32(uint64((*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps) * 16)
 		fileinfo = Z_Malloc(length, int32(PU_STATIC), uintptr(0))
 		W_Read(wad_file, uint32((*(*wadinfo_t)(unsafe.Pointer(bp))).Finfotableofs), fileinfo, uint64(length))
 		newnumlumps += (*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps
@@ -44111,7 +44111,7 @@ func W_AddFile(filename string) *os.File {
 		lump_p.Fposition = (*filelump_t)(unsafe.Pointer(filerover)).Ffilepos
 		lump_p.Fsize = (*filelump_t)(unsafe.Pointer(filerover)).Fsize
 		lump_p.Fcache = uintptr(0)
-		xstrncpy(lump_p.NamePtr(), filerover+8, uint64(8))
+		xstrncpy(lump_p.NamePtr(), filerover+8, 8)
 		filerover += 16
 		goto _1
 	_1:
@@ -44144,7 +44144,7 @@ func W_CheckNumForName(name uintptr) (r int32) {
 			if !(lump_p != nil) {
 				break
 			}
-			if !(xstrncasecmp(lump_p.NamePtr(), name, uint64(8)) != 0) {
+			if !(xstrncasecmp(lump_p.NamePtr(), name, 8) != 0) {
 				return lumpIndex(lump_p)
 			}
 			goto _1
@@ -44161,7 +44161,7 @@ func W_CheckNumForName(name uintptr) (r int32) {
 			if !(i >= 0) {
 				break
 			}
-			if !(xstrncasecmp(lumpinfo[i].NamePtr(), name, uint64(8)) != 0) {
+			if !(xstrncasecmp(lumpinfo[i].NamePtr(), name, 8) != 0) {
 				return i
 			}
 			goto _2
@@ -44299,8 +44299,8 @@ func W_GenerateHashTable() {
 	}
 	// Generate hash table
 	if numlumps > 0 {
-		lumphash = Z_Malloc(int32(uint64(8)*uint64(numlumps)), int32(PU_STATIC), uintptr(0))
-		xmemset(lumphash, 0, uint64(8)*uint64(numlumps))
+		lumphash = Z_Malloc(int32(8*uint64(numlumps)), int32(PU_STATIC), uintptr(0))
+		xmemset(lumphash, 0, 8*uint64(numlumps))
 		i = 0
 		for {
 			if !(i < numlumps) {
@@ -44467,7 +44467,7 @@ func Z_Init() {
 	(*memblock_t)(unsafe.Pointer(block)).Fprev = v3
 	// free block
 	(*memblock_t)(unsafe.Pointer(block)).Ftag = int32(PU_FREE)
-	(*memblock_t)(unsafe.Pointer(block)).Fsize = int32(uint64((*memzone_t)(unsafe.Pointer(mainzone)).Fsize) - uint64(56))
+	(*memblock_t)(unsafe.Pointer(block)).Fsize = int32(uint64((*memzone_t)(unsafe.Pointer(mainzone)).Fsize) - 56)
 }
 
 // C documentation
@@ -44520,7 +44520,7 @@ func Z_Free(ptr uintptr) {
 func Z_Malloc(size int32, tag int32, user uintptr) (r uintptr) {
 	var base, newblock, result, rover, start, v1 uintptr
 	var extra int32
-	size = int32((uint64(size) + uint64(8) - uint64(1)) & 0xffff_fff8)
+	size = int32((uint64(size) + 8 - uint64(1)) & 0xffff_fff8)
 	// scan through the block list,
 	// looking for the first free block
 	// of sufficient size,
