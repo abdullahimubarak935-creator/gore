@@ -19,6 +19,15 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends ffmpeg
+        go install golang.org/x/tools/cmd/deadcode@latest
+    - name: deadcode
+      run: |
+        DEAD=$(deadcode ./example/webserver)
+        if [ -n "$DEAD" ]; then
+          echo "deadcode found the following unused code:"
+          echo "$DEAD"
+          exit 1
+        fi
     - name: Install doom wad
       run: wget https://github.com/Akbar30Bill/DOOM_wads/raw/refs/heads/master/doom1.wad
     - name: test
