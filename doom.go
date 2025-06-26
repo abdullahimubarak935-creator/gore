@@ -281,8 +281,6 @@ const ST_HEIGHT = 32
 const TICRATE = 35
 const VDOORWAIT = 150
 
-type va_list = uintptr
-
 type sha1_digest_t = [20]uint8
 
 const PU_STATIC = 1
@@ -1815,23 +1813,6 @@ type column_t struct {
 type vertex_t struct {
 	Fx fixed_t
 	Fy fixed_t
-}
-
-type line_s struct {
-	Fv1          uintptr
-	Fv2          uintptr
-	Fdx          fixed_t
-	Fdy          fixed_t
-	Fflags       int16
-	Fspecial     int16
-	Ftag         int16
-	Fsidenum     [2]int16
-	Fbbox        [4]fixed_t
-	Fslopetype   slopetype_t
-	Ffrontsector *sector_t
-	Fbacksector  *sector_t
-	Fvalidcount  int32
-	Fspecialdata uintptr
 }
 
 const ST_HORIZONTAL = 0
@@ -3978,7 +3959,6 @@ var iwads = [14]iwad_t{
 //
 // "128 IWAD search directories should be enough for anybody".
 
-var iwad_dirs_built int32 = 0
 var iwad_dirs [128]string
 var num_iwad_dirs int32 = 0
 
@@ -4092,8 +4072,6 @@ func IdentifyIWADByName(name string, mask int32) (r GameMission_t) {
 
 func BuildIWADDirList() {
 	AddIWADDir(__ccgo_ts_str(1250))
-	// Don't run this function again.
-	iwad_dirs_built = 1
 }
 
 //
@@ -20875,8 +20853,6 @@ func M_Options(choice int32) {
 //	//      Toggle messages on/off
 //	//
 func M_ChangeMessages(choice int32) {
-	// warning: unused parameter `int choice'
-	choice = 0
 	showMessages = 1 - showMessages
 	if !(showMessages != 0) {
 		players[consoleplayer].Fmessage = __ccgo_ts_str(22892)
@@ -20901,7 +20877,6 @@ func M_EndGameResponse(key int32) {
 }
 
 func M_EndGame(choice int32) {
-	choice = 0
 	if !(usergame != 0) {
 		S_StartSound(uintptr(0), int32(sfx_oof))
 		return
@@ -20919,7 +20894,6 @@ func M_EndGame(choice int32) {
 //	// M_ReadThis
 //	//
 func M_ReadThis(choice int32) {
-	choice = 0
 	M_SetupNextMenu(&ReadDef1)
 }
 
@@ -20927,7 +20901,6 @@ func M_ReadThis2(choice int32) {
 	// Doom 1.9 had two menus when playing Doom 1
 	// All others had only one
 	if gameversion <= exe_doom_1_9 && gamemode != commercial {
-		choice = 0
 		M_SetupNextMenu(&ReadDef2)
 	} else {
 		// Close the menu
@@ -20936,7 +20909,6 @@ func M_ReadThis2(choice int32) {
 }
 
 func M_FinishReadThis(choice int32) {
-	choice = 0
 	M_SetupNextMenu(&MainDef)
 }
 
@@ -40482,8 +40454,6 @@ func ST_Responder(ev *event_t) (r boolean) {
 	}
 	return 0
 }
-
-var buf [52]int8
 
 func ST_calcPainOffset() (r int32) {
 	var health, v1 int32
