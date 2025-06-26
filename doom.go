@@ -2314,6 +2314,10 @@ type lumpinfo_t struct {
 	Fnext     uintptr
 }
 
+func (l *lumpinfo_t) NamePtr() uintptr {
+	return uintptr(unsafe.Pointer(&l.Fname[0]))
+}
+
 type netgame_startup_callback_t = uintptr
 
 type loop_interface_t struct {
@@ -5357,11 +5361,11 @@ func D_IdentifyVersion() {
 			if !(i < numlumps) {
 				break
 			}
-			if !(xstrncasecmp(lumpinfo+uintptr(i)*40, __ccgo_ts(2613), uint64(8)) != 0) {
+			if xstrncasecmp(lumpinfo[i].NamePtr(), __ccgo_ts(2613), 8) == 0 {
 				gamemission = doom2
 				break
 			} else {
-				if !(xstrncasecmp(lumpinfo+uintptr(i)*40, __ccgo_ts(2619), uint64(8)) != 0) {
+				if xstrncasecmp(lumpinfo[i].NamePtr(), __ccgo_ts(2619), 8) == 0 {
 					gamemission = doom
 					break
 				}
@@ -5886,7 +5890,7 @@ func D_DoomMain() {
 			name = fmt.Sprintf(__ccgo_ts_str(4481), myargs[p+1])
 		}
 		if D_AddFile(name) != 0 {
-			argDemoName = gostring(lumpinfo + uintptr(numlumps-uint32(1))*40)
+			argDemoName = gostring_n(lumpinfo[numlumps-1].NamePtr(), 8)
 		} else {
 			// If file failed to load, still continue trying to play
 			// the demo in the same way as Vanilla Doom.  This makes
@@ -10202,7 +10206,7 @@ var altdown boolean
 var num_nobrainers int32
 
 func init() {
-	sprnames = [139]uintptr{
+	sprnames = []uintptr{
 		0:   __ccgo_ts(17612),
 		1:   __ccgo_ts(17617),
 		2:   __ccgo_ts(17622),
@@ -10341,7 +10345,6 @@ func init() {
 		135: __ccgo_ts(18287),
 		136: __ccgo_ts(18292),
 		137: __ccgo_ts(18297),
-		138: uintptr(0),
 	}
 }
 
@@ -31705,7 +31708,7 @@ func P_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
 func P_Init() {
 	P_InitSwitchList()
 	P_InitPicAnims()
-	R_InitSprites(uintptr(unsafe.Pointer(&sprnames)))
+	R_InitSprites(sprnames)
 }
 
 const NF_SUBSECTOR1 = 32768
@@ -37845,7 +37848,7 @@ const INT_MAX17 = 2147483647
 //	// R_InstallSpriteLump
 //	// Local function for R_InitSprites.
 //	//
-func R_InstallSpriteLump(lump int32, frame uint32, rotation uint32, flipped boolean) {
+func R_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation uint32, flipped boolean) {
 	var r int32
 	if frame >= uint32(29) || rotation > uint32(8) {
 		I_Error(__ccgo_ts(26603), lump)
@@ -37907,16 +37910,11 @@ func R_InstallSpriteLump(lump int32, frame uint32, rotation uint32, flipped bool
 //	//  letter/number appended.
 //	// The rotation character can be 0 to signify no rotations.
 //	//
-func R_InitSpriteDefs(namelist uintptr) {
-	var check uintptr
+func R_InitSpriteDefs(namelist []uintptr) {
 	var end, frame, i, l, patched, rotation, start int32
 	// count the number of sprite names
-	check = namelist
-	for *(*uintptr)(unsafe.Pointer(check)) != uintptr(0) {
-		check += 8
-	}
-	numsprites = int32((int64(check) - int64(namelist)) / 8)
-	if !(numsprites != 0) {
+	numsprites = int32(len(namelist))
+	if numsprites == 0 {
 		return
 	}
 	sprites = Z_Malloc(int32(uint64(numsprites)*uint64(16)), int32(PU_STATIC), uintptr(0))
@@ -37930,7 +37928,7 @@ func R_InitSpriteDefs(namelist uintptr) {
 		if !(i < numsprites) {
 			break
 		}
-		spritename = *(*uintptr)(unsafe.Pointer(namelist + uintptr(i)*8))
+		spritename := gostring_n(namelist[i], 4)
 		xmemset(uintptr(unsafe.Pointer(&sprtemp)), 0xff, 812)
 		maxframe = -1
 		// scan the lumps,
@@ -37940,19 +37938,20 @@ func R_InitSpriteDefs(namelist uintptr) {
 			if !(l < end) {
 				break
 			}
-			if !(xstrncasecmp(lumpinfo+uintptr(l)*40, spritename, uint64(4)) != 0) {
-				frame = int32(*(*int8)(unsafe.Pointer(lumpinfo + uintptr(l)*40 + 4))) - int32('A')
-				rotation = int32(*(*int8)(unsafe.Pointer(lumpinfo + uintptr(l)*40 + 5))) - int32('0')
+
+			if xstrncasecmp(lumpinfo[l].NamePtr(), namelist[i], 4) == 0 {
+				frame = int32(lumpinfo[l].Fname[4] - 'A')
+				rotation = int32(lumpinfo[l].Fname[5] - '0')
 				if modifiedgame != 0 {
-					patched = W_GetNumForName(lumpinfo + uintptr(l)*40)
+					patched = W_GetNumForName(lumpinfo[l].NamePtr())
 				} else {
 					patched = l
 				}
-				R_InstallSpriteLump(patched, uint32(frame), uint32(rotation), 0)
-				if *(*int8)(unsafe.Pointer(lumpinfo + uintptr(l)*40 + 6)) != 0 {
-					frame = int32(*(*int8)(unsafe.Pointer(lumpinfo + uintptr(l)*40 + 6))) - int32('A')
-					rotation = int32(*(*int8)(unsafe.Pointer(lumpinfo + uintptr(l)*40 + 7))) - int32('0')
-					R_InstallSpriteLump(l, uint32(frame), uint32(rotation), 1)
+				R_InstallSpriteLump(spritename, patched, uint32(frame), uint32(rotation), 0)
+				if lumpinfo[l].Fname[6] != 0 {
+					frame = int32(lumpinfo[l].Fname[6] - 'A')
+					rotation = int32(lumpinfo[l].Fname[7] - '0')
+					R_InstallSpriteLump(spritename, l, uint32(frame), uint32(rotation), 1)
 				}
 			}
 			goto _2
@@ -38034,7 +38033,7 @@ func R_InitSpriteDefs(namelist uintptr) {
 //	// R_InitSprites
 //	// Called at program start.
 //	//
-func R_InitSprites(namelist uintptr) {
+func R_InitSprites(namelist []uintptr) {
 	var i int32
 	i = 0
 	for {
@@ -43958,13 +43957,13 @@ func GetFileNumber(handle *os.File) (r int32) {
 	return int32(len(open_wadfiles) - 1)
 }
 
-func ChecksumAddLump(sha hash.Hash, lump uintptr) {
+func ChecksumAddLump(sha hash.Hash, lump *lumpinfo_t) {
 	bp := alloc(16)
-	M_StringCopy(bp, lump, uint64(9))
+	M_StringCopy(bp, lump.NamePtr(), uint64(9))
 	SHA1_UpdateString(sha, bp)
-	SHA1_UpdateInt32(sha, uint32(GetFileNumber((*lumpinfo_t)(unsafe.Pointer(lump)).Fwad_file)))
-	SHA1_UpdateInt32(sha, uint32((*lumpinfo_t)(unsafe.Pointer(lump)).Fposition))
-	SHA1_UpdateInt32(sha, uint32((*lumpinfo_t)(unsafe.Pointer(lump)).Fsize))
+	SHA1_UpdateInt32(sha, uint32(GetFileNumber(lump.Fwad_file)))
+	SHA1_UpdateInt32(sha, uint32(lump.Fposition))
+	SHA1_UpdateInt32(sha, uint32(lump.Fsize))
 }
 
 func W_Checksum(digest *sha1_digest_t) {
@@ -43980,7 +43979,7 @@ func W_Checksum(digest *sha1_digest_t) {
 		if !(i < numlumps) {
 			break
 		}
-		ChecksumAddLump(sha, lumpinfo+uintptr(i)*40)
+		ChecksumAddLump(sha, &lumpinfo[i])
 		goto _1
 	_1:
 		;
@@ -44087,39 +44086,11 @@ func W_LumpNameHash(s uintptr) (r uint32) {
 //
 //	// Increase the size of the lumpinfo[] array to the specified size.
 func ExtendLumpInfo(newnumlumps int32) {
-	var i uint32
-	var newlumpinfo uintptr
-	var nextlumpnum int32
-	newlumpinfo = xmalloc(uint64(newnumlumps * 40))
-	if newlumpinfo == uintptr(0) {
-		I_Error(__ccgo_ts(28605), 0)
+	if newnumlumps >= int32(len(lumpinfo)) {
+		// TODO: Should be lumpinfo = append(lumpinfo, lumpinfo_t{})
+		panic("ExtendLumpInfo called with newnumlumps >= len(lumpinfo)")
 	}
-	// Copy over lumpinfo_t structures from the old array. If any of
-	// these lumps have been cached, we need to update the user
-	// pointers to the new location.
-	i = uint32(0)
-	for {
-		if !(i < numlumps && i < uint32(newnumlumps)) {
-			break
-		}
-		xmemcpy(newlumpinfo+uintptr(i)*40, lumpinfo+uintptr(i)*40, uint64(40))
-		if (*(*lumpinfo_t)(unsafe.Pointer(newlumpinfo + uintptr(i)*40))).Fcache != uintptr(0) {
-			Z_ChangeUser((*(*lumpinfo_t)(unsafe.Pointer(newlumpinfo + uintptr(i)*40))).Fcache, newlumpinfo+uintptr(i)*40+24)
-		}
-		// We shouldn't be generating a hash table until after all WADs have
-		// been loaded, but just in case...
-		if (*(*lumpinfo_t)(unsafe.Pointer(lumpinfo + uintptr(i)*40))).Fnext != uintptr(0) {
-			nextlumpnum = int32((int64((*(*lumpinfo_t)(unsafe.Pointer(lumpinfo + uintptr(i)*40))).Fnext) - int64(lumpinfo)) / 40)
-			(*(*lumpinfo_t)(unsafe.Pointer(newlumpinfo + uintptr(i)*40))).Fnext = newlumpinfo + uintptr(nextlumpnum)*40
-		}
-		goto _1
-	_1:
-		;
-		i++
-	}
-	// All done.
-	xfree(lumpinfo)
-	lumpinfo = newlumpinfo
+
 	numlumps = uint32(newnumlumps)
 }
 
@@ -44139,7 +44110,7 @@ var wad_files = map[uintptr]*os.File{}
 
 func W_AddFile(filename string) *os.File {
 	bp := alloc(32)
-	var fileinfo, filerover, lump_p uintptr
+	var fileinfo, filerover uintptr
 	var wad_file *os.File
 	var i uint32
 	var length, newnumlumps, startlump int32
@@ -44188,19 +44159,19 @@ func W_AddFile(filename string) *os.File {
 	// Increase size of numlumps array to accomodate the new file.
 	startlump = int32(numlumps)
 	ExtendLumpInfo(newnumlumps)
-	lump_p = lumpinfo + uintptr(startlump)*40
 	filerover = fileinfo
 	i = uint32(startlump)
 	for {
 		if !(i < numlumps) {
 			break
 		}
-		(*lumpinfo_t)(unsafe.Pointer(lump_p)).Fwad_file = wad_file
-		(*lumpinfo_t)(unsafe.Pointer(lump_p)).Fposition = (*filelump_t)(unsafe.Pointer(filerover)).Ffilepos
-		(*lumpinfo_t)(unsafe.Pointer(lump_p)).Fsize = (*filelump_t)(unsafe.Pointer(filerover)).Fsize
-		(*lumpinfo_t)(unsafe.Pointer(lump_p)).Fcache = uintptr(0)
-		xstrncpy(lump_p, filerover+8, uint64(8))
-		lump_p += 40
+		lump_p := &lumpinfo[i]
+		lump_p.Fwad_file = wad_file
+		lump_p.Fposition = (*filelump_t)(unsafe.Pointer(filerover)).Ffilepos
+		lump_p.Fsize = (*filelump_t)(unsafe.Pointer(filerover)).Fsize
+		lump_p.Fcache = uintptr(0)
+		xstrncpy(lump_p.NamePtr(), filerover+8, uint64(8))
+		log.Printf("add file lump %d: %s", i, gostring_n(lump_p.NamePtr(), 8))
 		filerover += 16
 		goto _1
 	_1:
@@ -44223,23 +44194,23 @@ func W_AddFile(filename string) *os.File {
 
 func W_CheckNumForName(name uintptr) (r int32) {
 	var hash, i int32
-	var lump_p uintptr
+	var lump_p *lumpinfo_t
 	// Do we have a hash table yet?
 	if lumphash != uintptr(0) {
 		// We do! Excellent.
 		hash = int32(W_LumpNameHash(name) % numlumps)
-		lump_p = *(*uintptr)(unsafe.Pointer(lumphash + uintptr(hash)*8))
+		lump_p = *(**lumpinfo_t)(unsafe.Pointer(lumphash + uintptr(hash)*8))
 		for {
-			if !(lump_p != uintptr(0)) {
+			if !(lump_p != nil) {
 				break
 			}
-			if !(xstrncasecmp(lump_p, name, uint64(8)) != 0) {
-				return int32((int64(lump_p) - int64(lumpinfo)) / 40)
+			if !(xstrncasecmp(lump_p.NamePtr(), name, uint64(8)) != 0) {
+				return lumpIndex(lump_p)
 			}
 			goto _1
 		_1:
 			;
-			lump_p = (*lumpinfo_t)(unsafe.Pointer(lump_p)).Fnext
+			lump_p = (*lumpinfo_t)(unsafe.Pointer(lump_p.Fnext))
 		}
 	} else {
 		// We don't have a hash table generate yet. Linear search :-(
@@ -44250,7 +44221,7 @@ func W_CheckNumForName(name uintptr) (r int32) {
 			if !(i >= 0) {
 				break
 			}
-			if !(xstrncasecmp(lumpinfo+uintptr(i)*40, name, uint64(8)) != 0) {
+			if !(xstrncasecmp(lumpinfo[i].NamePtr(), name, uint64(8)) != 0) {
 				return i
 			}
 			goto _2
@@ -44288,7 +44259,7 @@ func W_LumpLength(lump uint32) (r int32) {
 	if lump >= numlumps {
 		I_Error(__ccgo_ts(28737), lump)
 	}
-	return (*(*lumpinfo_t)(unsafe.Pointer(lumpinfo + uintptr(lump)*40))).Fsize
+	return lumpinfo[lump].Fsize
 }
 
 // C documentation
@@ -44300,15 +44271,14 @@ func W_LumpLength(lump uint32) (r int32) {
 //	//
 func W_ReadLump(lump uint32, dest uintptr) {
 	var c int32
-	var l uintptr
 	if lump >= numlumps {
 		I_Error(__ccgo_ts(28766), lump)
 	}
-	l = lumpinfo + uintptr(lump)*40
+	l := &lumpinfo[lump]
 	I_BeginRead()
-	c = int32(W_Read((*lumpinfo_t)(unsafe.Pointer(l)).Fwad_file, uint32((*lumpinfo_t)(unsafe.Pointer(l)).Fposition), dest, uint64((*lumpinfo_t)(unsafe.Pointer(l)).Fsize)))
-	if c < (*lumpinfo_t)(unsafe.Pointer(l)).Fsize {
-		I_Error(__ccgo_ts(28793), c, (*lumpinfo_t)(unsafe.Pointer(l)).Fsize, lump)
+	c = int32(W_Read(l.Fwad_file, uint32(l.Fposition), dest, uint64(l.Fsize)))
+	if c < l.Fsize {
+		I_Error(__ccgo_ts(28793), c, l.Fsize, lump)
 	}
 	I_EndRead()
 }
@@ -44326,24 +44296,24 @@ func W_ReadLump(lump uint32, dest uintptr) {
 //
 
 func W_CacheLumpNum(lumpnum int32, tag int32) (r uintptr) {
-	var lump, result uintptr
+	var result uintptr
 	if uint32(lumpnum) >= numlumps {
 		I_Error(__ccgo_ts(28835), lumpnum)
 	}
-	lump = lumpinfo + uintptr(lumpnum)*40
+	lump := &lumpinfo[lumpnum]
 	// Get the pointer to return.  If the lump is in a memory-mapped
 	// file, we can just return a pointer to within the memory-mapped
 	// region.  If the lump is in an ordinary file, we may already
 	// have it cached; otherwise, load it into memory.
-	if (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache != uintptr(0) {
+	if lump.Fcache != uintptr(0) {
 		// Already cached, so just switch the zone tag.
-		result = (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache
-		Z_ChangeTag2((*lumpinfo_t)(unsafe.Pointer(lump)).Fcache, tag, __ccgo_ts(28866), 410)
+		result = lump.Fcache
+		Z_ChangeTag2(lump.Fcache, tag, __ccgo_ts(28866), 410)
 	} else {
 		// Not yet loaded, so load it now
-		(*lumpinfo_t)(unsafe.Pointer(lump)).Fcache = Z_Malloc(W_LumpLength(uint32(lumpnum)), tag, lump+24)
-		W_ReadLump(uint32(lumpnum), (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache)
-		result = (*lumpinfo_t)(unsafe.Pointer(lump)).Fcache
+		lump.Fcache = Z_Malloc(W_LumpLength(uint32(lumpnum)), tag, (uintptr)(unsafe.Pointer(&lump.Fcache)))
+		W_ReadLump(uint32(lumpnum), lump.Fcache)
+		result = lump.Fcache
 	}
 	return result
 }
@@ -44368,12 +44338,11 @@ func W_CacheLumpName(name uintptr, tag int32) (r uintptr) {
 //
 
 func W_ReleaseLumpNum(lumpnum int32) {
-	var lump uintptr
 	if uint32(lumpnum) >= numlumps {
 		I_Error(__ccgo_ts(28874), lumpnum)
 	}
-	lump = lumpinfo + uintptr(lumpnum)*40
-	Z_ChangeTag2((*lumpinfo_t)(unsafe.Pointer(lump)).Fcache, int32(PU_CACHE), __ccgo_ts(28866), 461)
+	lump := &lumpinfo[lumpnum]
+	Z_ChangeTag2(lump.Fcache, int32(PU_CACHE), __ccgo_ts(28866), 461)
 }
 
 func W_ReleaseLumpName(name uintptr) {
@@ -44397,10 +44366,10 @@ func W_GenerateHashTable() {
 			if !(i < numlumps) {
 				break
 			}
-			hash = W_LumpNameHash(lumpinfo+uintptr(i)*40) % numlumps
+			hash = W_LumpNameHash(lumpinfo[i].NamePtr()) % numlumps
 			// Hook into the hash table
-			(*(*lumpinfo_t)(unsafe.Pointer(lumpinfo + uintptr(i)*40))).Fnext = *(*uintptr)(unsafe.Pointer(lumphash + uintptr(hash)*8))
-			*(*uintptr)(unsafe.Pointer(lumphash + uintptr(hash)*8)) = lumpinfo + uintptr(i)*40
+			lumpinfo[i].Fnext = *(*uintptr)(unsafe.Pointer(lumphash + uintptr(hash)*8))
+			*(*uintptr)(unsafe.Pointer(lumphash + uintptr(hash)*8)) = (uintptr)(unsafe.Pointer(&lumpinfo[i]))
 			goto _1
 		_1:
 			;
@@ -44751,16 +44720,6 @@ func Z_ChangeTag2(ptr uintptr, tag int32, file uintptr, line int32) {
 		I_Error(__ccgo_ts(29632), file, line)
 	}
 	(*memblock_t)(unsafe.Pointer(block)).Ftag = tag
-}
-
-func Z_ChangeUser(ptr uintptr, user uintptr) {
-	var block uintptr
-	block = ptr - uintptr(40)
-	if (*memblock_t)(unsafe.Pointer(block)).Fid != int32(ZONEID) {
-		I_Error(__ccgo_ts(29693), 0)
-	}
-	(*memblock_t)(unsafe.Pointer(block)).Fuser = user
-	*(*uintptr)(unsafe.Pointer(user)) = ptr
 }
 
 // Read data from the specified position in the file into the
@@ -46213,7 +46172,18 @@ var lowres_turn boolean
 
 // Location of each lump on disk.
 
-var lumpinfo uintptr
+// TODO: GORE/ANDRE - once we've got Go memory management fully in place, this should
+// become a dynamic array that can be resized. We keep it static at the moment
+// so that addresses don't change for the Z_Change... functions
+var lumpinfo [4096]lumpinfo_t
+
+func lumpIndex(l *lumpinfo_t) int32 {
+	idx := (uintptr(unsafe.Pointer(l)) - uintptr(unsafe.Pointer(&lumpinfo[0]))) / unsafe.Sizeof(lumpinfo_t{})
+	if idx < 0 || idx >= uintptr(len(lumpinfo)) {
+		log.Fatalf("lumpIndex: lump %p out of bounds, %d lumps length", l, len(lumpinfo))
+	}
+	return int32(idx)
+}
 
 // C documentation
 //
@@ -46907,8 +46877,6 @@ var spechit [20]*line_t
 
 var spritelights uintptr
 
-var spritename uintptr
-
 var spriteoffset uintptr
 
 //
@@ -46928,7 +46896,7 @@ var spritetopoffset uintptr
 //	// needed for pre rendering
 var spritewidth uintptr
 
-var sprnames [139]uintptr
+var sprnames []uintptr
 
 var sprtemp [29]spriteframe_t
 
