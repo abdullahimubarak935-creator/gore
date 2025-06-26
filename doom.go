@@ -16282,7 +16282,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       56 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_DROPOFF) | int32(MF_PICKUP) | int32(MF_NOTDMATCH),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_DROPOFF | MF_PICKUP | MF_NOTDMATCH,
 		},
 		1: {
 			Fdoomednum:    3004,
@@ -16304,7 +16304,7 @@ func init() {
 			Fheight:       56 * (1 << FRACBITS),
 			Fmass:         100,
 			Factivesound:  int32(sfx_posact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 			Fraisestate:   S_POSS_RAISE1,
 		},
 		2: {
@@ -16326,7 +16326,7 @@ func init() {
 			Fheight:       56 * (1 << FRACBITS),
 			Fmass:         100,
 			Factivesound:  int32(sfx_posact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 			Fraisestate:   S_SPOS_RAISE1,
 		},
 		3: {
@@ -16347,7 +16347,7 @@ func init() {
 			Fheight:       56 * (1 << FRACBITS),
 			Fmass:         500,
 			Factivesound:  int32(sfx_vilact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 		},
 		4: {
 			Fdoomednum:    -1,
@@ -16357,7 +16357,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_NOGRAVITY,
 		},
 		5: {
 			Fdoomednum:    66,
@@ -16378,7 +16378,7 @@ func init() {
 			Fheight:       56 * (1 << FRACBITS),
 			Fmass:         500,
 			Factivesound:  int32(sfx_skeact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 			Fraisestate:   S_SKEL_RAISE1,
 		},
 		6: {
@@ -16394,7 +16394,7 @@ func init() {
 			Fheight:       8 * (1 << FRACBITS),
 			Fmass:         100,
 			Fdamage:       10,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_MISSILE | MF_DROPOFF | MF_NOGRAVITY,
 		},
 		7: {
 			Fdoomednum:    -1,
@@ -16404,7 +16404,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_NOGRAVITY,
 		},
 		8: {
 			Fdoomednum:    67,
@@ -16424,7 +16424,7 @@ func init() {
 			Fheight:       64 * (1 << FRACBITS),
 			Fmass:         1000,
 			Factivesound:  int32(sfx_posact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 			Fraisestate:   S_FATT_RAISE1,
 		},
 		9: {
@@ -16440,7 +16440,7 @@ func init() {
 			Fheight:       8 * (1 << FRACBITS),
 			Fmass:         100,
 			Fdamage:       8,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_MISSILE | MF_DROPOFF | MF_NOGRAVITY,
 		},
 		10: {
 			Fdoomednum:    65,
@@ -16461,7 +16461,7 @@ func init() {
 			Fheight:       56 * (1 << FRACBITS),
 			Fmass:         100,
 			Factivesound:  int32(sfx_posact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 			Fraisestate:   S_CPOS_RAISE1,
 		},
 		11: {
@@ -16484,7 +16484,7 @@ func init() {
 			Fheight:       56 * (1 << FRACBITS),
 			Fmass:         100,
 			Factivesound:  int32(sfx_bgact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 			Fraisestate:   S_TROO_RAISE1,
 		},
 		12: {
@@ -16506,7 +16506,7 @@ func init() {
 			Fheight:       56 * (1 << FRACBITS),
 			Fmass:         400,
 			Factivesound:  int32(sfx_dmact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 			Fraisestate:   S_SARG_RAISE1,
 		},
 		13: {
@@ -16528,7 +16528,7 @@ func init() {
 			Fheight:       56 * (1 << FRACBITS),
 			Fmass:         400,
 			Factivesound:  int32(sfx_dmact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_SHADOW) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_SHADOW | MF_COUNTKILL,
 			Fraisestate:   S_SARG_RAISE1,
 		},
 		14: {
@@ -16549,7 +16549,7 @@ func init() {
 			Fheight:       56 * (1 << FRACBITS),
 			Fmass:         400,
 			Factivesound:  int32(sfx_dmact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_FLOAT) | int32(MF_NOGRAVITY) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_FLOAT | MF_NOGRAVITY | MF_COUNTKILL,
 			Fraisestate:   S_HEAD_RAISE1,
 		},
 		15: {
@@ -16571,7 +16571,7 @@ func init() {
 			Fheight:       64 * (1 << FRACBITS),
 			Fmass:         1000,
 			Factivesound:  int32(sfx_dmact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 			Fraisestate:   S_BOSS_RAISE1,
 		},
 		16: {
@@ -16587,7 +16587,7 @@ func init() {
 			Fheight:       8 * (1 << FRACBITS),
 			Fmass:         100,
 			Fdamage:       8,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_MISSILE | MF_DROPOFF | MF_NOGRAVITY,
 		},
 		17: {
 			Fdoomednum:    69,
@@ -16608,7 +16608,7 @@ func init() {
 			Fheight:       64 * (1 << FRACBITS),
 			Fmass:         1000,
 			Factivesound:  int32(sfx_dmact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 			Fraisestate:   S_BOS2_RAISE1,
 		},
 		18: {
@@ -16630,7 +16630,7 @@ func init() {
 			Fmass:         50,
 			Fdamage:       3,
 			Factivesound:  int32(sfx_dmact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_FLOAT) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_FLOAT | MF_NOGRAVITY,
 		},
 		19: {
 			Fdoomednum:    7,
@@ -16651,7 +16651,7 @@ func init() {
 			Fheight:       100 * (1 << FRACBITS),
 			Fmass:         1000,
 			Factivesound:  int32(sfx_dmact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 		},
 		20: {
 			Fdoomednum:    68,
@@ -16671,7 +16671,7 @@ func init() {
 			Fheight:       64 * (1 << FRACBITS),
 			Fmass:         600,
 			Factivesound:  int32(sfx_bspact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 			Fraisestate:   S_BSPI_RAISE1,
 		},
 		21: {
@@ -16692,7 +16692,7 @@ func init() {
 			Fheight:       110 * (1 << FRACBITS),
 			Fmass:         1000,
 			Factivesound:  int32(sfx_dmact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 		},
 		22: {
 			Fdoomednum:    71,
@@ -16712,7 +16712,7 @@ func init() {
 			Fheight:       56 * (1 << FRACBITS),
 			Fmass:         400,
 			Factivesound:  int32(sfx_dmact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_FLOAT) | int32(MF_NOGRAVITY) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_FLOAT | MF_NOGRAVITY | MF_COUNTKILL,
 			Fraisestate:   S_PAIN_RAISE1,
 		},
 		23: {
@@ -16734,7 +16734,7 @@ func init() {
 			Fheight:       56 * (1 << FRACBITS),
 			Fmass:         100,
 			Factivesound:  int32(sfx_posact),
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_COUNTKILL,
 			Fraisestate:   S_SSWV_RAISE1,
 		},
 		24: {
@@ -16750,7 +16750,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       72 * (1 << FRACBITS),
 			Fmass:         10000000,
-			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY) | int32(MF_SHOOTABLE) | int32(MF_COUNTKILL),
+			Fflags:        MF_SOLID | MF_SPAWNCEILING | MF_NOGRAVITY | MF_SHOOTABLE | MF_COUNTKILL,
 		},
 		25: {
 			Fdoomednum:    88,
@@ -16765,7 +16765,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         10000000,
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE),
+			Fflags:        MF_SOLID | MF_SHOOTABLE,
 		},
 		26: {
 			Fdoomednum:    89,
@@ -16776,7 +16776,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       32 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOSECTOR),
+			Fflags:        MF_NOBLOCKMAP | MF_NOSECTOR,
 		},
 		27: {
 			Fdoomednum:    87,
@@ -16785,7 +16785,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       32 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOSECTOR),
+			Fflags:        MF_NOBLOCKMAP | MF_NOSECTOR,
 		},
 		28: {
 			Fdoomednum:    -1,
@@ -16799,7 +16799,7 @@ func init() {
 			Fheight:       32 * (1 << FRACBITS),
 			Fmass:         100,
 			Fdamage:       3,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY) | int32(MF_NOCLIP),
+			Fflags:        MF_NOBLOCKMAP | MF_MISSILE | MF_DROPOFF | MF_NOGRAVITY | MF_NOCLIP,
 		},
 		29: {
 			Fdoomednum:    -1,
@@ -16809,7 +16809,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_NOGRAVITY,
 		},
 		30: {
 			Fdoomednum:    2035,
@@ -16821,7 +16821,7 @@ func init() {
 			Fradius:       10 * (1 << FRACBITS),
 			Fheight:       42 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SHOOTABLE) | int32(MF_NOBLOOD),
+			Fflags:        MF_SOLID | MF_SHOOTABLE | MF_NOBLOOD,
 		},
 		31: {
 			Fdoomednum:    -1,
@@ -16836,7 +16836,7 @@ func init() {
 			Fheight:       8 * (1 << FRACBITS),
 			Fmass:         100,
 			Fdamage:       3,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_MISSILE | MF_DROPOFF | MF_NOGRAVITY,
 		},
 		32: {
 			Fdoomednum:    -1,
@@ -16851,7 +16851,7 @@ func init() {
 			Fheight:       8 * (1 << FRACBITS),
 			Fmass:         100,
 			Fdamage:       5,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_MISSILE | MF_DROPOFF | MF_NOGRAVITY,
 		},
 		33: {
 			Fdoomednum:    -1,
@@ -16866,7 +16866,7 @@ func init() {
 			Fheight:       8 * (1 << FRACBITS),
 			Fmass:         100,
 			Fdamage:       20,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_MISSILE | MF_DROPOFF | MF_NOGRAVITY,
 		},
 		34: {
 			Fdoomednum:    -1,
@@ -16881,7 +16881,7 @@ func init() {
 			Fheight:       8 * (1 << FRACBITS),
 			Fmass:         100,
 			Fdamage:       5,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_MISSILE | MF_DROPOFF | MF_NOGRAVITY,
 		},
 		35: {
 			Fdoomednum:    -1,
@@ -16895,7 +16895,7 @@ func init() {
 			Fheight:       8 * (1 << FRACBITS),
 			Fmass:         100,
 			Fdamage:       100,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_MISSILE | MF_DROPOFF | MF_NOGRAVITY,
 		},
 		36: {
 			Fdoomednum:    -1,
@@ -16910,7 +16910,7 @@ func init() {
 			Fheight:       8 * (1 << FRACBITS),
 			Fmass:         100,
 			Fdamage:       5,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_MISSILE) | int32(MF_DROPOFF) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_MISSILE | MF_DROPOFF | MF_NOGRAVITY,
 		},
 		37: {
 			Fdoomednum:    -1,
@@ -16920,7 +16920,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_NOGRAVITY,
 		},
 		38: {
 			Fdoomednum:    -1,
@@ -16930,7 +16930,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP),
+			Fflags:        MF_NOBLOCKMAP,
 		},
 		39: {
 			Fdoomednum:    -1,
@@ -16940,7 +16940,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_NOGRAVITY,
 		},
 		40: {
 			Fdoomednum:    -1,
@@ -16950,7 +16950,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_NOGRAVITY,
 		},
 		41: {
 			Fdoomednum:    14,
@@ -16959,7 +16959,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOSECTOR),
+			Fflags:        MF_NOBLOCKMAP | MF_NOSECTOR,
 		},
 		42: {
 			Fdoomednum:    -1,
@@ -16969,7 +16969,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP) | int32(MF_NOGRAVITY),
+			Fflags:        MF_NOBLOCKMAP | MF_NOGRAVITY,
 		},
 		43: {
 			Fdoomednum:    2018,
@@ -16979,7 +16979,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		44: {
 			Fdoomednum:    2019,
@@ -16989,7 +16989,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		45: {
 			Fdoomednum:    2014,
@@ -16999,7 +16999,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
+			Fflags:        MF_SPECIAL | MF_COUNTITEM,
 		},
 		46: {
 			Fdoomednum:    2015,
@@ -17009,7 +17009,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
+			Fflags:        MF_SPECIAL | MF_COUNTITEM,
 		},
 		47: {
 			Fdoomednum:    5,
@@ -17019,7 +17019,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
+			Fflags:        MF_SPECIAL | MF_NOTDMATCH,
 		},
 		48: {
 			Fdoomednum:    13,
@@ -17029,7 +17029,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
+			Fflags:        MF_SPECIAL | MF_NOTDMATCH,
 		},
 		49: {
 			Fdoomednum:    6,
@@ -17039,7 +17039,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
+			Fflags:        MF_SPECIAL | MF_NOTDMATCH,
 		},
 		50: {
 			Fdoomednum:    39,
@@ -17049,7 +17049,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
+			Fflags:        MF_SPECIAL | MF_NOTDMATCH,
 		},
 		51: {
 			Fdoomednum:    38,
@@ -17059,7 +17059,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
+			Fflags:        MF_SPECIAL | MF_NOTDMATCH,
 		},
 		52: {
 			Fdoomednum:    40,
@@ -17069,7 +17069,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_NOTDMATCH),
+			Fflags:        MF_SPECIAL | MF_NOTDMATCH,
 		},
 		53: {
 			Fdoomednum:    2011,
@@ -17079,7 +17079,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		54: {
 			Fdoomednum:    2012,
@@ -17089,7 +17089,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		55: {
 			Fdoomednum:    2013,
@@ -17099,7 +17099,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
+			Fflags:        MF_SPECIAL | MF_COUNTITEM,
 		},
 		56: {
 			Fdoomednum:    2022,
@@ -17109,7 +17109,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
+			Fflags:        MF_SPECIAL | MF_COUNTITEM,
 		},
 		57: {
 			Fdoomednum:    2023,
@@ -17119,7 +17119,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
+			Fflags:        MF_SPECIAL | MF_COUNTITEM,
 		},
 		58: {
 			Fdoomednum:    2024,
@@ -17129,7 +17129,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
+			Fflags:        MF_SPECIAL | MF_COUNTITEM,
 		},
 		59: {
 			Fdoomednum:    2025,
@@ -17139,7 +17139,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		60: {
 			Fdoomednum:    2026,
@@ -17149,7 +17149,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
+			Fflags:        MF_SPECIAL | MF_COUNTITEM,
 		},
 		61: {
 			Fdoomednum:    2045,
@@ -17159,7 +17159,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
+			Fflags:        MF_SPECIAL | MF_COUNTITEM,
 		},
 		62: {
 			Fdoomednum:    83,
@@ -17169,7 +17169,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL) | int32(MF_COUNTITEM),
+			Fflags:        MF_SPECIAL | MF_COUNTITEM,
 		},
 		63: {
 			Fdoomednum:    2007,
@@ -17179,7 +17179,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		64: {
 			Fdoomednum:    2048,
@@ -17189,7 +17189,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		65: {
 			Fdoomednum:    2010,
@@ -17199,7 +17199,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		66: {
 			Fdoomednum:    2046,
@@ -17209,7 +17209,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		67: {
 			Fdoomednum:    2047,
@@ -17219,7 +17219,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		68: {
 			Fdoomednum:    17,
@@ -17229,7 +17229,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		69: {
 			Fdoomednum:    2008,
@@ -17239,7 +17239,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		70: {
 			Fdoomednum:    2049,
@@ -17249,7 +17249,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		71: {
 			Fdoomednum:    8,
@@ -17259,7 +17259,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		72: {
 			Fdoomednum:    2006,
@@ -17269,7 +17269,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		73: {
 			Fdoomednum:    2002,
@@ -17279,7 +17279,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		74: {
 			Fdoomednum:    2005,
@@ -17289,7 +17289,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		75: {
 			Fdoomednum:    2003,
@@ -17299,7 +17299,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		76: {
 			Fdoomednum:    2004,
@@ -17309,7 +17309,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		77: {
 			Fdoomednum:    2001,
@@ -17319,7 +17319,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		78: {
 			Fdoomednum:    82,
@@ -17329,7 +17329,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPECIAL),
+			Fflags:        MF_SPECIAL,
 		},
 		79: {
 			Fdoomednum:    85,
@@ -17339,7 +17339,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		80: {
 			Fdoomednum:    86,
@@ -17349,7 +17349,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		81: {
 			Fdoomednum:    2028,
@@ -17359,7 +17359,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		82: {
 			Fdoomednum:    30,
@@ -17369,7 +17369,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		83: {
 			Fdoomednum:    31,
@@ -17379,7 +17379,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		84: {
 			Fdoomednum:    32,
@@ -17389,7 +17389,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		85: {
 			Fdoomednum:    33,
@@ -17399,7 +17399,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		86: {
 			Fdoomednum:    37,
@@ -17409,7 +17409,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		87: {
 			Fdoomednum:    36,
@@ -17419,7 +17419,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		88: {
 			Fdoomednum:    41,
@@ -17429,7 +17429,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		89: {
 			Fdoomednum:    42,
@@ -17439,7 +17439,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		90: {
 			Fdoomednum:    43,
@@ -17449,7 +17449,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		91: {
 			Fdoomednum:    44,
@@ -17459,7 +17459,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		92: {
 			Fdoomednum:    45,
@@ -17469,7 +17469,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		93: {
 			Fdoomednum:    46,
@@ -17479,7 +17479,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		94: {
 			Fdoomednum:    55,
@@ -17489,7 +17489,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		95: {
 			Fdoomednum:    56,
@@ -17499,7 +17499,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		96: {
 			Fdoomednum:    57,
@@ -17509,7 +17509,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		97: {
 			Fdoomednum:    47,
@@ -17519,7 +17519,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		98: {
 			Fdoomednum:    48,
@@ -17529,7 +17529,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		99: {
 			Fdoomednum:    34,
@@ -17548,7 +17548,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		101: {
 			Fdoomednum:    49,
@@ -17558,7 +17558,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       68 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SOLID | MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		102: {
 			Fdoomednum:    50,
@@ -17568,7 +17568,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       84 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SOLID | MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		103: {
 			Fdoomednum:    51,
@@ -17578,7 +17578,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       84 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SOLID | MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		104: {
 			Fdoomednum:    52,
@@ -17588,7 +17588,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       68 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SOLID | MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		105: {
 			Fdoomednum:    53,
@@ -17598,7 +17598,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       52 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SOLID | MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		106: {
 			Fdoomednum:    59,
@@ -17608,7 +17608,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       84 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		107: {
 			Fdoomednum:    60,
@@ -17618,7 +17618,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       68 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		108: {
 			Fdoomednum:    61,
@@ -17628,7 +17628,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       52 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		109: {
 			Fdoomednum:    62,
@@ -17638,7 +17638,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       52 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		110: {
 			Fdoomednum:    63,
@@ -17648,7 +17648,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       68 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		111: {
 			Fdoomednum:    22,
@@ -17739,7 +17739,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		121: {
 			Fdoomednum:    24,
@@ -17758,7 +17758,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		123: {
 			Fdoomednum:    29,
@@ -17768,7 +17768,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		124: {
 			Fdoomednum:    25,
@@ -17778,7 +17778,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		125: {
 			Fdoomednum:    26,
@@ -17788,7 +17788,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		126: {
 			Fdoomednum:    54,
@@ -17798,7 +17798,7 @@ func init() {
 			Fradius:       32 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		127: {
 			Fdoomednum:    70,
@@ -17808,7 +17808,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID),
+			Fflags:        MF_SOLID,
 		},
 		128: {
 			Fdoomednum:    73,
@@ -17818,7 +17818,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       88 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SOLID | MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		129: {
 			Fdoomednum:    74,
@@ -17828,7 +17828,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       88 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SOLID | MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		130: {
 			Fdoomednum:    75,
@@ -17838,7 +17838,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       64 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SOLID | MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		131: {
 			Fdoomednum:    76,
@@ -17848,7 +17848,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       64 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SOLID | MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		132: {
 			Fdoomednum:    77,
@@ -17858,7 +17858,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       64 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SOLID | MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		133: {
 			Fdoomednum:    78,
@@ -17868,7 +17868,7 @@ func init() {
 			Fradius:       16 * (1 << FRACBITS),
 			Fheight:       64 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_SOLID) | int32(MF_SPAWNCEILING) | int32(MF_NOGRAVITY),
+			Fflags:        MF_SOLID | MF_SPAWNCEILING | MF_NOGRAVITY,
 		},
 		134: {
 			Fdoomednum:    79,
@@ -17878,7 +17878,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP),
+			Fflags:        MF_NOBLOCKMAP,
 		},
 		135: {
 			Fdoomednum:    80,
@@ -17888,7 +17888,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP),
+			Fflags:        MF_NOBLOCKMAP,
 		},
 		136: {
 			Fdoomednum:    81,
@@ -17898,7 +17898,7 @@ func init() {
 			Fradius:       20 * (1 << FRACBITS),
 			Fheight:       16 * (1 << FRACBITS),
 			Fmass:         100,
-			Fflags:        int32(MF_NOBLOCKMAP),
+			Fflags:        MF_NOBLOCKMAP,
 		},
 	}
 }
@@ -22933,10 +22933,10 @@ func P_CheckMissileRange(actor *mobj_t) (r boolean) {
 	if !(P_CheckSight(actor, actor.Ftarget) != 0) {
 		return 0
 	}
-	if actor.Fflags&int32(MF_JUSTHIT) != 0 {
+	if actor.Fflags&MF_JUSTHIT != 0 {
 		// the target just hit the enemy,
 		// so fight back!
-		actor.Fflags &^= int32(MF_JUSTHIT)
+		actor.Fflags &^= MF_JUSTHIT
 		return 1
 	}
 	if actor.Freactiontime != 0 {
@@ -23011,14 +23011,14 @@ func P_Move(actor *mobj_t) (r boolean) {
 	try_ok = P_TryMove(actor, tryx, tryy)
 	if !(try_ok != 0) {
 		// open any specials
-		if actor.Fflags&int32(MF_FLOAT) != 0 && floatok != 0 {
+		if actor.Fflags&MF_FLOAT != 0 && floatok != 0 {
 			// must adjust height
 			if actor.Fz < tmfloorz {
 				actor.Fz += 1 << FRACBITS * 4
 			} else {
 				actor.Fz -= 1 << FRACBITS * 4
 			}
-			actor.Fflags |= int32(MF_INFLOAT)
+			actor.Fflags |= MF_INFLOAT
 			return 1
 		}
 		if !(numspechit != 0) {
@@ -23042,9 +23042,9 @@ func P_Move(actor *mobj_t) (r boolean) {
 		}
 		return good
 	} else {
-		actor.Fflags &^= int32(MF_INFLOAT)
+		actor.Fflags &^= MF_INFLOAT
 	}
-	if !(actor.Fflags&int32(MF_FLOAT) != 0) {
+	if !(actor.Fflags&MF_FLOAT != 0) {
 		actor.Fz = actor.Ffloorz
 	}
 	return 1
@@ -23287,9 +23287,9 @@ func A_Look(actor *mobj_t) {
 	var targ *mobj_t
 	actor.Fthreshold = 0 // any shot will wake up
 	targ = (*sector_t)(unsafe.Pointer(actor.Fsubsector.Fsector)).Fsoundtarget
-	if targ != nil && targ.Fflags&int32(MF_SHOOTABLE) != 0 {
+	if targ != nil && targ.Fflags&MF_SHOOTABLE != 0 {
 		actor.Ftarget = targ
-		if actor.Fflags&int32(MF_AMBUSH) != 0 {
+		if actor.Fflags&MF_AMBUSH != 0 {
 			if P_CheckSight(actor, actor.Ftarget) != 0 {
 				goto seeyou
 			}
@@ -23362,7 +23362,7 @@ func A_Chase(actor *mobj_t) {
 			}
 		}
 	}
-	if !(actor.Ftarget != nil) || !((*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(actor.Ftarget != nil) || !((*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fflags&MF_SHOOTABLE != 0) {
 		// look for a new target
 		if P_LookForPlayers(actor, 1) != 0 {
 			return
@@ -23371,8 +23371,8 @@ func A_Chase(actor *mobj_t) {
 		return
 	}
 	// do not attack twice in a row
-	if actor.Fflags&int32(MF_JUSTATTACKED) != 0 {
-		actor.Fflags &= ^int32(MF_JUSTATTACKED)
+	if actor.Fflags&MF_JUSTATTACKED != 0 {
+		actor.Fflags &= ^MF_JUSTATTACKED
 		if gameskill != sk_nightmare && !(fastparm != 0) {
 			P_NewChaseDir(actor)
 		}
@@ -23395,7 +23395,7 @@ func A_Chase(actor *mobj_t) {
 			goto nomissile
 		}
 		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fmissilestate)
-		actor.Fflags |= int32(MF_JUSTATTACKED)
+		actor.Fflags |= MF_JUSTATTACKED
 		return
 	}
 	// ?
@@ -23428,9 +23428,9 @@ func A_FaceTarget(actor *mobj_t) {
 	if !(actor.Ftarget != nil) {
 		return
 	}
-	actor.Fflags |= int32(MF_AMBUSH)
+	actor.Fflags |= MF_AMBUSH
 	actor.Fangle = R_PointToAngle2(actor.Fx, actor.Fy, (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fy)
-	if (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fflags&int32(MF_SHADOW) != 0 {
+	if (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fflags&MF_SHADOW != 0 {
 		actor.Fangle += uint32((P_Random() - P_Random()) << 21)
 	}
 }
@@ -23695,7 +23695,7 @@ func PIT_VileCheck(thing *mobj_t) (r boolean) {
 	var check boolean
 	var maxdist int32
 	var v1 fixed_t
-	if !(thing.Fflags&int32(MF_CORPSE) != 0) {
+	if !(thing.Fflags&MF_CORPSE != 0) {
 		return 1
 	} // not a monster
 	if thing.Ftics != -1 {
@@ -23942,7 +23942,7 @@ func A_SkullAttack(actor *mobj_t) {
 		return
 	}
 	dest = actor.Ftarget
-	actor.Fflags |= int32(MF_SKULLFLY)
+	actor.Fflags |= MF_SKULLFLY
 	S_StartSound(&(actor.degenmobj_t), (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fattacksound)
 	A_FaceTarget(actor)
 	an = actor.Fangle >> int32(ANGLETOFINESHIFT)
@@ -24060,7 +24060,7 @@ func A_Pain(actor *mobj_t) {
 
 func A_Fall(actor *mobj_t) {
 	// actor is on ground, it can be walked over
-	actor.Fflags &^= int32(MF_SOLID)
+	actor.Fflags &^= MF_SOLID
 	// So change this if corpse objects
 	// are meant to be obstacles.
 }
@@ -25078,7 +25078,7 @@ func P_GivePower(player *player_t, power int32) (r boolean) {
 	}
 	if power == int32(pw_invisibility) {
 		player.Fpowers[power] = INVISTICS
-		player.Fmo.Fflags |= int32(MF_SHADOW)
+		player.Fmo.Fflags |= MF_SHADOW
 		return 1
 	}
 	if power == int32(pw_infrared) {
@@ -25295,7 +25295,7 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		// ammo
 		fallthrough
 	case SPR_CLIP:
-		if special.Fflags&int32(MF_DROPPED) != 0 {
+		if special.Fflags&MF_DROPPED != 0 {
 			if !(P_GiveAmmo(player, am_clip, 0) != 0) {
 				return
 			}
@@ -25377,7 +25377,7 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		player.Fmessage = __ccgo_ts_str(24474)
 		sound = int32(sfx_wpnup)
 	case SPR_MGUN:
-		if !(P_GiveWeapon(player, wp_chaingun, booluint32(special.Fflags&int32(MF_DROPPED) != 0)) != 0) {
+		if !(P_GiveWeapon(player, wp_chaingun, booluint32(special.Fflags&MF_DROPPED != 0)) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24505)
@@ -25401,13 +25401,13 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		player.Fmessage = __ccgo_ts_str(24585)
 		sound = int32(sfx_wpnup)
 	case SPR_SHOT:
-		if !(P_GiveWeapon(player, wp_shotgun, booluint32(special.Fflags&int32(MF_DROPPED) != 0)) != 0) {
+		if !(P_GiveWeapon(player, wp_shotgun, booluint32(special.Fflags&MF_DROPPED != 0)) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24609)
 		sound = int32(sfx_wpnup)
 	case SPR_SGN2:
-		if !(P_GiveWeapon(player, wp_supershotgun, booluint32(special.Fflags&int32(MF_DROPPED) != 0)) != 0) {
+		if !(P_GiveWeapon(player, wp_supershotgun, booluint32(special.Fflags&MF_DROPPED != 0)) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24630)
@@ -25415,7 +25415,7 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 	default:
 		I_Error(__ccgo_ts(24657), 0)
 	}
-	if special.Fflags&int32(MF_COUNTITEM) != 0 {
+	if special.Fflags&MF_COUNTITEM != 0 {
 		player.Fitemcount++
 	}
 	P_RemoveMobj(special)
@@ -25433,15 +25433,15 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 func P_KillMobj(source *mobj_t, target *mobj_t) {
 	var item mobjtype_t
 	var mo *mobj_t
-	target.Fflags &= ^(int32(MF_SHOOTABLE) | int32(MF_FLOAT) | int32(MF_SKULLFLY))
+	target.Fflags &= ^(MF_SHOOTABLE | MF_FLOAT | MF_SKULLFLY)
 	if target.Ftype1 != int32(MT_SKULL) {
-		target.Fflags &= ^int32(MF_NOGRAVITY)
+		target.Fflags &= ^MF_NOGRAVITY
 	}
-	target.Fflags |= int32(MF_CORPSE) | int32(MF_DROPOFF)
+	target.Fflags |= MF_CORPSE | MF_DROPOFF
 	target.Fheight >>= 2
 	if source != nil && source.Fplayer != nil {
 		// count for intermission
-		if target.Fflags&int32(MF_COUNTKILL) != 0 {
+		if target.Fflags&MF_COUNTKILL != 0 {
 			source.Fplayer.Fkillcount++
 		}
 		if target.Fplayer != nil {
@@ -25449,7 +25449,7 @@ func P_KillMobj(source *mobj_t, target *mobj_t) {
 			source.Fplayer.Ffrags[idx]++
 		}
 	} else {
-		if !(netgame != 0) && target.Fflags&int32(MF_COUNTKILL) != 0 {
+		if !(netgame != 0) && target.Fflags&MF_COUNTKILL != 0 {
 			// count all monster deaths,
 			// even those caused by other monsters
 			players[0].Fkillcount++
@@ -25461,7 +25461,7 @@ func P_KillMobj(source *mobj_t, target *mobj_t) {
 			idx := playerIndex(target.Fplayer)
 			target.Fplayer.Ffrags[idx]++
 		}
-		target.Fflags &= ^int32(MF_SOLID)
+		target.Fflags &= ^MF_SOLID
 		target.Fplayer.Fplayerstate = int32(PST_DEAD)
 		P_DropWeapon(target.Fplayer)
 		if target.Fplayer == &players[consoleplayer] && automapactive != 0 {
@@ -25521,13 +25521,13 @@ func P_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int3
 	var player *player_t
 	var saved, temp, v3 int32
 	var thrust, v1, v2 fixed_t
-	if !(target.Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(target.Fflags&MF_SHOOTABLE != 0) {
 		return
 	} // shouldn't happen...
 	if target.Fhealth <= 0 {
 		return
 	}
-	if target.Fflags&int32(MF_SKULLFLY) != 0 {
+	if target.Fflags&MF_SKULLFLY != 0 {
 		v2 = 0
 		target.Fmomz = v2
 		v1 = v2
@@ -25541,7 +25541,7 @@ func P_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int3
 	// Some close combat weapons should not
 	// inflict thrust and push the victim out of reach,
 	// thus kick away unless using the chainsaw.
-	if inflictor != nil && !(target.Fflags&int32(MF_NOCLIP) != 0) && (!(source != nil) || !(source.Fplayer != nil) || source.Fplayer.Freadyweapon != wp_chainsaw) {
+	if inflictor != nil && !(target.Fflags&MF_NOCLIP != 0) && (!(source != nil) || !(source.Fplayer != nil) || source.Fplayer.Freadyweapon != wp_chainsaw) {
 		ang = R_PointToAngle2(inflictor.Fx, inflictor.Fy, target.Fx, target.Fy)
 		thrust = damage * (1 << FRACBITS >> 3) * 100 / (target.Finfo).Fmass
 		// make fall forwards sometimes
@@ -25603,8 +25603,8 @@ func P_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int3
 		P_KillMobj(source, target)
 		return
 	}
-	if P_Random() < target.Finfo.Fpainchance && !(target.Fflags&int32(MF_SKULLFLY) != 0) {
-		target.Fflags |= int32(MF_JUSTHIT) // fight back!
+	if P_Random() < target.Finfo.Fpainchance && !(target.Fflags&MF_SKULLFLY != 0) {
+		target.Fflags |= MF_JUSTHIT // fight back!
 		P_SetMobjState(target, target.Finfo.Fpainstate)
 	}
 	target.Freactiontime = 0 // we're awake now...
@@ -25956,7 +25956,7 @@ const DEFAULT_SPECHIT_MAGIC = 29400216
 //	//
 func PIT_StompThing(thing *mobj_t) (r boolean) {
 	var blockdist fixed_t
-	if !(thing.Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(thing.Fflags&MF_SHOOTABLE != 0) {
 		return 1
 	}
 	blockdist = thing.Fradius + tmthing.Fradius
@@ -26070,7 +26070,7 @@ func PIT_CheckLine(ld *line_t) (r boolean) {
 	if !(ld.Fbacksector != nil) {
 		return 0
 	} // one sided line
-	if !(tmthing.Fflags&int32(MF_MISSILE) != 0) {
+	if !(tmthing.Fflags&MF_MISSILE != 0) {
 		if int32(ld.Fflags)&ML_BLOCKING != 0 {
 			return 0
 		} // explicitly blocking everything
@@ -26112,7 +26112,7 @@ func PIT_CheckThing(thing *mobj_t) (r boolean) {
 	var blockdist, v1, v2 fixed_t
 	var damage int32
 	var solid boolean
-	if !(thing.Fflags&(int32(MF_SOLID)|int32(MF_SPECIAL)|int32(MF_SHOOTABLE)) != 0) {
+	if !(thing.Fflags&(MF_SOLID|MF_SPECIAL|MF_SHOOTABLE) != 0) {
 		return 1
 	}
 	blockdist = thing.Fradius + tmthing.Fradius
@@ -26125,10 +26125,10 @@ func PIT_CheckThing(thing *mobj_t) (r boolean) {
 		return 1
 	}
 	// check for skulls slamming into things
-	if tmthing.Fflags&int32(MF_SKULLFLY) != 0 {
+	if tmthing.Fflags&MF_SKULLFLY != 0 {
 		damage = (P_Random()%int32(8) + 1) * tmthing.Finfo.Fdamage
 		P_DamageMobj(thing, tmthing, tmthing, damage)
-		tmthing.Fflags &^= int32(MF_SKULLFLY)
+		tmthing.Fflags &^= MF_SKULLFLY
 		v2 = 0
 		tmthing.Fmomz = v2
 		v1 = v2
@@ -26138,7 +26138,7 @@ func PIT_CheckThing(thing *mobj_t) (r boolean) {
 		return 0 // stop moving
 	}
 	// missiles can hit other things
-	if tmthing.Fflags&int32(MF_MISSILE) != 0 {
+	if tmthing.Fflags&MF_MISSILE != 0 {
 		// see if it went over / under
 		if tmthing.Fz > thing.Fz+thing.Fheight {
 			return 1
@@ -26160,9 +26160,9 @@ func PIT_CheckThing(thing *mobj_t) (r boolean) {
 				return 0
 			}
 		}
-		if !(thing.Fflags&int32(MF_SHOOTABLE) != 0) {
+		if !(thing.Fflags&MF_SHOOTABLE != 0) {
 			// didn't do any damage
-			return booluint32(!(thing.Fflags&int32(MF_SOLID) != 0))
+			return booluint32(!(thing.Fflags&MF_SOLID != 0))
 		}
 		// damage / explode
 		damage = (P_Random()%int32(8) + 1) * tmthing.Finfo.Fdamage
@@ -26171,15 +26171,15 @@ func PIT_CheckThing(thing *mobj_t) (r boolean) {
 		return 0
 	}
 	// check for special pickup
-	if thing.Fflags&int32(MF_SPECIAL) != 0 {
-		solid = uint32(thing.Fflags & int32(MF_SOLID))
-		if tmflags&int32(MF_PICKUP) != 0 {
+	if thing.Fflags&MF_SPECIAL != 0 {
+		solid = uint32(thing.Fflags & MF_SOLID)
+		if tmflags&MF_PICKUP != 0 {
 			// can remove thing
 			P_TouchSpecialThing(thing, tmthing)
 		}
 		return booluint32(!(solid != 0))
 	}
-	return booluint32(!(thing.Fflags&int32(MF_SOLID) != 0))
+	return booluint32(!(thing.Fflags&MF_SOLID != 0))
 }
 
 //
@@ -26236,7 +26236,7 @@ func P_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	tmceilingz = (*sector_t)(unsafe.Pointer(newsubsec.Fsector)).Fceilingheight
 	validcount++
 	numspechit = 0
-	if tmflags&int32(MF_NOCLIP) != 0 {
+	if tmflags&MF_NOCLIP != 0 {
 		return 1
 	}
 	// Check things first, possibly picking things up.
@@ -26317,18 +26317,18 @@ func P_TryMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	if !(P_CheckPosition(thing, x, y) != 0) {
 		return 0
 	} // solid wall or thing
-	if !(mthing.Fflags&int32(MF_NOCLIP) != 0) {
+	if !(mthing.Fflags&MF_NOCLIP != 0) {
 		if tmceilingz-tmfloorz < mthing.Fheight {
 			return 0
 		} // doesn't fit
 		floatok = 1
-		if !(mthing.Fflags&int32(MF_TELEPORT) != 0) && tmceilingz-mthing.Fz < mthing.Fheight {
+		if !(mthing.Fflags&MF_TELEPORT != 0) && tmceilingz-mthing.Fz < mthing.Fheight {
 			return 0
 		} // mobj must lower itself to fit
-		if !(mthing.Fflags&int32(MF_TELEPORT) != 0) && tmfloorz-mthing.Fz > 24*(1<<FRACBITS) {
+		if !(mthing.Fflags&MF_TELEPORT != 0) && tmfloorz-mthing.Fz > 24*(1<<FRACBITS) {
 			return 0
 		} // too big a step up
-		if !(mthing.Fflags&(int32(MF_DROPOFF)|int32(MF_FLOAT)) != 0) && tmfloorz-tmdropoffz > 24*(1<<FRACBITS) {
+		if !(mthing.Fflags&(MF_DROPOFF|MF_FLOAT) != 0) && tmfloorz-tmdropoffz > 24*(1<<FRACBITS) {
 			return 0
 		} // don't stand over a dropoff
 	}
@@ -26343,7 +26343,7 @@ func P_TryMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	mthing.Fy = y
 	P_SetThingPosition(thing)
 	// if any special lines were hit, do the effect
-	if !(mthing.Fflags&(int32(MF_TELEPORT)|int32(MF_NOCLIP)) != 0) {
+	if !(mthing.Fflags&(MF_TELEPORT|MF_NOCLIP) != 0) {
 		for {
 			v1 = numspechit
 			numspechit--
@@ -26609,7 +26609,7 @@ func PTR_AimTraverse(in *intercept_t) (r boolean) {
 	if th == shootthing {
 		return 1
 	} // can't shoot self
-	if !(th.Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(th.Fflags&MF_SHOOTABLE != 0) {
 		return 1
 	} // corpse or something
 	// check angles to see if the thing can be aimed at
@@ -26710,7 +26710,7 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 	if th == shootthing {
 		return 1
 	} // can't shoot self
-	if !(th.Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(th.Fflags&MF_SHOOTABLE != 0) {
 		return 1
 	} // corpse or something
 	// check angles to see if the thing can be aimed at
@@ -26731,7 +26731,7 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 	z = shootz + FixedMul(aimslope, FixedMul(frac, attackrange))
 	// Spawn bullet puffs or blod spots,
 	// depending on target type.
-	if (*mobj_t)(unsafe.Pointer(in.Fd.Fthing)).Fflags&int32(MF_NOBLOOD) != 0 {
+	if (*mobj_t)(unsafe.Pointer(in.Fd.Fthing)).Fflags&MF_NOBLOOD != 0 {
 		P_SpawnPuff(x, y, z)
 	} else {
 		P_SpawnBlood(x, y, z, la_damage)
@@ -26839,7 +26839,7 @@ func P_UseLines(player *player_t) {
 func PIT_RadiusAttack(thing *mobj_t) (r boolean) {
 	var dist, dx, dy fixed_t
 	var v1 int32
-	if !(thing.Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(thing.Fflags&MF_SHOOTABLE != 0) {
 		return 1
 	}
 	// Boss spider and cyborg
@@ -26923,19 +26923,19 @@ func PIT_ChangeSector(thing *mobj_t) (r boolean) {
 	// crunch bodies to giblets
 	if thing.Fhealth <= 0 {
 		P_SetMobjState(thing, S_GIBS)
-		thing.Fflags &= ^int32(MF_SOLID)
+		thing.Fflags &= ^MF_SOLID
 		thing.Fheight = 0
 		thing.Fradius = 0
 		// keep checking
 		return 1
 	}
 	// crunch dropped items
-	if thing.Fflags&int32(MF_DROPPED) != 0 {
+	if thing.Fflags&MF_DROPPED != 0 {
 		P_RemoveMobj(thing)
 		// keep checking
 		return 1
 	}
-	if !(thing.Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(thing.Fflags&MF_SHOOTABLE != 0) {
 		// assume it is bloody gibs or something
 		return 1
 	}
@@ -27247,7 +27247,7 @@ func P_LineOpening(linedef *line_t) {
 //	//
 func P_UnsetThingPosition(thing *mobj_t) {
 	var blockx, blocky int32
-	if !(thing.Fflags&int32(MF_NOSECTOR) != 0) {
+	if !(thing.Fflags&MF_NOSECTOR != 0) {
 		// inert things don't need to be in blockmap?
 		// unlink from subsector
 		if thing.Fsnext != nil {
@@ -27259,7 +27259,7 @@ func P_UnsetThingPosition(thing *mobj_t) {
 			(*sector_t)(unsafe.Pointer((thing.Fsubsector).Fsector)).Fthinglist = thing.Fsnext
 		}
 	}
-	if !(thing.Fflags&int32(MF_NOBLOCKMAP) != 0) {
+	if !(thing.Fflags&MF_NOBLOCKMAP != 0) {
 		// inert things don't need to be in blockmap
 		// unlink from block map
 		if thing.Fbnext != nil {
@@ -27293,7 +27293,7 @@ func P_SetThingPosition(thing *mobj_t) {
 	// link into subsector
 	ss = R_PointInSubsector(thing.Fx, thing.Fy)
 	thing.Fsubsector = ss
-	if !(thing.Fflags&int32(MF_NOSECTOR) != 0) {
+	if !(thing.Fflags&MF_NOSECTOR != 0) {
 		// invisible things don't go into the sector links
 		sec = ss.Fsector
 		thing.Fsprev = nil
@@ -27304,7 +27304,7 @@ func P_SetThingPosition(thing *mobj_t) {
 		sec.Fthinglist = thing
 	}
 	// link into blockmap
-	if !(thing.Fflags&int32(MF_NOBLOCKMAP) != 0) {
+	if !(thing.Fflags&MF_NOBLOCKMAP != 0) {
 		// inert things don't need to be in blockmap
 		blockx = (thing.Fx - bmaporgx) >> (FRACBITS + 7)
 		blocky = (thing.Fy - bmaporgy) >> (FRACBITS + 7)
@@ -27844,9 +27844,9 @@ func P_XYMovement(mo *mobj_t) {
 	var player *player_t
 	var ptryx, ptryy, xmove, ymove, v1, v2, v3, v4, v5 fixed_t
 	if !(mo.Fmomx != 0) && !(mo.Fmomy != 0) {
-		if mo.Fflags&int32(MF_SKULLFLY) != 0 {
+		if mo.Fflags&MF_SKULLFLY != 0 {
 			// the skull slammed into something
-			mo.Fflags &= ^int32(MF_SKULLFLY)
+			mo.Fflags &= ^MF_SKULLFLY
 			v2 = 0
 			mo.Fmomz = v2
 			v1 = v2
@@ -27892,7 +27892,7 @@ func P_XYMovement(mo *mobj_t) {
 				// try to slide along it
 				P_SlideMove(mo)
 			} else {
-				if mo.Fflags&int32(MF_MISSILE) != 0 {
+				if mo.Fflags&MF_MISSILE != 0 {
 					// explode a missile
 					if ceilingline != nil && ceilingline.Fbacksector != nil && int32((*sector_t)(unsafe.Pointer(ceilingline.Fbacksector)).Fceilingpic) == skyflatnum {
 						// Hack to prevent missiles exploding
@@ -27918,13 +27918,13 @@ func P_XYMovement(mo *mobj_t) {
 		mo.Fmomx = v5
 		return
 	}
-	if mo.Fflags&(int32(MF_MISSILE)|int32(MF_SKULLFLY)) != 0 {
+	if mo.Fflags&(MF_MISSILE|MF_SKULLFLY) != 0 {
 		return
 	} // no friction for missiles ever
 	if mo.Fz > mo.Ffloorz {
 		return
 	} // no friction when airborne
-	if mo.Fflags&int32(MF_CORPSE) != 0 {
+	if mo.Fflags&MF_CORPSE != 0 {
 		// do not stop sliding
 		//  if halfway off a step with some momentum
 		if mo.Fmomx > 1<<FRACBITS/4 || mo.Fmomx < -(1<<FRACBITS)/4 || mo.Fmomy > 1<<FRACBITS/4 || mo.Fmomy < -(1<<FRACBITS)/4 {
@@ -27961,9 +27961,9 @@ func P_ZMovement(mo *mobj_t) {
 	}
 	// adjust height
 	mo.Fz += mo.Fmomz
-	if mo.Fflags&int32(MF_FLOAT) != 0 && mo.Ftarget != nil {
+	if mo.Fflags&MF_FLOAT != 0 && mo.Ftarget != nil {
 		// float down towards target if too close
-		if !(mo.Fflags&int32(MF_SKULLFLY) != 0) && !(mo.Fflags&int32(MF_INFLOAT) != 0) {
+		if !(mo.Fflags&MF_SKULLFLY != 0) && !(mo.Fflags&MF_INFLOAT != 0) {
 			dist = P_AproxDistance(mo.Fx-(*mobj_t)(unsafe.Pointer(mo.Ftarget)).Fx, mo.Fy-(*mobj_t)(unsafe.Pointer(mo.Ftarget)).Fy)
 			delta = (*mobj_t)(unsafe.Pointer(mo.Ftarget)).Fz + mo.Fheight>>1 - mo.Fz
 			if delta < 0 && dist < -(delta*int32(3)) {
@@ -28001,7 +28001,7 @@ func P_ZMovement(mo *mobj_t) {
 		// So we need to check that this is either retail or commercial
 		// (but not doom2)
 		correct_lost_soul_bounce = boolint32(gameversion >= exe_ultimate)
-		if correct_lost_soul_bounce != 0 && mo.Fflags&int32(MF_SKULLFLY) != 0 {
+		if correct_lost_soul_bounce != 0 && mo.Fflags&MF_SKULLFLY != 0 {
 			// the skull slammed into something
 			mo.Fmomz = -mo.Fmomz
 		}
@@ -28022,15 +28022,15 @@ func P_ZMovement(mo *mobj_t) {
 		// compatibility with original Doom2 v1.9 - if a soul is charging and
 		// hit by a raising floor this incorrectly reverses its Y momentum.
 		//
-		if !(correct_lost_soul_bounce != 0) && mo.Fflags&int32(MF_SKULLFLY) != 0 {
+		if !(correct_lost_soul_bounce != 0) && mo.Fflags&MF_SKULLFLY != 0 {
 			mo.Fmomz = -mo.Fmomz
 		}
-		if mo.Fflags&int32(MF_MISSILE) != 0 && !(mo.Fflags&int32(MF_NOCLIP) != 0) {
+		if mo.Fflags&MF_MISSILE != 0 && !(mo.Fflags&MF_NOCLIP != 0) {
 			P_ExplodeMissile(mo)
 			return
 		}
 	} else {
-		if !(mo.Fflags&int32(MF_NOGRAVITY) != 0) {
+		if !(mo.Fflags&MF_NOGRAVITY != 0) {
 			if mo.Fmomz == 0 {
 				mo.Fmomz = -(1 << FRACBITS) * 2
 			} else {
@@ -28044,11 +28044,11 @@ func P_ZMovement(mo *mobj_t) {
 			mo.Fmomz = 0
 		}
 		mo.Fz = mo.Fceilingz - mo.Fheight
-		if mo.Fflags&int32(MF_SKULLFLY) != 0 {
+		if mo.Fflags&MF_SKULLFLY != 0 {
 			// the skull slammed into something
 			mo.Fmomz = -mo.Fmomz
 		}
-		if mo.Fflags&int32(MF_MISSILE) != 0 && !(mo.Fflags&int32(MF_NOCLIP) != 0) {
+		if mo.Fflags&MF_MISSILE != 0 && !(mo.Fflags&MF_NOCLIP != 0) {
 			P_ExplodeMissile(mo)
 			return
 		}
@@ -28083,7 +28083,7 @@ func P_NightmareRespawn(mobj *mobj_t) {
 	// spawn the new monster
 	mthing = &(mobj.Fspawnpoint)
 	// spawn it
-	if mobj.Finfo.Fflags&int32(MF_SPAWNCEILING) != 0 {
+	if mobj.Finfo.Fflags&MF_SPAWNCEILING != 0 {
 		z = int32(INT_MAX11)
 	} else {
 		z = -1 - 0x7fffffff
@@ -28093,7 +28093,7 @@ func P_NightmareRespawn(mobj *mobj_t) {
 	mo.Fspawnpoint = mobj.Fspawnpoint
 	mo.Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
 	if int32(mthing.Foptions)&int32(MTF_AMBUSH) != 0 {
-		mo.Fflags |= int32(MF_AMBUSH)
+		mo.Fflags |= MF_AMBUSH
 	}
 	mo.Freactiontime = 18
 	// remove the old monster,
@@ -28107,7 +28107,7 @@ func P_NightmareRespawn(mobj *mobj_t) {
 //	//
 func P_MobjThinker(mobj *mobj_t) {
 	// momentum movement
-	if mobj.Fmomx != 0 || mobj.Fmomy != 0 || mobj.Fflags&int32(MF_SKULLFLY) != 0 {
+	if mobj.Fmomx != 0 || mobj.Fmomy != 0 || mobj.Fflags&MF_SKULLFLY != 0 {
 		P_XYMovement(mobj)
 		// FIXME: decent NOP/NULL/Nil function pointer please.
 		if mobj.Fthinker.Ffunction.Facv == uintptr_negative_one {
@@ -28133,7 +28133,7 @@ func P_MobjThinker(mobj *mobj_t) {
 		} // freed itself
 	} else {
 		// check for nightmare respawn
-		if !(mobj.Fflags&int32(MF_COUNTKILL) != 0) {
+		if !(mobj.Fflags&MF_COUNTKILL != 0) {
 			return
 		}
 		if !(respawnmonsters != 0) {
@@ -28202,7 +28202,7 @@ func P_SpawnMobj(x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r *mobj_t) 
 }
 
 func P_RemoveMobj(mobj *mobj_t) {
-	if mobj.Fflags&int32(MF_SPECIAL) != 0 && !(mobj.Fflags&int32(MF_DROPPED) != 0) && mobj.Ftype1 != int32(MT_INV) && mobj.Ftype1 != int32(MT_INS) {
+	if mobj.Fflags&MF_SPECIAL != 0 && !(mobj.Fflags&MF_DROPPED != 0) && mobj.Ftype1 != int32(MT_INV) && mobj.Ftype1 != int32(MT_INS) {
 		itemrespawnque[iquehead] = mobj.Fspawnpoint
 		itemrespawntime[iquehead] = leveltime
 		iquehead = (iquehead + 1) & (ITEMQUESIZE - 1)
@@ -28264,7 +28264,7 @@ func P_RespawnSpecials() {
 		i++
 	}
 	// spawn it
-	if mobjinfo[i].Fflags&int32(MF_SPAWNCEILING) != 0 {
+	if mobjinfo[i].Fflags&MF_SPAWNCEILING != 0 {
 		z = int32(INT_MAX11)
 	} else {
 		z = -1 - 0x7fffffff
@@ -28306,7 +28306,7 @@ func P_SpawnPlayer(mthing *mapthing_t) {
 	mobj = P_SpawnMobj(x, y, z, int32(MT_PLAYER))
 	// set color translations for player sprites
 	if int32(mthing.Ftype1) > 1 {
-		mobj.Fflags |= (int32(mthing.Ftype1) - 1) << int32(MF_TRANSSHIFT)
+		mobj.Fflags |= (int32(mthing.Ftype1) - 1) << MF_TRANSSHIFT
 	}
 	mobj.Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
 	mobj.Fplayer = p
@@ -28411,17 +28411,17 @@ func P_SpawnMapThing(mthing *mapthing_t) {
 		I_Error(__ccgo_ts(24810), int32(mthing.Ftype1), int32(mthing.Fx), int32(mthing.Fy))
 	}
 	// don't spawn keycards and players in deathmatch
-	if deathmatch != 0 && mobjinfo[i].Fflags&int32(MF_NOTDMATCH) != 0 {
+	if deathmatch != 0 && mobjinfo[i].Fflags&MF_NOTDMATCH != 0 {
 		return
 	}
 	// don't spawn any monsters if -nomonsters
-	if nomonsters != 0 && (i == int32(MT_SKULL) || mobjinfo[i].Fflags&int32(MF_COUNTKILL) != 0) {
+	if nomonsters != 0 && (i == int32(MT_SKULL) || mobjinfo[i].Fflags&MF_COUNTKILL != 0) {
 		return
 	}
 	// spawn it
 	x = int32(mthing.Fx) << int32(FRACBITS)
 	y = int32(mthing.Fy) << int32(FRACBITS)
-	if mobjinfo[i].Fflags&int32(MF_SPAWNCEILING) != 0 {
+	if mobjinfo[i].Fflags&MF_SPAWNCEILING != 0 {
 		z = int32(INT_MAX11)
 	} else {
 		z = -1 - 0x7fffffff
@@ -28431,15 +28431,15 @@ func P_SpawnMapThing(mthing *mapthing_t) {
 	if mobj.Ftics > 0 {
 		mobj.Ftics = 1 + P_Random()%mobj.Ftics
 	}
-	if mobj.Fflags&int32(MF_COUNTKILL) != 0 {
+	if mobj.Fflags&MF_COUNTKILL != 0 {
 		totalkills++
 	}
-	if mobj.Fflags&int32(MF_COUNTITEM) != 0 {
+	if mobj.Fflags&MF_COUNTITEM != 0 {
 		totalitems++
 	}
 	mobj.Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
 	if int32(mthing.Foptions)&int32(MTF_AMBUSH) != 0 {
-		mobj.Fflags |= int32(MF_AMBUSH)
+		mobj.Fflags |= MF_AMBUSH
 	}
 }
 
@@ -28538,7 +28538,7 @@ func P_SpawnMissile(source *mobj_t, dest *mobj_t, type1 mobjtype_t) (r *mobj_t) 
 	th.Ftarget = source // where it came from
 	an = R_PointToAngle2(source.Fx, source.Fy, dest.Fx, dest.Fy)
 	// fuzzy player
-	if dest.Fflags&int32(MF_SHADOW) != 0 {
+	if dest.Fflags&MF_SHADOW != 0 {
 		an += uint32((P_Random() - P_Random()) << 20)
 	}
 	th.Fangle = an
@@ -29210,7 +29210,7 @@ func A_Saw(player *player_t, psp *pspdef_t) {
 			player.Fmo.Fangle += uint32(ANG905 / 20)
 		}
 	}
-	player.Fmo.Fflags |= int32(MF_JUSTATTACKED)
+	player.Fmo.Fflags |= MF_JUSTATTACKED
 }
 
 // Doom does not check the bounds of the ammo array.  As a result,
@@ -33992,7 +33992,7 @@ func EV_Teleport(line *line_t, side int32, thing *mobj_t) (r int32) {
 	var tag int16
 	var oldx, oldy, oldz, v3, v4 fixed_t
 	// don't teleport missiles
-	if thing.Fflags&int32(MF_MISSILE) != 0 {
+	if thing.Fflags&MF_MISSILE != 0 {
 		return 0
 	}
 	// Don't teleport if hit back of line,
@@ -34317,17 +34317,17 @@ func P_PlayerThink(player *player_t) {
 	var newweapon weapontype_t
 	// fixme: do this in the cheat code
 	if player.Fcheats&int32(CF_NOCLIP) != 0 {
-		player.Fmo.Fflags |= int32(MF_NOCLIP)
+		player.Fmo.Fflags |= MF_NOCLIP
 	} else {
-		player.Fmo.Fflags &^= int32(MF_NOCLIP)
+		player.Fmo.Fflags &^= MF_NOCLIP
 	}
 	// chain saw run forward
 	cmd := &player.Fcmd
-	if player.Fmo.Fflags&int32(MF_JUSTATTACKED) != 0 {
+	if player.Fmo.Fflags&MF_JUSTATTACKED != 0 {
 		cmd.Fangleturn = 0
 		cmd.Fforwardmove = int8(0xc800 / 512)
 		cmd.Fsidemove = 0
-		player.Fmo.Fflags &^= int32(MF_JUSTATTACKED)
+		player.Fmo.Fflags &^= MF_JUSTATTACKED
 	}
 	if player.Fplayerstate == int32(PST_DEAD) {
 		P_DeathThink(player)
@@ -34391,7 +34391,7 @@ func P_PlayerThink(player *player_t) {
 	if player.Fpowers[pw_invisibility] != 0 {
 		player.Fpowers[pw_invisibility]--
 		if !(player.Fpowers[pw_invisibility] != 0) {
-			player.Fmo.Fflags &^= int32(MF_SHADOW)
+			player.Fmo.Fflags &^= MF_SHADOW
 		}
 	}
 	if player.Fpowers[pw_infrared] != 0 {
@@ -38085,9 +38085,9 @@ func R_DrawVisSprite(vis *vissprite_t, x1 int32, x2 int32) {
 		// NULL colormap = shadow draw
 		colfunc = fuzzcolfunc
 	} else {
-		if vis.Fmobjflags&int32(MF_TRANSLATION) != 0 {
+		if vis.Fmobjflags&MF_TRANSLATION != 0 {
 			colfunc = transcolfunc
-			dc_translation = translationtables - uintptr(256) + uintptr(vis.Fmobjflags&int32(MF_TRANSLATION)>>(int32(MF_TRANSSHIFT)-8))
+			dc_translation = translationtables - uintptr(256) + uintptr(vis.Fmobjflags&MF_TRANSLATION>>(MF_TRANSSHIFT-8))
 		}
 	}
 	dc_iscale = xabs(vis.Fxiscale) >> detailshift
@@ -38217,7 +38217,7 @@ func R_ProjectSprite(thing *mobj_t) {
 	}
 	vis.Fpatch = lump
 	// get light level
-	if thing.Fflags&int32(MF_SHADOW) != 0 {
+	if thing.Fflags&MF_SHADOW != 0 {
 		// shadow draw
 		vis.Fcolormap = uintptr(0)
 	} else {
