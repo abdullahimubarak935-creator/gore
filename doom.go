@@ -9892,7 +9892,7 @@ func HU_Start() {
 	}
 	switch v1 {
 	case doom:
-		s = mapnames[(gameepisode-1)*int32(9)+gamemap-1]
+		s = mapnames[(gameepisode-1)*9+gamemap-1]
 	case doom2:
 		s = mapnames_commercial[gamemap-1]
 	case pack_plut:
@@ -27026,7 +27026,7 @@ func SpechitOverrun(ld *line_t) {
 	case 11:
 		fallthrough
 	case 12:
-		tmbbox[numspechit-int32(9)] = addr
+		tmbbox[numspechit-9] = addr
 	case 13:
 		crushchange = boolean(addr)
 	case 14:
@@ -35253,7 +35253,7 @@ func R_InitTextures() {
 		fprintf_ccgo(os.Stdout, 26061)
 		i = 0
 		for {
-			if !(i < temp3+int32(9)) {
+			if !(i < temp3+9) {
 				break
 			}
 			fprintf_ccgo(os.Stdout, 26063)
@@ -39745,11 +39745,11 @@ func STlib_drawNum(n *st_number_t, refresh boolean) {
 	n.Foldnum = *(*int32)(unsafe.Pointer(n.Fnum))
 	neg = boolint32(num < 0)
 	if neg != 0 {
-		if numdigits == 2 && num < -int32(9) {
-			num = -int32(9)
+		if numdigits == 2 && num < -9 {
+			num = -9
 		} else {
-			if numdigits == 3 && num < -int32(99) {
-				num = -int32(99)
+			if numdigits == 3 && num < -99 {
+				num = -99
 			}
 		}
 		num = -num
@@ -40329,8 +40329,8 @@ func ST_Responder(ev *event_t) (r boolean) {
 										S_ChangeMusic(musnum, 1)
 									}
 								} else {
-									musnum = int32(mus_e1m1) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*int32(9) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('1'))
-									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*int32(9)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('1') > 31 {
+									musnum = int32(mus_e1m1) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*9 + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('1'))
+									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*9+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('1') > 31 {
 										plyr.Fmessage = __ccgo_ts_str(27653)
 									} else {
 										S_ChangeMusic(musnum, 1)
@@ -41159,7 +41159,7 @@ func S_Start() {
 			8: int32(mus_e1m9),
 		}
 		if gameepisode < 4 {
-			mnum = int32(mus_e1m1) + (gameepisode-1)*int32(9) + gamemap - 1
+			mnum = int32(mus_e1m1) + (gameepisode-1)*9 + gamemap - 1
 		} else {
 			mnum = spmus[gamemap-1]
 		}
@@ -43075,8 +43075,8 @@ func WI_updateDeathmatchStats() {
 						if *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) > 99 {
 							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = 99
 						}
-						if *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) < -int32(99) {
-							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = -int32(99)
+						if *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) < -99 {
+							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = -99
 						}
 						stillticking = 1
 					}
@@ -43089,8 +43089,8 @@ func WI_updateDeathmatchStats() {
 				if dm_totals[i] > 99 {
 					dm_totals[i] = 99
 				}
-				if dm_totals[i] < -int32(99) {
-					dm_totals[i] = -int32(99)
+				if dm_totals[i] < -99 {
+					dm_totals[i] = -99
 				}
 			}
 			goto _3
