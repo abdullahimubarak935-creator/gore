@@ -4404,7 +4404,7 @@ func OldNetSync() {
 	frameon++
 	// ideally maketic should be 1 - 3 tics above lowtic
 	// if we are consistantly slower, speed up time
-	i = uint32(0)
+	i = 0
 	for {
 		if !(i < uint32(NET_MAXPLAYERS)) {
 			break
@@ -4447,7 +4447,7 @@ func PlayersInGame() (r boolean) {
 	// If we are connected to a server, check if there are any players
 	// in the game.
 	if net_client_connected != 0 {
-		i = uint32(0)
+		i = 0
 		for {
 			if !(i < uint32(NET_MAXPLAYERS)) {
 				break
@@ -4472,7 +4472,7 @@ func PlayersInGame() (r boolean) {
 
 func TicdupSquash(set *ticcmd_set_t) {
 	var i uint32
-	i = uint32(0)
+	i = 0
 	for {
 		if !(i < uint32(NET_MAXPLAYERS)) {
 			break
@@ -4494,7 +4494,7 @@ func TicdupSquash(set *ticcmd_set_t) {
 
 func SinglePlayerClear(set *ticcmd_set_t) {
 	var i uint32
-	i = uint32(0)
+	i = 0
 	for {
 		if !(i < uint32(NET_MAXPLAYERS)) {
 			break
@@ -5236,7 +5236,7 @@ func GetGameName(gamename string) string {
 			for {
 				if len(gamename) >= 1 {
 					v2 = int32(gamename[0])
-					v3 = boolint32(v2 == int32(' ') || uint32(v2)-uint32('\t') < uint32(5))
+					v3 = boolint32(v2 == int32(' ') || uint32(v2)-uint32('\t') < 5)
 					goto _4
 				_4:
 				}
@@ -5248,7 +5248,7 @@ func GetGameName(gamename string) string {
 			for {
 				if len(gamename) >= 1 {
 					v6 = int32(gamename[len(gamename)-1])
-					v7 = boolint32(v6 == int32(' ') || uint32(v6)-uint32('\t') < uint32(5))
+					v7 = boolint32(v6 == int32(' ') || uint32(v6)-uint32('\t') < 5)
 					goto _8
 				_8:
 				}
@@ -5330,7 +5330,7 @@ func D_IdentifyVersion() {
 	// any known IWAD name, we may have a dilemma.  Try to
 	// identify by its contents.
 	if gamemission == none {
-		i = uint32(0)
+		i = 0
 		for {
 			if !(i < numlumps) {
 				break
@@ -6165,7 +6165,7 @@ var exitmsg string
 func RunTic(cmds []ticcmd_t, ingame []boolean) {
 	var i uint32
 	// Check for player quits.
-	i = uint32(0)
+	i = 0
 	for {
 		if !(i < uint32(MAXPLAYERS)) {
 			break
@@ -6212,8 +6212,8 @@ func LoadGameSettings(settings *net_gamesettings_t) {
 	if lowres_turn != 0 {
 		fprintf_ccgo(os.Stdout, 5423)
 	}
-	for i := uint32(0); i < MAXPLAYERS; i++ {
-		playeringame[i] = booluint32(i < uint32(settings.Fnum_players))
+	for i := 0; i < MAXPLAYERS; i++ {
+		playeringame[i] = booluint32(i < int(settings.Fnum_players))
 	}
 }
 
@@ -6562,7 +6562,7 @@ func F_StartFinale() {
 	finaletext = finaletext
 	finaleflat = finaleflat
 	finalestage = int32(F_STAGE_TEXT)
-	finalecount = uint32(0)
+	finalecount = 0
 }
 
 func F_Responder(event *event_t) (r boolean) {
@@ -6580,7 +6580,7 @@ func F_Responder(event *event_t) (r boolean) {
 func F_Ticker() {
 	var i uint64
 	// check for skipping
-	if gamemode == commercial && finalecount > uint32(50) {
+	if gamemode == commercial && finalecount > 50 {
 		// go on to the next level
 		i = uint64(0)
 		for {
@@ -6613,7 +6613,7 @@ func F_Ticker() {
 		return
 	}
 	if finalestage == int32(F_STAGE_TEXT) && uint64(finalecount) > xstrlen(finaletext)*uint64(TEXTSPEED)+uint64(TEXTWAIT) {
-		finalecount = uint32(0)
+		finalecount = 0
 		finalestage = int32(F_STAGE_ARTSCREEN)
 		wipegamestate = -1 // force a wipe
 		if gameepisode == 3 {
@@ -7085,15 +7085,15 @@ func F_BunnyScroll() {
 		;
 		x++
 	}
-	if finalecount < uint32(1130) {
+	if finalecount < 1130 {
 		return
 	}
-	if finalecount < uint32(1180) {
+	if finalecount < 1180 {
 		V_DrawPatch((SCREENWIDTH-13*8)/2, (SCREENHEIGHT-8*8)/2, W_CacheLumpName(__ccgo_ts(13652), int32(PU_CACHE)))
 		laststage = 0
 		return
 	}
-	stage = int32((finalecount - uint32(1180)) / uint32(5))
+	stage = int32((finalecount - 1180) / 5)
 	if stage > 6 {
 		stage = 6
 	}
@@ -7155,7 +7155,7 @@ func F_Drawer() {
 // C documentation
 //
 //	// when zero, stop the wipe
-var go1 = uint32(0)
+var go1 = 0
 
 var wipe_scr_start uintptr
 var wipe_scr_end uintptr
@@ -7370,7 +7370,7 @@ func wipe_ScreenWipe(wipeno int32, x int32, y int32, width int32, height int32, 
 	var rc int32
 	// initial stuff
 	if !(go1 != 0) {
-		go1 = uint32(1)
+		go1 = 1
 		// wipe_scr = (byte *) Z_Malloc(width*height, PU_STATIC, 0); // DEBUG
 		wipe_scr = I_VideoBuffer
 		wipes[wipeno*3](width, height, ticks)
@@ -7381,7 +7381,7 @@ func wipe_ScreenWipe(wipeno int32, x int32, y int32, width int32, height int32, 
 	//  V_DrawBlock(x, y, 0, width, height, wipe_scr); // DEBUG
 	// final stuff
 	if rc != 0 {
-		go1 = uint32(0)
+		go1 = 0
 		wipes[wipeno*3+2](width, height, ticks)
 	}
 	return boolint32(!(go1 != 0))
@@ -7737,7 +7737,7 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 			dclicktime += ticdup
 			if dclicktime > 20 {
 				dclicks = 0
-				dclickstate = uint32(0)
+				dclickstate = 0
 			}
 		}
 		// strafe double click
@@ -7757,7 +7757,7 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 			dclicktime2 += ticdup
 			if dclicktime2 > 20 {
 				dclicks2 = 0
-				dclickstate2 = uint32(0)
+				dclickstate2 = 0
 			}
 		}
 	}
@@ -7895,7 +7895,7 @@ func SetJoyButtons(buttons_mask uint32) {
 		if !(i < int32(MAX_JOY_BUTTONS)) {
 			break
 		}
-		button_on = boolint32(buttons_mask&uint32(1<<i) != uint32(0))
+		button_on = boolint32(buttons_mask&uint32(1<<i) != 0)
 		// Detect button press:
 		if !(*(*boolean)(unsafe.Pointer(joybuttons + uintptr(i)*4)) != 0) && button_on != 0 {
 			// Weapon cycling:
@@ -7923,7 +7923,7 @@ func SetMouseButtons(buttons_mask uint32) {
 		if !(i < int32(MAX_MOUSE_BUTTONS)) {
 			break
 		}
-		button_on = booluint32(buttons_mask&uint32(1<<i) != uint32(0))
+		button_on = booluint32(buttons_mask&uint32(1<<i) != 0)
 		// Detect button press:
 		if !(*(*boolean)(unsafe.Pointer(mousebuttons + uintptr(i)*4)) != 0) && button_on != 0 {
 			if i == mousebprevweapon {
@@ -9967,7 +9967,7 @@ func HU_Ticker() {
 			message_on = 1
 			message_counter = 4 * TICRATE
 			message_nottobefuckedwith = message_dontfuckwithme
-			message_dontfuckwithme = uint32(0)
+			message_dontfuckwithme = 0
 		}
 	} // else message_on = false;
 	// check for incoming chat characters
@@ -18387,7 +18387,7 @@ func I_PrintStartupBanner(gamedescription string) {
 //
 
 func I_ConsoleStdout() (r boolean) {
-	return uint32(0)
+	return 0
 }
 
 //
@@ -18533,7 +18533,7 @@ func I_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
 
 var firsttime = 1
 
-var basetime = uint32(0)
+var basetime uint32 = 0
 
 func I_GetTicks() (r int32) {
 	return int32(float64(time.Since(start_time).Milliseconds()) * dg_speed_ratio)
@@ -18543,11 +18543,11 @@ func I_GetTicks() (r int32) {
 func I_GetTime() (r int32) {
 	var ticks uint32
 	ticks = uint32(I_GetTicks())
-	if basetime == uint32(0) {
+	if basetime == 0 {
 		basetime = ticks
 	}
 	ticks -= basetime
-	return int32(ticks * uint32(TICRATE) / uint32(1000))
+	return int32(ticks * uint32(TICRATE) / 1000)
 }
 
 //
@@ -18557,7 +18557,7 @@ func I_GetTime() (r int32) {
 func I_GetTimeMS() (r int32) {
 	var ticks uint32
 	ticks = uint32(I_GetTicks())
-	if basetime == uint32(0) {
+	if basetime == 0 {
 		basetime = ticks
 	}
 	return int32(ticks - basetime)
@@ -19842,7 +19842,7 @@ func M_BindChatControls(num_players uint32) {
 	bp := alloc(48)
 	var i uint32
 	M_BindVariable(__ccgo_ts(21681), uintptr(unsafe.Pointer(&key_multi_msg)))
-	i = uint32(0)
+	i = 0
 	for {
 		if !(i < num_players) {
 			break
@@ -21552,7 +21552,7 @@ func M_StartControlPanel() {
 	if menuactive != 0 {
 		return
 	}
-	menuactive = uint32(1)
+	menuactive = 1
 	currentMenu = &MainDef       // JDC
 	itemOn = currentMenu.FlastOn // JDC
 }
@@ -21578,7 +21578,7 @@ func M_Drawer() {
 		y2 = int16(SCREENHEIGHT/2 - M_StringHeight(messageString)/int32(2))
 		for start < int32(len(messageString)) {
 			foundnewline = 0
-			i = uint32(0)
+			i = 0
 			for {
 				if !(uint64(i) < uint64(len(messageString[start:]))) {
 					break
@@ -21618,7 +21618,7 @@ func M_Drawer() {
 	x = currentMenu.Fx
 	y2 = currentMenu.Fy
 	max = uint32(currentMenu.Fnumitems)
-	i = uint32(0)
+	i = 0
 	for {
 		if !(i < max) {
 			break
@@ -21647,7 +21647,7 @@ var y2 int16
 //	// M_ClearMenus
 //	//
 func M_ClearMenus() {
-	menuactive = uint32(0)
+	menuactive = 0
 	// if (!netgame && usergame && paused)
 	//       sendpause = true;
 }
@@ -21685,7 +21685,7 @@ func M_Ticker() {
 func M_Init() {
 	var p1 uintptr
 	currentMenu = &MainDef
-	menuactive = uint32(0)
+	menuactive = 0
 	itemOn = currentMenu.FlastOn
 	whichSkull = 0
 	skullAnimCounter = 10
@@ -23015,7 +23015,7 @@ func P_Move(actor uintptr) (r boolean) {
 	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir == DI_NODIR {
 		return 0
 	}
-	if uint32((*mobj_t)(unsafe.Pointer(actor)).Fmovedir) >= uint32(8) {
+	if uint32((*mobj_t)(unsafe.Pointer(actor)).Fmovedir) >= 8 {
 		I_Error(__ccgo_ts(23654), 0)
 	}
 	tryx = (*mobj_t)(unsafe.Pointer(actor)).Fx + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*xspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
@@ -31039,8 +31039,8 @@ func P_LoadVertexes(lump int32) {
 func GetSectorAtNullAddress() (r *sector_t) {
 	if !(null_sector_is_initialized != 0) {
 		xmemset(uintptr(unsafe.Pointer(&null_sector)), 0, uint64(144))
-		I_GetMemoryValue(uint32(0), uintptr(unsafe.Pointer(&null_sector)), 4)
-		I_GetMemoryValue(uint32(4), uintptr(unsafe.Pointer(&null_sector))+4, 4)
+		I_GetMemoryValue(0, uintptr(unsafe.Pointer(&null_sector)), 4)
+		I_GetMemoryValue(4, uintptr(unsafe.Pointer(&null_sector))+4, 4)
 		null_sector_is_initialized = 1
 	}
 	return &null_sector
@@ -31508,18 +31508,18 @@ func PadRejectArray(array uintptr, len1 uint32) {
 	// Values to pad the REJECT array with:
 	rejectpad = [4]uint32{
 		0: uint32((totallines*int32(4)+int32(3)) & ^3 + 24),
-		2: uint32(50),
+		2: 50,
 		3: uint32(0x1d4a11),
 	}
 	// Copy values from rejectpad into the destination array.
 	dest = array
-	i = uint32(0)
+	i = 0
 	for {
 		if !(i < len1 && uint64(i) < uint64(16)) {
 			break
 		}
-		byte_num = i % uint32(4)
-		*(*uint8)(unsafe.Pointer(dest)) = uint8(rejectpad[i/uint32(4)] >> (byte_num * uint32(8)) & uint32(0xff))
+		byte_num = i % 4
+		*(*uint8)(unsafe.Pointer(dest)) = uint8(rejectpad[i/4] >> (byte_num * 8) & uint32(0xff))
 		dest++
 		goto _1
 	_1:
@@ -34604,8 +34604,8 @@ func R_AddLine(line uintptr) {
 	angle1 -= viewangle
 	angle2 -= viewangle
 	tspan = angle1 + clipangle
-	if tspan > uint32(2)*clipangle {
-		tspan -= uint32(2) * clipangle
+	if tspan > 2*clipangle {
+		tspan -= 2 * clipangle
 		// Totally off the left edge?
 		if tspan >= span {
 			return
@@ -34613,8 +34613,8 @@ func R_AddLine(line uintptr) {
 		angle1 = clipangle
 	}
 	tspan = clipangle - angle2
-	if tspan > uint32(2)*clipangle {
-		tspan -= uint32(2) * clipangle
+	if tspan > 2*clipangle {
+		tspan -= 2 * clipangle
 		// Totally off the left edge?
 		if tspan >= span {
 			return
@@ -34753,8 +34753,8 @@ func R_CheckBBox(bspcoord uintptr) (r boolean) {
 		return 1
 	}
 	tspan = angle1 + clipangle
-	if tspan > uint32(2)*clipangle {
-		tspan -= uint32(2) * clipangle
+	if tspan > 2*clipangle {
+		tspan -= 2 * clipangle
 		// Totally off the left edge?
 		if tspan >= span {
 			return 0
@@ -34762,8 +34762,8 @@ func R_CheckBBox(bspcoord uintptr) (r boolean) {
 		angle1 = clipangle
 	}
 	tspan = clipangle - angle2
-	if tspan > uint32(2)*clipangle {
-		tspan -= uint32(2) * clipangle
+	if tspan > 2*clipangle {
+		tspan -= 2 * clipangle
 		// Totally off the left edge?
 		if tspan >= span {
 			return 0
@@ -36340,7 +36340,7 @@ func R_DrawViewBorder() {
 	top = (SCREENHEIGHT - SBARHEIGHT - viewheight) / 2
 	side = (int32(SCREENWIDTH) - scaledviewwidth) / 2
 	// copy top and one line of left side
-	R_VideoErase(uint32(0), top*int32(SCREENWIDTH)+side)
+	R_VideoErase(0, top*int32(SCREENWIDTH)+side)
 	// copy one line of right side and bottom
 	ofs = (viewheight+top)*int32(SCREENWIDTH) - side
 	R_VideoErase(uint32(ofs), top*int32(SCREENWIDTH)+side)
@@ -36469,7 +36469,7 @@ func R_PointToAngle(x fixed_t, y fixed_t) (r angle_t) {
 	x -= viewx
 	y -= viewy
 	if !(x != 0) && !(y != 0) {
-		return uint32(0)
+		return 0
 	}
 	if x >= 0 {
 		// x >=0
@@ -36517,7 +36517,7 @@ func R_PointToAngle(x fixed_t, y fixed_t) (r angle_t) {
 			}
 		}
 	}
-	return uint32(0)
+	return 0
 }
 
 func R_PointToAngle2(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t) (r angle_t) {
@@ -37808,13 +37808,13 @@ const INT_MAX17 = 2147483647
 //	//
 func R_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation uint32, flipped boolean) {
 	var r int32
-	if frame >= uint32(29) || rotation > uint32(8) {
+	if frame >= 29 || rotation > 8 {
 		I_Error(__ccgo_ts(26603), lump)
 	}
 	if int32(frame) > maxframe {
 		maxframe = int32(frame)
 	}
-	if rotation == uint32(0) {
+	if rotation == 0 {
 		// the lump should be used for all rotations
 		if sprtemp[frame].Frotate == 0 {
 			I_Error(__ccgo_ts(26656), spritename, uint32('A')+frame)
@@ -41067,7 +41067,7 @@ func S_Init(sfxVolume int32, musicVolume int32) {
 	// simultaneously) within zone memory.
 	channels = make([]channel_t, snd_channels)
 	// no sounds are playing, and they are not mus_paused
-	mus_paused = uint32(0)
+	mus_paused = 0
 	// Note that sounds have not been cached (yet).
 	i = 1
 	for {
@@ -41143,7 +41143,7 @@ func S_Start() {
 		cnum++
 	}
 	// start new music for the level
-	mus_paused = uint32(0)
+	mus_paused = 0
 	if gamemode == commercial {
 		mnum = int32(mus_runnin) + gamemap - 1
 	} else {
@@ -41491,7 +41491,7 @@ func S_StopMusic() {
 
 func SlopeDiv(num uint32, den uint32) (r int32) {
 	var ans uint32
-	if den < uint32(512) {
+	if den < 512 {
 		return int32(SLOPERANGE)
 	} else {
 		ans = num << 3 / (den >> 8)
@@ -42884,7 +42884,7 @@ func WI_updateNoState() {
 	}
 }
 
-var snl_pointeron = uint32(0)
+var snl_pointeron uint32 = 0
 
 func WI_initShowNextLoc() {
 	state = ShowNextLoc
@@ -43915,7 +43915,7 @@ func W_Checksum(digest *sha1_digest_t) {
 	open_wadfiles = nil
 	// Go through each entry in the WAD directory, adding information
 	// about each entry to the SHA1 hash.
-	i = uint32(0)
+	i = 0
 	for {
 		if !(i < numlumps) {
 			break
@@ -44008,10 +44008,10 @@ func W_LumpNameHash(s uintptr) (r uint32) {
 	var i, result uint32
 	// This is the djb2 string hash function, modded to work on strings
 	// that have a maximum length of 8.
-	result = uint32(5381)
-	i = uint32(0)
+	result = 5381
+	i = 0
 	for {
-		if !(i < uint32(8) && int32(*(*int8)(unsafe.Pointer(s + uintptr(i)))) != int32('\000')) {
+		if !(i < 8 && int32(*(*int8)(unsafe.Pointer(s + uintptr(i)))) != int32('\000')) {
 			break
 		}
 		result = result<<int32(5) ^ result ^ uint32(xtoupper(int32(*(*int8)(unsafe.Pointer(s + uintptr(i))))))
@@ -44082,7 +44082,7 @@ func W_AddFile(filename string) *os.File {
 		newnumlumps++
 	} else {
 		// WAD file
-		W_Read(wad_file, uint32(0), bp, uint64(12))
+		W_Read(wad_file, 0, bp, uint64(12))
 		if xstrncmp(bp, __ccgo_ts(28654), uint64(4)) != 0 {
 			// Homebrew levels?
 			if xstrncmp(bp, __ccgo_ts(28659), uint64(4)) != 0 {
@@ -44156,7 +44156,7 @@ func W_CheckNumForName(name uintptr) (r int32) {
 		// We don't have a hash table generate yet. Linear search :-(
 		//
 		// scan backwards so patch lump files take precedence
-		i = int32(numlumps - uint32(1))
+		i = int32(numlumps - 1)
 		for {
 			if !(i >= 0) {
 				break
@@ -44298,10 +44298,10 @@ func W_GenerateHashTable() {
 		Z_Free(lumphash)
 	}
 	// Generate hash table
-	if numlumps > uint32(0) {
+	if numlumps > 0 {
 		lumphash = Z_Malloc(int32(uint64(8)*uint64(numlumps)), int32(PU_STATIC), uintptr(0))
 		xmemset(lumphash, 0, uint64(8)*uint64(numlumps))
-		i = uint32(0)
+		i = 0
 		for {
 			if !(i < numlumps) {
 				break
