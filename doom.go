@@ -456,14 +456,10 @@ type actionf_t struct {
 	Facv actionf_v
 }
 
-type think_t struct {
-	Facv actionf_v
-}
-
 type thinker_t struct {
 	Fprev     *thinker_t
 	Fnext     *thinker_t
-	Ffunction think_t
+	Ffunction actionf_t
 }
 
 const ML_THINGS = 1
@@ -24186,7 +24182,7 @@ func A_BossDeath(mo uintptr) {
 		goto _2
 	_2:
 		;
-		th = (*thinker_t)(unsafe.Pointer(th)).Fnext
+		th = th.Fnext
 	}
 	// victory!
 	if gamemode == commercial {
@@ -24271,7 +24267,7 @@ func A_BrainAwake(mo uintptr) {
 		goto _1
 	_1:
 		;
-		thinker = (*thinker_t)(unsafe.Pointer(thinker)).Fnext
+		thinker = thinker.Fnext
 	}
 	S_StartSound(uintptr(0), int32(sfx_bossit))
 }
@@ -29684,14 +29680,14 @@ func saveg_write_mapthing_t(str *mapthing_t) {
 // actionf_t
 //
 
-func saveg_read_actionf_t(str uintptr) {
+func saveg_read_actionf_t(str *actionf_t) {
 	// actionf_p1 acp1;
-	*(*actionf_p1)(unsafe.Pointer(str)) = saveg_readp()
+	str.Facv = saveg_readp()
 }
 
-func saveg_write_actionf_t(str uintptr) {
+func saveg_write_actionf_t(str *actionf_t) {
 	// actionf_p1 acp1;
-	saveg_writep(*(*actionf_p1)(unsafe.Pointer(str)))
+	saveg_writep((uintptr)(unsafe.Pointer(str.Facv)))
 }
 
 //
@@ -29704,22 +29700,23 @@ func saveg_write_actionf_t(str uintptr) {
 // thinker_t
 //
 
-func saveg_read_thinker_t(str uintptr) {
+func saveg_read_thinker_t(str *thinker_t) {
 	// struct thinker_t* prev;
-	(*thinker_t)(unsafe.Pointer(str)).Fprev = (*thinker_t)(unsafe.Pointer(saveg_readp()))
+	str.Fprev = (*thinker_t)(unsafe.Pointer(saveg_readp()))
 	// struct thinker_t* next;
-	(*thinker_t)(unsafe.Pointer(str)).Fnext = (*thinker_t)(unsafe.Pointer(saveg_readp()))
+	str.Fnext = (*thinker_t)(unsafe.Pointer(saveg_readp()))
 	// think_t function;
-	saveg_read_actionf_t(str + 16)
+
+	saveg_read_actionf_t(&str.Ffunction)
 }
 
-func saveg_write_thinker_t(str uintptr) {
+func saveg_write_thinker_t(str *thinker_t) {
 	// struct thinker_t* prev;
-	saveg_writep((uintptr)(unsafe.Pointer((*thinker_t)(unsafe.Pointer(str)).Fprev)))
+	saveg_writep((uintptr)(unsafe.Pointer(str.Fprev)))
 	// struct thinker_t* next;
-	saveg_writep((uintptr)(unsafe.Pointer((*thinker_t)(unsafe.Pointer(str)).Fnext)))
+	saveg_writep((uintptr)(unsafe.Pointer(str.Fnext)))
 	// think_t function;
-	saveg_write_actionf_t(str + 16)
+	saveg_write_actionf_t(&str.Ffunction)
 }
 
 //
@@ -29729,7 +29726,7 @@ func saveg_write_thinker_t(str uintptr) {
 func saveg_read_mobj_t(str uintptr) {
 	var pl int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(str)
+	saveg_read_thinker_t(&((*mobj_t)(unsafe.Pointer(str)).Fthinker))
 	// fixed_t x;
 	(*mobj_t)(unsafe.Pointer(str)).Fx = saveg_read32()
 	// fixed_t y;
@@ -29806,83 +29803,83 @@ func saveg_read_mobj_t(str uintptr) {
 	(*mobj_t)(unsafe.Pointer(str)).Ftracer = saveg_readp()
 }
 
-func saveg_write_mobj_t(str uintptr) {
+func saveg_write_mobj_t(str *mobj_t) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(str)
+	saveg_write_thinker_t(&str.Fthinker)
 	// fixed_t x;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fx)
+	saveg_write32(str.Fx)
 	// fixed_t y;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fy)
+	saveg_write32(str.Fy)
 	// fixed_t z;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fz)
+	saveg_write32(str.Fz)
 	// struct mobj_t* snext;
-	saveg_writep((*mobj_t)(unsafe.Pointer(str)).Fsnext)
+	saveg_writep(str.Fsnext)
 	// struct mobj_t* sprev;
-	saveg_writep((*mobj_t)(unsafe.Pointer(str)).Fsprev)
+	saveg_writep(str.Fsprev)
 	// angle_t angle;
-	saveg_write32(int32((*mobj_t)(unsafe.Pointer(str)).Fangle))
+	saveg_write32(int32(str.Fangle))
 	// spritenum_t sprite;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fsprite)
+	saveg_write32(str.Fsprite)
 	// int frame;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fframe)
+	saveg_write32(str.Fframe)
 	// struct mobj_t* bnext;
-	saveg_writep((*mobj_t)(unsafe.Pointer(str)).Fbnext)
+	saveg_writep(str.Fbnext)
 	// struct mobj_t* bprev;
-	saveg_writep((*mobj_t)(unsafe.Pointer(str)).Fbprev)
+	saveg_writep(str.Fbprev)
 	// struct subsector_t* subsector;
-	saveg_writep((uintptr)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(str)).Fsubsector)))
+	saveg_writep((uintptr)(unsafe.Pointer(str.Fsubsector)))
 	// fixed_t floorz;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Ffloorz)
+	saveg_write32(str.Ffloorz)
 	// fixed_t ceilingz;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fceilingz)
+	saveg_write32(str.Fceilingz)
 	// fixed_t radius;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fradius)
+	saveg_write32(str.Fradius)
 	// fixed_t height;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fheight)
+	saveg_write32(str.Fheight)
 	// fixed_t momx;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fmomx)
+	saveg_write32(str.Fmomx)
 	// fixed_t momy;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fmomy)
+	saveg_write32(str.Fmomy)
 	// fixed_t momz;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fmomz)
+	saveg_write32(str.Fmomz)
 	// int validcount;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fvalidcount)
+	saveg_write32(str.Fvalidcount)
 	// mobjtype_t type;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Ftype1)
+	saveg_write32(str.Ftype1)
 	// mobjinfo_t* info;
-	saveg_writep((uintptr)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(str)).Finfo)))
+	saveg_writep((uintptr)(unsafe.Pointer(str.Finfo)))
 	// int tics;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Ftics)
+	saveg_write32(str.Ftics)
 	// state_t* state;
-	idx := stateIndex((*mobj_t)(unsafe.Pointer(str)).Fstate)
+	idx := stateIndex(str.Fstate)
 	saveg_write32(idx)
 	// int flags;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fflags)
+	saveg_write32(str.Fflags)
 	// int health;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fhealth)
+	saveg_write32(str.Fhealth)
 	// int movedir;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fmovedir)
+	saveg_write32(str.Fmovedir)
 	// int movecount;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fmovecount)
+	saveg_write32(str.Fmovecount)
 	// struct mobj_t* target;
-	saveg_writep((*mobj_t)(unsafe.Pointer(str)).Ftarget)
+	saveg_writep(str.Ftarget)
 	// int reactiontime;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Freactiontime)
+	saveg_write32(str.Freactiontime)
 	// int threshold;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Fthreshold)
+	saveg_write32(str.Fthreshold)
 	// player_t* player;
-	if (*mobj_t)(unsafe.Pointer(str)).Fplayer != nil {
-		idx := int32(playerIndex((*mobj_t)(unsafe.Pointer(str)).Fplayer))
+	if str.Fplayer != nil {
+		idx := int32(playerIndex(str.Fplayer))
 		saveg_write32(idx + 1)
 	} else {
 		saveg_write32(0)
 	}
 	// int lastlook;
-	saveg_write32((*mobj_t)(unsafe.Pointer(str)).Flastlook)
+	saveg_write32(str.Flastlook)
 	// mapthing_t spawnpoint;
-	saveg_write_mapthing_t(&(*mobj_t)(unsafe.Pointer(str)).Fspawnpoint)
+	saveg_write_mapthing_t(&str.Fspawnpoint)
 	// struct mobj_t* tracer;
-	saveg_writep((*mobj_t)(unsafe.Pointer(str)).Ftracer)
+	saveg_writep(str.Ftracer)
 }
 
 //
@@ -30200,7 +30197,7 @@ func saveg_write_player_t(str *player_t) {
 func saveg_read_ceiling_t(str uintptr) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(str)
+	saveg_read_thinker_t(&(*ceiling_t)(unsafe.Pointer(str)).Fthinker)
 	// ceiling_e type;
 	(*ceiling_t)(unsafe.Pointer(str)).Ftype1 = saveg_read32()
 	// sector_t* sector;
@@ -30224,7 +30221,7 @@ func saveg_read_ceiling_t(str uintptr) {
 
 func saveg_write_ceiling_t(str uintptr) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(str)
+	saveg_write_thinker_t(&(*ceiling_t)(unsafe.Pointer(str)).Fthinker)
 	// ceiling_e type;
 	saveg_write32((*ceiling_t)(unsafe.Pointer(str)).Ftype1)
 	// sector_t* sector;
@@ -30252,7 +30249,7 @@ func saveg_write_ceiling_t(str uintptr) {
 func saveg_read_vldoor_t(str uintptr) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(str)
+	saveg_read_thinker_t(&(*vldoor_t)(unsafe.Pointer(str)).Fthinker)
 	// vldoor_e type;
 	(*vldoor_t)(unsafe.Pointer(str)).Ftype1 = saveg_read32()
 	// sector_t* sector;
@@ -30272,7 +30269,7 @@ func saveg_read_vldoor_t(str uintptr) {
 
 func saveg_write_vldoor_t(str uintptr) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(str)
+	saveg_write_thinker_t(&(*vldoor_t)(unsafe.Pointer(str)).Fthinker)
 	// vldoor_e type;
 	saveg_write32((*vldoor_t)(unsafe.Pointer(str)).Ftype1)
 	// sector_t* sector;
@@ -30296,7 +30293,7 @@ func saveg_write_vldoor_t(str uintptr) {
 func saveg_read_floormove_t(str uintptr) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(str)
+	saveg_read_thinker_t(&(*floormove_t)(unsafe.Pointer(str)).Fthinker)
 	// floor_e type;
 	(*floormove_t)(unsafe.Pointer(str)).Ftype1 = saveg_read32()
 	// boolean crush;
@@ -30318,7 +30315,7 @@ func saveg_read_floormove_t(str uintptr) {
 
 func saveg_write_floormove_t(str uintptr) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(str)
+	saveg_write_thinker_t(&(*floormove_t)(unsafe.Pointer(str)).Fthinker)
 	// floor_e type;
 	saveg_write32((*floormove_t)(unsafe.Pointer(str)).Ftype1)
 	// boolean crush;
@@ -30344,7 +30341,7 @@ func saveg_write_floormove_t(str uintptr) {
 func saveg_read_plat_t(str uintptr) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(str)
+	saveg_read_thinker_t(&(*plat_t)(unsafe.Pointer(str)).Fthinker)
 	// sector_t* sector;
 	sector = saveg_read32()
 	(*plat_t)(unsafe.Pointer(str)).Fsector = &sectors[sector]
@@ -30372,7 +30369,7 @@ func saveg_read_plat_t(str uintptr) {
 
 func saveg_write_plat_t(str uintptr) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(str)
+	saveg_write_thinker_t(&(*plat_t)(unsafe.Pointer(str)).Fthinker)
 	// sector_t* sector;
 	saveg_write32(sectorIndex((*plat_t)(unsafe.Pointer(str)).Fsector))
 	// fixed_t speed;
@@ -30404,7 +30401,7 @@ func saveg_write_plat_t(str uintptr) {
 func saveg_read_lightflash_t(str uintptr) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(str)
+	saveg_read_thinker_t(&(*lightflash_t)(unsafe.Pointer(str)).Fthinker)
 	// sector_t* sector;
 	sector = saveg_read32()
 	(*lightflash_t)(unsafe.Pointer(str)).Fsector = &sectors[sector]
@@ -30422,7 +30419,7 @@ func saveg_read_lightflash_t(str uintptr) {
 
 func saveg_write_lightflash_t(str uintptr) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(str)
+	saveg_write_thinker_t(&(*lightflash_t)(unsafe.Pointer(str)).Fthinker)
 	// sector_t* sector;
 	saveg_write32(sectorIndex((*lightflash_t)(unsafe.Pointer(str)).Fsector))
 	// int count;
@@ -30444,7 +30441,7 @@ func saveg_write_lightflash_t(str uintptr) {
 func saveg_read_strobe_t(str uintptr) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(str)
+	saveg_read_thinker_t(&(*strobe_t)(unsafe.Pointer(str)).Fthinker)
 	// sector_t* sector;
 	sector = saveg_read32()
 	(*strobe_t)(unsafe.Pointer(str)).Fsector = &sectors[sector]
@@ -30462,7 +30459,7 @@ func saveg_read_strobe_t(str uintptr) {
 
 func saveg_write_strobe_t(str uintptr) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(str)
+	saveg_write_thinker_t(&(*strobe_t)(unsafe.Pointer(str)).Fthinker)
 	// sector_t* sector;
 	saveg_write32(sectorIndex((*strobe_t)(unsafe.Pointer(str)).Fsector))
 	// int count;
@@ -30484,7 +30481,7 @@ func saveg_write_strobe_t(str uintptr) {
 func saveg_read_glow_t(str uintptr) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(str)
+	saveg_read_thinker_t(&(*glow_t)(unsafe.Pointer(str)).Fthinker)
 	// sector_t* sector;
 	sector = saveg_read32()
 	(*glow_t)(unsafe.Pointer(str)).Fsector = &sectors[sector]
@@ -30498,7 +30495,7 @@ func saveg_read_glow_t(str uintptr) {
 
 func saveg_write_glow_t(str uintptr) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(str)
+	saveg_write_thinker_t(&(*glow_t)(unsafe.Pointer(str)).Fthinker)
 	// sector_t* sector;
 	saveg_write32(sectorIndex((*glow_t)(unsafe.Pointer(str)).Fsector))
 	// int minlight;
@@ -30785,7 +30782,7 @@ func P_ArchiveThinkers() {
 		if th.Ffunction.Facv == __ccgo_fp(P_MobjThinker) {
 			saveg_write8(uint8(tc_mobj))
 			saveg_write_pad()
-			saveg_write_mobj_t((uintptr)(unsafe.Pointer(th)))
+			saveg_write_mobj_t((*mobj_t)(unsafe.Pointer(th)))
 			goto _1
 		}
 		// I_Error ("P_ArchiveThinkers: Unknown thinker function");
@@ -30941,7 +30938,7 @@ func P_ArchiveSpecials() {
 		goto _1
 	_1:
 		;
-		th = (*thinker_t)(unsafe.Pointer(th)).Fnext
+		th = th.Fnext
 	}
 	// add a terminating marker
 	saveg_write8(uint8(tc_endspecials))
@@ -34085,7 +34082,7 @@ func EV_Teleport(line *line_t, side int32, thing uintptr) (r int32) {
 				goto _2
 			_2:
 				;
-				thinker = (*thinker_t)(unsafe.Pointer(thinker)).Fnext
+				thinker = thinker.Fnext
 			}
 		}
 		goto _1
