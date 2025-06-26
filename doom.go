@@ -1755,13 +1755,13 @@ const MF_TRANSSHIFT = 26
 
 type mobj_t struct {
 	degenmobj_t
-	Fsnext        uintptr
-	Fsprev        uintptr
+	Fsnext        *mobj_t
+	Fsprev        *mobj_t
 	Fangle        angle_t
 	Fsprite       spritenum_t
 	Fframe        int32
-	Fbnext        uintptr
-	Fbprev        uintptr
+	Fbnext        *mobj_t
+	Fbprev        *mobj_t
 	Fsubsector    *subsector_t
 	Ffloorz       fixed_t
 	Fceilingz     fixed_t
@@ -1779,13 +1779,13 @@ type mobj_t struct {
 	Fhealth       int32
 	Fmovedir      int32
 	Fmovecount    int32
-	Ftarget       uintptr
+	Ftarget       *mobj_t
 	Freactiontime int32
 	Fthreshold    int32
 	Fplayer       *player_t
 	Flastlook     int32
 	Fspawnpoint   mapthing_t
-	Ftracer       uintptr
+	Ftracer       *mobj_t
 }
 
 type grabmouse_callback_t = uintptr
@@ -1829,11 +1829,11 @@ type sector_t struct {
 	Fspecial        int16
 	Ftag            int16
 	Fsoundtraversed int32
-	Fsoundtarget    uintptr
+	Fsoundtarget    *mobj_t
 	Fblockbox       [4]int32
 	Fsoundorg       degenmobj_t
 	Fvalidcount     int32
-	Fthinglist      uintptr
+	Fthinglist      *mobj_t
 	Fspecialdata    uintptr
 	Flinecount      int32
 	Flines          []*line_t
@@ -2030,7 +2030,7 @@ const CF_GODMODE = 2
 const CF_NOMOMENTUM = 4
 
 type player_t struct {
-	Fmo              uintptr
+	Fmo              *mobj_t
 	Fplayerstate     playerstate_t
 	Fcmd             ticcmd_t
 	Fviewz           fixed_t
@@ -2059,7 +2059,7 @@ type player_t struct {
 	Fmessage         string
 	Fdamagecount     int32
 	Fbonuscount      int32
-	Fattacker        uintptr
+	Fattacker        *mobj_t
 	Fextralight      int32
 	Ffixedcolormap   int32
 	Fcolormap        int32
@@ -2720,8 +2720,8 @@ func AM_restoreScaleAndLoc() {
 		m_x = old_m_x
 		m_y = old_m_y
 	} else {
-		m_x = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx - m_w/int32(2)
-		m_y = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy - m_h/int32(2)
+		m_x = plr.Fmo.Fx - m_w/int32(2)
+		m_y = plr.Fmo.Fy - m_h/int32(2)
 	}
 	m_x2 = m_x + m_w
 	m_y2 = m_y + m_h
@@ -2853,8 +2853,8 @@ func AM_initVariables() {
 			}
 		}
 	}
-	m_x = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx - m_w/int32(2)
-	m_y = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy - m_h/int32(2)
+	m_x = plr.Fmo.Fx - m_w/int32(2)
+	m_y = plr.Fmo.Fy - m_h/int32(2)
 	AM_changeWindowLoc()
 	// for saving & restoring
 	old_m_x = m_x
@@ -3183,13 +3183,13 @@ func AM_changeWindowScale() {
 //	//
 //	//
 func AM_doFollowPlayer() {
-	if f_oldloc.Fx != (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx || f_oldloc.Fy != (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy {
-		m_x = FixedMul(FixedMul((*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_w/int32(2)
-		m_y = FixedMul(FixedMul((*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_h/int32(2)
+	if f_oldloc.Fx != plr.Fmo.Fx || f_oldloc.Fy != plr.Fmo.Fy {
+		m_x = FixedMul(FixedMul(plr.Fmo.Fx, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_w/int32(2)
+		m_y = FixedMul(FixedMul(plr.Fmo.Fy, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_h/int32(2)
 		m_x2 = m_x + m_w
 		m_y2 = m_y + m_h
-		f_oldloc.Fx = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx
-		f_oldloc.Fy = (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy
+		f_oldloc.Fx = plr.Fmo.Fx
+		f_oldloc.Fy = plr.Fmo.Fy
 		//  m_x = FTOM(MTOF(plr->mo->x - m_w/2));
 		//  m_y = FTOM(MTOF(plr->mo->y - m_h/2));
 		//  m_x = plr->mo->x - m_w/2;
@@ -3644,9 +3644,9 @@ func AM_drawPlayers() {
 	their_color = -1
 	if netgame == 0 {
 		if cheating != 0 {
-			AM_drawLineCharacter(cheat_player_arrow[:], 0, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy)
+			AM_drawLineCharacter(cheat_player_arrow[:], 0, plr.Fmo.Fangle, 256-47, plr.Fmo.Fx, plr.Fmo.Fy)
 		} else {
-			AM_drawLineCharacter(player_arrow[:], 0, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fangle, 256-47, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(plr.Fmo)).Fy)
+			AM_drawLineCharacter(player_arrow[:], 0, plr.Fmo.Fangle, 256-47, plr.Fmo.Fx, plr.Fmo.Fy)
 		}
 		return
 	}
@@ -3664,7 +3664,7 @@ func AM_drawPlayers() {
 		} else {
 			color = their_colors[their_color]
 		}
-		AM_drawLineCharacter(player_arrow[:], 0, (*mobj_t)(unsafe.Pointer(p.Fmo)).Fangle, color, (*mobj_t)(unsafe.Pointer(p.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(p.Fmo)).Fy)
+		AM_drawLineCharacter(player_arrow[:], 0, p.Fmo.Fangle, color, p.Fmo.Fx, p.Fmo.Fy)
 	}
 }
 
@@ -3676,12 +3676,12 @@ var their_colors = [4]int32{
 }
 
 func AM_drawThings(colors int32, colorrange int32) {
-	var t uintptr
+	var t *mobj_t
 	for i := int32(0); i < numsectors; i++ {
 		t = sectors[i].Fthinglist
-		for t != 0 {
-			AM_drawLineCharacter(thintriangle_guy[:], 16<<FRACBITS, (*mobj_t)(unsafe.Pointer(t)).Fangle, colors+lightlev, (*mobj_t)(unsafe.Pointer(t)).Fx, (*mobj_t)(unsafe.Pointer(t)).Fy)
-			t = (*mobj_t)(unsafe.Pointer(t)).Fsnext
+		for t != nil {
+			AM_drawLineCharacter(thintriangle_guy[:], 16<<FRACBITS, t.Fangle, colors+lightlev, t.Fx, t.Fy)
+			t = t.Fsnext
 		}
 	}
 }
@@ -5036,8 +5036,8 @@ func doomgeneric_Tick() {
 	I_StartFrame()
 	TryRunTics() // will run at least one tic
 	var dmo *degenmobj_t
-	if players[consoleplayer].Fmo != 0 {
-		dmo = &(*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).degenmobj_t // console player
+	if players[consoleplayer].Fmo != nil {
+		dmo = &players[consoleplayer].Fmo.degenmobj_t // console player
 	}
 	S_UpdateSounds(dmo) // move positional sounds
 	// Update display, next frame, with current state.
@@ -7557,12 +7557,12 @@ func WeaponSelectable(weapon weapontype_t) (r boolean) {
 		return 0
 	}
 	// Can't select a weapon if we don't own it.
-	if !(*(*boolean)(unsafe.Pointer(uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328 + 132 + uintptr(weapon)*4)) != 0) {
+	if players[consoleplayer].Fweaponowned[weapon] == 0 {
 		return 0
 	}
 	// Can't select the fist if we have the chainsaw, unless
 	// we also have the berserk pack.
-	if weapon == wp_fist && *(*boolean)(unsafe.Pointer(uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328 + 132 + uintptr(wp_chainsaw)*4)) != 0 && !(*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&players)) + uintptr(consoleplayer)*328 + 56 + uintptr(pw_strength)*4)) != 0) {
+	if weapon == wp_fist && players[consoleplayer].Fweaponowned[wp_chainsaw] != 0 && players[consoleplayer].Fpowers[pw_strength] == 0 {
 		return 0
 	}
 	return 1
@@ -8109,8 +8109,8 @@ func G_Ticker() {
 				if gametic > int32(BACKUPTICS) && int32(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))) != int32(cmd.Fconsistancy) {
 					I_Error(__ccgo_ts(13760), int32(cmd.Fconsistancy), int32(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))))
 				}
-				if players[i].Fmo != 0 {
-					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = uint8((*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fx)
+				if players[i].Fmo != nil {
+					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = uint8(players[i].Fmo.Fx)
 				} else {
 					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = uint8(rndindex)
 				}
@@ -8184,10 +8184,10 @@ func G_PlayerFinishLevel(player int32) {
 	p := &players[player]
 	clear(p.Fpowers[:])
 	clear(p.Fcards[:])
-	*(*int32)(unsafe.Pointer(p.Fmo + 160)) &= ^int32(MF_SHADOW) // cancel invisibility
-	p.Fextralight = 0                                           // cancel gun flashes
-	p.Ffixedcolormap = 0                                        // cancel ir gogles
-	p.Fdamagecount = 0                                          // no palette changes
+	p.Fmo.Fflags &= ^MF_SHADOW // cancel invisibility
+	p.Fextralight = 0          // cancel gun flashes
+	p.Ffixedcolormap = 0       // cancel ir gogles
+	p.Fdamagecount = 0         // no palette changes
 	p.Fbonuscount = 0
 }
 
@@ -8228,17 +8228,17 @@ func G_PlayerReborn(player int32) {
 
 func G_CheckSpot(playernum int32, mthing *mapthing_t) (r boolean) {
 	var an, i int32
-	var mo uintptr
+	var mo *mobj_t
 	var ss *subsector_t
 	var x, xa, y, ya, v2 fixed_t
-	if !(players[playernum].Fmo != 0) {
+	if !(players[playernum].Fmo != nil) {
 		// first spawn of level, before corpses
 		i = 0
 		for {
 			if !(i < playernum) {
 				break
 			}
-			if (*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fx == int32(mthing.Fx)<<int32(FRACBITS) && (*mobj_t)(unsafe.Pointer(players[i].Fmo)).Fy == int32(mthing.Fy)<<int32(FRACBITS) {
+			if players[i].Fmo.Fx == int32(mthing.Fx)<<int32(FRACBITS) && players[i].Fmo.Fy == int32(mthing.Fy)<<int32(FRACBITS) {
 				return 0
 			}
 			goto _1
@@ -8311,7 +8311,7 @@ func G_CheckSpot(playernum int32, mthing *mapthing_t) (r boolean) {
 	}
 	mo = P_SpawnMobj(x+int32(20)*xa, y+int32(20)*ya, ss.Fsector.Ffloorheight, int32(MT_TFOG))
 	if players[consoleplayer].Fviewz != 1 {
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(mo)).degenmobj_t), int32(sfx_telept))
+		S_StartSound(&(mo.degenmobj_t), int32(sfx_telept))
 	} // don't start sound on first frame
 	return 1
 }
@@ -8362,7 +8362,7 @@ func G_DoReborn(playernum int32) {
 	} else {
 		// respawn at the start
 		// first dissasociate the corpse
-		(*mobj_t)(unsafe.Pointer(players[playernum].Fmo)).Fplayer = nil
+		players[playernum].Fmo.Fplayer = nil
 		// spawn at random spot if in death match
 		if deathmatch != 0 {
 			G_DeathMatchSpawnPlayer(playernum)
@@ -22467,9 +22467,9 @@ func T_VerticalDoor(door *vldoor_t) {
 // Move a locked door up/down
 //
 
-func EV_DoLockedDoor(line *line_t, type1 vldoor_e, thing uintptr) (r int32) {
+func EV_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) (r int32) {
 	var p *player_t
-	p = (*mobj_t)(unsafe.Pointer(thing)).Fplayer
+	p = thing.Fplayer
 	if !(p != nil) {
 		return 0
 	}
@@ -22585,14 +22585,14 @@ func EV_DoDoor(line *line_t, type1 vldoor_e) (r int32) {
 //	//
 //	// EV_VerticalDoor : open a door manually, no tag value
 //	//
-func EV_VerticalDoor(line *line_t, thing uintptr) {
+func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 	var door, plat uintptr
 	var player *player_t
 	var sec *sector_t
 	var side int32
 	side = 0 // only front sides can be used
 	//	Check for locks
-	player = (*mobj_t)(unsafe.Pointer(thing)).Fplayer
+	player = thing.Fplayer
 	switch int32(line.Fspecial) {
 	case 26: // Blue Lock
 		fallthrough
@@ -22646,7 +22646,7 @@ func EV_VerticalDoor(line *line_t, thing uintptr) {
 			if (*vldoor_t)(unsafe.Pointer(door)).Fdirection == -1 {
 				(*vldoor_t)(unsafe.Pointer(door)).Fdirection = 1
 			} else {
-				if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != nil) {
+				if !(thing.Fplayer != nil) {
 					return
 				} // JDC: bad guys never close doors
 				// When is a door not a door?
@@ -22895,10 +22895,10 @@ func P_RecursiveSound(sec *sector_t, soundblocks int32) {
 //	// If a monster yells at a player,
 //	// it will alert other monsters to the player.
 //	//
-func P_NoiseAlert(target uintptr, emmiter uintptr) {
+func P_NoiseAlert(target *mobj_t, emmiter *mobj_t) {
 	soundtarget = target
 	validcount++
-	P_RecursiveSound((*mobj_t)(unsafe.Pointer(emmiter)).Fsubsector.Fsector, 0)
+	P_RecursiveSound(emmiter.Fsubsector.Fsector, 0)
 }
 
 // C documentation
@@ -22906,18 +22906,18 @@ func P_NoiseAlert(target uintptr, emmiter uintptr) {
 //	//
 //	// P_CheckMeleeRange
 //	//
-func P_CheckMeleeRange(actor uintptr) (r boolean) {
+func P_CheckMeleeRange(actor *mobj_t) (r boolean) {
 	var dist fixed_t
-	var pl uintptr
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+	var pl *mobj_t
+	if !(actor.Ftarget != nil) {
 		return 0
 	}
-	pl = (*mobj_t)(unsafe.Pointer(actor)).Ftarget
-	dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(pl)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(pl)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fy)
-	if dist >= 64*(1<<FRACBITS)-20*(1<<FRACBITS)+(*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(pl)).Finfo)).Fradius {
+	pl = actor.Ftarget
+	dist = P_AproxDistance(pl.Fx-actor.Fx, pl.Fy-actor.Fy)
+	if dist >= 64*(1<<FRACBITS)-20*(1<<FRACBITS)+(*mobjinfo_t)(unsafe.Pointer(pl.Finfo)).Fradius {
 		return 0
 	}
-	if !(P_CheckSight(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
+	if !(P_CheckSight(actor, actor.Ftarget) != 0) {
 		return 0
 	}
 	return 1
@@ -22928,44 +22928,44 @@ func P_CheckMeleeRange(actor uintptr) (r boolean) {
 //	//
 //	// P_CheckMissileRange
 //	//
-func P_CheckMissileRange(actor uintptr) (r boolean) {
+func P_CheckMissileRange(actor *mobj_t) (r boolean) {
 	var dist fixed_t
-	if !(P_CheckSight(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
+	if !(P_CheckSight(actor, actor.Ftarget) != 0) {
 		return 0
 	}
-	if (*mobj_t)(unsafe.Pointer(actor)).Fflags&int32(MF_JUSTHIT) != 0 {
+	if actor.Fflags&int32(MF_JUSTHIT) != 0 {
 		// the target just hit the enemy,
 		// so fight back!
-		*(*int32)(unsafe.Pointer(actor + 160)) &= ^int32(MF_JUSTHIT)
+		actor.Fflags &^= int32(MF_JUSTHIT)
 		return 1
 	}
-	if (*mobj_t)(unsafe.Pointer(actor)).Freactiontime != 0 {
+	if actor.Freactiontime != 0 {
 		return 0
 	} // do not attack yet
 	// OPTIMIZE: get this from a global checksight
-	dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(actor)).Fx-(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy-(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy) - 64*(1<<FRACBITS)
-	if !((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fmeleestate != 0) {
+	dist = P_AproxDistance(actor.Fx-(*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx, actor.Fy-(*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fy) - 64*(1<<FRACBITS)
+	if !((*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fmeleestate != 0) {
 		dist -= 128 * (1 << FRACBITS)
 	} // no melee attack, so fire more
 	dist >>= 16
-	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_VILE) {
+	if actor.Ftype1 == int32(MT_VILE) {
 		if dist > 14*64 {
 			return 0
 		} // too far away
 	}
-	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_UNDEAD) {
+	if actor.Ftype1 == int32(MT_UNDEAD) {
 		if dist < 196 {
 			return 0
 		} // close for fist attack
 		dist >>= 1
 	}
-	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_CYBORG) || (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_SPIDER) || (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_SKULL) {
+	if actor.Ftype1 == int32(MT_CYBORG) || actor.Ftype1 == int32(MT_SPIDER) || actor.Ftype1 == int32(MT_SKULL) {
 		dist >>= 1
 	}
 	if dist > 200 {
 		dist = 200
 	}
-	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_CYBORG) && dist > 160 {
+	if actor.Ftype1 == int32(MT_CYBORG) && dist > 160 {
 		dist = 160
 	}
 	if P_Random() < dist {
@@ -22996,35 +22996,35 @@ func init() {
 	}
 }
 
-func P_Move(actor uintptr) (r boolean) {
+func P_Move(actor *mobj_t) (r boolean) {
 	var good, try_ok boolean
 	var tryx, tryy fixed_t
 	var v1 int32
-	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir == DI_NODIR {
+	if actor.Fmovedir == DI_NODIR {
 		return 0
 	}
-	if uint32((*mobj_t)(unsafe.Pointer(actor)).Fmovedir) >= 8 {
+	if uint32(actor.Fmovedir) >= 8 {
 		I_Error(__ccgo_ts(23654), 0)
 	}
-	tryx = (*mobj_t)(unsafe.Pointer(actor)).Fx + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*xspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
-	tryy = (*mobj_t)(unsafe.Pointer(actor)).Fy + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*yspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
+	tryx = actor.Fx + (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed*xspeed[actor.Fmovedir]
+	tryy = actor.Fy + (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed*yspeed[actor.Fmovedir]
 	try_ok = P_TryMove(actor, tryx, tryy)
 	if !(try_ok != 0) {
 		// open any specials
-		if (*mobj_t)(unsafe.Pointer(actor)).Fflags&int32(MF_FLOAT) != 0 && floatok != 0 {
+		if actor.Fflags&int32(MF_FLOAT) != 0 && floatok != 0 {
 			// must adjust height
-			if (*mobj_t)(unsafe.Pointer(actor)).Fz < tmfloorz {
-				*(*fixed_t)(unsafe.Pointer(actor + 32)) += 1 << FRACBITS * 4
+			if actor.Fz < tmfloorz {
+				actor.Fz += 1 << FRACBITS * 4
 			} else {
-				*(*fixed_t)(unsafe.Pointer(actor + 32)) -= 1 << FRACBITS * 4
+				actor.Fz -= 1 << FRACBITS * 4
 			}
-			*(*int32)(unsafe.Pointer(actor + 160)) |= int32(MF_INFLOAT)
+			actor.Fflags |= int32(MF_INFLOAT)
 			return 1
 		}
 		if !(numspechit != 0) {
 			return 0
 		}
-		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = DI_NODIR
+		actor.Fmovedir = DI_NODIR
 		good = 0
 		for {
 			v1 = numspechit
@@ -23042,10 +23042,10 @@ func P_Move(actor uintptr) (r boolean) {
 		}
 		return good
 	} else {
-		*(*int32)(unsafe.Pointer(actor + 160)) &= ^int32(MF_INFLOAT)
+		actor.Fflags &^= int32(MF_INFLOAT)
 	}
-	if !((*mobj_t)(unsafe.Pointer(actor)).Fflags&int32(MF_FLOAT) != 0) {
-		(*mobj_t)(unsafe.Pointer(actor)).Fz = (*mobj_t)(unsafe.Pointer(actor)).Ffloorz
+	if !(actor.Fflags&int32(MF_FLOAT) != 0) {
+		actor.Fz = actor.Ffloorz
 	}
 	return 1
 }
@@ -23063,26 +23063,26 @@ func P_Move(actor uintptr) (r boolean) {
 //	// If a door is in the way,
 //	// an OpenDoor call is made to start it opening.
 //	//
-func P_TryWalk(actor uintptr) (r boolean) {
+func P_TryWalk(actor *mobj_t) (r boolean) {
 	if !(P_Move(actor) != 0) {
 		return 0
 	}
-	(*mobj_t)(unsafe.Pointer(actor)).Fmovecount = P_Random() & 15
+	actor.Fmovecount = P_Random() & 15
 	return 1
 }
 
-func P_NewChaseDir(actor uintptr) {
+func P_NewChaseDir(actor *mobj_t) {
 	var d [3]dirtype_t
 	var deltax, deltay fixed_t
 	var olddir, turnaround dirtype_t
 	var tdir int32
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+	if !(actor.Ftarget != nil) {
 		I_Error(__ccgo_ts(23676), 0)
 	}
-	olddir = (*mobj_t)(unsafe.Pointer(actor)).Fmovedir
+	olddir = actor.Fmovedir
 	turnaround = opposite[olddir]
-	deltax = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - (*mobj_t)(unsafe.Pointer(actor)).Fx
-	deltay = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - (*mobj_t)(unsafe.Pointer(actor)).Fy
+	deltax = (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx - actor.Fx
+	deltay = (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fy - actor.Fy
 	if deltax > 10*(1<<FRACBITS) {
 		d[int32(1)] = DI_EAST
 	} else {
@@ -23103,8 +23103,8 @@ func P_NewChaseDir(actor uintptr) {
 	}
 	// try direct route
 	if d[int32(1)] != DI_NODIR && d[int32(2)] != DI_NODIR {
-		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = diags[boolint32(deltay < 0)<<int32(1)+boolint32(deltax > 0)]
-		if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir != turnaround && P_TryWalk(actor) != 0 {
+		actor.Fmovedir = diags[boolint32(deltay < 0)<<int32(1)+boolint32(deltax > 0)]
+		if actor.Fmovedir != turnaround && P_TryWalk(actor) != 0 {
 			return
 		}
 	}
@@ -23121,14 +23121,14 @@ func P_NewChaseDir(actor uintptr) {
 		d[int32(2)] = DI_NODIR
 	}
 	if d[int32(1)] != DI_NODIR {
-		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = d[int32(1)]
+		actor.Fmovedir = d[int32(1)]
 		if P_TryWalk(actor) != 0 {
 			// either moved forward or attacked
 			return
 		}
 	}
 	if d[int32(2)] != DI_NODIR {
-		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = d[int32(2)]
+		actor.Fmovedir = d[int32(2)]
 		if P_TryWalk(actor) != 0 {
 			return
 		}
@@ -23136,7 +23136,7 @@ func P_NewChaseDir(actor uintptr) {
 	// there is no direct path to the player,
 	// so pick another direction.
 	if olddir != DI_NODIR {
-		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = olddir
+		actor.Fmovedir = olddir
 		if P_TryWalk(actor) != 0 {
 			return
 		}
@@ -23149,7 +23149,7 @@ func P_NewChaseDir(actor uintptr) {
 				break
 			}
 			if tdir != turnaround {
-				(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = tdir
+				actor.Fmovedir = tdir
 				if P_TryWalk(actor) != 0 {
 					return
 				}
@@ -23166,7 +23166,7 @@ func P_NewChaseDir(actor uintptr) {
 				break
 			}
 			if tdir != turnaround {
-				(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = tdir
+				actor.Fmovedir = tdir
 				if P_TryWalk(actor) != 0 {
 					return
 				}
@@ -23178,12 +23178,12 @@ func P_NewChaseDir(actor uintptr) {
 		}
 	}
 	if turnaround != DI_NODIR {
-		(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = turnaround
+		actor.Fmovedir = turnaround
 		if P_TryWalk(actor) != 0 {
 			return
 		}
 	}
-	(*mobj_t)(unsafe.Pointer(actor)).Fmovedir = DI_NODIR // can not move
+	actor.Fmovedir = DI_NODIR // can not move
 }
 
 // C documentation
@@ -23193,24 +23193,24 @@ func P_NewChaseDir(actor uintptr) {
 //	// If allaround is false, only look 180 degrees in front.
 //	// Returns true if a player is targeted.
 //	//
-func P_LookForPlayers(actor uintptr, allaround boolean) (r boolean) {
+func P_LookForPlayers(actor *mobj_t, allaround boolean) (r boolean) {
 	var an angle_t
 	var c, stop, v2 int32
 	var dist fixed_t
 	var player *player_t
 	c = 0
-	stop = ((*mobj_t)(unsafe.Pointer(actor)).Flastlook - 1) & 3
+	stop = (actor.Flastlook - 1) & 3
 	for {
-		if !(playeringame[(*mobj_t)(unsafe.Pointer(actor)).Flastlook] != 0) {
+		if !(playeringame[actor.Flastlook] != 0) {
 			goto _1
 		}
 		v2 = c
 		c++
-		if v2 == 2 || (*mobj_t)(unsafe.Pointer(actor)).Flastlook == stop {
+		if v2 == 2 || actor.Flastlook == stop {
 			// done looking
 			return 0
 		}
-		player = &players[(*mobj_t)(unsafe.Pointer(actor)).Flastlook]
+		player = &players[actor.Flastlook]
 		if player.Fhealth <= 0 {
 			goto _1
 		} // dead
@@ -23218,21 +23218,21 @@ func P_LookForPlayers(actor uintptr, allaround boolean) (r boolean) {
 			goto _1
 		} // out of sight
 		if !(allaround != 0) {
-			an = R_PointToAngle2((*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy, (*mobj_t)(unsafe.Pointer(player.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(player.Fmo)).Fy) - (*mobj_t)(unsafe.Pointer(actor)).Fangle
+			an = R_PointToAngle2(actor.Fx, actor.Fy, player.Fmo.Fx, player.Fmo.Fy) - actor.Fangle
 			if an > ANG903 && an < ANG2703 {
-				dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(player.Fmo)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(player.Fmo)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fy)
+				dist = P_AproxDistance(player.Fmo.Fx-actor.Fx, player.Fmo.Fy-actor.Fy)
 				// if real close, react anyway
 				if dist > 64*(1<<FRACBITS) {
 					goto _1
 				} // behind back
 			}
 		}
-		(*mobj_t)(unsafe.Pointer(actor)).Ftarget = player.Fmo
+		actor.Ftarget = player.Fmo
 		return 1
 		goto _1
 	_1:
 		;
-		(*mobj_t)(unsafe.Pointer(actor)).Flastlook = ((*mobj_t)(unsafe.Pointer(actor)).Flastlook + 1) & 3
+		actor.Flastlook = (actor.Flastlook + 1) & 3
 	}
 	return 0
 }
@@ -23244,8 +23244,8 @@ func P_LookForPlayers(actor uintptr, allaround boolean) (r boolean) {
 //	// DOOM II special, map 32.
 //	// Uses special tag 666.
 //	//
-func A_KeenDie(mo uintptr) {
-	var mo2 uintptr
+func A_KeenDie(mo *mobj_t) {
+	var mo2 *mobj_t
 	var th *thinker_t
 	A_Fall(mo)
 	// scan the remaining thinkers
@@ -23258,8 +23258,8 @@ func A_KeenDie(mo uintptr) {
 		if th.Ffunction.Facv != __ccgo_fp(P_MobjThinker) {
 			goto _1
 		}
-		mo2 = (uintptr)(unsafe.Pointer(th)) // cast to mobj_t
-		if mo2 != mo && (*mobj_t)(unsafe.Pointer(mo2)).Ftype1 == (*mobj_t)(unsafe.Pointer(mo)).Ftype1 && (*mobj_t)(unsafe.Pointer(mo2)).Fhealth > 0 {
+		mo2 = (*mobj_t)(unsafe.Pointer(th)) // cast to mobj_t
+		if mo2 != mo && mo2.Ftype1 == mo.Ftype1 && mo2.Fhealth > 0 {
 			// other Keen not dead
 			return
 		}
@@ -23282,15 +23282,15 @@ func A_KeenDie(mo uintptr) {
 //	// A_Look
 //	// Stay in state until a player is sighted.
 //	//
-func A_Look(actor uintptr) {
+func A_Look(actor *mobj_t) {
 	var sound int32
-	var targ uintptr
-	(*mobj_t)(unsafe.Pointer(actor)).Fthreshold = 0 // any shot will wake up
-	targ = (*sector_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Fsubsector.Fsector)).Fsoundtarget
-	if targ != 0 && (*mobj_t)(unsafe.Pointer(targ)).Fflags&int32(MF_SHOOTABLE) != 0 {
-		(*mobj_t)(unsafe.Pointer(actor)).Ftarget = targ
-		if (*mobj_t)(unsafe.Pointer(actor)).Fflags&int32(MF_AMBUSH) != 0 {
-			if P_CheckSight(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0 {
+	var targ *mobj_t
+	actor.Fthreshold = 0 // any shot will wake up
+	targ = (*sector_t)(unsafe.Pointer(actor.Fsubsector.Fsector)).Fsoundtarget
+	if targ != nil && targ.Fflags&int32(MF_SHOOTABLE) != 0 {
+		actor.Ftarget = targ
+		if actor.Fflags&int32(MF_AMBUSH) != 0 {
+			if P_CheckSight(actor, actor.Ftarget) != 0 {
 				goto seeyou
 			}
 		} else {
@@ -23304,8 +23304,8 @@ func A_Look(actor uintptr) {
 	goto seeyou
 seeyou:
 	;
-	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fseesound != 0 {
-		switch (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fseesound {
+	if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseesound != 0 {
+		switch (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseesound {
 		case int32(sfx_posit1):
 			fallthrough
 		case int32(sfx_posit2):
@@ -23317,17 +23317,17 @@ seeyou:
 		case int32(sfx_bgsit2):
 			sound = int32(sfx_bgsit1) + P_Random()%int32(2)
 		default:
-			sound = (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fseesound
+			sound = (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseesound
 			break
 		}
-		if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_SPIDER) || (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_CYBORG) {
+		if actor.Ftype1 == int32(MT_SPIDER) || actor.Ftype1 == int32(MT_CYBORG) {
 			// full volume
 			S_StartSound(nil, sound)
 		} else {
-			S_StartSound(&(*mobj_t)(unsafe.Pointer(actor)).degenmobj_t, sound)
+			S_StartSound(&actor.degenmobj_t, sound)
 		}
 	}
-	P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fseestate)
+	P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseestate)
 }
 
 // C documentation
@@ -23337,66 +23337,65 @@ seeyou:
 //	// Actor has a melee attack,
 //	// so it tries to close as fast as possible
 //	//
-func A_Chase(actor uintptr) {
-	var delta, v1 int32
-	var v2 uintptr
-	if (*mobj_t)(unsafe.Pointer(actor)).Freactiontime != 0 {
-		(*mobj_t)(unsafe.Pointer(actor)).Freactiontime--
+func A_Chase(actor *mobj_t) {
+	var delta int32
+	if actor.Freactiontime != 0 {
+		actor.Freactiontime--
 	}
 	// modify target threshold
-	if (*mobj_t)(unsafe.Pointer(actor)).Fthreshold != 0 {
-		if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fhealth <= 0 {
-			(*mobj_t)(unsafe.Pointer(actor)).Fthreshold = 0
+	if actor.Fthreshold != 0 {
+		if !(actor.Ftarget != nil) || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fhealth <= 0 {
+			actor.Fthreshold = 0
 		} else {
-			(*mobj_t)(unsafe.Pointer(actor)).Fthreshold--
+			actor.Fthreshold--
 		}
 	}
 	// turn towards movement direction if not there yet
-	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir < 8 {
-		*(*angle_t)(unsafe.Pointer(actor + 56)) &= 7 << 29
-		delta = int32((*mobj_t)(unsafe.Pointer(actor)).Fangle - uint32((*mobj_t)(unsafe.Pointer(actor)).Fmovedir<<29))
+	if actor.Fmovedir < 8 {
+		actor.Fangle &= 7 << 29
+		delta = int32(actor.Fangle - uint32(actor.Fmovedir<<29))
 		if delta > 0 {
-			*(*angle_t)(unsafe.Pointer(actor + 56)) -= uint32(ANG903 / 2)
+			actor.Fangle -= uint32(ANG903 / 2)
 		} else {
 			if delta < 0 {
-				*(*angle_t)(unsafe.Pointer(actor + 56)) += uint32(ANG903 / 2)
+				actor.Fangle += uint32(ANG903 / 2)
 			}
 		}
 	}
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || !((*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(actor.Ftarget != nil) || !((*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fflags&int32(MF_SHOOTABLE) != 0) {
 		// look for a new target
 		if P_LookForPlayers(actor, 1) != 0 {
 			return
 		} // got a new target
-		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspawnstate)
+		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspawnstate)
 		return
 	}
 	// do not attack twice in a row
-	if (*mobj_t)(unsafe.Pointer(actor)).Fflags&int32(MF_JUSTATTACKED) != 0 {
-		*(*int32)(unsafe.Pointer(actor + 160)) &= ^int32(MF_JUSTATTACKED)
+	if actor.Fflags&int32(MF_JUSTATTACKED) != 0 {
+		actor.Fflags &= ^int32(MF_JUSTATTACKED)
 		if gameskill != sk_nightmare && !(fastparm != 0) {
 			P_NewChaseDir(actor)
 		}
 		return
 	}
 	// check for melee attack
-	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fmeleestate != 0 && P_CheckMeleeRange(actor) != 0 {
-		if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fattacksound != 0 {
-			S_StartSound(&((*mobj_t)(unsafe.Pointer(actor))).degenmobj_t, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fattacksound)
+	if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fmeleestate != 0 && P_CheckMeleeRange(actor) != 0 {
+		if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fattacksound != 0 {
+			S_StartSound(&(actor).degenmobj_t, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fattacksound)
 		}
-		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fmeleestate)
+		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fmeleestate)
 		return
 	}
 	// check for missile attack
-	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fmissilestate != 0 {
-		if gameskill < sk_nightmare && !(fastparm != 0) && (*mobj_t)(unsafe.Pointer(actor)).Fmovecount != 0 {
+	if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fmissilestate != 0 {
+		if gameskill < sk_nightmare && !(fastparm != 0) && actor.Fmovecount != 0 {
 			goto nomissile
 		}
 		if !(P_CheckMissileRange(actor) != 0) {
 			goto nomissile
 		}
-		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fmissilestate)
-		*(*int32)(unsafe.Pointer(actor + 160)) |= int32(MF_JUSTATTACKED)
+		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fmissilestate)
+		actor.Fflags |= int32(MF_JUSTATTACKED)
 		return
 	}
 	// ?
@@ -23404,21 +23403,19 @@ func A_Chase(actor uintptr) {
 nomissile:
 	;
 	// possibly choose another target
-	if netgame != 0 && !((*mobj_t)(unsafe.Pointer(actor)).Fthreshold != 0) && !(P_CheckSight(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
+	if netgame != 0 && !(actor.Fthreshold != 0) && !(P_CheckSight(actor, actor.Ftarget) != 0) {
 		if P_LookForPlayers(actor, 1) != 0 {
 			return
 		} // got a new target
 	}
 	// chase towards player
-	v2 = actor + 172
-	*(*int32)(unsafe.Pointer(v2))--
-	v1 = *(*int32)(unsafe.Pointer(v2))
-	if v1 < 0 || !(P_Move(actor) != 0) {
+	actor.Fmovecount--
+	if actor.Fmovecount < 0 || !(P_Move(actor) != 0) {
 		P_NewChaseDir(actor)
 	}
 	// make active sound
-	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Factivesound != 0 && P_Random() < 3 {
-		S_StartSound(&(*mobj_t)(unsafe.Pointer(actor)).degenmobj_t, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Factivesound)
+	if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Factivesound != 0 && P_Random() < 3 {
+		S_StartSound(&actor.degenmobj_t, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Factivesound)
 	}
 }
 
@@ -23427,14 +23424,14 @@ nomissile:
 //	//
 //	// A_FaceTarget
 //	//
-func A_FaceTarget(actor uintptr) {
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+func A_FaceTarget(actor *mobj_t) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
-	*(*int32)(unsafe.Pointer(actor + 160)) &= ^int32(MF_AMBUSH)
-	(*mobj_t)(unsafe.Pointer(actor)).Fangle = R_PointToAngle2((*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy, (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy)
-	if (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fflags&int32(MF_SHADOW) != 0 {
-		*(*angle_t)(unsafe.Pointer(actor + 56)) += uint32((P_Random() - P_Random()) << 21)
+	actor.Fflags |= int32(MF_AMBUSH)
+	actor.Fangle = R_PointToAngle2(actor.Fx, actor.Fy, (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fy)
+	if (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fflags&int32(MF_SHADOW) != 0 {
+		actor.Fangle += uint32((P_Random() - P_Random()) << 21)
 	}
 }
 
@@ -23443,28 +23440,28 @@ func A_FaceTarget(actor uintptr) {
 //	//
 //	// A_PosAttack
 //	//
-func A_PosAttack(actor uintptr) {
+func A_PosAttack(actor *mobj_t) {
 	var angle, damage, slope int32
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	A_FaceTarget(actor)
-	angle = int32((*mobj_t)(unsafe.Pointer(actor)).Fangle)
+	angle = int32(actor.Fangle)
 	slope = P_AimLineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS))
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(actor))).degenmobj_t, int32(sfx_pistol))
+	S_StartSound(&(actor).degenmobj_t, int32(sfx_pistol))
 	angle += (P_Random() - P_Random()) << 20
 	damage = (P_Random()%int32(5) + 1) * 3
 	P_LineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS), slope, damage)
 }
 
-func A_SPosAttack(actor uintptr) {
+func A_SPosAttack(actor *mobj_t) {
 	var angle, bangle, damage, i, slope int32
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
-	S_StartSound(&(*mobj_t)(unsafe.Pointer(actor)).degenmobj_t, int32(sfx_shotgn))
+	S_StartSound(&actor.degenmobj_t, int32(sfx_shotgn))
 	A_FaceTarget(actor)
-	bangle = int32((*mobj_t)(unsafe.Pointer(actor)).Fangle)
+	bangle = int32(actor.Fangle)
 	slope = P_AimLineAttack(actor, uint32(bangle), 32*64*(1<<FRACBITS))
 	i = 0
 	for {
@@ -23481,49 +23478,49 @@ func A_SPosAttack(actor uintptr) {
 	}
 }
 
-func A_CPosAttack(actor uintptr) {
+func A_CPosAttack(actor *mobj_t) {
 	var angle, bangle, damage, slope int32
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), int32(sfx_shotgn))
+	S_StartSound(&(actor.degenmobj_t), int32(sfx_shotgn))
 	A_FaceTarget(actor)
-	bangle = int32((*mobj_t)(unsafe.Pointer(actor)).Fangle)
+	bangle = int32(actor.Fangle)
 	slope = P_AimLineAttack(actor, uint32(bangle), 32*64*(1<<FRACBITS))
 	angle = bangle + (P_Random()-P_Random())<<int32(20)
 	damage = (P_Random()%int32(5) + 1) * 3
 	P_LineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS), slope, damage)
 }
 
-func A_CPosRefire(actor uintptr) {
+func A_CPosRefire(actor *mobj_t) {
 	// keep firing unless target got out of sight
 	A_FaceTarget(actor)
 	if P_Random() < 40 {
 		return
 	}
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fhealth <= 0 || !(P_CheckSight(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
-		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fseestate)
+	if !(actor.Ftarget != nil) || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fhealth <= 0 || !(P_CheckSight(actor, actor.Ftarget) != 0) {
+		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseestate)
 	}
 }
 
-func A_SpidRefire(actor uintptr) {
+func A_SpidRefire(actor *mobj_t) {
 	// keep firing unless target got out of sight
 	A_FaceTarget(actor)
 	if P_Random() < 10 {
 		return
 	}
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) || (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fhealth <= 0 || !(P_CheckSight(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
-		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fseestate)
+	if !(actor.Ftarget != nil) || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fhealth <= 0 || !(P_CheckSight(actor, actor.Ftarget) != 0) {
+		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseestate)
 	}
 }
 
-func A_BspiAttack(actor uintptr) {
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+func A_BspiAttack(actor *mobj_t) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	A_FaceTarget(actor)
 	// launch a missile
-	P_SpawnMissile(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, int32(MT_ARACHPLAZ))
+	P_SpawnMissile(actor, actor.Ftarget, int32(MT_ARACHPLAZ))
 }
 
 // C documentation
@@ -23531,70 +23528,70 @@ func A_BspiAttack(actor uintptr) {
 //	//
 //	// A_TroopAttack
 //	//
-func A_TroopAttack(actor uintptr) {
+func A_TroopAttack(actor *mobj_t) {
 	var damage int32
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	A_FaceTarget(actor)
 	if P_CheckMeleeRange(actor) != 0 {
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), int32(sfx_claw))
+		S_StartSound(&(actor.degenmobj_t), int32(sfx_claw))
 		damage = (P_Random()%int32(8) + 1) * 3
-		P_DamageMobj((*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, damage)
+		P_DamageMobj(actor.Ftarget, actor, actor, damage)
 		return
 	}
 	// launch a missile
-	P_SpawnMissile(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, int32(MT_TROOPSHOT))
+	P_SpawnMissile(actor, actor.Ftarget, int32(MT_TROOPSHOT))
 }
 
-func A_SargAttack(actor uintptr) {
+func A_SargAttack(actor *mobj_t) {
 	var damage int32
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	A_FaceTarget(actor)
 	if P_CheckMeleeRange(actor) != 0 {
 		damage = (P_Random()%int32(10) + 1) * 4
-		P_DamageMobj((*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, damage)
+		P_DamageMobj(actor.Ftarget, actor, actor, damage)
 	}
 }
 
-func A_HeadAttack(actor uintptr) {
+func A_HeadAttack(actor *mobj_t) {
 	var damage int32
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	A_FaceTarget(actor)
 	if P_CheckMeleeRange(actor) != 0 {
 		damage = (P_Random()%int32(6) + 1) * 10
-		P_DamageMobj((*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, damage)
+		P_DamageMobj(actor.Ftarget, actor, actor, damage)
 		return
 	}
 	// launch a missile
-	P_SpawnMissile(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, int32(MT_HEADSHOT))
+	P_SpawnMissile(actor, actor.Ftarget, int32(MT_HEADSHOT))
 }
 
-func A_CyberAttack(actor uintptr) {
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+func A_CyberAttack(actor *mobj_t) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	A_FaceTarget(actor)
-	P_SpawnMissile(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, int32(MT_ROCKET))
+	P_SpawnMissile(actor, actor.Ftarget, int32(MT_ROCKET))
 }
 
-func A_BruisAttack(actor uintptr) {
+func A_BruisAttack(actor *mobj_t) {
 	var damage int32
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	if P_CheckMeleeRange(actor) != 0 {
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), int32(sfx_claw))
+		S_StartSound(&(actor.degenmobj_t), int32(sfx_claw))
 		damage = (P_Random()%int32(8) + 1) * 10
-		P_DamageMobj((*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, damage)
+		P_DamageMobj(actor.Ftarget, actor, actor, damage)
 		return
 	}
 	// launch a missile
-	P_SpawnMissile(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, int32(MT_BRUISERSHOT))
+	P_SpawnMissile(actor, actor.Ftarget, int32(MT_BRUISERSHOT))
 }
 
 // C documentation
@@ -23602,121 +23599,122 @@ func A_BruisAttack(actor uintptr) {
 //	//
 //	// A_SkelMissile
 //	//
-func A_SkelMissile(actor uintptr) {
-	var mo uintptr
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+func A_SkelMissile(actor *mobj_t) {
+	var mo *mobj_t
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	A_FaceTarget(actor)
-	*(*fixed_t)(unsafe.Pointer(actor + 32)) += 16 * (1 << FRACBITS) // so missile spawns higher
-	mo = P_SpawnMissile(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget, int32(MT_TRACER))
-	*(*fixed_t)(unsafe.Pointer(actor + 32)) -= 16 * (1 << FRACBITS) // back to normal
-	*(*fixed_t)(unsafe.Pointer(mo + 24)) += (*mobj_t)(unsafe.Pointer(mo)).Fmomx
-	*(*fixed_t)(unsafe.Pointer(mo + 28)) += (*mobj_t)(unsafe.Pointer(mo)).Fmomy
-	(*mobj_t)(unsafe.Pointer(mo)).Ftracer = (*mobj_t)(unsafe.Pointer(actor)).Ftarget
+	actor.Fz += 16 * (1 << FRACBITS) // so missile spawns higher
+	mo = P_SpawnMissile(actor, actor.Ftarget, int32(MT_TRACER))
+	actor.Fz -= 16 * (1 << FRACBITS) // back to normal
+	actor.Fx += mo.Fmomx
+	actor.Fy += mo.Fmomy
+	mo.Ftracer = actor.Ftarget
 }
 
 func init() {
 	TRACEANGLE = int32(0xc000000)
 }
 
-func A_Tracer(actor uintptr) {
-	var dest, th uintptr
+func A_Tracer(actor *mobj_t) {
+	var dest *mobj_t
+	var th *mobj_t
 	var dist, slope fixed_t
 	var exact angle_t
 	if gametic&int32(3) != 0 {
 		return
 	}
 	// spawn a puff of smoke behind the rocket
-	P_SpawnPuff((*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy, (*mobj_t)(unsafe.Pointer(actor)).Fz)
-	th = P_SpawnMobj((*mobj_t)(unsafe.Pointer(actor)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fmomx, (*mobj_t)(unsafe.Pointer(actor)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fmomy, (*mobj_t)(unsafe.Pointer(actor)).Fz, int32(MT_SMOKE))
-	(*mobj_t)(unsafe.Pointer(th)).Fmomz = 1 << FRACBITS
-	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & 3
-	if (*mobj_t)(unsafe.Pointer(th)).Ftics < 1 {
-		(*mobj_t)(unsafe.Pointer(th)).Ftics = 1
+	P_SpawnPuff(actor.Fx, actor.Fy, actor.Fz)
+	th = P_SpawnMobj(actor.Fx-actor.Fmomx, actor.Fy-actor.Fmomy, actor.Fz, int32(MT_SMOKE))
+	th.Fmomz = 1 << FRACBITS
+	th.Ftics -= P_Random() & 3
+	if th.Ftics < 1 {
+		th.Ftics = 1
 	}
 	// adjust direction
-	dest = (*mobj_t)(unsafe.Pointer(actor)).Ftracer
-	if !(dest != 0) || (*mobj_t)(unsafe.Pointer(dest)).Fhealth <= 0 {
+	dest = actor.Ftracer
+	if !(dest != nil) || dest.Fhealth <= 0 {
 		return
 	}
 	// change angle
-	exact = R_PointToAngle2((*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(actor)).Fy, (*mobj_t)(unsafe.Pointer(dest)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy)
-	if exact != (*mobj_t)(unsafe.Pointer(actor)).Fangle {
-		if exact-(*mobj_t)(unsafe.Pointer(actor)).Fangle > uint32(0x80000000) {
-			*(*angle_t)(unsafe.Pointer(actor + 56)) -= uint32(TRACEANGLE)
-			if exact-(*mobj_t)(unsafe.Pointer(actor)).Fangle < uint32(0x80000000) {
-				(*mobj_t)(unsafe.Pointer(actor)).Fangle = exact
+	exact = R_PointToAngle2(actor.Fx, actor.Fy, dest.Fx, dest.Fy)
+	if exact != actor.Fangle {
+		if exact-actor.Fangle > uint32(0x80000000) {
+			actor.Fangle -= uint32(TRACEANGLE)
+			if exact-actor.Fangle < uint32(0x80000000) {
+				actor.Fangle = exact
 			}
 		} else {
-			*(*angle_t)(unsafe.Pointer(actor + 56)) += uint32(TRACEANGLE)
-			if exact-(*mobj_t)(unsafe.Pointer(actor)).Fangle > uint32(0x80000000) {
-				(*mobj_t)(unsafe.Pointer(actor)).Fangle = exact
+			actor.Fangle += uint32(TRACEANGLE)
+			if exact-actor.Fangle > uint32(0x80000000) {
+				actor.Fangle = exact
 			}
 		}
 	}
-	exact = (*mobj_t)(unsafe.Pointer(actor)).Fangle >> int32(ANGLETOFINESHIFT)
-	(*mobj_t)(unsafe.Pointer(actor)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed, finecosine[exact])
-	(*mobj_t)(unsafe.Pointer(actor)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed, finesine[exact])
+	exact = actor.Fangle >> int32(ANGLETOFINESHIFT)
+	actor.Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed, finecosine[exact])
+	actor.Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed, finesine[exact])
 	// change slope
-	dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(dest)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fy)
-	dist = dist / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed
+	dist = P_AproxDistance(dest.Fx-actor.Fx, dest.Fy-actor.Fy)
+	dist = dist / (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed
 	if dist < 1 {
 		dist = 1
 	}
-	slope = ((*mobj_t)(unsafe.Pointer(dest)).Fz + 40*(1<<FRACBITS) - (*mobj_t)(unsafe.Pointer(actor)).Fz) / dist
-	if slope < (*mobj_t)(unsafe.Pointer(actor)).Fmomz {
-		*(*fixed_t)(unsafe.Pointer(actor + 120)) -= 1 << FRACBITS / 8
+	slope = (dest.Fz + 40*(1<<FRACBITS) - actor.Fz) / dist
+	if slope < actor.Fmomz {
+		actor.Fmomz -= 1 << FRACBITS / 8
 	} else {
-		*(*fixed_t)(unsafe.Pointer(actor + 120)) += 1 << FRACBITS / 8
+		actor.Fmomz += 1 << FRACBITS / 8
 	}
 }
 
-func A_SkelWhoosh(actor uintptr) {
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+func A_SkelWhoosh(actor *mobj_t) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	A_FaceTarget(actor)
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), int32(sfx_skeswg))
+	S_StartSound(&(actor.degenmobj_t), int32(sfx_skeswg))
 }
 
-func A_SkelFist(actor uintptr) {
+func A_SkelFist(actor *mobj_t) {
 	var damage int32
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	A_FaceTarget(actor)
 	if P_CheckMeleeRange(actor) != 0 {
 		damage = (P_Random()%int32(10) + 1) * 6
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), int32(sfx_skepch))
-		P_DamageMobj((*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, damage)
+		S_StartSound(&(actor.degenmobj_t), int32(sfx_skepch))
+		P_DamageMobj(actor.Ftarget, actor, actor, damage)
 	}
 }
 
-func PIT_VileCheck(thing uintptr) (r boolean) {
+func PIT_VileCheck(thing *mobj_t) (r boolean) {
 	var check boolean
 	var maxdist int32
 	var v1 fixed_t
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_CORPSE) != 0) {
+	if !(thing.Fflags&int32(MF_CORPSE) != 0) {
 		return 1
 	} // not a monster
-	if (*mobj_t)(unsafe.Pointer(thing)).Ftics != -1 {
+	if thing.Ftics != -1 {
 		return 1
 	} // not lying still yet
-	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Finfo)).Fraisestate == S_NULL {
+	if (*mobjinfo_t)(unsafe.Pointer(thing.Finfo)).Fraisestate == S_NULL {
 		return 1
 	} // monster doesn't have a raise state
-	maxdist = (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Finfo)).Fradius + mobjinfo[int32(MT_VILE)].Fradius
-	if xabs((*mobj_t)(unsafe.Pointer(thing)).Fx-viletryx) > maxdist || xabs((*mobj_t)(unsafe.Pointer(thing)).Fy-viletryy) > maxdist {
+	maxdist = (*mobjinfo_t)(unsafe.Pointer(thing.Finfo)).Fradius + mobjinfo[int32(MT_VILE)].Fradius
+	if xabs(thing.Fx-viletryx) > maxdist || xabs(thing.Fy-viletryy) > maxdist {
 		return 1
 	} // not actually touching
 	corpsehit = thing
 	v1 = 0
-	(*mobj_t)(unsafe.Pointer(corpsehit)).Fmomy = v1
-	(*mobj_t)(unsafe.Pointer(corpsehit)).Fmomx = v1
-	*(*fixed_t)(unsafe.Pointer(corpsehit + 108)) <<= 2
-	check = P_CheckPosition(corpsehit, (*mobj_t)(unsafe.Pointer(corpsehit)).Fx, (*mobj_t)(unsafe.Pointer(corpsehit)).Fy)
-	*(*fixed_t)(unsafe.Pointer(corpsehit + 108)) >>= 2
+	corpsehit.Fmomy = v1
+	corpsehit.Fmomx = v1
+	corpsehit.Fheight <<= 2
+	check = P_CheckPosition(corpsehit, corpsehit.Fx, corpsehit.Fy)
+	corpsehit.Fheight >>= 2
 	if !(check != 0) {
 		return 1
 	} // doesn't fit here
@@ -23729,14 +23727,14 @@ func PIT_VileCheck(thing uintptr) (r boolean) {
 //	// A_VileChase
 //	// Check for ressurecting a body
 //	//
-func A_VileChase(actor uintptr) {
+func A_VileChase(actor *mobj_t) {
 	var bx, by, xh, xl, yh, yl int32
-	var temp uintptr
+	var temp *mobj_t
 	var info *mobjinfo_t
-	if (*mobj_t)(unsafe.Pointer(actor)).Fmovedir != DI_NODIR {
+	if actor.Fmovedir != DI_NODIR {
 		// check for corpses to raise
-		viletryx = (*mobj_t)(unsafe.Pointer(actor)).Fx + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*xspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
-		viletryy = (*mobj_t)(unsafe.Pointer(actor)).Fy + (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fspeed*yspeed[(*mobj_t)(unsafe.Pointer(actor)).Fmovedir]
+		viletryx = actor.Fx + (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed*xspeed[actor.Fmovedir]
+		viletryy = actor.Fy + (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed*yspeed[actor.Fmovedir]
 		xl = (viletryx - bmaporgx - 32*(1<<FRACBITS)*2) >> (FRACBITS + 7)
 		xh = (viletryx - bmaporgx + 32*(1<<FRACBITS)*2) >> (FRACBITS + 7)
 		yl = (viletryy - bmaporgy - 32*(1<<FRACBITS)*2) >> (FRACBITS + 7)
@@ -23756,18 +23754,18 @@ func A_VileChase(actor uintptr) {
 				// that canbe raised.
 				if !(P_BlockThingsIterator(bx, by, PIT_VileCheck) != 0) {
 					// got one!
-					temp = (*mobj_t)(unsafe.Pointer(actor)).Ftarget
-					(*mobj_t)(unsafe.Pointer(actor)).Ftarget = corpsehit
+					temp = actor.Ftarget
+					actor.Ftarget = corpsehit
 					A_FaceTarget(actor)
-					(*mobj_t)(unsafe.Pointer(actor)).Ftarget = temp
+					actor.Ftarget = temp
 					P_SetMobjState(actor, S_VILE_HEAL1)
-					S_StartSound(&((*mobj_t)(unsafe.Pointer(corpsehit)).degenmobj_t), int32(sfx_slop))
-					info = (*mobj_t)(unsafe.Pointer(corpsehit)).Finfo
+					S_StartSound(&(corpsehit.degenmobj_t), int32(sfx_slop))
+					info = corpsehit.Finfo
 					P_SetMobjState(corpsehit, (*mobjinfo_t)(unsafe.Pointer(info)).Fraisestate)
-					*(*fixed_t)(unsafe.Pointer(corpsehit + 108)) <<= 2
-					(*mobj_t)(unsafe.Pointer(corpsehit)).Fflags = (*mobjinfo_t)(unsafe.Pointer(info)).Fflags
-					(*mobj_t)(unsafe.Pointer(corpsehit)).Fhealth = (*mobjinfo_t)(unsafe.Pointer(info)).Fspawnhealth
-					(*mobj_t)(unsafe.Pointer(corpsehit)).Ftarget = uintptr(0)
+					corpsehit.Fheight <<= 2
+					corpsehit.Fflags = (*mobjinfo_t)(unsafe.Pointer(info)).Fflags
+					corpsehit.Fhealth = (*mobjinfo_t)(unsafe.Pointer(info)).Fspawnhealth
+					corpsehit.Ftarget = nil
 					return
 				}
 				goto _2
@@ -23790,37 +23788,37 @@ func A_VileChase(actor uintptr) {
 //	//
 //	// A_VileStart
 //	//
-func A_VileStart(actor uintptr) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), int32(sfx_vilatk))
+func A_VileStart(actor *mobj_t) {
+	S_StartSound(&(actor.degenmobj_t), int32(sfx_vilatk))
 }
 
-func A_StartFire(actor uintptr) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), int32(sfx_flamst))
+func A_StartFire(actor *mobj_t) {
+	S_StartSound(&(actor.degenmobj_t), int32(sfx_flamst))
 	A_Fire(actor)
 }
 
-func A_FireCrackle(actor uintptr) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), int32(sfx_flame))
+func A_FireCrackle(actor *mobj_t) {
+	S_StartSound(&(actor.degenmobj_t), int32(sfx_flame))
 	A_Fire(actor)
 }
 
-func A_Fire(actor uintptr) {
+func A_Fire(actor *mobj_t) {
 	var an uint32
-	var dest, target uintptr
-	dest = (*mobj_t)(unsafe.Pointer(actor)).Ftracer
-	if !(dest != 0) {
+	var dest, target *mobj_t
+	dest = actor.Ftracer
+	if !(dest != nil) {
 		return
 	}
-	target = P_SubstNullMobj((*mobj_t)(unsafe.Pointer(actor)).Ftarget)
+	target = P_SubstNullMobj(actor.Ftarget)
 	// don't move it if the vile lost sight
 	if !(P_CheckSight(target, dest) != 0) {
 		return
 	}
-	an = (*mobj_t)(unsafe.Pointer(dest)).Fangle >> int32(ANGLETOFINESHIFT)
+	an = dest.Fangle >> int32(ANGLETOFINESHIFT)
 	P_UnsetThingPosition(actor)
-	(*mobj_t)(unsafe.Pointer(actor)).Fx = (*mobj_t)(unsafe.Pointer(dest)).Fx + FixedMul(24*(1<<FRACBITS), finecosine[an])
-	(*mobj_t)(unsafe.Pointer(actor)).Fy = (*mobj_t)(unsafe.Pointer(dest)).Fy + FixedMul(24*(1<<FRACBITS), finesine[an])
-	(*mobj_t)(unsafe.Pointer(actor)).Fz = (*mobj_t)(unsafe.Pointer(dest)).Fz
+	actor.Fx = dest.Fx + FixedMul(24*(1<<FRACBITS), finecosine[an])
+	actor.Fy = dest.Fy + FixedMul(24*(1<<FRACBITS), finesine[an])
+	actor.Fz = dest.Fz
 	P_SetThingPosition(actor)
 }
 
@@ -23830,16 +23828,16 @@ func A_Fire(actor uintptr) {
 //	// A_VileTarget
 //	// Spawn the hellfire
 //	//
-func A_VileTarget(actor uintptr) {
-	var fog uintptr
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+func A_VileTarget(actor *mobj_t) {
+	var fog *mobj_t
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	A_FaceTarget(actor)
-	fog = P_SpawnMobj((*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fz, int32(MT_FIRE))
-	(*mobj_t)(unsafe.Pointer(actor)).Ftracer = fog
-	(*mobj_t)(unsafe.Pointer(fog)).Ftarget = actor
-	(*mobj_t)(unsafe.Pointer(fog)).Ftracer = (*mobj_t)(unsafe.Pointer(actor)).Ftarget
+	fog = P_SpawnMobj((*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fz, int32(MT_FIRE))
+	actor.Ftracer = fog
+	fog.Ftarget = actor
+	fog.Ftracer = actor.Ftarget
 	A_Fire(fog)
 }
 
@@ -23848,27 +23846,27 @@ func A_VileTarget(actor uintptr) {
 //	//
 //	// A_VileAttack
 //	//
-func A_VileAttack(actor uintptr) {
+func A_VileAttack(actor *mobj_t) {
 	var an int32
-	var fire uintptr
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+	var fire *mobj_t
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	A_FaceTarget(actor)
-	if !(P_CheckSight(actor, (*mobj_t)(unsafe.Pointer(actor)).Ftarget) != 0) {
+	if !(P_CheckSight(actor, actor.Ftarget) != 0) {
 		return
 	}
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), int32(sfx_barexp))
-	P_DamageMobj((*mobj_t)(unsafe.Pointer(actor)).Ftarget, actor, actor, 20)
-	(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fmomz = 1000 * (1 << FRACBITS) / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Finfo)).Fmass
-	an = int32((*mobj_t)(unsafe.Pointer(actor)).Fangle >> int32(ANGLETOFINESHIFT))
-	fire = (*mobj_t)(unsafe.Pointer(actor)).Ftracer
-	if !(fire != 0) {
+	S_StartSound(&(actor.degenmobj_t), int32(sfx_barexp))
+	P_DamageMobj(actor.Ftarget, actor, actor, 20)
+	(*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fmomz = 1000 * (1 << FRACBITS) / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor.Ftarget)).Finfo)).Fmass
+	an = int32(actor.Fangle >> int32(ANGLETOFINESHIFT))
+	fire = actor.Ftracer
+	if !(fire != nil) {
 		return
 	}
 	// move the fire between the vile and the player
-	(*mobj_t)(unsafe.Pointer(fire)).Fx = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fx - FixedMul(24*(1<<FRACBITS), finecosine[an])
-	(*mobj_t)(unsafe.Pointer(fire)).Fy = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Ftarget)).Fy - FixedMul(24*(1<<FRACBITS), finesine[an])
+	fire.Fx = (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx - FixedMul(24*(1<<FRACBITS), finecosine[an])
+	fire.Fy = (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fy - FixedMul(24*(1<<FRACBITS), finesine[an])
 	P_RadiusAttack(fire, actor, 70)
 }
 
@@ -23879,56 +23877,56 @@ func A_VileAttack(actor uintptr) {
 // Doesn't look like it.
 //
 
-func A_FatRaise(actor uintptr) {
+func A_FatRaise(actor *mobj_t) {
 	A_FaceTarget(actor)
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), int32(sfx_manatk))
+	S_StartSound(&(actor.degenmobj_t), int32(sfx_manatk))
 }
 
-func A_FatAttack1(actor uintptr) {
+func A_FatAttack1(actor *mobj_t) {
 	var an int32
-	var mo, target uintptr
+	var mo, target *mobj_t
 	A_FaceTarget(actor)
 	// Change direction  to ...
-	*(*angle_t)(unsafe.Pointer(actor + 56)) += uint32(ANG903 / 8)
-	target = P_SubstNullMobj((*mobj_t)(unsafe.Pointer(actor)).Ftarget)
+	actor.Fangle += uint32(ANG903 / 8)
+	target = P_SubstNullMobj(actor.Ftarget)
 	P_SpawnMissile(actor, target, int32(MT_FATSHOT))
 	mo = P_SpawnMissile(actor, target, int32(MT_FATSHOT))
-	*(*angle_t)(unsafe.Pointer(mo + 56)) += uint32(ANG903 / 8)
-	an = int32((*mobj_t)(unsafe.Pointer(mo)).Fangle >> int32(ANGLETOFINESHIFT))
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finecosine[an])
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
+	mo.Fangle += uint32(ANG903 / 8 * 2)
+	an = int32(mo.Fangle >> int32(ANGLETOFINESHIFT))
+	mo.Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finecosine[an])
+	mo.Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finesine[an])
 }
 
-func A_FatAttack2(actor uintptr) {
+func A_FatAttack2(actor *mobj_t) {
 	var an int32
-	var mo, target uintptr
+	var mo, target *mobj_t
 	A_FaceTarget(actor)
 	// Now here choose opposite deviation.
-	*(*angle_t)(unsafe.Pointer(actor + 56)) -= uint32(ANG903 / 8)
-	target = P_SubstNullMobj((*mobj_t)(unsafe.Pointer(actor)).Ftarget)
+	actor.Fangle -= uint32(ANG903 / 8)
+	target = P_SubstNullMobj(actor.Ftarget)
 	P_SpawnMissile(actor, target, int32(MT_FATSHOT))
 	mo = P_SpawnMissile(actor, target, int32(MT_FATSHOT))
-	*(*angle_t)(unsafe.Pointer(mo + 56)) -= uint32(ANG903 / 8 * 2)
-	an = int32((*mobj_t)(unsafe.Pointer(mo)).Fangle >> int32(ANGLETOFINESHIFT))
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finecosine[an])
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
+	mo.Fangle -= uint32(ANG903 / 8 * 2)
+	an = int32(mo.Fangle >> int32(ANGLETOFINESHIFT))
+	mo.Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finecosine[an])
+	mo.Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finesine[an])
 }
 
-func A_FatAttack3(actor uintptr) {
+func A_FatAttack3(actor *mobj_t) {
 	var an int32
-	var mo, target uintptr
+	var mo, target *mobj_t
 	A_FaceTarget(actor)
-	target = P_SubstNullMobj((*mobj_t)(unsafe.Pointer(actor)).Ftarget)
+	target = P_SubstNullMobj(actor.Ftarget)
 	mo = P_SpawnMissile(actor, target, int32(MT_FATSHOT))
-	*(*angle_t)(unsafe.Pointer(mo + 56)) -= uint32(ANG903 / 8 / 2)
-	an = int32((*mobj_t)(unsafe.Pointer(mo)).Fangle >> int32(ANGLETOFINESHIFT))
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finecosine[an])
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
+	mo.Fangle -= uint32(ANG903 / 8 / 2)
+	an = int32(mo.Fangle >> int32(ANGLETOFINESHIFT))
+	mo.Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finecosine[an])
+	mo.Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finesine[an])
 	mo = P_SpawnMissile(actor, target, int32(MT_FATSHOT))
-	*(*angle_t)(unsafe.Pointer(mo + 56)) += uint32(ANG903 / 8 / 2)
-	an = int32((*mobj_t)(unsafe.Pointer(mo)).Fangle >> int32(ANGLETOFINESHIFT))
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finecosine[an])
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Finfo)).Fspeed, finesine[an])
+	mo.Fangle += uint32(ANG903 / 8 / 2)
+	an = int32(mo.Fangle >> int32(ANGLETOFINESHIFT))
+	mo.Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finecosine[an])
+	mo.Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finesine[an])
 }
 
 //
@@ -23936,26 +23934,26 @@ func A_FatAttack3(actor uintptr) {
 // Fly at the player like a missile.
 //
 
-func A_SkullAttack(actor uintptr) {
+func A_SkullAttack(actor *mobj_t) {
 	var an angle_t
-	var dest uintptr
+	var dest *mobj_t
 	var dist int32
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
-	dest = (*mobj_t)(unsafe.Pointer(actor)).Ftarget
-	*(*int32)(unsafe.Pointer(actor + 160)) |= int32(MF_SKULLFLY)
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fattacksound)
+	dest = actor.Ftarget
+	actor.Fflags |= int32(MF_SKULLFLY)
+	S_StartSound(&(actor.degenmobj_t), (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fattacksound)
 	A_FaceTarget(actor)
-	an = (*mobj_t)(unsafe.Pointer(actor)).Fangle >> int32(ANGLETOFINESHIFT)
-	(*mobj_t)(unsafe.Pointer(actor)).Fmomx = FixedMul(20*(1<<FRACBITS), finecosine[an])
-	(*mobj_t)(unsafe.Pointer(actor)).Fmomy = FixedMul(20*(1<<FRACBITS), finesine[an])
-	dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(dest)).Fx-(*mobj_t)(unsafe.Pointer(actor)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy-(*mobj_t)(unsafe.Pointer(actor)).Fy)
+	an = actor.Fangle >> int32(ANGLETOFINESHIFT)
+	actor.Fmomx = FixedMul(20*(1<<FRACBITS), finecosine[an])
+	actor.Fmomy = FixedMul(20*(1<<FRACBITS), finesine[an])
+	dist = P_AproxDistance(dest.Fx-actor.Fx, dest.Fy-actor.Fy)
 	dist = dist / (20 * (1 << FRACBITS))
 	if dist < 1 {
 		dist = 1
 	}
-	(*mobj_t)(unsafe.Pointer(actor)).Fmomz = ((*mobj_t)(unsafe.Pointer(dest)).Fz + (*mobj_t)(unsafe.Pointer(dest)).Fheight>>1 - (*mobj_t)(unsafe.Pointer(actor)).Fz) / dist
+	actor.Fmomz = (dest.Fz + dest.Fheight>>1 - actor.Fz) / dist
 }
 
 // C documentation
@@ -23964,11 +23962,11 @@ func A_SkullAttack(actor uintptr) {
 //	// A_PainShootSkull
 //	// Spawn a lost soul and launch it at the target
 //	//
-func A_PainShootSkull(actor uintptr, angle angle_t) {
+func A_PainShootSkull(actor *mobj_t, angle angle_t) {
 	var an angle_t
 	var count, prestep int32
 	var currentthinker *thinker_t
-	var newmobj uintptr
+	var newmobj *mobj_t
 	var x, y, z fixed_t
 	// count total number of skull currently on the level
 	count = 0
@@ -23986,18 +23984,18 @@ func A_PainShootSkull(actor uintptr, angle angle_t) {
 	}
 	// okay, there's playe for another one
 	an = angle >> int32(ANGLETOFINESHIFT)
-	prestep = 4*(1<<FRACBITS) + 3*((*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fradius+mobjinfo[int32(MT_SKULL)].Fradius)/int32(2)
-	x = (*mobj_t)(unsafe.Pointer(actor)).Fx + FixedMul(prestep, finecosine[an])
-	y = (*mobj_t)(unsafe.Pointer(actor)).Fy + FixedMul(prestep, finesine[an])
-	z = (*mobj_t)(unsafe.Pointer(actor)).Fz + 8*(1<<FRACBITS)
+	prestep = 4*(1<<FRACBITS) + 3*((*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fradius+mobjinfo[int32(MT_SKULL)].Fradius)/int32(2)
+	x = actor.Fx + FixedMul(prestep, finecosine[an])
+	y = actor.Fy + FixedMul(prestep, finesine[an])
+	z = actor.Fz + 8*(1<<FRACBITS)
 	newmobj = P_SpawnMobj(x, y, z, int32(MT_SKULL))
 	// Check for movements.
-	if !(P_TryMove(newmobj, (*mobj_t)(unsafe.Pointer(newmobj)).Fx, (*mobj_t)(unsafe.Pointer(newmobj)).Fy) != 0) {
+	if !(P_TryMove(newmobj, newmobj.Fx, newmobj.Fy) != 0) {
 		// kill it immediately
 		P_DamageMobj(newmobj, actor, actor, 10000)
 		return
 	}
-	(*mobj_t)(unsafe.Pointer(newmobj)).Ftarget = (*mobj_t)(unsafe.Pointer(actor)).Ftarget
+	newmobj.Ftarget = actor.Ftarget
 	A_SkullAttack(newmobj)
 }
 
@@ -24007,24 +24005,24 @@ func A_PainShootSkull(actor uintptr, angle angle_t) {
 //	// A_PainAttack
 //	// Spawn a lost soul and launch it at the target
 //	//
-func A_PainAttack(actor uintptr) {
-	if !((*mobj_t)(unsafe.Pointer(actor)).Ftarget != 0) {
+func A_PainAttack(actor *mobj_t) {
+	if !(actor.Ftarget != nil) {
 		return
 	}
 	A_FaceTarget(actor)
-	A_PainShootSkull(actor, (*mobj_t)(unsafe.Pointer(actor)).Fangle)
+	A_PainShootSkull(actor, actor.Fangle)
 }
 
-func A_PainDie(actor uintptr) {
+func A_PainDie(actor *mobj_t) {
 	A_Fall(actor)
-	A_PainShootSkull(actor, (*mobj_t)(unsafe.Pointer(actor)).Fangle+uint32(ANG903))
-	A_PainShootSkull(actor, (*mobj_t)(unsafe.Pointer(actor)).Fangle+uint32(ANG1801))
-	A_PainShootSkull(actor, (*mobj_t)(unsafe.Pointer(actor)).Fangle+uint32(ANG2703))
+	A_PainShootSkull(actor, actor.Fangle+uint32(ANG903))
+	A_PainShootSkull(actor, actor.Fangle+uint32(ANG1801))
+	A_PainShootSkull(actor, actor.Fangle+uint32(ANG2703))
 }
 
-func A_Scream(actor uintptr) {
+func A_Scream(actor *mobj_t) {
 	var sound int32
-	switch (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fdeathsound {
+	switch (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fdeathsound {
 	case 0:
 		return
 	case int32(sfx_podth1):
@@ -24038,31 +24036,31 @@ func A_Scream(actor uintptr) {
 	case int32(sfx_bgdth2):
 		sound = int32(sfx_bgdth1) + P_Random()%int32(2)
 	default:
-		sound = (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fdeathsound
+		sound = (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fdeathsound
 		break
 	}
 	// Check for bosses.
-	if (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_SPIDER) || (*mobj_t)(unsafe.Pointer(actor)).Ftype1 == int32(MT_CYBORG) {
+	if actor.Ftype1 == int32(MT_SPIDER) || actor.Ftype1 == int32(MT_CYBORG) {
 		// full volume
 		S_StartSound(nil, sound)
 	} else {
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), sound)
+		S_StartSound(&(actor.degenmobj_t), sound)
 	}
 }
 
-func A_XScream(actor uintptr) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), int32(sfx_slop))
+func A_XScream(actor *mobj_t) {
+	S_StartSound(&(actor.degenmobj_t), int32(sfx_slop))
 }
 
-func A_Pain(actor uintptr) {
-	if (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fpainsound != 0 {
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(actor)).degenmobj_t), (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor)).Finfo)).Fpainsound)
+func A_Pain(actor *mobj_t) {
+	if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fpainsound != 0 {
+		S_StartSound(&(actor.degenmobj_t), (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fpainsound)
 	}
 }
 
-func A_Fall(actor uintptr) {
+func A_Fall(actor *mobj_t) {
 	// actor is on ground, it can be walked over
-	*(*int32)(unsafe.Pointer(actor + 160)) &= ^int32(MF_SOLID)
+	actor.Fflags &^= int32(MF_SOLID)
 	// So change this if corpse objects
 	// are meant to be obstacles.
 }
@@ -24072,8 +24070,8 @@ func A_Fall(actor uintptr) {
 //	//
 //	// A_Explode
 //	//
-func A_Explode(thingy uintptr) {
-	P_RadiusAttack(thingy, (*mobj_t)(unsafe.Pointer(thingy)).Ftarget, 128)
+func A_Explode(thingy *mobj_t) {
+	P_RadiusAttack(thingy, thingy.Ftarget, 128)
 }
 
 // Check whether the death of the specified monster type is allowed
@@ -24120,19 +24118,19 @@ func CheckBossEnd(motype mobjtype_t) (r boolean) {
 //	// Possibly trigger special effects
 //	// if on first boss level
 //	//
-func A_BossDeath(mo uintptr) {
+func A_BossDeath(mo *mobj_t) {
 	var i int32
-	var mo2 uintptr
+	var mo2 *mobj_t
 	var th *thinker_t
 	if gamemode == commercial {
 		if gamemap != 7 {
 			return
 		}
-		if (*mobj_t)(unsafe.Pointer(mo)).Ftype1 != int32(MT_FATSO) && (*mobj_t)(unsafe.Pointer(mo)).Ftype1 != int32(MT_BABY) {
+		if mo.Ftype1 != int32(MT_FATSO) && mo.Ftype1 != int32(MT_BABY) {
 			return
 		}
 	} else {
-		if !(CheckBossEnd((*mobj_t)(unsafe.Pointer(mo)).Ftype1) != 0) {
+		if !(CheckBossEnd(mo.Ftype1) != 0) {
 			return
 		}
 	}
@@ -24163,8 +24161,8 @@ func A_BossDeath(mo uintptr) {
 		if th.Ffunction.Facv != __ccgo_fp(P_MobjThinker) {
 			goto _2
 		}
-		mo2 = (uintptr)(unsafe.Pointer(th))
-		if mo2 != mo && (*mobj_t)(unsafe.Pointer(mo2)).Ftype1 == (*mobj_t)(unsafe.Pointer(mo)).Ftype1 && (*mobj_t)(unsafe.Pointer(mo2)).Fhealth > 0 {
+		mo2 = (*mobj_t)(unsafe.Pointer(th))
+		if mo2 != mo && mo2.Ftype1 == mo.Ftype1 && mo2.Fhealth > 0 {
 			// other boss not dead
 			return
 		}
@@ -24176,11 +24174,11 @@ func A_BossDeath(mo uintptr) {
 	// victory!
 	if gamemode == commercial {
 		if gamemap == 7 {
-			if (*mobj_t)(unsafe.Pointer(mo)).Ftype1 == int32(MT_FATSO) {
+			if mo.Ftype1 == int32(MT_FATSO) {
 				EV_DoFloor(&line_t{Ftag: 666}, int32(lowerFloorToLowest))
 				return
 			}
-			if (*mobj_t)(unsafe.Pointer(mo)).Ftype1 == int32(MT_BABY) {
+			if mo.Ftype1 == int32(MT_BABY) {
 				EV_DoFloor(&line_t{Ftag: 667}, int32(raiseToTexture))
 				return
 			}
@@ -24205,36 +24203,36 @@ func A_BossDeath(mo uintptr) {
 	G_ExitLevel()
 }
 
-func A_Hoof(mo uintptr) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(mo)).degenmobj_t), int32(sfx_hoof))
+func A_Hoof(mo *mobj_t) {
+	S_StartSound(&(mo.degenmobj_t), int32(sfx_hoof))
 	A_Chase(mo)
 }
 
-func A_Metal(mo uintptr) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(mo)).degenmobj_t), int32(sfx_metal))
+func A_Metal(mo *mobj_t) {
+	S_StartSound(&(mo.degenmobj_t), int32(sfx_metal))
 	A_Chase(mo)
 }
 
-func A_BabyMetal(mo uintptr) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(mo)).degenmobj_t), int32(sfx_bspwlk))
+func A_BabyMetal(mo *mobj_t) {
+	S_StartSound(&(mo.degenmobj_t), int32(sfx_bspwlk))
 	A_Chase(mo)
 }
 
 func A_OpenShotgun2(player *player_t, psp *pspdef_t) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_dbopn))
+	S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_dbopn))
 }
 
 func A_LoadShotgun2(player *player_t, psp *pspdef_t) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_dbload))
+	S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_dbload))
 }
 
 func A_CloseShotgun2(player *player_t, psp *pspdef_t) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_dbcls))
+	S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_dbcls))
 	A_ReFire(player, psp)
 }
 
-func A_BrainAwake(mo uintptr) {
-	var m uintptr
+func A_BrainAwake(mo *mobj_t) {
+	var m *mobj_t
 	var thinker *thinker_t
 	// find all the target spots
 	numbraintargets = 0
@@ -24248,8 +24246,8 @@ func A_BrainAwake(mo uintptr) {
 		if thinker.Ffunction.Facv != __ccgo_fp(P_MobjThinker) {
 			goto _1
 		} // not a mobj
-		m = (uintptr)(unsafe.Pointer(thinker))
-		if (*mobj_t)(unsafe.Pointer(m)).Ftype1 == int32(MT_BOSSTARGET) {
+		m = (*mobj_t)(unsafe.Pointer(thinker))
+		if m.Ftype1 == int32(MT_BOSSTARGET) {
 			braintargets[numbraintargets] = m
 			numbraintargets++
 		}
@@ -24261,26 +24259,26 @@ func A_BrainAwake(mo uintptr) {
 	S_StartSound(nil, int32(sfx_bossit))
 }
 
-func A_BrainPain(mo uintptr) {
+func A_BrainPain(mo *mobj_t) {
 	S_StartSound(nil, int32(sfx_bospn))
 }
 
-func A_BrainScream(mo uintptr) {
-	var th uintptr
+func A_BrainScream(mo *mobj_t) {
+	var th *mobj_t
 	var x, y, z int32
-	x = (*mobj_t)(unsafe.Pointer(mo)).Fx - 196*(1<<FRACBITS)
+	x = mo.Fx - 196*(1<<FRACBITS)
 	for {
-		if !(x < (*mobj_t)(unsafe.Pointer(mo)).Fx+320*(1<<FRACBITS)) {
+		if !(x < mo.Fx+320*(1<<FRACBITS)) {
 			break
 		}
-		y = (*mobj_t)(unsafe.Pointer(mo)).Fy - 320*(1<<FRACBITS)
+		y = mo.Fy - 320*(1<<FRACBITS)
 		z = 128 + P_Random()*int32(2)*(1<<FRACBITS)
 		th = P_SpawnMobj(x, y, z, int32(MT_ROCKET))
-		(*mobj_t)(unsafe.Pointer(th)).Fmomz = P_Random() * 512
+		th.Fmomz = P_Random() * 512
 		P_SetMobjState(th, S_BRAINEXPLODE1)
-		*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & 7
-		if (*mobj_t)(unsafe.Pointer(th)).Ftics < 1 {
-			(*mobj_t)(unsafe.Pointer(th)).Ftics = 1
+		th.Ftics -= P_Random() & 7
+		if th.Ftics < 1 {
+			th.Ftics = 1
 		}
 		goto _1
 	_1:
@@ -24290,27 +24288,27 @@ func A_BrainScream(mo uintptr) {
 	S_StartSound(nil, int32(sfx_bosdth))
 }
 
-func A_BrainExplode(mo uintptr) {
-	var th uintptr
+func A_BrainExplode(mo *mobj_t) {
+	var th *mobj_t
 	var x, y, z int32
-	x = (*mobj_t)(unsafe.Pointer(mo)).Fx + (P_Random()-P_Random())*int32(2048)
-	y = (*mobj_t)(unsafe.Pointer(mo)).Fy
+	x = mo.Fx + (P_Random()-P_Random())*int32(2048)
+	y = mo.Fy
 	z = 128 + P_Random()*int32(2)*(1<<FRACBITS)
 	th = P_SpawnMobj(x, y, z, int32(MT_ROCKET))
-	(*mobj_t)(unsafe.Pointer(th)).Fmomz = P_Random() * 512
+	th.Fmomz = P_Random() * 512
 	P_SetMobjState(th, S_BRAINEXPLODE1)
-	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & 7
-	if (*mobj_t)(unsafe.Pointer(th)).Ftics < 1 {
-		(*mobj_t)(unsafe.Pointer(th)).Ftics = 1
+	th.Ftics -= P_Random() & 7
+	if th.Ftics < 1 {
+		th.Ftics = 1
 	}
 }
 
-func A_BrainDie(mo uintptr) {
+func A_BrainDie(mo *mobj_t) {
 	G_ExitLevel()
 }
 
-func A_BrainSpit(mo uintptr) {
-	var newmobj, targ uintptr
+func A_BrainSpit(mo *mobj_t) {
+	var newmobj, targ *mobj_t
 	easy ^= 1
 	if gameskill <= sk_easy && !(easy != 0) {
 		return
@@ -24320,8 +24318,8 @@ func A_BrainSpit(mo uintptr) {
 	braintargeton = (braintargeton + 1) % numbraintargets
 	// spawn brain missile
 	newmobj = P_SpawnMissile(mo, targ, int32(MT_SPAWNSHOT))
-	(*mobj_t)(unsafe.Pointer(newmobj)).Ftarget = targ
-	(*mobj_t)(unsafe.Pointer(newmobj)).Freactiontime = ((*mobj_t)(unsafe.Pointer(targ)).Fy - (*mobj_t)(unsafe.Pointer(mo)).Fy) / (*mobj_t)(unsafe.Pointer(newmobj)).Fmomy / (*mobj_t)(unsafe.Pointer(newmobj)).Fstate.Ftics
+	newmobj.Ftarget = targ
+	newmobj.Freactiontime = (targ.Fy - mo.Fy) / newmobj.Fmomy / newmobj.Fstate.Ftics
 	S_StartSound(nil, int32(sfx_bospit))
 }
 
@@ -24330,25 +24328,23 @@ var easy int32
 // C documentation
 //
 //	// travelling cube sound
-func A_SpawnSound(mo uintptr) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(mo)).degenmobj_t), int32(sfx_boscub))
+func A_SpawnSound(mo *mobj_t) {
+	S_StartSound(&(mo.degenmobj_t), int32(sfx_boscub))
 	A_SpawnFly(mo)
 }
 
-func A_SpawnFly(mo uintptr) {
-	var fog, newmobj, targ, v2 uintptr
-	var r, v1 int32
+func A_SpawnFly(mo *mobj_t) {
+	var fog, newmobj, targ *mobj_t
+	var r int32
 	var type1 mobjtype_t
-	v2 = mo + 184
-	*(*int32)(unsafe.Pointer(v2))--
-	v1 = *(*int32)(unsafe.Pointer(v2))
-	if v1 != 0 {
+	mo.Freactiontime--
+	if mo.Freactiontime != 0 {
 		return
 	} // still flying
-	targ = P_SubstNullMobj((*mobj_t)(unsafe.Pointer(mo)).Ftarget)
+	targ = P_SubstNullMobj(mo.Ftarget)
 	// First spawn teleport fog.
-	fog = P_SpawnMobj((*mobj_t)(unsafe.Pointer(targ)).Fx, (*mobj_t)(unsafe.Pointer(targ)).Fy, (*mobj_t)(unsafe.Pointer(targ)).Fz, int32(MT_SPAWNFIRE))
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(fog)).degenmobj_t), int32(sfx_telept))
+	fog = P_SpawnMobj(targ.Fx, targ.Fy, targ.Fz, int32(MT_SPAWNFIRE))
+	S_StartSound(&(fog.degenmobj_t), int32(sfx_telept))
 	// Randomly select monster to spawn.
 	r = P_Random()
 	// Probability distribution (kind of :),
@@ -24394,26 +24390,26 @@ func A_SpawnFly(mo uintptr) {
 			}
 		}
 	}
-	newmobj = P_SpawnMobj((*mobj_t)(unsafe.Pointer(targ)).Fx, (*mobj_t)(unsafe.Pointer(targ)).Fy, (*mobj_t)(unsafe.Pointer(targ)).Fz, type1)
+	newmobj = P_SpawnMobj(targ.Fx, targ.Fy, targ.Fz, type1)
 	if P_LookForPlayers(newmobj, 1) != 0 {
-		P_SetMobjState(newmobj, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(newmobj)).Finfo)).Fseestate)
+		P_SetMobjState(newmobj, (*mobjinfo_t)(unsafe.Pointer(newmobj.Finfo)).Fseestate)
 	}
 	// telefrag anything in this spot
-	P_TeleportMove(newmobj, (*mobj_t)(unsafe.Pointer(newmobj)).Fx, (*mobj_t)(unsafe.Pointer(newmobj)).Fy)
+	P_TeleportMove(newmobj, newmobj.Fx, newmobj.Fy)
 	// remove self (i.e., cube).
 	P_RemoveMobj(mo)
 }
 
-func A_PlayerScream(mo uintptr) {
+func A_PlayerScream(mo *mobj_t) {
 	var sound int32
 	// Default death sound.
 	sound = int32(sfx_pldeth)
-	if gamemode == commercial && (*mobj_t)(unsafe.Pointer(mo)).Fhealth < -int32(50) {
+	if gamemode == commercial && mo.Fhealth < -int32(50) {
 		// IF THE PLAYER DIES
 		// LESS THAN -50% WITHOUT GIBBING
 		sound = int32(sfx_pdiehi)
 	}
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(mo)).degenmobj_t), sound)
+	S_StartSound(&(mo.degenmobj_t), sound)
 }
 
 const INT_MAX9 = 2147483647
@@ -25035,7 +25031,7 @@ func P_GiveBody(player *player_t, num int32) (r boolean) {
 	if player.Fhealth > int32(MAXHEALTH) {
 		player.Fhealth = int32(MAXHEALTH)
 	}
-	(*mobj_t)(unsafe.Pointer(player.Fmo)).Fhealth = player.Fhealth
+	player.Fmo.Fhealth = player.Fhealth
 	return 1
 }
 
@@ -25082,7 +25078,7 @@ func P_GivePower(player *player_t, power int32) (r boolean) {
 	}
 	if power == int32(pw_invisibility) {
 		player.Fpowers[power] = INVISTICS
-		*(*int32)(unsafe.Pointer(player.Fmo + 160)) |= int32(MF_SHADOW)
+		player.Fmo.Fflags |= int32(MF_SHADOW)
 		return 1
 	}
 	if power == int32(pw_infrared) {
@@ -25110,24 +25106,24 @@ func P_GivePower(player *player_t, power int32) (r boolean) {
 //	//
 //	// P_TouchSpecialThing
 //	//
-func P_TouchSpecialThing(special uintptr, toucher uintptr) {
+func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 	var delta fixed_t
 	var i, sound int32
 	var player *player_t
-	delta = (*mobj_t)(unsafe.Pointer(special)).Fz - (*mobj_t)(unsafe.Pointer(toucher)).Fz
-	if delta > (*mobj_t)(unsafe.Pointer(toucher)).Fheight || delta < -8*(1<<FRACBITS) {
+	delta = special.Fz - toucher.Fz
+	if delta > toucher.Fheight || delta < -8*(1<<FRACBITS) {
 		// out of reach
 		return
 	}
 	sound = int32(sfx_itemup)
-	player = (*mobj_t)(unsafe.Pointer(toucher)).Fplayer
+	player = toucher.Fplayer
 	// Dead thing touching.
 	// Can happen with a sliding player corpse.
-	if (*mobj_t)(unsafe.Pointer(toucher)).Fhealth <= 0 {
+	if toucher.Fhealth <= 0 {
 		return
 	}
 	// Identify by sprite.
-	switch (*mobj_t)(unsafe.Pointer(special)).Fsprite {
+	switch special.Fsprite {
 	// armor
 	case SPR_ARM1:
 		if !(P_GiveArmor(player, int32(DEH_DEFAULT_GREEN_ARMOR_CLASS)) != 0) {
@@ -25147,7 +25143,7 @@ func P_TouchSpecialThing(special uintptr, toucher uintptr) {
 		if player.Fhealth > int32(DEH_DEFAULT_MAX_HEALTH) {
 			player.Fhealth = int32(DEH_DEFAULT_MAX_HEALTH)
 		}
-		(*mobj_t)(unsafe.Pointer(player.Fmo)).Fhealth = player.Fhealth
+		player.Fmo.Fhealth = player.Fhealth
 		player.Fmessage = __ccgo_ts_str(23783)
 	case SPR_BON2:
 		player.Farmorpoints++ // can go over 100%
@@ -25165,7 +25161,7 @@ func P_TouchSpecialThing(special uintptr, toucher uintptr) {
 		if player.Fhealth > int32(DEH_DEFAULT_MAX_SOULSPHERE) {
 			player.Fhealth = int32(DEH_DEFAULT_MAX_SOULSPHERE)
 		}
-		(*mobj_t)(unsafe.Pointer(player.Fmo)).Fhealth = player.Fhealth
+		player.Fmo.Fhealth = player.Fhealth
 		player.Fmessage = __ccgo_ts_str(23835)
 		sound = int32(sfx_getpow)
 	case SPR_MEGA:
@@ -25173,7 +25169,7 @@ func P_TouchSpecialThing(special uintptr, toucher uintptr) {
 			return
 		}
 		player.Fhealth = int32(DEH_DEFAULT_MEGASPHERE_HEALTH)
-		(*mobj_t)(unsafe.Pointer(player.Fmo)).Fhealth = player.Fhealth
+		player.Fmo.Fhealth = player.Fhealth
 		// We always give armor type 2 for the megasphere; dehacked only
 		// affects the MegaArmor.
 		P_GiveArmor(player, 2)
@@ -25299,7 +25295,7 @@ func P_TouchSpecialThing(special uintptr, toucher uintptr) {
 		// ammo
 		fallthrough
 	case SPR_CLIP:
-		if (*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0 {
+		if special.Fflags&int32(MF_DROPPED) != 0 {
 			if !(P_GiveAmmo(player, am_clip, 0) != 0) {
 				return
 			}
@@ -25381,7 +25377,7 @@ func P_TouchSpecialThing(special uintptr, toucher uintptr) {
 		player.Fmessage = __ccgo_ts_str(24474)
 		sound = int32(sfx_wpnup)
 	case SPR_MGUN:
-		if !(P_GiveWeapon(player, wp_chaingun, booluint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
+		if !(P_GiveWeapon(player, wp_chaingun, booluint32(special.Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24505)
@@ -25405,13 +25401,13 @@ func P_TouchSpecialThing(special uintptr, toucher uintptr) {
 		player.Fmessage = __ccgo_ts_str(24585)
 		sound = int32(sfx_wpnup)
 	case SPR_SHOT:
-		if !(P_GiveWeapon(player, wp_shotgun, booluint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
+		if !(P_GiveWeapon(player, wp_shotgun, booluint32(special.Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24609)
 		sound = int32(sfx_wpnup)
 	case SPR_SGN2:
-		if !(P_GiveWeapon(player, wp_supershotgun, booluint32((*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0)) != 0) {
+		if !(P_GiveWeapon(player, wp_supershotgun, booluint32(special.Fflags&int32(MF_DROPPED) != 0)) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24630)
@@ -25419,7 +25415,7 @@ func P_TouchSpecialThing(special uintptr, toucher uintptr) {
 	default:
 		I_Error(__ccgo_ts(24657), 0)
 	}
-	if (*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_COUNTITEM) != 0 {
+	if special.Fflags&int32(MF_COUNTITEM) != 0 {
 		player.Fitemcount++
 	}
 	P_RemoveMobj(special)
@@ -25434,54 +25430,54 @@ func P_TouchSpecialThing(special uintptr, toucher uintptr) {
 //	//
 //	// KillMobj
 //	//
-func P_KillMobj(source uintptr, target uintptr) {
+func P_KillMobj(source *mobj_t, target *mobj_t) {
 	var item mobjtype_t
-	var mo uintptr
-	*(*int32)(unsafe.Pointer(target + 160)) &= ^(int32(MF_SHOOTABLE) | int32(MF_FLOAT) | int32(MF_SKULLFLY))
-	if (*mobj_t)(unsafe.Pointer(target)).Ftype1 != int32(MT_SKULL) {
-		*(*int32)(unsafe.Pointer(target + 160)) &= ^int32(MF_NOGRAVITY)
+	var mo *mobj_t
+	target.Fflags &= ^(int32(MF_SHOOTABLE) | int32(MF_FLOAT) | int32(MF_SKULLFLY))
+	if target.Ftype1 != int32(MT_SKULL) {
+		target.Fflags &= ^int32(MF_NOGRAVITY)
 	}
-	*(*int32)(unsafe.Pointer(target + 160)) |= int32(MF_CORPSE) | int32(MF_DROPOFF)
-	*(*fixed_t)(unsafe.Pointer(target + 108)) >>= 2
-	if source != 0 && (*mobj_t)(unsafe.Pointer(source)).Fplayer != nil {
+	target.Fflags |= int32(MF_CORPSE) | int32(MF_DROPOFF)
+	target.Fheight >>= 2
+	if source != nil && source.Fplayer != nil {
 		// count for intermission
-		if (*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_COUNTKILL) != 0 {
-			(*mobj_t)(unsafe.Pointer(source)).Fplayer.Fkillcount++
+		if target.Fflags&int32(MF_COUNTKILL) != 0 {
+			source.Fplayer.Fkillcount++
 		}
-		if (*mobj_t)(unsafe.Pointer(target)).Fplayer != nil {
-			idx := playerIndex((*mobj_t)(unsafe.Pointer(target)).Fplayer)
-			(*mobj_t)(unsafe.Pointer(source)).Fplayer.Ffrags[idx]++
+		if target.Fplayer != nil {
+			idx := playerIndex(target.Fplayer)
+			source.Fplayer.Ffrags[idx]++
 		}
 	} else {
-		if !(netgame != 0) && (*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_COUNTKILL) != 0 {
+		if !(netgame != 0) && target.Fflags&int32(MF_COUNTKILL) != 0 {
 			// count all monster deaths,
 			// even those caused by other monsters
 			players[0].Fkillcount++
 		}
 	}
-	if (*mobj_t)(unsafe.Pointer(target)).Fplayer != nil {
+	if target.Fplayer != nil {
 		// count environment kills against you
-		if !(source != 0) {
-			idx := playerIndex((*mobj_t)(unsafe.Pointer(target)).Fplayer)
-			(*mobj_t)(unsafe.Pointer(target)).Fplayer.Ffrags[idx]++
+		if !(source != nil) {
+			idx := playerIndex(target.Fplayer)
+			target.Fplayer.Ffrags[idx]++
 		}
-		*(*int32)(unsafe.Pointer(target + 160)) &= ^int32(MF_SOLID)
-		(*mobj_t)(unsafe.Pointer(target)).Fplayer.Fplayerstate = int32(PST_DEAD)
-		P_DropWeapon((*mobj_t)(unsafe.Pointer(target)).Fplayer)
-		if (*mobj_t)(unsafe.Pointer(target)).Fplayer == &players[consoleplayer] && automapactive != 0 {
+		target.Fflags &= ^int32(MF_SOLID)
+		target.Fplayer.Fplayerstate = int32(PST_DEAD)
+		P_DropWeapon(target.Fplayer)
+		if target.Fplayer == &players[consoleplayer] && automapactive != 0 {
 			// don't die in auto map,
 			// switch view prior to dying
 			AM_Stop()
 		}
 	}
-	if (*mobj_t)(unsafe.Pointer(target)).Fhealth < -(*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fspawnhealth && (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fxdeathstate != 0 {
-		P_SetMobjState(target, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fxdeathstate)
+	if target.Fhealth < -(*mobjinfo_t)(unsafe.Pointer(target.Finfo)).Fspawnhealth && (*mobjinfo_t)(unsafe.Pointer(target.Finfo)).Fxdeathstate != 0 {
+		P_SetMobjState(target, (*mobjinfo_t)(unsafe.Pointer(target.Finfo)).Fxdeathstate)
 	} else {
-		P_SetMobjState(target, (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(target)).Finfo)).Fdeathstate)
+		P_SetMobjState(target, (*mobjinfo_t)(unsafe.Pointer(target.Finfo)).Fdeathstate)
 	}
-	*(*int32)(unsafe.Pointer(target + 144)) -= P_Random() & 3
-	if (*mobj_t)(unsafe.Pointer(target)).Ftics < 1 {
-		(*mobj_t)(unsafe.Pointer(target)).Ftics = 1
+	target.Ftics -= P_Random() & 3
+	if target.Ftics < 1 {
+		target.Ftics = 1
 	}
 	//	I_StartSound (&actor->r, actor->info->deathsound);
 	// In Chex Quest, monsters don't drop items.
@@ -25491,7 +25487,7 @@ func P_KillMobj(source uintptr, target uintptr) {
 	// Drop stuff.
 	// This determines the kind of object spawned
 	// during the death frame of a thing.
-	switch (*mobj_t)(unsafe.Pointer(target)).Ftype1 {
+	switch target.Ftype1 {
 	case int32(MT_WOLFSS):
 		fallthrough
 	case int32(MT_POSSESSED):
@@ -25503,8 +25499,8 @@ func P_KillMobj(source uintptr, target uintptr) {
 	default:
 		return
 	}
-	mo = P_SpawnMobj((*mobj_t)(unsafe.Pointer(target)).Fx, (*mobj_t)(unsafe.Pointer(target)).Fy, -1-0x7fffffff, item)
-	*(*int32)(unsafe.Pointer(mo + 160)) |= int32(MF_DROPPED) // special versions of items
+	mo = P_SpawnMobj(target.Fx, target.Fy, -1-0x7fffffff, item)
+	mo.Fflags |= MF_DROPPED // special versions of items
 }
 
 // C documentation
@@ -25520,48 +25516,48 @@ func P_KillMobj(source uintptr, target uintptr) {
 //	// Source can be NULL for slime, barrel explosions
 //	// and other environmental stuff.
 //	//
-func P_DamageMobj(target uintptr, inflictor uintptr, source uintptr, damage int32) {
+func P_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int32) {
 	var ang uint32
 	var player *player_t
 	var saved, temp, v3 int32
 	var thrust, v1, v2 fixed_t
-	if !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(target.Fflags&int32(MF_SHOOTABLE) != 0) {
 		return
 	} // shouldn't happen...
-	if (*mobj_t)(unsafe.Pointer(target)).Fhealth <= 0 {
+	if target.Fhealth <= 0 {
 		return
 	}
-	if (*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_SKULLFLY) != 0 {
+	if target.Fflags&int32(MF_SKULLFLY) != 0 {
 		v2 = 0
-		(*mobj_t)(unsafe.Pointer(target)).Fmomz = v2
+		target.Fmomz = v2
 		v1 = v2
-		(*mobj_t)(unsafe.Pointer(target)).Fmomy = v1
-		(*mobj_t)(unsafe.Pointer(target)).Fmomx = v1
+		target.Fmomy = v1
+		target.Fmomx = v1
 	}
-	player = (*mobj_t)(unsafe.Pointer(target)).Fplayer
+	player = target.Fplayer
 	if player != nil && gameskill == sk_baby {
 		damage >>= 1
 	} // take half damage in trainer mode
 	// Some close combat weapons should not
 	// inflict thrust and push the victim out of reach,
 	// thus kick away unless using the chainsaw.
-	if inflictor != 0 && !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_NOCLIP) != 0) && (!(source != 0) || !((*mobj_t)(unsafe.Pointer(source)).Fplayer != nil) || (*mobj_t)(unsafe.Pointer(source)).Fplayer.Freadyweapon != wp_chainsaw) {
-		ang = R_PointToAngle2((*mobj_t)(unsafe.Pointer(inflictor)).Fx, (*mobj_t)(unsafe.Pointer(inflictor)).Fy, (*mobj_t)(unsafe.Pointer(target)).Fx, (*mobj_t)(unsafe.Pointer(target)).Fy)
-		thrust = damage * (1 << FRACBITS >> 3) * 100 / ((*mobj_t)(unsafe.Pointer(target)).Finfo).Fmass
+	if inflictor != nil && !(target.Fflags&int32(MF_NOCLIP) != 0) && (!(source != nil) || !(source.Fplayer != nil) || source.Fplayer.Freadyweapon != wp_chainsaw) {
+		ang = R_PointToAngle2(inflictor.Fx, inflictor.Fy, target.Fx, target.Fy)
+		thrust = damage * (1 << FRACBITS >> 3) * 100 / (target.Finfo).Fmass
 		// make fall forwards sometimes
-		if damage < 40 && damage > (*mobj_t)(unsafe.Pointer(target)).Fhealth && (*mobj_t)(unsafe.Pointer(target)).Fz-(*mobj_t)(unsafe.Pointer(inflictor)).Fz > 64*(1<<FRACBITS) && P_Random()&int32(1) != 0 {
+		if damage < 40 && damage > target.Fhealth && target.Fz-inflictor.Fz > 64*(1<<FRACBITS) && P_Random()&int32(1) != 0 {
 			ang += uint32(ANG1803)
 			thrust *= 4
 		}
 		ang >>= uint32(ANGLETOFINESHIFT)
-		*(*fixed_t)(unsafe.Pointer(target + 112)) += FixedMul(thrust, finecosine[ang])
-		*(*fixed_t)(unsafe.Pointer(target + 116)) += FixedMul(thrust, finesine[ang])
+		target.Fmomx += FixedMul(thrust, finecosine[ang])
+		target.Fmomy += FixedMul(thrust, finesine[ang])
 	}
 	// player specific
 	if player != nil {
 		// end of game hell hack
-		if int32((*sector_t)(unsafe.Pointer(((*mobj_t)(unsafe.Pointer(target)).Fsubsector).Fsector)).Fspecial) == 11 && damage >= (*mobj_t)(unsafe.Pointer(target)).Fhealth {
-			damage = (*mobj_t)(unsafe.Pointer(target)).Fhealth - 1
+		if int32((*sector_t)(unsafe.Pointer((target.Fsubsector).Fsector)).Fspecial) == 11 && damage >= target.Fhealth {
+			damage = target.Fhealth - 1
 		}
 		// Below certain threshold,
 		// ignore damage in GOD mode, or with INVUL power.
@@ -25602,23 +25598,23 @@ func P_DamageMobj(target uintptr, inflictor uintptr, source uintptr, damage int3
 		}
 	}
 	// do the damage
-	*(*int32)(unsafe.Pointer(target + 164)) -= damage
-	if (*mobj_t)(unsafe.Pointer(target)).Fhealth <= 0 {
+	target.Fhealth -= damage
+	if target.Fhealth <= 0 {
 		P_KillMobj(source, target)
 		return
 	}
-	if P_Random() < (*mobj_t)(unsafe.Pointer(target)).Finfo.Fpainchance && !((*mobj_t)(unsafe.Pointer(target)).Fflags&int32(MF_SKULLFLY) != 0) {
-		*(*int32)(unsafe.Pointer(target + 160)) |= int32(MF_JUSTHIT) // fight back!
-		P_SetMobjState(target, (*mobj_t)(unsafe.Pointer(target)).Finfo.Fpainstate)
+	if P_Random() < target.Finfo.Fpainchance && !(target.Fflags&int32(MF_SKULLFLY) != 0) {
+		target.Fflags |= int32(MF_JUSTHIT) // fight back!
+		P_SetMobjState(target, target.Finfo.Fpainstate)
 	}
-	(*mobj_t)(unsafe.Pointer(target)).Freactiontime = 0 // we're awake now...
-	if (!((*mobj_t)(unsafe.Pointer(target)).Fthreshold != 0) || (*mobj_t)(unsafe.Pointer(target)).Ftype1 == int32(MT_VILE)) && source != 0 && source != target && (*mobj_t)(unsafe.Pointer(source)).Ftype1 != int32(MT_VILE) {
+	target.Freactiontime = 0 // we're awake now...
+	if (!(target.Fthreshold != 0) || target.Ftype1 == int32(MT_VILE)) && source != nil && source != target && source.Ftype1 != int32(MT_VILE) {
 		// if not intent on another player,
 		// chase after this one
-		(*mobj_t)(unsafe.Pointer(target)).Ftarget = source
-		(*mobj_t)(unsafe.Pointer(target)).Fthreshold = int32(BASETHRESHOLD)
-		if (*mobj_t)(unsafe.Pointer(target)).Fstate == &states[(*mobj_t)(unsafe.Pointer(target)).Finfo.Fspawnstate] && (*mobj_t)(unsafe.Pointer(target)).Finfo.Fseestate != S_NULL {
-			P_SetMobjState(target, (*mobj_t)(unsafe.Pointer(target)).Finfo.Fseestate)
+		target.Ftarget = source
+		target.Fthreshold = int32(BASETHRESHOLD)
+		if target.Fstate == &states[target.Finfo.Fspawnstate] && target.Finfo.Fseestate != S_NULL {
+			P_SetMobjState(target, target.Finfo.Fseestate)
 		}
 	}
 }
@@ -25958,13 +25954,13 @@ const DEFAULT_SPECHIT_MAGIC = 29400216
 //	//
 //	// PIT_StompThing
 //	//
-func PIT_StompThing(thing uintptr) (r boolean) {
+func PIT_StompThing(thing *mobj_t) (r boolean) {
 	var blockdist fixed_t
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(thing.Fflags&int32(MF_SHOOTABLE) != 0) {
 		return 1
 	}
-	blockdist = (*mobj_t)(unsafe.Pointer(thing)).Fradius + (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
-	if xabs((*mobj_t)(unsafe.Pointer(thing)).Fx-tmx) >= blockdist || xabs((*mobj_t)(unsafe.Pointer(thing)).Fy-tmy) >= blockdist {
+	blockdist = thing.Fradius + tmthing.Fradius
+	if xabs(thing.Fx-tmx) >= blockdist || xabs(thing.Fy-tmy) >= blockdist {
 		// didn't hit it
 		return 1
 	}
@@ -25973,7 +25969,7 @@ func PIT_StompThing(thing uintptr) (r boolean) {
 		return 1
 	}
 	// monsters don't stomp things except on boss level
-	if !((*mobj_t)(unsafe.Pointer(tmthing)).Fplayer != nil) && gamemap != 30 {
+	if !(tmthing.Fplayer != nil) && gamemap != 30 {
 		return 0
 	}
 	P_DamageMobj(thing, tmthing, tmthing, 10000)
@@ -25985,19 +25981,19 @@ func PIT_StompThing(thing uintptr) (r boolean) {
 //	//
 //	// P_TeleportMove
 //	//
-func P_TeleportMove(thing uintptr, x fixed_t, y fixed_t) (r boolean) {
+func P_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	var bx, by, xh, xl, yh, yl int32
 	var newsubsec *subsector_t
 	var v1 fixed_t
 	// kill anything occupying the position
 	tmthing = thing
-	tmflags = (*mobj_t)(unsafe.Pointer(thing)).Fflags
+	tmflags = thing.Fflags
 	tmx = x
 	tmy = y
-	tmbbox[int32(BOXTOP)] = y + (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
-	tmbbox[int32(BOXBOTTOM)] = y - (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
-	tmbbox[int32(BOXRIGHT)] = x + (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
-	tmbbox[int32(BOXLEFT)] = x - (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
+	tmbbox[int32(BOXTOP)] = y + tmthing.Fradius
+	tmbbox[int32(BOXBOTTOM)] = y - tmthing.Fradius
+	tmbbox[int32(BOXRIGHT)] = x + tmthing.Fradius
+	tmbbox[int32(BOXLEFT)] = x - tmthing.Fradius
 	newsubsec = R_PointInSubsector(x, y)
 	ceilingline = nil
 	// The base floor/ceiling is from the subsector
@@ -26041,10 +26037,10 @@ func P_TeleportMove(thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 	// the move is ok,
 	// so link the thing into its new position
 	P_UnsetThingPosition(thing)
-	(*mobj_t)(unsafe.Pointer(thing)).Ffloorz = tmfloorz
-	(*mobj_t)(unsafe.Pointer(thing)).Fceilingz = tmceilingz
-	(*mobj_t)(unsafe.Pointer(thing)).Fx = x
-	(*mobj_t)(unsafe.Pointer(thing)).Fy = y
+	thing.Ffloorz = tmfloorz
+	thing.Fceilingz = tmceilingz
+	thing.Fx = x
+	thing.Fy = y
 	P_SetThingPosition(thing)
 	return 1
 }
@@ -26074,11 +26070,11 @@ func PIT_CheckLine(ld *line_t) (r boolean) {
 	if !(ld.Fbacksector != nil) {
 		return 0
 	} // one sided line
-	if !((*mobj_t)(unsafe.Pointer(tmthing)).Fflags&int32(MF_MISSILE) != 0) {
+	if !(tmthing.Fflags&int32(MF_MISSILE) != 0) {
 		if int32(ld.Fflags)&ML_BLOCKING != 0 {
 			return 0
 		} // explicitly blocking everything
-		if !((*mobj_t)(unsafe.Pointer(tmthing)).Fplayer != nil) && int32(ld.Fflags)&ML_BLOCKMONSTERS != 0 {
+		if !(tmthing.Fplayer != nil) && int32(ld.Fflags)&ML_BLOCKMONSTERS != 0 {
 			return 0
 		} // block monsters only
 	}
@@ -26112,15 +26108,15 @@ func PIT_CheckLine(ld *line_t) (r boolean) {
 //	//
 //	// PIT_CheckThing
 //	//
-func PIT_CheckThing(thing uintptr) (r boolean) {
+func PIT_CheckThing(thing *mobj_t) (r boolean) {
 	var blockdist, v1, v2 fixed_t
 	var damage int32
 	var solid boolean
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&(int32(MF_SOLID)|int32(MF_SPECIAL)|int32(MF_SHOOTABLE)) != 0) {
+	if !(thing.Fflags&(int32(MF_SOLID)|int32(MF_SPECIAL)|int32(MF_SHOOTABLE)) != 0) {
 		return 1
 	}
-	blockdist = (*mobj_t)(unsafe.Pointer(thing)).Fradius + (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
-	if xabs((*mobj_t)(unsafe.Pointer(thing)).Fx-tmx) >= blockdist || xabs((*mobj_t)(unsafe.Pointer(thing)).Fy-tmy) >= blockdist {
+	blockdist = thing.Fradius + tmthing.Fradius
+	if xabs(thing.Fx-tmx) >= blockdist || xabs(thing.Fy-tmy) >= blockdist {
 		// didn't hit it
 		return 1
 	}
@@ -26129,61 +26125,61 @@ func PIT_CheckThing(thing uintptr) (r boolean) {
 		return 1
 	}
 	// check for skulls slamming into things
-	if (*mobj_t)(unsafe.Pointer(tmthing)).Fflags&int32(MF_SKULLFLY) != 0 {
-		damage = (P_Random()%int32(8) + 1) * (*mobj_t)(unsafe.Pointer(tmthing)).Finfo.Fdamage
+	if tmthing.Fflags&int32(MF_SKULLFLY) != 0 {
+		damage = (P_Random()%int32(8) + 1) * tmthing.Finfo.Fdamage
 		P_DamageMobj(thing, tmthing, tmthing, damage)
-		*(*int32)(unsafe.Pointer(tmthing + 160)) &= ^int32(MF_SKULLFLY)
+		tmthing.Fflags &^= int32(MF_SKULLFLY)
 		v2 = 0
-		(*mobj_t)(unsafe.Pointer(tmthing)).Fmomz = v2
+		tmthing.Fmomz = v2
 		v1 = v2
-		(*mobj_t)(unsafe.Pointer(tmthing)).Fmomy = v1
-		(*mobj_t)(unsafe.Pointer(tmthing)).Fmomx = v1
-		P_SetMobjState(tmthing, (*mobj_t)(unsafe.Pointer(tmthing)).Finfo.Fspawnstate)
+		tmthing.Fmomy = v1
+		tmthing.Fmomx = v1
+		P_SetMobjState(tmthing, tmthing.Finfo.Fspawnstate)
 		return 0 // stop moving
 	}
 	// missiles can hit other things
-	if (*mobj_t)(unsafe.Pointer(tmthing)).Fflags&int32(MF_MISSILE) != 0 {
+	if tmthing.Fflags&int32(MF_MISSILE) != 0 {
 		// see if it went over / under
-		if (*mobj_t)(unsafe.Pointer(tmthing)).Fz > (*mobj_t)(unsafe.Pointer(thing)).Fz+(*mobj_t)(unsafe.Pointer(thing)).Fheight {
+		if tmthing.Fz > thing.Fz+thing.Fheight {
 			return 1
 		} // overhead
-		if (*mobj_t)(unsafe.Pointer(tmthing)).Fz+(*mobj_t)(unsafe.Pointer(tmthing)).Fheight < (*mobj_t)(unsafe.Pointer(thing)).Fz {
+		if tmthing.Fz+tmthing.Fheight < thing.Fz {
 			return 1
 		} // underneath
-		if (*mobj_t)(unsafe.Pointer(tmthing)).Ftarget != 0 && ((*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Ftarget)).Ftype1 == (*mobj_t)(unsafe.Pointer(thing)).Ftype1 || (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Ftarget)).Ftype1 == int32(MT_KNIGHT) && (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_BRUISER) || (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(tmthing)).Ftarget)).Ftype1 == int32(MT_BRUISER) && (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_KNIGHT)) {
+		if tmthing.Ftarget != nil && ((*mobj_t)(unsafe.Pointer(tmthing.Ftarget)).Ftype1 == thing.Ftype1 || (*mobj_t)(unsafe.Pointer(tmthing.Ftarget)).Ftype1 == int32(MT_KNIGHT) && thing.Ftype1 == int32(MT_BRUISER) || (*mobj_t)(unsafe.Pointer(tmthing.Ftarget)).Ftype1 == int32(MT_BRUISER) && thing.Ftype1 == int32(MT_KNIGHT)) {
 			// Don't hit same species as originator.
-			if thing == (*mobj_t)(unsafe.Pointer(tmthing)).Ftarget {
+			if thing == tmthing.Ftarget {
 				return 1
 			}
 			// sdh: Add deh_species_infighting here.  We can override the
 			// "monsters of the same species cant hurt each other" behavior
 			// through dehacked patches
-			if (*mobj_t)(unsafe.Pointer(thing)).Ftype1 != int32(MT_PLAYER) && (DEH_DEFAULT_SPECIES_INFIGHTING == 0) {
+			if thing.Ftype1 != int32(MT_PLAYER) && (DEH_DEFAULT_SPECIES_INFIGHTING == 0) {
 				// Explode, but do no damage.
 				// Let players missile other players.
 				return 0
 			}
 		}
-		if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SHOOTABLE) != 0) {
+		if !(thing.Fflags&int32(MF_SHOOTABLE) != 0) {
 			// didn't do any damage
-			return booluint32(!((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SOLID) != 0))
+			return booluint32(!(thing.Fflags&int32(MF_SOLID) != 0))
 		}
 		// damage / explode
-		damage = (P_Random()%int32(8) + 1) * (*mobj_t)(unsafe.Pointer(tmthing)).Finfo.Fdamage
-		P_DamageMobj(thing, tmthing, (*mobj_t)(unsafe.Pointer(tmthing)).Ftarget, damage)
+		damage = (P_Random()%int32(8) + 1) * tmthing.Finfo.Fdamage
+		P_DamageMobj(thing, tmthing, tmthing.Ftarget, damage)
 		// don't traverse any more
 		return 0
 	}
 	// check for special pickup
-	if (*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SPECIAL) != 0 {
-		solid = uint32((*mobj_t)(unsafe.Pointer(thing)).Fflags & int32(MF_SOLID))
+	if thing.Fflags&int32(MF_SPECIAL) != 0 {
+		solid = uint32(thing.Fflags & int32(MF_SOLID))
 		if tmflags&int32(MF_PICKUP) != 0 {
 			// can remove thing
 			P_TouchSpecialThing(thing, tmthing)
 		}
 		return booluint32(!(solid != 0))
 	}
-	return booluint32(!((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SOLID) != 0))
+	return booluint32(!(thing.Fflags&int32(MF_SOLID) != 0))
 }
 
 //
@@ -26216,18 +26212,18 @@ func PIT_CheckThing(thing uintptr) (r boolean) {
 //	//  speciallines[]
 //	//  numspeciallines
 //	//
-func P_CheckPosition(thing uintptr, x fixed_t, y fixed_t) (r boolean) {
+func P_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	var bx, by, xh, xl, yh, yl int32
 	var newsubsec *subsector_t
 	var v1 fixed_t
 	tmthing = thing
-	tmflags = (*mobj_t)(unsafe.Pointer(thing)).Fflags
+	tmflags = thing.Fflags
 	tmx = x
 	tmy = y
-	tmbbox[int32(BOXTOP)] = y + (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
-	tmbbox[int32(BOXBOTTOM)] = y - (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
-	tmbbox[int32(BOXRIGHT)] = x + (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
-	tmbbox[int32(BOXLEFT)] = x - (*mobj_t)(unsafe.Pointer(tmthing)).Fradius
+	tmbbox[int32(BOXTOP)] = y + tmthing.Fradius
+	tmbbox[int32(BOXBOTTOM)] = y - tmthing.Fradius
+	tmbbox[int32(BOXRIGHT)] = x + tmthing.Fradius
+	tmbbox[int32(BOXLEFT)] = x - tmthing.Fradius
 	newsubsec = R_PointInSubsector(x, y)
 	ceilingline = nil
 	// The base floor / ceiling is from the subsector
@@ -26313,10 +26309,10 @@ func P_CheckPosition(thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 //	// Attempt to move to a new position,
 //	// crossing special lines unless MF_TELEPORT is set.
 //	//
-func P_TryMove(thing uintptr, x fixed_t, y fixed_t) (r boolean) {
+func P_TryMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	var oldside, side, v1 int32
 	var oldx, oldy fixed_t
-	mthing := (*mobj_t)(unsafe.Pointer(thing))
+	mthing := thing
 	floatok = 0
 	if !(P_CheckPosition(thing, x, y) != 0) {
 		return 0
@@ -26380,23 +26376,23 @@ func P_TryMove(thing uintptr, x fixed_t, y fixed_t) (r boolean) {
 //	// the z will be set to the lowest value
 //	// and false will be returned.
 //	//
-func P_ThingHeightClip(thing uintptr) (r boolean) {
+func P_ThingHeightClip(thing *mobj_t) (r boolean) {
 	var onfloor boolean
-	onfloor = booluint32((*mobj_t)(unsafe.Pointer(thing)).Fz == (*mobj_t)(unsafe.Pointer(thing)).Ffloorz)
-	P_CheckPosition(thing, (*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy)
+	onfloor = booluint32(thing.Fz == thing.Ffloorz)
+	P_CheckPosition(thing, thing.Fx, thing.Fy)
 	// what about stranding a monster partially off an edge?
-	(*mobj_t)(unsafe.Pointer(thing)).Ffloorz = tmfloorz
-	(*mobj_t)(unsafe.Pointer(thing)).Fceilingz = tmceilingz
+	thing.Ffloorz = tmfloorz
+	thing.Fceilingz = tmceilingz
 	if onfloor != 0 {
 		// walking monsters rise and fall with the floor
-		(*mobj_t)(unsafe.Pointer(thing)).Fz = (*mobj_t)(unsafe.Pointer(thing)).Ffloorz
+		thing.Fz = thing.Ffloorz
 	} else {
 		// don't adjust a floating monster unless forced to
-		if (*mobj_t)(unsafe.Pointer(thing)).Fz+(*mobj_t)(unsafe.Pointer(thing)).Fheight > (*mobj_t)(unsafe.Pointer(thing)).Fceilingz {
-			(*mobj_t)(unsafe.Pointer(thing)).Fz = (*mobj_t)(unsafe.Pointer(thing)).Fceilingz - (*mobj_t)(unsafe.Pointer(thing)).Fheight
+		if thing.Fz+thing.Fheight > thing.Fceilingz {
+			thing.Fz = thing.Fceilingz - thing.Fheight
 		}
 	}
-	if (*mobj_t)(unsafe.Pointer(thing)).Fceilingz-(*mobj_t)(unsafe.Pointer(thing)).Ffloorz < (*mobj_t)(unsafe.Pointer(thing)).Fheight {
+	if thing.Fceilingz-thing.Ffloorz < thing.Fheight {
 		return 0
 	}
 	return 1
@@ -26494,10 +26490,10 @@ isblocking:
 //	//
 //	// This is a kludgy mess.
 //	//
-func P_SlideMove(mo uintptr) {
+func P_SlideMove(mo *mobj_t) {
 	var hitcount, v1 int32
 	var leadx, leady, newx, newy, trailx, traily fixed_t
-	slidemo = (*mobj_t)(unsafe.Pointer(mo))
+	slidemo = mo
 	hitcount = 0
 	goto retry
 retry:
@@ -26508,24 +26504,24 @@ retry:
 		goto stairstep
 	} // don't loop forever
 	// trace along the three leading corners
-	if (*mobj_t)(unsafe.Pointer(mo)).Fmomx > 0 {
-		leadx = (*mobj_t)(unsafe.Pointer(mo)).Fx + (*mobj_t)(unsafe.Pointer(mo)).Fradius
-		trailx = (*mobj_t)(unsafe.Pointer(mo)).Fx - (*mobj_t)(unsafe.Pointer(mo)).Fradius
+	if mo.Fmomx > 0 {
+		leadx = mo.Fx + mo.Fradius
+		trailx = mo.Fx - mo.Fradius
 	} else {
-		leadx = (*mobj_t)(unsafe.Pointer(mo)).Fx - (*mobj_t)(unsafe.Pointer(mo)).Fradius
-		trailx = (*mobj_t)(unsafe.Pointer(mo)).Fx + (*mobj_t)(unsafe.Pointer(mo)).Fradius
+		leadx = mo.Fx - mo.Fradius
+		trailx = mo.Fx + mo.Fradius
 	}
-	if (*mobj_t)(unsafe.Pointer(mo)).Fmomy > 0 {
-		leady = (*mobj_t)(unsafe.Pointer(mo)).Fy + (*mobj_t)(unsafe.Pointer(mo)).Fradius
-		traily = (*mobj_t)(unsafe.Pointer(mo)).Fy - (*mobj_t)(unsafe.Pointer(mo)).Fradius
+	if mo.Fmomy > 0 {
+		leady = mo.Fy + mo.Fradius
+		traily = mo.Fy - mo.Fradius
 	} else {
-		leady = (*mobj_t)(unsafe.Pointer(mo)).Fy - (*mobj_t)(unsafe.Pointer(mo)).Fradius
-		traily = (*mobj_t)(unsafe.Pointer(mo)).Fy + (*mobj_t)(unsafe.Pointer(mo)).Fradius
+		leady = mo.Fy - mo.Fradius
+		traily = mo.Fy + mo.Fradius
 	}
 	bestslidefrac = 1<<FRACBITS + 1
-	P_PathTraverse(leadx, leady, leadx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, leady+(*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(PT_ADDLINES), PTR_SlideTraverse)
-	P_PathTraverse(trailx, leady, trailx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, leady+(*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(PT_ADDLINES), PTR_SlideTraverse)
-	P_PathTraverse(leadx, traily, leadx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, traily+(*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(PT_ADDLINES), PTR_SlideTraverse)
+	P_PathTraverse(leadx, leady, leadx+mo.Fmomx, leady+mo.Fmomy, int32(PT_ADDLINES), PTR_SlideTraverse)
+	P_PathTraverse(trailx, leady, trailx+mo.Fmomx, leady+mo.Fmomy, int32(PT_ADDLINES), PTR_SlideTraverse)
+	P_PathTraverse(leadx, traily, leadx+mo.Fmomx, traily+mo.Fmomy, int32(PT_ADDLINES), PTR_SlideTraverse)
 	// move up to the wall
 	if !(bestslidefrac == 1<<FRACBITS+1) {
 		goto _2
@@ -26534,8 +26530,8 @@ retry:
 	goto stairstep
 stairstep:
 	;
-	if !(P_TryMove(mo, (*mobj_t)(unsafe.Pointer(mo)).Fx, (*mobj_t)(unsafe.Pointer(mo)).Fy+(*mobj_t)(unsafe.Pointer(mo)).Fmomy) != 0) {
-		P_TryMove(mo, (*mobj_t)(unsafe.Pointer(mo)).Fx+(*mobj_t)(unsafe.Pointer(mo)).Fmomx, (*mobj_t)(unsafe.Pointer(mo)).Fy)
+	if !(P_TryMove(mo, mo.Fx, mo.Fy+mo.Fmomy) != 0) {
+		P_TryMove(mo, mo.Fx+mo.Fmomx, mo.Fy)
 	}
 	return
 _2:
@@ -26543,9 +26539,9 @@ _2:
 	// fudge a bit to make sure it doesn't hit
 	bestslidefrac -= int32(0x800)
 	if bestslidefrac > 0 {
-		newx = FixedMul((*mobj_t)(unsafe.Pointer(mo)).Fmomx, bestslidefrac)
-		newy = FixedMul((*mobj_t)(unsafe.Pointer(mo)).Fmomy, bestslidefrac)
-		if !(P_TryMove(mo, (*mobj_t)(unsafe.Pointer(mo)).Fx+newx, (*mobj_t)(unsafe.Pointer(mo)).Fy+newy) != 0) {
+		newx = FixedMul(mo.Fmomx, bestslidefrac)
+		newy = FixedMul(mo.Fmomy, bestslidefrac)
+		if !(P_TryMove(mo, mo.Fx+newx, mo.Fy+newy) != 0) {
 			goto stairstep
 		}
 	}
@@ -26558,12 +26554,12 @@ _2:
 	if bestslidefrac <= 0 {
 		return
 	}
-	tmxmove = FixedMul((*mobj_t)(unsafe.Pointer(mo)).Fmomx, bestslidefrac)
-	tmymove = FixedMul((*mobj_t)(unsafe.Pointer(mo)).Fmomy, bestslidefrac)
+	tmxmove = FixedMul(mo.Fmomx, bestslidefrac)
+	tmymove = FixedMul(mo.Fmomy, bestslidefrac)
 	P_HitSlideLine(bestslideline) // clip the moves
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = tmxmove
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = tmymove
-	if !(P_TryMove(mo, (*mobj_t)(unsafe.Pointer(mo)).Fx+tmxmove, (*mobj_t)(unsafe.Pointer(mo)).Fy+tmymove) != 0) {
+	mo.Fmomx = tmxmove
+	mo.Fmomy = tmymove
+	if !(P_TryMove(mo, mo.Fx+tmxmove, mo.Fy+tmymove) != 0) {
 		goto retry
 	}
 }
@@ -26576,7 +26572,7 @@ _2:
 //	//
 func PTR_AimTraverse(in *intercept_t) (r boolean) {
 	var dist, slope, thingbottomslope, thingtopslope fixed_t
-	var th uintptr
+	var th *mobj_t
 	var li *line_t
 	if (*intercept_t)(unsafe.Pointer(in)).Fisaline != 0 {
 		li = (*intercept_t)(unsafe.Pointer(in)).Fd.Fthing
@@ -26609,20 +26605,20 @@ func PTR_AimTraverse(in *intercept_t) (r boolean) {
 		return 1 // shot continues
 	}
 	// shoot a thing
-	th = (uintptr)(unsafe.Pointer(in.Fd.Fthing))
+	th = (*mobj_t)(unsafe.Pointer(in.Fd.Fthing))
 	if th == shootthing {
 		return 1
 	} // can't shoot self
-	if !((*mobj_t)(unsafe.Pointer(th)).Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(th.Fflags&int32(MF_SHOOTABLE) != 0) {
 		return 1
 	} // corpse or something
 	// check angles to see if the thing can be aimed at
 	dist = FixedMul(attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
-	thingtopslope = FixedDiv((*mobj_t)(unsafe.Pointer(th)).Fz+(*mobj_t)(unsafe.Pointer(th)).Fheight-shootz, dist)
+	thingtopslope = FixedDiv(th.Fz+th.Fheight-shootz, dist)
 	if thingtopslope < bottomslope {
 		return 1
 	} // shot over the thing
-	thingbottomslope = FixedDiv((*mobj_t)(unsafe.Pointer(th)).Fz-shootz, dist)
+	thingbottomslope = FixedDiv(th.Fz-shootz, dist)
 	if thingbottomslope > topslope {
 		return 1
 	} // shot under the thing
@@ -26645,7 +26641,7 @@ func PTR_AimTraverse(in *intercept_t) (r boolean) {
 //	//
 func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 	var dist, frac, slope, thingbottomslope, thingtopslope, x, y, z fixed_t
-	var th uintptr
+	var th *mobj_t
 	var li *line_t
 	if (*intercept_t)(unsafe.Pointer(in)).Fisaline != 0 {
 		li = (*intercept_t)(unsafe.Pointer(in)).Fd.Fthing
@@ -26710,20 +26706,20 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 		return 0
 	}
 	// shoot a thing
-	th = (uintptr)(unsafe.Pointer(in.Fd.Fthing))
+	th = (*mobj_t)(unsafe.Pointer(in.Fd.Fthing))
 	if th == shootthing {
 		return 1
 	} // can't shoot self
-	if !((*mobj_t)(unsafe.Pointer(th)).Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(th.Fflags&int32(MF_SHOOTABLE) != 0) {
 		return 1
 	} // corpse or something
 	// check angles to see if the thing can be aimed at
 	dist = FixedMul(attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
-	thingtopslope = FixedDiv((*mobj_t)(unsafe.Pointer(th)).Fz+(*mobj_t)(unsafe.Pointer(th)).Fheight-shootz, dist)
+	thingtopslope = FixedDiv(th.Fz+th.Fheight-shootz, dist)
 	if thingtopslope < aimslope {
 		return 1
 	} // shot over the thing
-	thingbottomslope = FixedDiv((*mobj_t)(unsafe.Pointer(th)).Fz-shootz, dist)
+	thingbottomslope = FixedDiv(th.Fz-shootz, dist)
 	if thingbottomslope > aimslope {
 		return 1
 	} // shot under the thing
@@ -26752,21 +26748,21 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 //	//
 //	// P_AimLineAttack
 //	//
-func P_AimLineAttack(t1 uintptr, angle angle_t, distance fixed_t) (r fixed_t) {
+func P_AimLineAttack(t1 *mobj_t, angle angle_t, distance fixed_t) (r fixed_t) {
 	var x2, y2 fixed_t
 	t1 = P_SubstNullMobj(t1)
 	angle >>= uint32(ANGLETOFINESHIFT)
 	shootthing = t1
-	x2 = (*mobj_t)(unsafe.Pointer(t1)).Fx + distance>>FRACBITS*finecosine[angle]
-	y2 = (*mobj_t)(unsafe.Pointer(t1)).Fy + distance>>FRACBITS*finesine[angle]
-	shootz = (*mobj_t)(unsafe.Pointer(t1)).Fz + (*mobj_t)(unsafe.Pointer(t1)).Fheight>>1 + 8*(1<<FRACBITS)
+	x2 = t1.Fx + distance>>FRACBITS*finecosine[angle]
+	y2 = t1.Fy + distance>>FRACBITS*finesine[angle]
+	shootz = t1.Fz + t1.Fheight>>1 + 8*(1<<FRACBITS)
 	// can't shoot outside view angles
 	topslope = 100 * (1 << FRACBITS) / 160
 	bottomslope = -100 * (1 << FRACBITS) / 160
 	attackrange = distance
-	linetarget = uintptr(0)
-	P_PathTraverse((*mobj_t)(unsafe.Pointer(t1)).Fx, (*mobj_t)(unsafe.Pointer(t1)).Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, PTR_AimTraverse)
-	if linetarget != 0 {
+	linetarget = nil
+	P_PathTraverse(t1.Fx, t1.Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, PTR_AimTraverse)
+	if linetarget != nil {
 		return aimslope
 	}
 	return 0
@@ -26779,17 +26775,17 @@ func P_AimLineAttack(t1 uintptr, angle angle_t, distance fixed_t) (r fixed_t) {
 //	// If damage == 0, it is just a test trace
 //	// that will leave linetarget set.
 //	//
-func P_LineAttack(t1 uintptr, angle angle_t, distance fixed_t, slope fixed_t, damage int32) {
+func P_LineAttack(t1 *mobj_t, angle angle_t, distance fixed_t, slope fixed_t, damage int32) {
 	var x2, y2 fixed_t
 	angle >>= uint32(ANGLETOFINESHIFT)
 	shootthing = t1
 	la_damage = damage
-	x2 = (*mobj_t)(unsafe.Pointer(t1)).Fx + distance>>FRACBITS*finecosine[angle]
-	y2 = (*mobj_t)(unsafe.Pointer(t1)).Fy + distance>>FRACBITS*finesine[angle]
-	shootz = (*mobj_t)(unsafe.Pointer(t1)).Fz + (*mobj_t)(unsafe.Pointer(t1)).Fheight>>1 + 8*(1<<FRACBITS)
+	x2 = t1.Fx + distance>>FRACBITS*finecosine[angle]
+	y2 = t1.Fy + distance>>FRACBITS*finesine[angle]
+	shootz = t1.Fz + t1.Fheight>>1 + 8*(1<<FRACBITS)
 	attackrange = distance
 	aimslope = slope
-	P_PathTraverse((*mobj_t)(unsafe.Pointer(t1)).Fx, (*mobj_t)(unsafe.Pointer(t1)).Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, PTR_ShootTraverse)
+	P_PathTraverse(t1.Fx, t1.Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, PTR_ShootTraverse)
 }
 
 func PTR_UseTraverse(in *intercept_t) (r boolean) {
@@ -26798,7 +26794,7 @@ func PTR_UseTraverse(in *intercept_t) (r boolean) {
 	if !(line.Fspecial != 0) {
 		P_LineOpening(line)
 		if openrange <= 0 {
-			S_StartSound(&((*mobj_t)(unsafe.Pointer(usething)).degenmobj_t), int32(sfx_noway))
+			S_StartSound(&(usething.degenmobj_t), int32(sfx_noway))
 			// can't use through a wall
 			return 0
 		}
@@ -26806,7 +26802,7 @@ func PTR_UseTraverse(in *intercept_t) (r boolean) {
 		return 1
 	}
 	side = 0
-	if P_PointOnLineSide((*mobj_t)(unsafe.Pointer(usething)).Fx, (*mobj_t)(unsafe.Pointer(usething)).Fy, line) == 1 {
+	if P_PointOnLineSide(usething.Fx, usething.Fy, line) == 1 {
 		side = 1
 	}
 	//	return false;		// don't use back side
@@ -26825,9 +26821,9 @@ func P_UseLines(player *player_t) {
 	var angle int32
 	var x1, x2, y1, y2 fixed_t
 	usething = player.Fmo
-	angle = int32((*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle >> int32(ANGLETOFINESHIFT))
-	x1 = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fx
-	y1 = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fy
+	angle = int32(player.Fmo.Fangle >> int32(ANGLETOFINESHIFT))
+	x1 = player.Fmo.Fx
+	y1 = player.Fmo.Fy
 	x2 = x1 + 64*(1<<FRACBITS)>>FRACBITS*finecosine[angle]
 	y2 = y1 + 64*(1<<FRACBITS)>>FRACBITS*finesine[angle]
 	P_PathTraverse(x1, y1, x2, y2, int32(PT_ADDLINES), PTR_UseTraverse)
@@ -26840,26 +26836,26 @@ func P_UseLines(player *player_t) {
 //	// "bombsource" is the creature
 //	// that caused the explosion at "bombspot".
 //	//
-func PIT_RadiusAttack(thing uintptr) (r boolean) {
+func PIT_RadiusAttack(thing *mobj_t) (r boolean) {
 	var dist, dx, dy fixed_t
 	var v1 int32
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(thing.Fflags&int32(MF_SHOOTABLE) != 0) {
 		return 1
 	}
 	// Boss spider and cyborg
 	// take no damage from concussion.
-	if (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_CYBORG) || (*mobj_t)(unsafe.Pointer(thing)).Ftype1 == int32(MT_SPIDER) {
+	if thing.Ftype1 == int32(MT_CYBORG) || thing.Ftype1 == int32(MT_SPIDER) {
 		return 1
 	}
-	dx = xabs((*mobj_t)(unsafe.Pointer(thing)).Fx - (*mobj_t)(unsafe.Pointer(bombspot)).Fx)
-	dy = xabs((*mobj_t)(unsafe.Pointer(thing)).Fy - (*mobj_t)(unsafe.Pointer(bombspot)).Fy)
+	dx = xabs(thing.Fx - bombspot.Fx)
+	dy = xabs(thing.Fy - bombspot.Fy)
 	if dx > dy {
 		v1 = dx
 	} else {
 		v1 = dy
 	}
 	dist = v1
-	dist = (dist - (*mobj_t)(unsafe.Pointer(thing)).Fradius) >> int32(FRACBITS)
+	dist = (dist - thing.Fradius) >> int32(FRACBITS)
 	if dist < 0 {
 		dist = 0
 	}
@@ -26879,14 +26875,14 @@ func PIT_RadiusAttack(thing uintptr) (r boolean) {
 //	// P_RadiusAttack
 //	// Source is the creature that caused the explosion at spot.
 //	//
-func P_RadiusAttack(spot uintptr, source uintptr, damage int32) {
+func P_RadiusAttack(spot *mobj_t, source *mobj_t, damage int32) {
 	var dist fixed_t
 	var x, xh, xl, y, yh, yl int32
 	dist = (damage + 32*(1<<FRACBITS)) << int32(FRACBITS)
-	yh = ((*mobj_t)(unsafe.Pointer(spot)).Fy + dist - bmaporgy) >> (FRACBITS + 7)
-	yl = ((*mobj_t)(unsafe.Pointer(spot)).Fy - dist - bmaporgy) >> (FRACBITS + 7)
-	xh = ((*mobj_t)(unsafe.Pointer(spot)).Fx + dist - bmaporgx) >> (FRACBITS + 7)
-	xl = ((*mobj_t)(unsafe.Pointer(spot)).Fx - dist - bmaporgx) >> (FRACBITS + 7)
+	yh = (spot.Fy + dist - bmaporgy) >> (FRACBITS + 7)
+	yl = (spot.Fy - dist - bmaporgy) >> (FRACBITS + 7)
+	xh = (spot.Fx + dist - bmaporgx) >> (FRACBITS + 7)
+	xl = (spot.Fx - dist - bmaporgx) >> (FRACBITS + 7)
 	bombspot = spot
 	bombsource = source
 	bombdamage = damage
@@ -26918,38 +26914,38 @@ func P_RadiusAttack(spot uintptr, source uintptr, damage int32) {
 //	//
 //	// PIT_ChangeSector
 //	//
-func PIT_ChangeSector(thing uintptr) (r boolean) {
-	var mo uintptr
+func PIT_ChangeSector(thing *mobj_t) (r boolean) {
+	var mo *mobj_t
 	if P_ThingHeightClip(thing) != 0 {
 		// keep checking
 		return 1
 	}
 	// crunch bodies to giblets
-	if (*mobj_t)(unsafe.Pointer(thing)).Fhealth <= 0 {
+	if thing.Fhealth <= 0 {
 		P_SetMobjState(thing, S_GIBS)
-		*(*int32)(unsafe.Pointer(thing + 160)) &= ^int32(MF_SOLID)
-		(*mobj_t)(unsafe.Pointer(thing)).Fheight = 0
-		(*mobj_t)(unsafe.Pointer(thing)).Fradius = 0
+		thing.Fflags &= ^int32(MF_SOLID)
+		thing.Fheight = 0
+		thing.Fradius = 0
 		// keep checking
 		return 1
 	}
 	// crunch dropped items
-	if (*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_DROPPED) != 0 {
+	if thing.Fflags&int32(MF_DROPPED) != 0 {
 		P_RemoveMobj(thing)
 		// keep checking
 		return 1
 	}
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SHOOTABLE) != 0) {
+	if !(thing.Fflags&int32(MF_SHOOTABLE) != 0) {
 		// assume it is bloody gibs or something
 		return 1
 	}
 	nofit = 1
 	if crushchange != 0 && !(leveltime&3 != 0) {
-		P_DamageMobj(thing, uintptr(0), uintptr(0), 10)
+		P_DamageMobj(thing, nil, nil, 10)
 		// spray blood in a random direction
-		mo = P_SpawnMobj((*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy, (*mobj_t)(unsafe.Pointer(thing)).Fz+(*mobj_t)(unsafe.Pointer(thing)).Fheight/int32(2), int32(MT_BLOOD))
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = (P_Random() - P_Random()) << 12
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = (P_Random() - P_Random()) << 12
+		mo = P_SpawnMobj(thing.Fx, thing.Fy, thing.Fz+thing.Fheight/int32(2), int32(MT_BLOOD))
+		mo.Fmomx = (P_Random() - P_Random()) << 12
+		mo.Fmomy = (P_Random() - P_Random()) << 12
 	}
 	// keep checking (crush other things)
 	return 1
@@ -27249,33 +27245,33 @@ func P_LineOpening(linedef *line_t) {
 //	// lookups maintaining lists ot things inside
 //	// these structures need to be updated.
 //	//
-func P_UnsetThingPosition(thing uintptr) {
+func P_UnsetThingPosition(thing *mobj_t) {
 	var blockx, blocky int32
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_NOSECTOR) != 0) {
+	if !(thing.Fflags&int32(MF_NOSECTOR) != 0) {
 		// inert things don't need to be in blockmap?
 		// unlink from subsector
-		if (*mobj_t)(unsafe.Pointer(thing)).Fsnext != 0 {
-			(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fsnext)).Fsprev = (*mobj_t)(unsafe.Pointer(thing)).Fsprev
+		if thing.Fsnext != nil {
+			(*mobj_t)(unsafe.Pointer(thing.Fsnext)).Fsprev = thing.Fsprev
 		}
-		if (*mobj_t)(unsafe.Pointer(thing)).Fsprev != 0 {
-			(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fsprev)).Fsnext = (*mobj_t)(unsafe.Pointer(thing)).Fsnext
+		if thing.Fsprev != nil {
+			(*mobj_t)(unsafe.Pointer(thing.Fsprev)).Fsnext = thing.Fsnext
 		} else {
-			(*sector_t)(unsafe.Pointer(((*mobj_t)(unsafe.Pointer(thing)).Fsubsector).Fsector)).Fthinglist = (*mobj_t)(unsafe.Pointer(thing)).Fsnext
+			(*sector_t)(unsafe.Pointer((thing.Fsubsector).Fsector)).Fthinglist = thing.Fsnext
 		}
 	}
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_NOBLOCKMAP) != 0) {
+	if !(thing.Fflags&int32(MF_NOBLOCKMAP) != 0) {
 		// inert things don't need to be in blockmap
 		// unlink from block map
-		if (*mobj_t)(unsafe.Pointer(thing)).Fbnext != 0 {
-			(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fbnext)).Fbprev = (*mobj_t)(unsafe.Pointer(thing)).Fbprev
+		if thing.Fbnext != nil {
+			(*mobj_t)(unsafe.Pointer(thing.Fbnext)).Fbprev = thing.Fbprev
 		}
-		if (*mobj_t)(unsafe.Pointer(thing)).Fbprev != 0 {
-			(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(thing)).Fbprev)).Fbnext = (*mobj_t)(unsafe.Pointer(thing)).Fbnext
+		if thing.Fbprev != nil {
+			(*mobj_t)(unsafe.Pointer(thing.Fbprev)).Fbnext = thing.Fbnext
 		} else {
-			blockx = ((*mobj_t)(unsafe.Pointer(thing)).Fx - bmaporgx) >> (FRACBITS + 7)
-			blocky = ((*mobj_t)(unsafe.Pointer(thing)).Fy - bmaporgy) >> (FRACBITS + 7)
+			blockx = (thing.Fx - bmaporgx) >> (FRACBITS + 7)
+			blocky = (thing.Fy - bmaporgy) >> (FRACBITS + 7)
 			if blockx >= 0 && blockx < bmapwidth && blocky >= 0 && blocky < bmapheight {
-				*(*uintptr)(unsafe.Pointer(blocklinks + uintptr(blocky*bmapwidth+blockx)*8)) = (*mobj_t)(unsafe.Pointer(thing)).Fbnext
+				*(*uintptr)(unsafe.Pointer(blocklinks + uintptr(blocky*bmapwidth+blockx)*8)) = (uintptr)(unsafe.Pointer(thing.Fbnext))
 			}
 		}
 	}
@@ -27289,42 +27285,41 @@ func P_UnsetThingPosition(thing uintptr) {
 //	// based on it's x y.
 //	// Sets thing->subsector properly
 //	//
-func P_SetThingPosition(thing uintptr) {
+func P_SetThingPosition(thing *mobj_t) {
 	var blockx, blocky int32
-	var link, v1 uintptr
+	var link uintptr
 	var ss *subsector_t
 	var sec *sector_t
 	// link into subsector
-	ss = R_PointInSubsector((*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy)
-	(*mobj_t)(unsafe.Pointer(thing)).Fsubsector = ss
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_NOSECTOR) != 0) {
+	ss = R_PointInSubsector(thing.Fx, thing.Fy)
+	thing.Fsubsector = ss
+	if !(thing.Fflags&int32(MF_NOSECTOR) != 0) {
 		// invisible things don't go into the sector links
 		sec = ss.Fsector
-		(*mobj_t)(unsafe.Pointer(thing)).Fsprev = uintptr(0)
-		(*mobj_t)(unsafe.Pointer(thing)).Fsnext = sec.Fthinglist
-		if sec.Fthinglist != 0 {
+		thing.Fsprev = nil
+		thing.Fsnext = sec.Fthinglist
+		if sec.Fthinglist != nil {
 			(*mobj_t)(unsafe.Pointer(sec.Fthinglist)).Fsprev = thing
 		}
 		sec.Fthinglist = thing
 	}
 	// link into blockmap
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_NOBLOCKMAP) != 0) {
+	if !(thing.Fflags&int32(MF_NOBLOCKMAP) != 0) {
 		// inert things don't need to be in blockmap
-		blockx = ((*mobj_t)(unsafe.Pointer(thing)).Fx - bmaporgx) >> (FRACBITS + 7)
-		blocky = ((*mobj_t)(unsafe.Pointer(thing)).Fy - bmaporgy) >> (FRACBITS + 7)
+		blockx = (thing.Fx - bmaporgx) >> (FRACBITS + 7)
+		blocky = (thing.Fy - bmaporgy) >> (FRACBITS + 7)
 		if blockx >= 0 && blockx < bmapwidth && blocky >= 0 && blocky < bmapheight {
 			link = blocklinks + uintptr(blocky*bmapwidth+blockx)*8
-			(*mobj_t)(unsafe.Pointer(thing)).Fbprev = uintptr(0)
-			(*mobj_t)(unsafe.Pointer(thing)).Fbnext = *(*uintptr)(unsafe.Pointer(link))
+			thing.Fbprev = nil
+			thing.Fbnext = *(**mobj_t)(unsafe.Pointer(link))
 			if *(*uintptr)(unsafe.Pointer(link)) != 0 {
 				(*mobj_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(link)))).Fbprev = thing
 			}
-			*(*uintptr)(unsafe.Pointer(link)) = thing
+			*(*uintptr)(unsafe.Pointer(link)) = (uintptr)(unsafe.Pointer(thing))
 		} else {
 			// thing is off the map
-			v1 = uintptr(0)
-			(*mobj_t)(unsafe.Pointer(thing)).Fbprev = v1
-			(*mobj_t)(unsafe.Pointer(thing)).Fbnext = v1
+			thing.Fbprev = nil
+			thing.Fbnext = nil
 		}
 	}
 }
@@ -27381,14 +27376,14 @@ func P_BlockLinesIterator(x int32, y int32, func1 func(*line_t) boolean) (r bool
 //	//
 //	// P_BlockThingsIterator
 //	//
-func P_BlockThingsIterator(x int32, y int32, func1 func(uintptr) boolean) (r boolean) {
-	var mobj uintptr
+func P_BlockThingsIterator(x int32, y int32, func1 func(*mobj_t) boolean) (r boolean) {
+	var mobj *mobj_t
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
 		return 1
 	}
-	mobj = *(*uintptr)(unsafe.Pointer(blocklinks + uintptr(y*bmapwidth+x)*8))
+	mobj = *(**mobj_t)(unsafe.Pointer(blocklinks + uintptr(y*bmapwidth+x)*8))
 	for {
-		if !(mobj != 0) {
+		if !(mobj != nil) {
 			break
 		}
 		if !(func1(mobj) != 0) {
@@ -27397,7 +27392,7 @@ func P_BlockThingsIterator(x int32, y int32, func1 func(uintptr) boolean) (r boo
 		goto _1
 	_1:
 		;
-		mobj = (*mobj_t)(unsafe.Pointer(mobj)).Fbnext
+		mobj = mobj.Fbnext
 	}
 	return 1
 }
@@ -27452,7 +27447,7 @@ func PIT_AddLineIntercepts(ld *line_t) (r boolean) {
 //	//
 //	// PIT_AddThingIntercepts
 //	//
-func PIT_AddThingIntercepts(thing uintptr) (r boolean) {
+func PIT_AddThingIntercepts(thing *mobj_t) (r boolean) {
 	bp := alloc(16)
 	var frac, x1, x2, y1, y2 fixed_t
 	var s1, s2 int32
@@ -27460,15 +27455,15 @@ func PIT_AddThingIntercepts(thing uintptr) (r boolean) {
 	tracepositive = booluint32(trace.Fdx^trace.Fdy > 0)
 	// check a corner to corner crossection for hit
 	if tracepositive != 0 {
-		x1 = (*mobj_t)(unsafe.Pointer(thing)).Fx - (*mobj_t)(unsafe.Pointer(thing)).Fradius
-		y1 = (*mobj_t)(unsafe.Pointer(thing)).Fy + (*mobj_t)(unsafe.Pointer(thing)).Fradius
-		x2 = (*mobj_t)(unsafe.Pointer(thing)).Fx + (*mobj_t)(unsafe.Pointer(thing)).Fradius
-		y2 = (*mobj_t)(unsafe.Pointer(thing)).Fy - (*mobj_t)(unsafe.Pointer(thing)).Fradius
+		x1 = thing.Fx - thing.Fradius
+		y1 = thing.Fy + thing.Fradius
+		x2 = thing.Fx + thing.Fradius
+		y2 = thing.Fy - thing.Fradius
 	} else {
-		x1 = (*mobj_t)(unsafe.Pointer(thing)).Fx - (*mobj_t)(unsafe.Pointer(thing)).Fradius
-		y1 = (*mobj_t)(unsafe.Pointer(thing)).Fy - (*mobj_t)(unsafe.Pointer(thing)).Fradius
-		x2 = (*mobj_t)(unsafe.Pointer(thing)).Fx + (*mobj_t)(unsafe.Pointer(thing)).Fradius
-		y2 = (*mobj_t)(unsafe.Pointer(thing)).Fy + (*mobj_t)(unsafe.Pointer(thing)).Fradius
+		x1 = thing.Fx - thing.Fradius
+		y1 = thing.Fy - thing.Fradius
+		x2 = thing.Fx + thing.Fradius
+		y2 = thing.Fy + thing.Fradius
 	}
 	s1 = P_PointOnDivlineSide(x1, y1, uintptr(unsafe.Pointer(&trace)))
 	s2 = P_PointOnDivlineSide(x2, y2, uintptr(unsafe.Pointer(&trace)))
@@ -27485,7 +27480,7 @@ func PIT_AddThingIntercepts(thing uintptr) (r boolean) {
 	} // behind source
 	(*intercept_t)(unsafe.Pointer(intercept_p)).Ffrac = frac
 	(*intercept_t)(unsafe.Pointer(intercept_p)).Fisaline = 0
-	*(*uintptr)(unsafe.Pointer(intercept_p + 8)) = thing
+	*(**mobj_t)(unsafe.Pointer(intercept_p + 8)) = thing
 	InterceptsOverrun(int32((int64(intercept_p)-int64(uintptr(unsafe.Pointer(&intercepts))))/16), intercept_p)
 	intercept_p += 16
 	return 1 // keep going
@@ -27796,22 +27791,22 @@ const ANG453 = 536870912
 const FRICTION = 59392
 const STOPSPEED = 4096
 
-func P_SetMobjState(mobj uintptr, state statenum_t) (r boolean) {
-	for cond := true; cond; cond = !((*mobj_t)(unsafe.Pointer(mobj)).Ftics != 0) {
+func P_SetMobjState(mobj *mobj_t, state statenum_t) (r boolean) {
+	for cond := true; cond; cond = !(mobj.Ftics != 0) {
 		if state == S_NULL {
-			(*mobj_t)(unsafe.Pointer(mobj)).Fstate = nil
+			mobj.Fstate = nil
 			P_RemoveMobj(mobj)
 			return 0
 		}
 		st := &states[state]
-		(*mobj_t)(unsafe.Pointer(mobj)).Fstate = st
-		(*mobj_t)(unsafe.Pointer(mobj)).Ftics = st.Ftics
-		(*mobj_t)(unsafe.Pointer(mobj)).Fsprite = st.Fsprite
-		(*mobj_t)(unsafe.Pointer(mobj)).Fframe = st.Fframe
+		mobj.Fstate = st
+		mobj.Ftics = st.Ftics
+		mobj.Fsprite = st.Fsprite
+		mobj.Fframe = st.Fframe
 		// Modified handling.
 		// Call action functions when the state is set
 		if st.Faction.Facv != 0 {
-			(*(*func(uintptr))(unsafe.Pointer(&struct{ uintptr }{*(*actionf_p1)(unsafe.Pointer(&st.Faction))})))(mobj)
+			(*(*func(*mobj_t))(unsafe.Pointer(&struct{ uintptr }{*(*actionf_p1)(unsafe.Pointer(&st.Faction))})))(mobj)
 		}
 		state = st.Fnextstate
 	}
@@ -27823,21 +27818,21 @@ func P_SetMobjState(mobj uintptr, state statenum_t) (r boolean) {
 //	//
 //	// P_ExplodeMissile
 //	//
-func P_ExplodeMissile(mo uintptr) {
+func P_ExplodeMissile(mo *mobj_t) {
 	var v1, v2 fixed_t
 	v2 = 0
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomz = v2
+	mo.Fmomz = v2
 	v1 = v2
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomy = v1
-	(*mobj_t)(unsafe.Pointer(mo)).Fmomx = v1
-	P_SetMobjState(mo, mobjinfo[(*mobj_t)(unsafe.Pointer(mo)).Ftype1].Fdeathstate)
-	*(*int32)(unsafe.Pointer(mo + 144)) -= P_Random() & 3
-	if (*mobj_t)(unsafe.Pointer(mo)).Ftics < 1 {
-		(*mobj_t)(unsafe.Pointer(mo)).Ftics = 1
+	mo.Fmomy = v1
+	mo.Fmomx = v1
+	P_SetMobjState(mo, mobjinfo[mo.Ftype1].Fdeathstate)
+	mo.Ftics -= P_Random() & 3
+	if mo.Ftics < 1 {
+		mo.Ftics = 1
 	}
-	*(*int32)(unsafe.Pointer(mo + 160)) &= ^int32(MF_MISSILE)
-	if (*mobj_t)(unsafe.Pointer(mo)).Finfo.Fdeathsound != 0 {
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(mo)).degenmobj_t), (*mobj_t)(unsafe.Pointer(mo)).Finfo.Fdeathsound)
+	mo.Fflags &= ^MF_MISSILE
+	if mo.Finfo.Fdeathsound != 0 {
+		S_StartSound(&(mo.degenmobj_t), mo.Finfo.Fdeathsound)
 	}
 }
 
@@ -27845,59 +27840,59 @@ func P_ExplodeMissile(mo uintptr) {
 // P_XYMovement
 //
 
-func P_XYMovement(mo uintptr) {
+func P_XYMovement(mo *mobj_t) {
 	var player *player_t
 	var ptryx, ptryy, xmove, ymove, v1, v2, v3, v4, v5 fixed_t
-	if !((*mobj_t)(unsafe.Pointer(mo)).Fmomx != 0) && !((*mobj_t)(unsafe.Pointer(mo)).Fmomy != 0) {
-		if (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_SKULLFLY) != 0 {
+	if !(mo.Fmomx != 0) && !(mo.Fmomy != 0) {
+		if mo.Fflags&int32(MF_SKULLFLY) != 0 {
 			// the skull slammed into something
-			*(*int32)(unsafe.Pointer(mo + 160)) &= ^int32(MF_SKULLFLY)
+			mo.Fflags &= ^int32(MF_SKULLFLY)
 			v2 = 0
-			(*mobj_t)(unsafe.Pointer(mo)).Fmomz = v2
+			mo.Fmomz = v2
 			v1 = v2
-			(*mobj_t)(unsafe.Pointer(mo)).Fmomy = v1
-			(*mobj_t)(unsafe.Pointer(mo)).Fmomx = v1
-			P_SetMobjState(mo, (*mobj_t)(unsafe.Pointer(mo)).Finfo.Fspawnstate)
+			mo.Fmomy = v1
+			mo.Fmomx = v1
+			P_SetMobjState(mo, mo.Finfo.Fspawnstate)
 		}
 		return
 	}
-	player = (*mobj_t)(unsafe.Pointer(mo)).Fplayer
-	if (*mobj_t)(unsafe.Pointer(mo)).Fmomx > 30*(1<<FRACBITS) {
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = 30 * (1 << FRACBITS)
+	player = mo.Fplayer
+	if mo.Fmomx > 30*(1<<FRACBITS) {
+		mo.Fmomx = 30 * (1 << FRACBITS)
 	} else {
-		if (*mobj_t)(unsafe.Pointer(mo)).Fmomx < -(30 * (1 << FRACBITS)) {
-			(*mobj_t)(unsafe.Pointer(mo)).Fmomx = -(30 * (1 << FRACBITS))
+		if mo.Fmomx < -(30 * (1 << FRACBITS)) {
+			mo.Fmomx = -(30 * (1 << FRACBITS))
 		}
 	}
-	if (*mobj_t)(unsafe.Pointer(mo)).Fmomy > 30*(1<<FRACBITS) {
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = 30 * (1 << FRACBITS)
+	if mo.Fmomy > 30*(1<<FRACBITS) {
+		mo.Fmomy = 30 * (1 << FRACBITS)
 	} else {
-		if (*mobj_t)(unsafe.Pointer(mo)).Fmomy < -(30 * (1 << FRACBITS)) {
-			(*mobj_t)(unsafe.Pointer(mo)).Fmomy = -(30 * (1 << FRACBITS))
+		if mo.Fmomy < -(30 * (1 << FRACBITS)) {
+			mo.Fmomy = -(30 * (1 << FRACBITS))
 		}
 	}
-	xmove = (*mobj_t)(unsafe.Pointer(mo)).Fmomx
-	ymove = (*mobj_t)(unsafe.Pointer(mo)).Fmomy
+	xmove = mo.Fmomx
+	ymove = mo.Fmomy
 	for cond := true; cond; cond = xmove != 0 || ymove != 0 {
 		if xmove > 30*(1<<FRACBITS)/2 || ymove > 30*(1<<FRACBITS)/2 {
-			ptryx = (*mobj_t)(unsafe.Pointer(mo)).Fx + xmove/int32(2)
-			ptryy = (*mobj_t)(unsafe.Pointer(mo)).Fy + ymove/int32(2)
+			ptryx = mo.Fx + xmove/int32(2)
+			ptryy = mo.Fy + ymove/int32(2)
 			xmove >>= 1
 			ymove >>= 1
 		} else {
-			ptryx = (*mobj_t)(unsafe.Pointer(mo)).Fx + xmove
-			ptryy = (*mobj_t)(unsafe.Pointer(mo)).Fy + ymove
+			ptryx = mo.Fx + xmove
+			ptryy = mo.Fy + ymove
 			v3 = 0
 			ymove = v3
 			xmove = v3
 		}
 		if !(P_TryMove(mo, ptryx, ptryy) != 0) {
 			// blocked move
-			if (*mobj_t)(unsafe.Pointer(mo)).Fplayer != nil {
+			if mo.Fplayer != nil {
 				// try to slide along it
 				P_SlideMove(mo)
 			} else {
-				if (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_MISSILE) != 0 {
+				if mo.Fflags&int32(MF_MISSILE) != 0 {
 					// explode a missile
 					if ceilingline != nil && ceilingline.Fbacksector != nil && int32((*sector_t)(unsafe.Pointer(ceilingline.Fbacksector)).Fceilingpic) == skyflatnum {
 						// Hack to prevent missiles exploding
@@ -27909,8 +27904,8 @@ func P_XYMovement(mo uintptr) {
 					P_ExplodeMissile(mo)
 				} else {
 					v4 = 0
-					(*mobj_t)(unsafe.Pointer(mo)).Fmomy = v4
-					(*mobj_t)(unsafe.Pointer(mo)).Fmomx = v4
+					mo.Fmomy = v4
+					mo.Fmomx = v4
 				}
 			}
 		}
@@ -27919,35 +27914,35 @@ func P_XYMovement(mo uintptr) {
 	if player != nil && player.Fcheats&int32(CF_NOMOMENTUM) != 0 {
 		// debug option for no sliding at all
 		v5 = 0
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = v5
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = v5
+		mo.Fmomy = v5
+		mo.Fmomx = v5
 		return
 	}
-	if (*mobj_t)(unsafe.Pointer(mo)).Fflags&(int32(MF_MISSILE)|int32(MF_SKULLFLY)) != 0 {
+	if mo.Fflags&(int32(MF_MISSILE)|int32(MF_SKULLFLY)) != 0 {
 		return
 	} // no friction for missiles ever
-	if (*mobj_t)(unsafe.Pointer(mo)).Fz > (*mobj_t)(unsafe.Pointer(mo)).Ffloorz {
+	if mo.Fz > mo.Ffloorz {
 		return
 	} // no friction when airborne
-	if (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_CORPSE) != 0 {
+	if mo.Fflags&int32(MF_CORPSE) != 0 {
 		// do not stop sliding
 		//  if halfway off a step with some momentum
-		if (*mobj_t)(unsafe.Pointer(mo)).Fmomx > 1<<FRACBITS/4 || (*mobj_t)(unsafe.Pointer(mo)).Fmomx < -(1<<FRACBITS)/4 || (*mobj_t)(unsafe.Pointer(mo)).Fmomy > 1<<FRACBITS/4 || (*mobj_t)(unsafe.Pointer(mo)).Fmomy < -(1<<FRACBITS)/4 {
-			if (*mobj_t)(unsafe.Pointer(mo)).Ffloorz != (*sector_t)(unsafe.Pointer(((*mobj_t)(unsafe.Pointer(mo)).Fsubsector).Fsector)).Ffloorheight {
+		if mo.Fmomx > 1<<FRACBITS/4 || mo.Fmomx < -(1<<FRACBITS)/4 || mo.Fmomy > 1<<FRACBITS/4 || mo.Fmomy < -(1<<FRACBITS)/4 {
+			if mo.Ffloorz != (*sector_t)(unsafe.Pointer((mo.Fsubsector).Fsector)).Ffloorheight {
 				return
 			}
 		}
 	}
-	if (*mobj_t)(unsafe.Pointer(mo)).Fmomx > -int32(STOPSPEED) && (*mobj_t)(unsafe.Pointer(mo)).Fmomx < int32(STOPSPEED) && (*mobj_t)(unsafe.Pointer(mo)).Fmomy > -int32(STOPSPEED) && (*mobj_t)(unsafe.Pointer(mo)).Fmomy < int32(STOPSPEED) && (!(player != nil) || int32(player.Fcmd.Fforwardmove) == 0 && int32(player.Fcmd.Fsidemove) == 0) {
+	if mo.Fmomx > -int32(STOPSPEED) && mo.Fmomx < int32(STOPSPEED) && mo.Fmomy > -int32(STOPSPEED) && mo.Fmomy < int32(STOPSPEED) && (!(player != nil) || int32(player.Fcmd.Fforwardmove) == 0 && int32(player.Fcmd.Fsidemove) == 0) {
 		// if in a walking frame, stop moving
-		if player != nil && stateIndex((*mobj_t)(unsafe.Pointer(player.Fmo)).Fstate)-S_PLAY_RUN1 < 4 {
+		if player != nil && stateIndex(player.Fmo.Fstate)-S_PLAY_RUN1 < 4 {
 			P_SetMobjState(player.Fmo, S_PLAY)
 		}
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = 0
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = 0
+		mo.Fmomx = 0
+		mo.Fmomy = 0
 	} else {
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomx = FixedMul((*mobj_t)(unsafe.Pointer(mo)).Fmomx, int32(FRICTION))
-		(*mobj_t)(unsafe.Pointer(mo)).Fmomy = FixedMul((*mobj_t)(unsafe.Pointer(mo)).Fmomy, int32(FRICTION))
+		mo.Fmomx = FixedMul(mo.Fmomx, int32(FRICTION))
+		mo.Fmomy = FixedMul(mo.Fmomy, int32(FRICTION))
 	}
 }
 
@@ -27956,32 +27951,32 @@ func P_XYMovement(mo uintptr) {
 //	//
 //	// P_ZMovement
 //	//
-func P_ZMovement(mo uintptr) {
+func P_ZMovement(mo *mobj_t) {
 	var correct_lost_soul_bounce int32
 	var delta, dist fixed_t
 	// check for smooth step up
-	if (*mobj_t)(unsafe.Pointer(mo)).Fplayer != nil && (*mobj_t)(unsafe.Pointer(mo)).Fz < (*mobj_t)(unsafe.Pointer(mo)).Ffloorz {
-		(*mobj_t)(unsafe.Pointer(mo)).Fplayer.Fviewheight -= (*mobj_t)(unsafe.Pointer(mo)).Ffloorz - (*mobj_t)(unsafe.Pointer(mo)).Fz
-		(*mobj_t)(unsafe.Pointer(mo)).Fplayer.Fdeltaviewheight = (41*(1<<FRACBITS) - (*mobj_t)(unsafe.Pointer(mo)).Fplayer.Fviewheight) >> 3
+	if mo.Fplayer != nil && mo.Fz < mo.Ffloorz {
+		mo.Fplayer.Fviewheight -= mo.Ffloorz - mo.Fz
+		mo.Fplayer.Fdeltaviewheight = (41*(1<<FRACBITS) - mo.Fplayer.Fviewheight) >> 3
 	}
 	// adjust height
-	*(*fixed_t)(unsafe.Pointer(mo + 32)) += (*mobj_t)(unsafe.Pointer(mo)).Fmomz
-	if (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_FLOAT) != 0 && (*mobj_t)(unsafe.Pointer(mo)).Ftarget != 0 {
+	mo.Fz += mo.Fmomz
+	if mo.Fflags&int32(MF_FLOAT) != 0 && mo.Ftarget != nil {
 		// float down towards target if too close
-		if !((*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_SKULLFLY) != 0) && !((*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_INFLOAT) != 0) {
-			dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(mo)).Fx-(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(mo)).Fy-(*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fy)
-			delta = (*mobj_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(mo)).Ftarget)).Fz + (*mobj_t)(unsafe.Pointer(mo)).Fheight>>1 - (*mobj_t)(unsafe.Pointer(mo)).Fz
+		if !(mo.Fflags&int32(MF_SKULLFLY) != 0) && !(mo.Fflags&int32(MF_INFLOAT) != 0) {
+			dist = P_AproxDistance(mo.Fx-(*mobj_t)(unsafe.Pointer(mo.Ftarget)).Fx, mo.Fy-(*mobj_t)(unsafe.Pointer(mo.Ftarget)).Fy)
+			delta = (*mobj_t)(unsafe.Pointer(mo.Ftarget)).Fz + mo.Fheight>>1 - mo.Fz
 			if delta < 0 && dist < -(delta*int32(3)) {
-				*(*fixed_t)(unsafe.Pointer(mo + 32)) -= 1 << FRACBITS * 4
+				mo.Fz -= 1 << FRACBITS * 4
 			} else {
 				if delta > 0 && dist < delta*int32(3) {
-					*(*fixed_t)(unsafe.Pointer(mo + 32)) += 1 << FRACBITS * 4
+					mo.Fz += 1 << FRACBITS * 4
 				}
 			}
 		}
 	}
 	// clip movement
-	if (*mobj_t)(unsafe.Pointer(mo)).Fz <= (*mobj_t)(unsafe.Pointer(mo)).Ffloorz {
+	if mo.Fz <= mo.Ffloorz {
 		// hit the floor
 		// Note (id):
 		//  somebody left this after the setting momz to 0,
@@ -28006,54 +28001,54 @@ func P_ZMovement(mo uintptr) {
 		// So we need to check that this is either retail or commercial
 		// (but not doom2)
 		correct_lost_soul_bounce = boolint32(gameversion >= exe_ultimate)
-		if correct_lost_soul_bounce != 0 && (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_SKULLFLY) != 0 {
+		if correct_lost_soul_bounce != 0 && mo.Fflags&int32(MF_SKULLFLY) != 0 {
 			// the skull slammed into something
-			(*mobj_t)(unsafe.Pointer(mo)).Fmomz = -(*mobj_t)(unsafe.Pointer(mo)).Fmomz
+			mo.Fmomz = -mo.Fmomz
 		}
-		if (*mobj_t)(unsafe.Pointer(mo)).Fmomz < 0 {
-			if (*mobj_t)(unsafe.Pointer(mo)).Fplayer != nil && (*mobj_t)(unsafe.Pointer(mo)).Fmomz < -(1<<FRACBITS)*8 {
+		if mo.Fmomz < 0 {
+			if mo.Fplayer != nil && mo.Fmomz < -(1<<FRACBITS)*8 {
 				// Squat down.
 				// Decrease viewheight for a moment
 				// after hitting the ground (hard),
 				// and utter appropriate sound.
-				(*mobj_t)(unsafe.Pointer(mo)).Fplayer.Fdeltaviewheight = (*mobj_t)(unsafe.Pointer(mo)).Fmomz >> 3
-				S_StartSound(&((*mobj_t)(unsafe.Pointer(mo)).degenmobj_t), int32(sfx_oof))
+				mo.Fplayer.Fdeltaviewheight = mo.Fmomz >> 3
+				S_StartSound(&(mo.degenmobj_t), int32(sfx_oof))
 			}
-			(*mobj_t)(unsafe.Pointer(mo)).Fmomz = 0
+			mo.Fmomz = 0
 		}
-		(*mobj_t)(unsafe.Pointer(mo)).Fz = (*mobj_t)(unsafe.Pointer(mo)).Ffloorz
+		mo.Fz = mo.Ffloorz
 		// cph 2001/05/26 -
 		// See lost soul bouncing comment above. We need this here for bug
 		// compatibility with original Doom2 v1.9 - if a soul is charging and
 		// hit by a raising floor this incorrectly reverses its Y momentum.
 		//
-		if !(correct_lost_soul_bounce != 0) && (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_SKULLFLY) != 0 {
-			(*mobj_t)(unsafe.Pointer(mo)).Fmomz = -(*mobj_t)(unsafe.Pointer(mo)).Fmomz
+		if !(correct_lost_soul_bounce != 0) && mo.Fflags&int32(MF_SKULLFLY) != 0 {
+			mo.Fmomz = -mo.Fmomz
 		}
-		if (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_MISSILE) != 0 && !((*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_NOCLIP) != 0) {
+		if mo.Fflags&int32(MF_MISSILE) != 0 && !(mo.Fflags&int32(MF_NOCLIP) != 0) {
 			P_ExplodeMissile(mo)
 			return
 		}
 	} else {
-		if !((*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_NOGRAVITY) != 0) {
-			if (*mobj_t)(unsafe.Pointer(mo)).Fmomz == 0 {
-				(*mobj_t)(unsafe.Pointer(mo)).Fmomz = -(1 << FRACBITS) * 2
+		if !(mo.Fflags&int32(MF_NOGRAVITY) != 0) {
+			if mo.Fmomz == 0 {
+				mo.Fmomz = -(1 << FRACBITS) * 2
 			} else {
-				*(*fixed_t)(unsafe.Pointer(mo + 120)) -= 1 << FRACBITS
+				mo.Fmomz -= 1 << FRACBITS
 			}
 		}
 	}
-	if (*mobj_t)(unsafe.Pointer(mo)).Fz+(*mobj_t)(unsafe.Pointer(mo)).Fheight > (*mobj_t)(unsafe.Pointer(mo)).Fceilingz {
+	if mo.Fz+mo.Fheight > mo.Fceilingz {
 		// hit the ceiling
-		if (*mobj_t)(unsafe.Pointer(mo)).Fmomz > 0 {
-			(*mobj_t)(unsafe.Pointer(mo)).Fmomz = 0
+		if mo.Fmomz > 0 {
+			mo.Fmomz = 0
 		}
-		(*mobj_t)(unsafe.Pointer(mo)).Fz = (*mobj_t)(unsafe.Pointer(mo)).Fceilingz - (*mobj_t)(unsafe.Pointer(mo)).Fheight
-		if (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_SKULLFLY) != 0 {
+		mo.Fz = mo.Fceilingz - mo.Fheight
+		if mo.Fflags&int32(MF_SKULLFLY) != 0 {
 			// the skull slammed into something
-			(*mobj_t)(unsafe.Pointer(mo)).Fmomz = -(*mobj_t)(unsafe.Pointer(mo)).Fmomz
+			mo.Fmomz = -mo.Fmomz
 		}
-		if (*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_MISSILE) != 0 && !((*mobj_t)(unsafe.Pointer(mo)).Fflags&int32(MF_NOCLIP) != 0) {
+		if mo.Fflags&int32(MF_MISSILE) != 0 && !(mo.Fflags&int32(MF_NOCLIP) != 0) {
 			P_ExplodeMissile(mo)
 			return
 		}
@@ -28065,42 +28060,42 @@ func P_ZMovement(mo uintptr) {
 //	//
 //	// P_NightmareRespawn
 //	//
-func P_NightmareRespawn(mobj uintptr) {
-	var mo uintptr
+func P_NightmareRespawn(mobj *mobj_t) {
+	var mo *mobj_t
 	var mthing *mapthing_t
 	var ss *subsector_t
 	var x, y, z fixed_t
-	x = int32((*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint.Fx) << int32(FRACBITS)
-	y = int32((*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint.Fy) << int32(FRACBITS)
+	x = int32(mobj.Fspawnpoint.Fx) << int32(FRACBITS)
+	y = int32(mobj.Fspawnpoint.Fy) << int32(FRACBITS)
 	// somthing is occupying it's position?
 	if !(P_CheckPosition(mobj, x, y) != 0) {
 		return
 	} // no respwan
 	// spawn a teleport fog at old spot
 	// because of removal of the body?
-	mo = P_SpawnMobj((*mobj_t)(unsafe.Pointer(mobj)).Fx, (*mobj_t)(unsafe.Pointer(mobj)).Fy, (*sector_t)(unsafe.Pointer(((*mobj_t)(unsafe.Pointer(mobj)).Fsubsector).Fsector)).Ffloorheight, int32(MT_TFOG))
+	mo = P_SpawnMobj(mobj.Fx, mobj.Fy, (*sector_t)(unsafe.Pointer((mobj.Fsubsector).Fsector)).Ffloorheight, int32(MT_TFOG))
 	// initiate teleport sound
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(mo)).degenmobj_t), int32(sfx_telept))
+	S_StartSound(&(mo.degenmobj_t), int32(sfx_telept))
 	// spawn a teleport fog at the new spot
 	ss = R_PointInSubsector(x, y)
 	mo = P_SpawnMobj(x, y, (*sector_t)(unsafe.Pointer(ss.Fsector)).Ffloorheight, int32(MT_TFOG))
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(mo)).degenmobj_t), int32(sfx_telept))
+	S_StartSound(&(mo.degenmobj_t), int32(sfx_telept))
 	// spawn the new monster
-	mthing = &((*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint)
+	mthing = &(mobj.Fspawnpoint)
 	// spawn it
-	if (*mobj_t)(unsafe.Pointer(mobj)).Finfo.Fflags&int32(MF_SPAWNCEILING) != 0 {
+	if mobj.Finfo.Fflags&int32(MF_SPAWNCEILING) != 0 {
 		z = int32(INT_MAX11)
 	} else {
 		z = -1 - 0x7fffffff
 	}
 	// inherit attributes from deceased one
-	mo = P_SpawnMobj(x, y, z, (*mobj_t)(unsafe.Pointer(mobj)).Ftype1)
-	(*mobj_t)(unsafe.Pointer(mo)).Fspawnpoint = (*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint
-	(*mobj_t)(unsafe.Pointer(mo)).Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
+	mo = P_SpawnMobj(x, y, z, mobj.Ftype1)
+	mo.Fspawnpoint = mobj.Fspawnpoint
+	mo.Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
 	if int32(mthing.Foptions)&int32(MTF_AMBUSH) != 0 {
-		*(*int32)(unsafe.Pointer(mo + 160)) |= int32(MF_AMBUSH)
+		mo.Fflags |= int32(MF_AMBUSH)
 	}
-	(*mobj_t)(unsafe.Pointer(mo)).Freactiontime = 18
+	mo.Freactiontime = 18
 	// remove the old monster,
 	P_RemoveMobj(mobj)
 }
@@ -28110,42 +28105,42 @@ func P_NightmareRespawn(mobj uintptr) {
 //	//
 //	// P_MobjThinker
 //	//
-func P_MobjThinker(mobj uintptr) {
+func P_MobjThinker(mobj *mobj_t) {
 	// momentum movement
-	if (*mobj_t)(unsafe.Pointer(mobj)).Fmomx != 0 || (*mobj_t)(unsafe.Pointer(mobj)).Fmomy != 0 || (*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_SKULLFLY) != 0 {
+	if mobj.Fmomx != 0 || mobj.Fmomy != 0 || mobj.Fflags&int32(MF_SKULLFLY) != 0 {
 		P_XYMovement(mobj)
 		// FIXME: decent NOP/NULL/Nil function pointer please.
-		if *(*actionf_v)(unsafe.Pointer(mobj + 16)) == uintptr_negative_one {
+		if mobj.Fthinker.Ffunction.Facv == uintptr_negative_one {
 			return
 		} // mobj was removed
 	}
-	if (*mobj_t)(unsafe.Pointer(mobj)).Fz != (*mobj_t)(unsafe.Pointer(mobj)).Ffloorz || (*mobj_t)(unsafe.Pointer(mobj)).Fmomz != 0 {
+	if mobj.Fz != mobj.Ffloorz || mobj.Fmomz != 0 {
 		P_ZMovement(mobj)
 		// FIXME: decent NOP/NULL/Nil function pointer please.
-		if *(*actionf_v)(unsafe.Pointer(mobj + 16)) == uintptr_negative_one {
+		if mobj.Fthinker.Ffunction.Facv == uintptr_negative_one {
 			return
 		} // mobj was removed
 	}
 	// cycle through states,
 	// calling action functions at transitions
-	if (*mobj_t)(unsafe.Pointer(mobj)).Ftics != -1 {
-		(*mobj_t)(unsafe.Pointer(mobj)).Ftics--
+	if mobj.Ftics != -1 {
+		mobj.Ftics--
 		// you can cycle through multiple states in a tic
-		if !((*mobj_t)(unsafe.Pointer(mobj)).Ftics != 0) {
-			if !(P_SetMobjState(mobj, (*mobj_t)(unsafe.Pointer(mobj)).Fstate.Fnextstate) != 0) {
+		if !(mobj.Ftics != 0) {
+			if !(P_SetMobjState(mobj, mobj.Fstate.Fnextstate) != 0) {
 				return
 			}
 		} // freed itself
 	} else {
 		// check for nightmare respawn
-		if !((*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_COUNTKILL) != 0) {
+		if !(mobj.Fflags&int32(MF_COUNTKILL) != 0) {
 			return
 		}
 		if !(respawnmonsters != 0) {
 			return
 		}
-		(*mobj_t)(unsafe.Pointer(mobj)).Fmovecount++
-		if (*mobj_t)(unsafe.Pointer(mobj)).Fmovecount < 12*TICRATE {
+		mobj.Fmovecount++
+		if mobj.Fmovecount < 12*TICRATE {
 			return
 		}
 		if leveltime&int32(31) != 0 {
@@ -28163,53 +28158,52 @@ func P_MobjThinker(mobj uintptr) {
 //	//
 //	// P_SpawnMobj
 //	//
-func P_SpawnMobj(x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r uintptr) {
-	var mobj uintptr
+func P_SpawnMobj(x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r *mobj_t) {
+	var mobj *mobj_t
 	var info *mobjinfo_t
-	mobj = Z_Malloc(224, int32(PU_LEVEL), uintptr(0))
-	mobjP := (*mobj_t)(unsafe.Pointer(mobj))
-	xmemset(mobj, 0, 224)
+	mobj = (*mobj_t)(unsafe.Pointer(Z_Malloc(224, int32(PU_LEVEL), uintptr(0))))
+	*mobj = mobj_t{}
 	info = &mobjinfo[uintptr(type1)]
-	mobjP.Ftype1 = type1
-	mobjP.Finfo = info
-	mobjP.Fx = x
-	mobjP.Fy = y
-	mobjP.Fradius = info.Fradius
-	mobjP.Fheight = info.Fheight
-	mobjP.Fflags = info.Fflags
-	mobjP.Fhealth = info.Fspawnhealth
+	mobj.Ftype1 = type1
+	mobj.Finfo = info
+	mobj.Fx = x
+	mobj.Fy = y
+	mobj.Fradius = info.Fradius
+	mobj.Fheight = info.Fheight
+	mobj.Fflags = info.Fflags
+	mobj.Fhealth = info.Fspawnhealth
 	if gameskill != sk_nightmare {
-		mobjP.Freactiontime = info.Freactiontime
+		mobj.Freactiontime = info.Freactiontime
 	}
-	mobjP.Flastlook = P_Random() % int32(MAXPLAYERS)
+	mobj.Flastlook = P_Random() % int32(MAXPLAYERS)
 	// do not set the state with P_SetMobjState,
 	// because action routines can not be called yet
 	st := &states[info.Fspawnstate]
-	mobjP.Fstate = st
-	mobjP.Ftics = st.Ftics
-	mobjP.Fsprite = st.Fsprite
-	mobjP.Fframe = st.Fframe
+	mobj.Fstate = st
+	mobj.Ftics = st.Ftics
+	mobj.Fsprite = st.Fsprite
+	mobj.Fframe = st.Fframe
 	// set subsector and/or block links
 	P_SetThingPosition(mobj)
-	mobjP.Ffloorz = (*sector_t)(unsafe.Pointer((mobjP.Fsubsector).Fsector)).Ffloorheight
-	mobjP.Fceilingz = (*sector_t)(unsafe.Pointer((mobjP.Fsubsector).Fsector)).Fceilingheight
+	mobj.Ffloorz = (*sector_t)(unsafe.Pointer((mobj.Fsubsector).Fsector)).Ffloorheight
+	mobj.Fceilingz = (*sector_t)(unsafe.Pointer((mobj.Fsubsector).Fsector)).Fceilingheight
 	if z == -1-0x7fffffff {
-		mobjP.Fz = mobjP.Ffloorz
+		mobj.Fz = mobj.Ffloorz
 	} else {
 		if z == int32(INT_MAX11) {
-			mobjP.Fz = mobjP.Fceilingz - mobjP.Finfo.Fheight
+			mobj.Fz = mobj.Fceilingz - mobj.Finfo.Fheight
 		} else {
-			mobjP.Fz = z
+			mobj.Fz = z
 		}
 	}
-	mobjP.Fthinker.Ffunction.Facv = __ccgo_fp(P_MobjThinker)
-	P_AddThinker(&mobjP.Fthinker)
+	mobj.Fthinker.Ffunction.Facv = __ccgo_fp(P_MobjThinker)
+	P_AddThinker(&mobj.Fthinker)
 	return mobj
 }
 
-func P_RemoveMobj(mobj uintptr) {
-	if (*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_SPECIAL) != 0 && !((*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_DROPPED) != 0) && (*mobj_t)(unsafe.Pointer(mobj)).Ftype1 != int32(MT_INV) && (*mobj_t)(unsafe.Pointer(mobj)).Ftype1 != int32(MT_INS) {
-		itemrespawnque[iquehead] = (*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint
+func P_RemoveMobj(mobj *mobj_t) {
+	if mobj.Fflags&int32(MF_SPECIAL) != 0 && !(mobj.Fflags&int32(MF_DROPPED) != 0) && mobj.Ftype1 != int32(MT_INV) && mobj.Ftype1 != int32(MT_INS) {
+		itemrespawnque[iquehead] = mobj.Fspawnpoint
 		itemrespawntime[iquehead] = leveltime
 		iquehead = (iquehead + 1) & (ITEMQUESIZE - 1)
 		// lose one off the end?
@@ -28220,9 +28214,9 @@ func P_RemoveMobj(mobj uintptr) {
 	// unlink from sector and block lists
 	P_UnsetThingPosition(mobj)
 	// stop any playing sound
-	S_StopSound(&((*mobj_t)(unsafe.Pointer(mobj)).degenmobj_t))
+	S_StopSound(&(mobj.degenmobj_t))
 	// free block
-	P_RemoveThinker(&(*mobj_t)(unsafe.Pointer(mobj)).Fthinker)
+	P_RemoveThinker(&mobj.Fthinker)
 }
 
 // C documentation
@@ -28232,7 +28226,7 @@ func P_RemoveMobj(mobj uintptr) {
 //	//
 func P_RespawnSpecials() {
 	var i int32
-	var mo uintptr
+	var mo *mobj_t
 	var mthing *mapthing_t
 	var ss *subsector_t
 	var x, y, z fixed_t
@@ -28254,7 +28248,7 @@ func P_RespawnSpecials() {
 	// spawn a teleport fog at the new spot
 	ss = R_PointInSubsector(x, y)
 	mo = P_SpawnMobj(x, y, (*sector_t)(unsafe.Pointer(ss.Fsector)).Ffloorheight, int32(MT_IFOG))
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(mo)).degenmobj_t), int32(sfx_itmbk))
+	S_StartSound(&(mo.degenmobj_t), int32(sfx_itmbk))
 	// find which type to spawn
 	i = 0
 	for {
@@ -28276,8 +28270,8 @@ func P_RespawnSpecials() {
 		z = -1 - 0x7fffffff
 	}
 	mo = P_SpawnMobj(x, y, z, i)
-	(*mobj_t)(unsafe.Pointer(mo)).Fspawnpoint = *mthing
-	(*mobj_t)(unsafe.Pointer(mo)).Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
+	mo.Fspawnpoint = *mthing
+	mo.Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
 	// pull it from the que
 	iquetail = (iquetail + 1) & (ITEMQUESIZE - 1)
 }
@@ -28292,7 +28286,7 @@ func P_RespawnSpecials() {
 //	//
 func P_SpawnPlayer(mthing *mapthing_t) {
 	var i int32
-	var mobj uintptr
+	var mobj *mobj_t
 	var p *player_t
 	var x, y, z fixed_t
 	if int32(mthing.Ftype1) == 0 {
@@ -28312,11 +28306,11 @@ func P_SpawnPlayer(mthing *mapthing_t) {
 	mobj = P_SpawnMobj(x, y, z, int32(MT_PLAYER))
 	// set color translations for player sprites
 	if int32(mthing.Ftype1) > 1 {
-		*(*int32)(unsafe.Pointer(mobj + 160)) |= (int32(mthing.Ftype1) - 1) << int32(MF_TRANSSHIFT)
+		mobj.Fflags |= (int32(mthing.Ftype1) - 1) << int32(MF_TRANSSHIFT)
 	}
-	(*mobj_t)(unsafe.Pointer(mobj)).Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
-	(*mobj_t)(unsafe.Pointer(mobj)).Fplayer = p
-	(*mobj_t)(unsafe.Pointer(mobj)).Fhealth = p.Fhealth
+	mobj.Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
+	mobj.Fplayer = p
+	mobj.Fhealth = p.Fhealth
 	p.Fmo = mobj
 	p.Fplayerstate = int32(PST_LIVE)
 	p.Frefire = 0
@@ -28359,7 +28353,7 @@ func P_SpawnPlayer(mthing *mapthing_t) {
 //	//
 func P_SpawnMapThing(mthing *mapthing_t) {
 	var bit, i int32
-	var mobj uintptr
+	var mobj *mobj_t
 	var x, y, z fixed_t
 	// count deathmatch start positions
 	if int32(mthing.Ftype1) == 11 {
@@ -28433,30 +28427,30 @@ func P_SpawnMapThing(mthing *mapthing_t) {
 		z = -1 - 0x7fffffff
 	}
 	mobj = P_SpawnMobj(x, y, z, i)
-	(*mobj_t)(unsafe.Pointer(mobj)).Fspawnpoint = *mthing
-	if (*mobj_t)(unsafe.Pointer(mobj)).Ftics > 0 {
-		(*mobj_t)(unsafe.Pointer(mobj)).Ftics = 1 + P_Random()%(*mobj_t)(unsafe.Pointer(mobj)).Ftics
+	mobj.Fspawnpoint = *mthing
+	if mobj.Ftics > 0 {
+		mobj.Ftics = 1 + P_Random()%mobj.Ftics
 	}
-	if (*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_COUNTKILL) != 0 {
+	if mobj.Fflags&int32(MF_COUNTKILL) != 0 {
 		totalkills++
 	}
-	if (*mobj_t)(unsafe.Pointer(mobj)).Fflags&int32(MF_COUNTITEM) != 0 {
+	if mobj.Fflags&int32(MF_COUNTITEM) != 0 {
 		totalitems++
 	}
-	(*mobj_t)(unsafe.Pointer(mobj)).Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
+	mobj.Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
 	if int32(mthing.Foptions)&int32(MTF_AMBUSH) != 0 {
-		*(*int32)(unsafe.Pointer(mobj + 160)) |= int32(MF_AMBUSH)
+		mobj.Fflags |= int32(MF_AMBUSH)
 	}
 }
 
 func P_SpawnPuff(x fixed_t, y fixed_t, z fixed_t) {
-	var th uintptr
+	var th *mobj_t
 	z += (P_Random() - P_Random()) << 10
 	th = P_SpawnMobj(x, y, z, int32(MT_PUFF))
-	(*mobj_t)(unsafe.Pointer(th)).Fmomz = 1 << FRACBITS
-	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & 3
-	if (*mobj_t)(unsafe.Pointer(th)).Ftics < 1 {
-		(*mobj_t)(unsafe.Pointer(th)).Ftics = 1
+	th.Fmomz = 1 << FRACBITS
+	th.Ftics -= P_Random() & 3
+	if th.Ftics < 1 {
+		th.Ftics = 1
 	}
 	// don't make punches spark on the wall
 	if attackrange == 64*(1<<FRACBITS) {
@@ -28470,13 +28464,13 @@ func P_SpawnPuff(x fixed_t, y fixed_t, z fixed_t) {
 //	// P_SpawnBlood
 //	//
 func P_SpawnBlood(x fixed_t, y fixed_t, z fixed_t, damage int32) {
-	var th uintptr
+	var th *mobj_t
 	z += (P_Random() - P_Random()) << 10
 	th = P_SpawnMobj(x, y, z, int32(MT_BLOOD))
-	(*mobj_t)(unsafe.Pointer(th)).Fmomz = 1 << FRACBITS * 2
-	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & 3
-	if (*mobj_t)(unsafe.Pointer(th)).Ftics < 1 {
-		(*mobj_t)(unsafe.Pointer(th)).Ftics = 1
+	th.Fmomz = 1 << FRACBITS * 2
+	th.Ftics -= P_Random() & 3
+	if th.Ftics < 1 {
+		th.Ftics = 1
 	}
 	if damage <= 12 && damage >= 9 {
 		P_SetMobjState(th, S_BLOOD2)
@@ -28494,17 +28488,17 @@ func P_SpawnBlood(x fixed_t, y fixed_t, z fixed_t, damage int32) {
 //	// Moves the missile forward a bit
 //	//  and possibly explodes it right there.
 //	//
-func P_CheckMissileSpawn(th uintptr) {
-	*(*int32)(unsafe.Pointer(th + 144)) -= P_Random() & 3
-	if (*mobj_t)(unsafe.Pointer(th)).Ftics < 1 {
-		(*mobj_t)(unsafe.Pointer(th)).Ftics = 1
+func P_CheckMissileSpawn(th *mobj_t) {
+	th.Ftics -= P_Random() & 3
+	if th.Ftics < 1 {
+		th.Ftics = 1
 	}
 	// move a little forward so an angle can
 	// be computed if it immediately explodes
-	*(*fixed_t)(unsafe.Pointer(th + 24)) += (*mobj_t)(unsafe.Pointer(th)).Fmomx >> 1
-	*(*fixed_t)(unsafe.Pointer(th + 28)) += (*mobj_t)(unsafe.Pointer(th)).Fmomy >> 1
-	*(*fixed_t)(unsafe.Pointer(th + 32)) += (*mobj_t)(unsafe.Pointer(th)).Fmomz >> 1
-	if !(P_TryMove(th, (*mobj_t)(unsafe.Pointer(th)).Fx, (*mobj_t)(unsafe.Pointer(th)).Fy) != 0) {
+	th.Fx += th.Fmomx >> 1
+	th.Fy += th.Fmomy >> 1
+	th.Fz += th.Fmomz >> 1
+	if !(P_TryMove(th, th.Fx, th.Fy) != 0) {
 		P_ExplodeMissile(th)
 	}
 }
@@ -28515,13 +28509,13 @@ func P_CheckMissileSpawn(th uintptr) {
 // protection. This function substitutes NULL pointers for
 // pointers to a dummy mobj, to avoid a crash.
 
-func P_SubstNullMobj(mobj uintptr) (r uintptr) {
-	if mobj == uintptr(0) {
+func P_SubstNullMobj(mobj *mobj_t) *mobj_t {
+	if mobj == nil {
 		dummy_mobj.Fx = 0
 		dummy_mobj.Fy = 0
 		dummy_mobj.Fz = 0
 		dummy_mobj.Fflags = 0
-		mobj = uintptr(unsafe.Pointer(&dummy_mobj))
+		mobj = &dummy_mobj
 	}
 	return mobj
 }
@@ -28533,30 +28527,30 @@ var dummy_mobj mobj_t
 //	//
 //	// P_SpawnMissile
 //	//
-func P_SpawnMissile(source uintptr, dest uintptr, type1 mobjtype_t) (r uintptr) {
+func P_SpawnMissile(source *mobj_t, dest *mobj_t, type1 mobjtype_t) (r *mobj_t) {
 	var an angle_t
 	var dist int32
-	var th uintptr
-	th = P_SpawnMobj((*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(source)).Fy, (*mobj_t)(unsafe.Pointer(source)).Fz+4*8*(1<<FRACBITS), type1)
-	if (*mobj_t)(unsafe.Pointer(th)).Finfo.Fseesound != 0 {
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(th)).degenmobj_t), (*mobj_t)(unsafe.Pointer(th)).Finfo.Fseesound)
+	var th *mobj_t
+	th = P_SpawnMobj(source.Fx, source.Fy, source.Fz+4*8*(1<<FRACBITS), type1)
+	if th.Finfo.Fseesound != 0 {
+		S_StartSound(&(th.degenmobj_t), th.Finfo.Fseesound)
 	}
-	(*mobj_t)(unsafe.Pointer(th)).Ftarget = source // where it came from
-	an = R_PointToAngle2((*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(source)).Fy, (*mobj_t)(unsafe.Pointer(dest)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy)
+	th.Ftarget = source // where it came from
+	an = R_PointToAngle2(source.Fx, source.Fy, dest.Fx, dest.Fy)
 	// fuzzy player
-	if (*mobj_t)(unsafe.Pointer(dest)).Fflags&int32(MF_SHADOW) != 0 {
+	if dest.Fflags&int32(MF_SHADOW) != 0 {
 		an += uint32((P_Random() - P_Random()) << 20)
 	}
-	(*mobj_t)(unsafe.Pointer(th)).Fangle = an
+	th.Fangle = an
 	an >>= uint32(ANGLETOFINESHIFT)
-	(*mobj_t)(unsafe.Pointer(th)).Fmomx = FixedMul((*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed, finecosine[an])
-	(*mobj_t)(unsafe.Pointer(th)).Fmomy = FixedMul((*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed, finesine[an])
-	dist = P_AproxDistance((*mobj_t)(unsafe.Pointer(dest)).Fx-(*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(dest)).Fy-(*mobj_t)(unsafe.Pointer(source)).Fy)
-	dist = dist / (*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed
+	th.Fmomx = FixedMul(th.Finfo.Fspeed, finecosine[an])
+	th.Fmomy = FixedMul(th.Finfo.Fspeed, finesine[an])
+	dist = P_AproxDistance(dest.Fx-source.Fx, dest.Fy-source.Fy)
+	dist = dist / th.Finfo.Fspeed
 	if dist < 1 {
 		dist = 1
 	}
-	(*mobj_t)(unsafe.Pointer(th)).Fmomz = ((*mobj_t)(unsafe.Pointer(dest)).Fz - (*mobj_t)(unsafe.Pointer(source)).Fz) / dist
+	th.Fmomz = (dest.Fz - source.Fz) / dist
 	P_CheckMissileSpawn(th)
 	return th
 }
@@ -28567,37 +28561,37 @@ func P_SpawnMissile(source uintptr, dest uintptr, type1 mobjtype_t) (r uintptr) 
 //	// P_SpawnPlayerMissile
 //	// Tries to aim at a nearby monster
 //	//
-func P_SpawnPlayerMissile(source uintptr, type1 mobjtype_t) {
+func P_SpawnPlayerMissile(source *mobj_t, type1 mobjtype_t) {
 	var an angle_t
 	var slope, x, y, z fixed_t
-	var th uintptr
+	var th *mobj_t
 	// see which target is to be aimed at
-	an = (*mobj_t)(unsafe.Pointer(source)).Fangle
+	an = source.Fangle
 	slope = P_AimLineAttack(source, an, 16*64*(1<<FRACBITS))
-	if !(linetarget != 0) {
+	if !(linetarget != nil) {
 		an += uint32(1 << 26)
 		slope = P_AimLineAttack(source, an, 16*64*(1<<FRACBITS))
-		if !(linetarget != 0) {
+		if !(linetarget != nil) {
 			an -= uint32(2 << 26)
 			slope = P_AimLineAttack(source, an, 16*64*(1<<FRACBITS))
 		}
-		if !(linetarget != 0) {
-			an = (*mobj_t)(unsafe.Pointer(source)).Fangle
+		if !(linetarget != nil) {
+			an = source.Fangle
 			slope = 0
 		}
 	}
-	x = (*mobj_t)(unsafe.Pointer(source)).Fx
-	y = (*mobj_t)(unsafe.Pointer(source)).Fy
-	z = (*mobj_t)(unsafe.Pointer(source)).Fz + 4*8*(1<<FRACBITS)
+	x = source.Fx
+	y = source.Fy
+	z = source.Fz + 4*8*(1<<FRACBITS)
 	th = P_SpawnMobj(x, y, z, type1)
-	if (*mobj_t)(unsafe.Pointer(th)).Finfo.Fseesound != 0 {
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(th)).degenmobj_t), (*mobj_t)(unsafe.Pointer(th)).Finfo.Fseesound)
+	if th.Finfo.Fseesound != 0 {
+		S_StartSound(&(th.degenmobj_t), th.Finfo.Fseesound)
 	}
-	(*mobj_t)(unsafe.Pointer(th)).Ftarget = source
-	(*mobj_t)(unsafe.Pointer(th)).Fangle = an
-	(*mobj_t)(unsafe.Pointer(th)).Fmomx = FixedMul((*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed, finecosine[an>>int32(ANGLETOFINESHIFT)])
-	(*mobj_t)(unsafe.Pointer(th)).Fmomy = FixedMul((*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed, finesine[an>>int32(ANGLETOFINESHIFT)])
-	(*mobj_t)(unsafe.Pointer(th)).Fmomz = FixedMul((*mobj_t)(unsafe.Pointer(th)).Finfo.Fspeed, slope)
+	th.Ftarget = source
+	th.Fangle = an
+	th.Fmomx = FixedMul(th.Finfo.Fspeed, finecosine[an>>int32(ANGLETOFINESHIFT)])
+	th.Fmomy = FixedMul(th.Finfo.Fspeed, finesine[an>>int32(ANGLETOFINESHIFT)])
+	th.Fmomz = FixedMul(th.Finfo.Fspeed, slope)
 	P_CheckMissileSpawn(th)
 }
 
@@ -28925,7 +28919,7 @@ func P_BringUpWeapon(player *player_t) {
 		player.Fpendingweapon = player.Freadyweapon
 	}
 	if player.Fpendingweapon == wp_chainsaw {
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_sawup))
+		S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_sawup))
 	}
 	newstate = weaponinfo[player.Fpendingweapon].Fupstate
 	player.Fpendingweapon = wp_nochange
@@ -29041,11 +29035,11 @@ func A_WeaponReady(player *player_t, psp *pspdef_t) {
 	var angle int32
 	var newstate statenum_t
 	// get out of attack state
-	if (*mobj_t)(unsafe.Pointer(player.Fmo)).Fstate == &states[S_PLAY_ATK1] || (*mobj_t)(unsafe.Pointer(player.Fmo)).Fstate == &states[S_PLAY_ATK2] {
+	if player.Fmo.Fstate == &states[S_PLAY_ATK1] || player.Fmo.Fstate == &states[S_PLAY_ATK2] {
 		P_SetMobjState(player.Fmo, S_PLAY)
 	}
 	if player.Freadyweapon == wp_chainsaw && psp.Fstate == &states[S_SAW] {
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_sawidl))
+		S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_sawidl))
 	}
 	// check for change
 	//  if player is dead, put the weapon away
@@ -29171,14 +29165,14 @@ func A_Punch(player *player_t, psp *pspdef_t) {
 	if player.Fpowers[pw_strength] != 0 {
 		damage *= 10
 	}
-	angle = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle
+	angle = player.Fmo.Fangle
 	angle += uint32((P_Random() - P_Random()) << 18)
 	slope = P_AimLineAttack(player.Fmo, angle, 64*(1<<FRACBITS))
 	P_LineAttack(player.Fmo, angle, 64*(1<<FRACBITS), slope, damage)
 	// turn to face target
-	if linetarget != 0 {
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_punch))
-		(*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle = R_PointToAngle2((*mobj_t)(unsafe.Pointer(player.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(player.Fmo)).Fy, (*mobj_t)(unsafe.Pointer(linetarget)).Fx, (*mobj_t)(unsafe.Pointer(linetarget)).Fy)
+	if linetarget != nil {
+		S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_punch))
+		player.Fmo.Fangle = R_PointToAngle2(player.Fmo.Fx, player.Fmo.Fy, linetarget.Fx, linetarget.Fy)
 	}
 }
 
@@ -29191,32 +29185,32 @@ func A_Saw(player *player_t, psp *pspdef_t) {
 	var angle angle_t
 	var damage, slope int32
 	damage = 2 * (P_Random()%int32(10) + 1)
-	angle = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle
+	angle = player.Fmo.Fangle
 	angle += uint32((P_Random() - P_Random()) << 18)
 	// use meleerange + 1 se the puff doesn't skip the flash
 	slope = P_AimLineAttack(player.Fmo, angle, 64*(1<<FRACBITS)+1)
 	P_LineAttack(player.Fmo, angle, 64*(1<<FRACBITS)+1, slope, damage)
-	if !(linetarget != 0) {
-		S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_sawful))
+	if !(linetarget != nil) {
+		S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_sawful))
 		return
 	}
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_sawhit))
+	S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_sawhit))
 	// turn to face target
-	angle = R_PointToAngle2((*mobj_t)(unsafe.Pointer(player.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(player.Fmo)).Fy, (*mobj_t)(unsafe.Pointer(linetarget)).Fx, (*mobj_t)(unsafe.Pointer(linetarget)).Fy)
-	if angle-(*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle > uint32(ANG1807) {
-		if int32(angle-(*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle) < -ANG905/20 {
-			(*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle = angle + uint32(ANG905/21)
+	angle = R_PointToAngle2(player.Fmo.Fx, player.Fmo.Fy, linetarget.Fx, linetarget.Fy)
+	if angle-player.Fmo.Fangle > uint32(ANG1807) {
+		if int32(angle-player.Fmo.Fangle) < -ANG905/20 {
+			player.Fmo.Fangle = angle + uint32(ANG905/21)
 		} else {
-			*(*angle_t)(unsafe.Pointer(player.Fmo + 56)) -= uint32(ANG905 / 20)
+			player.Fmo.Fangle -= uint32(ANG905 / 20)
 		}
 	} else {
-		if angle-(*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle > uint32(ANG905/20) {
-			(*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle = angle - uint32(ANG905/21)
+		if angle-player.Fmo.Fangle > uint32(ANG905/20) {
+			player.Fmo.Fangle = angle - uint32(ANG905/21)
 		} else {
-			*(*angle_t)(unsafe.Pointer(player.Fmo + 56)) += uint32(ANG905 / 20)
+			player.Fmo.Fangle += uint32(ANG905 / 20)
 		}
 	}
-	*(*int32)(unsafe.Pointer(player.Fmo + 160)) |= int32(MF_JUSTATTACKED)
+	player.Fmo.Fflags |= int32(MF_JUSTATTACKED)
 }
 
 // Doom does not check the bounds of the ammo array.  As a result,
@@ -29264,15 +29258,15 @@ func A_FirePlasma(player *player_t, psp *pspdef_t) {
 	P_SpawnPlayerMissile(player.Fmo, int32(MT_PLASMA))
 }
 
-func P_BulletSlope(mo uintptr) {
+func P_BulletSlope(mo *mobj_t) {
 	var an angle_t
 	// see which target is to be aimed at
-	an = (*mobj_t)(unsafe.Pointer(mo)).Fangle
+	an = mo.Fangle
 	bulletslope = P_AimLineAttack(mo, an, 16*64*(1<<FRACBITS))
-	if !(linetarget != 0) {
+	if !(linetarget != nil) {
 		an += uint32(1 << 26)
 		bulletslope = P_AimLineAttack(mo, an, 16*64*(1<<FRACBITS))
-		if !(linetarget != 0) {
+		if !(linetarget != nil) {
 			an -= uint32(2 << 26)
 			bulletslope = P_AimLineAttack(mo, an, 16*64*(1<<FRACBITS))
 		}
@@ -29284,11 +29278,11 @@ func P_BulletSlope(mo uintptr) {
 //	//
 //	// P_GunShot
 //	//
-func P_GunShot(mo uintptr, accurate boolean) {
+func P_GunShot(mo *mobj_t, accurate boolean) {
 	var angle angle_t
 	var damage int32
 	damage = 5 * (P_Random()%int32(3) + 1)
-	angle = (*mobj_t)(unsafe.Pointer(mo)).Fangle
+	angle = mo.Fangle
 	if !(accurate != 0) {
 		angle += uint32((P_Random() - P_Random()) << 18)
 	}
@@ -29301,7 +29295,7 @@ func P_GunShot(mo uintptr, accurate boolean) {
 //	// A_FirePistol
 //	//
 func A_FirePistol(player *player_t, psp *pspdef_t) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_pistol))
+	S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_pistol))
 	P_SetMobjState(player.Fmo, S_PLAY_ATK2)
 	DecreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 1)
 	P_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
@@ -29316,7 +29310,7 @@ func A_FirePistol(player *player_t, psp *pspdef_t) {
 //	//
 func A_FireShotgun(player *player_t, psp *pspdef_t) {
 	var i int32
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_shotgn))
+	S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_shotgn))
 	P_SetMobjState(player.Fmo, S_PLAY_ATK2)
 	DecreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 1)
 	P_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
@@ -29342,7 +29336,7 @@ func A_FireShotgun(player *player_t, psp *pspdef_t) {
 func A_FireShotgun2(player *player_t, psp *pspdef_t) {
 	var angle angle_t
 	var damage, i int32
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_dshtgn))
+	S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_dshtgn))
 	P_SetMobjState(player.Fmo, S_PLAY_ATK2)
 	DecreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 2)
 	P_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
@@ -29353,7 +29347,7 @@ func A_FireShotgun2(player *player_t, psp *pspdef_t) {
 			break
 		}
 		damage = 5 * (P_Random()%int32(3) + 1)
-		angle = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle
+		angle = player.Fmo.Fangle
 		angle += uint32((P_Random() - P_Random()) << 19)
 		P_LineAttack(player.Fmo, angle, 32*64*(1<<FRACBITS), bulletslope+(P_Random()-P_Random())<<int32(5), damage)
 		goto _1
@@ -29369,7 +29363,7 @@ func A_FireShotgun2(player *player_t, psp *pspdef_t) {
 //	// A_FireCGun
 //	//
 func A_FireCGun(player *player_t, psp *pspdef_t) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_pistol))
+	S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_pistol))
 	if !(player.Fammo[weaponinfo[player.Freadyweapon].Fammo] != 0) {
 		return
 	}
@@ -29404,7 +29398,7 @@ func A_Light2(player *player_t, psp *pspdef_t) {
 //	// A_BFGSpray
 //	// Spawn a BFG explosion on every monster in view
 //	//
-func A_BFGSpray(mo uintptr) {
+func A_BFGSpray(mo *mobj_t) {
 	var an angle_t
 	var damage, i, j int32
 	// offset angles from its attack angle
@@ -29413,14 +29407,14 @@ func A_BFGSpray(mo uintptr) {
 		if !(i < 40) {
 			break
 		}
-		an = (*mobj_t)(unsafe.Pointer(mo)).Fangle - uint32(ANG905/2) + uint32(ANG905/40*i)
+		an = mo.Fangle - uint32(ANG905/2) + uint32(ANG905/40*i)
 		// mo->target is the originator (player)
 		//  of the missile
-		P_AimLineAttack((*mobj_t)(unsafe.Pointer(mo)).Ftarget, an, 16*64*(1<<FRACBITS))
-		if !(linetarget != 0) {
+		P_AimLineAttack(mo.Ftarget, an, 16*64*(1<<FRACBITS))
+		if !(linetarget != nil) {
 			goto _1
 		}
-		P_SpawnMobj((*mobj_t)(unsafe.Pointer(linetarget)).Fx, (*mobj_t)(unsafe.Pointer(linetarget)).Fy, (*mobj_t)(unsafe.Pointer(linetarget)).Fz+(*mobj_t)(unsafe.Pointer(linetarget)).Fheight>>2, int32(MT_EXTRABFG))
+		P_SpawnMobj(linetarget.Fx, linetarget.Fy, linetarget.Fz+linetarget.Fheight>>2, int32(MT_EXTRABFG))
 		damage = 0
 		j = 0
 		for {
@@ -29433,7 +29427,7 @@ func A_BFGSpray(mo uintptr) {
 			;
 			j++
 		}
-		P_DamageMobj(linetarget, (*mobj_t)(unsafe.Pointer(mo)).Ftarget, (*mobj_t)(unsafe.Pointer(mo)).Ftarget, damage)
+		P_DamageMobj(linetarget, mo.Ftarget, mo.Ftarget, damage)
 		goto _1
 	_1:
 		;
@@ -29447,7 +29441,7 @@ func A_BFGSpray(mo uintptr) {
 //	// A_BFGsound
 //	//
 func A_BFGsound(player *player_t, psp *pspdef_t) {
-	S_StartSound(&((*mobj_t)(unsafe.Pointer(player.Fmo)).degenmobj_t), int32(sfx_bfg))
+	S_StartSound(&(player.Fmo.degenmobj_t), int32(sfx_bfg))
 }
 
 // C documentation
@@ -29723,9 +29717,9 @@ func saveg_read_mobj_t(str *mobj_t) {
 	// fixed_t z;
 	str.Fz = saveg_read32()
 	// struct mobj_t* snext;
-	str.Fsnext = saveg_readp()
+	str.Fsnext = (*mobj_t)(unsafe.Pointer(saveg_readp()))
 	// struct mobj_t* sprev;
-	str.Fsprev = saveg_readp()
+	str.Fsprev = (*mobj_t)(unsafe.Pointer(saveg_readp()))
 	// angle_t angle;
 	str.Fangle = uint32(saveg_read32())
 	// spritenum_t sprite;
@@ -29733,9 +29727,9 @@ func saveg_read_mobj_t(str *mobj_t) {
 	// int frame;
 	str.Fframe = saveg_read32()
 	// struct mobj_t* bnext;
-	str.Fbnext = saveg_readp()
+	str.Fbnext = (*mobj_t)(unsafe.Pointer(saveg_readp()))
 	// struct mobj_t* bprev;
-	str.Fbprev = saveg_readp()
+	str.Fbprev = (*mobj_t)(unsafe.Pointer(saveg_readp()))
 	// struct subsector_t* subsector;
 	str.Fsubsector = (*subsector_t)(unsafe.Pointer(saveg_readp()))
 	// fixed_t floorz;
@@ -29771,7 +29765,7 @@ func saveg_read_mobj_t(str *mobj_t) {
 	// int movecount;
 	str.Fmovecount = saveg_read32()
 	// struct mobj_t* target;
-	str.Ftarget = saveg_readp()
+	str.Ftarget = (*mobj_t)(unsafe.Pointer(saveg_readp()))
 	// int reactiontime;
 	str.Freactiontime = saveg_read32()
 	// int threshold;
@@ -29780,7 +29774,7 @@ func saveg_read_mobj_t(str *mobj_t) {
 	pl = saveg_read32()
 	if pl > 0 {
 		str.Fplayer = &players[pl-1]
-		str.Fplayer.Fmo = (uintptr)(unsafe.Pointer(str))
+		str.Fplayer.Fmo = str
 	} else {
 		str.Fplayer = nil
 	}
@@ -29789,7 +29783,7 @@ func saveg_read_mobj_t(str *mobj_t) {
 	// mapthing_t spawnpoint;
 	saveg_read_mapthing_t(&str.Fspawnpoint)
 	// struct mobj_t* tracer;
-	str.Ftracer = saveg_readp()
+	str.Ftracer = (*mobj_t)(unsafe.Pointer(saveg_readp()))
 }
 
 func saveg_write_mobj_t(str *mobj_t) {
@@ -29802,9 +29796,9 @@ func saveg_write_mobj_t(str *mobj_t) {
 	// fixed_t z;
 	saveg_write32(str.Fz)
 	// struct mobj_t* snext;
-	saveg_writep(str.Fsnext)
+	saveg_writep((uintptr)(unsafe.Pointer(str.Fsnext)))
 	// struct mobj_t* sprev;
-	saveg_writep(str.Fsprev)
+	saveg_writep((uintptr)(unsafe.Pointer(str.Fsprev)))
 	// angle_t angle;
 	saveg_write32(int32(str.Fangle))
 	// spritenum_t sprite;
@@ -29812,9 +29806,9 @@ func saveg_write_mobj_t(str *mobj_t) {
 	// int frame;
 	saveg_write32(str.Fframe)
 	// struct mobj_t* bnext;
-	saveg_writep(str.Fbnext)
+	saveg_writep((uintptr)(unsafe.Pointer(str.Fbnext)))
 	// struct mobj_t* bprev;
-	saveg_writep(str.Fbprev)
+	saveg_writep((uintptr)(unsafe.Pointer(str.Fbprev)))
 	// struct subsector_t* subsector;
 	saveg_writep((uintptr)(unsafe.Pointer(str.Fsubsector)))
 	// fixed_t floorz;
@@ -29851,7 +29845,7 @@ func saveg_write_mobj_t(str *mobj_t) {
 	// int movecount;
 	saveg_write32(str.Fmovecount)
 	// struct mobj_t* target;
-	saveg_writep(str.Ftarget)
+	saveg_writep((uintptr)(unsafe.Pointer(str.Ftarget)))
 	// int reactiontime;
 	saveg_write32(str.Freactiontime)
 	// int threshold;
@@ -29868,7 +29862,7 @@ func saveg_write_mobj_t(str *mobj_t) {
 	// mapthing_t spawnpoint;
 	saveg_write_mapthing_t(&str.Fspawnpoint)
 	// struct mobj_t* tracer;
-	saveg_writep(str.Ftracer)
+	saveg_writep((uintptr)(unsafe.Pointer(str.Ftracer)))
 }
 
 //
@@ -29947,7 +29941,7 @@ func saveg_write_pspdef_t(str *pspdef_t) {
 
 func saveg_read_player_t(str *player_t) {
 	// mobj_t* mo;
-	str.Fmo = saveg_readp()
+	str.Fmo = (*mobj_t)(unsafe.Pointer(saveg_readp()))
 	// playerstate_t playerstate;
 	str.Fplayerstate = saveg_read32()
 	// ticcmd_t cmd;
@@ -30016,7 +30010,7 @@ func saveg_read_player_t(str *player_t) {
 	// int bonuscount;
 	str.Fbonuscount = saveg_read32()
 	// mobj_t* attacker;
-	str.Fattacker = saveg_readp()
+	str.Fattacker = (*mobj_t)(unsafe.Pointer(saveg_readp()))
 	// int extralight;
 	str.Fextralight = saveg_read32()
 	// int fixedcolormap;
@@ -30034,7 +30028,7 @@ func saveg_read_player_t(str *player_t) {
 func saveg_write_player_t(str *player_t) {
 	var i int32
 	// mobj_t* mo;
-	saveg_writep(str.Fmo)
+	saveg_writep((uintptr)(unsafe.Pointer(str.Fmo)))
 	// playerstate_t playerstate;
 	saveg_write32(str.Fplayerstate)
 	// ticcmd_t cmd;
@@ -30156,7 +30150,7 @@ func saveg_write_player_t(str *player_t) {
 	// int bonuscount;
 	saveg_write32(str.Fbonuscount)
 	// mobj_t* attacker;
-	saveg_writep(str.Fattacker)
+	saveg_writep((uintptr)(unsafe.Pointer(str.Fattacker)))
 	// int extralight;
 	saveg_write32(str.Fextralight)
 	// int fixedcolormap;
@@ -30668,9 +30662,9 @@ func P_UnArchivePlayers() {
 		saveg_read_pad()
 		saveg_read_player_t(&players[i])
 		// will be set when unarc thinker
-		players[i].Fmo = uintptr(0)
+		players[i].Fmo = nil
 		players[i].Fmessage = ""
-		players[i].Fattacker = uintptr(0)
+		players[i].Fattacker = nil
 	}
 }
 
@@ -30730,7 +30724,7 @@ func P_UnArchiveWorld() {
 		sec.Fspecial = saveg_read16() // needed?
 		sec.Ftag = saveg_read16()     // needed?
 		sec.Fspecialdata = uintptr(0)
-		sec.Fsoundtarget = uintptr(0)
+		sec.Fsoundtarget = nil
 	}
 	// do lines
 	for i := int32(0); i < numlines; i++ {
@@ -30791,14 +30785,14 @@ func P_ArchiveThinkers() {
 //	//
 func P_UnArchiveThinkers() {
 	var currentthinker, next *thinker_t
-	var mobj uintptr
+	var mobj *mobj_t
 	var tclass uint8
 	// remove all the current thinkers
 	currentthinker = thinkercap.Fnext
 	for currentthinker != &thinkercap {
 		next = currentthinker.Fnext
 		if currentthinker.Ffunction.Facv == __ccgo_fp(P_MobjThinker) {
-			P_RemoveMobj((uintptr)(unsafe.Pointer(currentthinker)))
+			P_RemoveMobj((*mobj_t)(unsafe.Pointer(currentthinker)))
 		} else {
 			Z_Free((uintptr)(unsafe.Pointer(currentthinker)))
 		}
@@ -30813,17 +30807,16 @@ func P_UnArchiveThinkers() {
 			return // end of list
 		case tc_mobj:
 			saveg_read_pad()
-			mobj = Z_Malloc(224, int32(PU_LEVEL), uintptr(0))
-			mobjP := (*mobj_t)(unsafe.Pointer(mobj))
-			saveg_read_mobj_t(mobjP)
-			mobjP.Ftarget = uintptr(0)
-			mobjP.Ftracer = uintptr(0)
+			mobj = (*mobj_t)(unsafe.Pointer(Z_Malloc(224, int32(PU_LEVEL), uintptr(0))))
+			saveg_read_mobj_t(mobj)
+			mobj.Ftarget = nil
+			mobj.Ftracer = nil
 			P_SetThingPosition(mobj)
-			mobjP.Finfo = &mobjinfo[mobjP.Ftype1]
-			mobjP.Ffloorz = (*sector_t)(unsafe.Pointer((mobjP.Fsubsector).Fsector)).Ffloorheight
-			mobjP.Fceilingz = (*sector_t)(unsafe.Pointer((mobjP.Fsubsector).Fsector)).Fceilingheight
-			mobjP.Fthinker.Ffunction.Facv = __ccgo_fp(P_MobjThinker)
-			P_AddThinker(&mobjP.Fthinker)
+			mobj.Finfo = &mobjinfo[mobj.Ftype1]
+			mobj.Ffloorz = (*sector_t)(unsafe.Pointer((mobj.Fsubsector).Fsector)).Ffloorheight
+			mobj.Fceilingz = (*sector_t)(unsafe.Pointer((mobj.Fsubsector).Fsector)).Fceilingheight
+			mobj.Fthinker.Ffunction.Facv = __ccgo_fp(P_MobjThinker)
+			P_AddThinker(&mobj.Fthinker)
 		default:
 			I_Error(__ccgo_ts(25069), tclass)
 		}
@@ -31155,7 +31148,7 @@ func P_LoadSectors(lump int32) {
 		ss.Flightlevel = ms.Flightlevel
 		ss.Fspecial = ms.Fspecial
 		ss.Ftag = ms.Ftag
-		ss.Fthinglist = uintptr(0)
+		ss.Fthinglist = nil
 	}
 	W_ReleaseLumpNum(lump)
 }
@@ -31644,7 +31637,7 @@ func P_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
 				break
 			}
 			if playeringame[i] != 0 {
-				players[i].Fmo = uintptr(0)
+				players[i].Fmo = nil
 				G_DeathMatchSpawnPlayer(i)
 			}
 			goto _7
@@ -31893,12 +31886,12 @@ func P_CrossBSPNode(bspnum int32) (r boolean) {
 //	//  if a straight line between t1 and t2 is unobstructed.
 //	// Uses REJECT.
 //	//
-func P_CheckSight(t1 uintptr, t2 uintptr) (r boolean) {
+func P_CheckSight(t1 *mobj_t, t2 *mobj_t) (r boolean) {
 	var bitnum, bytenum, pnum, s1, s2 int32
 	// First check for trivial rejection.
 	// Determine subsector entries in REJECT table.
-	s1 = sectorIndex(((*mobj_t)(unsafe.Pointer(t1)).Fsubsector).Fsector)
-	s2 = sectorIndex(((*mobj_t)(unsafe.Pointer(t2)).Fsubsector).Fsector)
+	s1 = sectorIndex((t1.Fsubsector).Fsector)
+	s2 = sectorIndex((t2.Fsubsector).Fsector)
 	pnum = s1*numsectors + s2
 	bytenum = pnum >> 3
 	bitnum = 1 << (pnum & 7)
@@ -31912,15 +31905,15 @@ func P_CheckSight(t1 uintptr, t2 uintptr) (r boolean) {
 	// Now look from eyes of t1 to any part of t2.
 	sightcounts[int32(1)]++
 	validcount++
-	sightzstart = (*mobj_t)(unsafe.Pointer(t1)).Fz + (*mobj_t)(unsafe.Pointer(t1)).Fheight - (*mobj_t)(unsafe.Pointer(t1)).Fheight>>2
-	topslope = (*mobj_t)(unsafe.Pointer(t2)).Fz + (*mobj_t)(unsafe.Pointer(t2)).Fheight - sightzstart
-	bottomslope = (*mobj_t)(unsafe.Pointer(t2)).Fz - sightzstart
-	strace.Fx = (*mobj_t)(unsafe.Pointer(t1)).Fx
-	strace.Fy = (*mobj_t)(unsafe.Pointer(t1)).Fy
-	t2x = (*mobj_t)(unsafe.Pointer(t2)).Fx
-	t2y = (*mobj_t)(unsafe.Pointer(t2)).Fy
-	strace.Fdx = (*mobj_t)(unsafe.Pointer(t2)).Fx - (*mobj_t)(unsafe.Pointer(t1)).Fx
-	strace.Fdy = (*mobj_t)(unsafe.Pointer(t2)).Fy - (*mobj_t)(unsafe.Pointer(t1)).Fy
+	sightzstart = t1.Fz + t1.Fheight - t1.Fheight>>2
+	topslope = t2.Fz + t2.Fheight - sightzstart
+	bottomslope = t2.Fz - sightzstart
+	strace.Fx = t1.Fx
+	strace.Fy = t1.Fy
+	t2x = t2.Fx
+	t2y = t2.Fy
+	strace.Fdx = t2.Fx - t1.Fx
+	strace.Fdy = t2.Fy - t1.Fy
 	// the head node is the last node output
 	return P_CrossBSPNode(numnodes - 1)
 }
@@ -32490,13 +32483,13 @@ func P_FindMinSurroundingLight(sector *sector_t, max int32) (r int32) {
 //	// Called every time a thing origin is about
 //	//  to cross a line with a non 0 special.
 //	//
-func P_CrossSpecialLine(linenum int32, side int32, thing uintptr) {
+func P_CrossSpecialLine(linenum int32, side int32, thing *mobj_t) {
 	var ok int32
 	line := &lines[linenum]
 	//	Triggers that other things can activate
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != nil) {
+	if !(thing.Fplayer != nil) {
 		// Things that should NOT trigger specials...
-		switch (*mobj_t)(unsafe.Pointer(thing)).Ftype1 {
+		switch thing.Ftype1 {
 		case int32(MT_ROCKET):
 			fallthrough
 		case int32(MT_PLASMA):
@@ -32688,7 +32681,7 @@ func P_CrossSpecialLine(linenum int32, side int32, thing uintptr) {
 		G_SecretExitLevel()
 	case 125:
 		// TELEPORT MonsterONLY
-		if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != nil) {
+		if !(thing.Fplayer != nil) {
 			EV_Teleport(line, side, thing)
 			line.Fspecial = 0
 		}
@@ -32794,7 +32787,7 @@ func P_CrossSpecialLine(linenum int32, side int32, thing uintptr) {
 		EV_DoPlat(line, int32(blazeDWUS), 0)
 	case 126:
 		// TELEPORT MonsterONLY.
-		if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != nil) {
+		if !(thing.Fplayer != nil) {
 			EV_Teleport(line, side, thing)
 		}
 	case 128:
@@ -32813,10 +32806,10 @@ func P_CrossSpecialLine(linenum int32, side int32, thing uintptr) {
 //	// P_ShootSpecialLine - IMPACT SPECIALS
 //	// Called when a thing shoots a special line.
 //	//
-func P_ShootSpecialLine(thing uintptr, line *line_t) {
+func P_ShootSpecialLine(thing *mobj_t, line *line_t) {
 	var ok int32
 	//	Impacts that other things can activate.
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != nil) {
+	if !(thing.Fplayer != nil) {
 		ok = 0
 		switch int32(line.Fspecial) {
 		case 46:
@@ -32854,9 +32847,9 @@ func P_ShootSpecialLine(thing uintptr, line *line_t) {
 //	//
 func P_PlayerInSpecialSector(player *player_t) {
 	var sector *sector_t
-	sector = ((*mobj_t)(unsafe.Pointer(player.Fmo)).Fsubsector).Fsector
+	sector = (player.Fmo.Fsubsector).Fsector
 	// Falling, not all the way down yet?
-	if (*mobj_t)(unsafe.Pointer(player.Fmo)).Fz != sector.Ffloorheight {
+	if player.Fmo.Fz != sector.Ffloorheight {
 		return
 	}
 	// Has hitten ground.
@@ -32865,14 +32858,14 @@ func P_PlayerInSpecialSector(player *player_t) {
 		// HELLSLIME DAMAGE
 		if !(player.Fpowers[pw_ironfeet] != 0) {
 			if !(leveltime&0x1f != 0) {
-				P_DamageMobj(player.Fmo, uintptr(0), uintptr(0), 10)
+				P_DamageMobj(player.Fmo, nil, nil, 10)
 			}
 		}
 	case 7:
 		// NUKAGE DAMAGE
 		if !(player.Fpowers[pw_ironfeet] != 0) {
 			if !(leveltime&0x1f != 0) {
-				P_DamageMobj(player.Fmo, uintptr(0), uintptr(0), 5)
+				P_DamageMobj(player.Fmo, nil, nil, 5)
 			}
 		}
 	case 16:
@@ -32882,7 +32875,7 @@ func P_PlayerInSpecialSector(player *player_t) {
 		// STROBE HURT
 		if !(player.Fpowers[pw_ironfeet] != 0) || P_Random() < 5 {
 			if !(leveltime&0x1f != 0) {
-				P_DamageMobj(player.Fmo, uintptr(0), uintptr(0), 20)
+				P_DamageMobj(player.Fmo, nil, nil, 20)
 			}
 		}
 	case 9:
@@ -32893,7 +32886,7 @@ func P_PlayerInSpecialSector(player *player_t) {
 		// EXIT SUPER DAMAGE! (for E1M8 finale)
 		player.Fcheats &= ^int32(CF_GODMODE)
 		if !(leveltime&0x1f != 0) {
-			P_DamageMobj(player.Fmo, uintptr(0), uintptr(0), 20)
+			P_DamageMobj(player.Fmo, nil, nil, 20)
 		}
 		if player.Fhealth <= 10 {
 			G_ExitLevel()
@@ -33622,7 +33615,7 @@ func P_ChangeSwitchTexture(line *line_t, useAgain int32) {
 //	// Called when a thing uses a special line.
 //	// Only the front sides of lines are usable.
 //	//
-func P_UseSpecialLine(thing uintptr, line *line_t, side int32) (r boolean) {
+func P_UseSpecialLine(thing *mobj_t, line *line_t, side int32) (r boolean) {
 	// Err...
 	// Use the back sides of VERY SPECIAL lines...
 	if side != 0 {
@@ -33636,7 +33629,7 @@ func P_UseSpecialLine(thing uintptr, line *line_t, side int32) (r boolean) {
 		}
 	}
 	// Switches that other things can activate.
-	if !((*mobj_t)(unsafe.Pointer(thing)).Fplayer != nil) {
+	if !(thing.Fplayer != nil) {
 		// never open secret doors
 		if int32(line.Fflags)&ML_SECRET != 0 {
 			return 0
@@ -33989,9 +33982,9 @@ func P_UseSpecialLine(thing uintptr, line *line_t, side int32) (r boolean) {
 //	//
 //	// TELEPORTATION
 //	//
-func EV_Teleport(line *line_t, side int32, thing uintptr) (r int32) {
+func EV_Teleport(line *line_t, side int32, thing *mobj_t) (r int32) {
 	var an uint32
-	var fog uintptr
+	var fog *mobj_t
 	var m *mobj_t
 	var thinker *thinker_t
 	var sector *sector_t
@@ -33999,7 +33992,7 @@ func EV_Teleport(line *line_t, side int32, thing uintptr) (r int32) {
 	var tag int16
 	var oldx, oldy, oldz, v3, v4 fixed_t
 	// don't teleport missiles
-	if (*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_MISSILE) != 0 {
+	if thing.Fflags&int32(MF_MISSILE) != 0 {
 		return 0
 	}
 	// Don't teleport if hit back of line,
@@ -34034,10 +34027,10 @@ func EV_Teleport(line *line_t, side int32, thing uintptr) (r int32) {
 				if sectorIndex(sector) != i {
 					goto _2
 				}
-				oldx = (*mobj_t)(unsafe.Pointer(thing)).Fx
-				oldy = (*mobj_t)(unsafe.Pointer(thing)).Fy
-				oldz = (*mobj_t)(unsafe.Pointer(thing)).Fz
-				if !(P_TeleportMove(thing, (*mobj_t)(unsafe.Pointer(m)).Fx, (*mobj_t)(unsafe.Pointer(m)).Fy) != 0) {
+				oldx = thing.Fx
+				oldy = thing.Fy
+				oldz = thing.Fz
+				if !(P_TeleportMove(thing, m.Fx, m.Fy) != 0) {
 					return 0
 				}
 				// The first Final Doom executable does not set thing->z
@@ -34045,28 +34038,28 @@ func EV_Teleport(line *line_t, side int32, thing uintptr) (r int32) {
 				// particular version; the later version included in
 				// some versions of the Id Anthology fixed this.
 				if gameversion != exe_final {
-					(*mobj_t)(unsafe.Pointer(thing)).Fz = (*mobj_t)(unsafe.Pointer(thing)).Ffloorz
+					thing.Fz = thing.Ffloorz
 				}
-				if (*mobj_t)(unsafe.Pointer(thing)).Fplayer != nil {
-					(*mobj_t)(unsafe.Pointer(thing)).Fplayer.Fviewz = (*mobj_t)(unsafe.Pointer(thing)).Fz + (*mobj_t)(unsafe.Pointer(thing)).Fplayer.Fviewheight
+				if thing.Fplayer != nil {
+					thing.Fplayer.Fviewz = thing.Fz + thing.Fplayer.Fviewheight
 				}
 				// spawn teleport fog at source and destination
 				fog = P_SpawnMobj(oldx, oldy, oldz, int32(MT_TFOG))
-				S_StartSound(&((*mobj_t)(unsafe.Pointer(fog)).degenmobj_t), int32(sfx_telept))
-				an = (*mobj_t)(unsafe.Pointer(m)).Fangle >> int32(ANGLETOFINESHIFT)
-				fog = P_SpawnMobj((*mobj_t)(unsafe.Pointer(m)).Fx+int32(20)*finecosine[an], (*mobj_t)(unsafe.Pointer(m)).Fy+int32(20)*finesine[an], (*mobj_t)(unsafe.Pointer(thing)).Fz, int32(MT_TFOG))
+				S_StartSound(&(fog.degenmobj_t), int32(sfx_telept))
+				an = m.Fangle >> int32(ANGLETOFINESHIFT)
+				fog = P_SpawnMobj(m.Fx+int32(20)*finecosine[an], m.Fy+int32(20)*finesine[an], thing.Fz, int32(MT_TFOG))
 				// emit sound, where?
-				S_StartSound(&((*mobj_t)(unsafe.Pointer(fog)).degenmobj_t), int32(sfx_telept))
+				S_StartSound(&(fog.degenmobj_t), int32(sfx_telept))
 				// don't move for a bit
-				if (*mobj_t)(unsafe.Pointer(thing)).Fplayer != nil {
-					(*mobj_t)(unsafe.Pointer(thing)).Freactiontime = 18
+				if thing.Fplayer != nil {
+					thing.Freactiontime = 18
 				}
-				(*mobj_t)(unsafe.Pointer(thing)).Fangle = (*mobj_t)(unsafe.Pointer(m)).Fangle
+				thing.Fangle = m.Fangle
 				v4 = 0
-				(*mobj_t)(unsafe.Pointer(thing)).Fmomz = v4
+				thing.Fmomz = v4
 				v3 = v4
-				(*mobj_t)(unsafe.Pointer(thing)).Fmomy = v3
-				(*mobj_t)(unsafe.Pointer(thing)).Fmomx = v3
+				thing.Fmomy = v3
+				thing.Fmomx = v3
 				return 1
 				goto _2
 			_2:
@@ -34187,8 +34180,8 @@ const MAXBOB = 1048576
 //	//
 func P_Thrust(player *player_t, angle angle_t, move fixed_t) {
 	angle >>= uint32(ANGLETOFINESHIFT)
-	*(*fixed_t)(unsafe.Pointer(player.Fmo + 112)) += FixedMul(move, finecosine[angle])
-	*(*fixed_t)(unsafe.Pointer(player.Fmo + 116)) += FixedMul(move, finesine[angle])
+	player.Fmo.Fmomx += FixedMul(move, finecosine[angle])
+	player.Fmo.Fmomy += FixedMul(move, finesine[angle])
 }
 
 // C documentation
@@ -34206,17 +34199,17 @@ func P_CalcHeight(player *player_t) {
 	// OPTIMIZE: tablify angle
 	// Note: a LUT allows for effects
 	//  like a ramp with low health.
-	player.Fbob = FixedMul((*mobj_t)(unsafe.Pointer(player.Fmo)).Fmomx, (*mobj_t)(unsafe.Pointer(player.Fmo)).Fmomx) + FixedMul((*mobj_t)(unsafe.Pointer(player.Fmo)).Fmomy, (*mobj_t)(unsafe.Pointer(player.Fmo)).Fmomy)
+	player.Fbob = FixedMul(player.Fmo.Fmomx, player.Fmo.Fmomx) + FixedMul(player.Fmo.Fmomy, player.Fmo.Fmomy)
 	player.Fbob >>= 2
 	if player.Fbob > int32(MAXBOB) {
 		player.Fbob = int32(MAXBOB)
 	}
 	if player.Fcheats&int32(CF_NOMOMENTUM) != 0 || !(onground != 0) {
-		player.Fviewz = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fz + 41*(1<<FRACBITS)
-		if player.Fviewz > (*mobj_t)(unsafe.Pointer(player.Fmo)).Fceilingz-4*(1<<FRACBITS) {
-			player.Fviewz = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fceilingz - 4*(1<<FRACBITS)
+		player.Fviewz = player.Fmo.Fz + 41*(1<<FRACBITS)
+		if player.Fviewz > player.Fmo.Fceilingz-4*(1<<FRACBITS) {
+			player.Fviewz = player.Fmo.Fceilingz - 4*(1<<FRACBITS)
 		}
-		player.Fviewz = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fz + player.Fviewheight
+		player.Fviewz = player.Fmo.Fz + player.Fviewheight
 		return
 	}
 	angle = FINEANGLES / 20 * leveltime & (FINEANGLES - 1)
@@ -34241,9 +34234,9 @@ func P_CalcHeight(player *player_t) {
 			}
 		}
 	}
-	player.Fviewz = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fz + player.Fviewheight + bob
-	if player.Fviewz > (*mobj_t)(unsafe.Pointer(player.Fmo)).Fceilingz-4*(1<<FRACBITS) {
-		player.Fviewz = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fceilingz - 4*(1<<FRACBITS)
+	player.Fviewz = player.Fmo.Fz + player.Fviewheight + bob
+	if player.Fviewz > player.Fmo.Fceilingz-4*(1<<FRACBITS) {
+		player.Fviewz = player.Fmo.Fceilingz - 4*(1<<FRACBITS)
 	}
 }
 
@@ -34254,17 +34247,17 @@ func P_CalcHeight(player *player_t) {
 //	//
 func P_MovePlayer(player *player_t) {
 	cmd := &player.Fcmd
-	*(*angle_t)(unsafe.Pointer(player.Fmo + 56)) += uint32(int32(cmd.Fangleturn) << 16)
+	player.Fmo.Fangle += uint32(int32(cmd.Fangleturn) << 16)
 	// Do not let the player control movement
 	//  if not onground.
-	onground = booluint32((*mobj_t)(unsafe.Pointer(player.Fmo)).Fz <= (*mobj_t)(unsafe.Pointer(player.Fmo)).Ffloorz)
+	onground = booluint32(player.Fmo.Fz <= player.Fmo.Ffloorz)
 	if cmd.Fforwardmove != 0 && onground != 0 {
-		P_Thrust(player, (*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle, int32(cmd.Fforwardmove)*int32(2048))
+		P_Thrust(player, player.Fmo.Fangle, int32(cmd.Fforwardmove)*int32(2048))
 	}
 	if cmd.Fsidemove != 0 && onground != 0 {
-		P_Thrust(player, (*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle-uint32(ANG907), int32(cmd.Fsidemove)*int32(2048))
+		P_Thrust(player, player.Fmo.Fangle-uint32(ANG907), int32(cmd.Fsidemove)*int32(2048))
 	}
-	if (cmd.Fforwardmove != 0 || cmd.Fsidemove != 0) && (*mobj_t)(unsafe.Pointer(player.Fmo)).Fstate == &states[S_PLAY] {
+	if (cmd.Fforwardmove != 0 || cmd.Fsidemove != 0) && player.Fmo.Fstate == &states[S_PLAY] {
 		P_SetMobjState(player.Fmo, S_PLAY_RUN1)
 	}
 }
@@ -34286,23 +34279,23 @@ func P_DeathThink(player *player_t) {
 		player.Fviewheight = 6 * (1 << FRACBITS)
 	}
 	player.Fdeltaviewheight = 0
-	onground = booluint32((*mobj_t)(unsafe.Pointer(player.Fmo)).Fz <= (*mobj_t)(unsafe.Pointer(player.Fmo)).Ffloorz)
+	onground = booluint32(player.Fmo.Fz <= player.Fmo.Ffloorz)
 	P_CalcHeight(player)
-	if player.Fattacker != 0 && player.Fattacker != player.Fmo {
-		angle = R_PointToAngle2((*mobj_t)(unsafe.Pointer(player.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(player.Fmo)).Fy, (*mobj_t)(unsafe.Pointer(player.Fattacker)).Fx, (*mobj_t)(unsafe.Pointer(player.Fattacker)).Fy)
-		delta = angle - (*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle
+	if player.Fattacker != nil && player.Fattacker != player.Fmo {
+		angle = R_PointToAngle2(player.Fmo.Fx, player.Fmo.Fy, (*mobj_t)(unsafe.Pointer(player.Fattacker)).Fx, (*mobj_t)(unsafe.Pointer(player.Fattacker)).Fy)
+		delta = angle - player.Fmo.Fangle
 		if delta < uint32(ANG907/18) || delta > uint32((-(ANG907/18))&0xffff_ffff) {
 			// Looking at killer,
 			//  so fade damage flash down.
-			(*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle = angle
+			player.Fmo.Fangle = angle
 			if player.Fdamagecount != 0 {
 				player.Fdamagecount--
 			}
 		} else {
 			if delta < uint32(ANG1809) {
-				*(*angle_t)(unsafe.Pointer(player.Fmo + 56)) += uint32(ANG907 / 18)
+				player.Fmo.Fangle += uint32(ANG907 / 18)
 			} else {
-				*(*angle_t)(unsafe.Pointer(player.Fmo + 56)) -= uint32(ANG907 / 18)
+				player.Fmo.Fangle -= uint32(ANG907 / 18)
 			}
 		}
 	} else {
@@ -34324,17 +34317,17 @@ func P_PlayerThink(player *player_t) {
 	var newweapon weapontype_t
 	// fixme: do this in the cheat code
 	if player.Fcheats&int32(CF_NOCLIP) != 0 {
-		*(*int32)(unsafe.Pointer(player.Fmo + 160)) |= int32(MF_NOCLIP)
+		player.Fmo.Fflags |= int32(MF_NOCLIP)
 	} else {
-		*(*int32)(unsafe.Pointer(player.Fmo + 160)) &= ^int32(MF_NOCLIP)
+		player.Fmo.Fflags &^= int32(MF_NOCLIP)
 	}
 	// chain saw run forward
 	cmd := &player.Fcmd
-	if (*mobj_t)(unsafe.Pointer(player.Fmo)).Fflags&int32(MF_JUSTATTACKED) != 0 {
+	if player.Fmo.Fflags&int32(MF_JUSTATTACKED) != 0 {
 		cmd.Fangleturn = 0
 		cmd.Fforwardmove = int8(0xc800 / 512)
 		cmd.Fsidemove = 0
-		*(*int32)(unsafe.Pointer(player.Fmo + 160)) &= ^int32(MF_JUSTATTACKED)
+		player.Fmo.Fflags &^= int32(MF_JUSTATTACKED)
 	}
 	if player.Fplayerstate == int32(PST_DEAD) {
 		P_DeathThink(player)
@@ -34343,13 +34336,13 @@ func P_PlayerThink(player *player_t) {
 	// Move around.
 	// Reactiontime is used to prevent movement
 	//  for a bit after a teleport.
-	if (*mobj_t)(unsafe.Pointer(player.Fmo)).Freactiontime != 0 {
-		(*mobj_t)(unsafe.Pointer(player.Fmo)).Freactiontime--
+	if player.Fmo.Freactiontime != 0 {
+		player.Fmo.Freactiontime--
 	} else {
 		P_MovePlayer(player)
 	}
 	P_CalcHeight(player)
-	if (*sector_t)(unsafe.Pointer(((*mobj_t)(unsafe.Pointer(player.Fmo)).Fsubsector).Fsector)).Fspecial != 0 {
+	if (*sector_t)(unsafe.Pointer((player.Fmo.Fsubsector).Fsector)).Fspecial != 0 {
 		P_PlayerInSpecialSector(player)
 	}
 	// Check for weapon change.
@@ -34398,7 +34391,7 @@ func P_PlayerThink(player *player_t) {
 	if player.Fpowers[pw_invisibility] != 0 {
 		player.Fpowers[pw_invisibility]--
 		if !(player.Fpowers[pw_invisibility] != 0) {
-			*(*int32)(unsafe.Pointer(player.Fmo + 160)) &= ^int32(MF_SHADOW)
+			player.Fmo.Fflags &^= int32(MF_SHADOW)
 		}
 	}
 	if player.Fpowers[pw_infrared] != 0 {
@@ -36916,9 +36909,9 @@ func R_PointInSubsector(x fixed_t, y fixed_t) *subsector_t {
 func R_SetupFrame(player *player_t) {
 	var i int32
 	viewplayer = player
-	viewx = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fx
-	viewy = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fy
-	viewangle = (*mobj_t)(unsafe.Pointer(player.Fmo)).Fangle + viewangleoffset
+	viewx = player.Fmo.Fx
+	viewy = player.Fmo.Fy
+	viewangle = player.Fmo.Fangle + viewangleoffset
 	extralight = player.Fextralight
 	viewz = player.Fviewz
 	viewsin = finesine[viewangle>>int32(ANGLETOFINESHIFT)]
@@ -38129,7 +38122,7 @@ func R_DrawVisSprite(vis *vissprite_t, x1 int32, x2 int32) {
 //	// Generates a vissprite for a thing
 //	//  if it might be visible.
 //	//
-func R_ProjectSprite(thing uintptr) {
+func R_ProjectSprite(thing *mobj_t) {
 	var ang angle_t
 	var flip boolean
 	var gxt, gyt, iscale, tr_x, tr_y, tx, tz, xscale fixed_t
@@ -38139,8 +38132,8 @@ func R_ProjectSprite(thing uintptr) {
 	var sprframe *spriteframe_t
 	var vis *vissprite_t
 	// transform the origin point
-	tr_x = (*mobj_t)(unsafe.Pointer(thing)).Fx - viewx
-	tr_y = (*mobj_t)(unsafe.Pointer(thing)).Fy - viewy
+	tr_x = thing.Fx - viewx
+	tr_y = thing.Fy - viewy
 	gxt = FixedMul(tr_x, viewcos)
 	gyt = -FixedMul(tr_y, viewsin)
 	tz = gxt - gyt
@@ -38157,18 +38150,18 @@ func R_ProjectSprite(thing uintptr) {
 		return
 	}
 	// decide which patch to use for sprite relative to player
-	if uint32((*mobj_t)(unsafe.Pointer(thing)).Fsprite) >= uint32(numsprites) {
-		I_Error(__ccgo_ts(26979), (*mobj_t)(unsafe.Pointer(thing)).Fsprite)
+	if uint32(thing.Fsprite) >= uint32(numsprites) {
+		I_Error(__ccgo_ts(26979), thing.Fsprite)
 	}
-	sprdef = &sprites[(*mobj_t)(unsafe.Pointer(thing)).Fsprite]
-	if (*mobj_t)(unsafe.Pointer(thing)).Fframe&int32(FF_FRAMEMASK3) >= (*spritedef_t)(unsafe.Pointer(sprdef)).Fnumframes {
-		I_Error(__ccgo_ts(27022), (*mobj_t)(unsafe.Pointer(thing)).Fsprite, (*mobj_t)(unsafe.Pointer(thing)).Fframe)
+	sprdef = &sprites[thing.Fsprite]
+	if thing.Fframe&int32(FF_FRAMEMASK3) >= (*spritedef_t)(unsafe.Pointer(sprdef)).Fnumframes {
+		I_Error(__ccgo_ts(27022), thing.Fsprite, thing.Fframe)
 	}
-	sprframe = &sprdef.Fspriteframes[(*mobj_t)(unsafe.Pointer(thing)).Fframe&int32(FF_FRAMEMASK3)]
+	sprframe = &sprdef.Fspriteframes[thing.Fframe&int32(FF_FRAMEMASK3)]
 	if (*spriteframe_t)(unsafe.Pointer(sprframe)).Frotate != 0 {
 		// choose a different rotation based on player view
-		ang = R_PointToAngle((*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy)
-		rot = (ang - (*mobj_t)(unsafe.Pointer(thing)).Fangle + uint32(ANG455/2)*9) >> 29
+		ang = R_PointToAngle(thing.Fx, thing.Fy)
+		rot = (ang - thing.Fangle + uint32(ANG455/2)*9) >> 29
 		lump = int32(sprframe.Flump[rot])
 		flip = uint32(sprframe.Fflip[rot])
 	} else {
@@ -38191,12 +38184,12 @@ func R_ProjectSprite(thing uintptr) {
 	}
 	// store information in a vissprite
 	vis = R_NewVisSprite()
-	vis.Fmobjflags = (*mobj_t)(unsafe.Pointer(thing)).Fflags
+	vis.Fmobjflags = thing.Fflags
 	vis.Fscale = xscale << detailshift
-	vis.Fgx = (*mobj_t)(unsafe.Pointer(thing)).Fx
-	vis.Fgy = (*mobj_t)(unsafe.Pointer(thing)).Fy
-	vis.Fgz = (*mobj_t)(unsafe.Pointer(thing)).Fz
-	vis.Fgzt = (*mobj_t)(unsafe.Pointer(thing)).Fz + *(*fixed_t)(unsafe.Pointer(spritetopoffset + uintptr(lump)*4))
+	vis.Fgx = thing.Fx
+	vis.Fgy = thing.Fy
+	vis.Fgz = thing.Fz
+	vis.Fgzt = thing.Fz + *(*fixed_t)(unsafe.Pointer(spritetopoffset + uintptr(lump)*4))
 	vis.Ftexturemid = vis.Fgzt - viewz
 	if x1 < 0 {
 		v1 = 0
@@ -38224,7 +38217,7 @@ func R_ProjectSprite(thing uintptr) {
 	}
 	vis.Fpatch = lump
 	// get light level
-	if (*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SHADOW) != 0 {
+	if thing.Fflags&int32(MF_SHADOW) != 0 {
 		// shadow draw
 		vis.Fcolormap = uintptr(0)
 	} else {
@@ -38232,7 +38225,7 @@ func R_ProjectSprite(thing uintptr) {
 			// fixed map
 			vis.Fcolormap = fixedcolormap
 		} else {
-			if (*mobj_t)(unsafe.Pointer(thing)).Fframe&int32(FF_FULLBRIGHT1) != 0 {
+			if thing.Fframe&int32(FF_FULLBRIGHT1) != 0 {
 				// full bright
 				vis.Fcolormap = colormaps
 			} else {
@@ -38255,7 +38248,7 @@ func R_ProjectSprite(thing uintptr) {
 //	//
 func R_AddSprites(sec *sector_t) {
 	var lightnum int32
-	var thing uintptr
+	var thing *mobj_t
 	// BSP is traversed by subsector.
 	// A sector might have been split into several
 	//  subsectors during BSP building.
@@ -38278,14 +38271,14 @@ func R_AddSprites(sec *sector_t) {
 	// Handle all things in sector.
 	thing = sec.Fthinglist
 	for {
-		if !(thing != 0) {
+		if !(thing != nil) {
 			break
 		}
 		R_ProjectSprite(thing)
 		goto _1
 	_1:
 		;
-		thing = (*mobj_t)(unsafe.Pointer(thing)).Fsnext
+		thing = thing.Fsnext
 	}
 }
 
@@ -38382,7 +38375,7 @@ func R_DrawPSprite(psp *pspdef_t) {
 func R_DrawPlayerSprites() {
 	var i, lightnum int32
 	// get light level
-	lightnum = int32(((*mobj_t)(unsafe.Pointer(viewplayer.Fmo)).Fsubsector).Fsector.Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
+	lightnum = int32((viewplayer.Fmo.Fsubsector).Fsector.Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
 	if lightnum < 0 {
 		spritelights = uintptr(unsafe.Pointer(&scalelight))
 	} else {
@@ -40258,8 +40251,8 @@ func ST_Responder(ev *event_t) (r boolean) {
 				if cht_CheckCheat(&cheat_god, int8(ev.Fdata2)) != 0 {
 					plyr.Fcheats ^= int32(CF_GODMODE)
 					if plyr.Fcheats&int32(CF_GODMODE) != 0 {
-						if plyr.Fmo != 0 {
-							(*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fhealth = 100
+						if plyr.Fmo != nil {
+							plyr.Fmo.Fhealth = 100
 						}
 						plyr.Fhealth = int32(DEH_DEFAULT_GOD_MODE_HEALTH)
 						plyr.Fmessage = __ccgo_ts_str(27550)
@@ -40423,7 +40416,7 @@ func ST_Responder(ev *event_t) (r boolean) {
 						plyr.Fmessage = __ccgo_ts_str(27778)
 					} else {
 						if cht_CheckCheat(&cheat_mypos, int8(ev.Fdata2)) != 0 {
-							plyr.Fmessage = fmt.Sprintf(__ccgo_ts_str(27800), (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fangle, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx, (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy)
+							plyr.Fmessage = fmt.Sprintf(__ccgo_ts_str(27800), players[consoleplayer].Fmo.Fangle, players[consoleplayer].Fmo.Fx, players[consoleplayer].Fmo.Fy)
 						}
 					}
 				}
@@ -40539,21 +40532,21 @@ func ST_updateFaceWidget() {
 		}
 	}
 	if priority < 8 {
-		if plyr.Fdamagecount != 0 && plyr.Fattacker != 0 && plyr.Fattacker != plyr.Fmo {
+		if plyr.Fdamagecount != 0 && plyr.Fattacker != nil && plyr.Fattacker != plyr.Fmo {
 			// being attacked
 			priority = 7
 			if plyr.Fhealth-st_oldhealth > ST_MUCHPAIN {
 				st_facecount = 1 * TICRATE
 				st_faceindex = ST_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
 			} else {
-				badguyangle = R_PointToAngle2((*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fx, (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fy, (*mobj_t)(unsafe.Pointer(plyr.Fattacker)).Fx, (*mobj_t)(unsafe.Pointer(plyr.Fattacker)).Fy)
-				if badguyangle > (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fangle {
+				badguyangle = R_PointToAngle2(plyr.Fmo.Fx, plyr.Fmo.Fy, (*mobj_t)(unsafe.Pointer(plyr.Fattacker)).Fx, (*mobj_t)(unsafe.Pointer(plyr.Fattacker)).Fy)
+				if badguyangle > plyr.Fmo.Fangle {
 					// whether right or left
-					diffang = badguyangle - (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fangle
+					diffang = badguyangle - plyr.Fmo.Fangle
 					i = boolint32(diffang > uint32(ANG18015))
 				} else {
 					// whether left or right
-					diffang = (*mobj_t)(unsafe.Pointer(plyr.Fmo)).Fangle - badguyangle
+					diffang = plyr.Fmo.Fangle - badguyangle
 					i = boolint32(diffang <= uint32(ANG18015))
 				} // confusing, aint it?
 				st_facecount = 1 * TICRATE
@@ -41273,8 +41266,8 @@ func S_AdjustSoundParams(listener *degenmobj_t, source *degenmobj_t, vol uintptr
 	var v1 int32
 	// calculate the distance to sound origin
 	//  and clip it if necessary
-	adx = xabs((*mobj_t)(unsafe.Pointer(listener)).Fx - (*mobj_t)(unsafe.Pointer(source)).Fx)
-	ady = xabs((*mobj_t)(unsafe.Pointer(listener)).Fy - (*mobj_t)(unsafe.Pointer(source)).Fy)
+	adx = xabs(listener.Fx - source.Fx)
+	ady = xabs(listener.Fy - source.Fy)
 	// From _GG1_ p.428. Appox. eucledian distance fast.
 	if adx < ady {
 		v1 = adx
@@ -41286,11 +41279,13 @@ func S_AdjustSoundParams(listener *degenmobj_t, source *degenmobj_t, vol uintptr
 		return 0
 	}
 	// angle of source to listener
-	angle = R_PointToAngle2((*mobj_t)(unsafe.Pointer(listener)).Fx, (*mobj_t)(unsafe.Pointer(listener)).Fy, (*mobj_t)(unsafe.Pointer(source)).Fx, (*mobj_t)(unsafe.Pointer(source)).Fy)
-	if angle > (*mobj_t)(unsafe.Pointer(listener)).Fangle {
-		angle = angle - (*mobj_t)(unsafe.Pointer(listener)).Fangle
+	angle = R_PointToAngle2(listener.Fx, listener.Fy, source.Fx, source.Fy)
+	// TODO: Andre/GORE: Is this a safe cast? Can we guarantee this isn't just a degenmobj_t?
+	mo := (*mobj_t)(unsafe.Pointer(listener))
+	if angle > mo.Fangle {
+		angle = angle - mo.Fangle
 	} else {
-		angle = angle + (uint32(0xffffffff) - (*mobj_t)(unsafe.Pointer(listener)).Fangle)
+		angle = angle + (uint32(0xffffffff) - mo.Fangle)
 	}
 	angle >>= uint32(ANGLETOFINESHIFT)
 	// stereo separation
@@ -41334,9 +41329,9 @@ func S_StartSound(origin *degenmobj_t, sfx_id int32) {
 	}
 	// Check to see if it is audible,
 	//  and if not, modify the params
-	if origin != nil && origin != &((*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).degenmobj_t) {
-		rc = S_AdjustSoundParams(&((*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).degenmobj_t), origin, bp+4, bp)
-		if (*mobj_t)(unsafe.Pointer(origin)).Fx == (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fx && (*mobj_t)(unsafe.Pointer(origin)).Fy == (*mobj_t)(unsafe.Pointer(players[consoleplayer].Fmo)).Fy {
+	if origin != nil && origin != &(players[consoleplayer].Fmo.degenmobj_t) {
+		rc = S_AdjustSoundParams(&(players[consoleplayer].Fmo.degenmobj_t), origin, bp+4, bp)
+		if origin.Fx == players[consoleplayer].Fmo.Fx && origin.Fy == players[consoleplayer].Fmo.Fy {
 			*(*int32)(unsafe.Pointer(bp)) = int32(NORM_SEP)
 		}
 		if !(rc != 0) {
@@ -45176,7 +45171,7 @@ var bmaporgy fixed_t
 //	// Blockmap size.
 var bmapwidth int32
 
-var bodyque [32]uintptr
+var bodyque [32]*mobj_t
 
 var bodyqueslot int32
 
@@ -45187,9 +45182,9 @@ var bombdamage int32
 //	//
 //	// RADIUS ATTACK
 //	//
-var bombsource uintptr
+var bombsource *mobj_t
 
-var bombspot uintptr
+var bombspot *mobj_t
 
 var bottomfrac fixed_t
 
@@ -45201,7 +45196,7 @@ var bottomtexture int32
 
 var braintargeton int32
 
-var braintargets [32]uintptr
+var braintargets [32]*mobj_t
 
 // C documentation
 //
@@ -45356,7 +45351,7 @@ var consoleplayer int32
 //	// PIT_VileCheck
 //	// Detect a corpse that could be raised.
 //	//
-var corpsehit uintptr
+var corpsehit *mobj_t
 
 // C documentation
 //
@@ -45982,7 +45977,7 @@ var linespeciallist [64]*line_t
 //	//
 //	// P_LineAttack
 //	//
-var linetarget uintptr
+var linetarget *mobj_t
 
 var longtics boolean
 
@@ -46563,7 +46558,7 @@ var setsizeneeded boolean
 
 var sfxVolume int32
 
-var shootthing uintptr
+var shootthing *mobj_t
 
 // C documentation
 //
@@ -46682,7 +46677,7 @@ var solidsegs [32]cliprange_t
 // sound blocking lines cut off traversal.
 //
 
-var soundtarget uintptr
+var soundtarget *mobj_t
 
 var spanfunc uintptr
 
@@ -46995,7 +46990,7 @@ var tmflags int32
 
 var tmfloorz fixed_t
 
-var tmthing uintptr
+var tmthing *mobj_t
 
 var tmx fixed_t
 
@@ -47040,7 +47035,7 @@ var usergame boolean
 //	//
 //	// USE LINES
 //	//
-var usething uintptr
+var usething *mobj_t
 
 // C documentation
 //
