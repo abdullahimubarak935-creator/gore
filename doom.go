@@ -205,6 +205,16 @@ func gostring_n(s uintptr, n int) string {
 	return string(unsafe.Slice((*byte)(unsafe.Pointer(s)), p-s))
 }
 
+func bytestring(s string) []byte {
+	if len(s) == 0 {
+		return []byte{0}
+	}
+	data := make([]byte, len(s)+1)
+	copy(data, s)
+	data[len(s)] = 0 // null-terminate
+	return data
+}
+
 const AM_NUMMARKPOINTS = 10
 const ANGLETOFINESHIFT = 19
 const BACKUPTICS = 128
@@ -9256,7 +9266,7 @@ func G_DoPlayDemo() {
 	var v1, v10, v12, v2, v3, v4, v5, v6, v7, v8, v9 uintptr
 	var skill skill_t
 	gameaction = ga_nothing
-	cName := []byte(defdemoname)
+	cName := bytestring(defdemoname)
 	v1 = W_CacheLumpName((uintptr)(unsafe.Pointer(&cName[0])), int32(PU_STATIC))
 	demo_p = v1
 	demobuffer = v1
