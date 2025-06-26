@@ -1939,7 +1939,7 @@ type spriteframe_t struct {
 
 type spritedef_t struct {
 	Fnumframes    int32
-	Fspriteframes uintptr
+	Fspriteframes []spriteframe_t
 }
 
 type visplane_t struct {
@@ -6998,15 +6998,17 @@ func F_CastPrint(text uintptr) {
 func F_CastDrawer() {
 	var flip boolean
 	var lump int32
-	var patch, sprdef, sprframe uintptr
+	var patch uintptr
+	var sprdef *spritedef_t
+	var sprframe *spriteframe_t
 	// erase the entire screen to a background
 	V_DrawPatch(0, 0, W_CacheLumpName(__ccgo_ts(13631), int32(PU_CACHE)))
 	F_CastPrint(castorder[castnum].Fname)
 	// draw the current frame in the middle of the screen
-	sprdef = sprites + uintptr(caststate.Fsprite)*16
-	sprframe = (*spritedef_t)(unsafe.Pointer(sprdef)).Fspriteframes + uintptr(caststate.Fframe&int32(FF_FRAMEMASK1))*28
-	lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4)))
-	flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20)))
+	sprdef = &sprites[caststate.Fsprite]
+	sprframe = &sprdef.Fspriteframes[caststate.Fframe&int32(FF_FRAMEMASK1)]
+	lump = int32(sprframe.Flump[0])
+	flip = uint32(sprframe.Fflip[0])
 	patch = W_CacheLumpNum(lump+firstspritelump, int32(PU_CACHE))
 	if flip != 0 {
 		V_DrawPatchFlipped(160, 170, patch)
@@ -35532,7 +35534,8 @@ func R_TextureNumForName(name uintptr) (r int32) {
 }
 
 func R_PrecacheLevel() {
-	var flatpresent, sf, spritepresent, texture, texturepresent uintptr
+	var flatpresent, spritepresent, texture, texturepresent uintptr
+	var sf *spriteframe_t
 	var th *thinker_t
 	var i, j, k, lump int32
 	if demoplayback != 0 {
@@ -35645,16 +35648,16 @@ func R_PrecacheLevel() {
 		}
 		j = 0
 		for {
-			if !(j < (*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fnumframes) {
+			if !(j < sprites[i].Fnumframes) {
 				break
 			}
-			sf = (*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes + uintptr(j)*28
+			sf = &sprites[i].Fspriteframes[j]
 			k = 0
 			for {
 				if !(k < 8) {
 					break
 				}
-				lump = firstspritelump + int32(*(*int16)(unsafe.Pointer(sf + 4 + uintptr(k)*2)))
+				lump = firstspritelump + int32(sf.Flump[k])
 				W_CacheLumpNum(lump, int32(PU_CACHE))
 				goto _9
 			_9:
@@ -37887,7 +37890,7 @@ func R_InitSpriteDefs(namelist []uintptr) {
 	if numsprites == 0 {
 		return
 	}
-	sprites = Z_Malloc(int32(uint64(numsprites)*16), int32(PU_STATIC), uintptr(0))
+	sprites = make([]spritedef_t, int(numsprites))
 	start = firstspritelump - 1
 	end = lastspritelump + 1
 	// scan all the lump names for each of the names,
@@ -37931,7 +37934,7 @@ func R_InitSpriteDefs(namelist []uintptr) {
 		}
 		// check the frames that were found for completeness
 		if maxframe == -1 {
-			(*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fnumframes = 0
+			sprites[i].Fnumframes = 0
 			goto _1
 		}
 		maxframe++
@@ -37987,9 +37990,9 @@ func R_InitSpriteDefs(namelist []uintptr) {
 			frame++
 		}
 		// allocate space for the frames present and copy sprtemp to it
-		(*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fnumframes = maxframe
-		(*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes = Z_Malloc(int32(uint64(maxframe)*28), int32(PU_STATIC), uintptr(0))
-		xmemcpy((*(*spritedef_t)(unsafe.Pointer(sprites + uintptr(i)*16))).Fspriteframes, uintptr(unsafe.Pointer(&sprtemp)), uint64(maxframe)*28)
+		sprites[i].Fnumframes = maxframe
+		sprites[i].Fspriteframes = make([]spriteframe_t, maxframe)
+		copy(sprites[i].Fspriteframes, sprtemp[:maxframe])
 		goto _1
 	_1:
 		;
@@ -38131,7 +38134,8 @@ func R_ProjectSprite(thing uintptr) {
 	var gxt, gyt, iscale, tr_x, tr_y, tx, tz, xscale fixed_t
 	var index, lump, x1, x2, v1, v2 int32
 	var rot uint32
-	var sprdef, sprframe uintptr
+	var sprdef *spritedef_t
+	var sprframe *spriteframe_t
 	var vis *vissprite_t
 	// transform the origin point
 	tr_x = (*mobj_t)(unsafe.Pointer(thing)).Fx - viewx
@@ -38155,21 +38159,21 @@ func R_ProjectSprite(thing uintptr) {
 	if uint32((*mobj_t)(unsafe.Pointer(thing)).Fsprite) >= uint32(numsprites) {
 		I_Error(__ccgo_ts(26979), (*mobj_t)(unsafe.Pointer(thing)).Fsprite)
 	}
-	sprdef = sprites + uintptr((*mobj_t)(unsafe.Pointer(thing)).Fsprite)*16
+	sprdef = &sprites[(*mobj_t)(unsafe.Pointer(thing)).Fsprite]
 	if (*mobj_t)(unsafe.Pointer(thing)).Fframe&int32(FF_FRAMEMASK3) >= (*spritedef_t)(unsafe.Pointer(sprdef)).Fnumframes {
 		I_Error(__ccgo_ts(27022), (*mobj_t)(unsafe.Pointer(thing)).Fsprite, (*mobj_t)(unsafe.Pointer(thing)).Fframe)
 	}
-	sprframe = (*spritedef_t)(unsafe.Pointer(sprdef)).Fspriteframes + uintptr((*mobj_t)(unsafe.Pointer(thing)).Fframe&int32(FF_FRAMEMASK3))*28
+	sprframe = &sprdef.Fspriteframes[(*mobj_t)(unsafe.Pointer(thing)).Fframe&int32(FF_FRAMEMASK3)]
 	if (*spriteframe_t)(unsafe.Pointer(sprframe)).Frotate != 0 {
 		// choose a different rotation based on player view
 		ang = R_PointToAngle((*mobj_t)(unsafe.Pointer(thing)).Fx, (*mobj_t)(unsafe.Pointer(thing)).Fy)
 		rot = (ang - (*mobj_t)(unsafe.Pointer(thing)).Fangle + uint32(ANG455/2)*9) >> 29
-		lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4 + uintptr(rot)*2)))
-		flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20 + uintptr(rot))))
+		lump = int32(sprframe.Flump[rot])
+		flip = uint32(sprframe.Fflip[rot])
 	} else {
 		// use single rotation for all views
-		lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4)))
-		flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20)))
+		lump = int32(sprframe.Flump[0])
+		flip = uint32(sprframe.Fflip[0])
 	}
 	// calculate edges of the shape
 	tx -= *(*fixed_t)(unsafe.Pointer(spriteoffset + uintptr(lump)*4))
@@ -38292,20 +38296,21 @@ func R_AddSprites(sec *sector_t) {
 func R_DrawPSprite(psp *pspdef_t) {
 	var flip boolean
 	var lump, x1, x2, v1, v2 int32
-	var sprdef, sprframe uintptr
+	var sprdef *spritedef_t
+	var sprframe *spriteframe_t
 	var vis *vissprite_t
 	var tx fixed_t
 	// decide which patch to use
 	if uint32(psp.Fstate.Fsprite) >= uint32(numsprites) {
 		I_Error(__ccgo_ts(26979), psp.Fstate.Fsprite)
 	}
-	sprdef = sprites + uintptr(psp.Fstate.Fsprite)*16
+	sprdef = &sprites[psp.Fstate.Fsprite]
 	if psp.Fstate.Fframe&int32(FF_FRAMEMASK3) >= (*spritedef_t)(unsafe.Pointer(sprdef)).Fnumframes {
 		I_Error(__ccgo_ts(27022), psp.Fstate.Fsprite, psp.Fstate.Fframe)
 	}
-	sprframe = (*spritedef_t)(unsafe.Pointer(sprdef)).Fspriteframes + uintptr(psp.Fstate.Fframe&int32(FF_FRAMEMASK3))*28
-	lump = int32(*(*int16)(unsafe.Pointer(sprframe + 4)))
-	flip = uint32(*(*uint8)(unsafe.Pointer(sprframe + 20)))
+	sprframe = &sprdef.Fspriteframes[psp.Fstate.Fframe&int32(FF_FRAMEMASK3)]
+	lump = int32(sprframe.Flump[0])
+	flip = uint32(sprframe.Fflip[0])
 	// calculate edges of the shape
 	tx = psp.Fsx - 160*(1<<FRACBITS)
 	tx -= *(*fixed_t)(unsafe.Pointer(spriteoffset + uintptr(lump)*4))
@@ -46707,7 +46712,7 @@ var spriteoffset uintptr
 //
 //	// variables used to look up
 //	//  and range check thing_t sprites patches
-var sprites uintptr
+var sprites []spritedef_t
 
 var spritetopoffset uintptr
 
