@@ -44157,7 +44157,6 @@ func W_AddFile(filename string) *os.File {
 		lump_p.Fsize = (*filelump_t)(unsafe.Pointer(filerover)).Fsize
 		lump_p.Fcache = uintptr(0)
 		xstrncpy(lump_p.NamePtr(), filerover+8, uint64(8))
-		log.Printf("add file lump %d: %s", i, gostring_n(lump_p.NamePtr(), 8))
 		filerover += 16
 		goto _1
 	_1:
