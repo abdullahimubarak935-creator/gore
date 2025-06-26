@@ -338,7 +338,7 @@ const GS_INTERMISSION gamestate_t = 1
 const GS_FINALE gamestate_t = 2
 const GS_DEMOSCREEN gamestate_t = 3
 
-type gameaction_t = int32
+type gameaction_t int32
 
 const ga_nothing = 0
 const ga_loadlevel = 1
@@ -351,7 +351,7 @@ const ga_victory = 7
 const ga_worlddone = 8
 const ga_screenshot = 9
 
-type card_t = int32
+type card_t int32
 
 const it_bluecard = 0
 const it_yellowcard = 1
@@ -361,7 +361,7 @@ const it_yellowskull = 4
 const it_redskull = 5
 const NUMCARDS = 6
 
-type weapontype_t = int32
+type weapontype_t int32
 
 const wp_fist = 0
 const wp_pistol = 1
@@ -375,7 +375,7 @@ const wp_supershotgun = 8
 const NUMWEAPONS = 9
 const wp_nochange = 10
 
-type ammotype_t = int32
+type ammotype_t int32
 
 const am_clip = 0
 const am_shell = 1
@@ -2916,7 +2916,7 @@ func AM_clearMarks() {
 	var i int32
 	i = 0
 	for {
-		if !(i < int32(AM_NUMMARKPOINTS)) {
+		if !(i < AM_NUMMARKPOINTS) {
 			break
 		}
 		markpoints[i].Fx = -1
@@ -3786,7 +3786,7 @@ func D_PopEvent() *event_t {
 func init() {
 	weaponinfo = [9]weaponinfo_t{
 		0: {
-			Fammo:       int32(am_noammo),
+			Fammo:       am_noammo,
 			Fupstate:    S_PUNCHUP,
 			Fdownstate:  S_PUNCHDOWN,
 			Freadystate: S_PUNCH,
@@ -3800,7 +3800,7 @@ func init() {
 			Fflashstate: S_PISTOLFLASH,
 		},
 		2: {
-			Fammo:       int32(am_shell),
+			Fammo:       am_shell,
 			Fupstate:    S_SGUNUP,
 			Fdownstate:  S_SGUNDOWN,
 			Freadystate: S_SGUN,
@@ -3815,7 +3815,7 @@ func init() {
 			Fflashstate: S_CHAINFLASH1,
 		},
 		4: {
-			Fammo:       int32(am_misl),
+			Fammo:       am_misl,
 			Fupstate:    S_MISSILEUP,
 			Fdownstate:  S_MISSILEDOWN,
 			Freadystate: S_MISSILE,
@@ -3823,7 +3823,7 @@ func init() {
 			Fflashstate: S_MISSILEFLASH1,
 		},
 		5: {
-			Fammo:       int32(am_cell),
+			Fammo:       am_cell,
 			Fupstate:    S_PLASMAUP,
 			Fdownstate:  S_PLASMADOWN,
 			Freadystate: S_PLASMA,
@@ -3831,7 +3831,7 @@ func init() {
 			Fflashstate: S_PLASMAFLASH1,
 		},
 		6: {
-			Fammo:       int32(am_cell),
+			Fammo:       am_cell,
 			Fupstate:    S_BFGUP,
 			Fdownstate:  S_BFGDOWN,
 			Freadystate: S_BFG,
@@ -3839,14 +3839,14 @@ func init() {
 			Fflashstate: S_BFGFLASH1,
 		},
 		7: {
-			Fammo:       int32(am_noammo),
+			Fammo:       am_noammo,
 			Fupstate:    S_SAWUP,
 			Fdownstate:  S_SAWDOWN,
 			Freadystate: S_SAW,
 			Fatkstate:   S_SAW1,
 		},
 		8: {
-			Fammo:       int32(am_shell),
+			Fammo:       am_shell,
 			Fupstate:    S_DSGUNUP,
 			Fdownstate:  S_DSGUNDOWN,
 			Freadystate: S_DSGUN,
@@ -7460,7 +7460,7 @@ var weapon_keys = [8]int32{
 
 // Set to -1 or +1 to switch to the previous or next weapon.
 
-var next_weapon int32 = 0
+var next_weapon weapontype_t = 0
 
 // Used for prev/next weapon keys.
 
@@ -7567,7 +7567,7 @@ func WeaponSelectable(weapon weapontype_t) (r boolean) {
 	return 1
 }
 
-func G_NextWeapon(direction int32) (r int32) {
+func G_NextWeapon(direction int32) weapontype_t {
 	var i, start_i int32
 	var weapon weapontype_t
 	// Find index in the table.
@@ -7609,7 +7609,7 @@ func G_NextWeapon(direction int32) (r int32) {
 func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	var bstrafe, strafe boolean
 	var desired_angleturn int16
-	var forward, i, side, speed, tspeed, v1, v16 int32
+	var forward, side, speed, tspeed, v1, v16 int32
 	*cmd = ticcmd_t{}
 	cmd.Fconsistancy = *(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(consoleplayer)*128 + uintptr(maketic%int32(BACKUPTICS))))
 	strafe = booluint32(gamekeydown[key_strafe] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
@@ -7695,7 +7695,7 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	// next_weapon variable is set to change weapons when
 	// we generate a ticcmd.  Choose a new weapon.
 	if gamestate == GS_LEVEL && next_weapon != 0 {
-		i = G_NextWeapon(next_weapon)
+		i := G_NextWeapon(int32(next_weapon))
 		cmd.Fbuttons |= BT_CHANGE
 		cmd.Fbuttons |= uint8(i << BT_WEAPONSHIFT)
 	} else {
@@ -24906,10 +24906,10 @@ func init() {
 
 func P_GiveAmmo(player *player_t, ammo ammotype_t, num int32) (r boolean) {
 	var oldammo int32
-	if ammo == int32(am_noammo) {
+	if ammo == am_noammo {
 		return 0
 	}
-	if ammo > int32(NUMAMMO) {
+	if ammo > NUMAMMO {
 		I_Error(__ccgo_ts(23713), ammo)
 	}
 	if player.Fammo[ammo] == player.Fmaxammo[ammo] {
@@ -24940,7 +24940,7 @@ func P_GiveAmmo(player *player_t, ammo ammotype_t, num int32) (r boolean) {
 	// so select a new weapon.
 	// Preferences are not user selectable.
 	switch ammo {
-	case int32(am_clip):
+	case am_clip:
 		if player.Freadyweapon == wp_fist {
 			if player.Fweaponowned[wp_chainsaw] != 0 {
 				player.Fpendingweapon = wp_chaingun
@@ -24948,19 +24948,19 @@ func P_GiveAmmo(player *player_t, ammo ammotype_t, num int32) (r boolean) {
 				player.Fpendingweapon = wp_pistol
 			}
 		}
-	case int32(am_shell):
+	case am_shell:
 		if player.Freadyweapon == wp_fist || player.Freadyweapon == wp_pistol {
 			if player.Fweaponowned[wp_shotgun] != 0 {
 				player.Fpendingweapon = wp_shotgun
 			}
 		}
-	case int32(am_cell):
+	case am_cell:
 		if player.Freadyweapon == wp_fist || player.Freadyweapon == wp_pistol {
 			if player.Fweaponowned[wp_plasma] != 0 {
 				player.Fpendingweapon = wp_plasma
 			}
 		}
-	case int32(am_misl):
+	case am_misl:
 		if player.Freadyweapon == wp_fist {
 			if player.Fweaponowned[wp_missile] != 0 {
 				player.Fpendingweapon = wp_missile
@@ -24999,7 +24999,7 @@ func P_GiveWeapon(player *player_t, weapon weapontype_t, dropped boolean) (r boo
 		}
 		return 0
 	}
-	if weaponinfo[weapon].Fammo != int32(am_noammo) {
+	if weaponinfo[weapon].Fammo != am_noammo {
 		// give one clip with a dropped weapon,
 		// two clips with a found weapon
 		if dropped != 0 {
@@ -25299,47 +25299,47 @@ func P_TouchSpecialThing(special uintptr, toucher uintptr) {
 		fallthrough
 	case SPR_CLIP:
 		if (*mobj_t)(unsafe.Pointer(special)).Fflags&int32(MF_DROPPED) != 0 {
-			if !(P_GiveAmmo(player, int32(am_clip), 0) != 0) {
+			if !(P_GiveAmmo(player, am_clip, 0) != 0) {
 				return
 			}
 		} else {
-			if !(P_GiveAmmo(player, int32(am_clip), 1) != 0) {
+			if !(P_GiveAmmo(player, am_clip, 1) != 0) {
 				return
 			}
 		}
 		player.Fmessage = __ccgo_ts_str(24225)
 	case SPR_AMMO:
-		if !(P_GiveAmmo(player, int32(am_clip), 5) != 0) {
+		if !(P_GiveAmmo(player, am_clip, 5) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24243)
 	case SPR_ROCK:
-		if !(P_GiveAmmo(player, int32(am_misl), 1) != 0) {
+		if !(P_GiveAmmo(player, am_misl, 1) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24271)
 	case SPR_BROK:
-		if !(P_GiveAmmo(player, int32(am_misl), 5) != 0) {
+		if !(P_GiveAmmo(player, am_misl, 5) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24291)
 	case SPR_CELL:
-		if !(P_GiveAmmo(player, int32(am_cell), 1) != 0) {
+		if !(P_GiveAmmo(player, am_cell, 1) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24319)
 	case SPR_CELP:
-		if !(P_GiveAmmo(player, int32(am_cell), 5) != 0) {
+		if !(P_GiveAmmo(player, am_cell, 5) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24345)
 	case SPR_SHEL:
-		if !(P_GiveAmmo(player, int32(am_shell), 1) != 0) {
+		if !(P_GiveAmmo(player, am_shell, 1) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24376)
 	case SPR_SBOX:
-		if !(P_GiveAmmo(player, int32(am_shell), 5) != 0) {
+		if !(P_GiveAmmo(player, am_shell, 5) != 0) {
 			return
 		}
 		player.Fmessage = __ccgo_ts_str(24404)
@@ -25363,7 +25363,7 @@ func P_TouchSpecialThing(special uintptr, toucher uintptr) {
 			if !(i < int32(NUMAMMO)) {
 				break
 			}
-			P_GiveAmmo(player, i, 1)
+			P_GiveAmmo(player, ammotype_t(i), 1)
 			goto _2
 		_2:
 			;
@@ -28955,7 +28955,7 @@ func P_CheckAmmo(player *player_t) (r boolean) {
 	} // Regular.
 	// Some do not need ammunition anyway.
 	// Return if current ammunition sufficient.
-	if ammo == int32(am_noammo) || player.Fammo[ammo] >= count {
+	if ammo == am_noammo || player.Fammo[ammo] >= count {
 		return 1
 	}
 	// Out of ammo, pick a weapon to change to.
@@ -29224,11 +29224,11 @@ func A_Saw(player *player_t, psp *pspdef_t) {
 // example, it is possible to make a weapon that decreases the max
 // number of ammo for another weapon.  Emulate this.
 
-func DecreaseAmmo(player *player_t, ammonum int32, amount int32) {
-	if ammonum < int32(NUMAMMO) {
+func DecreaseAmmo(player *player_t, ammonum ammotype_t, amount int32) {
+	if ammonum < NUMAMMO {
 		player.Fammo[ammonum] -= amount
 	} else {
-		player.Fmaxammo[ammonum-int32(NUMAMMO)] -= amount
+		player.Fmaxammo[ammonum-NUMAMMO] -= amount
 	}
 }
 
@@ -29980,9 +29980,9 @@ func saveg_read_player_t(str *player_t) {
 		str.Ffrags[i] = saveg_read32()
 	}
 	// weapontype_t readyweapon;
-	str.Freadyweapon = saveg_read32()
+	str.Freadyweapon = weapontype_t(saveg_read32())
 	// weapontype_t pendingweapon;
-	str.Fpendingweapon = saveg_read32()
+	str.Fpendingweapon = weapontype_t(saveg_read32())
 	// boolean weaponowned[NUMWEAPONS];
 	for i := 0; i < NUMWEAPONS; i++ {
 		str.Fweaponowned[i] = uint32(saveg_read32())
@@ -30091,9 +30091,9 @@ func saveg_write_player_t(str *player_t) {
 		i++
 	}
 	// weapontype_t readyweapon;
-	saveg_write32(str.Freadyweapon)
+	saveg_write32(int32(str.Freadyweapon))
 	// weapontype_t pendingweapon;
-	saveg_write32(str.Fpendingweapon)
+	saveg_write32(int32(str.Fpendingweapon))
 	// boolean weaponowned[NUMWEAPONS];
 	i = 0
 	for {
@@ -34360,7 +34360,7 @@ func P_PlayerThink(player *player_t) {
 		// The actual changing of the weapon is done
 		//  when the weapon psprite can do it
 		//  (read: not in the middle of an attack).
-		newweapon = int32(cmd.Fbuttons) & int32(BT_WEAPONMASK) >> int32(BT_WEAPONSHIFT)
+		newweapon = weapontype_t(int32(cmd.Fbuttons) & int32(BT_WEAPONMASK) >> int32(BT_WEAPONSHIFT))
 		if newweapon == wp_fist && player.Fweaponowned[wp_chainsaw] != 0 && !(player.Freadyweapon == wp_chainsaw && player.Fpowers[pw_strength] != 0) {
 			newweapon = wp_chainsaw
 		}
@@ -39693,7 +39693,7 @@ type st_number_t struct {
 	Fnum    uintptr
 	Fon     *boolean
 	Fp      uintptr
-	Fdata   int32
+	Fdata   weapontype_t
 }
 
 type st_percent_t struct {
@@ -40628,7 +40628,7 @@ func ST_updateWidgets() {
 	// must redirect the pointer if the ready weapon has changed.
 	//  if (w_ready.data != plyr->readyweapon)
 	//  {
-	if weaponinfo[plyr.Freadyweapon].Fammo == int32(am_noammo) {
+	if weaponinfo[plyr.Freadyweapon].Fammo == am_noammo {
 		w_ready.Fnum = uintptr(unsafe.Pointer(&largeammo))
 	} else {
 		w_ready.Fnum = uintptr(unsafe.Pointer(&plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo]))
