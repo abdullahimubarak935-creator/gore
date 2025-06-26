@@ -29723,84 +29723,84 @@ func saveg_write_thinker_t(str *thinker_t) {
 // mobj_t
 //
 
-func saveg_read_mobj_t(str uintptr) {
+func saveg_read_mobj_t(str *mobj_t) {
 	var pl int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(&((*mobj_t)(unsafe.Pointer(str)).Fthinker))
+	saveg_read_thinker_t(&str.Fthinker)
 	// fixed_t x;
-	(*mobj_t)(unsafe.Pointer(str)).Fx = saveg_read32()
+	str.Fx = saveg_read32()
 	// fixed_t y;
-	(*mobj_t)(unsafe.Pointer(str)).Fy = saveg_read32()
+	str.Fy = saveg_read32()
 	// fixed_t z;
-	(*mobj_t)(unsafe.Pointer(str)).Fz = saveg_read32()
+	str.Fz = saveg_read32()
 	// struct mobj_t* snext;
-	(*mobj_t)(unsafe.Pointer(str)).Fsnext = saveg_readp()
+	str.Fsnext = saveg_readp()
 	// struct mobj_t* sprev;
-	(*mobj_t)(unsafe.Pointer(str)).Fsprev = saveg_readp()
+	str.Fsprev = saveg_readp()
 	// angle_t angle;
-	(*mobj_t)(unsafe.Pointer(str)).Fangle = uint32(saveg_read32())
+	str.Fangle = uint32(saveg_read32())
 	// spritenum_t sprite;
-	(*mobj_t)(unsafe.Pointer(str)).Fsprite = saveg_read32()
+	str.Fsprite = saveg_read32()
 	// int frame;
-	(*mobj_t)(unsafe.Pointer(str)).Fframe = saveg_read32()
+	str.Fframe = saveg_read32()
 	// struct mobj_t* bnext;
-	(*mobj_t)(unsafe.Pointer(str)).Fbnext = saveg_readp()
+	str.Fbnext = saveg_readp()
 	// struct mobj_t* bprev;
-	(*mobj_t)(unsafe.Pointer(str)).Fbprev = saveg_readp()
+	str.Fbprev = saveg_readp()
 	// struct subsector_t* subsector;
-	(*mobj_t)(unsafe.Pointer(str)).Fsubsector = (*subsector_t)(unsafe.Pointer(saveg_readp()))
+	str.Fsubsector = (*subsector_t)(unsafe.Pointer(saveg_readp()))
 	// fixed_t floorz;
-	(*mobj_t)(unsafe.Pointer(str)).Ffloorz = saveg_read32()
+	str.Ffloorz = saveg_read32()
 	// fixed_t ceilingz;
-	(*mobj_t)(unsafe.Pointer(str)).Fceilingz = saveg_read32()
+	str.Fceilingz = saveg_read32()
 	// fixed_t radius;
-	(*mobj_t)(unsafe.Pointer(str)).Fradius = saveg_read32()
+	str.Fradius = saveg_read32()
 	// fixed_t height;
-	(*mobj_t)(unsafe.Pointer(str)).Fheight = saveg_read32()
+	str.Fheight = saveg_read32()
 	// fixed_t momx;
-	(*mobj_t)(unsafe.Pointer(str)).Fmomx = saveg_read32()
+	str.Fmomx = saveg_read32()
 	// fixed_t momy;
-	(*mobj_t)(unsafe.Pointer(str)).Fmomy = saveg_read32()
+	str.Fmomy = saveg_read32()
 	// fixed_t momz;
-	(*mobj_t)(unsafe.Pointer(str)).Fmomz = saveg_read32()
+	str.Fmomz = saveg_read32()
 	// int validcount;
-	(*mobj_t)(unsafe.Pointer(str)).Fvalidcount = saveg_read32()
+	str.Fvalidcount = saveg_read32()
 	// mobjtype_t type;
-	(*mobj_t)(unsafe.Pointer(str)).Ftype1 = saveg_read32()
+	str.Ftype1 = saveg_read32()
 	// mobjinfo_t* info;
-	(*mobj_t)(unsafe.Pointer(str)).Finfo = (*mobjinfo_t)(unsafe.Pointer(saveg_readp()))
+	str.Finfo = (*mobjinfo_t)(unsafe.Pointer(saveg_readp()))
 	// int tics;
-	(*mobj_t)(unsafe.Pointer(str)).Ftics = saveg_read32()
+	str.Ftics = saveg_read32()
 	// state_t* state;
-	(*mobj_t)(unsafe.Pointer(str)).Fstate = &states[saveg_read32()]
+	str.Fstate = &states[saveg_read32()]
 	// int flags;
-	(*mobj_t)(unsafe.Pointer(str)).Fflags = saveg_read32()
+	str.Fflags = saveg_read32()
 	// int health;
-	(*mobj_t)(unsafe.Pointer(str)).Fhealth = saveg_read32()
+	str.Fhealth = saveg_read32()
 	// int movedir;
-	(*mobj_t)(unsafe.Pointer(str)).Fmovedir = saveg_read32()
+	str.Fmovedir = saveg_read32()
 	// int movecount;
-	(*mobj_t)(unsafe.Pointer(str)).Fmovecount = saveg_read32()
+	str.Fmovecount = saveg_read32()
 	// struct mobj_t* target;
-	(*mobj_t)(unsafe.Pointer(str)).Ftarget = saveg_readp()
+	str.Ftarget = saveg_readp()
 	// int reactiontime;
-	(*mobj_t)(unsafe.Pointer(str)).Freactiontime = saveg_read32()
+	str.Freactiontime = saveg_read32()
 	// int threshold;
-	(*mobj_t)(unsafe.Pointer(str)).Fthreshold = saveg_read32()
+	str.Fthreshold = saveg_read32()
 	// player_t* player;
 	pl = saveg_read32()
 	if pl > 0 {
-		(*mobj_t)(unsafe.Pointer(str)).Fplayer = &players[pl-1]
-		(*mobj_t)(unsafe.Pointer(str)).Fplayer.Fmo = str
+		str.Fplayer = &players[pl-1]
+		str.Fplayer.Fmo = (uintptr)(unsafe.Pointer(str))
 	} else {
-		(*mobj_t)(unsafe.Pointer(str)).Fplayer = nil
+		str.Fplayer = nil
 	}
 	// int lastlook;
-	(*mobj_t)(unsafe.Pointer(str)).Flastlook = saveg_read32()
+	str.Flastlook = saveg_read32()
 	// mapthing_t spawnpoint;
-	saveg_read_mapthing_t(&(*mobj_t)(unsafe.Pointer(str)).Fspawnpoint)
+	saveg_read_mapthing_t(&str.Fspawnpoint)
 	// struct mobj_t* tracer;
-	(*mobj_t)(unsafe.Pointer(str)).Ftracer = saveg_readp()
+	str.Ftracer = saveg_readp()
 }
 
 func saveg_write_mobj_t(str *mobj_t) {
@@ -30194,316 +30194,316 @@ func saveg_write_player_t(str *player_t) {
 // ceiling_t
 //
 
-func saveg_read_ceiling_t(str uintptr) {
+func saveg_read_ceiling_t(str *ceiling_t) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(&(*ceiling_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_read_thinker_t(&str.Fthinker)
 	// ceiling_e type;
-	(*ceiling_t)(unsafe.Pointer(str)).Ftype1 = saveg_read32()
+	str.Ftype1 = saveg_read32()
 	// sector_t* sector;
 	sector = saveg_read32()
-	(*ceiling_t)(unsafe.Pointer(str)).Fsector = &sectors[sector]
+	str.Fsector = &sectors[sector]
 	// fixed_t bottomheight;
-	(*ceiling_t)(unsafe.Pointer(str)).Fbottomheight = saveg_read32()
+	str.Fbottomheight = saveg_read32()
 	// fixed_t topheight;
-	(*ceiling_t)(unsafe.Pointer(str)).Ftopheight = saveg_read32()
+	str.Ftopheight = saveg_read32()
 	// fixed_t speed;
-	(*ceiling_t)(unsafe.Pointer(str)).Fspeed = saveg_read32()
+	str.Fspeed = saveg_read32()
 	// boolean crush;
-	(*ceiling_t)(unsafe.Pointer(str)).Fcrush = uint32(saveg_read32())
+	str.Fcrush = uint32(saveg_read32())
 	// int direction;
-	(*ceiling_t)(unsafe.Pointer(str)).Fdirection = saveg_read32()
+	str.Fdirection = saveg_read32()
 	// int tag;
-	(*ceiling_t)(unsafe.Pointer(str)).Ftag = saveg_read32()
+	str.Ftag = saveg_read32()
 	// int olddirection;
-	(*ceiling_t)(unsafe.Pointer(str)).Folddirection = saveg_read32()
+	str.Folddirection = saveg_read32()
 }
 
-func saveg_write_ceiling_t(str uintptr) {
+func saveg_write_ceiling_t(str *ceiling_t) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(&(*ceiling_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_write_thinker_t(&str.Fthinker)
 	// ceiling_e type;
-	saveg_write32((*ceiling_t)(unsafe.Pointer(str)).Ftype1)
+	saveg_write32(str.Ftype1)
 	// sector_t* sector;
-	saveg_write32(sectorIndex((*ceiling_t)(unsafe.Pointer(str)).Fsector))
+	saveg_write32(sectorIndex(str.Fsector))
 	// fixed_t bottomheight;
-	saveg_write32((*ceiling_t)(unsafe.Pointer(str)).Fbottomheight)
+	saveg_write32(str.Fbottomheight)
 	// fixed_t topheight;
-	saveg_write32((*ceiling_t)(unsafe.Pointer(str)).Ftopheight)
+	saveg_write32(str.Ftopheight)
 	// fixed_t speed;
-	saveg_write32((*ceiling_t)(unsafe.Pointer(str)).Fspeed)
+	saveg_write32(str.Fspeed)
 	// boolean crush;
-	saveg_write32(int32((*ceiling_t)(unsafe.Pointer(str)).Fcrush))
+	saveg_write32(int32(str.Fcrush))
 	// int direction;
-	saveg_write32((*ceiling_t)(unsafe.Pointer(str)).Fdirection)
+	saveg_write32(str.Fdirection)
 	// int tag;
-	saveg_write32((*ceiling_t)(unsafe.Pointer(str)).Ftag)
+	saveg_write32(str.Ftag)
 	// int olddirection;
-	saveg_write32((*ceiling_t)(unsafe.Pointer(str)).Folddirection)
+	saveg_write32(str.Folddirection)
 }
 
 //
 // vldoor_t
 //
 
-func saveg_read_vldoor_t(str uintptr) {
+func saveg_read_vldoor_t(str *vldoor_t) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(&(*vldoor_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_read_thinker_t(&str.Fthinker)
 	// vldoor_e type;
-	(*vldoor_t)(unsafe.Pointer(str)).Ftype1 = saveg_read32()
+	str.Ftype1 = saveg_read32()
 	// sector_t* sector;
 	sector = saveg_read32()
-	(*vldoor_t)(unsafe.Pointer(str)).Fsector = &sectors[sector]
+	str.Fsector = &sectors[sector]
 	// fixed_t topheight;
-	(*vldoor_t)(unsafe.Pointer(str)).Ftopheight = saveg_read32()
+	str.Ftopheight = saveg_read32()
 	// fixed_t speed;
-	(*vldoor_t)(unsafe.Pointer(str)).Fspeed = saveg_read32()
+	str.Fspeed = saveg_read32()
 	// int direction;
-	(*vldoor_t)(unsafe.Pointer(str)).Fdirection = saveg_read32()
+	str.Fdirection = saveg_read32()
 	// int topwait;
-	(*vldoor_t)(unsafe.Pointer(str)).Ftopwait = saveg_read32()
+	str.Ftopwait = saveg_read32()
 	// int topcountdown;
-	(*vldoor_t)(unsafe.Pointer(str)).Ftopcountdown = saveg_read32()
+	str.Ftopcountdown = saveg_read32()
 }
 
-func saveg_write_vldoor_t(str uintptr) {
+func saveg_write_vldoor_t(str *vldoor_t) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(&(*vldoor_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_write_thinker_t(&str.Fthinker)
 	// vldoor_e type;
-	saveg_write32((*vldoor_t)(unsafe.Pointer(str)).Ftype1)
+	saveg_write32(str.Ftype1)
 	// sector_t* sector;
-	saveg_write32(sectorIndex((*vldoor_t)(unsafe.Pointer(str)).Fsector))
+	saveg_write32(sectorIndex(str.Fsector))
 	// fixed_t topheight;
-	saveg_write32((*vldoor_t)(unsafe.Pointer(str)).Ftopheight)
+	saveg_write32(str.Ftopheight)
 	// fixed_t speed;
-	saveg_write32((*vldoor_t)(unsafe.Pointer(str)).Fspeed)
+	saveg_write32(str.Fspeed)
 	// int direction;
-	saveg_write32((*vldoor_t)(unsafe.Pointer(str)).Fdirection)
+	saveg_write32(str.Fdirection)
 	// int topwait;
-	saveg_write32((*vldoor_t)(unsafe.Pointer(str)).Ftopwait)
+	saveg_write32(str.Ftopwait)
 	// int topcountdown;
-	saveg_write32((*vldoor_t)(unsafe.Pointer(str)).Ftopcountdown)
+	saveg_write32(str.Ftopcountdown)
 }
 
 //
 // floormove_t
 //
 
-func saveg_read_floormove_t(str uintptr) {
+func saveg_read_floormove_t(str *floormove_t) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(&(*floormove_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_read_thinker_t(&str.Fthinker)
 	// floor_e type;
-	(*floormove_t)(unsafe.Pointer(str)).Ftype1 = saveg_read32()
+	str.Ftype1 = saveg_read32()
 	// boolean crush;
-	(*floormove_t)(unsafe.Pointer(str)).Fcrush = uint32(saveg_read32())
+	str.Fcrush = uint32(saveg_read32())
 	// sector_t* sector;
 	sector = saveg_read32()
-	(*floormove_t)(unsafe.Pointer(str)).Fsector = &sectors[sector]
+	str.Fsector = &sectors[sector]
 	// int direction;
-	(*floormove_t)(unsafe.Pointer(str)).Fdirection = saveg_read32()
+	str.Fdirection = saveg_read32()
 	// int newspecial;
-	(*floormove_t)(unsafe.Pointer(str)).Fnewspecial = saveg_read32()
+	str.Fnewspecial = saveg_read32()
 	// short texture;
-	(*floormove_t)(unsafe.Pointer(str)).Ftexture = saveg_read16()
+	str.Ftexture = saveg_read16()
 	// fixed_t floordestheight;
-	(*floormove_t)(unsafe.Pointer(str)).Ffloordestheight = saveg_read32()
+	str.Ffloordestheight = saveg_read32()
 	// fixed_t speed;
-	(*floormove_t)(unsafe.Pointer(str)).Fspeed = saveg_read32()
+	str.Fspeed = saveg_read32()
 }
 
-func saveg_write_floormove_t(str uintptr) {
+func saveg_write_floormove_t(str *floormove_t) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(&(*floormove_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_write_thinker_t(&str.Fthinker)
 	// floor_e type;
-	saveg_write32((*floormove_t)(unsafe.Pointer(str)).Ftype1)
+	saveg_write32(str.Ftype1)
 	// boolean crush;
-	saveg_write32(int32((*floormove_t)(unsafe.Pointer(str)).Fcrush))
+	saveg_write32(int32(str.Fcrush))
 	// sector_t* sector;
-	saveg_write32(sectorIndex((*floormove_t)(unsafe.Pointer(str)).Fsector))
+	saveg_write32(sectorIndex(str.Fsector))
 	// int direction;
-	saveg_write32((*floormove_t)(unsafe.Pointer(str)).Fdirection)
+	saveg_write32(str.Fdirection)
 	// int newspecial;
-	saveg_write32((*floormove_t)(unsafe.Pointer(str)).Fnewspecial)
+	saveg_write32(str.Fnewspecial)
 	// short texture;
-	saveg_write16((*floormove_t)(unsafe.Pointer(str)).Ftexture)
+	saveg_write16(str.Ftexture)
 	// fixed_t floordestheight;
-	saveg_write32((*floormove_t)(unsafe.Pointer(str)).Ffloordestheight)
+	saveg_write32(str.Ffloordestheight)
 	// fixed_t speed;
-	saveg_write32((*floormove_t)(unsafe.Pointer(str)).Fspeed)
+	saveg_write32(str.Fspeed)
 }
 
 //
 // plat_t
 //
 
-func saveg_read_plat_t(str uintptr) {
+func saveg_read_plat_t(str *plat_t) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(&(*plat_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_read_thinker_t(&str.Fthinker)
 	// sector_t* sector;
 	sector = saveg_read32()
-	(*plat_t)(unsafe.Pointer(str)).Fsector = &sectors[sector]
+	str.Fsector = &sectors[sector]
 	// fixed_t speed;
-	(*plat_t)(unsafe.Pointer(str)).Fspeed = saveg_read32()
+	str.Fspeed = saveg_read32()
 	// fixed_t low;
-	(*plat_t)(unsafe.Pointer(str)).Flow = saveg_read32()
+	str.Flow = saveg_read32()
 	// fixed_t high;
-	(*plat_t)(unsafe.Pointer(str)).Fhigh = saveg_read32()
+	str.Fhigh = saveg_read32()
 	// int wait;
-	(*plat_t)(unsafe.Pointer(str)).Fwait = saveg_read32()
+	str.Fwait = saveg_read32()
 	// int count;
-	(*plat_t)(unsafe.Pointer(str)).Fcount = saveg_read32()
+	str.Fcount = saveg_read32()
 	// plat_e status;
-	(*plat_t)(unsafe.Pointer(str)).Fstatus = saveg_read32()
+	str.Fstatus = saveg_read32()
 	// plat_e oldstatus;
-	(*plat_t)(unsafe.Pointer(str)).Foldstatus = saveg_read32()
+	str.Foldstatus = saveg_read32()
 	// boolean crush;
-	(*plat_t)(unsafe.Pointer(str)).Fcrush = uint32(saveg_read32())
+	str.Fcrush = uint32(saveg_read32())
 	// int tag;
-	(*plat_t)(unsafe.Pointer(str)).Ftag = saveg_read32()
+	str.Ftag = saveg_read32()
 	// plattype_e type;
-	(*plat_t)(unsafe.Pointer(str)).Ftype1 = saveg_read32()
+	str.Ftype1 = saveg_read32()
 }
 
-func saveg_write_plat_t(str uintptr) {
+func saveg_write_plat_t(str *plat_t) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(&(*plat_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_write_thinker_t(&str.Fthinker)
 	// sector_t* sector;
-	saveg_write32(sectorIndex((*plat_t)(unsafe.Pointer(str)).Fsector))
+	saveg_write32(sectorIndex(str.Fsector))
 	// fixed_t speed;
-	saveg_write32((*plat_t)(unsafe.Pointer(str)).Fspeed)
+	saveg_write32(str.Fspeed)
 	// fixed_t low;
-	saveg_write32((*plat_t)(unsafe.Pointer(str)).Flow)
+	saveg_write32(str.Flow)
 	// fixed_t high;
-	saveg_write32((*plat_t)(unsafe.Pointer(str)).Fhigh)
+	saveg_write32(str.Fhigh)
 	// int wait;
-	saveg_write32((*plat_t)(unsafe.Pointer(str)).Fwait)
+	saveg_write32(str.Fwait)
 	// int count;
-	saveg_write32((*plat_t)(unsafe.Pointer(str)).Fcount)
+	saveg_write32(str.Fcount)
 	// plat_e status;
-	saveg_write32((*plat_t)(unsafe.Pointer(str)).Fstatus)
+	saveg_write32(str.Fstatus)
 	// plat_e oldstatus;
-	saveg_write32((*plat_t)(unsafe.Pointer(str)).Foldstatus)
+	saveg_write32(str.Foldstatus)
 	// boolean crush;
-	saveg_write32(int32((*plat_t)(unsafe.Pointer(str)).Fcrush))
+	saveg_write32(int32(str.Fcrush))
 	// int tag;
-	saveg_write32((*plat_t)(unsafe.Pointer(str)).Ftag)
+	saveg_write32(str.Ftag)
 	// plattype_e type;
-	saveg_write32((*plat_t)(unsafe.Pointer(str)).Ftype1)
+	saveg_write32(str.Ftype1)
 }
 
 //
 // lightflash_t
 //
 
-func saveg_read_lightflash_t(str uintptr) {
+func saveg_read_lightflash_t(str *lightflash_t) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(&(*lightflash_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_read_thinker_t(&str.Fthinker)
 	// sector_t* sector;
 	sector = saveg_read32()
-	(*lightflash_t)(unsafe.Pointer(str)).Fsector = &sectors[sector]
+	str.Fsector = &sectors[sector]
 	// int count;
-	(*lightflash_t)(unsafe.Pointer(str)).Fcount = saveg_read32()
+	str.Fcount = saveg_read32()
 	// int maxlight;
-	(*lightflash_t)(unsafe.Pointer(str)).Fmaxlight = saveg_read32()
+	str.Fmaxlight = saveg_read32()
 	// int minlight;
-	(*lightflash_t)(unsafe.Pointer(str)).Fminlight = saveg_read32()
+	str.Fminlight = saveg_read32()
 	// int maxtime;
-	(*lightflash_t)(unsafe.Pointer(str)).Fmaxtime = saveg_read32()
+	str.Fmaxtime = saveg_read32()
 	// int mintime;
-	(*lightflash_t)(unsafe.Pointer(str)).Fmintime = saveg_read32()
+	str.Fmintime = saveg_read32()
 }
 
-func saveg_write_lightflash_t(str uintptr) {
+func saveg_write_lightflash_t(str *lightflash_t) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(&(*lightflash_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_write_thinker_t(&str.Fthinker)
 	// sector_t* sector;
-	saveg_write32(sectorIndex((*lightflash_t)(unsafe.Pointer(str)).Fsector))
+	saveg_write32(sectorIndex(str.Fsector))
 	// int count;
-	saveg_write32((*lightflash_t)(unsafe.Pointer(str)).Fcount)
+	saveg_write32(str.Fcount)
 	// int maxlight;
-	saveg_write32((*lightflash_t)(unsafe.Pointer(str)).Fmaxlight)
+	saveg_write32(str.Fmaxlight)
 	// int minlight;
-	saveg_write32((*lightflash_t)(unsafe.Pointer(str)).Fminlight)
+	saveg_write32(str.Fminlight)
 	// int maxtime;
-	saveg_write32((*lightflash_t)(unsafe.Pointer(str)).Fmaxtime)
+	saveg_write32(str.Fmaxtime)
 	// int mintime;
-	saveg_write32((*lightflash_t)(unsafe.Pointer(str)).Fmintime)
+	saveg_write32(str.Fmintime)
 }
 
 //
 // strobe_t
 //
 
-func saveg_read_strobe_t(str uintptr) {
+func saveg_read_strobe_t(str *strobe_t) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(&(*strobe_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_read_thinker_t(&str.Fthinker)
 	// sector_t* sector;
 	sector = saveg_read32()
-	(*strobe_t)(unsafe.Pointer(str)).Fsector = &sectors[sector]
+	str.Fsector = &sectors[sector]
 	// int count;
-	(*strobe_t)(unsafe.Pointer(str)).Fcount = saveg_read32()
+	str.Fcount = saveg_read32()
 	// int minlight;
-	(*strobe_t)(unsafe.Pointer(str)).Fminlight = saveg_read32()
+	str.Fminlight = saveg_read32()
 	// int maxlight;
-	(*strobe_t)(unsafe.Pointer(str)).Fmaxlight = saveg_read32()
+	str.Fmaxlight = saveg_read32()
 	// int darktime;
-	(*strobe_t)(unsafe.Pointer(str)).Fdarktime = saveg_read32()
+	str.Fdarktime = saveg_read32()
 	// int brighttime;
-	(*strobe_t)(unsafe.Pointer(str)).Fbrighttime = saveg_read32()
+	str.Fbrighttime = saveg_read32()
 }
 
-func saveg_write_strobe_t(str uintptr) {
+func saveg_write_strobe_t(str *strobe_t) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(&(*strobe_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_write_thinker_t(&str.Fthinker)
 	// sector_t* sector;
-	saveg_write32(sectorIndex((*strobe_t)(unsafe.Pointer(str)).Fsector))
+	saveg_write32(sectorIndex(str.Fsector))
 	// int count;
-	saveg_write32((*strobe_t)(unsafe.Pointer(str)).Fcount)
+	saveg_write32(str.Fcount)
 	// int minlight;
-	saveg_write32((*strobe_t)(unsafe.Pointer(str)).Fminlight)
+	saveg_write32(str.Fminlight)
 	// int maxlight;
-	saveg_write32((*strobe_t)(unsafe.Pointer(str)).Fmaxlight)
+	saveg_write32(str.Fmaxlight)
 	// int darktime;
-	saveg_write32((*strobe_t)(unsafe.Pointer(str)).Fdarktime)
+	saveg_write32(str.Fdarktime)
 	// int brighttime;
-	saveg_write32((*strobe_t)(unsafe.Pointer(str)).Fbrighttime)
+	saveg_write32(str.Fbrighttime)
 }
 
 //
 // glow_t
 //
 
-func saveg_read_glow_t(str uintptr) {
+func saveg_read_glow_t(str *glow_t) {
 	var sector int32
 	// thinker_t thinker;
-	saveg_read_thinker_t(&(*glow_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_read_thinker_t(&str.Fthinker)
 	// sector_t* sector;
 	sector = saveg_read32()
-	(*glow_t)(unsafe.Pointer(str)).Fsector = &sectors[sector]
+	str.Fsector = &sectors[sector]
 	// int minlight;
-	(*glow_t)(unsafe.Pointer(str)).Fminlight = saveg_read32()
+	str.Fminlight = saveg_read32()
 	// int maxlight;
-	(*glow_t)(unsafe.Pointer(str)).Fmaxlight = saveg_read32()
+	str.Fmaxlight = saveg_read32()
 	// int direction;
-	(*glow_t)(unsafe.Pointer(str)).Fdirection = saveg_read32()
+	str.Fdirection = saveg_read32()
 }
 
-func saveg_write_glow_t(str uintptr) {
+func saveg_write_glow_t(str *glow_t) {
 	// thinker_t thinker;
-	saveg_write_thinker_t(&(*glow_t)(unsafe.Pointer(str)).Fthinker)
+	saveg_write_thinker_t(&str.Fthinker)
 	// sector_t* sector;
-	saveg_write32(sectorIndex((*glow_t)(unsafe.Pointer(str)).Fsector))
+	saveg_write32(sectorIndex(str.Fsector))
 	// int minlight;
-	saveg_write32((*glow_t)(unsafe.Pointer(str)).Fminlight)
+	saveg_write32(str.Fminlight)
 	// int maxlight;
-	saveg_write32((*glow_t)(unsafe.Pointer(str)).Fmaxlight)
+	saveg_write32(str.Fmaxlight)
 	// int direction;
-	saveg_write32((*glow_t)(unsafe.Pointer(str)).Fdirection)
+	saveg_write32(str.Fdirection)
 }
 
 //
@@ -30826,7 +30826,7 @@ func P_UnArchiveThinkers() {
 			saveg_read_pad()
 			mobj = Z_Malloc(224, int32(PU_LEVEL), uintptr(0))
 			mobjP := (*mobj_t)(unsafe.Pointer(mobj))
-			saveg_read_mobj_t(mobj)
+			saveg_read_mobj_t(mobjP)
 			mobjP.Ftarget = uintptr(0)
 			mobjP.Ftracer = uintptr(0)
 			P_SetThingPosition(mobj)
@@ -30889,50 +30889,50 @@ func P_ArchiveSpecials() {
 			if i < int32(MAXCEILINGS) {
 				saveg_write8(uint8(tc_ceiling))
 				saveg_write_pad()
-				saveg_write_ceiling_t((uintptr)(unsafe.Pointer(th)))
+				saveg_write_ceiling_t((*ceiling_t)(unsafe.Pointer(th)))
 			}
 			goto _1
 		}
 		if th.Ffunction.Facv == __ccgo_fp(T_MoveCeiling) {
 			saveg_write8(uint8(tc_ceiling))
 			saveg_write_pad()
-			saveg_write_ceiling_t((uintptr)(unsafe.Pointer(th)))
+			saveg_write_ceiling_t((*ceiling_t)(unsafe.Pointer(th)))
 			goto _1
 		}
 		if th.Ffunction.Facv == __ccgo_fp(T_VerticalDoor) {
 			saveg_write8(uint8(tc_door))
 			saveg_write_pad()
-			saveg_write_vldoor_t((uintptr)(unsafe.Pointer(th)))
+			saveg_write_vldoor_t((*vldoor_t)(unsafe.Pointer(th)))
 			goto _1
 		}
 		if th.Ffunction.Facv == __ccgo_fp(T_MoveFloor) {
 			saveg_write8(uint8(tc_floor))
 			saveg_write_pad()
-			saveg_write_floormove_t((uintptr)(unsafe.Pointer(th)))
+			saveg_write_floormove_t((*floormove_t)(unsafe.Pointer(th)))
 			goto _1
 		}
 		if th.Ffunction.Facv == __ccgo_fp(T_PlatRaise) {
 			saveg_write8(uint8(tc_plat))
 			saveg_write_pad()
-			saveg_write_plat_t((uintptr)(unsafe.Pointer(th)))
+			saveg_write_plat_t((*plat_t)(unsafe.Pointer(th)))
 			goto _1
 		}
 		if th.Ffunction.Facv == __ccgo_fp(T_LightFlash) {
 			saveg_write8(uint8(tc_flash))
 			saveg_write_pad()
-			saveg_write_lightflash_t((uintptr)(unsafe.Pointer(th)))
+			saveg_write_lightflash_t((*lightflash_t)(unsafe.Pointer(th)))
 			goto _1
 		}
 		if th.Ffunction.Facv == __ccgo_fp(T_StrobeFlash) {
 			saveg_write8(uint8(tc_strobe))
 			saveg_write_pad()
-			saveg_write_strobe_t((uintptr(unsafe.Pointer(th))))
+			saveg_write_strobe_t((*strobe_t)(unsafe.Pointer(th)))
 			goto _1
 		}
 		if th.Ffunction.Facv == __ccgo_fp(T_Glow) {
 			saveg_write8(uint8(tc_glow))
 			saveg_write_pad()
-			saveg_write_glow_t((uintptr(unsafe.Pointer(th))))
+			saveg_write_glow_t((*glow_t)(unsafe.Pointer(th)))
 			goto _1
 		}
 		goto _1
@@ -30962,7 +30962,7 @@ func P_UnArchiveSpecials() {
 			saveg_read_pad()
 			ceiling = Z_Malloc(72, int32(PU_LEVEL), uintptr(0))
 			ceilingP := (*ceiling_t)(unsafe.Pointer(ceiling))
-			saveg_read_ceiling_t(ceiling)
+			saveg_read_ceiling_t(ceilingP)
 			(*sector_t)(unsafe.Pointer(ceilingP.Fsector)).Fspecialdata = ceiling
 			if ceilingP.Fthinker.Ffunction.Facv != uintptr(0) {
 				ceilingP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveCeiling)
@@ -30973,7 +30973,7 @@ func P_UnArchiveSpecials() {
 			saveg_read_pad()
 			door = Z_Malloc(64, int32(PU_LEVEL), uintptr(0))
 			doorP := (*vldoor_t)(unsafe.Pointer(door))
-			saveg_read_vldoor_t(door)
+			saveg_read_vldoor_t(doorP)
 			(*sector_t)(unsafe.Pointer(doorP.Fsector)).Fspecialdata = door
 			doorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_VerticalDoor)
 			P_AddThinker(&doorP.Fthinker)
@@ -30981,7 +30981,7 @@ func P_UnArchiveSpecials() {
 			saveg_read_pad()
 			floor = Z_Malloc(64, int32(PU_LEVEL), uintptr(0))
 			floorP := (*floormove_t)(unsafe.Pointer(floor))
-			saveg_read_floormove_t(floor)
+			saveg_read_floormove_t(floorP)
 			(*sector_t)(unsafe.Pointer(floorP.Fsector)).Fspecialdata = floor
 			floorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveFloor)
 			P_AddThinker(&floorP.Fthinker)
@@ -30989,7 +30989,7 @@ func P_UnArchiveSpecials() {
 			saveg_read_pad()
 			plat = Z_Malloc(72, int32(PU_LEVEL), uintptr(0))
 			platP := (*plat_t)(unsafe.Pointer(plat))
-			saveg_read_plat_t(plat)
+			saveg_read_plat_t(platP)
 			(*sector_t)(unsafe.Pointer(platP.Fsector)).Fspecialdata = plat
 			if platP.Fthinker.Ffunction.Facv != uintptr(0) {
 				platP.Fthinker.Ffunction.Facv = __ccgo_fp(T_PlatRaise)
@@ -31000,21 +31000,21 @@ func P_UnArchiveSpecials() {
 			saveg_read_pad()
 			flash = Z_Malloc(56, int32(PU_LEVEL), uintptr(0))
 			flashP := (*lightflash_t)(unsafe.Pointer(flash))
-			saveg_read_lightflash_t(flash)
+			saveg_read_lightflash_t(flashP)
 			flashP.Fthinker.Ffunction.Facv = __ccgo_fp(T_LightFlash)
 			P_AddThinker(&flashP.Fthinker)
 		case tc_strobe:
 			saveg_read_pad()
 			strobe = Z_Malloc(56, int32(PU_LEVEL), uintptr(0))
 			strobeP := (*strobe_t)(unsafe.Pointer(strobe))
-			saveg_read_strobe_t(strobe)
+			saveg_read_strobe_t(strobeP)
 			strobeP.Fthinker.Ffunction.Facv = __ccgo_fp(T_StrobeFlash)
 			P_AddThinker(&strobeP.Fthinker)
 		case tc_glow:
 			saveg_read_pad()
 			glow = Z_Malloc(48, int32(PU_LEVEL), uintptr(0))
 			glowP := (*glow_t)(unsafe.Pointer(glow))
-			saveg_read_glow_t(glow)
+			saveg_read_glow_t(glowP)
 			glowP.Fthinker.Ffunction.Facv = __ccgo_fp(T_Glow)
 			P_AddThinker(&glowP.Fthinker)
 		default:
