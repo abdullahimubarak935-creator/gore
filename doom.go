@@ -1888,8 +1888,8 @@ type drawseg_t struct {
 }
 
 type vissprite_t struct {
-	Fprev       uintptr
-	Fnext       uintptr
+	Fprev       *vissprite_t
+	Fnext       *vissprite_t
 	Fx1         int32
 	Fx2         int32
 	Fgx         fixed_t
@@ -38059,15 +38059,15 @@ func R_InitSprites(namelist uintptr) {
 //	// Called at frame start.
 //	//
 func R_ClearSprites() {
-	vissprite_p = uintptr(unsafe.Pointer(&vissprites))
+	vissprite_n = 0
 }
 
-func R_NewVisSprite() (r uintptr) {
-	if vissprite_p == uintptr(unsafe.Pointer(&vissprites))+128*80 {
-		return uintptr(unsafe.Pointer(&overflowsprite))
+func R_NewVisSprite() *vissprite_t {
+	if vissprite_n == len(vissprites) {
+		return &overflowsprite
 	}
-	vissprite_p += 80
-	return vissprite_p - uintptr(1)*80
+	vissprite_n++
+	return &vissprites[vissprite_n-1]
 }
 
 func R_DrawMaskedColumn(column uintptr) {
@@ -38164,7 +38164,8 @@ func R_ProjectSprite(thing uintptr) {
 	var gxt, gyt, iscale, tr_x, tr_y, tx, tz, xscale fixed_t
 	var index, lump, x1, x2, v1, v2 int32
 	var rot uint32
-	var sprdef, sprframe, vis uintptr
+	var sprdef, sprframe uintptr
+	var vis *vissprite_t
 	// transform the origin point
 	tr_x = (*mobj_t)(unsafe.Pointer(thing)).Fx - viewx
 	tr_y = (*mobj_t)(unsafe.Pointer(thing)).Fy - viewy
@@ -38218,56 +38219,57 @@ func R_ProjectSprite(thing uintptr) {
 	}
 	// store information in a vissprite
 	vis = R_NewVisSprite()
-	(*vissprite_t)(unsafe.Pointer(vis)).Fmobjflags = (*mobj_t)(unsafe.Pointer(thing)).Fflags
-	(*vissprite_t)(unsafe.Pointer(vis)).Fscale = xscale << detailshift
-	(*vissprite_t)(unsafe.Pointer(vis)).Fgx = (*mobj_t)(unsafe.Pointer(thing)).Fx
-	(*vissprite_t)(unsafe.Pointer(vis)).Fgy = (*mobj_t)(unsafe.Pointer(thing)).Fy
-	(*vissprite_t)(unsafe.Pointer(vis)).Fgz = (*mobj_t)(unsafe.Pointer(thing)).Fz
-	(*vissprite_t)(unsafe.Pointer(vis)).Fgzt = (*mobj_t)(unsafe.Pointer(thing)).Fz + *(*fixed_t)(unsafe.Pointer(spritetopoffset + uintptr(lump)*4))
-	(*vissprite_t)(unsafe.Pointer(vis)).Ftexturemid = (*vissprite_t)(unsafe.Pointer(vis)).Fgzt - viewz
+	vis.Fmobjflags = (*mobj_t)(unsafe.Pointer(thing)).Fflags
+	vis.Fscale = xscale << detailshift
+	vis.Fgx = (*mobj_t)(unsafe.Pointer(thing)).Fx
+	vis.Fgy = (*mobj_t)(unsafe.Pointer(thing)).Fy
+	vis.Fgz = (*mobj_t)(unsafe.Pointer(thing)).Fz
+	vis.Fgzt = (*mobj_t)(unsafe.Pointer(thing)).Fz + *(*fixed_t)(unsafe.Pointer(spritetopoffset + uintptr(lump)*4))
+	vis.Ftexturemid = (*vissprite_t)(unsafe.Pointer(vis)).Fgzt - viewz
 	if x1 < 0 {
 		v1 = 0
 	} else {
 		v1 = x1
 	}
-	(*vissprite_t)(unsafe.Pointer(vis)).Fx1 = v1
+	vis.Fx1 = v1
 	if x2 >= viewwidth {
 		v2 = viewwidth - 1
 	} else {
 		v2 = x2
 	}
-	(*vissprite_t)(unsafe.Pointer(vis)).Fx2 = v2
+	vis.Fx2 = v2
 	iscale = FixedDiv(1<<FRACBITS, xscale)
 	if flip != 0 {
-		(*vissprite_t)(unsafe.Pointer(vis)).Fstartfrac = *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4)) - 1
-		(*vissprite_t)(unsafe.Pointer(vis)).Fxiscale = -iscale
+		vis.Fstartfrac = *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4)) - 1
+		vis.Fxiscale = -iscale
 	} else {
-		(*vissprite_t)(unsafe.Pointer(vis)).Fstartfrac = 0
-		(*vissprite_t)(unsafe.Pointer(vis)).Fxiscale = iscale
+		vis.Fstartfrac = 0
+		vis.Fxiscale = iscale
 	}
-	if (*vissprite_t)(unsafe.Pointer(vis)).Fx1 > x1 {
-		*(*fixed_t)(unsafe.Pointer(vis + 40)) += (*vissprite_t)(unsafe.Pointer(vis)).Fxiscale * ((*vissprite_t)(unsafe.Pointer(vis)).Fx1 - x1)
+	if vis.Fx1 > x1 {
+
+		vis.Fstartfrac += (*vissprite_t)(unsafe.Pointer(vis)).Fxiscale * ((*vissprite_t)(unsafe.Pointer(vis)).Fx1 - x1)
 	}
-	(*vissprite_t)(unsafe.Pointer(vis)).Fpatch = lump
+	vis.Fpatch = lump
 	// get light level
 	if (*mobj_t)(unsafe.Pointer(thing)).Fflags&int32(MF_SHADOW) != 0 {
 		// shadow draw
-		(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = uintptr(0)
+		vis.Fcolormap = uintptr(0)
 	} else {
 		if fixedcolormap != 0 {
 			// fixed map
-			(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = fixedcolormap
+			vis.Fcolormap = fixedcolormap
 		} else {
 			if (*mobj_t)(unsafe.Pointer(thing)).Fframe&int32(FF_FULLBRIGHT1) != 0 {
 				// full bright
-				(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = colormaps
+				vis.Fcolormap = colormaps
 			} else {
 				// diminished light
 				index = xscale >> (int32(LIGHTSCALESHIFT) - detailshift)
 				if index >= int32(MAXLIGHTSCALE) {
 					index = MAXLIGHTSCALE - 1
 				}
-				(*vissprite_t)(unsafe.Pointer(vis)).Fcolormap = *(*uintptr)(unsafe.Pointer(spritelights + uintptr(index)*8))
+				vis.Fcolormap = *(*uintptr)(unsafe.Pointer(spritelights + uintptr(index)*8))
 			}
 		}
 	}
@@ -38438,37 +38440,36 @@ func R_DrawPlayerSprites() {
 }
 
 func R_SortVisSprites() {
-	bp := alloc(80)
-	var best, ds, v1, v3 uintptr
+	bp := (*vissprite_t)(unsafe.Pointer(alloc(80)))
+	var best, ds *vissprite_t
 	var bestscale fixed_t
 	var count, i int32
-	count = int32((int64(vissprite_p) - int64(uintptr(unsafe.Pointer(&vissprites)))) / 80)
-	v1 = bp
-	(*(*vissprite_t)(unsafe.Pointer(bp))).Fprev = v1
-	(*(*vissprite_t)(unsafe.Pointer(bp))).Fnext = v1
+	count = int32(vissprite_n)
+	(*(*vissprite_t)(unsafe.Pointer(bp))).Fprev = bp
+	(*(*vissprite_t)(unsafe.Pointer(bp))).Fnext = bp
 	if !(count != 0) {
 		return
 	}
-	ds = uintptr(unsafe.Pointer(&vissprites))
-	for {
-		if !(ds < vissprite_p) {
-			break
+	for i := 0; i < vissprite_n; i++ {
+		ds := &vissprites[i]
+		if i < len(vissprites)-1 {
+			(*vissprite_t)(unsafe.Pointer(ds)).Fnext = &vissprites[i+1]
+		} else {
+			(*vissprite_t)(unsafe.Pointer(ds)).Fnext = nil
 		}
-		(*vissprite_t)(unsafe.Pointer(ds)).Fnext = ds + uintptr(1)*80
-		(*vissprite_t)(unsafe.Pointer(ds)).Fprev = ds - uintptr(1)*80
-		goto _2
-	_2:
-		;
-		ds += 80
+		if i > 0 {
+			(*vissprite_t)(unsafe.Pointer(ds)).Fprev = &vissprites[i-1]
+		} else {
+			(*vissprite_t)(unsafe.Pointer(ds)).Fprev = nil
+		}
 	}
 	vissprites[0].Fprev = bp
-	(*(*vissprite_t)(unsafe.Pointer(bp))).Fnext = uintptr(unsafe.Pointer(&vissprites))
-	(*vissprite_t)(unsafe.Pointer(vissprite_p - uintptr(1)*80)).Fnext = bp
-	(*(*vissprite_t)(unsafe.Pointer(bp))).Fprev = vissprite_p - uintptr(1)*80
+	bp.Fnext = &vissprites[0]
+	vissprites[vissprite_n-1].Fnext = bp
+	bp.Fprev = &vissprites[vissprite_n-1]
 	// pull the vissprites out by scale
-	v3 = uintptr(unsafe.Pointer(&vsprsortedhead))
-	vsprsortedhead.Fprev = v3
-	vsprsortedhead.Fnext = v3
+	vsprsortedhead.Fprev = &vsprsortedhead
+	vsprsortedhead.Fnext = &vsprsortedhead
 	i = 0
 	for {
 		if !(i < count) {
@@ -38492,7 +38493,7 @@ func R_SortVisSprites() {
 		}
 		(*vissprite_t)(unsafe.Pointer((*vissprite_t)(unsafe.Pointer(best)).Fnext)).Fprev = (*vissprite_t)(unsafe.Pointer(best)).Fprev
 		(*vissprite_t)(unsafe.Pointer((*vissprite_t)(unsafe.Pointer(best)).Fprev)).Fnext = (*vissprite_t)(unsafe.Pointer(best)).Fnext
-		(*vissprite_t)(unsafe.Pointer(best)).Fnext = uintptr(unsafe.Pointer(&vsprsortedhead))
+		(*vissprite_t)(unsafe.Pointer(best)).Fnext = &vsprsortedhead
 		(*vissprite_t)(unsafe.Pointer(best)).Fprev = vsprsortedhead.Fprev
 		(*vissprite_t)(unsafe.Pointer(vsprsortedhead.Fprev)).Fnext = best
 		vsprsortedhead.Fprev = best
@@ -38664,20 +38665,20 @@ func R_DrawSprite(spr *vissprite_t) {
 //	// R_DrawMasked
 //	//
 func R_DrawMasked() {
-	var spr uintptr
+	var spr *vissprite_t
 	R_SortVisSprites()
-	if vissprite_p > uintptr(unsafe.Pointer(&vissprites)) {
+	if vissprite_n > 0 {
 		// draw all vissprites back to front
 		spr = vsprsortedhead.Fnext
 		for {
-			if !(spr != uintptr(unsafe.Pointer(&vsprsortedhead))) {
+			if !(spr != &vsprsortedhead) {
 				break
 			}
-			R_DrawSprite((*vissprite_t)(unsafe.Pointer(spr)))
+			R_DrawSprite(spr)
 			goto _1
 		_1:
 			;
-			spr = (*vissprite_t)(unsafe.Pointer(spr)).Fnext
+			spr = spr.Fnext
 		}
 	}
 	// render any remaining masked mid textures
@@ -47313,7 +47314,7 @@ var viletryy fixed_t
 //	// Here comes the obnoxious "visplane".
 var visplanes [128]visplane_t
 
-var vissprite_p uintptr
+var vissprite_n int
 
 // C documentation
 //
