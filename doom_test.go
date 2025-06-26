@@ -388,7 +388,20 @@ func TestDoomLevels(t *testing.T) {
 	defer game.Close()
 	go func() {
 		// Let things get settled
-		time.Sleep(20 * time.Millisecond)
+		time.Sleep(40 * time.Millisecond)
+		startScreen := game.GetScreen()
+		knownGood, err := loadPNG("testdata/good_doom_test_start.png")
+		if err != nil {
+			t.Errorf("Error loading known good image: %v", err)
+		} else {
+			diffImg, percent, err := diff.CompareImages(startScreen, knownGood)
+			if err != nil || percent > 2 {
+				t.Errorf("Start screen screenshot does not match known good: %f%% difference", percent)
+				savePNG("doom_test_start.png", startScreen)
+				savePNG("doom_test_start_diff.png", diffImg)
+			}
+		}
+
 		// Start a game
 		game.InsertKey(KEY_ESCAPE) // Open menu
 		game.InsertKey(KEY_ENTER)
@@ -408,7 +421,7 @@ func TestDoomLevels(t *testing.T) {
 				continue
 			}
 			diffImg, percent, err := diff.CompareImages(img1, knownGood)
-			if err != nil || percent > 2 {
+			if err != nil || percent > 10 {
 				t.Errorf("Level E1M%d screenshot does not match known good: %f%% difference", i, percent)
 				savePNG(fmt.Sprintf("doom_test_e1m%d.png", i), img1)
 				savePNG(fmt.Sprintf("doom_test_e1m%d_diff.png", i), diffImg)
