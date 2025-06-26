@@ -24842,11 +24842,11 @@ func EV_BuildStairs(line *line_t, type1 stair_e) (r int32) {
 				}
 				tsec = sec.Flines[i].Fbacksector
 				newsecnum = sectorIndex(tsec)
-				if int32((*sector_t)(unsafe.Pointer(tsec)).Ffloorpic) != texture {
+				if int32(tsec.Ffloorpic) != texture {
 					goto _2
 				}
 				height += stairsize
-				if (*sector_t)(unsafe.Pointer(tsec)).Fspecialdata != 0 {
+				if tsec.Fspecialdata != 0 {
 					goto _2
 				}
 				sec = tsec
@@ -31803,34 +31803,34 @@ func P_CrossSubsector(num int32) (r boolean) {
 		front = (*seg_t)(unsafe.Pointer(seg)).Ffrontsector
 		back = (*seg_t)(unsafe.Pointer(seg)).Fbacksector
 		// no wall to block sight with?
-		if (*sector_t)(unsafe.Pointer(front)).Ffloorheight == (*sector_t)(unsafe.Pointer(back)).Ffloorheight && (*sector_t)(unsafe.Pointer(front)).Fceilingheight == (*sector_t)(unsafe.Pointer(back)).Fceilingheight {
+		if front.Ffloorheight == back.Ffloorheight && front.Fceilingheight == back.Fceilingheight {
 			goto _1
 		}
 		// possible occluder
 		// because of ceiling height differences
-		if (*sector_t)(unsafe.Pointer(front)).Fceilingheight < (*sector_t)(unsafe.Pointer(back)).Fceilingheight {
-			opentop = (*sector_t)(unsafe.Pointer(front)).Fceilingheight
+		if front.Fceilingheight < back.Fceilingheight {
+			opentop = front.Fceilingheight
 		} else {
-			opentop = (*sector_t)(unsafe.Pointer(back)).Fceilingheight
+			opentop = back.Fceilingheight
 		}
 		// because of ceiling height differences
-		if (*sector_t)(unsafe.Pointer(front)).Ffloorheight > (*sector_t)(unsafe.Pointer(back)).Ffloorheight {
-			openbottom = (*sector_t)(unsafe.Pointer(front)).Ffloorheight
+		if front.Ffloorheight > back.Ffloorheight {
+			openbottom = front.Ffloorheight
 		} else {
-			openbottom = (*sector_t)(unsafe.Pointer(back)).Ffloorheight
+			openbottom = back.Ffloorheight
 		}
 		// quick test for totally closed doors
 		if openbottom >= opentop {
 			return 0
 		} // stop
 		frac = P_InterceptVector2(uintptr(unsafe.Pointer(&strace)), bp)
-		if (*sector_t)(unsafe.Pointer(front)).Ffloorheight != (*sector_t)(unsafe.Pointer(back)).Ffloorheight {
+		if front.Ffloorheight != back.Ffloorheight {
 			slope = FixedDiv(openbottom-sightzstart, frac)
 			if slope > bottomslope {
 				bottomslope = slope
 			}
 		}
-		if (*sector_t)(unsafe.Pointer(front)).Fceilingheight != (*sector_t)(unsafe.Pointer(back)).Fceilingheight {
+		if front.Fceilingheight != back.Fceilingheight {
 			slope = FixedDiv(opentop-sightzstart, frac)
 			if slope < topslope {
 				topslope = slope
@@ -33066,7 +33066,7 @@ func EV_DoDonut(line *line_t) (r int32) {
 		}
 		s1 = &sectors[secnum]
 		// ALREADY MOVING?  IF SO, KEEP GOING...
-		if (*sector_t)(unsafe.Pointer(s1)).Fspecialdata != 0 {
+		if s1.Fspecialdata != 0 {
 			continue
 		}
 		rtn = 1
@@ -33086,7 +33086,7 @@ func EV_DoDonut(line *line_t) (r int32) {
 		i = 0
 		for {
 			var floorP *floormove_t
-			if !(i < (*sector_t)(unsafe.Pointer(s2)).Flinecount) {
+			if !(i < s2.Flinecount) {
 				break
 			}
 			s3 = s2.Flines[i].Fbacksector
@@ -33102,14 +33102,14 @@ func EV_DoDonut(line *line_t) (r int32) {
 				fprintf_ccgo(os.Stderr, 25682)
 				DonutOverrun(bp, bp+4, line, s1)
 			} else {
-				*(*fixed_t)(unsafe.Pointer(bp)) = (*sector_t)(unsafe.Pointer(s3)).Ffloorheight
-				*(*int16)(unsafe.Pointer(bp + 4)) = (*sector_t)(unsafe.Pointer(s3)).Ffloorpic
+				*(*fixed_t)(unsafe.Pointer(bp)) = s3.Ffloorheight
+				*(*int16)(unsafe.Pointer(bp + 4)) = s3.Ffloorpic
 			}
 			//	Spawn rising slime
 			floor = Z_Malloc(64, int32(PU_LEVSPEC), uintptr(0))
 			floorP = (*floormove_t)(unsafe.Pointer(floor))
 			P_AddThinker(&floorP.Fthinker)
-			(*sector_t)(unsafe.Pointer(s2)).Fspecialdata = floor
+			s2.Fspecialdata = floor
 			floorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveFloor)
 			floorP.Ftype1 = int32(donutRaise)
 			floorP.Fcrush = 0
@@ -33123,7 +33123,7 @@ func EV_DoDonut(line *line_t) (r int32) {
 			floor = Z_Malloc(64, int32(PU_LEVSPEC), uintptr(0))
 			floorP = (*floormove_t)(unsafe.Pointer(floor))
 			P_AddThinker(&floorP.Fthinker)
-			(*sector_t)(unsafe.Pointer(s1)).Fspecialdata = floor
+			s1.Fspecialdata = floor
 			floorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveFloor)
 			floorP.Ftype1 = int32(lowerFloor)
 			floorP.Fcrush = 0
@@ -34649,11 +34649,11 @@ func R_AddLine(line uintptr) {
 		goto clipsolid
 	}
 	// Closed door.
-	if (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight <= (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight || (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight >= (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight {
+	if backsector.Fceilingheight <= frontsector.Ffloorheight || backsector.Ffloorheight >= frontsector.Fceilingheight {
 		goto clipsolid
 	}
 	// Window.
-	if (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight != (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight || (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight != (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight {
+	if backsector.Fceilingheight != frontsector.Fceilingheight || backsector.Ffloorheight != frontsector.Ffloorheight {
 		goto clippass
 	}
 	// Reject empty lines used for triggers
@@ -34661,7 +34661,7 @@ func R_AddLine(line uintptr) {
 	// Identical floor and ceiling on both sides,
 	// identical light levels on both sides,
 	// and no middle texture.
-	if int32((*sector_t)(unsafe.Pointer(backsector)).Fceilingpic) == int32((*sector_t)(unsafe.Pointer(frontsector)).Fceilingpic) && int32((*sector_t)(unsafe.Pointer(backsector)).Ffloorpic) == int32((*sector_t)(unsafe.Pointer(frontsector)).Ffloorpic) && int32((*sector_t)(unsafe.Pointer(backsector)).Flightlevel) == int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel) && int32((*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fsidedef)).Fmidtexture) == 0 {
+	if int32(backsector.Fceilingpic) == int32(frontsector.Fceilingpic) && int32(backsector.Ffloorpic) == int32(frontsector.Ffloorpic) && int32(backsector.Flightlevel) == int32(frontsector.Flightlevel) && int32((*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fsidedef)).Fmidtexture) == 0 {
 		return
 	}
 	goto clippass
@@ -34824,13 +34824,13 @@ func R_Subsector(num int32) {
 	frontsector = sub.Fsector
 	count = int32(sub.Fnumlines)
 	line = segs + uintptr(sub.Ffirstline)*56
-	if (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight < viewz {
-		floorplane = R_FindPlane((*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight, int32((*sector_t)(unsafe.Pointer(frontsector)).Ffloorpic), int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel))
+	if frontsector.Ffloorheight < viewz {
+		floorplane = R_FindPlane(frontsector.Ffloorheight, int32(frontsector.Ffloorpic), int32(frontsector.Flightlevel))
 	} else {
 		floorplane = nil
 	}
-	if (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight > viewz || int32((*sector_t)(unsafe.Pointer(frontsector)).Fceilingpic) == skyflatnum {
-		ceilingplane = R_FindPlane((*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight, int32((*sector_t)(unsafe.Pointer(frontsector)).Fceilingpic), int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel))
+	if frontsector.Fceilingheight > viewz || int32(frontsector.Fceilingpic) == skyflatnum {
+		ceilingplane = R_FindPlane(frontsector.Fceilingheight, int32(frontsector.Fceilingpic), int32(frontsector.Flightlevel))
 	} else {
 		ceilingplane = nil
 	}
@@ -37290,7 +37290,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 	frontsector = (*seg_t)(unsafe.Pointer(curline)).Ffrontsector
 	backsector = (*seg_t)(unsafe.Pointer(curline)).Fbacksector
 	texnum = *(*int32)(unsafe.Pointer(texturetranslation + uintptr((*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fsidedef)).Fmidtexture)*4))
-	lightnum = int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
+	lightnum = int32(frontsector.Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
 	if (*seg_t)(unsafe.Pointer(curline)).Fv1.Fy == (*seg_t)(unsafe.Pointer(curline)).Fv2.Fy {
 		lightnum--
 	} else {
@@ -37314,18 +37314,18 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 	mceilingclip = ds.Fsprtopclip
 	// find positioning
 	if int32((*seg_t)(unsafe.Pointer(curline)).Flinedef.Fflags)&ML_DONTPEGBOTTOM != 0 {
-		if (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight > (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight {
-			v1 = (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight
+		if frontsector.Ffloorheight > backsector.Ffloorheight {
+			v1 = frontsector.Ffloorheight
 		} else {
-			v1 = (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight
+			v1 = backsector.Ffloorheight
 		}
 		dc_texturemid = v1
 		dc_texturemid = dc_texturemid + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr(texnum)*4)) - viewz
 	} else {
-		if (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight < (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight {
-			v2 = (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight
+		if frontsector.Fceilingheight < backsector.Fceilingheight {
+			v2 = frontsector.Fceilingheight
 		} else {
-			v2 = (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight
+			v2 = backsector.Fceilingheight
 		}
 		dc_texturemid = v2
 		dc_texturemid = dc_texturemid - viewz
@@ -37570,8 +37570,8 @@ func R_StoreWallRange(start int32, stop int32) {
 	}
 	// calculate texture boundaries
 	//  and decide if floor / ceiling marks are needed
-	worldtop = (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight - viewz
-	worldbottom = (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight - viewz
+	worldtop = frontsector.Fceilingheight - viewz
+	worldbottom = frontsector.Ffloorheight - viewz
 	v7 = 0
 	maskedtexture = v7
 	v6 = int32(v7)
@@ -37588,7 +37588,7 @@ func R_StoreWallRange(start int32, stop int32) {
 		markceiling = v8
 		markfloor = v8
 		if int32(linedef.Fflags)&ML_DONTPEGBOTTOM != 0 {
-			vtop = (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr(sidedef.Fmidtexture)*4))
+			vtop = frontsector.Ffloorheight + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr(sidedef.Fmidtexture)*4))
 			// bottom of texture at bottom
 			rw_midtexturemid = vtop - viewz
 		} else {
@@ -37607,55 +37607,55 @@ func R_StoreWallRange(start int32, stop int32) {
 		drawsegs[ds_index].Fsprbottomclip = v9
 		drawsegs[ds_index].Fsprtopclip = v9
 		drawsegs[ds_index].Fsilhouette = 0
-		if (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight > (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight {
+		if frontsector.Ffloorheight > backsector.Ffloorheight {
 			drawsegs[ds_index].Fsilhouette = int32(SIL_BOTTOM)
-			drawsegs[ds_index].Fbsilheight = (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight
+			drawsegs[ds_index].Fbsilheight = frontsector.Ffloorheight
 		} else {
-			if (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight > viewz {
+			if backsector.Ffloorheight > viewz {
 				drawsegs[ds_index].Fsilhouette = int32(SIL_BOTTOM)
 				drawsegs[ds_index].Fbsilheight = int32(INT_MAX15)
 				// ds_p->sprbottomclip = negonearray;
 			}
 		}
-		if (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight < (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight {
+		if frontsector.Fceilingheight < backsector.Fceilingheight {
 			drawsegs[ds_index].Fsilhouette |= int32(SIL_TOP)
-			drawsegs[ds_index].Ftsilheight = (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight
+			drawsegs[ds_index].Ftsilheight = frontsector.Fceilingheight
 		} else {
-			if (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight < viewz {
+			if backsector.Fceilingheight < viewz {
 				drawsegs[ds_index].Fsilhouette |= int32(SIL_TOP)
 				drawsegs[ds_index].Ftsilheight = -1 - 0x7fffffff
 				// ds_p->sprtopclip = screenheightarray;
 			}
 		}
-		if (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight <= (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight {
+		if backsector.Fceilingheight <= frontsector.Ffloorheight {
 			drawsegs[ds_index].Fsprbottomclip = uintptr(unsafe.Pointer(&negonearray))
 			drawsegs[ds_index].Fbsilheight = int32(INT_MAX15)
 			drawsegs[ds_index].Fsilhouette |= int32(SIL_BOTTOM)
 		}
-		if (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight >= (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight {
+		if backsector.Ffloorheight >= frontsector.Fceilingheight {
 			drawsegs[ds_index].Fsprtopclip = uintptr(unsafe.Pointer(&screenheightarray))
 			drawsegs[ds_index].Ftsilheight = -1 - 0x7fffffff
 			drawsegs[ds_index].Fsilhouette |= int32(SIL_TOP)
 		}
-		worldhigh = (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight - viewz
-		worldlow = (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight - viewz
+		worldhigh = backsector.Fceilingheight - viewz
+		worldlow = backsector.Ffloorheight - viewz
 		// hack to allow height changes in outdoor areas
-		if int32((*sector_t)(unsafe.Pointer(frontsector)).Fceilingpic) == skyflatnum && int32((*sector_t)(unsafe.Pointer(backsector)).Fceilingpic) == skyflatnum {
+		if int32(frontsector.Fceilingpic) == skyflatnum && int32(backsector.Fceilingpic) == skyflatnum {
 			worldtop = worldhigh
 		}
-		if worldlow != worldbottom || int32((*sector_t)(unsafe.Pointer(backsector)).Ffloorpic) != int32((*sector_t)(unsafe.Pointer(frontsector)).Ffloorpic) || int32((*sector_t)(unsafe.Pointer(backsector)).Flightlevel) != int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel) {
+		if worldlow != worldbottom || int32(backsector.Ffloorpic) != int32(frontsector.Ffloorpic) || int32(backsector.Flightlevel) != int32(frontsector.Flightlevel) {
 			markfloor = 1
 		} else {
 			// same plane on both sides
 			markfloor = 0
 		}
-		if worldhigh != worldtop || int32((*sector_t)(unsafe.Pointer(backsector)).Fceilingpic) != int32((*sector_t)(unsafe.Pointer(frontsector)).Fceilingpic) || int32((*sector_t)(unsafe.Pointer(backsector)).Flightlevel) != int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel) {
+		if worldhigh != worldtop || int32(backsector.Fceilingpic) != int32(frontsector.Fceilingpic) || int32(backsector.Flightlevel) != int32(frontsector.Flightlevel) {
 			markceiling = 1
 		} else {
 			// same plane on both sides
 			markceiling = 0
 		}
-		if (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight <= (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight || (*sector_t)(unsafe.Pointer(backsector)).Ffloorheight >= (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight {
+		if backsector.Fceilingheight <= frontsector.Ffloorheight || backsector.Ffloorheight >= frontsector.Fceilingheight {
 			// closed door
 			v10 = 1
 			markfloor = v10
@@ -37668,7 +37668,7 @@ func R_StoreWallRange(start int32, stop int32) {
 				// top of texture at top
 				rw_toptexturemid = worldtop
 			} else {
-				vtop = (*sector_t)(unsafe.Pointer(backsector)).Fceilingheight + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr(sidedef.Ftoptexture)*4))
+				vtop = backsector.Fceilingheight + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr(sidedef.Ftoptexture)*4))
 				// bottom of texture
 				rw_toptexturemid = vtop - viewz
 			}
@@ -37718,7 +37718,7 @@ func R_StoreWallRange(start int32, stop int32) {
 		//  for horizontal / vertical / diagonal
 		// OPTIMIZE: get rid of LIGHTSEGSHIFT globally
 		if !(fixedcolormap != 0) {
-			lightnum = int32((*sector_t)(unsafe.Pointer(frontsector)).Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
+			lightnum = int32(frontsector.Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
 			if (*seg_t)(unsafe.Pointer(curline)).Fv1.Fy == (*seg_t)(unsafe.Pointer(curline)).Fv2.Fy {
 				lightnum--
 			} else {
@@ -37740,11 +37740,11 @@ func R_StoreWallRange(start int32, stop int32) {
 	// if a floor / ceiling plane is on the wrong side
 	//  of the view plane, it is definitely invisible
 	//  and doesn't need to be marked.
-	if (*sector_t)(unsafe.Pointer(frontsector)).Ffloorheight >= viewz {
+	if frontsector.Ffloorheight >= viewz {
 		// above view plane
 		markfloor = 0
 	}
-	if (*sector_t)(unsafe.Pointer(frontsector)).Fceilingheight <= viewz && int32((*sector_t)(unsafe.Pointer(frontsector)).Fceilingpic) != skyflatnum {
+	if frontsector.Fceilingheight <= viewz && int32(frontsector.Fceilingpic) != skyflatnum {
 		// below view plane
 		markceiling = 0
 	}
