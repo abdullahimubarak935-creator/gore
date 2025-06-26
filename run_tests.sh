@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # We're not clearing out the state properly on `Run` at the moment, so all the
 # tests need to be in a separate process
 

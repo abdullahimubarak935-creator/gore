@@ -141,25 +141,10 @@ func (d *doomTestHeadless) GetKey(event *DoomKeyEvent) bool {
 
 // InsertKey simulates an immediate key press and release event in the game.
 func (d *doomTestHeadless) InsertKey(key uint8) {
-	d.lock.Lock()
-	defer d.lock.Unlock()
-	d.keys = append(d.keys, delayedKeyEvent{
-		event: DoomKeyEvent{
-			Pressed: true,
-			Key:     key,
-		},
-		ticks: 1,
-	},
-		delayedKeyEvent{
-			event: DoomKeyEvent{
-				Pressed: false,
-				Key:     key,
-			},
-			ticks: 1,
-		},
-	)
+	d.InsertKeySequence(key)
 }
 
+// Insert a series of key presses and releases, and wait for them to be processed.
 func (d *doomTestHeadless) InsertKeySequence(keys ...uint8) {
 	d.lock.Lock()
 	for _, key := range keys {
