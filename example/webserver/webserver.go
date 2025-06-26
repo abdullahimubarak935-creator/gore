@@ -7,7 +7,6 @@ import (
 	"os"
 	"strconv"
 	"sync"
-	"time"
 
 	"github.com/AndreRenaud/gore"
 )
@@ -18,8 +17,6 @@ type keyChange struct {
 }
 
 var (
-	start time.Time
-
 	streamer   MJPEGHandler
 	keyChanges []keyChange
 	keyLock    sync.Mutex
@@ -103,7 +100,6 @@ func main() {
 	frontend := &webDoomFrontend{}
 
 	log.Printf("DG_Init called\n")
-	start = time.Now()
 	addr := ":8080"
 
 	mux := http.NewServeMux()
