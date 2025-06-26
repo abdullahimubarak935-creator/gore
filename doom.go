@@ -49,10 +49,6 @@ func xmalloc(n uint64) uintptr {
 	return res
 }
 
-func xfree(ptr uintptr) {
-	delete(dg_alloced, ptr)
-}
-
 // LIBC functions
 func xabs(j int32) int32 {
 	if j < 0 {
@@ -21798,16 +21794,6 @@ func M_WriteFile(name string, source uintptr, length int32) (r boolean) {
 
 func M_TempFile(s string) string {
 	return __ccgo_ts_str(23139) + __ccgo_ts_str(1252) + s
-}
-
-func M_StrToInt(str uintptr, result *int32) (r boolean) {
-	gStr := gostring(str)
-	val, err := strconv.Atoi(gStr)
-	*result = int32(val)
-	if err != nil {
-		return 0
-	}
-	return 1
 }
 
 func M_ExtractFileBase(path string, dest uintptr) {
