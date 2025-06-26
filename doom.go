@@ -41061,7 +41061,7 @@ type channel_t struct {
 
 // The set of channels available
 
-var channels uintptr
+var channels []channel_t
 
 func init() {
 	sfxVolume = 8
@@ -41095,19 +41095,7 @@ func S_Init(sfxVolume int32, musicVolume int32) {
 	// Allocating the internal channels for mixing
 	// (the maximum numer of sounds rendered
 	// simultaneously) within zone memory.
-	channels = Z_Malloc(int32(uint64(snd_channels)*uint64(24)), int32(PU_STATIC), uintptr(0))
-	// Free all channels for use
-	i = 0
-	for {
-		if !(i < snd_channels) {
-			break
-		}
-		(*(*channel_t)(unsafe.Pointer(channels + uintptr(i)*24))).Fsfxinfo = nil
-		goto _1
-	_1:
-		;
-		i++
-	}
+	channels = make([]channel_t, snd_channels)
 	// no sounds are playing, and they are not mus_paused
 	mus_paused = uint32(0)
 	// Note that sounds have not been cached (yet).
@@ -41133,13 +41121,12 @@ func S_Shutdown() {
 }
 
 func S_StopChannel(cnum int32) {
-	var c uintptr
 	var i int32
-	c = channels + uintptr(cnum)*24
-	if (*channel_t)(unsafe.Pointer(c)).Fsfxinfo != nil {
+	c := &channels[cnum]
+	if c.Fsfxinfo != nil {
 		// stop the sound playing
-		if I_SoundIsPlaying((*channel_t)(unsafe.Pointer(c)).Fhandle) != 0 {
-			I_StopSound((*channel_t)(unsafe.Pointer(c)).Fhandle)
+		if I_SoundIsPlaying(c.Fhandle) != 0 {
+			I_StopSound(c.Fhandle)
 		}
 		// check to see if other channels are playing the sound
 		i = 0
@@ -41147,7 +41134,7 @@ func S_StopChannel(cnum int32) {
 			if !(i < snd_channels) {
 				break
 			}
-			if cnum != i && (*channel_t)(unsafe.Pointer(c)).Fsfxinfo == (*(*channel_t)(unsafe.Pointer(channels + uintptr(i)*24))).Fsfxinfo {
+			if cnum != i && c.Fsfxinfo == channels[i].Fsfxinfo {
 				break
 			}
 			goto _1
@@ -41156,8 +41143,8 @@ func S_StopChannel(cnum int32) {
 			i++
 		}
 		// degrade usefulness of sound data
-		(*sfxinfo_t)(unsafe.Pointer((*channel_t)(unsafe.Pointer(c)).Fsfxinfo)).Fusefulness--
-		(*channel_t)(unsafe.Pointer(c)).Fsfxinfo = nil
+		(*sfxinfo_t)(unsafe.Pointer(c.Fsfxinfo)).Fusefulness--
+		c.Fsfxinfo = nil
 	}
 }
 
@@ -41177,7 +41164,7 @@ func S_Start() {
 		if !(cnum < snd_channels) {
 			break
 		}
-		if (*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fsfxinfo != nil {
+		if channels[cnum].Fsfxinfo != nil {
 			S_StopChannel(cnum)
 		}
 		goto _1
@@ -41217,7 +41204,7 @@ func S_StopSound(origin uintptr) {
 		if !(cnum < snd_channels) {
 			break
 		}
-		if (*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fsfxinfo != nil && (*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Forigin == origin {
+		if channels[cnum].Fsfxinfo != nil && channels[cnum].Forigin == origin {
 			S_StopChannel(cnum)
 			break
 		}
@@ -41234,7 +41221,6 @@ func S_StopSound(origin uintptr) {
 //
 
 func S_GetChannel(origin uintptr, sfxinfo *sfxinfo_t) (r int32) {
-	var c uintptr
 	var cnum int32
 	// Find an open channel
 	cnum = 0
@@ -41242,10 +41228,10 @@ func S_GetChannel(origin uintptr, sfxinfo *sfxinfo_t) (r int32) {
 		if !(cnum < snd_channels) {
 			break
 		}
-		if !((*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fsfxinfo != nil) {
+		if !(channels[cnum].Fsfxinfo != nil) {
 			break
 		} else {
-			if origin != 0 && (*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Forigin == origin {
+			if origin != 0 && channels[cnum].Forigin == origin {
 				S_StopChannel(cnum)
 				break
 			}
@@ -41263,7 +41249,7 @@ func S_GetChannel(origin uintptr, sfxinfo *sfxinfo_t) (r int32) {
 			if !(cnum < snd_channels) {
 				break
 			}
-			if (*sfxinfo_t)(unsafe.Pointer((*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fsfxinfo)).Fpriority >= sfxinfo.Fpriority {
+			if (*sfxinfo_t)(unsafe.Pointer(channels[cnum].Fsfxinfo)).Fpriority >= sfxinfo.Fpriority {
 				break
 			}
 			goto _2
@@ -41279,10 +41265,10 @@ func S_GetChannel(origin uintptr, sfxinfo *sfxinfo_t) (r int32) {
 			S_StopChannel(cnum)
 		}
 	}
-	c = channels + uintptr(cnum)*24
+	c := &channels[cnum]
 	// channel is decided to be cnum.
-	(*channel_t)(unsafe.Pointer(c)).Fsfxinfo = sfxinfo
-	(*channel_t)(unsafe.Pointer(c)).Forigin = origin
+	c.Fsfxinfo = sfxinfo
+	c.Forigin = origin
 	return cnum
 }
 
@@ -41385,7 +41371,7 @@ func S_StartSound(origin_p uintptr, sfx_id int32) {
 	if sfx.Flumpnum < 0 {
 		sfx.Flumpnum = I_GetSfxLumpNum(sfx)
 	}
-	(*(*channel_t)(unsafe.Pointer(channels + uintptr(cnum)*24))).Fhandle = I_StartSound(sfx, cnum, *(*int32)(unsafe.Pointer(bp + 4)), *(*int32)(unsafe.Pointer(bp)))
+	channels[cnum].Fhandle = I_StartSound(sfx, cnum, *(*int32)(unsafe.Pointer(bp + 4)), *(*int32)(unsafe.Pointer(bp)))
 }
 
 //
@@ -41413,7 +41399,6 @@ func S_ResumeSound() {
 func S_UpdateSounds(listener uintptr) {
 	bp := alloc(16)
 	var audible, cnum int32
-	var c uintptr
 	var sfx *sfxinfo_t
 	I_UpdateSound()
 	cnum = 0
@@ -41421,10 +41406,10 @@ func S_UpdateSounds(listener uintptr) {
 		if !(cnum < snd_channels) {
 			break
 		}
-		c = channels + uintptr(cnum)*24
-		sfx = (*channel_t)(unsafe.Pointer(c)).Fsfxinfo
+		c := &channels[cnum]
+		sfx = c.Fsfxinfo
 		if sfx != nil {
-			if I_SoundIsPlaying((*channel_t)(unsafe.Pointer(c)).Fhandle) != 0 {
+			if I_SoundIsPlaying(c.Fhandle) != 0 {
 				// initialize parameters
 				*(*int32)(unsafe.Pointer(bp)) = snd_SfxVolume
 				*(*int32)(unsafe.Pointer(bp + 4)) = int32(NORM_SEP)
@@ -41441,12 +41426,12 @@ func S_UpdateSounds(listener uintptr) {
 				}
 				// check non-local sounds for distance clipping
 				//  or modify their params
-				if (*channel_t)(unsafe.Pointer(c)).Forigin != 0 && listener != (*channel_t)(unsafe.Pointer(c)).Forigin {
-					audible = S_AdjustSoundParams(listener, (*channel_t)(unsafe.Pointer(c)).Forigin, bp, bp+4)
+				if c.Forigin != 0 && listener != c.Forigin {
+					audible = S_AdjustSoundParams(listener, c.Forigin, bp, bp+4)
 					if !(audible != 0) {
 						S_StopChannel(cnum)
 					} else {
-						I_UpdateSoundParams((*channel_t)(unsafe.Pointer(c)).Fhandle, *(*int32)(unsafe.Pointer(bp)), *(*int32)(unsafe.Pointer(bp + 4)))
+						I_UpdateSoundParams(c.Fhandle, *(*int32)(unsafe.Pointer(bp)), *(*int32)(unsafe.Pointer(bp + 4)))
 					}
 				}
 			} else {
