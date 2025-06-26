@@ -41143,7 +41143,7 @@ func S_StopChannel(cnum int32) {
 			i++
 		}
 		// degrade usefulness of sound data
-		(*sfxinfo_t)(unsafe.Pointer(c.Fsfxinfo)).Fusefulness--
+		c.Fsfxinfo.Fusefulness--
 		c.Fsfxinfo = nil
 	}
 }
@@ -41249,7 +41249,7 @@ func S_GetChannel(origin uintptr, sfxinfo *sfxinfo_t) (r int32) {
 			if !(cnum < snd_channels) {
 				break
 			}
-			if (*sfxinfo_t)(unsafe.Pointer(channels[cnum].Fsfxinfo)).Fpriority >= sfxinfo.Fpriority {
+			if channels[cnum].Fsfxinfo.Fpriority >= sfxinfo.Fpriority {
 				break
 			}
 			goto _2
