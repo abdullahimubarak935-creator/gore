@@ -38440,7 +38440,7 @@ func R_DrawPlayerSprites() {
 }
 
 func R_SortVisSprites() {
-	bp := (*vissprite_t)(unsafe.Pointer(alloc(80)))
+	bp := &vissprite_t{}
 	var best, ds *vissprite_t
 	var bestscale fixed_t
 	var count, i int32
