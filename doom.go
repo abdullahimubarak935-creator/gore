@@ -34723,26 +34723,26 @@ func init() {
 	}
 }
 
-func R_CheckBBox(bspcoord uintptr) (r boolean) {
+func R_CheckBBox(bspcoord [4]fixed_t) (r boolean) {
 	var angle1, angle2, span, tspan angle_t
 	var boxpos, boxx, boxy, sx1, sx2 int32
 	var start uintptr
 	var x1, x2, y1, y2 fixed_t
 	// Find the corners of the box
 	// that define the edges from current viewpoint.
-	if viewx <= *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(BOXLEFT)*4)) {
+	if viewx <= bspcoord[BOXLEFT] {
 		boxx = 0
 	} else {
-		if viewx < *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(BOXRIGHT)*4)) {
+		if viewx < bspcoord[BOXRIGHT] {
 			boxx = 1
 		} else {
 			boxx = 2
 		}
 	}
-	if viewy >= *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(BOXTOP)*4)) {
+	if viewy >= bspcoord[BOXTOP] {
 		boxy = 0
 	} else {
-		if viewy > *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(BOXBOTTOM)*4)) {
+		if viewy > bspcoord[BOXBOTTOM] {
 			boxy = 1
 		} else {
 			boxy = 2
@@ -34752,10 +34752,11 @@ func R_CheckBBox(bspcoord uintptr) (r boolean) {
 	if boxpos == 5 {
 		return 1
 	}
-	x1 = *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&checkcoord)) + uintptr(boxpos)*16)))*4))
-	y1 = *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&checkcoord)) + uintptr(boxpos)*16 + 1*4)))*4))
-	x2 = *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&checkcoord)) + uintptr(boxpos)*16 + 2*4)))*4))
-	y2 = *(*fixed_t)(unsafe.Pointer(bspcoord + uintptr(*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&checkcoord)) + uintptr(boxpos)*16 + 3*4)))*4))
+
+	x1 = bspcoord[checkcoord[boxpos][0]]
+	y1 = bspcoord[checkcoord[boxpos][1]]
+	x2 = bspcoord[checkcoord[boxpos][2]]
+	y2 = bspcoord[checkcoord[boxpos][3]]
 	// check clip list for an open space
 	angle1 = R_PointToAngle(x1, y1) - viewangle
 	angle2 = R_PointToAngle(x2, y2) - viewangle
@@ -34853,7 +34854,7 @@ func R_Subsector(num int32) {
 //	//  traversing subtree recursively.
 //	// Just call with BSP root.
 func R_RenderBSPNode(bspnum int32) {
-	var bsp uintptr
+	var bsp *node_t
 	var side int32
 	// Found a subsector?
 	if bspnum&int32(NF_SUBSECTOR3) != 0 {
@@ -34864,14 +34865,14 @@ func R_RenderBSPNode(bspnum int32) {
 		}
 		return
 	}
-	bsp = (uintptr)(unsafe.Pointer(&nodes[bspnum]))
+	bsp = &nodes[bspnum]
 	// Decide which side the view point is on.
 	side = R_PointOnSide(viewx, viewy, &nodes[bspnum])
 	// Recursively divide front space.
-	R_RenderBSPNode(int32(*(*uint16)(unsafe.Pointer(bsp + 48 + uintptr(side)*2))))
+	R_RenderBSPNode(int32(bsp.Fchildren[side]))
 	// Possibly divide back space.
-	if R_CheckBBox(bsp+16+uintptr(side^int32(1))*16) != 0 {
-		R_RenderBSPNode(int32(*(*uint16)(unsafe.Pointer(bsp + 48 + uintptr(side^int32(1))*2))))
+	if R_CheckBBox(bsp.Fbbox[side]) != 0 {
+		R_RenderBSPNode(int32(bsp.Fchildren[side^int32(1)]))
 	}
 }
 
