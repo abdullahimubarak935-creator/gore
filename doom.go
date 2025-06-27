@@ -24653,14 +24653,14 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 				if twoSided(secnum, i) != 0 {
 					side = getSide(secnum, i, 0)
 					if int32((*side_t)(unsafe.Pointer(side)).Fbottomtexture) >= 0 {
-						if *(*fixed_t)(unsafe.Pointer(textureheight + uintptr((*side_t)(unsafe.Pointer(side)).Fbottomtexture)*4)) < minsize {
-							minsize = *(*fixed_t)(unsafe.Pointer(textureheight + uintptr((*side_t)(unsafe.Pointer(side)).Fbottomtexture)*4))
+						if textureheight[side.Fbottomtexture] < minsize {
+							minsize = textureheight[side.Fbottomtexture]
 						}
 					}
 					side = getSide(secnum, i, 1)
 					if int32((*side_t)(unsafe.Pointer(side)).Fbottomtexture) >= 0 {
-						if *(*fixed_t)(unsafe.Pointer(textureheight + uintptr((*side_t)(unsafe.Pointer(side)).Fbottomtexture)*4)) < minsize {
-							minsize = *(*fixed_t)(unsafe.Pointer(textureheight + uintptr((*side_t)(unsafe.Pointer(side)).Fbottomtexture)*4))
+						if textureheight[side.Fbottomtexture] < minsize {
+							minsize = textureheight[side.Fbottomtexture]
 						}
 					}
 				}
@@ -34929,7 +34929,7 @@ func R_GenerateComposite(texnum int32) {
 	var block, collump, colofs, patch, patchcol, realpatch, texture uintptr
 	var i, x, x1, x2 int32
 	texture = *(*uintptr)(unsafe.Pointer(textures + uintptr(texnum)*8))
-	block = Z_Malloc(*(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)), int32(PU_STATIC), texturecomposite+uintptr(texnum)*8)
+	block = Z_Malloc(texturecompositesize[texnum], int32(PU_STATIC), texturecomposite+uintptr(texnum)*8)
 	collump = *(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(texnum)*8))
 	colofs = *(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(texnum)*8))
 	// Composite the columns together.
@@ -34989,7 +34989,7 @@ func R_GenerateLookup(texnum int32) {
 	texture = *(*uintptr)(unsafe.Pointer(textures + uintptr(texnum)*8))
 	// Composited texture not created yet.
 	*(*uintptr)(unsafe.Pointer(texturecomposite + uintptr(texnum)*8)) = uintptr(0)
-	*(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)) = 0
+	texturecompositesize[texnum] = 0
 	collump = *(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(texnum)*8))
 	colofs = *(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(texnum)*8))
 	// Now count the number of columns
@@ -35047,11 +35047,11 @@ func R_GenerateLookup(texnum int32) {
 		if int32(*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))) > 1 {
 			// Use the cached block.
 			*(*int16)(unsafe.Pointer(collump + uintptr(x)*2)) = int16(-1)
-			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = uint16(*(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)))
-			if *(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)) > 0x10000-int32((*texture_t)(unsafe.Pointer(texture)).Fheight) {
+			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = uint16(texturecompositesize[texnum])
+			if texturecompositesize[texnum] > 0x10000-int32((*texture_t)(unsafe.Pointer(texture)).Fheight) {
 				I_Error(25985, texnum)
 			}
-			*(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)) += int32((*texture_t)(unsafe.Pointer(texture)).Fheight)
+			texturecompositesize[texnum] += int32((*texture_t)(unsafe.Pointer(texture)).Fheight)
 		}
 		goto _3
 	_3:
@@ -35165,9 +35165,9 @@ func R_InitTextures() {
 	texturecolumnlump = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
 	texturecolumnofs = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
 	texturecomposite = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
-	texturecompositesize = Z_Malloc(int32(uint64(numtextures)*4), int32(PU_STATIC), uintptr(0))
+	texturecompositesize = make([]int32, numtextures)
 	texturewidthmask = make([]int32, numtextures)
-	textureheight = Z_Malloc(int32(uint64(numtextures)*4), int32(PU_STATIC), uintptr(0))
+	textureheight = make([]fixed_t, numtextures)
 	totalwidth = 0
 	//	Really complex printing shit...
 	temp1 = W_GetNumForName(__ccgo_ts(26047)) // P_???????
@@ -35255,7 +35255,7 @@ func R_InitTextures() {
 			j <<= 1
 		}
 		texturewidthmask[i] = j - 1
-		*(*fixed_t)(unsafe.Pointer(textureheight + uintptr(i)*4)) = int32((*texture_t)(unsafe.Pointer(texture)).Fheight) << int32(FRACBITS)
+		textureheight[i] = int32((*texture_t)(unsafe.Pointer(texture)).Fheight) << int32(FRACBITS)
 		totalwidth += int32((*texture_t)(unsafe.Pointer(texture)).Fwidth)
 		goto _5
 	_5:
@@ -37235,7 +37235,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 			v1 = backsector.Ffloorheight
 		}
 		dc_texturemid = v1
-		dc_texturemid = dc_texturemid + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr(texnum)*4)) - viewz
+		dc_texturemid = dc_texturemid + textureheight[texnum]
 	} else {
 		if frontsector.Fceilingheight < backsector.Fceilingheight {
 			v2 = frontsector.Fceilingheight
@@ -37503,7 +37503,7 @@ func R_StoreWallRange(start int32, stop int32) {
 		markceiling = v8
 		markfloor = v8
 		if int32(linedef.Fflags)&ML_DONTPEGBOTTOM != 0 {
-			vtop = frontsector.Ffloorheight + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr(sidedef.Fmidtexture)*4))
+			vtop = frontsector.Ffloorheight + textureheight[sidedef.Fmidtexture]
 			// bottom of texture at bottom
 			rw_midtexturemid = vtop - viewz
 		} else {
@@ -37583,7 +37583,7 @@ func R_StoreWallRange(start int32, stop int32) {
 				// top of texture at top
 				rw_toptexturemid = worldtop
 			} else {
-				vtop = backsector.Fceilingheight + *(*fixed_t)(unsafe.Pointer(textureheight + uintptr(sidedef.Ftoptexture)*4))
+				vtop = backsector.Fceilingheight + textureheight[sidedef.Ftoptexture]
 				// bottom of texture
 				rw_toptexturemid = vtop - viewz
 			}
@@ -46804,12 +46804,12 @@ var texturecolumnofs uintptr
 
 var texturecomposite uintptr
 
-var texturecompositesize uintptr
+var texturecompositesize []int32
 
 // C documentation
 //
 //	// needed for texture pegging
-var textureheight uintptr
+var textureheight []fixed_t
 
 var textures uintptr
 
