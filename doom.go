@@ -18306,7 +18306,7 @@ func I_Tactile(on int32, off int32, total int32) {
 // by trying progressively smaller zone sizes until one is found that
 // works.
 
-func AutoAllocMemory(size uintptr, default_ram int32, min_ram int32) (r uintptr) {
+func AutoAllocMemory(size *int32, default_ram int32, min_ram int32) (r uintptr) {
 	var zonemem uintptr
 	// Allocate the zone memory.  This loop tries progressively smaller
 	// zone sizes until a size is found that can be allocated.
@@ -18319,8 +18319,8 @@ func AutoAllocMemory(size uintptr, default_ram int32, min_ram int32) (r uintptr)
 			I_Error(18832, default_ram)
 		}
 		// Try to allocate the zone memory.
-		*(*int32)(unsafe.Pointer(size)) = default_ram * 1024 * 1024
-		zonemem = xmalloc(uint64(*(*int32)(unsafe.Pointer(size))))
+		*size = default_ram * 1024 * 1024
+		zonemem = xmalloc(uint64(*size))
 		// Failed to allocate?  Reduce zone size until we reach a size
 		// that is acceptable.
 		if zonemem == uintptr(0) {
@@ -18330,7 +18330,7 @@ func AutoAllocMemory(size uintptr, default_ram int32, min_ram int32) (r uintptr)
 	return zonemem
 }
 
-func I_ZoneBase(size uintptr) (r uintptr) {
+func I_ZoneBase(size *int32) (r uintptr) {
 	var default_ram, min_ram, p int32
 	var zonemem uintptr
 	//!
@@ -44241,10 +44241,10 @@ type memzone_t struct {
 //	// Z_Init
 //	//
 func Z_Init() {
-	bp := alloc(16)
+	var size int32
 	var block, v1, v2, v3 uintptr
-	mainzone = I_ZoneBase(bp)
-	(*memzone_t)(unsafe.Pointer(mainzone)).Fsize = *(*int32)(unsafe.Pointer(bp))
+	mainzone = I_ZoneBase(&size)
+	(*memzone_t)(unsafe.Pointer(mainzone)).Fsize = size
 	// set the entire zone to one free block
 	v2 = mainzone + uintptr(56)
 	block = v2
