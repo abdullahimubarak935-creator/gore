@@ -34388,53 +34388,52 @@ type cliprange_t struct {
 //	//  that entirely block the view.
 //	//
 func R_ClipSolidWallSegment(first int32, last int32) {
-	var next, start, v1, v2 uintptr
+	var v1 int
+	var next, start int
 	// Find the first range that touches the range
 	//  (adjacent pixels are touching).
-	start = uintptr(unsafe.Pointer(&solidsegs))
-	for (*cliprange_t)(unsafe.Pointer(start)).Flast < first-1 {
-		start += 8
+	for start = 0; solidsegs[start].Flast < first-1; start++ {
 	}
-	if first < (*cliprange_t)(unsafe.Pointer(start)).Ffirst {
-		if last < (*cliprange_t)(unsafe.Pointer(start)).Ffirst-1 {
+	if first < solidsegs[start].Ffirst {
+		if last < solidsegs[start].Ffirst-1 {
 			// Post is entirely visible (above start),
 			//  so insert a new clippost.
 			R_StoreWallRange(first, last)
 			next = newend
-			newend += 8
+			newend++
 			for next != start {
-				*(*cliprange_t)(unsafe.Pointer(next)) = *(*cliprange_t)(unsafe.Pointer(next - uintptr(1)*8))
-				next -= 8
+				solidsegs[next] = solidsegs[next-1]
+				next--
 			}
-			(*cliprange_t)(unsafe.Pointer(next)).Ffirst = first
-			(*cliprange_t)(unsafe.Pointer(next)).Flast = last
+			solidsegs[next].Ffirst = first
+			solidsegs[next].Flast = last
 			return
 		}
 		// There is a fragment above *start.
-		R_StoreWallRange(first, (*cliprange_t)(unsafe.Pointer(start)).Ffirst-1)
+		R_StoreWallRange(first, solidsegs[start].Ffirst-1)
 		// Now adjust the clip size.
-		(*cliprange_t)(unsafe.Pointer(start)).Ffirst = first
+		solidsegs[start].Ffirst = first
 	}
 	// Bottom contained in start?
-	if last <= (*cliprange_t)(unsafe.Pointer(start)).Flast {
+	if last <= solidsegs[start].Flast {
 		return
 	}
 	next = start
-	for last >= (*cliprange_t)(unsafe.Pointer(next+uintptr(1)*8)).Ffirst-1 {
+	for last >= solidsegs[next+1].Ffirst-1 {
 		// There is a fragment between two posts.
-		R_StoreWallRange((*cliprange_t)(unsafe.Pointer(next)).Flast+int32(1), (*cliprange_t)(unsafe.Pointer(next+uintptr(1)*8)).Ffirst-1)
-		next += 8
-		if last <= (*cliprange_t)(unsafe.Pointer(next)).Flast {
+		R_StoreWallRange(solidsegs[next].Flast+1, solidsegs[next+1].Ffirst-1)
+		next++
+		if last <= solidsegs[next].Flast {
 			// Bottom is contained in next.
 			// Adjust the clip size.
-			(*cliprange_t)(unsafe.Pointer(start)).Flast = (*cliprange_t)(unsafe.Pointer(next)).Flast
+			solidsegs[start].Flast = solidsegs[next].Flast
 			goto crunch
 		}
 	}
 	// There is a fragment after *next.
-	R_StoreWallRange((*cliprange_t)(unsafe.Pointer(next)).Flast+int32(1), last)
+	R_StoreWallRange(solidsegs[next].Flast+int32(1), last)
 	// Adjust the clip size.
-	(*cliprange_t)(unsafe.Pointer(start)).Flast = last
+	solidsegs[start].Flast = last
 	// Remove start+1 to next from the clip list,
 	// because start now covers their area.
 	goto crunch
@@ -34446,16 +34445,15 @@ crunch:
 	}
 	for {
 		v1 = next
-		next += 8
+		next++
 		if !(v1 != newend) {
 			break
 		}
 		// Remove a post.
-		start += 8
-		v2 = start
-		*(*cliprange_t)(unsafe.Pointer(v2)) = *(*cliprange_t)(unsafe.Pointer(next))
+		start++
+		solidsegs[start] = solidsegs[next]
 	}
-	newend = start + uintptr(1)*8
+	newend = start + 1
 }
 
 // C documentation
@@ -34468,36 +34466,34 @@ crunch:
 //	//  e.g. LineDefs with upper and lower texture.
 //	//
 func R_ClipPassWallSegment(first int32, last int32) {
-	var start uintptr
+	var start int
 	// Find the first range that touches the range
 	//  (adjacent pixels are touching).
-	start = uintptr(unsafe.Pointer(&solidsegs))
-	for (*cliprange_t)(unsafe.Pointer(start)).Flast < first-1 {
-		start += 8
+	for start = 0; solidsegs[start].Flast < first-1; start++ {
 	}
-	if first < (*cliprange_t)(unsafe.Pointer(start)).Ffirst {
-		if last < (*cliprange_t)(unsafe.Pointer(start)).Ffirst-1 {
+	if first < solidsegs[start].Ffirst {
+		if last < solidsegs[start].Ffirst-1 {
 			// Post is entirely visible (above start).
 			R_StoreWallRange(first, last)
 			return
 		}
 		// There is a fragment above *start.
-		R_StoreWallRange(first, (*cliprange_t)(unsafe.Pointer(start)).Ffirst-1)
+		R_StoreWallRange(first, solidsegs[start].Ffirst-1)
 	}
 	// Bottom contained in start?
-	if last <= (*cliprange_t)(unsafe.Pointer(start)).Flast {
+	if last <= solidsegs[start].Flast {
 		return
 	}
-	for last >= (*cliprange_t)(unsafe.Pointer(start+uintptr(1)*8)).Ffirst-1 {
+	for last >= solidsegs[start+1].Ffirst-1 {
 		// There is a fragment between two posts.
-		R_StoreWallRange((*cliprange_t)(unsafe.Pointer(start)).Flast+int32(1), (*cliprange_t)(unsafe.Pointer(start+uintptr(1)*8)).Ffirst-1)
-		start += 8
-		if last <= (*cliprange_t)(unsafe.Pointer(start)).Flast {
+		R_StoreWallRange(solidsegs[start].Flast+int32(1), solidsegs[start+1].Ffirst-1)
+		start++
+		if last <= solidsegs[start].Flast {
 			return
 		}
 	}
 	// There is a fragment after *next.
-	R_StoreWallRange((*cliprange_t)(unsafe.Pointer(start)).Flast+int32(1), last)
+	R_StoreWallRange(solidsegs[start].Flast+int32(1), last)
 }
 
 // C documentation
@@ -34510,7 +34506,7 @@ func R_ClearClipSegs() {
 	solidsegs[0].Flast = -1
 	solidsegs[int32(1)].Ffirst = viewwidth
 	solidsegs[int32(1)].Flast = int32(0x7fffffff)
-	newend = uintptr(unsafe.Pointer(&solidsegs)) + uintptr(2)*8
+	newend = 2
 }
 
 // C documentation
@@ -46132,8 +46128,8 @@ var netgame boolean
 
 // C documentation
 //
-//	// newend is one past the last valid seg
-var newend uintptr
+//	// newend is one past the last valid seg in `solidsegs`
+var newend int
 
 var nodes []node_t
 
