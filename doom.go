@@ -7031,7 +7031,7 @@ func F_DrawPatchCol(x int32, patch uintptr, col int32) {
 	column = patch + uintptr(*(*int32)(unsafe.Pointer(patch + 8 + uintptr(col)*4)))
 	desttop = I_VideoBuffer + uintptr(x)
 	// step through the posts in a column
-	for int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != int32(0xff) {
+	for int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != 0xff {
 		source = column + uintptr(3)
 		dest = desttop + uintptr(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)*int32(SCREENWIDTH))
 		count = int32((*column_t)(unsafe.Pointer(column)).Flength)
@@ -7428,15 +7428,15 @@ func init() {
 
 func init() {
 	forwardmove = [2]fixed_t{
-		0: int32(0x19),
-		1: int32(0x32),
+		0: 0x19,
+		1: 0x32,
 	}
 }
 
 func init() {
 	sidemove = [2]fixed_t{
-		0: int32(0x18),
-		1: int32(0x28),
+		0: 0x18,
+		1: 0x28,
 	}
 }
 
@@ -7803,7 +7803,7 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 		desired_angleturn = int16(int32(cmd.Fangleturn) + int32(carry))
 		// round angleturn to the nearest 256 unit boundary
 		// for recording demos with single byte values for turn
-		cmd.Fangleturn = int16((int32(desired_angleturn) + 128) & int32(0xff00))
+		cmd.Fangleturn = int16((int32(desired_angleturn) + 128) & 0xff00)
 		// Carry forward the error from the reduced resolution to the
 		// next tic, so that successive small movements can accumulate.
 		carry = int16(int32(desired_angleturn) - int32(cmd.Fangleturn))
@@ -9058,7 +9058,7 @@ func G_WriteDemoTiccmd(cmd *ticcmd_t) {
 		*(*uint8)(unsafe.Pointer(v3)) = uint8(int32(cmd.Fangleturn) & 0xff)
 		v4 = demo_p
 		demo_p++
-		*(*uint8)(unsafe.Pointer(v4)) = uint8(int32(cmd.Fangleturn) >> 8 & int32(0xff))
+		*(*uint8)(unsafe.Pointer(v4)) = uint8(int32(cmd.Fangleturn) >> 8 & 0xff)
 	} else {
 		v5 = demo_p
 		demo_p++
@@ -9092,7 +9092,7 @@ func G_RecordDemo(name string) {
 	var i, maxsize int32
 	usergame = 0
 	demoname = fmt.Sprintf(__ccgo_ts_str(4481), name)
-	maxsize = int32(0x20000)
+	maxsize = 0x20000
 	//!
 	// @arg <size>
 	// @category demo
@@ -22006,12 +22006,12 @@ var rndtable = [256]uint8{
 //
 //	// Which one is deterministic?
 func P_Random() (r int32) {
-	prndindex = (prndindex + 1) & int32(0xff)
+	prndindex = (prndindex + 1) & 0xff
 	return int32(rndtable[prndindex])
 }
 
 func M_Random() (r int32) {
-	rndindex = (rndindex + 1) & int32(0xff)
+	rndindex = (rndindex + 1) & 0xff
 	return int32(rndtable[rndindex])
 }
 
@@ -23543,7 +23543,7 @@ func A_SkelMissile(actor *mobj_t) {
 }
 
 func init() {
-	TRACEANGLE = int32(0xc000000)
+	TRACEANGLE = 0xc000000
 }
 
 func A_Tracer(actor *mobj_t) {
@@ -26466,7 +26466,7 @@ stairstep:
 _2:
 	;
 	// fudge a bit to make sure it doesn't hit
-	bestslidefrac -= int32(0x800)
+	bestslidefrac -= 0x800
 	if bestslidefrac > 0 {
 		newx = FixedMul(mo.Fmomx, bestslidefrac)
 		newy = FixedMul(mo.Fmomy, bestslidefrac)
@@ -26476,7 +26476,7 @@ _2:
 	}
 	// Now continue along the wall.
 	// First calculate remainder.
-	bestslidefrac = 1<<FRACBITS - (bestslidefrac + int32(0x800))
+	bestslidefrac = 1<<FRACBITS - (bestslidefrac + 0x800)
 	if bestslidefrac > 1<<FRACBITS {
 		bestslidefrac = 1 << FRACBITS
 	}
@@ -27576,8 +27576,8 @@ func InterceptsMemoryOverrun(location int32, value int32) {
 			if addr != uintptr(0) {
 				if intercepts_overrun[i].Fint16_array != 0 {
 					index = (location - offset) / 2
-					*(*int16)(unsafe.Pointer(addr + uintptr(index)*2)) = int16(value & int32(0xffff))
-					*(*int16)(unsafe.Pointer(addr + uintptr(index+int32(1))*2)) = int16(value >> 16 & int32(0xffff))
+					*(*int16)(unsafe.Pointer(addr + uintptr(index)*2)) = int16(value & 0xffff)
+					*(*int16)(unsafe.Pointer(addr + uintptr(index+int32(1))*2)) = int16(value >> 16 & 0xffff)
 				} else {
 					index = (location - offset) / 4
 					*(*int32)(unsafe.Pointer(addr + uintptr(index)*4)) = value
@@ -29486,8 +29486,8 @@ func saveg_read16() (r int16) {
 }
 
 func saveg_write16(value int16) {
-	saveg_write8(uint8(int32(value) & int32(0xff)))
-	saveg_write8(uint8(int32(value) >> int32(8) & int32(0xff)))
+	saveg_write8(uint8(int32(value) & 0xff))
+	saveg_write8(uint8(int32(value) >> int32(8) & 0xff))
 }
 
 func saveg_read32() (r int32) {
@@ -29500,10 +29500,10 @@ func saveg_read32() (r int32) {
 }
 
 func saveg_write32(value int32) {
-	saveg_write8(uint8(value & int32(0xff)))
-	saveg_write8(uint8(value >> int32(8) & int32(0xff)))
-	saveg_write8(uint8(value >> int32(16) & int32(0xff)))
-	saveg_write8(uint8(value >> int32(24) & int32(0xff)))
+	saveg_write8(uint8(value & 0xff))
+	saveg_write8(uint8(value >> int32(8) & 0xff))
+	saveg_write8(uint8(value >> int32(16) & 0xff))
+	saveg_write8(uint8(value >> int32(24) & 0xff))
 }
 
 // Pad to 4-byte boundaries
@@ -30473,9 +30473,9 @@ func P_WriteSaveGameHeader(description uintptr) {
 		;
 		i++
 	}
-	saveg_write8(uint8(leveltime >> int32(16) & int32(0xff)))
-	saveg_write8(uint8(leveltime >> int32(8) & int32(0xff)))
-	saveg_write8(uint8(leveltime & int32(0xff)))
+	saveg_write8(uint8(leveltime >> int32(16) & 0xff))
+	saveg_write8(uint8(leveltime >> int32(8) & 0xff))
+	saveg_write8(uint8(leveltime & 0xff))
 }
 
 //
@@ -34505,7 +34505,7 @@ func R_ClearClipSegs() {
 	solidsegs[0].Ffirst = -int32(0x7fffffff)
 	solidsegs[0].Flast = -1
 	solidsegs[int32(1)].Ffirst = viewwidth
-	solidsegs[int32(1)].Flast = int32(0x7fffffff)
+	solidsegs[int32(1)].Flast = 0x7fffffff
 	newend = 2
 }
 
@@ -34903,7 +34903,7 @@ type texture_t struct {
 func R_DrawColumnInCache(patch uintptr, cache uintptr, originy int32, cacheheight int32) {
 	var count, position int32
 	var source uintptr
-	for int32((*column_t)(unsafe.Pointer(patch)).Ftopdelta) != int32(0xff) {
+	for int32((*column_t)(unsafe.Pointer(patch)).Ftopdelta) != 0xff {
 		source = patch + uintptr(3)
 		count = int32((*column_t)(unsafe.Pointer(patch)).Flength)
 		position = originy + int32((*column_t)(unsafe.Pointer(patch)).Ftopdelta)
@@ -35052,7 +35052,7 @@ func R_GenerateLookup(texnum int32) {
 			// Use the cached block.
 			*(*int16)(unsafe.Pointer(collump + uintptr(x)*2)) = int16(-1)
 			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = uint16(*(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)))
-			if *(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)) > int32(0x10000)-int32((*texture_t)(unsafe.Pointer(texture)).Fheight) {
+			if *(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)) > 0x10000-int32((*texture_t)(unsafe.Pointer(texture)).Fheight) {
 				I_Error(25985, texnum)
 			}
 			*(*int32)(unsafe.Pointer(texturecompositesize + uintptr(texnum)*4)) += int32((*texture_t)(unsafe.Pointer(texture)).Fheight)
@@ -35965,11 +35965,11 @@ func R_InitTranslationTables() {
 		if !(i < 256) {
 			break
 		}
-		if i >= int32(0x70) && i <= int32(0x7f) {
+		if i >= 0x70 && i <= 0x7f {
 			// map green ramp to gray, brown, red
-			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i))) = uint8(int32(0x60) + i&int32(0xf))
-			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(256)))) = uint8(int32(0x40) + i&int32(0xf))
-			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(512)))) = uint8(int32(0x20) + i&int32(0xf))
+			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i))) = uint8(0x60 + i&int32(0xf))
+			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(256)))) = uint8(0x40 + i&int32(0xf))
+			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(512)))) = uint8(0x20 + i&int32(0xf))
 		} else {
 			// Keep all other colors as is.
 			v3 = uint8(i)
@@ -37152,14 +37152,14 @@ func R_DrawPlanes() {
 				t1 = int32(pl.Ftop[x-1])
 				b1 = int32(pl.Fbottom[x-1])
 			} else {
-				t1 = int32(0xff)
+				t1 = 0xff
 				b1 = -1
 			}
 			if x < int32(len(pl.Ftop)) {
 				t2 = int32(pl.Ftop[x])
 				b2 = int32(pl.Fbottom[x])
 			} else {
-				t2 = int32(0xff)
+				t2 = 0xff
 				b2 = -1
 			}
 			for t1 < t2 && t1 <= b1 {
@@ -37963,7 +37963,7 @@ func R_DrawMaskedColumn(column uintptr) {
 	var bottomscreen, topscreen int32
 	basetexturemid = dc_texturemid
 	for {
-		if !(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != int32(0xff)) {
+		if !(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != 0xff) {
 			break
 		}
 		// calculate unclipped screen coordinates
@@ -41539,7 +41539,7 @@ func V_DrawPatch(x int32, y int32, patch uintptr) {
 		}
 		column = patch + uintptr(*(*int32)(unsafe.Pointer(patch + 8 + uintptr(col)*4)))
 		// step through the posts in a column
-		for int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != int32(0xff) {
+		for int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != 0xff {
 			source = column + uintptr(3)
 			dest = desttop + uintptr(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)*int32(SCREENWIDTH))
 			count = int32((*column_t)(unsafe.Pointer(column)).Flength)
@@ -41588,7 +41588,7 @@ func V_DrawPatchFlipped(x int32, y int32, patch uintptr) {
 		}
 		column = patch + uintptr(*(*int32)(unsafe.Pointer(patch + 8 + uintptr(w-1-col)*4)))
 		// step through the posts in a column
-		for int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != int32(0xff) {
+		for int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != 0xff {
 			source = column + uintptr(3)
 			dest = desttop + uintptr(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)*int32(SCREENWIDTH))
 			count = int32((*column_t)(unsafe.Pointer(column)).Flength)
@@ -41749,12 +41749,12 @@ func V_DrawMouseSpeedBox(speed int32) {
 	var bgcolor, black, bordercolor, box_x, box_y, linelen, original_speed, red, redline_x, white, yellow int32
 	// Get palette indices for colors for widget. These depend on the
 	// palette of the game being played.
-	bgcolor = I_GetPaletteIndex(int32(0x77), int32(0x77), int32(0x77))
-	bordercolor = I_GetPaletteIndex(int32(0x55), int32(0x55), int32(0x55))
-	red = I_GetPaletteIndex(int32(0xff), 0x00, 0x00)
+	bgcolor = I_GetPaletteIndex(0x77, 0x77, 0x77)
+	bordercolor = I_GetPaletteIndex(0x55, 0x55, 0x55)
+	red = I_GetPaletteIndex(0xff, 0x00, 0x00)
 	black = I_GetPaletteIndex(0x00, 0x00, 0x00)
-	yellow = I_GetPaletteIndex(int32(0xff), int32(0xff), 0x00)
-	white = I_GetPaletteIndex(int32(0xff), int32(0xff), int32(0xff))
+	yellow = I_GetPaletteIndex(0xff, 0xff, 0x00)
+	white = I_GetPaletteIndex(0xff, 0xff, 0xff)
 	// If the mouse is turned off or acceleration is turned off, don't
 	// draw the box at all.
 	if !(usemouse != 0) || math.Abs(float64(mouse_acceleration-1)) < float64(0.01) {
