@@ -35068,7 +35068,7 @@ func R_GenerateLookup(texnum int32) {
 //	//
 func R_GetColumn(tex int32, col int32) (r uintptr) {
 	var lump, ofs int32
-	col &= *(*int32)(unsafe.Pointer(texturewidthmask + uintptr(tex)*4))
+	col &= texturewidthmask[tex]
 	lump = int32(*(*int16)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(tex)*8)) + uintptr(col)*2)))
 	ofs = int32(*(*uint16)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(tex)*8)) + uintptr(col)*2)))
 	if lump > 0 {
@@ -35166,7 +35166,7 @@ func R_InitTextures() {
 	texturecolumnofs = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
 	texturecomposite = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
 	texturecompositesize = Z_Malloc(int32(uint64(numtextures)*4), int32(PU_STATIC), uintptr(0))
-	texturewidthmask = Z_Malloc(int32(uint64(numtextures)*4), int32(PU_STATIC), uintptr(0))
+	texturewidthmask = make([]int32, numtextures)
 	textureheight = Z_Malloc(int32(uint64(numtextures)*4), int32(PU_STATIC), uintptr(0))
 	totalwidth = 0
 	//	Really complex printing shit...
@@ -35254,7 +35254,7 @@ func R_InitTextures() {
 		for j*int32(2) <= int32((*texture_t)(unsafe.Pointer(texture)).Fwidth) {
 			j <<= 1
 		}
-		*(*int32)(unsafe.Pointer(texturewidthmask + uintptr(i)*4)) = j - 1
+		texturewidthmask[i] = j - 1
 		*(*fixed_t)(unsafe.Pointer(textureheight + uintptr(i)*4)) = int32((*texture_t)(unsafe.Pointer(texture)).Fheight) << int32(FRACBITS)
 		totalwidth += int32((*texture_t)(unsafe.Pointer(texture)).Fwidth)
 		goto _5
@@ -46817,7 +46817,7 @@ var textures_hashtable uintptr
 
 var texturetranslation uintptr
 
-var texturewidthmask uintptr
+var texturewidthmask []int32
 
 //
 // THINKERS
