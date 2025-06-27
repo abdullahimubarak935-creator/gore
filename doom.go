@@ -20898,7 +20898,7 @@ func M_SelectEndMessage() string {
 }
 
 func M_QuitDOOM(choice int32) {
-	endstring = M_SelectEndMessage()
+	endstring = fmt.Sprintf(__ccgo_ts_str(23010), M_SelectEndMessage())
 	M_StartMessage(endstring, __ccgo_fp(M_QuitResponse), 1)
 }
 
