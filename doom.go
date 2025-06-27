@@ -2599,8 +2599,8 @@ func init() {
 var cheating int32 = 0
 var grid int32 = 0
 
-var finit_width = int32(SCREENWIDTH)
-var finit_height = int32(SCREENHEIGHT) - 32
+var finit_width int32 = SCREENWIDTH
+var finit_height int32 = SCREENHEIGHT - 32
 
 // C documentation
 //
@@ -4863,7 +4863,7 @@ func D_Display() {
 	// save the current screen if about to wipe
 	if gamestate != wipegamestate {
 		wipe = 1
-		wipe_StartScreen(0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
+		wipe_StartScreen(0, 0, SCREENWIDTH, SCREENHEIGHT)
 	} else {
 		wipe = 0
 	}
@@ -4951,7 +4951,7 @@ func D_Display() {
 		return
 	}
 	// wipe update
-	wipe_EndScreen(0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
+	wipe_EndScreen(0, 0, SCREENWIDTH, SCREENHEIGHT)
 	wipestart = I_GetTime() - 1
 	for cond := true; cond; cond = !(done != 0) {
 		for cond := true; cond; cond = tics <= 0 {
@@ -4960,7 +4960,7 @@ func D_Display() {
 			I_Sleep(1)
 		}
 		wipestart = nowtime
-		done = uint32(wipe_ScreenWipe(int32(wipe_Melt), 0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT), tics))
+		done = uint32(wipe_ScreenWipe(int32(wipe_Melt), 0, 0, SCREENWIDTH, SCREENHEIGHT, tics))
 		I_UpdateNoBlit()
 		M_Drawer()       // menu is drawn even on top of wipes
 		I_FinishUpdate() // page flip or blit buffer
@@ -6637,7 +6637,7 @@ func F_TextWrite() {
 	dest = I_VideoBuffer
 	y = 0
 	for {
-		if !(y < int32(SCREENHEIGHT)) {
+		if !(y < SCREENHEIGHT) {
 			break
 		}
 		x = 0
@@ -6661,7 +6661,7 @@ func F_TextWrite() {
 		;
 		y++
 	}
-	V_MarkRect(0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
+	V_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT)
 	// draw some of the text onto the screen
 	cx = 10
 	cy = 10
@@ -6691,7 +6691,7 @@ func F_TextWrite() {
 			goto _3
 		}
 		w = int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
-		if cx+w > int32(SCREENWIDTH) {
+		if cx+w > SCREENWIDTH {
 			break
 		}
 		V_DrawPatch(cx, cy, hu_font[c])
@@ -7043,7 +7043,7 @@ func F_DrawPatchCol(x int32, patch uintptr, col int32) {
 	// step through the posts in a column
 	for int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != 0xff {
 		source = column + uintptr(3)
-		dest = desttop + uintptr(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)*int32(SCREENWIDTH))
+		dest = desttop + uintptr(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)*SCREENWIDTH)
 		count = int32((*column_t)(unsafe.Pointer(column)).Flength)
 		for {
 			v1 = count
@@ -7071,7 +7071,7 @@ func F_BunnyScroll() {
 	var scrolled, stage, x int32
 	p1 = W_CacheLumpName(__ccgo_ts(13640), int32(PU_LEVEL))
 	p2 = W_CacheLumpName(__ccgo_ts(13646), int32(PU_LEVEL))
-	V_MarkRect(0, 0, int32(SCREENWIDTH), int32(SCREENHEIGHT))
+	V_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT)
 	scrolled = 320 - (int32(finalecount)-int32(230))/int32(2)
 	if scrolled > 320 {
 		scrolled = 320
@@ -7081,7 +7081,7 @@ func F_BunnyScroll() {
 	}
 	x = 0
 	for {
-		if !(x < int32(SCREENWIDTH)) {
+		if !(x < SCREENWIDTH) {
 			break
 		}
 		if x+scrolled < 320 {
@@ -9470,14 +9470,14 @@ func HUlib_drawTextLine(l *hu_textline_t, drawcursor boolean) {
 		c = uint8(xtoupper(int32(l.Fl[i])))
 		if int32(c) != int32(' ') && int32(c) >= l.Fsc && int32(c) <= int32('_') {
 			w = int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(l.Ff + uintptr(int32(c)-l.Fsc)*8)))).Fwidth)
-			if x+w > int32(SCREENWIDTH) {
+			if x+w > SCREENWIDTH {
 				break
 			}
 			V_DrawPatchDirect(x, l.Fy, *(*uintptr)(unsafe.Pointer(l.Ff + uintptr(int32(c)-l.Fsc)*8)))
 			x += w
 		} else {
 			x += 4
-			if x >= int32(SCREENWIDTH) {
+			if x >= SCREENWIDTH {
 				break
 			}
 		}
@@ -9487,7 +9487,7 @@ func HUlib_drawTextLine(l *hu_textline_t, drawcursor boolean) {
 		i++
 	}
 	// draw the cursor if requested
-	if drawcursor != 0 && x+int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(l.Ff + uintptr(int32('_')-l.Fsc)*8)))).Fwidth) <= int32(SCREENWIDTH) {
+	if drawcursor != 0 && x+int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(l.Ff + uintptr(int32('_')-l.Fsc)*8)))).Fwidth) <= SCREENWIDTH {
 		V_DrawPatchDirect(x, l.Fy, *(*uintptr)(unsafe.Pointer(l.Ff + uintptr(int32('_')-l.Fsc)*8)))
 	}
 }
@@ -9509,7 +9509,7 @@ func HUlib_eraseTextLine(l *hu_textline_t) {
 				break
 			}
 			if y < viewwindowy || y >= viewwindowy+viewheight {
-				R_VideoErase(uint32(yoffset), int32(SCREENWIDTH))
+				R_VideoErase(uint32(yoffset), SCREENWIDTH)
 			} else {
 				R_VideoErase(uint32(yoffset), viewwindowx) // erase left border
 				R_VideoErase(uint32(yoffset+viewwindowx+viewwidth), viewwindowx)
@@ -9519,7 +9519,7 @@ func HUlib_eraseTextLine(l *hu_textline_t) {
 		_1:
 			;
 			y++
-			yoffset += int32(SCREENWIDTH)
+			yoffset += SCREENWIDTH
 		}
 	}
 	if l.Fneedsupdate != 0 {
@@ -21041,7 +21041,7 @@ func M_WriteText(x int32, y int32, string1 string) {
 			continue
 		}
 		w = int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
-		if cx+w > int32(SCREENWIDTH) {
+		if cx+w > SCREENWIDTH {
 			break
 		}
 		V_DrawPatchDirect(cx, cy, hu_font[c])
@@ -35617,7 +35617,7 @@ func R_DrawColumn() {
 	if count < 0 {
 		return
 	}
-	if uint32(dc_x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
+	if uint32(dc_x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
 		I_Error(26239, dc_yl, dc_yh, dc_x)
 	}
 	// Framebuffer destination address.
@@ -35661,7 +35661,7 @@ func R_DrawColumnLow() {
 	if count < 0 {
 		return
 	}
-	if uint32(dc_x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
+	if uint32(dc_x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
 		I_Error(26239, dc_yl, dc_yh, dc_x)
 	}
 	//	dccount++;
@@ -35692,56 +35692,56 @@ func R_DrawColumnLow() {
 
 func init() {
 	fuzzoffset = [50]int32{
-		0:  int32(SCREENWIDTH),
-		1:  -int32(SCREENWIDTH),
-		2:  int32(SCREENWIDTH),
-		3:  -int32(SCREENWIDTH),
-		4:  int32(SCREENWIDTH),
-		5:  int32(SCREENWIDTH),
-		6:  -int32(SCREENWIDTH),
-		7:  int32(SCREENWIDTH),
-		8:  int32(SCREENWIDTH),
-		9:  -int32(SCREENWIDTH),
-		10: int32(SCREENWIDTH),
-		11: int32(SCREENWIDTH),
-		12: int32(SCREENWIDTH),
-		13: -int32(SCREENWIDTH),
-		14: int32(SCREENWIDTH),
-		15: int32(SCREENWIDTH),
-		16: int32(SCREENWIDTH),
-		17: -int32(SCREENWIDTH),
-		18: -int32(SCREENWIDTH),
-		19: -int32(SCREENWIDTH),
-		20: -int32(SCREENWIDTH),
-		21: int32(SCREENWIDTH),
-		22: -int32(SCREENWIDTH),
-		23: -int32(SCREENWIDTH),
-		24: int32(SCREENWIDTH),
-		25: int32(SCREENWIDTH),
-		26: int32(SCREENWIDTH),
-		27: int32(SCREENWIDTH),
-		28: -int32(SCREENWIDTH),
-		29: int32(SCREENWIDTH),
-		30: -int32(SCREENWIDTH),
-		31: int32(SCREENWIDTH),
-		32: int32(SCREENWIDTH),
-		33: -int32(SCREENWIDTH),
-		34: -int32(SCREENWIDTH),
-		35: int32(SCREENWIDTH),
-		36: int32(SCREENWIDTH),
-		37: -int32(SCREENWIDTH),
-		38: -int32(SCREENWIDTH),
-		39: -int32(SCREENWIDTH),
-		40: -int32(SCREENWIDTH),
-		41: int32(SCREENWIDTH),
-		42: int32(SCREENWIDTH),
-		43: int32(SCREENWIDTH),
-		44: int32(SCREENWIDTH),
-		45: -int32(SCREENWIDTH),
-		46: int32(SCREENWIDTH),
-		47: int32(SCREENWIDTH),
-		48: -int32(SCREENWIDTH),
-		49: int32(SCREENWIDTH),
+		0:  SCREENWIDTH,
+		1:  -SCREENWIDTH,
+		2:  SCREENWIDTH,
+		3:  -SCREENWIDTH,
+		4:  SCREENWIDTH,
+		5:  SCREENWIDTH,
+		6:  -SCREENWIDTH,
+		7:  SCREENWIDTH,
+		8:  SCREENWIDTH,
+		9:  -SCREENWIDTH,
+		10: SCREENWIDTH,
+		11: SCREENWIDTH,
+		12: SCREENWIDTH,
+		13: -SCREENWIDTH,
+		14: SCREENWIDTH,
+		15: SCREENWIDTH,
+		16: SCREENWIDTH,
+		17: -SCREENWIDTH,
+		18: -SCREENWIDTH,
+		19: -SCREENWIDTH,
+		20: -SCREENWIDTH,
+		21: SCREENWIDTH,
+		22: -SCREENWIDTH,
+		23: -SCREENWIDTH,
+		24: SCREENWIDTH,
+		25: SCREENWIDTH,
+		26: SCREENWIDTH,
+		27: SCREENWIDTH,
+		28: -SCREENWIDTH,
+		29: SCREENWIDTH,
+		30: -SCREENWIDTH,
+		31: SCREENWIDTH,
+		32: SCREENWIDTH,
+		33: -SCREENWIDTH,
+		34: -SCREENWIDTH,
+		35: SCREENWIDTH,
+		36: SCREENWIDTH,
+		37: -SCREENWIDTH,
+		38: -SCREENWIDTH,
+		39: -SCREENWIDTH,
+		40: -SCREENWIDTH,
+		41: SCREENWIDTH,
+		42: SCREENWIDTH,
+		43: SCREENWIDTH,
+		44: SCREENWIDTH,
+		45: -SCREENWIDTH,
+		46: SCREENWIDTH,
+		47: SCREENWIDTH,
+		48: -SCREENWIDTH,
+		49: SCREENWIDTH,
 	}
 }
 
@@ -35772,7 +35772,7 @@ func R_DrawFuzzColumn() {
 	if count < 0 {
 		return
 	}
-	if uint32(dc_x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
+	if uint32(dc_x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
 		I_Error(26268, dc_yl, dc_yh, dc_x)
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[dc_x])
@@ -35827,7 +35827,7 @@ func R_DrawFuzzColumnLow() {
 	}
 	// low detail mode, need to multiply by 2
 	x = dc_x << 1
-	if uint32(x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
+	if uint32(x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
 		I_Error(26268, dc_yl, dc_yh, dc_x)
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[x])
@@ -35873,7 +35873,7 @@ func R_DrawTranslatedColumn() {
 	if count < 0 {
 		return
 	}
-	if uint32(dc_x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
+	if uint32(dc_x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
 		I_Error(26239, dc_yl, dc_yh, dc_x)
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[dc_x])
@@ -35911,7 +35911,7 @@ func R_DrawTranslatedColumnLow() {
 	}
 	// low detail, need to scale by 2
 	x = dc_x << 1
-	if uint32(x) >= uint32(SCREENWIDTH) || dc_yl < 0 || dc_yh >= int32(SCREENHEIGHT) {
+	if uint32(x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
 		I_Error(26239, dc_yl, dc_yh, x)
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[x])
@@ -35989,7 +35989,7 @@ func R_DrawSpan() {
 	var count, spot, v1 int32
 	var dest, v3 uintptr
 	var position, step, xtemp, ytemp uint32
-	if ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= int32(SCREENWIDTH) || uint32(ds_y) > uint32(SCREENHEIGHT) {
+	if ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= SCREENWIDTH || uint32(ds_y) > SCREENHEIGHT {
 		I_Error(26301, ds_x1, ds_x2, ds_y)
 	}
 	//	dscount++;
@@ -36036,7 +36036,7 @@ func R_DrawSpanLow() {
 	var count, spot, v1 int32
 	var dest, v3, v4 uintptr
 	var position, step, xtemp, ytemp uint32
-	if ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= int32(SCREENWIDTH) || uint32(ds_y) > uint32(SCREENHEIGHT) {
+	if ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= SCREENWIDTH || uint32(ds_y) > SCREENHEIGHT {
 		I_Error(26301, ds_x1, ds_x2, ds_y)
 	}
 	//	dscount++;
@@ -36086,7 +36086,7 @@ func R_InitBuffer(width int32, height int32) {
 	// Handle resize,
 	//  e.g. smaller view windows
 	//  with border and/or status bar.
-	viewwindowx = (int32(SCREENWIDTH) - width) >> 1
+	viewwindowx = (SCREENWIDTH - width) >> 1
 	// Column offset. For windows.
 	i = 0
 	for {
@@ -36100,7 +36100,7 @@ func R_InitBuffer(width int32, height int32) {
 		i++
 	}
 	// Samw with base row offset.
-	if width == int32(SCREENWIDTH) {
+	if width == SCREENWIDTH {
 		viewwindowy = 0
 	} else {
 		viewwindowy = (SCREENHEIGHT - SBARHEIGHT - height) >> 1
@@ -36111,7 +36111,7 @@ func R_InitBuffer(width int32, height int32) {
 		if !(i < height) {
 			break
 		}
-		ylookup[i] = I_VideoBuffer + uintptr((i+viewwindowy)*int32(SCREENWIDTH))
+		ylookup[i] = I_VideoBuffer + uintptr((i+viewwindowy)*SCREENWIDTH)
 		goto _2
 	_2:
 		;
@@ -36136,7 +36136,7 @@ func R_FillBackScreen() {
 	name2 = __ccgo_ts(26337)
 	// If we are running full screen, there is no need to do any of this,
 	// and the background buffer can be freed if it was previously in use.
-	if scaledviewwidth == int32(SCREENWIDTH) {
+	if scaledviewwidth == SCREENWIDTH {
 		if background_buffer != uintptr(0) {
 			Z_Free(background_buffer)
 			background_buffer = uintptr(0)
@@ -36263,18 +36263,18 @@ func R_VideoErase(ofs uint32, count int32) {
 //	//
 func R_DrawViewBorder() {
 	var i, ofs, side, top int32
-	if scaledviewwidth == int32(SCREENWIDTH) {
+	if scaledviewwidth == SCREENWIDTH {
 		return
 	}
 	top = (SCREENHEIGHT - SBARHEIGHT - viewheight) / 2
-	side = (int32(SCREENWIDTH) - scaledviewwidth) / 2
+	side = (SCREENWIDTH - scaledviewwidth) / 2
 	// copy top and one line of left side
-	R_VideoErase(0, top*int32(SCREENWIDTH)+side)
+	R_VideoErase(0, top*SCREENWIDTH+side)
 	// copy one line of right side and bottom
-	ofs = (viewheight+top)*int32(SCREENWIDTH) - side
-	R_VideoErase(uint32(ofs), top*int32(SCREENWIDTH)+side)
+	ofs = (viewheight+top)*SCREENWIDTH - side
+	R_VideoErase(uint32(ofs), top*SCREENWIDTH+side)
 	// copy sides using wraparound
-	ofs = top*int32(SCREENWIDTH) + int32(SCREENWIDTH) - side
+	ofs = top*SCREENWIDTH + SCREENWIDTH - side
 	side <<= 1
 	i = 1
 	for {
@@ -36282,14 +36282,14 @@ func R_DrawViewBorder() {
 			break
 		}
 		R_VideoErase(uint32(ofs), side)
-		ofs += int32(SCREENWIDTH)
+		ofs += SCREENWIDTH
 		goto _1
 	_1:
 		;
 		i++
 	}
 	// ?
-	V_MarkRect(0, 0, int32(SCREENWIDTH), SCREENHEIGHT-SBARHEIGHT)
+	V_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT-SBARHEIGHT)
 }
 
 const ANG18011 = 2147483648
@@ -36675,8 +36675,8 @@ func R_ExecuteSetViewSize() {
 	var v1, v2 uintptr
 	setsizeneeded = 0
 	if setblocks == 11 {
-		scaledviewwidth = int32(SCREENWIDTH)
-		viewheight = int32(SCREENHEIGHT)
+		scaledviewwidth = SCREENWIDTH
+		viewheight = SCREENHEIGHT
 	} else {
 		scaledviewwidth = setblocks * 32
 		viewheight = setblocks * 168 / 10 & ^7
@@ -36706,7 +36706,7 @@ func R_ExecuteSetViewSize() {
 	R_InitBuffer(scaledviewwidth, viewheight)
 	R_InitTextureMapping()
 	// psprite scales
-	pspritescale = 1 << FRACBITS * viewwidth / int32(SCREENWIDTH)
+	pspritescale = 1 << FRACBITS * viewwidth / SCREENWIDTH
 	pspriteiscale = 1 << FRACBITS * SCREENWIDTH / viewwidth
 	// thing clipping
 	i = 0
@@ -36759,7 +36759,7 @@ func R_ExecuteSetViewSize() {
 			if !(j < int32(MAXLIGHTSCALE)) {
 				break
 			}
-			level = startmap - j*int32(SCREENWIDTH)/(viewwidth<<detailshift)/int32(DISTMAP)
+			level = startmap - j*SCREENWIDTH/(viewwidth<<detailshift)/int32(DISTMAP)
 			if level < 0 {
 				level = 0
 			}
@@ -37006,7 +37006,7 @@ func R_FindPlane(height fixed_t, picnum int32, lightlevel int32) *visplane_t {
 	check.Fheight = height
 	check.Fpicnum = picnum
 	check.Flightlevel = lightlevel
-	check.Fminx = int32(SCREENWIDTH)
+	check.Fminx = SCREENWIDTH
 	check.Fmaxx = -1
 	for i := 0; i < 320; i++ {
 		check.Ftop[i] = 0xff
@@ -37924,7 +37924,7 @@ func R_InitSprites(namelist []uintptr) {
 	var i int32
 	i = 0
 	for {
-		if !(i < int32(SCREENWIDTH)) {
+		if !(i < SCREENWIDTH) {
 			break
 		}
 		negonearray[i] = int16(-1)
@@ -40142,7 +40142,7 @@ func ST_refreshBackground() {
 			V_DrawPatch(ST_FX, 0, faceback)
 		}
 		V_RestoreBuffer()
-		V_CopyRect(ST_X, 0, st_backing_screen, int32(SCREENWIDTH), ST_HEIGHT, ST_X, SCREENHEIGHT-ST_HEIGHT)
+		V_CopyRect(ST_X, 0, st_backing_screen, SCREENWIDTH, ST_HEIGHT, ST_X, SCREENHEIGHT-ST_HEIGHT)
 	}
 }
 
@@ -41492,12 +41492,12 @@ func V_MarkRect(x int32, y int32, width int32, height int32) {
 //	//
 func V_CopyRect(srcx int32, srcy int32, source uintptr, width int32, height int32, destx int32, desty int32) {
 	var dest, src uintptr
-	if srcx < 0 || srcx+width > int32(SCREENWIDTH) || srcy < 0 || srcy+height > int32(SCREENHEIGHT) || destx < 0 || destx+width > int32(SCREENWIDTH) || desty < 0 || desty+height > int32(SCREENHEIGHT) {
+	if srcx < 0 || srcx+width > SCREENWIDTH || srcy < 0 || srcy+height > SCREENHEIGHT || destx < 0 || destx+width > SCREENWIDTH || desty < 0 || desty+height > SCREENHEIGHT {
 		I_Error(28088, 0)
 	}
 	V_MarkRect(destx, desty, width, height)
-	src = source + uintptr(int32(SCREENWIDTH)*srcy) + uintptr(srcx)
-	dest = dest_screen + uintptr(int32(SCREENWIDTH)*desty) + uintptr(destx)
+	src = source + uintptr(SCREENWIDTH*srcy) + uintptr(srcx)
+	dest = dest_screen + uintptr(SCREENWIDTH*desty) + uintptr(destx)
 	for {
 		if !(height > 0) {
 			break
@@ -41522,12 +41522,12 @@ func V_DrawPatch(x int32, y int32, patch uintptr) {
 	var column, dest, desttop, source, v3 uintptr
 	y -= int32((*patch_t)(unsafe.Pointer(patch)).Ftopoffset)
 	x -= int32((*patch_t)(unsafe.Pointer(patch)).Fleftoffset)
-	if x < 0 || x+int32((*patch_t)(unsafe.Pointer(patch)).Fwidth) > int32(SCREENWIDTH) || y < 0 || y+int32((*patch_t)(unsafe.Pointer(patch)).Fheight) > int32(SCREENHEIGHT) {
+	if x < 0 || x+int32((*patch_t)(unsafe.Pointer(patch)).Fwidth) > SCREENWIDTH || y < 0 || y+int32((*patch_t)(unsafe.Pointer(patch)).Fheight) > SCREENHEIGHT {
 		I_Error(28103, x, y, int32((*patch_t)(unsafe.Pointer(patch)).Fwidth), int32((*patch_t)(unsafe.Pointer(patch)).Fheight), int32((*patch_t)(unsafe.Pointer(patch)).Ftopoffset), int32((*patch_t)(unsafe.Pointer(patch)).Fleftoffset))
 	}
 	V_MarkRect(x, y, int32((*patch_t)(unsafe.Pointer(patch)).Fwidth), int32((*patch_t)(unsafe.Pointer(patch)).Fheight))
 	col = 0
-	desttop = dest_screen + uintptr(y*int32(SCREENWIDTH)) + uintptr(x)
+	desttop = dest_screen + uintptr(y*SCREENWIDTH) + uintptr(x)
 	w = int32((*patch_t)(unsafe.Pointer(patch)).Fwidth)
 	for {
 		if !(col < w) {
@@ -41537,7 +41537,7 @@ func V_DrawPatch(x int32, y int32, patch uintptr) {
 		// step through the posts in a column
 		for int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != 0xff {
 			source = column + uintptr(3)
-			dest = desttop + uintptr(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)*int32(SCREENWIDTH))
+			dest = desttop + uintptr(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)*SCREENWIDTH)
 			count = int32((*column_t)(unsafe.Pointer(column)).Flength)
 			for {
 				v2 = count
@@ -41571,12 +41571,12 @@ func V_DrawPatchFlipped(x int32, y int32, patch uintptr) {
 	var column, dest, desttop, source, v3 uintptr
 	y -= int32((*patch_t)(unsafe.Pointer(patch)).Ftopoffset)
 	x -= int32((*patch_t)(unsafe.Pointer(patch)).Fleftoffset)
-	if x < 0 || x+int32((*patch_t)(unsafe.Pointer(patch)).Fwidth) > int32(SCREENWIDTH) || y < 0 || y+int32((*patch_t)(unsafe.Pointer(patch)).Fheight) > int32(SCREENHEIGHT) {
+	if x < 0 || x+int32((*patch_t)(unsafe.Pointer(patch)).Fwidth) > SCREENWIDTH || y < 0 || y+int32((*patch_t)(unsafe.Pointer(patch)).Fheight) > SCREENHEIGHT {
 		I_Error(28187, 0)
 	}
 	V_MarkRect(x, y, int32((*patch_t)(unsafe.Pointer(patch)).Fwidth), int32((*patch_t)(unsafe.Pointer(patch)).Fheight))
 	col = 0
-	desttop = dest_screen + uintptr(y*int32(SCREENWIDTH)) + uintptr(x)
+	desttop = dest_screen + uintptr(y*SCREENWIDTH) + uintptr(x)
 	w = int32((*patch_t)(unsafe.Pointer(patch)).Fwidth)
 	for {
 		if !(col < w) {
@@ -41586,7 +41586,7 @@ func V_DrawPatchFlipped(x int32, y int32, patch uintptr) {
 		// step through the posts in a column
 		for int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != 0xff {
 			source = column + uintptr(3)
-			dest = desttop + uintptr(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)*int32(SCREENWIDTH))
+			dest = desttop + uintptr(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)*SCREENWIDTH)
 			count = int32((*column_t)(unsafe.Pointer(column)).Flength)
 			for {
 				v2 = count
@@ -41626,11 +41626,11 @@ func V_DrawPatchDirect(x int32, y int32, patch uintptr) {
 func V_DrawBlock(x int32, y int32, width int32, height int32, src uintptr) {
 	var dest uintptr
 	var v1 int32
-	if x < 0 || x+width > int32(SCREENWIDTH) || y < 0 || y+height > int32(SCREENHEIGHT) {
+	if x < 0 || x+width > SCREENWIDTH || y < 0 || y+height > SCREENHEIGHT {
 		I_Error(28288, 0)
 	}
 	V_MarkRect(x, y, width, height)
-	dest = dest_screen + uintptr(y*int32(SCREENWIDTH)) + uintptr(x)
+	dest = dest_screen + uintptr(y*SCREENWIDTH) + uintptr(x)
 	for {
 		v1 = height
 		height--
@@ -41646,7 +41646,7 @@ func V_DrawBlock(x int32, y int32, width int32, height int32, src uintptr) {
 func V_DrawFilledBox(x int32, y int32, w int32, h int32, c int32) {
 	var buf, buf1, v3 uintptr
 	var x1, y1 int32
-	buf = I_VideoBuffer + uintptr(int32(SCREENWIDTH)*y) + uintptr(x)
+	buf = I_VideoBuffer + uintptr(SCREENWIDTH*y) + uintptr(x)
 	y1 = 0
 	for {
 		if !(y1 < h) {
@@ -41677,7 +41677,7 @@ func V_DrawFilledBox(x int32, y int32, w int32, h int32, c int32) {
 func V_DrawHorizLine(x int32, y int32, w int32, c int32) {
 	var buf, v2 uintptr
 	var x1 int32
-	buf = I_VideoBuffer + uintptr(int32(SCREENWIDTH)*y) + uintptr(x)
+	buf = I_VideoBuffer + uintptr(SCREENWIDTH*y) + uintptr(x)
 	x1 = 0
 	for {
 		if !(x1 < w) {
@@ -41696,7 +41696,7 @@ func V_DrawHorizLine(x int32, y int32, w int32, c int32) {
 func V_DrawVertLine(x int32, y int32, h int32, c int32) {
 	var buf uintptr
 	var y1 int32
-	buf = I_VideoBuffer + uintptr(int32(SCREENWIDTH)*y) + uintptr(x)
+	buf = I_VideoBuffer + uintptr(SCREENWIDTH*y) + uintptr(x)
 	y1 = 0
 	for {
 		if !(y1 < h) {
@@ -42398,10 +42398,10 @@ func WI_drawLF() {
 	y = int32(WI_TITLEY)
 	if gamemode != commercial || wbs.Flast < NUMCMAPS {
 		// draw <LevelName>
-		V_DrawPatch((int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Flast)*8)))).Fwidth))/int32(2), y, *(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Flast)*8)))
+		V_DrawPatch((SCREENWIDTH-int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Flast)*8)))).Fwidth))/int32(2), y, *(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Flast)*8)))
 		// draw "Finished!"
 		y += 5 * int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Flast)*8)))).Fheight) / 4
-		V_DrawPatch((int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(finished)).Fwidth))/int32(2), y, finished)
+		V_DrawPatch((SCREENWIDTH-int32((*patch_t)(unsafe.Pointer(finished)).Fwidth))/int32(2), y, finished)
 	} else {
 		if wbs.Flast == NUMCMAPS {
 			// MAP33 - nothing is displayed!
@@ -42430,10 +42430,10 @@ func WI_drawEL() {
 	var y int32
 	y = int32(WI_TITLEY)
 	// draw "Entering"
-	V_DrawPatch((int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(entering)).Fwidth))/int32(2), y, entering)
+	V_DrawPatch((SCREENWIDTH-int32((*patch_t)(unsafe.Pointer(entering)).Fwidth))/int32(2), y, entering)
 	// draw level
 	y += 5 * int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Fnext)*8)))).Fheight) / 4
-	V_DrawPatch((int32(SCREENWIDTH)-int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Fnext)*8)))).Fwidth))/int32(2), y, *(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Fnext)*8)))
+	V_DrawPatch((SCREENWIDTH-int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Fnext)*8)))).Fwidth))/int32(2), y, *(*uintptr)(unsafe.Pointer(lnames + uintptr(wbs.Fnext)*8)))
 }
 
 func WI_drawOnLnode(n int32, c uintptr) {
@@ -42446,7 +42446,7 @@ func WI_drawOnLnode(n int32, c uintptr) {
 		top = (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr(wbs.Fepsd)*72 + uintptr(n)*8))).Fy - int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Ftopoffset)
 		right = left + int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Fwidth)
 		bottom = top + int32((*patch_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(c + uintptr(i)*8)))).Fheight)
-		if left >= 0 && right < int32(SCREENWIDTH) && top >= 0 && bottom < int32(SCREENHEIGHT) {
+		if left >= 0 && right < SCREENWIDTH && top >= 0 && bottom < SCREENHEIGHT {
 			fits = 1
 		} else {
 			i++
