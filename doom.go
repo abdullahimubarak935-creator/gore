@@ -11,7 +11,6 @@ import (
 	"math"
 	"os"
 	"path/filepath"
-	"reflect"
 	"runtime/debug"
 	"strconv"
 	"strings"
@@ -20878,7 +20877,7 @@ func init() {
 	}
 }
 
-func M_QuitResponse(key int32) {
+var M_QuitResponse = func(key int32) {
 	if key != key_menu_confirm {
 		return
 	}
@@ -20991,7 +20990,7 @@ func M_StartMessage(string1 string, routine func(int32), input boolean) {
 	messageLastMenuActive = int32(menuactive)
 	messageToPrint = 1
 	messageString = string1
-	messageRoutine = routine
+	messageRoutine = &routine
 	messageNeedsInput = input
 	menuactive = 1
 }
@@ -21097,12 +21096,7 @@ func M_Responder(ev *event_t) (r boolean) {
 		// First click on close button = bring up quit confirm message.
 		// Second click on close button = confirm quit
 
-		// TODO: GORE/ANDRE: This is a hack since Go doesn't like comparing function pointers.
-		// Can we just skip this special handling?
-		sf1 := reflect.ValueOf(messageRoutine)
-		sf2 := reflect.ValueOf(M_QuitResponse)
-
-		if menuactive != 0 && messageToPrint != 0 && sf1.Pointer() == sf2.Pointer() {
+		if menuactive != 0 && messageToPrint != 0 && messageRoutine == &M_QuitResponse {
 			M_QuitResponse(key_menu_confirm)
 		} else {
 			S_StartSound(nil, int32(sfx_swtchn))
@@ -21248,7 +21242,7 @@ func M_Responder(ev *event_t) (r boolean) {
 		menuactive = uint32(messageLastMenuActive)
 		messageToPrint = 0
 		if messageRoutine != nil {
-			messageRoutine(key)
+			(*messageRoutine)(key)
 		}
 		menuactive = 0
 		S_StartSound(nil, int32(sfx_swtchx))
@@ -45991,7 +45985,7 @@ var messageLastMenuActive int32
 //	// timed message = no input from user
 var messageNeedsInput boolean
 
-var messageRoutine func(int32)
+var messageRoutine *func(int32)
 
 // C documentation
 //
