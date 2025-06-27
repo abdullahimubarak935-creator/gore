@@ -34646,10 +34646,10 @@ func init() {
 	}
 }
 
-func R_CheckBBox(bspcoord [4]fixed_t) (r boolean) {
+func R_CheckBBox(bspcoord *box_t) (r boolean) {
 	var angle1, angle2, span, tspan angle_t
 	var boxpos, boxx, boxy, sx1, sx2 int32
-	var start uintptr
+	var start int
 	var x1, x2, y1, y2 fixed_t
 	// Find the corners of the box
 	// that define the edges from current viewpoint.
@@ -34680,6 +34680,7 @@ func R_CheckBBox(bspcoord [4]fixed_t) (r boolean) {
 	y1 = bspcoord[checkcoord[boxpos][1]]
 	x2 = bspcoord[checkcoord[boxpos][2]]
 	y2 = bspcoord[checkcoord[boxpos][3]]
+
 	// check clip list for an open space
 	angle1 = R_PointToAngle(x1, y1) - viewangle
 	angle2 = R_PointToAngle(x2, y2) - viewangle
@@ -34718,11 +34719,9 @@ func R_CheckBBox(bspcoord [4]fixed_t) (r boolean) {
 		return 0
 	}
 	sx2--
-	start = uintptr(unsafe.Pointer(&solidsegs))
-	for (*cliprange_t)(unsafe.Pointer(start)).Flast < sx2 {
-		start += 8
+	for start = 0; solidsegs[start].Flast < sx2; start++ {
 	}
-	if sx1 >= (*cliprange_t)(unsafe.Pointer(start)).Ffirst && sx2 <= (*cliprange_t)(unsafe.Pointer(start)).Flast {
+	if sx1 >= solidsegs[start].Ffirst && sx2 <= solidsegs[start].Flast {
 		// The clippost contains the new span.
 		return 0
 	}
@@ -34794,7 +34793,7 @@ func R_RenderBSPNode(bspnum int32) {
 	// Recursively divide front space.
 	R_RenderBSPNode(int32(bsp.Fchildren[side]))
 	// Possibly divide back space.
-	if R_CheckBBox(bsp.Fbbox[side]) != 0 {
+	if R_CheckBBox(&bsp.Fbbox[side]) != 0 {
 		R_RenderBSPNode(int32(bsp.Fchildren[side^int32(1)]))
 	}
 }
