@@ -34915,12 +34915,13 @@ func R_DrawColumnInCache(patch uintptr, cache uintptr, originy int32, cacheheigh
 //	//  and each column is cached.
 //	//
 func R_GenerateComposite(texnum int32) {
-	var block, collump, colofs, patch, patchcol, realpatch uintptr
+	var block, colofs, patch, patchcol, realpatch uintptr
+	var collump []int16
 	var i, x, x1, x2 int32
 	var texture *texture_t
 	texture = textures[texnum]
 	block = Z_Malloc(texturecompositesize[texnum], int32(PU_STATIC), texturecomposite+uintptr(texnum)*8)
-	collump = *(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(texnum)*8))
+	collump = texturecolumnlump[texnum]
 	colofs = *(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(texnum)*8))
 	// Composite the columns together.
 	patch = (uintptr)(unsafe.Pointer(&texture.Fpatches[0]))
@@ -34945,7 +34946,7 @@ func R_GenerateComposite(texnum int32) {
 				break
 			}
 			// Column does not have multiple patches?
-			if int32(*(*int16)(unsafe.Pointer(collump + uintptr(x)*2))) >= 0 {
+			if collump[x] >= 0 {
 				goto _2
 			}
 			patchcol = realpatch + uintptr(*(*int32)(unsafe.Pointer(realpatch + 8 + uintptr(x-x1)*4)))
@@ -34973,14 +34974,15 @@ func R_GenerateComposite(texnum int32) {
 //	//
 func R_GenerateLookup(texnum int32) {
 	bp := alloc(32)
-	var collump, colofs, patch, realpatch uintptr
+	var colofs, patch, realpatch uintptr
+	var collump []int16
 	var texture *texture_t
 	var i, x, x1, x2 int32
 	texture = textures[texnum]
 	// Composited texture not created yet.
 	*(*uintptr)(unsafe.Pointer(texturecomposite + uintptr(texnum)*8)) = uintptr(0)
 	texturecompositesize[texnum] = 0
-	collump = *(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(texnum)*8))
+	collump = texturecolumnlump[texnum]
 	colofs = *(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(texnum)*8))
 	// Now count the number of columns
 	//  that are covered by more than one patch.
@@ -35010,7 +35012,7 @@ func R_GenerateLookup(texnum int32) {
 				break
 			}
 			*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))++
-			*(*int16)(unsafe.Pointer(collump + uintptr(x)*2)) = int16((*texpatch_t)(unsafe.Pointer(patch)).Fpatch)
+			collump[x] = int16((*texpatch_t)(unsafe.Pointer(patch)).Fpatch)
 			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = uint16(*(*int32)(unsafe.Pointer(realpatch + 8 + uintptr(x-x1)*4)) + 3)
 			goto _2
 		_2:
@@ -35035,7 +35037,7 @@ func R_GenerateLookup(texnum int32) {
 		// I_Error ("R_GenerateLookup: column without a patch");
 		if int32(*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))) > 1 {
 			// Use the cached block.
-			*(*int16)(unsafe.Pointer(collump + uintptr(x)*2)) = int16(-1)
+			collump[x] = -1
 			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = uint16(texturecompositesize[texnum])
 			if texturecompositesize[texnum] > 0x10000-int32(texture.Fheight) {
 				I_Error(25985, texnum)
@@ -35058,7 +35060,7 @@ func R_GenerateLookup(texnum int32) {
 func R_GetColumn(tex int32, col int32) (r uintptr) {
 	var lump, ofs int32
 	col &= texturewidthmask[tex]
-	lump = int32(*(*int16)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(tex)*8)) + uintptr(col)*2)))
+	lump = int32(texturecolumnlump[tex][col])
 	ofs = int32(*(*uint16)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(tex)*8)) + uintptr(col)*2)))
 	if lump > 0 {
 		return W_CacheLumpNum(lump, int32(PU_CACHE)) + uintptr(ofs)
@@ -35150,7 +35152,7 @@ func R_InitTextures() {
 	}
 	numtextures = numtextures1 + numtextures2
 	textures = make([]*texture_t, numtextures)
-	texturecolumnlump = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
+	texturecolumnlump = make([][]int16, numtextures)
 	texturecolumnofs = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
 	texturecomposite = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
 	texturecompositesize = make([]int32, numtextures)
@@ -35236,7 +35238,7 @@ func R_InitTextures() {
 			j++
 			mpatch += 10
 		}
-		*(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(i)*8)) = Z_Malloc(int32(uint64(texture.Fwidth)*2), int32(PU_STATIC), uintptr(0))
+		texturecolumnlump[i] = make([]int16, texture.Fwidth)
 		*(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(i)*8)) = Z_Malloc(int32(uint64(texture.Fwidth)*2), int32(PU_STATIC), uintptr(0))
 		j = 1
 		for j*int32(2) <= int32(texture.Fwidth) {
@@ -46787,7 +46789,7 @@ var testcontrols boolean
 
 var testcontrols_mousespeed int32
 
-var texturecolumnlump uintptr
+var texturecolumnlump [][]int16
 
 var texturecolumnofs uintptr
 
