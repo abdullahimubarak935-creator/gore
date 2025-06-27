@@ -36681,7 +36681,6 @@ func R_SetViewSize(blocks int32, detail int32) {
 func R_ExecuteSetViewSize() {
 	var cosadj, dy fixed_t
 	var i, j, level, startmap int32
-	var v1, v2 uintptr
 	setsizeneeded = 0
 	if setblocks == 11 {
 		scaledviewwidth = SCREENWIDTH
@@ -36698,18 +36697,16 @@ func R_ExecuteSetViewSize() {
 	centeryfrac = centery << int32(FRACBITS)
 	projection = centerxfrac
 	if !(detailshift != 0) {
-		v1 = __ccgo_fp(R_DrawColumn)
-		basecolfunc = v1
-		colfunc = v1
-		fuzzcolfunc = __ccgo_fp(R_DrawFuzzColumn)
-		transcolfunc = __ccgo_fp(R_DrawTranslatedColumn)
+		basecolfunc = R_DrawColumn
+		colfunc = R_DrawColumn
+		fuzzcolfunc = R_DrawFuzzColumn
+		transcolfunc = R_DrawTranslatedColumn
 		spanfunc = __ccgo_fp(R_DrawSpan)
 	} else {
-		v2 = __ccgo_fp(R_DrawColumnLow)
-		basecolfunc = v2
-		colfunc = v2
-		fuzzcolfunc = __ccgo_fp(R_DrawFuzzColumnLow)
-		transcolfunc = __ccgo_fp(R_DrawTranslatedColumnLow)
+		basecolfunc = R_DrawColumnLow
+		colfunc = R_DrawColumnLow
+		fuzzcolfunc = R_DrawFuzzColumnLow
+		transcolfunc = R_DrawTranslatedColumnLow
 		spanfunc = __ccgo_fp(R_DrawSpanLow)
 	}
 	R_InitBuffer(scaledviewwidth, viewheight)
@@ -37120,7 +37117,7 @@ func R_DrawPlanes() {
 					angle = int32((viewangle + xtoviewangle[x]) >> int32(ANGLETOSKYSHIFT))
 					dc_x = x
 					dc_source = R_GetColumn(skytexture, angle)
-					(*(*func())(unsafe.Pointer(&struct{ uintptr }{colfunc})))()
+					colfunc()
 				}
 				goto _2
 			_2:
@@ -37369,7 +37366,7 @@ func R_RenderSegLoop() {
 			dc_yh = yh
 			dc_texturemid = rw_midtexturemid
 			dc_source = R_GetColumn(midtexture, texturecolumn)
-			(*(*func())(unsafe.Pointer(&struct{ uintptr }{colfunc})))()
+			colfunc()
 			*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(viewheight)
 			*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(-1)
 		} else {
@@ -37386,7 +37383,7 @@ func R_RenderSegLoop() {
 					dc_yh = mid
 					dc_texturemid = rw_toptexturemid
 					dc_source = R_GetColumn(toptexture, texturecolumn)
-					(*(*func())(unsafe.Pointer(&struct{ uintptr }{colfunc})))()
+					colfunc()
 					*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(mid)
 				} else {
 					*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(yl - 1)
@@ -37410,7 +37407,7 @@ func R_RenderSegLoop() {
 					dc_yh = yh
 					dc_texturemid = rw_bottomtexturemid
 					dc_source = R_GetColumn(bottomtexture, texturecolumn)
-					(*(*func())(unsafe.Pointer(&struct{ uintptr }{colfunc})))()
+					colfunc()
 					*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(mid)
 				} else {
 					*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(yh + 1)
@@ -37989,7 +37986,7 @@ func R_DrawMaskedColumn(column uintptr) {
 			// dc_source = (byte *)column + 3 - column->topdelta;
 			// Drawn by either R_DrawColumn
 			//  or (SHADOW) R_DrawFuzzColumn.
-			(*(*func())(unsafe.Pointer(&struct{ uintptr }{colfunc})))()
+			colfunc()
 		}
 		column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + uintptr(4)
 		goto _1
@@ -45051,7 +45048,7 @@ var autostart boolean
 
 var backsector *sector_t
 
-var basecolfunc uintptr
+var basecolfunc func()
 
 var basexscale fixed_t
 
@@ -45253,7 +45250,7 @@ var clipammo [4]int32
 //	//
 var clipangle angle_t
 
-var colfunc uintptr
+var colfunc func()
 
 var colormaps uintptr
 
@@ -45560,7 +45557,7 @@ var forwardmove [2]fixed_t
 
 var frontsector *sector_t
 
-var fuzzcolfunc uintptr
+var fuzzcolfunc func()
 
 //
 // Spectre/Invisibility.
@@ -46948,7 +46945,7 @@ var totalsecret int32
 
 var trace divline_t
 
-var transcolfunc uintptr
+var transcolfunc func()
 
 var translationtables uintptr
 
