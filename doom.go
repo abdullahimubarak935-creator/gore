@@ -25859,21 +25859,21 @@ func EV_LightTurnOn(line *line_t, bright int32) {
 // Spawn glowing light
 //
 
-func T_Glow(g uintptr) {
-	switch (*glow_t)(unsafe.Pointer(g)).Fdirection {
+func T_Glow(g *glow_t) {
+	switch g.Fdirection {
 	case -1:
 		// DOWN
-		(*glow_t)(unsafe.Pointer(g)).Fsector.Flightlevel -= GLOWSPEED
-		if int32((*glow_t)(unsafe.Pointer(g)).Fsector.Flightlevel) <= (*glow_t)(unsafe.Pointer(g)).Fminlight {
-			(*glow_t)(unsafe.Pointer(g)).Fsector.Flightlevel += GLOWSPEED
-			(*glow_t)(unsafe.Pointer(g)).Fdirection = 1
+		g.Fsector.Flightlevel -= GLOWSPEED
+		if int32(g.Fsector.Flightlevel) <= g.Fminlight {
+			g.Fsector.Flightlevel += GLOWSPEED
+			g.Fdirection = 1
 		}
 	case 1:
 		// UP
-		(*glow_t)(unsafe.Pointer(g)).Fsector.Flightlevel += GLOWSPEED
-		if int32((*glow_t)(unsafe.Pointer(g)).Fsector.Flightlevel) >= (*glow_t)(unsafe.Pointer(g)).Fmaxlight {
-			(*glow_t)(unsafe.Pointer(g)).Fsector.Flightlevel -= GLOWSPEED
-			(*glow_t)(unsafe.Pointer(g)).Fdirection = -1
+		g.Fsector.Flightlevel += GLOWSPEED
+		if int32(g.Fsector.Flightlevel) >= g.Fmaxlight {
+			g.Fsector.Flightlevel -= GLOWSPEED
+			g.Fdirection = -1
 		}
 		break
 	}
