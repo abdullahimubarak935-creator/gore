@@ -32844,9 +32844,9 @@ func P_UpdateSpecials() {
 			}
 			pic = anim.Fbasepic + (leveltime/anim.Fspeed+i)%anim.Fnumpics
 			if anim.Fistexture != 0 {
-				*(*int32)(unsafe.Pointer(texturetranslation + uintptr(i)*4)) = pic
+				texturetranslation[i] = pic
 			} else {
-				*(*int32)(unsafe.Pointer(flattranslation + uintptr(i)*4)) = pic
+				flattranslation[i] = pic
 			}
 			i++
 		}
@@ -35281,13 +35281,13 @@ func R_InitTextures() {
 		i++
 	}
 	// Create translation table for global animation.
-	texturetranslation = Z_Malloc(int32(uint64(numtextures+1)*4), int32(PU_STATIC), uintptr(0))
+	texturetranslation = make([]int32, numtextures+1)
 	i = 0
 	for {
 		if !(i < numtextures) {
 			break
 		}
-		*(*int32)(unsafe.Pointer(texturetranslation + uintptr(i)*4)) = i
+		texturetranslation[i] = i
 		goto _9
 	_9:
 		;
@@ -35307,13 +35307,13 @@ func R_InitFlats() {
 	lastflat = W_GetNumForName(__ccgo_ts(26159)) - 1
 	numflats = lastflat - firstflat + 1
 	// Create translation table for global animation.
-	flattranslation = Z_Malloc(int32(uint64(numflats+1)*4), int32(PU_STATIC), uintptr(0))
+	flattranslation = make([]int32, numflats+1)
 	i = 0
 	for {
 		if !(i < numflats) {
 			break
 		}
-		*(*int32)(unsafe.Pointer(flattranslation + uintptr(i)*4)) = i
+		flattranslation[i] = i
 		goto _1
 	_1:
 		;
@@ -37121,7 +37121,7 @@ func R_DrawPlanes() {
 			continue
 		}
 		// regular flat
-		lumpnum = firstflat + *(*int32)(unsafe.Pointer(flattranslation + uintptr((*visplane_t)(unsafe.Pointer(pl)).Fpicnum)*4))
+		lumpnum = firstflat + flattranslation[pl.Fpicnum]
 		ds_source = W_CacheLumpNum(lumpnum, int32(PU_STATIC))
 		planeheight = xabs((*visplane_t)(unsafe.Pointer(pl)).Fheight - viewz)
 		light = (*visplane_t)(unsafe.Pointer(pl)).Flightlevel>>int32(LIGHTSEGSHIFT) + extralight
@@ -37204,7 +37204,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 	curline = ds.Fcurline
 	frontsector = (*seg_t)(unsafe.Pointer(curline)).Ffrontsector
 	backsector = (*seg_t)(unsafe.Pointer(curline)).Fbacksector
-	texnum = *(*int32)(unsafe.Pointer(texturetranslation + uintptr((*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fsidedef)).Fmidtexture)*4))
+	texnum = texturetranslation[(*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fsidedef)).Fmidtexture]
 	lightnum = int32(frontsector.Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
 	if (*seg_t)(unsafe.Pointer(curline)).Fv1.Fy == (*seg_t)(unsafe.Pointer(curline)).Fv2.Fy {
 		lightnum--
@@ -37497,7 +37497,7 @@ func R_StoreWallRange(start int32, stop int32) {
 	drawsegs[ds_index].Fmaskedtexturecol = uintptr(0)
 	if !(backsector != nil) {
 		// single sided line
-		midtexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr(sidedef.Fmidtexture)*4))
+		midtexture = texturetranslation[sidedef.Fmidtexture]
 		// a single sided line is terminal, so it must mark ends
 		v8 = 1
 		markceiling = v8
@@ -37578,7 +37578,7 @@ func R_StoreWallRange(start int32, stop int32) {
 		}
 		if worldhigh < worldtop {
 			// top texture
-			toptexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr(sidedef.Ftoptexture)*4))
+			toptexture = texturetranslation[sidedef.Ftoptexture]
 			if int32(linedef.Fflags)&ML_DONTPEGTOP != 0 {
 				// top of texture at top
 				rw_toptexturemid = worldtop
@@ -37590,7 +37590,7 @@ func R_StoreWallRange(start int32, stop int32) {
 		}
 		if worldlow > worldbottom {
 			// bottom texture
-			bottomtexture = *(*int32)(unsafe.Pointer(texturetranslation + uintptr(sidedef.Fbottomtexture)*4))
+			bottomtexture = texturetranslation[sidedef.Fbottomtexture]
 			if int32(linedef.Fflags)&ML_DONTPEGBOTTOM != 0 {
 				// bottom of texture at bottom
 				// top of texture at top
@@ -45526,7 +45526,7 @@ var fixedcolormap uintptr
 // C documentation
 //
 //	// for global animation
-var flattranslation uintptr
+var flattranslation []int32
 
 // C documentation
 //
@@ -46815,7 +46815,7 @@ var textures uintptr
 
 var textures_hashtable uintptr
 
-var texturetranslation uintptr
+var texturetranslation []int32
 
 var texturewidthmask []int32
 
