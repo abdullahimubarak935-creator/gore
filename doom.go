@@ -22235,7 +22235,7 @@ func P_AddActiveCeiling(c *ceiling_t) {
 func P_RemoveActiveCeiling(c *ceiling_t) {
 	for i := 0; i < MAXCEILINGS; i++ {
 		if activeceilings[i] == c {
-			(*sector_t)(unsafe.Pointer(activeceilings[i].Fsector)).Fspecialdata = uintptr(0)
+			activeceilings[i].Fsector.Fspecialdata = uintptr(0)
 			P_RemoveThinker(&activeceilings[i].Fthinker)
 			activeceilings[i] = nil
 			break
@@ -22359,19 +22359,19 @@ func T_VerticalDoor(door *vldoor_t) {
 		}
 	case -1:
 		// DOWN
-		res = T_MovePlane(door.Fsector, door.Fspeed, (*sector_t)(unsafe.Pointer(door.Fsector)).Ffloorheight, 0, 1, door.Fdirection)
+		res = T_MovePlane(door.Fsector, door.Fspeed, door.Fsector.Ffloorheight, 0, 1, door.Fdirection)
 		if res == int32(pastdest) {
 			switch (*vldoor_t)(unsafe.Pointer(door)).Ftype1 {
 			case int32(vld_blazeRaise):
 				fallthrough
 			case int32(vld_blazeClose):
-				(*sector_t)(unsafe.Pointer(door.Fsector)).Fspecialdata = uintptr(0)
+				door.Fsector.Fspecialdata = uintptr(0)
 				P_RemoveThinker(&door.Fthinker) // unlink and free
 				S_StartSound(&door.Fsector.Fsoundorg, int32(sfx_bdcls))
 			case int32(vld_normal):
 				fallthrough
 			case int32(vld_close):
-				(*sector_t)(unsafe.Pointer(door.Fsector)).Fspecialdata = uintptr(0)
+				door.Fsector.Fspecialdata = uintptr(0)
 				P_RemoveThinker(&door.Fthinker) // unlink and free
 			case int32(vld_close30ThenOpen):
 				door.Fdirection = 0
@@ -22407,7 +22407,7 @@ func T_VerticalDoor(door *vldoor_t) {
 			case int32(vld_blazeOpen):
 				fallthrough
 			case int32(vld_open):
-				(*sector_t)(unsafe.Pointer(door.Fsector)).Fspecialdata = uintptr(0)
+				door.Fsector.Fspecialdata = uintptr(0)
 				P_RemoveThinker(&door.Fthinker) // unlink and free
 			default:
 				break
@@ -23241,7 +23241,7 @@ func A_Look(actor *mobj_t) {
 	var sound int32
 	var targ *mobj_t
 	actor.Fthreshold = 0 // any shot will wake up
-	targ = (*sector_t)(unsafe.Pointer(actor.Fsubsector.Fsector)).Fsoundtarget
+	targ = actor.Fsubsector.Fsector.Fsoundtarget
 	if targ != nil && targ.Fflags&MF_SHOOTABLE != 0 {
 		actor.Ftarget = targ
 		if actor.Fflags&MF_AMBUSH != 0 {
@@ -24539,12 +24539,12 @@ func T_MoveFloor(floor *floormove_t) {
 		S_StartSound(&floor.Fsector.Fsoundorg, int32(sfx_stnmov))
 	}
 	if res == int32(pastdest) {
-		(*sector_t)(unsafe.Pointer(floor.Fsector)).Fspecialdata = uintptr(0)
+		floor.Fsector.Fspecialdata = uintptr(0)
 		if floor.Fdirection == 1 {
 			switch floor.Ftype1 {
 			case int32(donutRaise):
-				(*sector_t)(unsafe.Pointer(floor.Fsector)).Fspecial = int16(floor.Fnewspecial)
-				(*sector_t)(unsafe.Pointer(floor.Fsector)).Ffloorpic = floor.Ftexture
+				floor.Fsector.Fspecial = int16(floor.Fnewspecial)
+				floor.Fsector.Ffloorpic = floor.Ftexture
 				fallthrough
 			default:
 				break
@@ -24553,8 +24553,8 @@ func T_MoveFloor(floor *floormove_t) {
 			if floor.Fdirection == -1 {
 				switch floor.Ftype1 {
 				case int32(lowerAndChange):
-					(*sector_t)(unsafe.Pointer(floor.Fsector)).Fspecial = int16((*floormove_t)(unsafe.Pointer(floor)).Fnewspecial)
-					(*sector_t)(unsafe.Pointer(floor.Fsector)).Ffloorpic = (*floormove_t)(unsafe.Pointer(floor)).Ftexture
+					floor.Fsector.Fspecial = int16((*floormove_t)(unsafe.Pointer(floor)).Fnewspecial)
+					floor.Fsector.Ffloorpic = (*floormove_t)(unsafe.Pointer(floor)).Ftexture
 					fallthrough
 				default:
 					break
@@ -25609,10 +25609,10 @@ func T_FireFlicker(flick *fireflicker_t) {
 		return
 	}
 	amount = P_Random() & 3 * 16
-	if int32((*sector_t)(unsafe.Pointer(flick.Fsector)).Flightlevel)-amount < flick.Fminlight {
-		(*sector_t)(unsafe.Pointer(flick.Fsector)).Flightlevel = int16(flick.Fminlight)
+	if int32(flick.Fsector.Flightlevel)-amount < flick.Fminlight {
+		flick.Fsector.Flightlevel = int16(flick.Fminlight)
 	} else {
-		(*sector_t)(unsafe.Pointer(flick.Fsector)).Flightlevel = int16(flick.Fmaxlight - amount)
+		flick.Fsector.Flightlevel = int16(flick.Fmaxlight - amount)
 	}
 	flick.Fcount = 4
 }
@@ -25696,21 +25696,17 @@ func P_SpawnLightFlash(sector *sector_t) {
 //	//
 //	// T_StrobeFlash
 //	//
-func T_StrobeFlash(flash uintptr) {
-	var v1 int32
-	var v2 uintptr
-	v2 = flash + 32
-	*(*int32)(unsafe.Pointer(v2))--
-	v1 = *(*int32)(unsafe.Pointer(v2))
-	if v1 != 0 {
+func T_StrobeFlash(flash *strobe_t) {
+	flash.Fcount--
+	if flash.Fcount != 0 {
 		return
 	}
-	if int32((*sector_t)(unsafe.Pointer((*strobe_t)(unsafe.Pointer(flash)).Fsector)).Flightlevel) == (*strobe_t)(unsafe.Pointer(flash)).Fminlight {
-		(*sector_t)(unsafe.Pointer((*strobe_t)(unsafe.Pointer(flash)).Fsector)).Flightlevel = int16((*strobe_t)(unsafe.Pointer(flash)).Fmaxlight)
-		(*strobe_t)(unsafe.Pointer(flash)).Fcount = (*strobe_t)(unsafe.Pointer(flash)).Fbrighttime
+	if int32(flash.Fsector.Flightlevel) == flash.Fminlight {
+		flash.Fsector.Flightlevel = int16(flash.Fmaxlight)
+		flash.Fcount = flash.Fbrighttime
 	} else {
-		(*sector_t)(unsafe.Pointer((*strobe_t)(unsafe.Pointer(flash)).Fsector)).Flightlevel = int16((*strobe_t)(unsafe.Pointer(flash)).Fminlight)
-		(*strobe_t)(unsafe.Pointer(flash)).Fcount = (*strobe_t)(unsafe.Pointer(flash)).Fdarktime
+		flash.Fsector.Flightlevel = int16(flash.Fminlight)
+		flash.Fcount = flash.Fdarktime
 	}
 }
 
@@ -25808,7 +25804,6 @@ func EV_TurnTagLightsOff(line *line_t) {
 	_1:
 		;
 		j++
-		sector = (*sector_t)(unsafe.Pointer(uintptr(unsafe.Pointer(sector)) + 144))
 	}
 }
 
@@ -25955,10 +25950,10 @@ func P_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	// that contains the point.
 	// Any contacted lines the step closer together
 	// will adjust them.
-	v1 = (*sector_t)(unsafe.Pointer(newsubsec.Fsector)).Ffloorheight
+	v1 = newsubsec.Fsector.Ffloorheight
 	tmdropoffz = v1
 	tmfloorz = v1
-	tmceilingz = (*sector_t)(unsafe.Pointer(newsubsec.Fsector)).Fceilingheight
+	tmceilingz = newsubsec.Fsector.Fceilingheight
 	validcount++
 	numspechit = 0
 	// stomp on any things contacted
@@ -26185,10 +26180,10 @@ func P_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	// that contains the point.
 	// Any contacted lines the step closer together
 	// will adjust them.
-	v1 = (*sector_t)(unsafe.Pointer(newsubsec.Fsector)).Ffloorheight
+	v1 = newsubsec.Fsector.Ffloorheight
 	tmdropoffz = v1
 	tmfloorz = v1
-	tmceilingz = (*sector_t)(unsafe.Pointer(newsubsec.Fsector)).Fceilingheight
+	tmceilingz = newsubsec.Fsector.Fceilingheight
 	validcount++
 	numspechit = 0
 	if tmflags&MF_NOCLIP != 0 {
@@ -26542,13 +26537,13 @@ func PTR_AimTraverse(in *intercept_t) (r boolean) {
 			return 0
 		} // stop
 		dist = FixedMul(attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
-		if li.Fbacksector == nil || li.Ffrontsector.Ffloorheight != (*sector_t)(unsafe.Pointer(li.Fbacksector)).Ffloorheight {
+		if li.Fbacksector == nil || li.Ffrontsector.Ffloorheight != li.Fbacksector.Ffloorheight {
 			slope = FixedDiv(openbottom-shootz, dist)
 			if slope > bottomslope {
 				bottomslope = slope
 			}
 		}
-		if li.Fbacksector == nil || li.Ffrontsector.Fceilingheight != (*sector_t)(unsafe.Pointer(li.Fbacksector)).Fceilingheight {
+		if li.Fbacksector == nil || li.Ffrontsector.Fceilingheight != li.Fbacksector.Fceilingheight {
 			slope = FixedDiv(opentop-shootz, dist)
 			if slope < topslope {
 				topslope = slope
@@ -26621,13 +26616,13 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 				goto hitline
 			}
 		} else {
-			if (*sector_t)(unsafe.Pointer(li.Ffrontsector)).Ffloorheight != (*sector_t)(unsafe.Pointer(li.Fbacksector)).Ffloorheight {
+			if li.Ffrontsector.Ffloorheight != li.Fbacksector.Ffloorheight {
 				slope = FixedDiv(openbottom-shootz, dist)
 				if slope > aimslope {
 					goto hitline
 				}
 			}
-			if (*sector_t)(unsafe.Pointer(li.Ffrontsector)).Fceilingheight != (*sector_t)(unsafe.Pointer(li.Fbacksector)).Fceilingheight {
+			if li.Ffrontsector.Fceilingheight != li.Fbacksector.Fceilingheight {
 				slope = FixedDiv(opentop-shootz, dist)
 				if slope < aimslope {
 					goto hitline
@@ -26645,9 +26640,9 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 		x = trace.Fx + FixedMul(trace.Fdx, frac)
 		y = trace.Fy + FixedMul(trace.Fdy, frac)
 		z = shootz + FixedMul(aimslope, FixedMul(frac, attackrange))
-		if int32((*sector_t)(unsafe.Pointer(li.Ffrontsector)).Fceilingpic) == skyflatnum {
+		if int32(li.Ffrontsector.Fceilingpic) == skyflatnum {
 			// don't shoot the sky!
-			if z > (*sector_t)(unsafe.Pointer(li.Ffrontsector)).Fceilingheight {
+			if z > li.Ffrontsector.Fceilingheight {
 				return 0
 			}
 			// it's a sky hack wall
@@ -27849,7 +27844,7 @@ func P_XYMovement(mo *mobj_t) {
 			} else {
 				if mo.Fflags&MF_MISSILE != 0 {
 					// explode a missile
-					if ceilingline != nil && ceilingline.Fbacksector != nil && int32((*sector_t)(unsafe.Pointer(ceilingline.Fbacksector)).Fceilingpic) == skyflatnum {
+					if ceilingline != nil && ceilingline.Fbacksector != nil && int32(ceilingline.Fbacksector.Fceilingpic) == skyflatnum {
 						// Hack to prevent missiles exploding
 						// against the sky.
 						// Does not handle sky floors.
@@ -28033,7 +28028,7 @@ func P_NightmareRespawn(mobj *mobj_t) {
 	S_StartSound(&(mo.degenmobj_t), int32(sfx_telept))
 	// spawn a teleport fog at the new spot
 	ss = R_PointInSubsector(x, y)
-	mo = P_SpawnMobj(x, y, (*sector_t)(unsafe.Pointer(ss.Fsector)).Ffloorheight, int32(MT_TFOG))
+	mo = P_SpawnMobj(x, y, ss.Fsector.Ffloorheight, int32(MT_TFOG))
 	S_StartSound(&(mo.degenmobj_t), int32(sfx_telept))
 	// spawn the new monster
 	mthing = &(mobj.Fspawnpoint)
@@ -28202,7 +28197,7 @@ func P_RespawnSpecials() {
 	y = int32(mthing.Fy) << int32(FRACBITS)
 	// spawn a teleport fog at the new spot
 	ss = R_PointInSubsector(x, y)
-	mo = P_SpawnMobj(x, y, (*sector_t)(unsafe.Pointer(ss.Fsector)).Ffloorheight, int32(MT_IFOG))
+	mo = P_SpawnMobj(x, y, ss.Fsector.Ffloorheight, int32(MT_IFOG))
 	S_StartSound(&(mo.degenmobj_t), int32(sfx_itmbk))
 	// find which type to spawn
 	i = 0
@@ -28598,7 +28593,7 @@ func T_PlatRaise(plat *plat_t) {
 	case int32(waiting):
 		plat.Fcount--
 		if plat.Fcount == 0 {
-			if (*sector_t)(unsafe.Pointer(plat.Fsector)).Ffloorheight == plat.Flow {
+			if plat.Fsector.Ffloorheight == plat.Flow {
 				plat.Fstatus = int32(up)
 			} else {
 				plat.Fstatus = int32(down)
@@ -28772,7 +28767,7 @@ func P_RemoveActivePlat(plat *plat_t) {
 			break
 		}
 		if plat == activeplats[i] {
-			(*sector_t)(unsafe.Pointer(activeplats[i].Fsector)).Fspecialdata = uintptr(0)
+			activeplats[i].Fsector.Fspecialdata = uintptr(0)
 			P_RemoveThinker(&activeplats[i].Fthinker)
 			activeplats[i] = nil
 			return
@@ -30886,7 +30881,7 @@ func P_UnArchiveSpecials() {
 			ceiling = Z_Malloc(72, int32(PU_LEVEL), uintptr(0))
 			ceilingP := (*ceiling_t)(unsafe.Pointer(ceiling))
 			saveg_read_ceiling_t(ceilingP)
-			(*sector_t)(unsafe.Pointer(ceilingP.Fsector)).Fspecialdata = ceiling
+			ceilingP.Fsector.Fspecialdata = ceiling
 			if ceilingP.Fthinker.Ffunction.Facv != uintptr(0) {
 				ceilingP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveCeiling)
 			}
@@ -30897,7 +30892,7 @@ func P_UnArchiveSpecials() {
 			door = Z_Malloc(64, int32(PU_LEVEL), uintptr(0))
 			doorP := (*vldoor_t)(unsafe.Pointer(door))
 			saveg_read_vldoor_t(doorP)
-			(*sector_t)(unsafe.Pointer(doorP.Fsector)).Fspecialdata = door
+			doorP.Fsector.Fspecialdata = door
 			doorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_VerticalDoor)
 			P_AddThinker(&doorP.Fthinker)
 		case tc_floor:
@@ -30905,7 +30900,7 @@ func P_UnArchiveSpecials() {
 			floor = Z_Malloc(64, int32(PU_LEVEL), uintptr(0))
 			floorP := (*floormove_t)(unsafe.Pointer(floor))
 			saveg_read_floormove_t(floorP)
-			(*sector_t)(unsafe.Pointer(floorP.Fsector)).Fspecialdata = floor
+			floorP.Fsector.Fspecialdata = floor
 			floorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveFloor)
 			P_AddThinker(&floorP.Fthinker)
 		case tc_plat:
@@ -30913,7 +30908,7 @@ func P_UnArchiveSpecials() {
 			plat = Z_Malloc(72, int32(PU_LEVEL), uintptr(0))
 			platP := (*plat_t)(unsafe.Pointer(plat))
 			saveg_read_plat_t(platP)
-			(*sector_t)(unsafe.Pointer(platP.Fsector)).Fspecialdata = plat
+			platP.Fsector.Fspecialdata = plat
 			if platP.Fthinker.Ffunction.Facv != uintptr(0) {
 				platP.Fthinker.Ffunction.Facv = __ccgo_fp(T_PlatRaise)
 			}
@@ -34272,7 +34267,7 @@ func P_PlayerThink(player *player_t) {
 		P_MovePlayer(player)
 	}
 	P_CalcHeight(player)
-	if (*sector_t)(unsafe.Pointer((player.Fmo.Fsubsector).Fsector)).Fspecial != 0 {
+	if player.Fmo.Fsubsector.Fsector.Fspecial != 0 {
 		P_PlayerInSpecialSector(player)
 	}
 	// Check for weapon change.
