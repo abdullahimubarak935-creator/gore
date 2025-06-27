@@ -34863,7 +34863,7 @@ type texture_t struct {
 	Findex      int32
 	Fnext       uintptr
 	Fpatchcount int16
-	Fpatches    [1]texpatch_t
+	Fpatches    []texpatch_t
 }
 
 //
@@ -34915,16 +34915,16 @@ func R_DrawColumnInCache(patch uintptr, cache uintptr, originy int32, cacheheigh
 //	//  and each column is cached.
 //	//
 func R_GenerateComposite(texnum int32) {
-	var block, collump, colofs, patch, patchcol, realpatch, texture uintptr
+	var block, collump, colofs, patch, patchcol, realpatch uintptr
 	var i, x, x1, x2 int32
-	texture = *(*uintptr)(unsafe.Pointer(textures + uintptr(texnum)*8))
+	var texture *texture_t
+	texture = textures[texnum]
 	block = Z_Malloc(texturecompositesize[texnum], int32(PU_STATIC), texturecomposite+uintptr(texnum)*8)
 	collump = *(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(texnum)*8))
 	colofs = *(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(texnum)*8))
 	// Composite the columns together.
-	patch = texture + 28
+	patch = (uintptr)(unsafe.Pointer(&texture.Fpatches[0]))
 	i = 0
-	patch = texture + 28
 	for {
 		if !(i < int32((*texture_t)(unsafe.Pointer(texture)).Fpatchcount)) {
 			break
@@ -34973,9 +34973,10 @@ func R_GenerateComposite(texnum int32) {
 //	//
 func R_GenerateLookup(texnum int32) {
 	bp := alloc(32)
-	var collump, colofs, patch, realpatch, texture uintptr
+	var collump, colofs, patch, realpatch uintptr
+	var texture *texture_t
 	var i, x, x1, x2 int32
-	texture = *(*uintptr)(unsafe.Pointer(textures + uintptr(texnum)*8))
+	texture = textures[texnum]
 	// Composited texture not created yet.
 	*(*uintptr)(unsafe.Pointer(texturecomposite + uintptr(texnum)*8)) = uintptr(0)
 	texturecompositesize[texnum] = 0
@@ -34987,11 +34988,10 @@ func R_GenerateLookup(texnum int32) {
 	//  with only a single patch are all done.
 	*(*uintptr)(unsafe.Pointer(bp)) = Z_Malloc(int32((*texture_t)(unsafe.Pointer(texture)).Fwidth), int32(PU_STATIC), bp)
 	xmemset(*(*uintptr)(unsafe.Pointer(bp)), 0, uint64((*texture_t)(unsafe.Pointer(texture)).Fwidth))
-	patch = texture + 28
 	i = 0
-	patch = texture + 28
+	patch = (uintptr)(unsafe.Pointer(&texture.Fpatches[0]))
 	for {
-		if !(i < int32((*texture_t)(unsafe.Pointer(texture)).Fpatchcount)) {
+		if !(i < int32(texture.Fpatchcount)) {
 			break
 		}
 		realpatch = W_CacheLumpNum((*texpatch_t)(unsafe.Pointer(patch)).Fpatch, int32(PU_CACHE))
@@ -35002,8 +35002,8 @@ func R_GenerateLookup(texnum int32) {
 		} else {
 			x = x1
 		}
-		if x2 > int32((*texture_t)(unsafe.Pointer(texture)).Fwidth) {
-			x2 = int32((*texture_t)(unsafe.Pointer(texture)).Fwidth)
+		if x2 > int32(texture.Fwidth) {
+			x2 = int32(texture.Fwidth)
 		}
 		for {
 			if !(x < x2) {
@@ -35025,7 +35025,7 @@ func R_GenerateLookup(texnum int32) {
 	}
 	x = 0
 	for {
-		if !(x < int32((*texture_t)(unsafe.Pointer(texture)).Fwidth)) {
+		if !(x < int32(texture.Fwidth)) {
 			break
 		}
 		if !(*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x))) != 0) {
@@ -35037,10 +35037,10 @@ func R_GenerateLookup(texnum int32) {
 			// Use the cached block.
 			*(*int16)(unsafe.Pointer(collump + uintptr(x)*2)) = int16(-1)
 			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = uint16(texturecompositesize[texnum])
-			if texturecompositesize[texnum] > 0x10000-int32((*texture_t)(unsafe.Pointer(texture)).Fheight) {
+			if texturecompositesize[texnum] > 0x10000-int32(texture.Fheight) {
 				I_Error(25985, texnum)
 			}
-			texturecompositesize[texnum] += int32((*texture_t)(unsafe.Pointer(texture)).Fheight)
+			texturecompositesize[texnum] += int32(texture.Fheight)
 		}
 		goto _3
 	_3:
@@ -35081,20 +35081,20 @@ func GenerateTextureHashTable() {
 			break
 		}
 		// Store index
-		(*texture_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(textures + uintptr(i)*8)))).Findex = i
+		textures[i].Findex = i
 		// Vanilla Doom does a linear search of the texures array
 		// and stops at the first entry it finds.  If there are two
 		// entries with the same name, the first one in the array
 		// wins. The new entry must therefore be added at the end
 		// of the hash chain, so that earlier entries win.
-		key = int32(W_LumpNameHash(*(*uintptr)(unsafe.Pointer(textures + uintptr(i)*8))) % uint32(numtextures))
+		key = int32(W_LumpNameHash((uintptr)(unsafe.Pointer(&textures[i].Fname[0]))) % uint32(numtextures))
 		rover = textures_hashtable + uintptr(key)*8
 		for *(*uintptr)(unsafe.Pointer(rover)) != uintptr(0) {
 			rover = *(*uintptr)(unsafe.Pointer(rover)) + 16
 		}
 		// Hook into hash table
-		(*texture_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(textures + uintptr(i)*8)))).Fnext = uintptr(0)
-		*(*uintptr)(unsafe.Pointer(rover)) = *(*uintptr)(unsafe.Pointer(textures + uintptr(i)*8))
+		textures[i].Fnext = uintptr(0)
+		*(*uintptr)(unsafe.Pointer(rover)) = (uintptr)(unsafe.Pointer(textures[i]))
 		goto _1
 	_1:
 		;
@@ -35111,7 +35111,7 @@ func GenerateTextureHashTable() {
 //	//
 func R_InitTextures() {
 	bp := alloc(32)
-	var directory, maptex, maptex2, mpatch, mtexture, name_p, names, patch, patchlookup, texture, v2, v6 uintptr
+	var directory, maptex, maptex2, mpatch, mtexture, name_p, names, patchlookup, v2 uintptr
 	var i, j, maxoff, maxoff2, nummappatches, numtextures1, numtextures2, offset, temp1, temp2, temp3, totalwidth int32
 	// Load the patch names from pnames.lmp.
 	(*(*[9]int8)(unsafe.Pointer(bp)))[int32(8)] = 0
@@ -35150,7 +35150,7 @@ func R_InitTextures() {
 		maxoff2 = 0
 	}
 	numtextures = numtextures1 + numtextures2
-	textures = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
+	textures = make([]*texture_t, numtextures)
 	texturecolumnlump = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
 	texturecolumnofs = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
 	texturecomposite = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
@@ -35210,24 +35210,25 @@ func R_InitTextures() {
 			I_Error(26069, 0)
 		}
 		mtexture = maptex + uintptr(offset)
-		v6 = Z_Malloc(int32(40+uint64(8)*uint64(int32((*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount)-1)), int32(PU_STATIC), uintptr(0))
-		*(*uintptr)(unsafe.Pointer(textures + uintptr(i)*8)) = v6
-		texture = v6
+		texture := &texture_t{
+			Fpatches: make([]texpatch_t, (*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount),
+		}
+		textures[i] = texture
 		(*texture_t)(unsafe.Pointer(texture)).Fwidth = (*maptexture_t)(unsafe.Pointer(mtexture)).Fwidth
 		(*texture_t)(unsafe.Pointer(texture)).Fheight = (*maptexture_t)(unsafe.Pointer(mtexture)).Fheight
 		(*texture_t)(unsafe.Pointer(texture)).Fpatchcount = (*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount
-		xmemcpy(texture, mtexture, 8)
+		copy(texture.Fname[:], (*maptexture_t)(unsafe.Pointer(mtexture)).Fname[:])
 		mpatch = mtexture + 22
-		patch = texture + 28
 		j = 0
 		for {
 			if !(j < int32((*texture_t)(unsafe.Pointer(texture)).Fpatchcount)) {
 				break
 			}
-			(*texpatch_t)(unsafe.Pointer(patch)).Foriginx = (*mappatch_t)(unsafe.Pointer(mpatch)).Foriginx
-			(*texpatch_t)(unsafe.Pointer(patch)).Foriginy = (*mappatch_t)(unsafe.Pointer(mpatch)).Foriginy
-			(*texpatch_t)(unsafe.Pointer(patch)).Fpatch = *(*int32)(unsafe.Pointer(patchlookup + uintptr((*mappatch_t)(unsafe.Pointer(mpatch)).Fpatch)*4))
-			if (*texpatch_t)(unsafe.Pointer(patch)).Fpatch == -1 {
+			patch := &texture.Fpatches[j]
+			patch.Foriginx = (*mappatch_t)(unsafe.Pointer(mpatch)).Foriginx
+			patch.Foriginy = (*mappatch_t)(unsafe.Pointer(mpatch)).Foriginy
+			patch.Fpatch = *(*int32)(unsafe.Pointer(patchlookup + uintptr((*mappatch_t)(unsafe.Pointer(mpatch)).Fpatch)*4))
+			if patch.Fpatch == -1 {
 				I_Error(26107, texture)
 			}
 			goto _7
@@ -35235,7 +35236,6 @@ func R_InitTextures() {
 			;
 			j++
 			mpatch += 10
-			patch += 8
 		}
 		*(*uintptr)(unsafe.Pointer(texturecolumnlump + uintptr(i)*8)) = Z_Malloc(int32(uint64((*texture_t)(unsafe.Pointer(texture)).Fwidth)*2), int32(PU_STATIC), uintptr(0))
 		*(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(i)*8)) = Z_Malloc(int32(uint64((*texture_t)(unsafe.Pointer(texture)).Fwidth)*2), int32(PU_STATIC), uintptr(0))
@@ -35437,7 +35437,8 @@ func R_TextureNumForName(name uintptr) (r int32) {
 }
 
 func R_PrecacheLevel() {
-	var flatpresent, spritepresent, texture, texturepresent uintptr
+	var flatpresent, spritepresent, texturepresent uintptr
+	var texture *texture_t
 	var sf *spriteframe_t
 	var th *thinker_t
 	var i, j, k, lump int32
@@ -35506,13 +35507,13 @@ func R_PrecacheLevel() {
 		if !(*(*int8)(unsafe.Pointer(texturepresent + uintptr(i))) != 0) {
 			goto _4
 		}
-		texture = *(*uintptr)(unsafe.Pointer(textures + uintptr(i)*8))
+		texture = textures[i]
 		j = 0
 		for {
-			if !(j < int32((*texture_t)(unsafe.Pointer(texture)).Fpatchcount)) {
+			if !(j < int32(texture.Fpatchcount)) {
 				break
 			}
-			lump = (*(*texpatch_t)(unsafe.Pointer(texture + 28 + uintptr(j)*8))).Fpatch
+			lump = texture.Fpatches[j].Fpatch
 			W_CacheLumpNum(lump, int32(PU_CACHE))
 			goto _5
 		_5:
@@ -46800,7 +46801,7 @@ var texturecompositesize []int32
 //	// needed for texture pegging
 var textureheight []fixed_t
 
-var textures uintptr
+var textures []*texture_t
 
 var textures_hashtable uintptr
 
