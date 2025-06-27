@@ -37123,8 +37123,8 @@ func R_DrawPlanes() {
 		// regular flat
 		lumpnum = firstflat + flattranslation[pl.Fpicnum]
 		ds_source = W_CacheLumpNum(lumpnum, int32(PU_STATIC))
-		planeheight = xabs((*visplane_t)(unsafe.Pointer(pl)).Fheight - viewz)
-		light = (*visplane_t)(unsafe.Pointer(pl)).Flightlevel>>int32(LIGHTSEGSHIFT) + extralight
+		planeheight = xabs(pl.Fheight - viewz)
+		light = pl.Flightlevel>>int32(LIGHTSEGSHIFT) + extralight
 		if light >= int32(LIGHTLEVELS) {
 			light = LIGHTLEVELS - 1
 		}
