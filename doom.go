@@ -20341,7 +20341,7 @@ func M_ReadSaveStrings() {
 		var err error
 		handle, err := os.Open(P_SaveGameFile(i))
 		if err != nil {
-			M_StringCopy(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24, __ccgo_ts(22118), uint64(SAVESTRINGSIZE))
+			M_StringCopy(uintptr(unsafe.Pointer(&savegamestrings[i])), __ccgo_ts(22118), uint64(SAVESTRINGSIZE))
 			LoadMenu[i].Fstatus = 0
 			goto _1
 		}
@@ -20369,7 +20369,7 @@ func M_DrawLoad() {
 			break
 		}
 		M_DrawSaveLoadBorder(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i)
-		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, gostring(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24))
+		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, gostring(uintptr(unsafe.Pointer(&savegamestrings[i]))))
 		goto _1
 	_1:
 		;
@@ -20438,14 +20438,14 @@ func M_DrawSave() {
 			break
 		}
 		M_DrawSaveLoadBorder(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i)
-		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, gostring(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(i)*24))
+		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, gostring(uintptr(unsafe.Pointer(&savegamestrings[i]))))
 		goto _1
 	_1:
 		;
 		i++
 	}
 	if saveStringEnter != 0 {
-		i = M_StringWidth(gostring(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(saveSlot)*24))
+		i = M_StringWidth(gostring(uintptr(unsafe.Pointer(&savegamestrings[saveSlot]))))
 		M_WriteText(int32(LoadDef.Fx)+i, int32(LoadDef.Fy)+int32(LINEHEIGHT)*saveSlot, __ccgo_ts_str(22225))
 	}
 }
@@ -20456,7 +20456,7 @@ func M_DrawSave() {
 //	// M_Responder calls this when user is finished
 //	//
 func M_DoSave(slot int32) {
-	G_SaveGame(slot, uintptr(unsafe.Pointer(&savegamestrings))+uintptr(slot)*24)
+	G_SaveGame(slot, uintptr(unsafe.Pointer(&savegamestrings[slot])))
 	M_ClearMenus()
 	// PICK QUICKSAVE SLOT YET?
 	if quickSaveSlot == -int32(2) {
@@ -20473,11 +20473,11 @@ func M_SaveSelect(choice int32) {
 	// we are going to be intercepting all chars
 	saveStringEnter = 1
 	saveSlot = choice
-	M_StringCopy(uintptr(unsafe.Pointer(&saveOldString)), uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, uint64(SAVESTRINGSIZE))
-	if !(xstrcmp(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(choice)*24, __ccgo_ts(22118)) != 0) {
-		*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(choice)*24)) = 0
+	M_StringCopy(uintptr(unsafe.Pointer(&saveOldString)), uintptr(unsafe.Pointer(&savegamestrings[choice])), uint64(SAVESTRINGSIZE))
+	if !(xstrcmp(uintptr(unsafe.Pointer(&savegamestrings[choice])), __ccgo_ts(22118)) != 0) {
+		*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings[choice])))) = 0
 	}
-	saveCharIndex = int32(xstrlen(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(choice)*24))
+	saveCharIndex = int32(xstrlen(uintptr(unsafe.Pointer(&savegamestrings[choice]))))
 }
 
 // C documentation
@@ -21053,7 +21053,7 @@ func IsNullKey(key int32) (r boolean) {
 //	// M_Responder
 //	//
 func M_Responder(ev *event_t) (r boolean) {
-	var ch, i, key, v1 int32
+	var ch, i, key int32
 	// In testcontrols mode, none of the function keys should do anything
 	// - the only key is escape to quit.
 	if testcontrols != 0 {
@@ -21163,14 +21163,14 @@ func M_Responder(ev *event_t) (r boolean) {
 		case int32(KEY_BACKSPACE3):
 			if saveCharIndex > 0 {
 				saveCharIndex--
-				*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(saveSlot)*24 + uintptr(saveCharIndex))) = 0
+				savegamestrings[saveSlot][saveCharIndex] = 0
 			}
 		case int32(KEY_ESCAPE):
 			saveStringEnter = 0
-			M_StringCopy(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24, uintptr(unsafe.Pointer(&saveOldString)), uint64(SAVESTRINGSIZE))
+			M_StringCopy(uintptr(unsafe.Pointer(&savegamestrings[saveSlot])), uintptr(unsafe.Pointer(&saveOldString)), uint64(SAVESTRINGSIZE))
 		case int32(KEY_ENTER):
 			saveStringEnter = 0
-			if *(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(saveSlot)*24)) != 0 {
+			if savegamestrings[saveSlot][0] != 0 {
 				M_DoSave(saveSlot)
 			}
 		default:
@@ -21187,11 +21187,10 @@ func M_Responder(ev *event_t) (r boolean) {
 			if ch != int32(' ') && (ch-int32('!') < 0 || ch-int32('!') >= int32('_')-int32('!')+1) {
 				break
 			}
-			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(gostring(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(saveSlot)*24)) < (SAVESTRINGSIZE-2)*8 {
-				v1 = saveCharIndex
+			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(gostring(uintptr(unsafe.Pointer(&savegamestrings[saveSlot])))) < (SAVESTRINGSIZE-2)*8 {
+				savegamestrings[saveSlot][saveCharIndex] = byte(ch)
 				saveCharIndex++
-				*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(saveSlot)*24 + uintptr(v1))) = int8(ch)
-				*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings)) + uintptr(saveSlot)*24 + uintptr(saveCharIndex))) = 0
+				savegamestrings[saveSlot][saveCharIndex] = 0
 			}
 			break
 		}
@@ -46368,7 +46367,7 @@ var rw_x int32
 var saveCharIndex int32
 
 // old save description before edit
-var saveOldString [24]int8
+var saveOldString [SAVESTRINGSIZE]int8
 
 var saveSlot int32
 
