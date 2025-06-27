@@ -42806,7 +42806,7 @@ func WI_initDeathmatchStats() {
 					break
 				}
 				if playeringame[j] != 0 {
-					*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = 0
+					dm_frags[i][j] = 0
 				}
 				goto _2
 			_2:
@@ -42841,7 +42841,7 @@ func WI_updateDeathmatchStats() {
 						break
 					}
 					if playeringame[j] != 0 {
-						*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = plrs[i].Ffrags[j]
+						dm_frags[i][j] = plrs[i].Ffrags[j]
 					}
 					goto _2
 				_2:
@@ -42874,17 +42874,17 @@ func WI_updateDeathmatchStats() {
 					if !(j < int32(MAXPLAYERS)) {
 						break
 					}
-					if playeringame[j] != 0 && *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) != plrs[i].Ffrags[j] {
+					if playeringame[j] != 0 && dm_frags[i][j] != plrs[i].Ffrags[j] {
 						if plrs[i].Ffrags[j] < 0 {
-							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4))--
+							dm_frags[i][j]--
 						} else {
-							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4))++
+							dm_frags[i][j]++
 						}
-						if *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) > 99 {
-							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = 99
+						if dm_frags[i][j] > 99 {
+							dm_frags[i][j] = 99
 						}
-						if *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) < -99 {
-							*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)) = -99
+						if dm_frags[i][j] < -99 {
+							dm_frags[i][j] = -99
 						}
 						stillticking = 1
 					}
@@ -42987,7 +42987,7 @@ func WI_drawDeathmatchStats() {
 					break
 				}
 				if playeringame[j] != 0 {
-					WI_drawNum(x+w, y, *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&dm_frags)) + uintptr(i)*16 + uintptr(j)*4)), 2)
+					WI_drawNum(x+w, y, dm_frags[i][j], 2)
 				}
 				x += int32(DM_SPACINGX)
 				goto _3
