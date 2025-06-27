@@ -34793,7 +34793,7 @@ func R_RenderBSPNode(bspnum int32) {
 	// Recursively divide front space.
 	R_RenderBSPNode(int32(bsp.Fchildren[side]))
 	// Possibly divide back space.
-	if R_CheckBBox(&bsp.Fbbox[side]) != 0 {
+	if R_CheckBBox(&bsp.Fbbox[side^1]) != 0 {
 		R_RenderBSPNode(int32(bsp.Fchildren[side^int32(1)]))
 	}
 }
