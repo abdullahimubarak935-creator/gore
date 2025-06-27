@@ -18735,7 +18735,7 @@ type default_t struct {
 }
 
 type default_collection_t struct {
-	Fdefaults    uintptr
+	Fdefaults    []default_t
 	Fnumdefaults int32
 	Ffilename    string
 }
@@ -19020,8 +19020,8 @@ var doom_defaults_list = [76]default_t{
 }
 
 var doom_defaults = default_collection_t{
-	Fdefaults:    uintptr(unsafe.Pointer(&doom_defaults_list)),
-	Fnumdefaults: int32(2432 / 32),
+	Fdefaults:    doom_defaults_list[:],
+	Fnumdefaults: int32(len(doom_defaults_list)),
 }
 
 //! @begin_config_file extended
@@ -19458,28 +19458,28 @@ var extra_defaults_list = [119]default_t{
 }
 
 var extra_defaults = default_collection_t{
-	Fdefaults:    uintptr(unsafe.Pointer(&extra_defaults_list)),
-	Fnumdefaults: int32(3808 / 32),
+	Fdefaults:    extra_defaults_list[:],
+	Fnumdefaults: int32(len(extra_defaults_list)),
 }
 
 // Search a collection for a variable
 
-func SearchCollection(collection uintptr, name uintptr) (r uintptr) {
+func SearchCollection(collection *default_collection_t, name uintptr) *default_t {
 	var i int32
 	i = 0
 	for {
-		if !(i < (*default_collection_t)(unsafe.Pointer(collection)).Fnumdefaults) {
+		if !(i < collection.Fnumdefaults) {
 			break
 		}
-		if !(xstrcmp(name, (*(*default_t)(unsafe.Pointer((*default_collection_t)(unsafe.Pointer(collection)).Fdefaults + uintptr(i)*32))).Fname) != 0) {
-			return (*default_collection_t)(unsafe.Pointer(collection)).Fdefaults + uintptr(i)*32
+		if !(xstrcmp(name, collection.Fdefaults[i].Fname) != 0) {
+			return &collection.Fdefaults[i]
 		}
 		goto _1
 	_1:
 		;
 		i++
 	}
-	return uintptr(0)
+	return nil
 }
 
 func SaveDefaultCollection(collection *default_collection_t) {
@@ -19545,15 +19545,15 @@ func M_LoadDefaults() {
 
 // Get a configuration file variable by its name
 
-func GetDefaultForName(name uintptr) (r uintptr) {
-	var result uintptr
+func GetDefaultForName(name uintptr) *default_t {
+	var result *default_t
 	// Try the main list and the extras
-	result = SearchCollection(uintptr(unsafe.Pointer(&doom_defaults)), name)
-	if result == uintptr(0) {
-		result = SearchCollection(uintptr(unsafe.Pointer(&extra_defaults)), name)
+	result = SearchCollection(&doom_defaults, name)
+	if result == nil {
+		result = SearchCollection(&extra_defaults, name)
 	}
 	// Not found? Internal error.
-	if result == uintptr(0) {
+	if result == nil {
 		I_Error(21968, name)
 	}
 	return result
@@ -19564,10 +19564,10 @@ func GetDefaultForName(name uintptr) (r uintptr) {
 //
 
 func M_BindVariable(name uintptr, location uintptr) {
-	var variable uintptr
+	var variable *default_t
 	variable = GetDefaultForName(name)
-	(*default_t)(unsafe.Pointer(variable)).Flocation = location
-	(*default_t)(unsafe.Pointer(variable)).Fbound = 1
+	variable.Flocation = location
+	variable.Fbound = 1
 }
 
 // Get the path to the default configuration dir to use, if NULL
