@@ -6653,8 +6653,8 @@ func F_TextWrite() {
 			x++
 		}
 		if SCREENWIDTH&63 != 0 {
-			xmemcpy(dest, src+uintptr(y&63<<6), uint64(SCREENWIDTH&63))
-			dest += uintptr(SCREENWIDTH & 63)
+			xmemcpy(dest, src+uintptr(y&63<<6), SCREENWIDTH&63)
+			dest += SCREENWIDTH & 63
 		}
 		goto _1
 	_1:
@@ -7054,7 +7054,7 @@ func F_DrawPatchCol(x int32, patch uintptr, col int32) {
 			v2 = source
 			source++
 			*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(v2))
-			dest += uintptr(SCREENWIDTH)
+			dest += SCREENWIDTH
 		}
 		column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + uintptr(4)
 	}
@@ -35635,7 +35635,7 @@ func R_DrawColumn() {
 		// Re-map color indices from wall texture column
 		//  using a lighting/special effects LUT.
 		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS&int32(127)))))))
-		dest += uintptr(SCREENWIDTH)
+		dest += SCREENWIDTH
 		frac += fracstep
 		goto _2
 	_2:
@@ -35676,8 +35676,8 @@ func R_DrawColumnLow() {
 		v3 = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS&int32(127)))))))
 		*(*uint8)(unsafe.Pointer(dest)) = v3
 		*(*uint8)(unsafe.Pointer(dest2)) = v3
-		dest += uintptr(SCREENWIDTH)
-		dest2 += uintptr(SCREENWIDTH)
+		dest += SCREENWIDTH
+		dest2 += SCREENWIDTH
 		frac += fracstep
 		goto _2
 	_2:
@@ -35794,7 +35794,7 @@ func R_DrawFuzzColumn() {
 		if v3 == int32(FUZZTABLE) {
 			fuzzpos = 0
 		}
-		dest += uintptr(SCREENWIDTH)
+		dest += SCREENWIDTH
 		frac += fracstep
 		goto _2
 	_2:
@@ -35851,8 +35851,8 @@ func R_DrawFuzzColumnLow() {
 		if v3 == int32(FUZZTABLE) {
 			fuzzpos = 0
 		}
-		dest += uintptr(SCREENWIDTH)
-		dest2 += uintptr(SCREENWIDTH)
+		dest += SCREENWIDTH
+		dest2 += SCREENWIDTH
 		frac += fracstep
 		goto _2
 	_2:
@@ -35888,7 +35888,7 @@ func R_DrawTranslatedColumn() {
 		// Thus the "green" ramp of the player 0 sprite
 		//  is mapped to gray, red, black/indigo.
 		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))))))))
-		dest += uintptr(SCREENWIDTH)
+		dest += SCREENWIDTH
 		frac += fracstep
 		goto _2
 	_2:
@@ -35928,8 +35928,8 @@ func R_DrawTranslatedColumnLow() {
 		//  is mapped to gray, red, black/indigo.
 		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))))))))
 		*(*uint8)(unsafe.Pointer(dest2)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))))))))
-		dest += uintptr(SCREENWIDTH)
-		dest2 += uintptr(SCREENWIDTH)
+		dest += SCREENWIDTH
+		dest2 += SCREENWIDTH
 		frac += fracstep
 		goto _2
 	_2:
@@ -36172,8 +36172,8 @@ func R_FillBackScreen() {
 			x++
 		}
 		if SCREENWIDTH&63 != 0 {
-			xmemcpy(dest, src+uintptr(y&63<<6), uint64(SCREENWIDTH&63))
-			dest += uintptr(SCREENWIDTH & 63)
+			xmemcpy(dest, src+uintptr(y&63<<6), SCREENWIDTH&63)
+			dest += SCREENWIDTH & 63
 		}
 		goto _1
 	_1:
@@ -41503,8 +41503,8 @@ func V_CopyRect(srcx int32, srcy int32, source uintptr, width int32, height int3
 			break
 		}
 		xmemcpy(dest, src, uint64(width))
-		src += uintptr(SCREENWIDTH)
-		dest += uintptr(SCREENWIDTH)
+		src += SCREENWIDTH
+		dest += SCREENWIDTH
 		goto _1
 	_1:
 		;
@@ -41548,7 +41548,7 @@ func V_DrawPatch(x int32, y int32, patch uintptr) {
 				v3 = source
 				source++
 				*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(v3))
-				dest += uintptr(SCREENWIDTH)
+				dest += SCREENWIDTH
 			}
 			column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + uintptr(4)
 		}
@@ -41597,7 +41597,7 @@ func V_DrawPatchFlipped(x int32, y int32, patch uintptr) {
 				v3 = source
 				source++
 				*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(v3))
-				dest += uintptr(SCREENWIDTH)
+				dest += SCREENWIDTH
 			}
 			column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + uintptr(4)
 		}
@@ -41639,7 +41639,7 @@ func V_DrawBlock(x int32, y int32, width int32, height int32, src uintptr) {
 		}
 		xmemcpy(dest, src, uint64(width))
 		src += uintptr(width)
-		dest += uintptr(SCREENWIDTH)
+		dest += SCREENWIDTH
 	}
 }
 
@@ -41666,7 +41666,7 @@ func V_DrawFilledBox(x int32, y int32, w int32, h int32, c int32) {
 			;
 			x1++
 		}
-		buf += uintptr(SCREENWIDTH)
+		buf += SCREENWIDTH
 		goto _1
 	_1:
 		;
@@ -41703,7 +41703,7 @@ func V_DrawVertLine(x int32, y int32, h int32, c int32) {
 			break
 		}
 		*(*uint8)(unsafe.Pointer(buf)) = uint8(c)
-		buf += uintptr(SCREENWIDTH)
+		buf += SCREENWIDTH
 		goto _1
 	_1:
 		;
@@ -44727,7 +44727,7 @@ func I_FinishUpdate() {
 			DG_ScreenBuffer.Pix[pos+2] = col.B
 			DG_ScreenBuffer.Pix[pos+3] = 0xff
 		}
-		line_in += uintptr(SCREENWIDTH)
+		line_in += SCREENWIDTH
 	}
 	dg_frontend.DrawFrame(DG_ScreenBuffer)
 }
