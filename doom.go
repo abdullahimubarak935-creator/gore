@@ -30949,7 +30949,7 @@ var totallines int32
 //	// P_LoadVertexes
 //	//
 func P_LoadVertexes(lump int32) {
-	var data, ml uintptr
+	var data uintptr
 	// Determine number of lumps:
 	//  total lump length / vertex record length.
 	numvertexes = int32(uint64(W_LumpLength(uint32(lump))) / 4)
@@ -30957,14 +30957,13 @@ func P_LoadVertexes(lump int32) {
 	vertexes = make([]vertex_t, numvertexes)
 	// Load data into cache.
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
-	ml = data
+	ml := unsafe.Slice((*mapvertex_t)(unsafe.Pointer(data)), numvertexes)
 	// Copy and convert vertex coordinates,
 	// internal representation as fixed.
 	for i := int32(0); i < numvertexes; i++ {
 		li := &vertexes[i]
-		li.Fx = int32((*mapvertex_t)(unsafe.Pointer(ml)).Fx) << int32(FRACBITS)
-		li.Fy = int32((*mapvertex_t)(unsafe.Pointer(ml)).Fy) << int32(FRACBITS)
-		ml += 4
+		li.Fx = int32(ml[i].Fx) << int32(FRACBITS)
+		li.Fy = int32(ml[i].Fy) << int32(FRACBITS)
 	}
 	// Free buffer memory.
 	W_ReleaseLumpNum(lump)
