@@ -1908,7 +1908,7 @@ type node_t struct {
 type lighttable_t = uint8
 
 type drawseg_t struct {
-	Fcurline          uintptr
+	Fcurline          *seg_t
 	Fx1               int32
 	Fx2               int32
 	Fscale1           fixed_t
@@ -30976,7 +30976,7 @@ func P_LoadVertexes(lump int32) {
 //	//
 func GetSectorAtNullAddress() (r *sector_t) {
 	if !(null_sector_is_initialized != 0) {
-		xmemset(uintptr(unsafe.Pointer(&null_sector)), 0, 144)
+		null_sector = sector_t{}
 		I_GetMemoryValue(0, uintptr(unsafe.Pointer(&null_sector)), 4)
 		I_GetMemoryValue(4, uintptr(unsafe.Pointer(&null_sector))+4, 4)
 		null_sector_is_initialized = 1
@@ -30994,30 +30994,25 @@ var null_sector sector_t
 //	// P_LoadSegs
 //	//
 func P_LoadSegs(lump int32) {
-	var data, li, ml uintptr
+	var data uintptr
 	var ldef *line_t
-	var i, linedef, side, sidenum int32
+	var linedef, side, sidenum int32
 	numsegs = int32(uint64(W_LumpLength(uint32(lump))) / 12)
-	segs = Z_Malloc(int32(uint64(numsegs)*56), int32(PU_LEVEL), uintptr(0))
-	xmemset(segs, 0, uint64(numsegs)*56)
+	segs = make([]seg_t, numsegs)
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
-	ml = data
-	li = segs
-	i = 0
-	for {
-		if !(i < numsegs) {
-			break
-		}
-		(*seg_t)(unsafe.Pointer(li)).Fv1 = &vertexes[(*mapseg_t)(unsafe.Pointer(ml)).Fv1]
-		(*seg_t)(unsafe.Pointer(li)).Fv2 = &vertexes[(*mapseg_t)(unsafe.Pointer(ml)).Fv2]
-		(*seg_t)(unsafe.Pointer(li)).Fangle = uint32(int32((*mapseg_t)(unsafe.Pointer(ml)).Fangle) << 16)
-		(*seg_t)(unsafe.Pointer(li)).Foffset = int32((*mapseg_t)(unsafe.Pointer(ml)).Foffset) << 16
-		linedef = int32((*mapseg_t)(unsafe.Pointer(ml)).Flinedef)
+	ml := unsafe.Slice((*mapseg_t)(unsafe.Pointer(data)), numsegs)
+	for i := int32(0); i < numsegs; i++ {
+		li := &segs[i]
+		li.Fv1 = &vertexes[ml[i].Fv1]
+		li.Fv2 = &vertexes[ml[i].Fv2]
+		li.Fangle = uint32(int32(ml[i].Fangle) << 16)
+		li.Foffset = int32(ml[i].Foffset) << 16
+		linedef = int32(ml[i].Flinedef)
 		ldef = &lines[linedef]
-		(*seg_t)(unsafe.Pointer(li)).Flinedef = ldef
-		side = int32((*mapseg_t)(unsafe.Pointer(ml)).Fside)
-		(*seg_t)(unsafe.Pointer(li)).Fsidedef = &sides[ldef.Fsidenum[side]]
-		(*seg_t)(unsafe.Pointer(li)).Ffrontsector = sides[ldef.Fsidenum[side]].Fsector
+		li.Flinedef = ldef
+		side = int32(ml[i].Fside)
+		li.Fsidedef = &sides[ldef.Fsidenum[side]]
+		li.Ffrontsector = sides[ldef.Fsidenum[side]].Fsector
 		if int32(ldef.Fflags)&ML_TWOSIDED != 0 {
 			sidenum = int32(ldef.Fsidenum[side^int32(1)])
 			// If the sidenum is out of range, this may be a "glass hack"
@@ -31026,19 +31021,13 @@ func P_LoadSegs(lump int32) {
 			// OTTAWAU.WAD, which is the one place I've seen this trick
 			// used).
 			if sidenum < 0 || sidenum >= numsides {
-				(*seg_t)(unsafe.Pointer(li)).Fbacksector = GetSectorAtNullAddress()
+				li.Fbacksector = GetSectorAtNullAddress()
 			} else {
-				(*seg_t)(unsafe.Pointer(li)).Fbacksector = sides[sidenum].Fsector
+				li.Fbacksector = sides[sidenum].Fsector
 			}
 		} else {
-			(*seg_t)(unsafe.Pointer(li)).Fbacksector = nil
+			li.Fbacksector = nil
 		}
-		goto _1
-	_1:
-		;
-		i++
-		li += 56
-		ml += 12
 	}
 	W_ReleaseLumpNum(lump)
 }
@@ -31312,12 +31301,11 @@ func P_LoadBlockMap(lump int32) {
 //	//
 func P_GroupLines() {
 	var block, i, j, v10, v7, v8, v9 int32
-	var seg uintptr
 	// look up sector number for each subsector
 	for i := int32(0); i < numsubsectors; i++ {
 		ss := &subsectors[i]
-		seg = segs + uintptr(ss.Ffirstline)*56
-		ss.Fsector = (*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(seg)).Fsidedef)).Fsector
+		seg := &segs[ss.Ffirstline]
+		ss.Fsector = seg.Fsidedef.Fsector
 	}
 	// count number of lines in each sector
 	totallines = 0
@@ -31666,7 +31654,6 @@ func P_InterceptVector2(v2 uintptr, v1 uintptr) (r fixed_t) {
 //	//
 func P_CrossSubsector(num int32) (r boolean) {
 	bp := alloc(48)
-	var seg uintptr
 	var v1, v2 *vertex_t
 	var line *line_t
 	var front, back *sector_t
@@ -31678,12 +31665,12 @@ func P_CrossSubsector(num int32) (r boolean) {
 	sub := &subsectors[num]
 	// check lines
 	count = int32(sub.Fnumlines)
-	seg = segs + uintptr(sub.Ffirstline)*56
-	for {
+	for i := sub.Ffirstline; ; i++ {
 		if !(count != 0) {
 			break
 		}
-		line = (*seg_t)(unsafe.Pointer(seg)).Flinedef
+		seg := &segs[sub.Ffirstline]
+		line = seg.Flinedef
 		// allready checked other side?
 		if line.Fvalidcount == validcount {
 			goto _1
@@ -31718,8 +31705,8 @@ func P_CrossSubsector(num int32) (r boolean) {
 			return 0
 		}
 		// crosses a two sided line
-		front = (*seg_t)(unsafe.Pointer(seg)).Ffrontsector
-		back = (*seg_t)(unsafe.Pointer(seg)).Fbacksector
+		front = seg.Ffrontsector
+		back = seg.Fbacksector
 		// no wall to block sight with?
 		if front.Ffloorheight == back.Ffloorheight && front.Fceilingheight == back.Fceilingheight {
 			goto _1
@@ -31760,7 +31747,6 @@ func P_CrossSubsector(num int32) (r boolean) {
 		goto _1
 	_1:
 		;
-		seg += 56
 		count--
 	}
 	// passed the subsector ok
@@ -34511,13 +34497,13 @@ func R_ClearClipSegs() {
 //	// Clips the given segment
 //	// and adds any visible pieces to the line list.
 //	//
-func R_AddLine(line uintptr) {
+func R_AddLine(line *seg_t) {
 	var angle1, angle2, span, tspan angle_t
 	var x1, x2 int32
 	curline = line
 	// OPTIMIZE: quickly reject orthogonal back sides.
-	angle1 = R_PointToAngle((*seg_t)(unsafe.Pointer(line)).Fv1.Fx, (*seg_t)(unsafe.Pointer(line)).Fv1.Fy)
-	angle2 = R_PointToAngle((*seg_t)(unsafe.Pointer(line)).Fv2.Fx, (*seg_t)(unsafe.Pointer(line)).Fv2.Fy)
+	angle1 = R_PointToAngle(line.Fv1.Fx, line.Fv1.Fy)
+	angle2 = R_PointToAngle(line.Fv2.Fx, line.Fv2.Fy)
 	// Clip to view edges.
 	// OPTIMIZE: make constant out of 2*clipangle (FIELDOFVIEW).
 	span = angle1 - angle2
@@ -34557,7 +34543,7 @@ func R_AddLine(line uintptr) {
 	if x1 == x2 {
 		return
 	}
-	backsector = (*seg_t)(unsafe.Pointer(line)).Fbacksector
+	backsector = line.Fbacksector
 	// Single sided line?
 	if !(backsector != nil) {
 		goto clipsolid
@@ -34575,7 +34561,7 @@ func R_AddLine(line uintptr) {
 	// Identical floor and ceiling on both sides,
 	// identical light levels on both sides,
 	// and no middle texture.
-	if int32(backsector.Fceilingpic) == int32(frontsector.Fceilingpic) && int32(backsector.Ffloorpic) == int32(frontsector.Ffloorpic) && int32(backsector.Flightlevel) == int32(frontsector.Flightlevel) && int32((*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fsidedef)).Fmidtexture) == 0 {
+	if int32(backsector.Fceilingpic) == int32(frontsector.Fceilingpic) && int32(backsector.Ffloorpic) == int32(frontsector.Ffloorpic) && int32(backsector.Flightlevel) == int32(frontsector.Flightlevel) && int32((*side_t)(unsafe.Pointer(curline.Fsidedef)).Fmidtexture) == 0 {
 		return
 	}
 	goto clippass
@@ -34729,14 +34715,12 @@ func R_CheckBBox(bspcoord *box_t) (r boolean) {
 //	//
 func R_Subsector(num int32) {
 	var count, v1 int32
-	var line uintptr
 	if num >= numsubsectors {
 		I_Error(25894, num, numsubsectors)
 	}
 	sub := &subsectors[num]
 	frontsector = sub.Fsector
 	count = int32(sub.Fnumlines)
-	line = segs + uintptr(sub.Ffirstline)*56
 	if frontsector.Ffloorheight < viewz {
 		floorplane = R_FindPlane(frontsector.Ffloorheight, int32(frontsector.Ffloorpic), int32(frontsector.Flightlevel))
 	} else {
@@ -34748,14 +34732,14 @@ func R_Subsector(num int32) {
 		ceilingplane = nil
 	}
 	R_AddSprites(frontsector)
-	for {
+	for i := sub.Ffirstline; ; i++ {
 		v1 = count
 		count--
 		if !(v1 != 0) {
 			break
 		}
+		line := &segs[i]
 		R_AddLine(line)
-		line += 56
 	}
 }
 
@@ -36348,12 +36332,12 @@ func R_PointOnSide(x fixed_t, y fixed_t, node *node_t) (r int32) {
 	return 1
 }
 
-func R_PointOnSegSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
+func R_PointOnSegSide(x fixed_t, y fixed_t, line *seg_t) (r int32) {
 	var dx, dy, ldx, ldy, left, lx, ly, right fixed_t
-	lx = (*seg_t)(unsafe.Pointer(line)).Fv1.Fx
-	ly = (*seg_t)(unsafe.Pointer(line)).Fv1.Fy
-	ldx = (*seg_t)(unsafe.Pointer(line)).Fv2.Fx - lx
-	ldy = (*seg_t)(unsafe.Pointer(line)).Fv2.Fy - ly
+	lx = line.Fv1.Fx
+	ly = line.Fv1.Fy
+	ldx = line.Fv2.Fx - lx
+	ldy = line.Fv2.Fy - ly
 	if !(ldx != 0) {
 		if x <= lx {
 			return boolint32(ldy > 0)
@@ -37202,14 +37186,14 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 	//   for horizontal / vertical / diagonal. Diagonal?
 	// OPTIMIZE: get rid of LIGHTSEGSHIFT globally
 	curline = ds.Fcurline
-	frontsector = (*seg_t)(unsafe.Pointer(curline)).Ffrontsector
-	backsector = (*seg_t)(unsafe.Pointer(curline)).Fbacksector
-	texnum = texturetranslation[(*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fsidedef)).Fmidtexture]
+	frontsector = curline.Ffrontsector
+	backsector = curline.Fbacksector
+	texnum = texturetranslation[(*side_t)(unsafe.Pointer(curline.Fsidedef)).Fmidtexture]
 	lightnum = int32(frontsector.Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
-	if (*seg_t)(unsafe.Pointer(curline)).Fv1.Fy == (*seg_t)(unsafe.Pointer(curline)).Fv2.Fy {
+	if curline.Fv1.Fy == curline.Fv2.Fy {
 		lightnum--
 	} else {
-		if (*seg_t)(unsafe.Pointer(curline)).Fv1.Fx == (*seg_t)(unsafe.Pointer(curline)).Fv2.Fx {
+		if curline.Fv1.Fx == curline.Fv2.Fx {
 			lightnum++
 		}
 	}
@@ -37228,7 +37212,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 	mfloorclip = ds.Fsprbottomclip
 	mceilingclip = ds.Fsprtopclip
 	// find positioning
-	if int32((*seg_t)(unsafe.Pointer(curline)).Flinedef.Fflags)&ML_DONTPEGBOTTOM != 0 {
+	if int32(curline.Flinedef.Fflags)&ML_DONTPEGBOTTOM != 0 {
 		if frontsector.Ffloorheight > backsector.Ffloorheight {
 			v1 = frontsector.Ffloorheight
 		} else {
@@ -37245,7 +37229,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 		dc_texturemid = v2
 		dc_texturemid = dc_texturemid - viewz
 	}
-	dc_texturemid += (*side_t)(unsafe.Pointer((*seg_t)(unsafe.Pointer(curline)).Fsidedef)).Frowoffset
+	dc_texturemid += (*side_t)(unsafe.Pointer(curline.Fsidedef)).Frowoffset
 	if fixedcolormap != 0 {
 		dc_colormap = fixedcolormap
 	}
@@ -37450,18 +37434,18 @@ func R_StoreWallRange(start int32, stop int32) {
 	if start >= viewwidth || start > stop {
 		I_Error(26571, start, stop)
 	}
-	sidedef = (*seg_t)(unsafe.Pointer(curline)).Fsidedef
-	linedef = (*seg_t)(unsafe.Pointer(curline)).Flinedef
+	sidedef = curline.Fsidedef
+	linedef = curline.Flinedef
 	// mark the segment as visible for auto map
 	linedef.Fflags |= ML_MAPPED
 	// calculate rw_distance for scale calculation
-	rw_normalangle = (*seg_t)(unsafe.Pointer(curline)).Fangle + uint32(ANG909)
+	rw_normalangle = curline.Fangle + uint32(ANG909)
 	offsetangle = uint32(xabs(int32(rw_normalangle - uint32(rw_angle1))))
 	if offsetangle > uint32(ANG909) {
 		offsetangle = uint32(ANG909)
 	}
 	distangle = uint32(ANG909) - offsetangle
-	hyp = R_PointToDist((*seg_t)(unsafe.Pointer(curline)).Fv1.Fx, (*seg_t)(unsafe.Pointer(curline)).Fv1.Fy)
+	hyp = R_PointToDist(curline.Fv1.Fx, curline.Fv1.Fy)
 	sineval = finesine[distangle>>int32(ANGLETOFINESHIFT)]
 	rw_distance = FixedMul(hyp, sineval)
 	v2 = start
@@ -37626,7 +37610,7 @@ func R_StoreWallRange(start int32, stop int32) {
 		if rw_normalangle-uint32(rw_angle1) < uint32(ANG18013) {
 			rw_offset = -rw_offset
 		}
-		rw_offset += sidedef.Ftextureoffset + (*seg_t)(unsafe.Pointer(curline)).Foffset
+		rw_offset += sidedef.Ftextureoffset + curline.Foffset
 		rw_centerangle = uint32(ANG909) + viewangle - rw_normalangle
 		// calculate light table
 		//  use different light tables
@@ -37634,10 +37618,10 @@ func R_StoreWallRange(start int32, stop int32) {
 		// OPTIMIZE: get rid of LIGHTSEGSHIFT globally
 		if !(fixedcolormap != 0) {
 			lightnum = int32(frontsector.Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
-			if (*seg_t)(unsafe.Pointer(curline)).Fv1.Fy == (*seg_t)(unsafe.Pointer(curline)).Fv2.Fy {
+			if curline.Fv1.Fy == curline.Fv2.Fy {
 				lightnum--
 			} else {
-				if (*seg_t)(unsafe.Pointer(curline)).Fv1.Fx == (*seg_t)(unsafe.Pointer(curline)).Fv2.Fx {
+				if curline.Fv1.Fx == curline.Fv2.Fx {
 					lightnum++
 				}
 			}
@@ -45318,7 +45302,7 @@ var crushchange boolean
 
 //#include "r_local.h"
 
-var curline uintptr
+var curline *seg_t
 
 // C documentation
 //
@@ -46449,7 +46433,7 @@ func sectorIndex(sector *sector_t) int32 {
 	return idx
 }
 
-var segs uintptr
+var segs []seg_t
 
 // OPTIMIZE: closed two sided lines as single sided
 
