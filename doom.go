@@ -11,6 +11,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"reflect"
 	"runtime/debug"
 	"strconv"
 	"strings"
@@ -20446,7 +20447,7 @@ func M_LoadSelect(choice int32) {
 //	//
 func M_LoadGame(choice int32) {
 	if netgame != 0 {
-		M_StartMessage(__ccgo_ts_str(22164), uintptr(0), 0)
+		M_StartMessage(__ccgo_ts_str(22164), nil, 0)
 		return
 	}
 	M_SetupNextMenu(&LoadDef)
@@ -20516,7 +20517,7 @@ func M_SaveSelect(choice int32) {
 //	//
 func M_SaveGame(choice int32) {
 	if !(usergame != 0) {
-		M_StartMessage(__ccgo_ts_str(22227), uintptr(0), 0)
+		M_StartMessage(__ccgo_ts_str(22227), nil, 0)
 		return
 	}
 	if gamestate != GS_LEVEL {
@@ -20549,7 +20550,7 @@ func M_QuickSave() {
 		return
 	}
 	tempstring := fmt.Sprintf(__ccgo_ts_str(22279), savegamestrings[quickSaveSlot])
-	M_StartMessage(tempstring, __ccgo_fp(M_QuickSaveResponse), 1)
+	M_StartMessage(tempstring, M_QuickSaveResponse, 1)
 }
 
 // C documentation
@@ -20566,15 +20567,15 @@ func M_QuickLoadResponse(key int32) {
 
 func M_QuickLoad() {
 	if netgame != 0 {
-		M_StartMessage(__ccgo_ts_str(22332), uintptr(0), 0)
+		M_StartMessage(__ccgo_ts_str(22332), nil, 0)
 		return
 	}
 	if quickSaveSlot < 0 {
-		M_StartMessage(__ccgo_ts_str(22384), uintptr(0), 0)
+		M_StartMessage(__ccgo_ts_str(22384), nil, 0)
 		return
 	}
 	tempstring := fmt.Sprintf(__ccgo_ts_str(22439), savegamestrings[quickSaveSlot])
-	M_StartMessage(tempstring, __ccgo_fp(M_QuickLoadResponse), 1)
+	M_StartMessage(tempstring, M_QuickLoadResponse, 1)
 }
 
 // C documentation
@@ -20713,7 +20714,7 @@ func M_DrawNewGame() {
 
 func M_NewGame(choice int32) {
 	if netgame != 0 && !(demoplayback != 0) {
-		M_StartMessage(__ccgo_ts_str(22564), uintptr(0), 0)
+		M_StartMessage(__ccgo_ts_str(22564), nil, 0)
 		return
 	}
 	// Chex Quest disabled the episode select screen, as did Doom II.
@@ -20738,7 +20739,7 @@ func M_VerifyNightmare(key int32) {
 
 func M_ChooseSkill(choice int32) {
 	if skill_t(choice) == sk_nightmare {
-		M_StartMessage(__ccgo_ts_str(22639), __ccgo_fp(M_VerifyNightmare), 1)
+		M_StartMessage(__ccgo_ts_str(22639), M_VerifyNightmare, 1)
 		return
 	}
 	G_DeferedInitNew(skill_t(choice), epi+int32(1), 1)
@@ -20747,7 +20748,7 @@ func M_ChooseSkill(choice int32) {
 
 func M_Episode(choice int32) {
 	if gamemode == shareware && choice != 0 {
-		M_StartMessage(__ccgo_ts_str(22711), uintptr(0), 0)
+		M_StartMessage(__ccgo_ts_str(22711), nil, 0)
 		M_SetupNextMenu(&ReadDef1)
 		return
 	}
@@ -20821,10 +20822,10 @@ func M_EndGame(choice int32) {
 		return
 	}
 	if netgame != 0 {
-		M_StartMessage(__ccgo_ts_str(22917), uintptr(0), 0)
+		M_StartMessage(__ccgo_ts_str(22917), nil, 0)
 		return
 	}
-	M_StartMessage(__ccgo_ts_str(22956), __ccgo_fp(M_EndGameResponse), 1)
+	M_StartMessage(__ccgo_ts_str(22956), M_EndGameResponse, 1)
 }
 
 // C documentation
@@ -20915,7 +20916,7 @@ func M_SelectEndMessage() string {
 
 func M_QuitDOOM(choice int32) {
 	endstring = fmt.Sprintf(__ccgo_ts_str(23010), M_SelectEndMessage())
-	M_StartMessage(endstring, __ccgo_fp(M_QuitResponse), 1)
+	M_StartMessage(endstring, M_QuitResponse, 1)
 }
 
 func M_ChangeSensitivity(choice int32) {
@@ -20986,14 +20987,13 @@ func M_DrawThermo(x int32, y int32, thermWidth int32, thermDot int32) {
 	V_DrawPatchDirect(x+int32(8)+thermDot*int32(8), y, W_CacheLumpName(__ccgo_ts(23090), int32(PU_CACHE)))
 }
 
-func M_StartMessage(string1 string, routine uintptr, input boolean) {
+func M_StartMessage(string1 string, routine func(int32), input boolean) {
 	messageLastMenuActive = int32(menuactive)
 	messageToPrint = 1
 	messageString = string1
 	messageRoutine = routine
 	messageNeedsInput = input
 	menuactive = 1
-	return
 }
 
 // C documentation
@@ -21096,7 +21096,13 @@ func M_Responder(ev *event_t) (r boolean) {
 	if ev.Ftype1 == ev_quit {
 		// First click on close button = bring up quit confirm message.
 		// Second click on close button = confirm quit
-		if menuactive != 0 && messageToPrint != 0 && messageRoutine == __ccgo_fp(M_QuitResponse) {
+
+		// TODO: GORE/ANDRE: This is a hack since Go doesn't like comparing function pointers.
+		// Can we just skip this special handling?
+		sf1 := reflect.ValueOf(messageRoutine)
+		sf2 := reflect.ValueOf(M_QuitResponse)
+
+		if menuactive != 0 && messageToPrint != 0 && sf1.Pointer() == sf2.Pointer() {
 			M_QuitResponse(key_menu_confirm)
 		} else {
 			S_StartSound(nil, int32(sfx_swtchn))
@@ -21241,8 +21247,8 @@ func M_Responder(ev *event_t) (r boolean) {
 		}
 		menuactive = uint32(messageLastMenuActive)
 		messageToPrint = 0
-		if messageRoutine != 0 {
-			(*(*func(int32))(unsafe.Pointer(&struct{ uintptr }{messageRoutine})))(key)
+		if messageRoutine != nil {
+			messageRoutine(key)
 		}
 		menuactive = 0
 		S_StartSound(nil, int32(sfx_swtchx))
@@ -45985,7 +45991,7 @@ var messageLastMenuActive int32
 //	// timed message = no input from user
 var messageNeedsInput boolean
 
-var messageRoutine uintptr
+var messageRoutine func(int32)
 
 // C documentation
 //
