@@ -178,6 +178,16 @@ func booluint32(b bool) uint32 {
 	return 0
 }
 
+func gostring_bytes(s []byte) string {
+	if len(s) == 0 {
+		return ""
+	}
+	var end int
+	for ; end < len(s) && s[end] != 0; end++ {
+	}
+	return string(s[:end])
+}
+
 func gostring(s uintptr) string {
 	if s == 0 {
 		return ""
@@ -7526,7 +7536,7 @@ var joystrafemove int32
 var joyarray [21]boolean
 var joybuttons = uintptr(unsafe.Pointer(&joyarray)) + 1*4 // allow [-1]
 var savegameslot int32
-var savedescription [32]int8
+var savedescription string
 
 func init() {
 	vanilla_savegame_limit = 1
@@ -8140,7 +8150,7 @@ func G_Ticker() {
 						S_ResumeSound()
 					}
 				case int32(BTS_SAVEGAME):
-					if !(savedescription[0] != 0) {
+					if len(savedescription) == 0 {
 						M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(13798), 32)
 					}
 					savegameslot = int32(players[i].Fcmd.Fbuttons) & int32(BTS_SAVEMASK) >> int32(BTS_SAVESHIFT)
@@ -8741,9 +8751,9 @@ func G_DoLoadGame() {
 //	// Called by the menu task.
 //	// Description is a 24 byte text string
 //	//
-func G_SaveGame(slot int32, description uintptr) {
+func G_SaveGame(slot int32, description string) {
 	savegameslot = slot
-	M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), description, 32)
+	savedescription = description
 	sendsave = 1
 }
 
@@ -8770,7 +8780,7 @@ func G_DoSaveGame() {
 		}
 	}
 	savegame_error = 0
-	P_WriteSaveGameHeader(uintptr(unsafe.Pointer(&savedescription)))
+	P_WriteSaveGameHeader(savedescription)
 	P_ArchivePlayers()
 	P_ArchiveWorld()
 	P_ArchiveThinkers()
@@ -20335,17 +20345,20 @@ func M_ReadSaveStrings() {
 	var i int32
 	i = 0
 	for {
+		var thisString [SAVESTRINGSIZE]byte
 		if !(i < int32(load_end)) {
 			break
 		}
 		var err error
 		handle, err := os.Open(P_SaveGameFile(i))
 		if err != nil {
-			M_StringCopy(uintptr(unsafe.Pointer(&savegamestrings[i])), __ccgo_ts(22118), uint64(SAVESTRINGSIZE))
+			savegamestrings[i] = __ccgo_ts_str(22118)
 			LoadMenu[i].Fstatus = 0
 			goto _1
 		}
-		handle.Read(savegamestrings[i][:])
+
+		handle.Read(thisString[:])
+		savegamestrings[i] = gostring_bytes(thisString[:])
 		handle.Close()
 		LoadMenu[i].Fstatus = 1
 		goto _1
@@ -20369,7 +20382,7 @@ func M_DrawLoad() {
 			break
 		}
 		M_DrawSaveLoadBorder(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i)
-		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, gostring(uintptr(unsafe.Pointer(&savegamestrings[i]))))
+		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, savegamestrings[i])
 		goto _1
 	_1:
 		;
@@ -20438,14 +20451,14 @@ func M_DrawSave() {
 			break
 		}
 		M_DrawSaveLoadBorder(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i)
-		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, gostring(uintptr(unsafe.Pointer(&savegamestrings[i]))))
+		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+int32(LINEHEIGHT)*i, savegamestrings[i])
 		goto _1
 	_1:
 		;
 		i++
 	}
 	if saveStringEnter != 0 {
-		i = M_StringWidth(gostring(uintptr(unsafe.Pointer(&savegamestrings[saveSlot]))))
+		i = M_StringWidth(savegamestrings[saveSlot])
 		M_WriteText(int32(LoadDef.Fx)+i, int32(LoadDef.Fy)+int32(LINEHEIGHT)*saveSlot, __ccgo_ts_str(22225))
 	}
 }
@@ -20456,7 +20469,7 @@ func M_DrawSave() {
 //	// M_Responder calls this when user is finished
 //	//
 func M_DoSave(slot int32) {
-	G_SaveGame(slot, uintptr(unsafe.Pointer(&savegamestrings[slot])))
+	G_SaveGame(slot, savegamestrings[slot])
 	M_ClearMenus()
 	// PICK QUICKSAVE SLOT YET?
 	if quickSaveSlot == -int32(2) {
@@ -20473,11 +20486,11 @@ func M_SaveSelect(choice int32) {
 	// we are going to be intercepting all chars
 	saveStringEnter = 1
 	saveSlot = choice
-	M_StringCopy(uintptr(unsafe.Pointer(&saveOldString)), uintptr(unsafe.Pointer(&savegamestrings[choice])), uint64(SAVESTRINGSIZE))
-	if !(xstrcmp(uintptr(unsafe.Pointer(&savegamestrings[choice])), __ccgo_ts(22118)) != 0) {
-		*(*int8)(unsafe.Pointer(uintptr(unsafe.Pointer(&savegamestrings[choice])))) = 0
+	saveOldString = savegamestrings[choice]
+	if strings.EqualFold(savegamestrings[choice], __ccgo_ts_str(22118)) {
+		savegamestrings[choice] = ""
 	}
-	saveCharIndex = int32(xstrlen(uintptr(unsafe.Pointer(&savegamestrings[choice]))))
+	saveCharIndex = len(savegamestrings[choice])
 }
 
 // C documentation
@@ -20519,7 +20532,7 @@ func M_QuickSave() {
 		quickSaveSlot = -int32(2) // means to pick a slot now
 		return
 	}
-	tempstring := fmt.Sprintf(__ccgo_ts_str(22279), gostring(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
+	tempstring := fmt.Sprintf(__ccgo_ts_str(22279), savegamestrings[quickSaveSlot])
 	M_StartMessage(tempstring, __ccgo_fp(M_QuickSaveResponse), 1)
 }
 
@@ -20544,7 +20557,7 @@ func M_QuickLoad() {
 		M_StartMessage(__ccgo_ts_str(22384), uintptr(0), 0)
 		return
 	}
-	tempstring := fmt.Sprintf(__ccgo_ts_str(22439), gostring(uintptr(unsafe.Pointer(&savegamestrings))+uintptr(quickSaveSlot)*24))
+	tempstring := fmt.Sprintf(__ccgo_ts_str(22439), savegamestrings[quickSaveSlot])
 	M_StartMessage(tempstring, __ccgo_fp(M_QuickLoadResponse), 1)
 }
 
@@ -21163,14 +21176,22 @@ func M_Responder(ev *event_t) (r boolean) {
 		case int32(KEY_BACKSPACE3):
 			if saveCharIndex > 0 {
 				saveCharIndex--
-				savegamestrings[saveSlot][saveCharIndex] = 0
+				savegamestrings[saveSlot] = savegamestrings[saveSlot][:saveCharIndex]
 			}
 		case int32(KEY_ESCAPE):
 			saveStringEnter = 0
-			M_StringCopy(uintptr(unsafe.Pointer(&savegamestrings[saveSlot])), uintptr(unsafe.Pointer(&saveOldString)), uint64(SAVESTRINGSIZE))
+			bString := bytestring(savegamestrings[saveSlot])
+			if len(bString) == 0 {
+				bString = []byte{0}
+			}
+			oldString := bytestring(saveOldString)
+			if len(oldString) == 0 {
+				oldString = []byte{0}
+			}
+			M_StringCopy(uintptr(unsafe.Pointer(&bString[0])), uintptr(unsafe.Pointer(&oldString[0])), uint64(SAVESTRINGSIZE))
 		case int32(KEY_ENTER):
 			saveStringEnter = 0
-			if savegamestrings[saveSlot][0] != 0 {
+			if len(savegamestrings[saveSlot]) > 0 {
 				M_DoSave(saveSlot)
 			}
 		default:
@@ -21188,9 +21209,8 @@ func M_Responder(ev *event_t) (r boolean) {
 				break
 			}
 			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(gostring(uintptr(unsafe.Pointer(&savegamestrings[saveSlot])))) < (SAVESTRINGSIZE-2)*8 {
-				savegamestrings[saveSlot][saveCharIndex] = byte(ch)
+				savegamestrings[saveSlot] += string(ch)
 				saveCharIndex++
-				savegamestrings[saveSlot][saveCharIndex] = 0
 			}
 			break
 		}
@@ -30412,35 +30432,21 @@ func saveg_write_glow_t(str *glow_t) {
 // Write the header for a savegame
 //
 
-func P_WriteSaveGameHeader(description uintptr) {
+func P_WriteSaveGameHeader(description string) {
+	var i int
 	bp := alloc(32)
-	var i int32
-	i = 0
-	for {
-		if !(int32(*(*int8)(unsafe.Pointer(description + uintptr(i)))) != int32('\000')) {
-			break
+	for i = 0; i < SAVESTRINGSIZE; i++ {
+		if i < len(description) {
+			saveg_write8(uint8(description[i]))
+		} else {
+			saveg_write8(0)
 		}
-		saveg_write8(uint8(*(*int8)(unsafe.Pointer(description + uintptr(i)))))
-		goto _1
-	_1:
-		;
-		i++
-	}
-	for {
-		if !(i < int32(SAVESTRINGSIZE)) {
-			break
-		}
-		saveg_write8(uint8(0))
-		goto _2
-	_2:
-		;
-		i++
 	}
 	xmemset(bp, 0, 16)
 	M_snprintf(bp, 16, __ccgo_ts_str(25058), G_VanillaVersionCode())
 	i = 0
 	for {
-		if !(i < int32(VERSIONSIZE)) {
+		if !(i < VERSIONSIZE) {
 			break
 		}
 		saveg_write8(uint8((*(*[16]int8)(unsafe.Pointer(bp)))[i]))
@@ -30454,7 +30460,7 @@ func P_WriteSaveGameHeader(description uintptr) {
 	saveg_write8(uint8(gamemap))
 	i = 0
 	for {
-		if !(i < int32(MAXPLAYERS)) {
+		if !(i < MAXPLAYERS) {
 			break
 		}
 		saveg_write8(uint8(playeringame[i]))
@@ -46364,10 +46370,10 @@ var rw_toptexturemid fixed_t
 //	//
 var rw_x int32
 
-var saveCharIndex int32
+var saveCharIndex int
 
 // old save description before edit
-var saveOldString [SAVESTRINGSIZE]int8
+var saveOldString string
 
 var saveSlot int32
 
@@ -46402,7 +46408,7 @@ var savegame_error boolean
 
 var savegamedir string
 
-var savegamestrings [10][SAVESTRINGSIZE]byte
+var savegamestrings [10]string
 
 var savename string
 
