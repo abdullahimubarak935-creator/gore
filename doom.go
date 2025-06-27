@@ -7152,7 +7152,7 @@ func F_Drawer() {
 // C documentation
 //
 //	// when zero, stop the wipe
-var go1 = 0
+var wipe_running = 0
 
 var wipe_scr_start uintptr
 var wipe_scr_end uintptr
@@ -7366,8 +7366,8 @@ func wipe_EndScreen(x int32, y int32, width int32, height int32) (r int32) {
 func wipe_ScreenWipe(wipeno int32, x int32, y int32, width int32, height int32, ticks int32) (r int32) {
 	var rc int32
 	// initial stuff
-	if !(go1 != 0) {
-		go1 = 1
+	if !(wipe_running != 0) {
+		wipe_running = 1
 		// wipe_scr = (byte *) Z_Malloc(width*height, PU_STATIC, 0); // DEBUG
 		wipe_scr = I_VideoBuffer
 		wipes[wipeno*3](width, height, ticks)
@@ -7378,10 +7378,10 @@ func wipe_ScreenWipe(wipeno int32, x int32, y int32, width int32, height int32, 
 	//  V_DrawBlock(x, y, 0, width, height, wipe_scr); // DEBUG
 	// final stuff
 	if rc != 0 {
-		go1 = 0
+		wipe_running = 0
 		wipes[wipeno*3+2](width, height, ticks)
 	}
-	return boolint32(!(go1 != 0))
+	return boolint32(!(wipe_running != 0))
 }
 
 var wipes = [6]func(int32, int32, int32) int32{
@@ -9192,6 +9192,9 @@ func G_BeginRecording() {
 }
 
 func G_DeferedPlayDemo(name string) {
+	if dont_run_demo {
+		return
+	}
 	defdemoname = name
 	gameaction = ga_playdemo
 }
@@ -19974,14 +19977,10 @@ func init() {
 	MainDef = menu_t{
 		Fnumitems:  int16(main_end),
 		Fmenuitems: MainMenu[:],
+		Froutine:   M_DrawMainMenu,
 		Fx:         97,
 		Fy:         64,
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&MainDef)
-	*(*uintptr)(unsafe.Add(p, 24)) = __ccgo_fp(M_DrawMainMenu)
 }
 
 const ep_end = 4
@@ -19992,31 +19991,27 @@ func init() {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'E', 'P', 'I', '1'},
 			FalphaKey: int8('k'),
+			Froutine:  M_Episode,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'E', 'P', 'I', '2'},
 			FalphaKey: int8('t'),
+			Froutine:  M_Episode,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'E', 'P', 'I', '3'},
 			FalphaKey: int8('i'),
+			Froutine:  M_Episode,
 		},
 		3: {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'E', 'P', 'I', '4'},
 			FalphaKey: int8('t'),
+			Froutine:  M_Episode,
 		},
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&EpisodeMenu)
-	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(M_Episode)
-	*(*uintptr)(unsafe.Add(p, 48)) = __ccgo_fp(M_Episode)
-	*(*uintptr)(unsafe.Add(p, 80)) = __ccgo_fp(M_Episode)
-	*(*uintptr)(unsafe.Add(p, 112)) = __ccgo_fp(M_Episode)
 }
 
 func init() {
@@ -20024,14 +20019,10 @@ func init() {
 		Fnumitems:  int16(ep_end),
 		FprevMenu:  &MainDef,
 		Fmenuitems: EpisodeMenu[:],
+		Froutine:   M_DrawEpisode,
 		Fx:         48,
 		Fy:         63,
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&EpiDef)
-	*(*uintptr)(unsafe.Add(p, 24)) = __ccgo_fp(M_DrawEpisode)
 }
 
 const hurtme = 2
@@ -20045,37 +20036,33 @@ func init() {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'J', 'K', 'I', 'L', 'L'},
 			FalphaKey: int8('i'),
+			Froutine:  M_ChooseSkill,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'R', 'O', 'U', 'G', 'H'},
 			FalphaKey: int8('h'),
+			Froutine:  M_ChooseSkill,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'H', 'U', 'R', 'T'},
 			FalphaKey: int8('h'),
+			Froutine:  M_ChooseSkill,
 		},
 		3: {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'U', 'L', 'T', 'R', 'A'},
 			FalphaKey: int8('u'),
+			Froutine:  M_ChooseSkill,
 		},
 		4: {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'N', 'M', 'A', 'R', 'E'},
 			FalphaKey: int8('n'),
+			Froutine:  M_ChooseSkill,
 		},
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&NewGameMenu)
-	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(M_ChooseSkill)
-	*(*uintptr)(unsafe.Add(p, 48)) = __ccgo_fp(M_ChooseSkill)
-	*(*uintptr)(unsafe.Add(p, 80)) = __ccgo_fp(M_ChooseSkill)
-	*(*uintptr)(unsafe.Add(p, 112)) = __ccgo_fp(M_ChooseSkill)
-	*(*uintptr)(unsafe.Add(p, 144)) = __ccgo_fp(M_ChooseSkill)
 }
 
 func init() {
@@ -20083,15 +20070,11 @@ func init() {
 		Fnumitems:  int16(newg_end),
 		FprevMenu:  &EpiDef,
 		Fmenuitems: NewGameMenu[:],
+		Froutine:   M_DrawNewGame,
 		Fx:         48,
 		Fy:         63,
 		FlastOn:    int16(hurtme),
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&NewDef)
-	*(*uintptr)(unsafe.Add(p, 24)) = __ccgo_fp(M_DrawNewGame)
 }
 
 const messages = 1
@@ -20106,21 +20089,25 @@ func init() {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'E', 'N', 'D', 'G', 'A', 'M'},
 			FalphaKey: int8('e'),
+			Froutine:  M_EndGame,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'M', 'E', 'S', 'S', 'G'},
 			FalphaKey: int8('m'),
+			Froutine:  M_ChangeMessages,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'D', 'E', 'T', 'A', 'I', 'L'},
 			FalphaKey: int8('g'),
+			Froutine:  M_ChangeDetail,
 		},
 		3: {
 			Fstatus:   2,
 			Fname:     [10]int8{'M', '_', 'S', 'C', 'R', 'N', 'S', 'Z'},
 			FalphaKey: int8('s'),
+			Froutine:  M_SizeDisplay,
 		},
 		4: {
 			Fstatus: int16(-1),
@@ -20130,6 +20117,7 @@ func init() {
 			Fstatus:   2,
 			Fname:     [10]int8{'M', '_', 'M', 'S', 'E', 'N', 'S'},
 			FalphaKey: int8('m'),
+			Froutine:  M_ChangeSensitivity,
 		},
 		6: {
 			Fstatus: int16(-1),
@@ -20139,18 +20127,9 @@ func init() {
 			Fstatus:   1,
 			Fname:     [10]int8{'M', '_', 'S', 'V', 'O', 'L'},
 			FalphaKey: int8('s'),
+			Froutine:  M_Sound,
 		},
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&OptionsMenu)
-	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(M_EndGame)
-	*(*uintptr)(unsafe.Add(p, 48)) = __ccgo_fp(M_ChangeMessages)
-	*(*uintptr)(unsafe.Add(p, 80)) = __ccgo_fp(M_ChangeDetail)
-	*(*uintptr)(unsafe.Add(p, 112)) = __ccgo_fp(M_SizeDisplay)
-	*(*uintptr)(unsafe.Add(p, 176)) = __ccgo_fp(M_ChangeSensitivity)
-	*(*uintptr)(unsafe.Add(p, 240)) = __ccgo_fp(M_Sound)
 }
 
 func init() {
@@ -20158,14 +20137,10 @@ func init() {
 		Fnumitems:  int16(opt_end),
 		FprevMenu:  &MainDef,
 		Fmenuitems: OptionsMenu[:],
+		Froutine:   M_DrawOptions,
 		Fx:         60,
 		Fy:         37,
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&OptionsDef)
-	*(*uintptr)(unsafe.Add(p, 24)) = __ccgo_fp(M_DrawOptions)
 }
 
 const read1_end = 1
@@ -20173,15 +20148,11 @@ const read1_end = 1
 func init() {
 	ReadMenu1 = [1]menuitem_t{
 		0: {
-			Fstatus: 1,
-			Fname:   [10]int8{},
+			Fstatus:  1,
+			Fname:    [10]int8{},
+			Froutine: M_ReadThis2,
 		},
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&ReadMenu1)
-	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(M_ReadThis2)
 }
 
 func init() {
@@ -20189,14 +20160,10 @@ func init() {
 		Fnumitems:  int16(read1_end),
 		FprevMenu:  &MainDef,
 		Fmenuitems: ReadMenu1[:],
+		Froutine:   M_DrawReadThis1,
 		Fx:         280,
 		Fy:         185,
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&ReadDef1)
-	*(*uintptr)(unsafe.Add(p, 24)) = __ccgo_fp(M_DrawReadThis1)
 }
 
 const read2_end = 1
@@ -20204,15 +20171,11 @@ const read2_end = 1
 func init() {
 	ReadMenu2 = [1]menuitem_t{
 		0: {
-			Fstatus: 1,
-			Fname:   [10]int8{},
+			Fstatus:  1,
+			Fname:    [10]int8{},
+			Froutine: M_FinishReadThis,
 		},
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&ReadMenu2)
-	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(M_FinishReadThis)
 }
 
 func init() {
@@ -20220,14 +20183,10 @@ func init() {
 		Fnumitems:  int16(read2_end),
 		FprevMenu:  &ReadDef1,
 		Fmenuitems: ReadMenu2[:],
+		Froutine:   M_DrawReadThis2,
 		Fx:         330,
 		Fy:         175,
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&ReadDef2)
-	*(*uintptr)(unsafe.Add(p, 24)) = __ccgo_fp(M_DrawReadThis2)
 }
 
 const sfx_vol = 0
@@ -20240,6 +20199,7 @@ func init() {
 			Fstatus:   2,
 			Fname:     [10]int8{'M', '_', 'S', 'F', 'X', 'V', 'O', 'L'},
 			FalphaKey: int8('s'),
+			Froutine:  M_SfxVol,
 		},
 		1: {
 			Fstatus: int16(-1),
@@ -20249,6 +20209,7 @@ func init() {
 			Fstatus:   2,
 			Fname:     [10]int8{'M', '_', 'M', 'U', 'S', 'V', 'O', 'L'},
 			FalphaKey: int8('m'),
+			Froutine:  M_MusicVol,
 		},
 		3: {
 			Fstatus: int16(-1),
@@ -20258,24 +20219,14 @@ func init() {
 }
 
 func init() {
-	p := unsafe.Pointer(&SoundMenu)
-	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(M_SfxVol)
-	*(*uintptr)(unsafe.Add(p, 80)) = __ccgo_fp(M_MusicVol)
-}
-
-func init() {
 	SoundDef = menu_t{
 		Fnumitems:  int16(sound_end),
 		FprevMenu:  &OptionsDef,
 		Fmenuitems: SoundMenu[:],
+		Froutine:   M_DrawSound,
 		Fx:         80,
 		Fy:         64,
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&SoundDef)
-	*(*uintptr)(unsafe.Add(p, 24)) = __ccgo_fp(M_DrawSound)
 }
 
 const load_end = 6
@@ -20286,43 +20237,39 @@ func init() {
 			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('1'),
+			Froutine:  M_LoadSelect,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('2'),
+			Froutine:  M_LoadSelect,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('3'),
+			Froutine:  M_LoadSelect,
 		},
 		3: {
 			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('4'),
+			Froutine:  M_LoadSelect,
 		},
 		4: {
 			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('5'),
+			Froutine:  M_LoadSelect,
 		},
 		5: {
 			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('6'),
+			Froutine:  M_LoadSelect,
 		},
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&LoadMenu)
-	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(M_LoadSelect)
-	*(*uintptr)(unsafe.Add(p, 48)) = __ccgo_fp(M_LoadSelect)
-	*(*uintptr)(unsafe.Add(p, 80)) = __ccgo_fp(M_LoadSelect)
-	*(*uintptr)(unsafe.Add(p, 112)) = __ccgo_fp(M_LoadSelect)
-	*(*uintptr)(unsafe.Add(p, 144)) = __ccgo_fp(M_LoadSelect)
-	*(*uintptr)(unsafe.Add(p, 176)) = __ccgo_fp(M_LoadSelect)
 }
 
 func init() {
@@ -20330,14 +20277,10 @@ func init() {
 		Fnumitems:  int16(load_end),
 		FprevMenu:  &MainDef,
 		Fmenuitems: LoadMenu[:],
+		Froutine:   M_DrawLoad,
 		Fx:         80,
 		Fy:         54,
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&LoadDef)
-	*(*uintptr)(unsafe.Add(p, 24)) = __ccgo_fp(M_DrawLoad)
 }
 
 func init() {
@@ -20346,43 +20289,39 @@ func init() {
 			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('1'),
+			Froutine:  M_SaveSelect,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('2'),
+			Froutine:  M_SaveSelect,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('3'),
+			Froutine:  M_SaveSelect,
 		},
 		3: {
 			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('4'),
+			Froutine:  M_SaveSelect,
 		},
 		4: {
 			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('5'),
+			Froutine:  M_SaveSelect,
 		},
 		5: {
 			Fstatus:   1,
 			Fname:     [10]int8{},
 			FalphaKey: int8('6'),
+			Froutine:  M_SaveSelect,
 		},
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&SaveMenu)
-	*(*uintptr)(unsafe.Add(p, 16)) = __ccgo_fp(M_SaveSelect)
-	*(*uintptr)(unsafe.Add(p, 48)) = __ccgo_fp(M_SaveSelect)
-	*(*uintptr)(unsafe.Add(p, 80)) = __ccgo_fp(M_SaveSelect)
-	*(*uintptr)(unsafe.Add(p, 112)) = __ccgo_fp(M_SaveSelect)
-	*(*uintptr)(unsafe.Add(p, 144)) = __ccgo_fp(M_SaveSelect)
-	*(*uintptr)(unsafe.Add(p, 176)) = __ccgo_fp(M_SaveSelect)
 }
 
 func init() {
@@ -20390,14 +20329,10 @@ func init() {
 		Fnumitems:  int16(load_end),
 		FprevMenu:  &MainDef,
 		Fmenuitems: SaveMenu[:],
+		Froutine:   M_DrawSave,
 		Fx:         80,
 		Fy:         54,
 	}
-}
-
-func init() {
-	p := unsafe.Pointer(&SaveDef)
-	*(*uintptr)(unsafe.Add(p, 24)) = __ccgo_fp(M_DrawSave)
 }
 
 // C documentation
@@ -20782,12 +20717,12 @@ func M_VerifyNightmare(key int32) {
 	M_ClearMenus()
 }
 
-func M_ChooseSkill(choice skill_t) {
-	if choice == sk_nightmare {
+func M_ChooseSkill(choice int32) {
+	if skill_t(choice) == sk_nightmare {
 		M_StartMessage(__ccgo_ts_str(22639), __ccgo_fp(M_VerifyNightmare), 1)
 		return
 	}
-	G_DeferedInitNew(choice, epi+int32(1), 1)
+	G_DeferedInitNew(skill_t(choice), epi+int32(1), 1)
 	M_ClearMenus()
 }
 
@@ -21664,7 +21599,6 @@ func M_Ticker() {
 //	// M_Init
 //	//
 func M_Init() {
-	var p1 uintptr
 	currentMenu = &MainDef
 	menuactive = 0
 	itemOn = currentMenu.FlastOn
@@ -21682,8 +21616,8 @@ func M_Init() {
 		// Commercial has no "read this" entry.
 		MainMenu[int32(readthis)] = MainMenu[int32(quitdoom)]
 		MainDef.Fnumitems--
-		p1 = uintptr(unsafe.Pointer(&MainDef)) + 34
-		*(*int16)(unsafe.Pointer(p1)) = int16(int32(*(*int16)(unsafe.Pointer(p1))) + 8)
+		MainDef.Fmenuitems = append([]menuitem_t{}, MainMenu[:int32(readthis)]...)
+		MainDef.Fmenuitems = append(MainDef.Fmenuitems, MainMenu[int32(readthis)+1:]...)
 		NewDef.FprevMenu = &MainDef
 	case shareware:
 		// Episode 2 and 3 are handled,
@@ -45057,6 +44991,9 @@ var activeceilings [30]*ceiling_t
 
 var activeplats [30]*plat_t
 
+// Used in the test suite to stop the demo running in the
+// background, as it messes with screenshots
+var dont_run_demo bool
 var advancedemo boolean
 
 var aimslope fixed_t
