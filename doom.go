@@ -8651,7 +8651,7 @@ func G_DoCompleted() {
 	gamestate = GS_INTERMISSION
 	viewactive = 0
 	automapactive = 0
-	StatCopy(uintptr(unsafe.Pointer(&wminfo)))
+	StatCopy(&wminfo)
 	WI_Start(&wminfo)
 }
 
@@ -39587,9 +39587,9 @@ const MAX_CAPTURES = 32
 var captured_stats [32]wbstartstruct_t
 var num_captured_stats int32 = 0
 
-func StatCopy(stats uintptr) {
+func StatCopy(stats *wbstartstruct_t) {
 	if M_ParmExists(__ccgo_ts_str(5318)) != 0 && num_captured_stats < MAX_CAPTURES {
-		xmemcpy(uintptr(unsafe.Pointer(&captured_stats))+uintptr(num_captured_stats)*200, stats, 200)
+		captured_stats[num_captured_stats] = *stats
 		num_captured_stats++
 	}
 }
