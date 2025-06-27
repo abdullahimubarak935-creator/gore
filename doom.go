@@ -36701,13 +36701,13 @@ func R_ExecuteSetViewSize() {
 		colfunc = R_DrawColumn
 		fuzzcolfunc = R_DrawFuzzColumn
 		transcolfunc = R_DrawTranslatedColumn
-		spanfunc = __ccgo_fp(R_DrawSpan)
+		spanfunc = R_DrawSpan
 	} else {
 		basecolfunc = R_DrawColumnLow
 		colfunc = R_DrawColumnLow
 		fuzzcolfunc = R_DrawFuzzColumnLow
 		transcolfunc = R_DrawTranslatedColumnLow
-		spanfunc = __ccgo_fp(R_DrawSpanLow)
+		spanfunc = R_DrawSpanLow
 	}
 	R_InitBuffer(scaledviewwidth, viewheight)
 	R_InitTextureMapping()
@@ -36953,7 +36953,7 @@ func R_MapPlane(y int32, x1 int32, x2 int32) {
 	ds_x1 = x1
 	ds_x2 = x2
 	// high or low detail
-	(*(*func())(unsafe.Pointer(&struct{ uintptr }{spanfunc})))()
+	spanfunc()
 }
 
 // C documentation
@@ -46608,7 +46608,7 @@ var solidsegs [32]cliprange_t
 
 var soundtarget *mobj_t
 
-var spanfunc uintptr
+var spanfunc func()
 
 // C documentation
 //
