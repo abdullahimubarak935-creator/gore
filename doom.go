@@ -34915,14 +34915,15 @@ func R_DrawColumnInCache(patch uintptr, cache uintptr, originy int32, cacheheigh
 //	//  and each column is cached.
 //	//
 func R_GenerateComposite(texnum int32) {
-	var block, colofs, patch, patchcol, realpatch uintptr
+	var block, patch, patchcol, realpatch uintptr
 	var collump []int16
+	var colofs []uint16
 	var i, x, x1, x2 int32
 	var texture *texture_t
 	texture = textures[texnum]
 	block = Z_Malloc(texturecompositesize[texnum], int32(PU_STATIC), texturecomposite+uintptr(texnum)*8)
 	collump = texturecolumnlump[texnum]
-	colofs = *(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(texnum)*8))
+	colofs = texturecolumnofs[texnum]
 	// Composite the columns together.
 	patch = (uintptr)(unsafe.Pointer(&texture.Fpatches[0]))
 	i = 0
@@ -34950,7 +34951,7 @@ func R_GenerateComposite(texnum int32) {
 				goto _2
 			}
 			patchcol = realpatch + uintptr(*(*int32)(unsafe.Pointer(realpatch + 8 + uintptr(x-x1)*4)))
-			R_DrawColumnInCache(patchcol, block+uintptr(*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2))), int32((*texpatch_t)(unsafe.Pointer(patch)).Foriginy), int32(texture.Fheight))
+			R_DrawColumnInCache(patchcol, block+uintptr(colofs[x]), int32((*texpatch_t)(unsafe.Pointer(patch)).Foriginy), int32(texture.Fheight))
 			goto _2
 		_2:
 			;
@@ -34974,7 +34975,8 @@ func R_GenerateComposite(texnum int32) {
 //	//
 func R_GenerateLookup(texnum int32) {
 	bp := alloc(32)
-	var colofs, patch, realpatch uintptr
+	var patch, realpatch uintptr
+	var colofs []uint16
 	var collump []int16
 	var texture *texture_t
 	var i, x, x1, x2 int32
@@ -34983,7 +34985,7 @@ func R_GenerateLookup(texnum int32) {
 	*(*uintptr)(unsafe.Pointer(texturecomposite + uintptr(texnum)*8)) = uintptr(0)
 	texturecompositesize[texnum] = 0
 	collump = texturecolumnlump[texnum]
-	colofs = *(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(texnum)*8))
+	colofs = texturecolumnofs[texnum]
 	// Now count the number of columns
 	//  that are covered by more than one patch.
 	// Fill in the lump / offset, so columns
@@ -35013,7 +35015,7 @@ func R_GenerateLookup(texnum int32) {
 			}
 			*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))++
 			collump[x] = int16((*texpatch_t)(unsafe.Pointer(patch)).Fpatch)
-			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = uint16(*(*int32)(unsafe.Pointer(realpatch + 8 + uintptr(x-x1)*4)) + 3)
+			colofs[x] = uint16(*(*int32)(unsafe.Pointer(realpatch + 8 + uintptr(x-x1)*4)) + 3)
 			goto _2
 		_2:
 			;
@@ -35038,7 +35040,7 @@ func R_GenerateLookup(texnum int32) {
 		if int32(*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))) > 1 {
 			// Use the cached block.
 			collump[x] = -1
-			*(*uint16)(unsafe.Pointer(colofs + uintptr(x)*2)) = uint16(texturecompositesize[texnum])
+			colofs[x] = uint16(texturecompositesize[texnum])
 			if texturecompositesize[texnum] > 0x10000-int32(texture.Fheight) {
 				I_Error(25985, texnum)
 			}
@@ -35061,7 +35063,7 @@ func R_GetColumn(tex int32, col int32) (r uintptr) {
 	var lump, ofs int32
 	col &= texturewidthmask[tex]
 	lump = int32(texturecolumnlump[tex][col])
-	ofs = int32(*(*uint16)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(tex)*8)) + uintptr(col)*2)))
+	ofs = int32(texturecolumnofs[tex][col])
 	if lump > 0 {
 		return W_CacheLumpNum(lump, int32(PU_CACHE)) + uintptr(ofs)
 	}
@@ -35153,7 +35155,7 @@ func R_InitTextures() {
 	numtextures = numtextures1 + numtextures2
 	textures = make([]*texture_t, numtextures)
 	texturecolumnlump = make([][]int16, numtextures)
-	texturecolumnofs = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
+	texturecolumnofs = make([][]uint16, numtextures)
 	texturecomposite = Z_Malloc(int32(uint64(numtextures)*8), int32(PU_STATIC), uintptr(0))
 	texturecompositesize = make([]int32, numtextures)
 	texturewidthmask = make([]int32, numtextures)
@@ -35239,7 +35241,7 @@ func R_InitTextures() {
 			mpatch += 10
 		}
 		texturecolumnlump[i] = make([]int16, texture.Fwidth)
-		*(*uintptr)(unsafe.Pointer(texturecolumnofs + uintptr(i)*8)) = Z_Malloc(int32(uint64(texture.Fwidth)*2), int32(PU_STATIC), uintptr(0))
+		texturecolumnofs[i] = make([]uint16, texture.Fwidth)
 		j = 1
 		for j*int32(2) <= int32(texture.Fwidth) {
 			j <<= 1
@@ -46791,7 +46793,7 @@ var testcontrols_mousespeed int32
 
 var texturecolumnlump [][]int16
 
-var texturecolumnofs uintptr
+var texturecolumnofs [][]uint16
 
 var texturecomposite uintptr
 
