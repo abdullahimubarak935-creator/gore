@@ -1850,6 +1850,8 @@ type side_t struct {
 
 type slopetype_t = int32
 
+type box_t [4]fixed_t
+
 type line_t struct {
 	Fv1          *vertex_t
 	Fv2          *vertex_t
@@ -1859,7 +1861,7 @@ type line_t struct {
 	Fspecial     int16
 	Ftag         int16
 	Fsidenum     [2]int16
-	Fbbox        [4]fixed_t
+	Fbbox        box_t
 	Fslopetype   slopetype_t
 	Ffrontsector *sector_t
 	Fbacksector  *sector_t
@@ -1889,7 +1891,7 @@ type node_t struct {
 	Fy        fixed_t
 	Fdx       fixed_t
 	Fdy       fixed_t
-	Fbbox     [2][4]fixed_t
+	Fbbox     [2]box_t
 	Fchildren [2]uint16
 }
 
@@ -7853,7 +7855,7 @@ func G_DoLoadLevel() {
 		if playeringame[i] != 0 && players[i].Fplayerstate == int32(PST_DEAD) {
 			players[i].Fplayerstate = int32(PST_REBORN)
 		}
-		xmemset(uintptr(unsafe.Pointer(&players))+uintptr(i)*328+108, 0, 16)
+		clear(players[i].Ffrags[:])
 		goto _1
 	_1:
 		;
@@ -18629,29 +18631,26 @@ const BOXBOTTOM = 1
 const BOXLEFT = 2
 const BOXRIGHT = 3
 
-func M_ClearBox(box uintptr) {
-	var v1, v2 fixed_t
-	v1 = -1 - 0x7fffffff
-	*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXRIGHT)*4)) = v1
-	*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXTOP)*4)) = v1
-	v2 = INT_MAX5
-	*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXLEFT)*4)) = v2
-	*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXBOTTOM)*4)) = v2
+func M_ClearBox(box *box_t) {
+	box[BOXRIGHT] = -1 - 0x7fffffff
+	box[BOXRIGHT] = -1 - 0x7fffffff
+	box[BOXLEFT] = INT_MAX5
+	box[BOXBOTTOM] = INT_MAX5
 }
 
-func M_AddToBox(box uintptr, x fixed_t, y fixed_t) {
-	if x < *(*fixed_t)(unsafe.Pointer(box + uintptr(BOXLEFT)*4)) {
-		*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXLEFT)*4)) = x
+func M_AddToBox(box *box_t, x fixed_t, y fixed_t) {
+	if x < box[BOXLEFT] {
+		box[BOXLEFT] = x
 	} else {
-		if x > *(*fixed_t)(unsafe.Pointer(box + uintptr(BOXRIGHT)*4)) {
-			*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXRIGHT)*4)) = x
+		if x > box[BOXRIGHT] {
+			box[BOXRIGHT] = x
 		}
 	}
-	if y < *(*fixed_t)(unsafe.Pointer(box + uintptr(BOXBOTTOM)*4)) {
-		*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXBOTTOM)*4)) = y
+	if y < box[BOXBOTTOM] {
+		box[BOXBOTTOM] = y
 	} else {
-		if y > *(*fixed_t)(unsafe.Pointer(box + uintptr(BOXTOP)*4)) {
-			*(*fixed_t)(unsafe.Pointer(box + uintptr(BOXTOP)*4)) = y
+		if y > box[BOXTOP] {
+			box[BOXTOP] = y
 		}
 	}
 }
@@ -31317,7 +31316,6 @@ func P_LoadBlockMap(lump int32) {
 //	// Finds block bounding boxes for sectors.
 //	//
 func P_GroupLines() {
-	bp := alloc(16)
 	var block, i, j, v10, v7, v8, v9 int32
 	var seg uintptr
 	// look up sector number for each subsector
@@ -31372,26 +31370,27 @@ func P_GroupLines() {
 		if !(i < numsectors) {
 			break
 		}
+		var box box_t
 		sector := &sectors[i]
-		M_ClearBox(bp)
+		M_ClearBox(&box)
 		j = 0
 		for {
 			if !(j < sector.Flinecount) {
 				break
 			}
 			li := sector.Flines[j]
-			M_AddToBox(bp, li.Fv1.Fx, li.Fv1.Fy)
-			M_AddToBox(bp, li.Fv2.Fx, li.Fv2.Fy)
+			M_AddToBox(&box, li.Fv1.Fx, li.Fv1.Fy)
+			M_AddToBox(&box, li.Fv2.Fx, li.Fv2.Fy)
 			goto _6
 		_6:
 			;
 			j++
 		}
 		// set the degenmobj_t to the middle of the bounding box
-		sector.Fsoundorg.Fx = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXRIGHT)] + (*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXLEFT)]) / 2
-		sector.Fsoundorg.Fy = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXTOP)] + (*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXBOTTOM)]) / 2
+		sector.Fsoundorg.Fx = (box[BOXRIGHT] + box[BOXLEFT]) / 2
+		sector.Fsoundorg.Fy = (box[BOXTOP] + box[BOXBOTTOM]) / 2
 		// adjust bounding box to map blocks
-		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXTOP)] - bmaporgy + 32*(1<<FRACBITS)) >> (FRACBITS + 7)
+		block = (box[int32(BOXTOP)] - bmaporgy + 32*(1<<FRACBITS)) >> (FRACBITS + 7)
 		if block >= bmapheight {
 			v7 = bmapheight - 1
 		} else {
@@ -31399,7 +31398,7 @@ func P_GroupLines() {
 		}
 		block = v7
 		sector.Fblockbox[BOXTOP] = block
-		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXBOTTOM)] - bmaporgy - 32*(1<<FRACBITS)) >> (FRACBITS + 7)
+		block = (box[int32(BOXBOTTOM)] - bmaporgy - 32*(1<<FRACBITS)) >> (FRACBITS + 7)
 		if block < 0 {
 			v8 = 0
 		} else {
@@ -31407,7 +31406,7 @@ func P_GroupLines() {
 		}
 		block = v8
 		sector.Fblockbox[BOXBOTTOM] = block
-		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXRIGHT)] - bmaporgx + 32*(1<<FRACBITS)) >> (FRACBITS + 7)
+		block = (box[int32(BOXRIGHT)] - bmaporgx + 32*(1<<FRACBITS)) >> (FRACBITS + 7)
 		if block >= bmapwidth {
 			v9 = bmapwidth - 1
 		} else {
@@ -31415,7 +31414,7 @@ func P_GroupLines() {
 		}
 		block = v9
 		sector.Fblockbox[BOXRIGHT] = block
-		block = ((*(*[4]fixed_t)(unsafe.Pointer(bp)))[int32(BOXLEFT)] - bmaporgx - 32*(1<<FRACBITS)) >> (FRACBITS + 7)
+		block = (box[int32(BOXLEFT)] - bmaporgx - 32*(1<<FRACBITS)) >> (FRACBITS + 7)
 		if block < 0 {
 			v10 = 0
 		} else {
@@ -41490,8 +41489,8 @@ func V_MarkRect(x int32, y int32, width int32, height int32) {
 	// If we are temporarily using an alternate screen, do not
 	// affect the update box.
 	if dest_screen == I_VideoBuffer {
-		M_AddToBox(uintptr(unsafe.Pointer(&dirtybox)), x, y)
-		M_AddToBox(uintptr(unsafe.Pointer(&dirtybox)), x+width-1, y+height-1)
+		M_AddToBox(&dirtybox, x, y)
+		M_AddToBox(&dirtybox, x+width-1, y+height-1)
 	}
 }
 
@@ -45436,7 +45435,7 @@ var devparm boolean
 
 var diags [4]dirtype_t
 
-var dirtybox [4]int32
+var dirtybox box_t
 
 var displayplayer int32
 
@@ -46913,7 +46912,7 @@ var timingdemo boolean
 
 //#define DEFAULT_SPECHIT_MAGIC 0x84f968e8
 
-var tmbbox [4]fixed_t
+var tmbbox box_t
 
 var tmceilingz fixed_t
 
