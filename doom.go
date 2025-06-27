@@ -4139,7 +4139,7 @@ func D_FindIWAD(mask int32, mission *GameMission_t) string {
 	//
 	// @arg <file>
 	//
-	iwadparm = M_CheckParmWithArgs(__ccgo_ts(1275), 1)
+	iwadparm = M_CheckParmWithArgs(__ccgo_ts_str(1275), 1)
 	if iwadparm != 0 {
 		// Search through IWAD dirs for an IWAD with the given name.
 		iwadfile = myargs[iwadparm+1]
@@ -5389,7 +5389,7 @@ func D_IdentifyVersion() {
 		// detecting it based on the filename. Valid values are: "doom2",
 		// "tnt" and "plutonia".
 		//
-		p = M_CheckParmWithArgs(__ccgo_ts(2664), 1)
+		p = M_CheckParmWithArgs(__ccgo_ts_str(2664), 1)
 		if p > 0 {
 			SetMissionForPackName(myargs[p+1])
 		}
@@ -5580,7 +5580,7 @@ func InitGameVersion() {
 	// Emulate a specific version of Doom.  Valid values are "1.9",
 	// "ultimate", "final", "final2", "hacx" and "chex".
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(3857), 1)
+	p = M_CheckParmWithArgs(__ccgo_ts_str(3857), 1)
 	if p != 0 {
 		i = 0
 		for {
@@ -5681,7 +5681,7 @@ func D_Endoom() {
 	// Don't show ENDOOM if we have it disabled, or we're running
 	// in screensaver or control test mode. Only show it once the
 	// game has actually started.
-	if !(show_endoom != 0) || !(main_loop_started != 0) || screensaver_mode != 0 || M_CheckParm(__ccgo_ts(3980)) > 0 {
+	if !(show_endoom != 0) || !(main_loop_started != 0) || screensaver_mode != 0 || M_CheckParm(__ccgo_ts_str(3980)) > 0 {
 		return
 	}
 	endoom = W_CacheLumpName(__ccgo_ts(3994), int32(PU_STATIC))
@@ -5709,26 +5709,26 @@ func D_DoomMain() {
 	//
 	// Disable monsters.
 	//
-	nomonsters = uint32(M_CheckParm(__ccgo_ts(4064)))
+	nomonsters = uint32(M_CheckParm(__ccgo_ts_str(4064)))
 	//!
 	// @vanilla
 	//
 	// Monsters respawn after being killed.
 	//
-	respawnparm = uint32(M_CheckParm(__ccgo_ts(4076)))
+	respawnparm = uint32(M_CheckParm(__ccgo_ts_str(4076)))
 	//!
 	// @vanilla
 	//
 	// Monsters move faster.
 	//
-	fastparm = uint32(M_CheckParm(__ccgo_ts(4085)))
+	fastparm = uint32(M_CheckParm(__ccgo_ts_str(4085)))
 	//!
 	// @vanilla
 	//
 	// Developer mode.  F1 saves a screenshot in the current working
 	// directory.
 	//
-	devparm = uint32(M_CheckParm(__ccgo_ts(4091)))
+	devparm = uint32(M_CheckParm(__ccgo_ts_str(4091)))
 	I_DisplayFPSDots(devparm)
 	//!
 	// @category net
@@ -5736,7 +5736,7 @@ func D_DoomMain() {
 	//
 	// Start a deathmatch game.
 	//
-	if M_CheckParm(__ccgo_ts(4100)) != 0 {
+	if M_CheckParm(__ccgo_ts_str(4100)) != 0 {
 		deathmatch = 1
 	}
 	//!
@@ -5746,7 +5746,7 @@ func D_DoomMain() {
 	// Start a deathmatch 2.0 game.  Weapons do not stay in place and
 	// all items respawn after 30 seconds.
 	//
-	if M_CheckParm(__ccgo_ts(4112)) != 0 {
+	if M_CheckParm(__ccgo_ts_str(4112)) != 0 {
 		deathmatch = 2
 	}
 	if devparm != 0 {
@@ -5762,7 +5762,7 @@ func D_DoomMain() {
 	// Turbo mode.  The player's speed is multiplied by x%.  If unspecified,
 	// x defaults to 200.  Values are rounded up to 10 and down to 400.
 	//
-	v1 = M_CheckParm(__ccgo_ts(4144))
+	v1 = M_CheckParm(__ccgo_ts_str(4144))
 	p = v1
 	if v1 != 0 {
 		scale := 200
@@ -5841,7 +5841,7 @@ func D_DoomMain() {
 	//
 	// Play back the demo named demo.lmp.
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(4456), 1)
+	p = M_CheckParmWithArgs(__ccgo_ts_str(4456), 1)
 	if !(p != 0) {
 		//!
 		// @arg <demo>
@@ -5851,7 +5851,7 @@ func D_DoomMain() {
 		// Play back the demo named demo.lmp, determining the framerate
 		// of the screen.
 		//
-		p = M_CheckParmWithArgs(__ccgo_ts(4466), 1)
+		p = M_CheckParmWithArgs(__ccgo_ts_str(4466), 1)
 	}
 	if p != 0 {
 		// With Vanilla you have to specify the file without extension,
@@ -5962,7 +5962,7 @@ func D_DoomMain() {
 	// Set the game skill, 1-5 (1: easiest, 5: hardest).  A skill of
 	// 0 disables all monsters.
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(5027), 1)
+	p = M_CheckParmWithArgs(__ccgo_ts_str(5027), 1)
 	if p != 0 {
 		startskill = skill_t(myargs[p+1][0] - '1')
 		autostart = 1
@@ -5973,7 +5973,7 @@ func D_DoomMain() {
 	//
 	// Start playing on episode n (1-4)
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(5034), 1)
+	p = M_CheckParmWithArgs(__ccgo_ts_str(5034), 1)
 	if p != 0 {
 		startepisode = int32(myargs[p+1][0] - '0')
 		startmap = 1
@@ -5987,7 +5987,7 @@ func D_DoomMain() {
 	//
 	// For multiplayer games: exit each level after n minutes.
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(5043), 1)
+	p = M_CheckParmWithArgs(__ccgo_ts_str(5043), 1)
 	if p != 0 {
 		v, _ := strconv.Atoi(myargs[p+1])
 		timelimit = int32(v)
@@ -5998,7 +5998,7 @@ func D_DoomMain() {
 	//
 	// Austin Virtual Gaming: end levels after 20 minutes.
 	//
-	p = M_CheckParm(__ccgo_ts(5050))
+	p = M_CheckParm(__ccgo_ts_str(5050))
 	if p != 0 {
 		timelimit = 20
 	}
@@ -6009,7 +6009,7 @@ func D_DoomMain() {
 	// Start a game immediately, warping to ExMy (Doom 1) or MAPxy
 	// (Doom 2)
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(5055), 1)
+	p = M_CheckParmWithArgs(__ccgo_ts_str(5055), 1)
 	if p != 0 {
 		if gamemode == commercial {
 			v, _ := strconv.Atoi(myargs[p+1])
@@ -6026,7 +6026,7 @@ func D_DoomMain() {
 	}
 	// Undocumented:
 	// Invoked by setup to test the controls.
-	p = M_CheckParm(__ccgo_ts(3980))
+	p = M_CheckParm(__ccgo_ts_str(3980))
 	if p > 0 {
 		startepisode = 1
 		startmap = 1
@@ -6042,7 +6042,7 @@ func D_DoomMain() {
 	//
 	// Load the game in slot s.
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(5061), 1)
+	p = M_CheckParmWithArgs(__ccgo_ts_str(5061), 1)
 	if p != 0 {
 		v, _ := strconv.Atoi(myargs[p+1])
 		startloadgame = int32(v)
@@ -6071,7 +6071,7 @@ func D_DoomMain() {
 	if gamemode == commercial && W_CheckNumForName(__ccgo_ts(5312)) < 0 {
 		storedemo = 1
 	}
-	if M_CheckParmWithArgs(__ccgo_ts(5318), 1) != 0 {
+	if M_CheckParmWithArgs(__ccgo_ts_str(5318), 1) != 0 {
 		I_AtExit(StatDump, 1)
 		fprintf_ccgo(os.Stdout, 5328)
 	}
@@ -6082,19 +6082,19 @@ func D_DoomMain() {
 	//
 	// Record a demo named x.lmp.
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(5361), 1)
+	p = M_CheckParmWithArgs(__ccgo_ts_str(5361), 1)
 	if p != 0 {
 		G_RecordDemo(myargs[p+1])
 		autostart = 1
 	}
-	p = M_CheckParmWithArgs(__ccgo_ts(4456), 1)
+	p = M_CheckParmWithArgs(__ccgo_ts_str(4456), 1)
 	if p != 0 {
 		singledemo = 1 // quit after one demo
 		G_DeferedPlayDemo(argDemoName)
 		D_DoomLoop()
 		return
 	}
-	p = M_CheckParmWithArgs(__ccgo_ts(4466), 1)
+	p = M_CheckParmWithArgs(__ccgo_ts_str(4466), 1)
 	if p != 0 {
 		G_TimeDemo(argDemoName)
 		D_DoomLoop()
@@ -6232,7 +6232,7 @@ func SaveGameSettings(settings *net_gamesettings_t) {
 	settings.Ffast_monsters = int32(fastparm)
 	settings.Frespawn_monsters = int32(respawnparm)
 	settings.Ftimelimit = timelimit
-	settings.Flowres_turn = boolint32(M_CheckParm(__ccgo_ts(5361)) > 0 && M_CheckParm(__ccgo_ts(5530)) == 0)
+	settings.Flowres_turn = boolint32(M_CheckParm(__ccgo_ts_str(5361)) > 0 && M_CheckParm(__ccgo_ts_str(5530)) == 0)
 }
 
 func InitConnectData(connect_data *net_connect_data_t) {
@@ -6243,7 +6243,7 @@ func InitConnectData(connect_data *net_connect_data_t) {
 	//
 	// Run as the left screen in three screen mode.
 	//
-	if M_CheckParm(__ccgo_ts(5540)) > 0 {
+	if M_CheckParm(__ccgo_ts_str(5540)) > 0 {
 		viewangleoffset = ANG901
 		connect_data.Fdrone = 1
 	}
@@ -6252,7 +6252,7 @@ func InitConnectData(connect_data *net_connect_data_t) {
 	//
 	// Run as the right screen in three screen mode.
 	//
-	if M_CheckParm(__ccgo_ts(5546)) > 0 {
+	if M_CheckParm(__ccgo_ts_str(5546)) > 0 {
 		viewangleoffset = ANG2701
 		connect_data.Fdrone = 1
 	}
@@ -6263,7 +6263,7 @@ func InitConnectData(connect_data *net_connect_data_t) {
 	connect_data.Fgamemode = gamemode
 	connect_data.Fgamemission = gamemission
 	// Are we recording a demo? Possibly set lowres turn mode
-	connect_data.Flowres_turn = boolint32(M_CheckParm(__ccgo_ts(5361)) > 0 && M_CheckParm(__ccgo_ts(5530)) == 0)
+	connect_data.Flowres_turn = boolint32(M_CheckParm(__ccgo_ts_str(5361)) > 0 && M_CheckParm(__ccgo_ts_str(5530)) == 0)
 	// Read checksums of our WAD directory and dehacked information
 	W_Checksum(&connect_data.Fwad_sha1sum)
 	// Are we playing with the Freedoom IWAD?
@@ -6281,7 +6281,7 @@ func D_ConnectNetGame() {
 	// player.  This can also be used to play back single player netgame
 	// demos.
 	//
-	if M_CheckParm(__ccgo_ts(5553)) > 0 {
+	if M_CheckParm(__ccgo_ts_str(5553)) > 0 {
 		netgame = 1
 	}
 }
@@ -6306,7 +6306,7 @@ func D_CheckNetGame() {
 	// Show players here; the server might have specified a time limit
 	if timelimit > 0 && deathmatch != 0 {
 		// Gross hack to work like Vanilla:
-		if timelimit == 20 && M_CheckParm(__ccgo_ts(5050)) != 0 {
+		if timelimit == 20 && M_CheckParm(__ccgo_ts_str(5050)) != 0 {
 			fprintf_ccgo(os.Stdout, 5654)
 		} else {
 			fprintf_ccgo(os.Stdout, 5711, timelimit)
@@ -9100,7 +9100,7 @@ func G_RecordDemo(name string) {
 	//
 	// Specify the demo buffer size (KiB)
 	//
-	i = M_CheckParmWithArgs(__ccgo_ts(14110), 1)
+	i = M_CheckParmWithArgs(__ccgo_ts_str(14110), 1)
 	if i != 0 {
 		v, _ := strconv.Atoi(myargs[i+1])
 		maxsize = int32(v) * 1024
@@ -9140,7 +9140,7 @@ func G_BeginRecording() {
 	//
 	// Record a high resolution "Doom 1.91" demo.
 	//
-	longtics = booluint32(M_CheckParm(__ccgo_ts(5530)) != 0)
+	longtics = booluint32(M_CheckParm(__ccgo_ts_str(5530)) != 0)
 	// If not recording a longtics demo, record in low res
 	lowres_turn = booluint32(!(longtics != 0))
 	demo_p = demobuffer
@@ -9293,7 +9293,7 @@ func G_DoPlayDemo() {
 		;
 		i++
 	}
-	if playeringame[int32(1)] != 0 || M_CheckParm(__ccgo_ts(5553)) > 0 || M_CheckParm(__ccgo_ts(14449)) > 0 {
+	if playeringame[int32(1)] != 0 || M_CheckParm(__ccgo_ts_str(5553)) > 0 || M_CheckParm(__ccgo_ts_str(14449)) > 0 {
 		netgame = 1
 		netdemo = 1
 	}
@@ -9317,7 +9317,7 @@ func G_TimeDemo(name string) {
 	//
 	// Disable rendering the screen entirely.
 	//
-	nodrawers = uint32(M_CheckParm(__ccgo_ts(14458)))
+	nodrawers = uint32(M_CheckParm(__ccgo_ts_str(14458)))
 	timingdemo = 1
 	singletics = 1
 	defdemoname = name
@@ -18087,19 +18087,19 @@ func I_InitSound(use_sfx_prefix boolean) {
 	//
 	// Disable all sound output.
 	//
-	nosound = booluint32(M_CheckParm(__ccgo_ts(18674)) > 0)
+	nosound = booluint32(M_CheckParm(__ccgo_ts_str(18674)) > 0)
 	//!
 	// @vanilla
 	//
 	// Disable sound effects.
 	//
-	nosfx = booluint32(M_CheckParm(__ccgo_ts(18683)) > 0)
+	nosfx = booluint32(M_CheckParm(__ccgo_ts_str(18683)) > 0)
 	//!
 	// @vanilla
 	//
 	// Disable music.
 	//
-	nomusic = booluint32(M_CheckParm(__ccgo_ts(18690)) > 0)
+	nomusic = booluint32(M_CheckParm(__ccgo_ts_str(18690)) > 0)
 	// Initialize the sound and music subsystems.
 	if !(nosound != 0) && !(screensaver_mode != 0) {
 		// This is kind of a hack. If native MIDI is enabled, set up
@@ -18328,7 +18328,7 @@ func I_ZoneBase(size uintptr) (r uintptr) {
 	//
 	// Specify the heap size, in MiB (default 16).
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(18874), 1)
+	p = M_CheckParmWithArgs(__ccgo_ts_str(18874), 1)
 	if p > 0 {
 		v, _ := strconv.Atoi(myargs[p+1])
 		default_ram = int32(v)
@@ -18423,7 +18423,7 @@ func I_Error(strIndex int, args ...any) {
 			exit_funcs[i].Ffunc()
 		}
 	}
-	exit_gui_popup = booluint32(!(M_ParmExists(__ccgo_ts(19327)) != 0))
+	exit_gui_popup = booluint32(!(M_ParmExists(__ccgo_ts_str(19327)) != 0))
 	// Pop up a GUI dialog box to show the error message, if the
 	// game was not run from the console (and the user will
 	// therefore be unable to otherwise see the message).
@@ -18473,7 +18473,7 @@ func I_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
 		// emulation.  Supported versions are: dos622, dos71, dosbox.
 		// The default is to emulate DOS 7.1 (Windows 98).
 		//
-		p = M_CheckParmWithArgs(__ccgo_ts(19334), 1)
+		p = M_CheckParmWithArgs(__ccgo_ts_str(19334), 1)
 		if p > 0 {
 			if strings.EqualFold(myargs[p+1], __ccgo_ts_str(19342)) {
 				dos_mem_dump = mem_dump_dos622[:]
@@ -18567,20 +18567,11 @@ func I_Sleep(ms uint32) {
 // or 0 if not present
 //
 
-func M_CheckParmWithArgs(check uintptr, num_args int32) (r int32) {
-	var i int32
-	i = 1
-	for {
-		if !(i < int32(len(myargs))-num_args) {
-			break
-		}
-		if strings.EqualFold(myargs[i], gostring(check)) {
+func M_CheckParmWithArgs(check string, num_args int32) (r int32) {
+	for i := int32(1); i < int32(len(myargs))-num_args; i++ {
+		if strings.EqualFold(myargs[i], check) {
 			return i
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return 0
 }
@@ -18592,11 +18583,11 @@ func M_CheckParmWithArgs(check uintptr, num_args int32) (r int32) {
 // line arguments, false if not.
 //
 
-func M_ParmExists(check uintptr) (r boolean) {
+func M_ParmExists(check string) (r boolean) {
 	return booluint32(M_CheckParm(check) != 0)
 }
 
-func M_CheckParm(check uintptr) (r int32) {
+func M_CheckParm(check string) (r int32) {
 	return M_CheckParmWithArgs(check, 0)
 }
 
@@ -19518,7 +19509,7 @@ func M_LoadDefaults() {
 	// Load main configuration from the specified file, instead of the
 	// default.
 	//
-	i = M_CheckParmWithArgs(__ccgo_ts(21869), 1)
+	i = M_CheckParmWithArgs(__ccgo_ts_str(21869), 1)
 	if i != 0 {
 		doom_defaults.Ffilename = myargs[i+1]
 		fprintf_ccgo(os.Stdout, 21877, doom_defaults.Ffilename)
@@ -19532,7 +19523,7 @@ func M_LoadDefaults() {
 	// Load additional configuration from the specified file, instead of
 	// the default.
 	//
-	i = M_CheckParmWithArgs(__ccgo_ts(21917), 1)
+	i = M_CheckParmWithArgs(__ccgo_ts_str(21917), 1)
 	if i != 0 {
 		extra_defaults.Ffilename = myargs[i+1]
 		fprintf_ccgo(os.Stdout, 21930, extra_defaults.Ffilename)
@@ -26931,7 +26922,7 @@ func SpechitOverrun(ld *line_t) {
 		//
 		// Use the specified magic value when emulating spechit overruns.
 		//
-		p = M_CheckParmWithArgs(__ccgo_ts(24727), 1)
+		p = M_CheckParmWithArgs(__ccgo_ts_str(24727), 1)
 		if p > 0 {
 			v, _ := strconv.Atoi(myargs[p+1])
 			baseaddr = int32(v)
@@ -31463,7 +31454,7 @@ func PadRejectArray(array uintptr, len1 uint32) {
 	if uint64(len1) > 16 {
 		fprintf_ccgo(os.Stderr, 25149, len1, 16)
 		// Pad remaining space with 0 (or 0xff, if specified on command line).
-		if M_CheckParm(__ccgo_ts(25206)) != 0 {
+		if M_CheckParm(__ccgo_ts_str(25206)) != 0 {
 			padvalue = 0xff
 		} else {
 			padvalue = 0x00
@@ -32927,7 +32918,7 @@ func DonutOverrun(s3_floorheight uintptr, s3_floorpic uintptr, line *line_t, pil
 		// In Vanilla Doom this can differ depending on the operating
 		// system.  The default (if this option is not specified) is to
 		// emulate the behavior when running under Windows 98.
-		p = M_CheckParmWithArgs(__ccgo_ts(25431), 2)
+		p = M_CheckParmWithArgs(__ccgo_ts_str(25431), 2)
 		if p > 0 {
 			// Dump of needed memory: (fixed_t)0000:0000 and (short)0000:0008
 			//
@@ -39597,7 +39588,7 @@ var captured_stats [32]wbstartstruct_t
 var num_captured_stats int32 = 0
 
 func StatCopy(stats uintptr) {
-	if M_ParmExists(__ccgo_ts(5318)) != 0 && num_captured_stats < MAX_CAPTURES {
+	if M_ParmExists(__ccgo_ts_str(5318)) != 0 && num_captured_stats < MAX_CAPTURES {
 		xmemcpy(uintptr(unsafe.Pointer(&captured_stats))+uintptr(num_captured_stats)*200, stats, 200)
 		num_captured_stats++
 	}
@@ -43769,7 +43760,7 @@ func W_ParseCommandLine() (r boolean) {
 	//
 	// Load the specified PWAD files.
 	//
-	p = M_CheckParmWithArgs(__ccgo_ts(28599), 1)
+	p = M_CheckParmWithArgs(__ccgo_ts_str(28599), 1)
 	if p != 0 {
 		// the parms after p are wadfile/lump names,
 		// until end of parms or another - preceded parm
