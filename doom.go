@@ -23570,14 +23570,14 @@ func A_Tracer(actor *mobj_t) {
 	// change angle
 	exact = R_PointToAngle2(actor.Fx, actor.Fy, dest.Fx, dest.Fy)
 	if exact != actor.Fangle {
-		if exact-actor.Fangle > uint32(0x80000000) {
+		if exact-actor.Fangle > 0x80000000 {
 			actor.Fangle -= uint32(TRACEANGLE)
-			if exact-actor.Fangle < uint32(0x80000000) {
+			if exact-actor.Fangle < 0x80000000 {
 				actor.Fangle = exact
 			}
 		} else {
 			actor.Fangle += uint32(TRACEANGLE)
-			if exact-actor.Fangle > uint32(0x80000000) {
+			if exact-actor.Fangle > 0x80000000 {
 				actor.Fangle = exact
 			}
 		}
@@ -27090,8 +27090,8 @@ func P_PointOnDivlineSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
 	dx = x - (*divline_t)(unsafe.Pointer(line)).Fx
 	dy = y - (*divline_t)(unsafe.Pointer(line)).Fy
 	// try to quickly decide by looking at sign bits
-	if uint32((*divline_t)(unsafe.Pointer(line)).Fdy^(*divline_t)(unsafe.Pointer(line)).Fdx^dx^dy)&uint32(0x80000000) != 0 {
-		if uint32((*divline_t)(unsafe.Pointer(line)).Fdy^dx)&uint32(0x80000000) != 0 {
+	if uint32((*divline_t)(unsafe.Pointer(line)).Fdy^(*divline_t)(unsafe.Pointer(line)).Fdx^dx^dy)&0x80000000 != 0 {
+		if uint32((*divline_t)(unsafe.Pointer(line)).Fdy^dx)&0x80000000 != 0 {
 			return 1
 		} // (left is negative)
 		return 0
@@ -31441,7 +31441,7 @@ func PadRejectArray(array uintptr, len1 uint32) {
 	rejectpad = [4]uint32{
 		0: uint32((totallines*int32(4)+int32(3)) & ^3 + 24),
 		2: 50,
-		3: uint32(0x1d4a11),
+		3: 0x1d4a11,
 	}
 	// Copy values from rejectpad into the destination array.
 	dest = array
@@ -31451,7 +31451,7 @@ func PadRejectArray(array uintptr, len1 uint32) {
 			break
 		}
 		byte_num = i % 4
-		*(*uint8)(unsafe.Pointer(dest)) = uint8(rejectpad[i/4] >> (byte_num * 8) & uint32(0xff))
+		*(*uint8)(unsafe.Pointer(dest)) = uint8(rejectpad[i/4] >> (byte_num * 8) & 0xff)
 		dest++
 		goto _1
 	_1:
@@ -36001,14 +36001,14 @@ func R_DrawSpan() {
 	// with x in the top 16 bits and y in the bottom 16 bits.  For
 	// each 16-bit part, the top 6 bits are the integer part and the
 	// bottom 10 bits are the fractional part of the pixel position.
-	position = uint32(ds_xfrac<<10)&uint32(0xffff0000) | uint32(ds_yfrac>>6&0x0000ffff)
-	step = uint32(ds_xstep<<10)&uint32(0xffff0000) | uint32(ds_ystep>>6&0x0000ffff)
+	position = uint32(ds_xfrac<<10)&0xffff0000 | uint32(ds_yfrac>>6&0x0000ffff)
+	step = uint32(ds_xstep<<10)&0xffff0000 | uint32(ds_ystep>>6&0x0000ffff)
 	dest = ylookup[ds_y] + uintptr(columnofs[ds_x1])
 	// We do not check for zero spans here?
 	count = ds_x2 - ds_x1
 	for {
 		// Calculate current texture index in u,v.
-		ytemp = position >> 4 & uint32(0x0fc0)
+		ytemp = position >> 4 & 0x0fc0
 		xtemp = position >> 26
 		spot = int32(xtemp | ytemp)
 		// Lookup pixel from flat texture tile,
@@ -36044,8 +36044,8 @@ func R_DrawSpanLow() {
 		I_Error(26301, ds_x1, ds_x2, ds_y)
 	}
 	//	dscount++;
-	position = uint32(ds_xfrac<<10)&uint32(0xffff0000) | uint32(ds_yfrac>>6&0x0000ffff)
-	step = uint32(ds_xstep<<10)&uint32(0xffff0000) | uint32(ds_ystep>>6&0x0000ffff)
+	position = uint32(ds_xfrac<<10)&0xffff0000 | uint32(ds_yfrac>>6&0x0000ffff)
+	step = uint32(ds_xstep<<10)&0xffff0000 | uint32(ds_ystep>>6&0x0000ffff)
 	count = ds_x2 - ds_x1
 	// Blocky mode, need to multiply by 2.
 	ds_x1 <<= 1
@@ -36053,7 +36053,7 @@ func R_DrawSpanLow() {
 	dest = ylookup[ds_y] + uintptr(columnofs[ds_x1])
 	for {
 		// Calculate current texture index in u,v.
-		ytemp = position >> 4 & uint32(0x0fc0)
+		ytemp = position >> 4 & 0x0fc0
 		xtemp = position >> 26
 		spot = int32(xtemp | ytemp)
 		// Lowres/blocky mode does it twice,
@@ -36332,8 +36332,8 @@ func R_PointOnSide(x fixed_t, y fixed_t, node *node_t) (r int32) {
 	dx = x - node.Fx
 	dy = y - node.Fy
 	// Try to quickly decide by looking at sign bits.
-	if uint32(node.Fdy^node.Fdx^dx^dy)&uint32(0x80000000) != 0 {
-		if uint32(node.Fdy^dx)&uint32(0x80000000) != 0 {
+	if uint32(node.Fdy^node.Fdx^dx^dy)&0x80000000 != 0 {
+		if uint32(node.Fdy^dx)&0x80000000 != 0 {
 			// (left is negative)
 			return 1
 		}
@@ -36370,8 +36370,8 @@ func R_PointOnSegSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
 	dx = x - lx
 	dy = y - ly
 	// Try to quickly decide by looking at sign bits.
-	if uint32(ldy^ldx^dx^dy)&uint32(0x80000000) != 0 {
-		if uint32(ldy^dx)&uint32(0x80000000) != 0 {
+	if uint32(ldy^ldx^dx^dy)&0x80000000 != 0 {
+		if uint32(ldy^dx)&0x80000000 != 0 {
 			// (left is negative)
 			return 1
 		}
@@ -37269,7 +37269,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 				dc_colormap = *(*uintptr)(unsafe.Pointer(walllights + uintptr(index)*8))
 			}
 			sprtopscreen = centeryfrac - FixedMul(dc_texturemid, spryscale)
-			dc_iscale = int32(uint32(0xffffffff) / uint32(spryscale))
+			dc_iscale = int32(0xffffffff / uint32(spryscale))
 			// draw the texture
 			col = R_GetColumn(texnum, int32(*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2)))) - uintptr(3)
 			R_DrawMaskedColumn(col)
@@ -37352,7 +37352,7 @@ func R_RenderSegLoop() {
 			}
 			dc_colormap = *(*uintptr)(unsafe.Pointer(walllights + uintptr(index)*8))
 			dc_x = rw_x
-			dc_iscale = int32(uint32(0xffffffff) / uint32(rw_scale))
+			dc_iscale = int32(0xffffffff / uint32(rw_scale))
 		} else {
 			// purely to shut up the compiler
 			texturecolumn = 0
@@ -38604,10 +38604,10 @@ func SHA1_Update(sha hash.Hash, inbuf uintptr, inlen uint64) {
 
 func SHA1_UpdateInt32(sha hash.Hash, val uint32) {
 	bp := alloc(16)
-	(*(*[4]uint8)(unsafe.Pointer(bp)))[0] = uint8(val >> 24 & uint32(0xff))
-	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(1)] = uint8(val >> 16 & uint32(0xff))
-	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(2)] = uint8(val >> 8 & uint32(0xff))
-	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(3)] = uint8(val & uint32(0xff))
+	(*(*[4]uint8)(unsafe.Pointer(bp)))[0] = uint8(val >> 24 & 0xff)
+	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(1)] = uint8(val >> 16 & 0xff)
+	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(2)] = uint8(val >> 8 & 0xff)
+	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(3)] = uint8(val & 0xff)
 	SHA1_Update(sha, bp, 4)
 }
 
@@ -40160,7 +40160,7 @@ func ST_Responder(ev *event_t) (r boolean) {
 	var v6, v8 GameMission_t
 	var v10 bool
 	// Filter automap on/off.
-	if ev.Ftype1 == ev_keyup && uint32(ev.Fdata1)&uint32(0xffff0000) == uint32(int32('a')<<24+int32('m')<<16) {
+	if ev.Ftype1 == ev_keyup && uint32(ev.Fdata1)&0xffff0000 == uint32(int32('a')<<24+int32('m')<<16) {
 		switch ev.Fdata1 {
 		case int32('a')<<24 + int32('m')<<16 | int32('e')<<8:
 			st_firsttime = 1
@@ -41209,7 +41209,7 @@ func S_AdjustSoundParams(listener *degenmobj_t, source *degenmobj_t, vol uintptr
 	if angle > mo.Fangle {
 		angle = angle - mo.Fangle
 	} else {
-		angle = angle + (uint32(0xffffffff) - mo.Fangle)
+		angle = angle + (0xffffffff - mo.Fangle)
 	}
 	angle >>= uint32(ANGLETOFINESHIFT)
 	// stereo separation
