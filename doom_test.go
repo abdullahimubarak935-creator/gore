@@ -538,7 +538,7 @@ func TestMenus(t *testing.T) {
 		for wipe_running != 0 {
 			time.Sleep(1 * time.Millisecond)
 		}
-		time.Sleep(2 * time.Millisecond)
+		time.Sleep(5 * time.Millisecond)
 
 		game.InsertKey(KEY_ESCAPE) // Open menu
 		confirmMenu(t, game, "main")
