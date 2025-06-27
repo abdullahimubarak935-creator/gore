@@ -201,21 +201,17 @@ func (d *doomTestHeadless) InsertKeyChange(Key uint8, pressed bool) {
 
 // Run the demo at super speed to make sure it all goes ok
 func TestDoomDemo(t *testing.T) {
-	dg_speed_ratio = 100.0 // Run at 50x speed
+	dg_speed_ratio = 100.0
 	game := &doomTestHeadless{
 		t: t,
-		keys: []delayedKeyEvent{
-			{DoomKeyEvent{Pressed: true, Key: KEY_ESCAPE}, 60_000},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ESCAPE}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_UPARROW1}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_UPARROW1}, 100},
-			{DoomKeyEvent{Pressed: true, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: false, Key: KEY_ENTER}, 100},
-			{DoomKeyEvent{Pressed: true, Key: 'y'}, 100},
-			{DoomKeyEvent{Pressed: false, Key: 'y'}, 100},
-		},
 	}
 	defer game.Close()
+	go func() {
+		time.Sleep(2 * time.Second)
+
+		// Quit
+		D_Endoom()
+	}()
 	Run(game, []string{"-iwad", "doom1.wad"})
 }
 
@@ -248,7 +244,7 @@ func loadPNG(filename string) (image.Image, error) {
 }
 
 func TestLoadSave(t *testing.T) {
-	dg_speed_ratio = 100.0 // Run at 50x speed
+	dg_speed_ratio = 100.0
 	game := &doomTestHeadless{
 		t: t,
 	}
@@ -314,7 +310,7 @@ func TestLoadSave(t *testing.T) {
 }
 
 func TestDoomRandom(t *testing.T) {
-	dg_speed_ratio = 100.0 // Run at 50x speed
+	dg_speed_ratio = 100.0
 	game := &doomTestHeadless{
 		t: t,
 	}
@@ -359,7 +355,7 @@ func TestDoomRandom(t *testing.T) {
 }
 
 func TestDoomLevels(t *testing.T) {
-	dg_speed_ratio = 100.0 // Run at 50x speed
+	dg_speed_ratio = 100.0
 	game := &doomTestHeadless{
 		t: t,
 	}
@@ -416,7 +412,7 @@ func TestDoomLevels(t *testing.T) {
 }
 
 func TestDoomMap(t *testing.T) {
-	dg_speed_ratio = 100.0 // Run at 50x speed
+	dg_speed_ratio = 100.0
 	game := &doomTestHeadless{
 		t: t,
 	}
@@ -454,7 +450,7 @@ func TestDoomMap(t *testing.T) {
 }
 
 func TestWeapons(t *testing.T) {
-	dg_speed_ratio = 100.0 // Run at 50x speed
+	dg_speed_ratio = 100.0
 	game := &doomTestHeadless{
 		t: t,
 	}
@@ -524,7 +520,7 @@ func confirmMenu(t *testing.T, game *doomTestHeadless, name string) {
 
 // TestMenus walks through the menus and checks the screenshots
 func TestMenus(t *testing.T) {
-	dg_speed_ratio = 100.0 // Run at 50x speed
+	dg_speed_ratio = 100.0
 	game := &doomTestHeadless{
 		t: t,
 	}
