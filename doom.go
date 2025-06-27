@@ -22569,7 +22569,7 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 		break
 	}
 	// if the sector has an active thinker, use it
-	sec = (*side_t)(unsafe.Pointer(sides + uintptr(line.Fsidenum[side^int32(1)])*24)).Fsector
+	sec = sides[line.Fsidenum[side^int32(1)]].Fsector
 	if sec.Fspecialdata != 0 {
 		door = sec.Fspecialdata
 		switch int32(line.Fspecial) {
@@ -22808,10 +22808,10 @@ func P_RecursiveSound(sec *sector_t, soundblocks int32) {
 		if openrange <= 0 {
 			goto _1
 		} // closed door
-		if (*side_t)(unsafe.Pointer(sides+uintptr(check.Fsidenum[0])*24)).Fsector == sec {
-			other = (*side_t)(unsafe.Pointer(sides + uintptr(check.Fsidenum[1])*24)).Fsector
+		if sides[check.Fsidenum[0]].Fsector == sec {
+			other = sides[check.Fsidenum[1]].Fsector
 		} else {
-			other = (*side_t)(unsafe.Pointer(sides + uintptr(check.Fsidenum[0])*24)).Fsector
+			other = sides[check.Fsidenum[0]].Fsector
 		}
 		if int32(check.Fflags)&ML_SOUNDBLOCK != 0 {
 			if !(soundblocks != 0) {
@@ -28638,7 +28638,7 @@ func EV_DoPlat(line *line_t, type1 plattype_e, amount int32) (r int32) {
 		switch type1 {
 		case int32(raiseToNearestAndChange):
 			platP.Fspeed = 1 << FRACBITS / 2
-			sec.Ffloorpic = (*side_t)(unsafe.Pointer(sides + uintptr(line.Fsidenum[0])*24)).Fsector.Ffloorpic
+			sec.Ffloorpic = sides[line.Fsidenum[0]].Fsector.Ffloorpic
 			platP.Fhigh = P_FindNextHighestFloor(sec, sec.Ffloorheight)
 			platP.Fwait = 0
 			platP.Fstatus = int32(up)
@@ -28647,7 +28647,7 @@ func EV_DoPlat(line *line_t, type1 plattype_e, amount int32) (r int32) {
 			S_StartSound(&sec.Fsoundorg, int32(sfx_stnmov))
 		case int32(raiseAndChange):
 			platP.Fspeed = 1 << FRACBITS / 2
-			sec.Ffloorpic = (*sector_t)(unsafe.Pointer((*(*side_t)(unsafe.Pointer(sides + uintptr(line.Fsidenum[0])*24))).Fsector)).Ffloorpic
+			sec.Ffloorpic = sides[line.Fsidenum[0]].Fsector.Ffloorpic
 			platP.Fhigh = sec.Ffloorheight + amount*(1<<FRACBITS)
 			platP.Fwait = 0
 			platP.Fstatus = int32(up)
@@ -30599,7 +30599,7 @@ func P_UnArchivePlayers() {
 //	// P_ArchiveWorld
 //	//
 func P_ArchiveWorld() {
-	var si uintptr
+	var si *side_t
 	// do sectors
 	for i := int32(0); i < numsectors; i++ {
 		sec := &sectors[i]
@@ -30621,7 +30621,7 @@ func P_ArchiveWorld() {
 			if li.Fsidenum[j] == -1 {
 				continue
 			}
-			si = sides + uintptr(li.Fsidenum[j])*24
+			si = &sides[li.Fsidenum[j]]
 			saveg_write16(int16((*side_t)(unsafe.Pointer(si)).Ftextureoffset >> int32(FRACBITS)))
 			saveg_write16(int16((*side_t)(unsafe.Pointer(si)).Frowoffset >> int32(FRACBITS)))
 			saveg_write16((*side_t)(unsafe.Pointer(si)).Ftoptexture)
@@ -30637,7 +30637,7 @@ func P_ArchiveWorld() {
 //	// P_UnArchiveWorld
 //	//
 func P_UnArchiveWorld() {
-	var si uintptr
+	var si *side_t
 	// do sectors
 	for i := int32(0); i < numsectors; i++ {
 		sec := &sectors[i]
@@ -30661,7 +30661,7 @@ func P_UnArchiveWorld() {
 			if li.Fsidenum[j] == -1 {
 				continue
 			}
-			si = sides + uintptr(li.Fsidenum[j])*24
+			si = &sides[li.Fsidenum[j]]
 			(*side_t)(unsafe.Pointer(si)).Ftextureoffset = int32(saveg_read16()) << int32(FRACBITS)
 			(*side_t)(unsafe.Pointer(si)).Frowoffset = int32(saveg_read16()) << int32(FRACBITS)
 			(*side_t)(unsafe.Pointer(si)).Ftoptexture = saveg_read16()
@@ -31006,8 +31006,8 @@ func P_LoadSegs(lump int32) {
 		ldef = &lines[linedef]
 		(*seg_t)(unsafe.Pointer(li)).Flinedef = ldef
 		side = int32((*mapseg_t)(unsafe.Pointer(ml)).Fside)
-		(*seg_t)(unsafe.Pointer(li)).Fsidedef = (*side_t)(unsafe.Pointer(sides + uintptr(ldef.Fsidenum[side])*24))
-		(*seg_t)(unsafe.Pointer(li)).Ffrontsector = (*(*side_t)(unsafe.Pointer(sides + uintptr(ldef.Fsidenum[side])*24))).Fsector
+		(*seg_t)(unsafe.Pointer(li)).Fsidedef = &sides[ldef.Fsidenum[side]]
+		(*seg_t)(unsafe.Pointer(li)).Ffrontsector = sides[ldef.Fsidenum[side]].Fsector
 		if int32(ldef.Fflags)&ML_TWOSIDED != 0 {
 			sidenum = int32(ldef.Fsidenum[side^int32(1)])
 			// If the sidenum is out of range, this may be a "glass hack"
@@ -31018,7 +31018,7 @@ func P_LoadSegs(lump int32) {
 			if sidenum < 0 || sidenum >= numsides {
 				(*seg_t)(unsafe.Pointer(li)).Fbacksector = GetSectorAtNullAddress()
 			} else {
-				(*seg_t)(unsafe.Pointer(li)).Fbacksector = (*(*side_t)(unsafe.Pointer(sides + uintptr(sidenum)*24))).Fsector
+				(*seg_t)(unsafe.Pointer(li)).Fbacksector = sides[sidenum].Fsector
 			}
 		} else {
 			(*seg_t)(unsafe.Pointer(li)).Fbacksector = nil
@@ -31220,12 +31220,12 @@ func P_LoadLineDefs(lump int32) {
 		ld.Fsidenum[0] = *(*int16)(unsafe.Pointer(mld + 10))
 		ld.Fsidenum[1] = *(*int16)(unsafe.Pointer(mld + 10 + 1*2))
 		if ld.Fsidenum[0] != -1 {
-			ld.Ffrontsector = (*(*side_t)(unsafe.Pointer(sides + uintptr(ld.Fsidenum[0])*24))).Fsector
+			ld.Ffrontsector = sides[ld.Fsidenum[0]].Fsector
 		} else {
 			ld.Ffrontsector = nil
 		}
 		if ld.Fsidenum[1] != -1 {
-			ld.Fbacksector = (*(*side_t)(unsafe.Pointer(sides + uintptr(ld.Fsidenum[1])*24))).Fsector
+			ld.Fbacksector = sides[ld.Fsidenum[1]].Fsector
 		} else {
 			ld.Fbacksector = nil
 		}
@@ -31240,31 +31240,20 @@ func P_LoadLineDefs(lump int32) {
 //	// P_LoadSideDefs
 //	//
 func P_LoadSideDefs(lump int32) {
-	var data, msd, sd uintptr
-	var i int32
+	var data, msd uintptr
 	numsides = int32(uint64(W_LumpLength(uint32(lump))) / 30)
-	sides = Z_Malloc(int32(uint64(numsides)*24), int32(PU_LEVEL), uintptr(0))
-	xmemset(sides, 0, uint64(numsides)*24)
+	sides = make([]side_t, numsides)
 	data = W_CacheLumpNum(lump, int32(PU_STATIC))
 	msd = data
-	sd = sides
-	i = 0
-	for {
-		if !(i < numsides) {
-			break
-		}
-		(*side_t)(unsafe.Pointer(sd)).Ftextureoffset = int32((*mapsidedef_t)(unsafe.Pointer(msd)).Ftextureoffset) << int32(FRACBITS)
-		(*side_t)(unsafe.Pointer(sd)).Frowoffset = int32((*mapsidedef_t)(unsafe.Pointer(msd)).Frowoffset) << int32(FRACBITS)
-		(*side_t)(unsafe.Pointer(sd)).Ftoptexture = int16(R_TextureNumForName(msd + 4))
-		(*side_t)(unsafe.Pointer(sd)).Fbottomtexture = int16(R_TextureNumForName(msd + 12))
-		(*side_t)(unsafe.Pointer(sd)).Fmidtexture = int16(R_TextureNumForName(msd + 20))
-		(*side_t)(unsafe.Pointer(sd)).Fsector = &sectors[(*mapsidedef_t)(unsafe.Pointer(msd)).Fsector]
-		goto _1
-	_1:
-		;
-		i++
+	for i := int32(0); i < numsides; i++ {
+		sd := &sides[i]
+		sd.Ftextureoffset = int32((*mapsidedef_t)(unsafe.Pointer(msd)).Ftextureoffset) << int32(FRACBITS)
+		sd.Frowoffset = int32((*mapsidedef_t)(unsafe.Pointer(msd)).Frowoffset) << int32(FRACBITS)
+		sd.Ftoptexture = int16(R_TextureNumForName(msd + 4))
+		sd.Fbottomtexture = int16(R_TextureNumForName(msd + 12))
+		sd.Fmidtexture = int16(R_TextureNumForName(msd + 20))
+		sd.Fsector = &sectors[(*mapsidedef_t)(unsafe.Pointer(msd)).Fsector]
 		msd += 30
-		sd += 24
 	}
 	W_ReleaseLumpNum(lump)
 }
@@ -32098,7 +32087,7 @@ func P_InitPicAnims() {
 func getSide(currentSector int32, line int32, side int32) *side_t {
 	sec := &sectors[currentSector]
 	linePtr := sec.Flines[line]
-	return (*side_t)(unsafe.Pointer(sides + uintptr(linePtr.Fsidenum[side])*24))
+	return &sides[linePtr.Fsidenum[side]]
 }
 
 // C documentation
@@ -32862,7 +32851,7 @@ func P_UpdateSpecials() {
 		switch int32(line.Fspecial) {
 		case 48:
 			// EFFECT FIRSTCOL SCROLL +
-			(*(*side_t)(unsafe.Pointer(sides + uintptr(line.Fsidenum[0])*24))).Ftextureoffset += 1 << FRACBITS
+			sides[line.Fsidenum[0]].Ftextureoffset += 1 << FRACBITS
 			break
 		}
 		goto _3
@@ -32881,11 +32870,11 @@ func P_UpdateSpecials() {
 			if !(buttonlist[i].Fbtimer != 0) {
 				switch buttonlist[i].Fwhere {
 				case int32(top):
-					(*(*side_t)(unsafe.Pointer(sides + uintptr(buttonlist[i].Fline.Fsidenum[0])*24))).Ftoptexture = int16(buttonlist[i].Fbtexture)
+					sides[buttonlist[i].Fline.Fsidenum[0]].Ftoptexture = int16(buttonlist[i].Fbtexture)
 				case int32(middle):
-					(*(*side_t)(unsafe.Pointer(sides + uintptr(buttonlist[i].Fline.Fsidenum[0])*24))).Fmidtexture = int16(buttonlist[i].Fbtexture)
+					sides[buttonlist[i].Fline.Fsidenum[0]].Fmidtexture = int16(buttonlist[i].Fbtexture)
 				case int32(bottom):
-					(*(*side_t)(unsafe.Pointer(sides + uintptr(buttonlist[i].Fline.Fsidenum[0])*24))).Fbottomtexture = int16(buttonlist[i].Fbtexture)
+					sides[buttonlist[i].Fline.Fsidenum[0]].Fbottomtexture = int16(buttonlist[i].Fbtexture)
 					break
 				}
 				S_StartSound(buttonlist[i].Fsoundorg, int32(sfx_swtchn))
@@ -33487,9 +33476,9 @@ func P_ChangeSwitchTexture(line *line_t, useAgain int32) {
 	if !(useAgain != 0) {
 		line.Fspecial = 0
 	}
-	texTop = int32((*(*side_t)(unsafe.Pointer(sides + uintptr(line.Fsidenum[0])*24))).Ftoptexture)
-	texMid = int32((*(*side_t)(unsafe.Pointer(sides + uintptr(line.Fsidenum[0])*24))).Fmidtexture)
-	texBot = int32((*(*side_t)(unsafe.Pointer(sides + uintptr(line.Fsidenum[0])*24))).Fbottomtexture)
+	texTop = int32(sides[line.Fsidenum[0]].Ftoptexture)
+	texMid = int32(sides[line.Fsidenum[0]].Fmidtexture)
+	texBot = int32(sides[line.Fsidenum[0]].Fbottomtexture)
 	sound = int32(sfx_swtchn)
 	// EXIT SWITCH?
 	if int32(line.Fspecial) == 11 {
@@ -33502,7 +33491,7 @@ func P_ChangeSwitchTexture(line *line_t, useAgain int32) {
 		}
 		if switchlist[i] == texTop {
 			S_StartSound(buttonlist[0].Fsoundorg, sound)
-			(*(*side_t)(unsafe.Pointer(sides + uintptr(line.Fsidenum[0])*24))).Ftoptexture = int16(switchlist[i^int32(1)])
+			sides[line.Fsidenum[0]].Ftoptexture = int16(switchlist[i^int32(1)])
 			if useAgain != 0 {
 				P_StartButton(line, int32(top), switchlist[i], int32(BUTTONTIME))
 			}
@@ -33510,7 +33499,7 @@ func P_ChangeSwitchTexture(line *line_t, useAgain int32) {
 		} else {
 			if switchlist[i] == texMid {
 				S_StartSound(buttonlist[0].Fsoundorg, sound)
-				(*(*side_t)(unsafe.Pointer(sides + uintptr(line.Fsidenum[0])*24))).Fmidtexture = int16(switchlist[i^int32(1)])
+				sides[line.Fsidenum[0]].Fmidtexture = int16(switchlist[i^int32(1)])
 				if useAgain != 0 {
 					P_StartButton(line, int32(middle), switchlist[i], int32(BUTTONTIME))
 				}
@@ -33518,7 +33507,7 @@ func P_ChangeSwitchTexture(line *line_t, useAgain int32) {
 			} else {
 				if switchlist[i] == texBot {
 					S_StartSound(buttonlist[0].Fsoundorg, sound)
-					(*(*side_t)(unsafe.Pointer(sides + uintptr(line.Fsidenum[0])*24))).Fbottomtexture = int16(switchlist[i^int32(1)])
+					sides[line.Fsidenum[0]].Fbottomtexture = int16(switchlist[i^int32(1)])
 					if useAgain != 0 {
 						P_StartButton(line, int32(bottom), switchlist[i], int32(BUTTONTIME))
 					}
@@ -35494,9 +35483,9 @@ func R_PrecacheLevel() {
 		if !(i < numsides) {
 			break
 		}
-		*(*int8)(unsafe.Pointer(texturepresent + uintptr((*(*side_t)(unsafe.Pointer(sides + uintptr(i)*24))).Ftoptexture))) = 1
-		*(*int8)(unsafe.Pointer(texturepresent + uintptr((*(*side_t)(unsafe.Pointer(sides + uintptr(i)*24))).Fmidtexture))) = 1
-		*(*int8)(unsafe.Pointer(texturepresent + uintptr((*(*side_t)(unsafe.Pointer(sides + uintptr(i)*24))).Fbottomtexture))) = 1
+		*(*int8)(unsafe.Pointer(texturepresent + uintptr(sides[i].Ftoptexture))) = 1
+		*(*int8)(unsafe.Pointer(texturepresent + uintptr(sides[i].Fmidtexture))) = 1
+		*(*int8)(unsafe.Pointer(texturepresent + uintptr(sides[i].Fbottomtexture))) = 1
 		goto _3
 	_3:
 		;
@@ -46500,7 +46489,7 @@ var sidedef *side_t
 
 var sidemove [2]fixed_t
 
-var sides uintptr
+var sides []side_t
 
 var sightcounts [2]int32
 
