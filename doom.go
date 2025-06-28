@@ -3570,7 +3570,7 @@ func AM_drawWalls() {
 			if int32(line.Fflags)&ML_DONTDRAW != 0 && cheating == 0 {
 				continue
 			}
-			if !(line.Fbacksector != nil) {
+			if line.Fbacksector == nil {
 				AM_drawMline(&l, 256-5*16+lightlev)
 			} else {
 				if int32(line.Fspecial) == 39 {
@@ -5594,7 +5594,7 @@ func InitGameVersion() {
 	if p != 0 {
 		i = 0
 		for {
-			if !(gameversions[i].Fdescription != uintptr(0)) {
+			if gameversions[i].Fdescription == uintptr(0) {
 				break
 			}
 			if strings.EqualFold(myargs[p+1], gameversions[i].Fcmdline) {
@@ -5610,7 +5610,7 @@ func InitGameVersion() {
 			fprintf_ccgo(os.Stdout, 3870)
 			i = 0
 			for {
-				if !(gameversions[i].Fdescription != uintptr(0)) {
+				if gameversions[i].Fdescription == uintptr(0) {
 					break
 				}
 				fprintf_ccgo(os.Stdout, 3896, gameversions[i].Fcmdline, gostring(gameversions[i].Fdescription))
@@ -5670,7 +5670,7 @@ func PrintGameVersion() {
 	var i int32
 	i = 0
 	for {
-		if !(gameversions[i].Fdescription != uintptr(0)) {
+		if gameversions[i].Fdescription == uintptr(0) {
 			break
 		}
 		if gameversions[i].Fversion == gameversion {
@@ -8243,7 +8243,7 @@ func G_CheckSpot(playernum int32, mthing *mapthing_t) (r boolean) {
 	var mo *mobj_t
 	var ss *subsector_t
 	var x, xa, y, ya, v2 fixed_t
-	if !(players[playernum].Fmo != nil) {
+	if players[playernum].Fmo == nil {
 		// first spawn of level, before corpses
 		i = 0
 		for {
@@ -22425,14 +22425,14 @@ func T_VerticalDoor(door *vldoor_t) {
 func EV_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) (r int32) {
 	var p *player_t
 	p = thing.Fplayer
-	if !(p != nil) {
+	if p == nil {
 		return 0
 	}
 	switch int32(line.Fspecial) {
 	case 99: // Blue Lock
 		fallthrough
 	case 133:
-		if !(p != nil) {
+		if p == nil {
 			return 0
 		}
 		if p.Fcards[it_bluecard] == 0 && p.Fcards[it_blueskull] == 0 {
@@ -22443,7 +22443,7 @@ func EV_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) (r int32) {
 	case 134: // Red Lock
 		fallthrough
 	case 135:
-		if !(p != nil) {
+		if p == nil {
 			return 0
 		}
 		if p.Fcards[it_redcard] == 0 && p.Fcards[it_redskull] == 0 {
@@ -22454,7 +22454,7 @@ func EV_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) (r int32) {
 	case 136: // Yellow Lock
 		fallthrough
 	case 137:
-		if !(p != nil) {
+		if p == nil {
 			return 0
 		}
 		if p.Fcards[it_yellowcard] == 0 && p.Fcards[it_yellowskull] == 0 {
@@ -22552,7 +22552,7 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 	case 26: // Blue Lock
 		fallthrough
 	case 32:
-		if !(player != nil) {
+		if player == nil {
 			return
 		}
 		if player.Fcards[it_bluecard] == 0 && player.Fcards[it_blueskull] == 0 {
@@ -22563,7 +22563,7 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 	case 27: // Yellow Lock
 		fallthrough
 	case 34:
-		if !(player != nil) {
+		if player == nil {
 			return
 		}
 		if player.Fcards[it_yellowcard] == 0 && player.Fcards[it_yellowskull] == 0 {
@@ -22574,7 +22574,7 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 	case 28: // Red Lock
 		fallthrough
 	case 33:
-		if !(player != nil) {
+		if player == nil {
 			return
 		}
 		if player.Fcards[it_redcard] == 0 && player.Fcards[it_redskull] == 0 {
@@ -22601,7 +22601,7 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 			if (*vldoor_t)(unsafe.Pointer(door)).Fdirection == -1 {
 				(*vldoor_t)(unsafe.Pointer(door)).Fdirection = 1
 			} else {
-				if !(thing.Fplayer != nil) {
+				if thing.Fplayer == nil {
 					return
 				} // JDC: bad guys never close doors
 				// When is a door not a door?
@@ -22864,7 +22864,7 @@ func P_NoiseAlert(target *mobj_t, emmiter *mobj_t) {
 func P_CheckMeleeRange(actor *mobj_t) (r boolean) {
 	var dist fixed_t
 	var pl *mobj_t
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return 0
 	}
 	pl = actor.Ftarget
@@ -23031,7 +23031,7 @@ func P_NewChaseDir(actor *mobj_t) {
 	var deltax, deltay fixed_t
 	var olddir, turnaround dirtype_t
 	var tdir int32
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		I_Error(23676, 0)
 	}
 	olddir = actor.Fmovedir
@@ -23117,7 +23117,7 @@ func P_NewChaseDir(actor *mobj_t) {
 	} else {
 		tdir = DI_SOUTHEAST
 		for {
-			if !(tdir != DI_EAST-1) {
+			if tdir == DI_EAST-1 {
 				break
 			}
 			if tdir != turnaround {
@@ -23207,7 +23207,7 @@ func A_KeenDie(mo *mobj_t) {
 	// to see if all Keens are dead
 	th = thinkercap.Fnext
 	for {
-		if !(th != &thinkercap) {
+		if th == &thinkercap {
 			break
 		}
 		if th.Ffunction.Facv != __ccgo_fp(P_MobjThinker) {
@@ -23299,7 +23299,7 @@ func A_Chase(actor *mobj_t) {
 	}
 	// modify target threshold
 	if actor.Fthreshold != 0 {
-		if !(actor.Ftarget != nil) || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fhealth <= 0 {
+		if actor.Ftarget == nil || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fhealth <= 0 {
 			actor.Fthreshold = 0
 		} else {
 			actor.Fthreshold--
@@ -23317,7 +23317,7 @@ func A_Chase(actor *mobj_t) {
 			}
 		}
 	}
-	if !(actor.Ftarget != nil) || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fflags&MF_SHOOTABLE == 0 {
+	if actor.Ftarget == nil || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fflags&MF_SHOOTABLE == 0 {
 		// look for a new target
 		if P_LookForPlayers(actor, 1) != 0 {
 			return
@@ -23380,7 +23380,7 @@ nomissile:
 //	// A_FaceTarget
 //	//
 func A_FaceTarget(actor *mobj_t) {
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	actor.Fflags |= MF_AMBUSH
@@ -23397,7 +23397,7 @@ func A_FaceTarget(actor *mobj_t) {
 //	//
 func A_PosAttack(actor *mobj_t) {
 	var angle, damage, slope int32
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	A_FaceTarget(actor)
@@ -23411,7 +23411,7 @@ func A_PosAttack(actor *mobj_t) {
 
 func A_SPosAttack(actor *mobj_t) {
 	var angle, bangle, damage, i, slope int32
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	S_StartSound(&actor.degenmobj_t, int32(sfx_shotgn))
@@ -23435,7 +23435,7 @@ func A_SPosAttack(actor *mobj_t) {
 
 func A_CPosAttack(actor *mobj_t) {
 	var angle, bangle, damage, slope int32
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	S_StartSound(&actor.degenmobj_t, int32(sfx_shotgn))
@@ -23453,7 +23453,7 @@ func A_CPosRefire(actor *mobj_t) {
 	if P_Random() < 40 {
 		return
 	}
-	if !(actor.Ftarget != nil) || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fhealth <= 0 || P_CheckSight(actor, actor.Ftarget) == 0 {
+	if actor.Ftarget == nil || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fhealth <= 0 || P_CheckSight(actor, actor.Ftarget) == 0 {
 		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseestate)
 	}
 }
@@ -23464,13 +23464,13 @@ func A_SpidRefire(actor *mobj_t) {
 	if P_Random() < 10 {
 		return
 	}
-	if !(actor.Ftarget != nil) || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fhealth <= 0 || P_CheckSight(actor, actor.Ftarget) == 0 {
+	if actor.Ftarget == nil || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fhealth <= 0 || P_CheckSight(actor, actor.Ftarget) == 0 {
 		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseestate)
 	}
 }
 
 func A_BspiAttack(actor *mobj_t) {
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	A_FaceTarget(actor)
@@ -23485,7 +23485,7 @@ func A_BspiAttack(actor *mobj_t) {
 //	//
 func A_TroopAttack(actor *mobj_t) {
 	var damage int32
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	A_FaceTarget(actor)
@@ -23501,7 +23501,7 @@ func A_TroopAttack(actor *mobj_t) {
 
 func A_SargAttack(actor *mobj_t) {
 	var damage int32
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	A_FaceTarget(actor)
@@ -23513,7 +23513,7 @@ func A_SargAttack(actor *mobj_t) {
 
 func A_HeadAttack(actor *mobj_t) {
 	var damage int32
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	A_FaceTarget(actor)
@@ -23527,7 +23527,7 @@ func A_HeadAttack(actor *mobj_t) {
 }
 
 func A_CyberAttack(actor *mobj_t) {
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	A_FaceTarget(actor)
@@ -23536,7 +23536,7 @@ func A_CyberAttack(actor *mobj_t) {
 
 func A_BruisAttack(actor *mobj_t) {
 	var damage int32
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	if P_CheckMeleeRange(actor) != 0 {
@@ -23556,7 +23556,7 @@ func A_BruisAttack(actor *mobj_t) {
 //	//
 func A_SkelMissile(actor *mobj_t) {
 	var mo *mobj_t
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	A_FaceTarget(actor)
@@ -23590,7 +23590,7 @@ func A_Tracer(actor *mobj_t) {
 	}
 	// adjust direction
 	dest = actor.Ftracer
-	if !(dest != nil) || dest.Fhealth <= 0 {
+	if dest == nil || dest.Fhealth <= 0 {
 		return
 	}
 	// change angle
@@ -23626,7 +23626,7 @@ func A_Tracer(actor *mobj_t) {
 }
 
 func A_SkelWhoosh(actor *mobj_t) {
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	A_FaceTarget(actor)
@@ -23635,7 +23635,7 @@ func A_SkelWhoosh(actor *mobj_t) {
 
 func A_SkelFist(actor *mobj_t) {
 	var damage int32
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	A_FaceTarget(actor)
@@ -23761,7 +23761,7 @@ func A_Fire(actor *mobj_t) {
 	var an uint32
 	var dest, target *mobj_t
 	dest = actor.Ftracer
-	if !(dest != nil) {
+	if dest == nil {
 		return
 	}
 	target = P_SubstNullMobj(actor.Ftarget)
@@ -23785,7 +23785,7 @@ func A_Fire(actor *mobj_t) {
 //	//
 func A_VileTarget(actor *mobj_t) {
 	var fog *mobj_t
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	A_FaceTarget(actor)
@@ -23804,7 +23804,7 @@ func A_VileTarget(actor *mobj_t) {
 func A_VileAttack(actor *mobj_t) {
 	var an int32
 	var fire *mobj_t
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	A_FaceTarget(actor)
@@ -23816,7 +23816,7 @@ func A_VileAttack(actor *mobj_t) {
 	(*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fmomz = 1000 * (1 << FRACBITS) / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor.Ftarget)).Finfo)).Fmass
 	an = int32(actor.Fangle >> int32(ANGLETOFINESHIFT))
 	fire = actor.Ftracer
-	if !(fire != nil) {
+	if fire == nil {
 		return
 	}
 	// move the fire between the vile and the player
@@ -23893,7 +23893,7 @@ func A_SkullAttack(actor *mobj_t) {
 	var an angle_t
 	var dest *mobj_t
 	var dist int32
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	dest = actor.Ftarget
@@ -23961,7 +23961,7 @@ func A_PainShootSkull(actor *mobj_t, angle angle_t) {
 //	// Spawn a lost soul and launch it at the target
 //	//
 func A_PainAttack(actor *mobj_t) {
-	if !(actor.Ftarget != nil) {
+	if actor.Ftarget == nil {
 		return
 	}
 	A_FaceTarget(actor)
@@ -24110,7 +24110,7 @@ func A_BossDeath(mo *mobj_t) {
 	// if all bosses are dead
 	th = thinkercap.Fnext
 	for {
-		if !(th != &thinkercap) {
+		if th == &thinkercap {
 			break
 		}
 		if th.Ffunction.Facv != __ccgo_fp(P_MobjThinker) {
@@ -24195,7 +24195,7 @@ func A_BrainAwake(mo *mobj_t) {
 	thinker = thinkercap.Fnext
 	thinker = thinkercap.Fnext
 	for {
-		if !(thinker != &thinkercap) {
+		if thinker == &thinkercap {
 			break
 		}
 		if thinker.Ffunction.Facv != __ccgo_fp(P_MobjThinker) {
@@ -25412,7 +25412,7 @@ func P_KillMobj(source *mobj_t, target *mobj_t) {
 	}
 	if target.Fplayer != nil {
 		// count environment kills against you
-		if !(source != nil) {
+		if source == nil {
 			idx := playerIndex(target.Fplayer)
 			target.Fplayer.Ffrags[idx]++
 		}
@@ -25496,7 +25496,7 @@ func P_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int3
 	// Some close combat weapons should not
 	// inflict thrust and push the victim out of reach,
 	// thus kick away unless using the chainsaw.
-	if inflictor != nil && target.Fflags&MF_NOCLIP == 0 && (!(source != nil) || !(source.Fplayer != nil) || source.Fplayer.Freadyweapon != wp_chainsaw) {
+	if inflictor != nil && target.Fflags&MF_NOCLIP == 0 && (source == nil || source.Fplayer == nil || source.Fplayer.Freadyweapon != wp_chainsaw) {
 		ang = R_PointToAngle2(inflictor.Fx, inflictor.Fy, target.Fx, target.Fy)
 		thrust = damage * (1 << FRACBITS >> 3) * 100 / target.Finfo.Fmass
 		// make fall forwards sometimes
@@ -25787,7 +25787,7 @@ func EV_TurnTagLightsOff(line *line_t) {
 				}
 				templine = sector.Flines[i]
 				tsec = getNextSector(templine, sector)
-				if !(tsec != nil) {
+				if tsec == nil {
 					goto _2
 				}
 				if int32(tsec.Flightlevel) < min {
@@ -25834,7 +25834,7 @@ func EV_LightTurnOn(line *line_t, bright int32) {
 					}
 					templine = sector.Flines[j]
 					temp = getNextSector(templine, sector)
-					if !(temp != nil) {
+					if temp == nil {
 						goto _2
 					}
 					if int32(temp.Flightlevel) > bright {
@@ -25919,7 +25919,7 @@ func PIT_StompThing(thing *mobj_t) (r boolean) {
 		return 1
 	}
 	// monsters don't stomp things except on boss level
-	if !(tmthing.Fplayer != nil) && gamemap != 30 {
+	if tmthing.Fplayer == nil && gamemap != 30 {
 		return 0
 	}
 	P_DamageMobj(thing, tmthing, tmthing, 10000)
@@ -26017,14 +26017,14 @@ func PIT_CheckLine(ld *line_t) (r boolean) {
 	// NOTE: specials are NOT sorted by order,
 	// so two special lines that are only 8 pixels apart
 	// could be crossed in either order.
-	if !(ld.Fbacksector != nil) {
+	if ld.Fbacksector == nil {
 		return 0
 	} // one sided line
 	if tmthing.Fflags&MF_MISSILE == 0 {
 		if int32(ld.Fflags)&ML_BLOCKING != 0 {
 			return 0
 		} // explicitly blocking everything
-		if !(tmthing.Fplayer != nil) && int32(ld.Fflags)&ML_BLOCKMONSTERS != 0 {
+		if tmthing.Fplayer == nil && int32(ld.Fflags)&ML_BLOCKMONSTERS != 0 {
 			return 0
 		} // block monsters only
 	}
@@ -27302,7 +27302,7 @@ func P_BlockLinesIterator(x int32, y int32, func1 func(*line_t) boolean) (r bool
 	offset = int32(*(*int16)(unsafe.Pointer(blockmap + uintptr(offset)*2)))
 	list = blockmaplump + uintptr(offset)*2
 	for {
-		if !(int32(*(*int16)(unsafe.Pointer(list))) != -1) {
+		if int32(*(*int16)(unsafe.Pointer(list))) == -1 {
 			break
 		}
 		ld := &lines[*(*int16)(unsafe.Pointer(list))]
@@ -27333,7 +27333,7 @@ func P_BlockThingsIterator(x int32, y int32, func1 func(*mobj_t) boolean) (r boo
 	}
 	mobj = *(**mobj_t)(unsafe.Pointer(blocklinks + uintptr(y*bmapwidth+x)*8))
 	for {
-		if !(mobj != nil) {
+		if mobj == nil {
 			break
 		}
 		if func1(mobj) == 0 {
@@ -27381,7 +27381,7 @@ func PIT_AddLineIntercepts(ld *line_t) (r boolean) {
 		return 1
 	} // behind source
 	// try to early out the check
-	if earlyout != 0 && frac < 1<<FRACBITS && !(ld.Fbacksector != nil) {
+	if earlyout != 0 && frac < 1<<FRACBITS && ld.Fbacksector == nil {
 		return 0 // stop checking
 	}
 	(*intercept_t)(unsafe.Pointer(intercept_p)).Ffrac = frac
@@ -27883,7 +27883,7 @@ func P_XYMovement(mo *mobj_t) {
 			}
 		}
 	}
-	if mo.Fmomx > -int32(STOPSPEED) && mo.Fmomx < int32(STOPSPEED) && mo.Fmomy > -int32(STOPSPEED) && mo.Fmomy < int32(STOPSPEED) && (!(player != nil) || int32(player.Fcmd.Fforwardmove) == 0 && int32(player.Fcmd.Fsidemove) == 0) {
+	if mo.Fmomx > -int32(STOPSPEED) && mo.Fmomx < int32(STOPSPEED) && mo.Fmomy > -int32(STOPSPEED) && mo.Fmomy < int32(STOPSPEED) && (player == nil || int32(player.Fcmd.Fforwardmove) == 0 && int32(player.Fcmd.Fsidemove) == 0) {
 		// if in a walking frame, stop moving
 		if player != nil && stateIndex(player.Fmo.Fstate)-S_PLAY_RUN1 < 4 {
 			P_SetMobjState(player.Fmo, S_PLAY)
@@ -28518,14 +28518,14 @@ func P_SpawnPlayerMissile(source *mobj_t, type1 mobjtype_t) {
 	// see which target is to be aimed at
 	an = source.Fangle
 	slope = P_AimLineAttack(source, an, 16*64*(1<<FRACBITS))
-	if !(linetarget != nil) {
+	if linetarget == nil {
 		an += uint32(1 << 26)
 		slope = P_AimLineAttack(source, an, 16*64*(1<<FRACBITS))
-		if !(linetarget != nil) {
+		if linetarget == nil {
 			an -= uint32(2 << 26)
 			slope = P_AimLineAttack(source, an, 16*64*(1<<FRACBITS))
 		}
-		if !(linetarget != nil) {
+		if linetarget == nil {
 			an = source.Fangle
 			slope = 0
 		}
@@ -28846,7 +28846,7 @@ func P_SetPsprite(player *player_t, position int32, stnum statenum_t) {
 		// Modified handling.
 		if state.Faction != nil {
 			state.Faction(player.Fmo, psp)
-			if !(psp.Fstate != nil) {
+			if psp.Fstate == nil {
 				break
 			}
 		}
@@ -29140,7 +29140,7 @@ func A_Saw(player *player_t, psp *pspdef_t) {
 	// use meleerange + 1 se the puff doesn't skip the flash
 	slope = P_AimLineAttack(player.Fmo, angle, 64*(1<<FRACBITS)+1)
 	P_LineAttack(player.Fmo, angle, 64*(1<<FRACBITS)+1, slope, damage)
-	if !(linetarget != nil) {
+	if linetarget == nil {
 		S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_sawful))
 		return
 	}
@@ -29213,10 +29213,10 @@ func P_BulletSlope(mo *mobj_t) {
 	// see which target is to be aimed at
 	an = mo.Fangle
 	bulletslope = P_AimLineAttack(mo, an, 16*64*(1<<FRACBITS))
-	if !(linetarget != nil) {
+	if linetarget == nil {
 		an += uint32(1 << 26)
 		bulletslope = P_AimLineAttack(mo, an, 16*64*(1<<FRACBITS))
-		if !(linetarget != nil) {
+		if linetarget == nil {
 			an -= uint32(2 << 26)
 			bulletslope = P_AimLineAttack(mo, an, 16*64*(1<<FRACBITS))
 		}
@@ -29361,7 +29361,7 @@ func A_BFGSpray(mo *mobj_t) {
 		// mo->target is the originator (player)
 		//  of the missile
 		P_AimLineAttack(mo.Ftarget, an, 16*64*(1<<FRACBITS))
-		if !(linetarget != nil) {
+		if linetarget == nil {
 			goto _1
 		}
 		P_SpawnMobj(linetarget.Fx, linetarget.Fy, linetarget.Fz+linetarget.Fheight>>2, int32(MT_EXTRABFG))
@@ -30695,7 +30695,7 @@ func P_ArchiveThinkers() {
 	// save off the current thinkers
 	th = thinkercap.Fnext
 	for {
-		if !(th != &thinkercap) {
+		if th == &thinkercap {
 			break
 		}
 		if th.Ffunction.Facv == __ccgo_fp(P_MobjThinker) {
@@ -30787,7 +30787,7 @@ func P_ArchiveSpecials() {
 	// save off the current thinkers
 	th = thinkercap.Fnext
 	for {
-		if !(th != &thinkercap) {
+		if th == &thinkercap {
 			break
 		}
 		if th.Ffunction.Facv == 0 {
@@ -32038,7 +32038,7 @@ func P_InitPicAnims() {
 	lastanim = &anims[0]
 	animPos := 0
 	for i := 0; ; i++ {
-		if !(animdefs[i].Fistexture != -1) {
+		if animdefs[i].Fistexture == -1 {
 			break
 		}
 		startname = uintptr(unsafe.Pointer(&animdefs)) + uintptr(i)*28 + 13
@@ -32147,7 +32147,7 @@ func P_FindLowestFloorSurrounding(sec *sector_t) (r fixed_t) {
 		}
 		check = sec.Flines[i]
 		other = getNextSector(check, sec)
-		if !(other != nil) {
+		if other == nil {
 			goto _1
 		}
 		if other.Ffloorheight < floor {
@@ -32180,7 +32180,7 @@ func P_FindHighestFloorSurrounding(sec *sector_t) (r fixed_t) {
 		}
 		check = sec.Flines[i]
 		other = getNextSector(check, sec)
-		if !(other != nil) {
+		if other == nil {
 			goto _1
 		}
 		if other.Ffloorheight > floor {
@@ -32218,7 +32218,7 @@ func P_FindNextHighestFloor(sec *sector_t, currentheight int32) (r fixed_t) {
 		}
 		check = sec.Flines[i]
 		other = getNextSector(check, sec)
-		if !(other != nil) {
+		if other == nil {
 			goto _1
 		}
 		if other.Ffloorheight > height {
@@ -32280,7 +32280,7 @@ func P_FindLowestCeilingSurrounding(sec *sector_t) (r fixed_t) {
 		}
 		check = sec.Flines[i]
 		other = getNextSector(check, sec)
-		if !(other != nil) {
+		if other == nil {
 			goto _1
 		}
 		if other.Fceilingheight < height {
@@ -32312,7 +32312,7 @@ func P_FindHighestCeilingSurrounding(sec *sector_t) (r fixed_t) {
 		}
 		check = sec.Flines[i]
 		other = getNextSector(check, sec)
-		if !(other != nil) {
+		if other == nil {
 			goto _1
 		}
 		if other.Fceilingheight > height {
@@ -32366,7 +32366,7 @@ func P_FindMinSurroundingLight(sector *sector_t, max int32) (r int32) {
 		}
 		line = sector.Flines[i]
 		check = getNextSector(line, sector)
-		if !(check != nil) {
+		if check == nil {
 			goto _1
 		}
 		if int32(check.Flightlevel) < min {
@@ -32397,7 +32397,7 @@ func P_CrossSpecialLine(linenum int32, side int32, thing *mobj_t) {
 	var ok int32
 	line := &lines[linenum]
 	//	Triggers that other things can activate
-	if !(thing.Fplayer != nil) {
+	if thing.Fplayer == nil {
 		// Things that should NOT trigger specials...
 		switch thing.Ftype1 {
 		case int32(MT_ROCKET):
@@ -32591,7 +32591,7 @@ func P_CrossSpecialLine(linenum int32, side int32, thing *mobj_t) {
 		G_SecretExitLevel()
 	case 125:
 		// TELEPORT MonsterONLY
-		if !(thing.Fplayer != nil) {
+		if thing.Fplayer == nil {
 			EV_Teleport(line, side, thing)
 			line.Fspecial = 0
 		}
@@ -32697,7 +32697,7 @@ func P_CrossSpecialLine(linenum int32, side int32, thing *mobj_t) {
 		EV_DoPlat(line, int32(blazeDWUS), 0)
 	case 126:
 		// TELEPORT MonsterONLY.
-		if !(thing.Fplayer != nil) {
+		if thing.Fplayer == nil {
 			EV_Teleport(line, side, thing)
 		}
 	case 128:
@@ -32719,7 +32719,7 @@ func P_CrossSpecialLine(linenum int32, side int32, thing *mobj_t) {
 func P_ShootSpecialLine(thing *mobj_t, line *line_t) {
 	var ok int32
 	//	Impacts that other things can activate.
-	if !(thing.Fplayer != nil) {
+	if thing.Fplayer == nil {
 		ok = 0
 		switch int32(line.Fspecial) {
 		case 46:
@@ -33539,7 +33539,7 @@ func P_UseSpecialLine(thing *mobj_t, line *line_t, side int32) (r boolean) {
 		}
 	}
 	// Switches that other things can activate.
-	if !(thing.Fplayer != nil) {
+	if thing.Fplayer == nil {
 		// never open secret doors
 		if int32(line.Fflags)&ML_SECRET != 0 {
 			return 0
@@ -33920,7 +33920,7 @@ func EV_Teleport(line *line_t, side int32, thing *mobj_t) (r int32) {
 			thinker = thinkercap.Fnext
 			thinker = thinkercap.Fnext
 			for {
-				if !(thinker != &thinkercap) {
+				if thinker == &thinkercap {
 					break
 				}
 				// not a mobj
@@ -34427,7 +34427,7 @@ crunch:
 	for {
 		v1 = next
 		next++
-		if !(v1 != newend) {
+		if v1 == newend {
 			break
 		}
 		// Remove a post.
@@ -34545,7 +34545,7 @@ func R_AddLine(line *seg_t) {
 	}
 	backsector = line.Fbacksector
 	// Single sided line?
-	if !(backsector != nil) {
+	if backsector == nil {
 		goto clipsolid
 	}
 	// Closed door.
@@ -35531,7 +35531,7 @@ func R_PrecacheLevel() {
 	xmemset(spritepresent, 0, uint64(numsprites))
 	th = thinkercap.Fnext
 	for {
-		if !(th != &thinkercap) {
+		if th == &thinkercap {
 			break
 		}
 		if th.Ffunction.Facv == __ccgo_fp(P_MobjThinker) {
@@ -37244,7 +37244,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 		}
 		// calculate lighting
 		if int32(*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2))) != int32(SHRT_MAX1) {
-			if !(fixedcolormap != nil) {
+			if fixedcolormap == nil {
 				index = uint32(spryscale >> int32(LIGHTSCALESHIFT))
 				if index >= uint32(MAXLIGHTSCALE) {
 					index = uint32(MAXLIGHTSCALE - 1)
@@ -37482,7 +37482,7 @@ func R_StoreWallRange(start int32, stop int32) {
 	toptexture = v5
 	midtexture = v5
 	drawsegs[ds_index].Fmaskedtexturecol = uintptr(0)
-	if !(backsector != nil) {
+	if backsector == nil {
 		// single sided line
 		midtexture = texturetranslation[sidedef.Fmidtexture]
 		// a single sided line is terminal, so it must mark ends
@@ -37619,7 +37619,7 @@ func R_StoreWallRange(start int32, stop int32) {
 		//  use different light tables
 		//  for horizontal / vertical / diagonal
 		// OPTIMIZE: get rid of LIGHTSEGSHIFT globally
-		if !(fixedcolormap != nil) {
+		if fixedcolormap == nil {
 			lightnum = int32(frontsector.Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
 			if curline.Fv1.Fy == curline.Fv2.Fy {
 				lightnum--
@@ -37946,7 +37946,7 @@ func R_DrawMaskedColumn(column uintptr) {
 	var bottomscreen, topscreen int32
 	basetexturemid = dc_texturemid
 	for {
-		if !(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != 0xff) {
+		if int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) == 0xff {
 			break
 		}
 		// calculate unclipped screen coordinates
@@ -37988,7 +37988,7 @@ func R_DrawVisSprite(vis *vissprite_t, x1 int32, x2 int32) {
 	var texturecolumn int32
 	patch = W_CacheLumpNum(vis.Fpatch+firstspritelump, int32(PU_CACHE))
 	dc_colormap = vis.Fcolormap
-	if !(dc_colormap != nil) {
+	if dc_colormap == nil {
 		// NULL colormap = shadow draw
 		colfunc = fuzzcolfunc
 	} else {
@@ -38178,7 +38178,7 @@ func R_AddSprites(sec *sector_t) {
 	// Handle all things in sector.
 	thing = sec.Fthinglist
 	for {
-		if !(thing != nil) {
+		if thing == nil {
 			break
 		}
 		R_ProjectSprite(thing)
@@ -38352,7 +38352,7 @@ func R_SortVisSprites() {
 		best = (*bp).Fnext
 		ds = (*bp).Fnext
 		for {
-			if !(ds != bp) {
+			if ds == bp {
 				break
 			}
 			if ds.Fscale < bestscale {
@@ -38544,7 +38544,7 @@ func R_DrawMasked() {
 		// draw all vissprites back to front
 		spr = vsprsortedhead.Fnext
 		for {
-			if !(spr != &vsprsortedhead) {
+			if spr == &vsprsortedhead {
 				break
 			}
 			R_DrawSprite(spr)
@@ -41116,7 +41116,7 @@ func S_GetChannel(origin *degenmobj_t, sfxinfo *sfxinfo_t) (r int32) {
 		if cnum >= snd_channels {
 			break
 		}
-		if !(channels[cnum].Fsfxinfo != nil) {
+		if channels[cnum].Fsfxinfo == nil {
 			break
 		} else {
 			if origin != nil && channels[cnum].Forigin == origin {
@@ -44359,7 +44359,7 @@ func Z_FreeTags(lowtag int32, hightag int32) {
 	var block, next uintptr
 	block = (*memzone_t)(unsafe.Pointer(mainzone)).Fblocklist.Fnext
 	for {
-		if !(block != mainzone+8) {
+		if block == mainzone+8 {
 			break
 		}
 		// get link before freeing
