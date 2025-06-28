@@ -43014,7 +43014,7 @@ func WI_initNetgameStats() {
 		;
 		i++
 	}
-	dofrags = boolint32(!(dofrags == 0))
+	dofrags = boolint32(dofrags != 0)
 	WI_initAnimatedBack()
 }
 
