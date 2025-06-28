@@ -26473,7 +26473,7 @@ retry:
 	P_PathTraverse(trailx, leady, trailx+mo.Fmomx, leady+mo.Fmomy, int32(PT_ADDLINES), PTR_SlideTraverse)
 	P_PathTraverse(leadx, traily, leadx+mo.Fmomx, traily+mo.Fmomy, int32(PT_ADDLINES), PTR_SlideTraverse)
 	// move up to the wall
-	if !(bestslidefrac == 1<<FRACBITS+1) {
+	if bestslidefrac != 1<<FRACBITS+1 {
 		goto _2
 	}
 	// the move most have hit the middle, so stairstep
