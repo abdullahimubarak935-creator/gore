@@ -1936,7 +1936,7 @@ type vissprite_t struct {
 	Fxiscale    fixed_t
 	Ftexturemid fixed_t
 	Fpatch      int32
-	Fcolormap   uintptr
+	Fcolormap   []lighttable_t
 	Fmobjflags  int32
 }
 
@@ -35349,10 +35349,14 @@ func R_InitSpriteLumps() {
 //	//
 func R_InitColormaps() {
 	var lump int32
+	var size int32
+	var data uintptr
 	// Load in the light tables,
 	//  256 byte align tables.
 	lump = W_GetNumForName(__ccgo_ts(26165))
-	colormaps = W_CacheLumpNum(lump, int32(PU_STATIC))
+	size = W_LumpLength(uint32(lump))
+	data = W_CacheLumpNum(lump, int32(PU_STATIC))
+	colormaps = unsafe.Slice((*lighttable_t)(unsafe.Pointer(data)), size)
 }
 
 // C documentation
@@ -35620,7 +35624,7 @@ func R_DrawColumn() {
 	for {
 		// Re-map color indices from wall texture column
 		//  using a lighting/special effects LUT.
-		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS&int32(127)))))))
+		*(*uint8)(unsafe.Pointer(dest)) = dc_colormap[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS&int32(127))))]
 		dest += SCREENWIDTH
 		frac += fracstep
 		goto _2
@@ -35659,7 +35663,7 @@ func R_DrawColumnLow() {
 	frac = dc_texturemid + (dc_yl-centery)*fracstep
 	for {
 		// Hack. Does not work corretly.
-		v3 = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS&int32(127)))))))
+		v3 = dc_colormap[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS&int32(127))))]
 		*(*uint8)(unsafe.Pointer(dest)) = v3
 		*(*uint8)(unsafe.Pointer(dest2)) = v3
 		dest += SCREENWIDTH
@@ -35773,7 +35777,7 @@ func R_DrawFuzzColumn() {
 		//  a pixel that is either one column
 		//  left or right of the current one.
 		// Add index from colormap to index.
-		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr(6*256+int32(*(*uint8)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos])))))))
+		*(*uint8)(unsafe.Pointer(dest)) = colormaps[6*256+int32(*(*uint8)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos]))))]
 		// Clamp table lookup index.
 		fuzzpos++
 		v3 = fuzzpos
@@ -35829,8 +35833,8 @@ func R_DrawFuzzColumnLow() {
 		//  a pixel that is either one column
 		//  left or right of the current one.
 		// Add index from colormap to index.
-		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr(6*256+int32(*(*uint8)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos])))))))
-		*(*uint8)(unsafe.Pointer(dest2)) = *(*lighttable_t)(unsafe.Pointer(colormaps + uintptr(6*256+int32(*(*uint8)(unsafe.Pointer(dest2 + uintptr(fuzzoffset[fuzzpos])))))))
+		*(*uint8)(unsafe.Pointer(dest)) = colormaps[6*256+int32(*(*uint8)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos]))))]
+		*(*uint8)(unsafe.Pointer(dest2)) = colormaps[6*256+int32(*(*uint8)(unsafe.Pointer(dest2 + uintptr(fuzzoffset[fuzzpos]))))]
 		// Clamp table lookup index.
 		fuzzpos++
 		v3 = fuzzpos
@@ -35873,7 +35877,7 @@ func R_DrawTranslatedColumn() {
 		//  used with PLAY sprites.
 		// Thus the "green" ramp of the player 0 sprite
 		//  is mapped to gray, red, black/indigo.
-		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))))))))
+		*(*uint8)(unsafe.Pointer(dest)) = dc_colormap[*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS)))))))]
 		dest += SCREENWIDTH
 		frac += fracstep
 		goto _2
@@ -35912,8 +35916,8 @@ func R_DrawTranslatedColumnLow() {
 		//  used with PLAY sprites.
 		// Thus the "green" ramp of the player 0 sprite
 		//  is mapped to gray, red, black/indigo.
-		*(*uint8)(unsafe.Pointer(dest)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))))))))
-		*(*uint8)(unsafe.Pointer(dest2)) = *(*lighttable_t)(unsafe.Pointer(dc_colormap + uintptr(*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))))))))
+		*(*uint8)(unsafe.Pointer(dest)) = dc_colormap[*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS)))))))]
+		*(*uint8)(unsafe.Pointer(dest2)) = dc_colormap[*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS)))))))]
 		dest += SCREENWIDTH
 		dest2 += SCREENWIDTH
 		frac += fracstep
@@ -35997,7 +36001,7 @@ func R_DrawSpan() {
 		//  re-index using light/colormap.
 		v3 = dest
 		dest++
-		*(*uint8)(unsafe.Pointer(v3)) = *(*lighttable_t)(unsafe.Pointer(ds_colormap + uintptr(*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot))))))
+		*(*uint8)(unsafe.Pointer(v3)) = ds_colormap[*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot)))]
 		position += step
 		goto _2
 	_2:
@@ -36042,10 +36046,10 @@ func R_DrawSpanLow() {
 		//  while scale is adjusted appropriately.
 		v3 = dest
 		dest++
-		*(*uint8)(unsafe.Pointer(v3)) = *(*lighttable_t)(unsafe.Pointer(ds_colormap + uintptr(*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot))))))
+		*(*uint8)(unsafe.Pointer(v3)) = ds_colormap[*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot)))]
 		v4 = dest
 		dest++
-		*(*uint8)(unsafe.Pointer(v4)) = *(*lighttable_t)(unsafe.Pointer(ds_colormap + uintptr(*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot))))))
+		*(*uint8)(unsafe.Pointer(v4)) = ds_colormap[*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot)))]
 		position += step
 		goto _2
 	_2:
@@ -36631,7 +36635,7 @@ func R_InitLightTables() {
 			if level >= int32(NUMCOLORMAPS) {
 				level = NUMCOLORMAPS - 1
 			}
-			zlight[i][j] = colormaps + uintptr(level*int32(256))
+			zlight[i][j] = colormaps[level*int32(256):]
 			goto _2
 		_2:
 			;
@@ -36749,7 +36753,7 @@ func R_ExecuteSetViewSize() {
 			if level >= int32(NUMCOLORMAPS) {
 				level = NUMCOLORMAPS - 1
 			}
-			*(*uintptr)(unsafe.Pointer(uintptr(unsafe.Pointer(&scalelight)) + uintptr(i)*384 + uintptr(j)*8)) = colormaps + uintptr(level*int32(256))
+			scalelight[i][j] = colormaps[level*256:]
 			goto _7
 		_7:
 			;
@@ -36820,8 +36824,8 @@ func R_SetupFrame(player *player_t) {
 	viewsin = finesine[viewangle>>int32(ANGLETOFINESHIFT)]
 	viewcos = finecosine[viewangle>>int32(ANGLETOFINESHIFT)]
 	if player.Ffixedcolormap != 0 {
-		fixedcolormap = colormaps + uintptr(uint64(player.Ffixedcolormap*int32(256))*1)
-		walllights = uintptr(unsafe.Pointer(&scalelightfixed))
+		fixedcolormap = colormaps[player.Ffixedcolormap*int32(256):]
+		walllights = scalelightfixed
 		i = 0
 		for {
 			if !(i < int32(MAXLIGHTSCALE)) {
@@ -36834,7 +36838,7 @@ func R_SetupFrame(player *player_t) {
 			i++
 		}
 	} else {
-		fixedcolormap = uintptr(0)
+		fixedcolormap = nil
 	}
 	validcount++
 }
@@ -36917,7 +36921,7 @@ func R_MapPlane(y int32, x1 int32, x2 int32) {
 	angle = (viewangle + xtoviewangle[x1]) >> int32(ANGLETOFINESHIFT)
 	ds_xfrac = viewx + FixedMul(finecosine[angle], length)
 	ds_yfrac = -viewy - FixedMul(finesine[angle], length)
-	if fixedcolormap != 0 {
+	if fixedcolormap != nil {
 		ds_colormap = fixedcolormap
 	} else {
 		index = uint32(distance >> int32(LIGHTZSHIFT))
@@ -37197,12 +37201,12 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 		}
 	}
 	if lightnum < 0 {
-		walllights = uintptr(unsafe.Pointer(&scalelight))
+		walllights = scalelight[0]
 	} else {
 		if lightnum >= int32(LIGHTLEVELS) {
-			walllights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(LIGHTLEVELS-1)*384
+			walllights = scalelight[LIGHTLEVELS-1]
 		} else {
-			walllights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(lightnum)*384
+			walllights = scalelight[lightnum]
 		}
 	}
 	maskedtexturecol = ds.Fmaskedtexturecol
@@ -37229,7 +37233,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 		dc_texturemid = dc_texturemid - viewz
 	}
 	dc_texturemid += (*side_t)(unsafe.Pointer(curline.Fsidedef)).Frowoffset
-	if fixedcolormap != 0 {
+	if fixedcolormap != nil {
 		dc_colormap = fixedcolormap
 	}
 	// draw the columns
@@ -37240,12 +37244,12 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 		}
 		// calculate lighting
 		if int32(*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2))) != int32(SHRT_MAX1) {
-			if !(fixedcolormap != 0) {
+			if !(fixedcolormap != nil) {
 				index = uint32(spryscale >> int32(LIGHTSCALESHIFT))
 				if index >= uint32(MAXLIGHTSCALE) {
 					index = uint32(MAXLIGHTSCALE - 1)
 				}
-				dc_colormap = *(*uintptr)(unsafe.Pointer(walllights + uintptr(index)*8))
+				dc_colormap = walllights[index]
 			}
 			sprtopscreen = centeryfrac - FixedMul(dc_texturemid, spryscale)
 			dc_iscale = int32(0xffffffff / uint32(spryscale))
@@ -37329,7 +37333,7 @@ func R_RenderSegLoop() {
 			if index >= uint32(MAXLIGHTSCALE) {
 				index = uint32(MAXLIGHTSCALE - 1)
 			}
-			dc_colormap = *(*uintptr)(unsafe.Pointer(walllights + uintptr(index)*8))
+			dc_colormap = walllights[index]
 			dc_x = rw_x
 			dc_iscale = int32(0xffffffff / uint32(rw_scale))
 		} else {
@@ -37615,7 +37619,7 @@ func R_StoreWallRange(start int32, stop int32) {
 		//  use different light tables
 		//  for horizontal / vertical / diagonal
 		// OPTIMIZE: get rid of LIGHTSEGSHIFT globally
-		if !(fixedcolormap != 0) {
+		if !(fixedcolormap != nil) {
 			lightnum = int32(frontsector.Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
 			if curline.Fv1.Fy == curline.Fv2.Fy {
 				lightnum--
@@ -37625,12 +37629,12 @@ func R_StoreWallRange(start int32, stop int32) {
 				}
 			}
 			if lightnum < 0 {
-				walllights = uintptr(unsafe.Pointer(&scalelight))
+				walllights = scalelight[0]
 			} else {
 				if lightnum >= int32(LIGHTLEVELS) {
-					walllights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(LIGHTLEVELS-1)*384
+					walllights = scalelight[LIGHTLEVELS-1]
 				} else {
-					walllights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(lightnum)*384
+					walllights = scalelight[lightnum]
 				}
 			}
 		}
@@ -37984,7 +37988,7 @@ func R_DrawVisSprite(vis *vissprite_t, x1 int32, x2 int32) {
 	var texturecolumn int32
 	patch = W_CacheLumpNum(vis.Fpatch+firstspritelump, int32(PU_CACHE))
 	dc_colormap = vis.Fcolormap
-	if !(dc_colormap != 0) {
+	if !(dc_colormap != nil) {
 		// NULL colormap = shadow draw
 		colfunc = fuzzcolfunc
 	} else {
@@ -38122,9 +38126,9 @@ func R_ProjectSprite(thing *mobj_t) {
 	// get light level
 	if thing.Fflags&MF_SHADOW != 0 {
 		// shadow draw
-		vis.Fcolormap = uintptr(0)
+		vis.Fcolormap = nil
 	} else {
-		if fixedcolormap != 0 {
+		if fixedcolormap != nil {
 			// fixed map
 			vis.Fcolormap = fixedcolormap
 		} else {
@@ -38137,7 +38141,7 @@ func R_ProjectSprite(thing *mobj_t) {
 				if index >= int32(MAXLIGHTSCALE) {
 					index = MAXLIGHTSCALE - 1
 				}
-				vis.Fcolormap = *(*uintptr)(unsafe.Pointer(spritelights + uintptr(index)*8))
+				vis.Fcolormap = spritelights[index]
 			}
 		}
 	}
@@ -38163,12 +38167,12 @@ func R_AddSprites(sec *sector_t) {
 	sec.Fvalidcount = validcount
 	lightnum = int32(sec.Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
 	if lightnum < 0 {
-		spritelights = uintptr(unsafe.Pointer(&scalelight))
+		spritelights = scalelight[0]
 	} else {
 		if lightnum >= int32(LIGHTLEVELS) {
-			spritelights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(LIGHTLEVELS-1)*384
+			spritelights = scalelight[LIGHTLEVELS-1]
 		} else {
-			spritelights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(lightnum)*384
+			spritelights = scalelight[lightnum]
 		}
 	}
 	// Handle all things in sector.
@@ -38252,9 +38256,9 @@ func R_DrawPSprite(psp *pspdef_t) {
 	vis.Fpatch = lump
 	if viewplayer.Fpowers[pw_invisibility] > 4*32 || viewplayer.Fpowers[pw_invisibility]&int32(8) != 0 {
 		// shadow draw
-		vis.Fcolormap = uintptr(0)
+		vis.Fcolormap = nil
 	} else {
-		if fixedcolormap != 0 {
+		if fixedcolormap != nil {
 			// fixed color
 			vis.Fcolormap = fixedcolormap
 		} else {
@@ -38263,7 +38267,7 @@ func R_DrawPSprite(psp *pspdef_t) {
 				vis.Fcolormap = colormaps
 			} else {
 				// local light
-				vis.Fcolormap = *(*uintptr)(unsafe.Pointer(spritelights + uintptr(MAXLIGHTSCALE-1)*8))
+				vis.Fcolormap = spritelights[MAXLIGHTSCALE-1]
 			}
 		}
 	}
@@ -38280,12 +38284,12 @@ func R_DrawPlayerSprites() {
 	// get light level
 	lightnum = int32((viewplayer.Fmo.Fsubsector).Fsector.Flightlevel)>>int32(LIGHTSEGSHIFT) + extralight
 	if lightnum < 0 {
-		spritelights = uintptr(unsafe.Pointer(&scalelight))
+		spritelights = scalelight[0]
 	} else {
 		if lightnum >= int32(LIGHTLEVELS) {
-			spritelights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(LIGHTLEVELS-1)*384
+			spritelights = scalelight[LIGHTLEVELS-1]
 		} else {
-			spritelights = uintptr(unsafe.Pointer(&scalelight)) + uintptr(lightnum)*384
+			spritelights = scalelight[lightnum]
 		}
 	}
 	// clip to screen bounds
@@ -45229,7 +45233,7 @@ var clipangle angle_t
 
 var colfunc func()
 
-var colormaps uintptr
+var colormaps []lighttable_t
 
 var columnofs [1120]int32
 
@@ -45327,7 +45331,7 @@ var d_skill skill_t
 //	// R_DrawColumn
 //	// Source is the top of the column to scale.
 //	//
-var dc_colormap uintptr
+var dc_colormap []lighttable_t
 
 var dc_iscale fixed_t
 
@@ -45423,7 +45427,7 @@ var drawsegs [256]drawseg_t
 
 var drone boolean
 
-var ds_colormap uintptr
+var ds_colormap []lighttable_t
 
 var ds_index int
 
@@ -45504,7 +45508,7 @@ var firstflat int32
 
 var firstspritelump int32
 
-var fixedcolormap uintptr
+var fixedcolormap []lighttable_t
 
 // C documentation
 //
@@ -46244,7 +46248,7 @@ var planeheight fixed_t
 //	//
 //	// texture mapping
 //	//
-var planezlight []uintptr
+var planezlight [][]lighttable_t
 
 // C documentation
 //
@@ -46397,9 +46401,9 @@ var savename string
 
 var scaledviewwidth int32
 
-var scalelight [16][48]uintptr
+var scalelight [16][48][]lighttable_t
 
-var scalelightfixed [48]uintptr
+var scalelightfixed [48][]lighttable_t
 
 // C documentation
 //
@@ -46600,7 +46604,7 @@ var spanstart [200]int32
 
 var spechit [20]*line_t
 
-var spritelights uintptr
+var spritelights [48][]lighttable_t
 
 var spriteoffset []fixed_t
 
@@ -47021,7 +47025,7 @@ var vissprites [128]vissprite_t
 //	//
 var vsprsortedhead vissprite_t
 
-var walllights uintptr
+var walllights [48][]lighttable_t
 
 // C documentation
 //
@@ -47083,7 +47087,7 @@ var yslope [200]fixed_t
 
 var yspeed [8]fixed_t
 
-var zlight [16][128]uintptr
+var zlight [16][128][]lighttable_t
 
 func fprintf_ccgo(output io.Writer, index int, args ...any) {
 	fmt.Fprintf(output, __ccgo_ts_str(index), args...)
