@@ -41486,7 +41486,7 @@ func V_CopyRect(srcx int32, srcy int32, source uintptr, width int32, height int3
 	src = source + uintptr(SCREENWIDTH*srcy) + uintptr(srcx)
 	dest = dest_screen + uintptr(SCREENWIDTH*desty) + uintptr(destx)
 	for {
-		if !(height > 0) {
+		if height <= 0 {
 			break
 		}
 		xmemcpy(dest, src, uint64(width))
