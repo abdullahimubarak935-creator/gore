@@ -37219,7 +37219,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 			v1 = backsector.Ffloorheight
 		}
 		dc_texturemid = v1
-		dc_texturemid = dc_texturemid + textureheight[texnum]
+		dc_texturemid = dc_texturemid + textureheight[texnum] - viewz
 	} else {
 		if frontsector.Fceilingheight < backsector.Fceilingheight {
 			v2 = frontsector.Fceilingheight
