@@ -2114,7 +2114,7 @@ type intercept_t struct {
 	Ffrac    fixed_t
 	Fisaline boolean
 	Fd       struct {
-		Fthing *line_t
+		Fthing any
 	}
 }
 
@@ -26396,7 +26396,7 @@ func PTR_SlideTraverse(in *intercept_t) (r boolean) {
 	if in.Fisaline == 0 {
 		I_Error(24696, 0)
 	}
-	li = in.Fd.Fthing
+	li = in.Fd.Fthing.(*line_t)
 	if int32(li.Fflags)&ML_TWOSIDED == 0 {
 		if P_PointOnLineSide(slidemo.Fx, slidemo.Fy, li) != 0 {
 			// don't hit the back side
@@ -26524,8 +26524,8 @@ func PTR_AimTraverse(in *intercept_t) (r boolean) {
 	var dist, slope, thingbottomslope, thingtopslope fixed_t
 	var th *mobj_t
 	var li *line_t
-	if (*intercept_t)(unsafe.Pointer(in)).Fisaline != 0 {
-		li = (*intercept_t)(unsafe.Pointer(in)).Fd.Fthing
+	if in.Fisaline != 0 {
+		li = in.Fd.Fthing.(*line_t)
 		if int32(li.Fflags)&ML_TWOSIDED == 0 {
 			return 0
 		} // stop
@@ -26536,7 +26536,7 @@ func PTR_AimTraverse(in *intercept_t) (r boolean) {
 		if openbottom >= opentop {
 			return 0
 		} // stop
-		dist = FixedMul(attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
+		dist = FixedMul(attackrange, in.Ffrac)
 		if li.Fbacksector == nil || li.Ffrontsector.Ffloorheight != li.Fbacksector.Ffloorheight {
 			slope = FixedDiv(openbottom-shootz, dist)
 			if slope > bottomslope {
@@ -26555,7 +26555,7 @@ func PTR_AimTraverse(in *intercept_t) (r boolean) {
 		return 1 // shot continues
 	}
 	// shoot a thing
-	th = (*mobj_t)(unsafe.Pointer(in.Fd.Fthing))
+	th = in.Fd.Fthing.(*mobj_t)
 	if th == shootthing {
 		return 1
 	} // can't shoot self
@@ -26563,7 +26563,7 @@ func PTR_AimTraverse(in *intercept_t) (r boolean) {
 		return 1
 	} // corpse or something
 	// check angles to see if the thing can be aimed at
-	dist = FixedMul(attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
+	dist = FixedMul(attackrange, in.Ffrac)
 	thingtopslope = FixedDiv(th.Fz+th.Fheight-shootz, dist)
 	if thingtopslope < bottomslope {
 		return 1
@@ -26593,8 +26593,8 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 	var dist, frac, slope, thingbottomslope, thingtopslope, x, y, z fixed_t
 	var th *mobj_t
 	var li *line_t
-	if (*intercept_t)(unsafe.Pointer(in)).Fisaline != 0 {
-		li = (*intercept_t)(unsafe.Pointer(in)).Fd.Fthing
+	if in.Fisaline != 0 {
+		li = in.Fd.Fthing.(*line_t)
 		if li.Fspecial != 0 {
 			P_ShootSpecialLine(shootthing, li)
 		}
@@ -26603,7 +26603,7 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 		}
 		// crosses a two sided line
 		P_LineOpening(li)
-		dist = FixedMul(attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
+		dist = FixedMul(attackrange, in.Ffrac)
 		// e6y: emulation of missed back side on two-sided lines.
 		// backsector can be NULL when emulating missing back side.
 		if li.Fbacksector == nil {
@@ -26636,7 +26636,7 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 	hitline:
 		;
 		// position a bit closer
-		frac = (*intercept_t)(unsafe.Pointer(in)).Ffrac - FixedDiv(4*(1<<FRACBITS), attackrange)
+		frac = in.Ffrac - FixedDiv(4*(1<<FRACBITS), attackrange)
 		x = trace.Fx + FixedMul(trace.Fdx, frac)
 		y = trace.Fy + FixedMul(trace.Fdy, frac)
 		z = shootz + FixedMul(aimslope, FixedMul(frac, attackrange))
@@ -26656,7 +26656,7 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 		return 0
 	}
 	// shoot a thing
-	th = (*mobj_t)(unsafe.Pointer(in.Fd.Fthing))
+	th = in.Fd.Fthing.(*mobj_t)
 	if th == shootthing {
 		return 1
 	} // can't shoot self
@@ -26664,7 +26664,7 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 		return 1
 	} // corpse or something
 	// check angles to see if the thing can be aimed at
-	dist = FixedMul(attackrange, (*intercept_t)(unsafe.Pointer(in)).Ffrac)
+	dist = FixedMul(attackrange, in.Ffrac)
 	thingtopslope = FixedDiv(th.Fz+th.Fheight-shootz, dist)
 	if thingtopslope < aimslope {
 		return 1
@@ -26675,13 +26675,13 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 	} // shot under the thing
 	// hit thing
 	// position a bit closer
-	frac = (*intercept_t)(unsafe.Pointer(in)).Ffrac - FixedDiv(10*(1<<FRACBITS), attackrange)
+	frac = in.Ffrac - FixedDiv(10*(1<<FRACBITS), attackrange)
 	x = trace.Fx + FixedMul(trace.Fdx, frac)
 	y = trace.Fy + FixedMul(trace.Fdy, frac)
 	z = shootz + FixedMul(aimslope, FixedMul(frac, attackrange))
 	// Spawn bullet puffs or blod spots,
 	// depending on target type.
-	if (*mobj_t)(unsafe.Pointer(in.Fd.Fthing)).Fflags&MF_NOBLOOD != 0 {
+	if in.Fd.Fthing.(*mobj_t).Fflags&MF_NOBLOOD != 0 {
 		P_SpawnPuff(x, y, z)
 	} else {
 		P_SpawnBlood(x, y, z, la_damage)
@@ -26740,7 +26740,7 @@ func P_LineAttack(t1 *mobj_t, angle angle_t, distance fixed_t, slope fixed_t, da
 
 func PTR_UseTraverse(in *intercept_t) (r boolean) {
 	var side int32
-	line := (*intercept_t)(unsafe.Pointer(in)).Fd.Fthing
+	line := in.Fd.Fthing.(*line_t)
 	if line.Fspecial == 0 {
 		P_LineOpening(line)
 		if openrange <= 0 {
@@ -27384,11 +27384,11 @@ func PIT_AddLineIntercepts(ld *line_t) (r boolean) {
 	if earlyout != 0 && frac < 1<<FRACBITS && ld.Fbacksector == nil {
 		return 0 // stop checking
 	}
-	(*intercept_t)(unsafe.Pointer(intercept_p)).Ffrac = frac
-	(*intercept_t)(unsafe.Pointer(intercept_p)).Fisaline = 1
-	(*intercept_t)(unsafe.Pointer(intercept_p)).Fd.Fthing = ld
-	InterceptsOverrun(int32((int64(intercept_p)-int64(uintptr(unsafe.Pointer(&intercepts))))/16), intercept_p)
-	intercept_p += 16
+	intercepts[intercept_pos].Ffrac = frac
+	intercepts[intercept_pos].Fisaline = 1
+	intercepts[intercept_pos].Fd.Fthing = ld
+	InterceptsOverrun(intercept_pos, &intercepts[intercept_pos])
+	intercept_pos++
 	return 1 // continue
 }
 
@@ -27428,11 +27428,11 @@ func PIT_AddThingIntercepts(thing *mobj_t) (r boolean) {
 	if frac < 0 {
 		return 1
 	} // behind source
-	(*intercept_t)(unsafe.Pointer(intercept_p)).Ffrac = frac
-	(*intercept_t)(unsafe.Pointer(intercept_p)).Fisaline = 0
-	*(**mobj_t)(unsafe.Pointer(intercept_p + 8)) = thing
-	InterceptsOverrun(int32((int64(intercept_p)-int64(uintptr(unsafe.Pointer(&intercepts))))/16), intercept_p)
-	intercept_p += 16
+	intercepts[intercept_pos].Ffrac = frac
+	intercepts[intercept_pos].Fisaline = 0
+	intercepts[intercept_pos].Fd.Fthing = thing
+	InterceptsOverrun(intercept_pos, &intercepts[intercept_pos])
+	intercept_pos++
 	return 1 // keep going
 }
 
@@ -27446,9 +27446,8 @@ func PIT_AddThingIntercepts(thing *mobj_t) (r boolean) {
 func P_TraverseIntercepts(func1 func(*intercept_t) boolean, maxfrac fixed_t) (r boolean) {
 	var count, v1 int32
 	var dist fixed_t
-	var in, scan uintptr
-	count = int32((int64(intercept_p) - int64(uintptr(unsafe.Pointer(&intercepts)))) / 16)
-	in = uintptr(0) // shut up compiler warning
+	var in *intercept_t
+	count = intercept_pos
 	for {
 		v1 = count
 		count--
@@ -27456,27 +27455,19 @@ func P_TraverseIntercepts(func1 func(*intercept_t) boolean, maxfrac fixed_t) (r 
 			break
 		}
 		dist = int32(INT_MAX11)
-		scan = uintptr(unsafe.Pointer(&intercepts))
-		for {
-			if scan >= intercept_p {
-				break
+		for scan := int32(0); scan < intercept_pos; scan++ {
+			if intercepts[scan].Ffrac < dist {
+				dist = intercepts[scan].Ffrac
+				in = &intercepts[scan]
 			}
-			if (*intercept_t)(unsafe.Pointer(scan)).Ffrac < dist {
-				dist = (*intercept_t)(unsafe.Pointer(scan)).Ffrac
-				in = scan
-			}
-			goto _2
-		_2:
-			;
-			scan += 16
 		}
 		if dist > maxfrac {
 			return 1
 		} // checked everything in range
-		if func1((*intercept_t)(unsafe.Pointer(in))) == 0 {
+		if func1(in) == 0 {
 			return 0
 		} // don't bother going farther
-		(*intercept_t)(unsafe.Pointer(in)).Ffrac = int32(INT_MAX11)
+		in.Ffrac = int32(INT_MAX11)
 	}
 	return 1 // everything was traversed
 }
@@ -27613,7 +27604,7 @@ func InterceptsMemoryOverrun(location int32, value int32) {
 
 // Emulate overruns of the intercepts[] array.
 
-func InterceptsOverrun(num_intercepts int32, intercept uintptr) {
+func InterceptsOverrun(num_intercepts int32, intercept *intercept_t) {
 	var location int32
 	if num_intercepts <= int32(MAXINTERCEPTS_ORIGINAL) {
 		// No overrun
@@ -27626,9 +27617,9 @@ func InterceptsOverrun(num_intercepts int32, intercept uintptr) {
 	// Note: the ->d.{thing,line} member should really have its
 	// address translated into the correct address value for
 	// Vanilla Doom.
-	InterceptsMemoryOverrun(location, (*intercept_t)(unsafe.Pointer(intercept)).Ffrac)
-	InterceptsMemoryOverrun(location+int32(4), int32((*intercept_t)(unsafe.Pointer(intercept)).Fisaline))
-	InterceptsMemoryOverrun(location+int32(8), int32(*(*uintptr)(unsafe.Pointer(intercept + 8))))
+	InterceptsMemoryOverrun(location, intercept.Ffrac)
+	InterceptsMemoryOverrun(location+int32(4), int32(intercept.Fisaline))
+	InterceptsMemoryOverrun(location+int32(8), int32(*(*uintptr)(unsafe.Pointer(&intercept.Fd))))
 }
 
 // C documentation
@@ -27645,7 +27636,7 @@ func P_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32,
 	var partial, xintercept, xstep, xt1, xt2, yintercept, ystep, yt1, yt2 fixed_t
 	earlyout = uint32(flags & int32(PT_EARLYOUT))
 	validcount++
-	intercept_p = uintptr(unsafe.Pointer(&intercepts))
+	intercept_pos = 0
 	if (x1-bmaporgx)&(MAPBLOCKUNITS*(1<<FRACBITS)-1) == 0 {
 		x1 += 1 << FRACBITS
 	} // don't side exactly on a line
@@ -45556,7 +45547,7 @@ var hu_font [63]uintptr
 
 var inhelpscreens boolean
 
-var intercept_p uintptr
+var intercept_pos int32
 
 // C documentation
 //
