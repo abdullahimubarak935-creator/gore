@@ -35868,7 +35868,7 @@ func R_DrawTranslatedColumn() {
 		//  used with PLAY sprites.
 		// Thus the "green" ramp of the player 0 sprite
 		//  is mapped to gray, red, black/indigo.
-		*(*uint8)(unsafe.Pointer(dest)) = dc_colormap[*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS)))))))]
+		*(*uint8)(unsafe.Pointer(dest)) = dc_colormap[dc_translation[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))]]
 		dest += SCREENWIDTH
 		frac += fracstep
 		goto _2
@@ -35907,8 +35907,8 @@ func R_DrawTranslatedColumnLow() {
 		//  used with PLAY sprites.
 		// Thus the "green" ramp of the player 0 sprite
 		//  is mapped to gray, red, black/indigo.
-		*(*uint8)(unsafe.Pointer(dest)) = dc_colormap[*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS)))))))]
-		*(*uint8)(unsafe.Pointer(dest2)) = dc_colormap[*(*uint8)(unsafe.Pointer(dc_translation + uintptr(*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS)))))))]
+		*(*uint8)(unsafe.Pointer(dest)) = dc_colormap[dc_translation[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))]]
+		*(*uint8)(unsafe.Pointer(dest2)) = dc_colormap[dc_translation[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>int32(FRACBITS))))]]
 		dest += SCREENWIDTH
 		dest2 += SCREENWIDTH
 		frac += fracstep
@@ -35934,8 +35934,7 @@ func R_DrawTranslatedColumnLow() {
 //	//
 func R_InitTranslationTables() {
 	var i int32
-	var v2, v3 uint8
-	translationtables = Z_Malloc(256*3, int32(PU_STATIC), uintptr(0))
+	translationtables = make([]byte, 256*3)
 	// translate just the 16 green colors
 	i = 0
 	for {
@@ -35944,16 +35943,14 @@ func R_InitTranslationTables() {
 		}
 		if i >= 0x70 && i <= 0x7f {
 			// map green ramp to gray, brown, red
-			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i))) = uint8(0x60 + i&int32(0xf))
-			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(256)))) = uint8(0x40 + i&int32(0xf))
-			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(512)))) = uint8(0x20 + i&int32(0xf))
+			translationtables[i] = uint8(0x60 + i&int32(0xf))
+			translationtables[i+256] = uint8(0x40 + i&int32(0xf))
+			translationtables[i+512] = uint8(0x20 + i&int32(0xf))
 		} else {
 			// Keep all other colors as is.
-			v3 = uint8(i)
-			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(512)))) = v3
-			v2 = v3
-			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i+int32(256)))) = v2
-			*(*uint8)(unsafe.Pointer(translationtables + uintptr(i))) = v2
+			translationtables[i+512] = uint8(i)
+			translationtables[i+256] = uint8(i)
+			translationtables[i] = uint8(i)
 		}
 		goto _1
 	_1:
@@ -37985,7 +37982,7 @@ func R_DrawVisSprite(vis *vissprite_t, x1 int32, x2 int32) {
 	} else {
 		if vis.Fmobjflags&MF_TRANSLATION != 0 {
 			colfunc = transcolfunc
-			dc_translation = translationtables - uintptr(256) + uintptr(vis.Fmobjflags&MF_TRANSLATION>>(MF_TRANSSHIFT-8))
+			dc_translation = translationtables[-256+(vis.Fmobjflags&MF_TRANSLATION>>(MF_TRANSSHIFT-8)):]
 		}
 	}
 	dc_iscale = xabs(vis.Fxiscale) >> detailshift
@@ -45320,7 +45317,7 @@ var dc_texturemid fixed_t
 //	//  of the BaronOfHell, the HellKnight, uses
 //	//  identical sprites, kinda brightened up.
 //	//
-var dc_translation uintptr
+var dc_translation []byte
 
 var dc_x int32
 
@@ -46895,7 +46892,7 @@ var trace divline_t
 
 var transcolfunc func()
 
-var translationtables uintptr
+var translationtables []byte
 
 var turbodetected [4]boolean
 
