@@ -2293,7 +2293,7 @@ type lumpinfo_t struct {
 	Fposition int32
 	Fsize     int32
 	Fcache    uintptr
-	Fnext     uintptr
+	Fnext     *lumpinfo_t
 }
 
 func (l *lumpinfo_t) NamePtr() uintptr {
@@ -43786,7 +43786,7 @@ type filelump_t struct {
 
 // Hash table for fast lookups
 
-var lumphash uintptr
+var lumphash []*lumpinfo_t
 
 // Hash function used for lump names.
 
@@ -43905,10 +43905,7 @@ func W_AddFile(filename string) *os.File {
 		i++
 	}
 	Z_Free(fileinfo)
-	if lumphash != uintptr(0) {
-		Z_Free(lumphash)
-		lumphash = uintptr(0)
-	}
+	lumphash = nil
 	wad_files[wad_file.Fd()] = wad_file
 	return wad_file
 }
@@ -43919,41 +43916,23 @@ func W_AddFile(filename string) *os.File {
 //
 
 func W_CheckNumForName(name uintptr) (r int32) {
-	var hash, i int32
-	var lump_p *lumpinfo_t
 	// Do we have a hash table yet?
-	if lumphash != uintptr(0) {
+	if lumphash != nil {
 		// We do! Excellent.
-		hash = int32(W_LumpNameHash(name) % numlumps)
-		lump_p = *(**lumpinfo_t)(unsafe.Pointer(lumphash + uintptr(hash)*8))
-		for {
-			if !(lump_p != nil) {
-				break
-			}
+		hash := int32(W_LumpNameHash(name) % numlumps)
+		for lump_p := lumphash[hash]; lump_p != nil; lump_p = lump_p.Fnext {
 			if !(xstrncasecmp(lump_p.NamePtr(), name, 8) != 0) {
 				return lumpIndex(lump_p)
 			}
-			goto _1
-		_1:
-			;
-			lump_p = (*lumpinfo_t)(unsafe.Pointer(lump_p.Fnext))
 		}
 	} else {
 		// We don't have a hash table generate yet. Linear search :-(
 		//
 		// scan backwards so patch lump files take precedence
-		i = int32(numlumps - 1)
-		for {
-			if !(i >= 0) {
-				break
-			}
+		for i := int32(numlumps - 1); i >= 0; i-- {
 			if !(xstrncasecmp(lumpinfo[i].NamePtr(), name, 8) != 0) {
 				return i
 			}
-			goto _2
-		_2:
-			;
-			i--
 		}
 	}
 	// TFB. Not found.
@@ -44080,13 +44059,10 @@ func W_ReleaseLumpName(name uintptr) {
 func W_GenerateHashTable() {
 	var hash, i uint32
 	// Free the old hash table, if there is one
-	if lumphash != uintptr(0) {
-		Z_Free(lumphash)
-	}
+	lumphash = nil
 	// Generate hash table
 	if numlumps > 0 {
-		lumphash = Z_Malloc(int32(8*uint64(numlumps)), int32(PU_STATIC), uintptr(0))
-		xmemset(lumphash, 0, 8*uint64(numlumps))
+		lumphash = make([]*lumpinfo_t, numlumps)
 		i = 0
 		for {
 			if !(i < numlumps) {
@@ -44094,8 +44070,8 @@ func W_GenerateHashTable() {
 			}
 			hash = W_LumpNameHash(lumpinfo[i].NamePtr()) % numlumps
 			// Hook into the hash table
-			lumpinfo[i].Fnext = *(*uintptr)(unsafe.Pointer(lumphash + uintptr(hash)*8))
-			*(*uintptr)(unsafe.Pointer(lumphash + uintptr(hash)*8)) = (uintptr)(unsafe.Pointer(&lumpinfo[i]))
+			lumpinfo[i].Fnext = lumphash[hash]
+			lumphash[hash] = &lumpinfo[i]
 			goto _1
 		_1:
 			;
