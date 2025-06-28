@@ -35108,7 +35108,7 @@ func GenerateTextureHashTable() {
 //	//
 func R_InitTextures() {
 	bp := alloc(32)
-	var directory, maptex, maptex2, mpatch, mtexture, name_p, names, patchlookup, v2 uintptr
+	var directory, maptex, maptex2, mpatch, name_p, names, patchlookup, v2 uintptr
 	var i, j, maxoff, maxoff2, nummappatches, numtextures1, numtextures2, offset, temp1, temp2, temp3, totalwidth int32
 	// Load the patch names from pnames.lmp.
 	(*(*[9]int8)(unsafe.Pointer(bp)))[int32(8)] = 0
@@ -35206,16 +35206,16 @@ func R_InitTextures() {
 		if offset > maxoff {
 			I_Error(26069, 0)
 		}
-		mtexture = maptex + uintptr(offset)
+		mtexture := (*maptexture_t)(unsafe.Pointer(maptex + uintptr(offset)))
 		texture := &texture_t{
-			Fpatches: make([]texpatch_t, (*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount),
+			Fpatches: make([]texpatch_t, mtexture.Fpatchcount),
 		}
 		textures[i] = texture
-		texture.Fwidth = (*maptexture_t)(unsafe.Pointer(mtexture)).Fwidth
-		texture.Fheight = (*maptexture_t)(unsafe.Pointer(mtexture)).Fheight
-		texture.Fpatchcount = (*maptexture_t)(unsafe.Pointer(mtexture)).Fpatchcount
-		copy(texture.Fname[:], (*maptexture_t)(unsafe.Pointer(mtexture)).Fname[:])
-		mpatch = mtexture + 22
+		texture.Fwidth = mtexture.Fwidth
+		texture.Fheight = mtexture.Fheight
+		texture.Fpatchcount = mtexture.Fpatchcount
+		copy(texture.Fname[:], mtexture.Fname[:])
+		mpatch = (uintptr)(unsafe.Pointer(&mtexture.Fpatches[0]))
 		j = 0
 		for {
 			if !(j < int32(texture.Fpatchcount)) {
@@ -35317,13 +35317,12 @@ func R_InitFlats() {
 //	//
 func R_InitSpriteLumps() {
 	var i int32
-	var patch uintptr
 	firstspritelump = W_GetNumForName(__ccgo_ts(26047)) + 1
 	lastspritelump = W_GetNumForName(__ccgo_ts(26055)) - 1
 	numspritelumps = lastspritelump - firstspritelump + 1
-	spritewidth = Z_Malloc(int32(uint64(numspritelumps)*4), int32(PU_STATIC), uintptr(0))
-	spriteoffset = Z_Malloc(int32(uint64(numspritelumps)*4), int32(PU_STATIC), uintptr(0))
-	spritetopoffset = Z_Malloc(int32(uint64(numspritelumps)*4), int32(PU_STATIC), uintptr(0))
+	spritewidth = make([]fixed_t, numspritelumps)
+	spriteoffset = make([]fixed_t, numspritelumps)
+	spritetopoffset = make([]fixed_t, numspritelumps)
 	i = 0
 	for {
 		if !(i < numspritelumps) {
@@ -35332,10 +35331,10 @@ func R_InitSpriteLumps() {
 		if !(i&63 != 0) {
 			fprintf_ccgo(os.Stdout, 1250)
 		}
-		patch = W_CacheLumpNum(firstspritelump+i, int32(PU_CACHE))
-		*(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(i)*4)) = int32((*patch_t)(unsafe.Pointer(patch)).Fwidth) << int32(FRACBITS)
-		*(*fixed_t)(unsafe.Pointer(spriteoffset + uintptr(i)*4)) = int32((*patch_t)(unsafe.Pointer(patch)).Fleftoffset) << int32(FRACBITS)
-		*(*fixed_t)(unsafe.Pointer(spritetopoffset + uintptr(i)*4)) = int32((*patch_t)(unsafe.Pointer(patch)).Ftopoffset) << int32(FRACBITS)
+		patch := (*patch_t)(unsafe.Pointer(W_CacheLumpNum(firstspritelump+i, int32(PU_CACHE))))
+		spritewidth[i] = int32(patch.Fwidth) << int32(FRACBITS)
+		spriteoffset[i] = int32(patch.Fleftoffset) << int32(FRACBITS)
+		spritetopoffset[i] = int32(patch.Ftopoffset) << int32(FRACBITS)
 		goto _1
 	_1:
 		;
@@ -38074,13 +38073,13 @@ func R_ProjectSprite(thing *mobj_t) {
 		flip = uint32(sprframe.Fflip[0])
 	}
 	// calculate edges of the shape
-	tx -= *(*fixed_t)(unsafe.Pointer(spriteoffset + uintptr(lump)*4))
+	tx -= spriteoffset[lump]
 	x1 = (centerxfrac + FixedMul(tx, xscale)) >> int32(FRACBITS)
 	// off the right side?
 	if x1 > viewwidth {
 		return
 	}
-	tx += *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4))
+	tx += spritewidth[lump]
 	x2 = (centerxfrac+FixedMul(tx, xscale))>>int32(FRACBITS) - 1
 	// off the left side
 	if x2 < 0 {
@@ -38093,7 +38092,7 @@ func R_ProjectSprite(thing *mobj_t) {
 	vis.Fgx = thing.Fx
 	vis.Fgy = thing.Fy
 	vis.Fgz = thing.Fz
-	vis.Fgzt = thing.Fz + *(*fixed_t)(unsafe.Pointer(spritetopoffset + uintptr(lump)*4))
+	vis.Fgzt = thing.Fz + spritetopoffset[lump]
 	vis.Ftexturemid = vis.Fgzt - viewz
 	if x1 < 0 {
 		v1 = 0
@@ -38109,7 +38108,7 @@ func R_ProjectSprite(thing *mobj_t) {
 	vis.Fx2 = v2
 	iscale = FixedDiv(1<<FRACBITS, xscale)
 	if flip != 0 {
-		vis.Fstartfrac = *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4)) - 1
+		vis.Fstartfrac = spritewidth[lump] - 1
 		vis.Fxiscale = -iscale
 	} else {
 		vis.Fstartfrac = 0
@@ -38211,13 +38210,13 @@ func R_DrawPSprite(psp *pspdef_t) {
 	flip = uint32(sprframe.Fflip[0])
 	// calculate edges of the shape
 	tx = psp.Fsx - 160*(1<<FRACBITS)
-	tx -= *(*fixed_t)(unsafe.Pointer(spriteoffset + uintptr(lump)*4))
+	tx -= spriteoffset[lump]
 	x1 = (centerxfrac + FixedMul(tx, pspritescale)) >> int32(FRACBITS)
 	// off the right side
 	if x1 > viewwidth {
 		return
 	}
-	tx += *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4))
+	tx += spritewidth[lump]
 	x2 = (centerxfrac+FixedMul(tx, pspritescale))>>int32(FRACBITS) - 1
 	// off the left side
 	if x2 < 0 {
@@ -38226,7 +38225,7 @@ func R_DrawPSprite(psp *pspdef_t) {
 	// store information in a vissprite
 	vis = &vissprite_t{}
 	vis.Fmobjflags = 0
-	vis.Ftexturemid = BASEYCENTER<<FRACBITS + 1<<FRACBITS/2 - (psp.Fsy - *(*fixed_t)(unsafe.Pointer(spritetopoffset + uintptr(lump)*4)))
+	vis.Ftexturemid = BASEYCENTER<<FRACBITS + 1<<FRACBITS/2 - (psp.Fsy - spritetopoffset[lump])
 	if x1 < 0 {
 		v1 = 0
 	} else {
@@ -38242,7 +38241,7 @@ func R_DrawPSprite(psp *pspdef_t) {
 	vis.Fscale = pspritescale << detailshift
 	if flip != 0 {
 		vis.Fxiscale = -pspriteiscale
-		vis.Fstartfrac = *(*fixed_t)(unsafe.Pointer(spritewidth + uintptr(lump)*4)) - 1
+		vis.Fstartfrac = spritewidth[lump] - 1
 	} else {
 		vis.Fxiscale = pspriteiscale
 		vis.Fstartfrac = 0
@@ -46603,7 +46602,7 @@ var spechit [20]*line_t
 
 var spritelights uintptr
 
-var spriteoffset uintptr
+var spriteoffset []fixed_t
 
 //
 // INITIALIZATION FUNCTIONS
@@ -46615,12 +46614,12 @@ var spriteoffset uintptr
 //	//  and range check thing_t sprites patches
 var sprites []spritedef_t
 
-var spritetopoffset uintptr
+var spritetopoffset []fixed_t
 
 // C documentation
 //
 //	// needed for pre rendering
-var spritewidth uintptr
+var spritewidth []fixed_t
 
 var sprnames []uintptr
 
