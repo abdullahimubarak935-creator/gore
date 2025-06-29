@@ -8128,7 +8128,7 @@ func G_Ticker() {
 				turbodetected[i] = 1
 			}
 			if gametic&int32(31) == 0 && gametic>>int32(5)%int32(MAXPLAYERS) == i && turbodetected[i] != 0 {
-				players[consoleplayer].Fmessage = fmt.Sprintf("%s is turbo!", gostring(player_names[i]))
+				players[consoleplayer].Fmessage = fmt.Sprintf("%s is turbo!", player_names[i])
 				turbodetected[i] = 0
 			}
 			if netgame != 0 && netdemo == 0 && gametic%ticdup == 0 {
@@ -9414,7 +9414,7 @@ type hu_textline_t struct {
 	Fy           int32
 	Ff           []*patch_t
 	Fsc          int32
-	Fl           [81]int8
+	Fl           [81]byte
 	Flen1        int32
 	Fneedsupdate int32
 }
@@ -9448,7 +9448,7 @@ func HUlib_initTextLine(t *hu_textline_t, x int32, y int32, f []*patch_t, sc int
 	HUlib_clearTextLine(t)
 }
 
-func HUlib_addCharToTextLine(t *hu_textline_t, ch int8) boolean {
+func HUlib_addCharToTextLine(t *hu_textline_t, ch byte) boolean {
 	if t.Flen1 == int32(HU_MAXLINELENGTH) {
 		return 0
 	} else {
@@ -9564,18 +9564,13 @@ func HUlib_addLineToSText(s *hu_stext_t) {
 	}
 }
 
-func HUlib_addMessageToSText(s *hu_stext_t, prefix uintptr, msg string) {
-	var v1 uintptr
+func HUlib_addMessageToSText(s *hu_stext_t, prefix string, msg string) {
 	HUlib_addLineToSText(s)
-	if prefix != 0 {
-		for *(*int8)(unsafe.Pointer(prefix)) != 0 {
-			v1 = prefix
-			prefix++
-			HUlib_addCharToTextLine(&s.Fl[s.Fcl], *(*int8)(unsafe.Pointer(v1)))
-		}
+	for _, i := range prefix {
+		HUlib_addCharToTextLine(&s.Fl[s.Fcl], byte(i))
 	}
-	for i := 0; i < len(msg); i++ {
-		HUlib_addCharToTextLine(&s.Fl[s.Fcl], int8(msg[i]))
+	for _, i := range msg {
+		HUlib_addCharToTextLine(&s.Fl[s.Fcl], byte(i))
 	}
 }
 
@@ -9637,7 +9632,7 @@ func HUlib_resetIText(it *hu_itext_t) {
 func HUlib_keyInIText(it *hu_itext_t, ch uint8) (r boolean) {
 	ch = uint8(xtoupper(int32(ch)))
 	if int32(ch) >= int32(' ') && int32(ch) <= int32('_') {
-		HUlib_addCharToTextLine(&it.Fl, int8(ch))
+		HUlib_addCharToTextLine(&it.Fl, ch)
 	} else {
 		if int32(ch) == int32(KEY_BACKSPACE1) {
 			HUlib_delCharFromIText(it)
@@ -9684,11 +9679,11 @@ func init() {
 }
 
 func init() {
-	player_names = [4]uintptr{
-		0: __ccgo_ts(14661),
-		1: __ccgo_ts(14669),
-		2: __ccgo_ts(14678),
-		3: __ccgo_ts(14686),
+	player_names = [4]string{
+		0: __ccgo_ts_str(14661),
+		1: __ccgo_ts_str(14669),
+		2: __ccgo_ts_str(14678),
+		3: __ccgo_ts_str(14686),
 	}
 }
 
@@ -9708,153 +9703,153 @@ var message_counter int32
 var headsupactive = 0
 
 func init() {
-	mapnames = [45]uintptr{
-		0:  __ccgo_ts(14692),
-		1:  __ccgo_ts(14705),
-		2:  __ccgo_ts(14725),
-		3:  __ccgo_ts(14746),
-		4:  __ccgo_ts(14768),
-		5:  __ccgo_ts(14785),
-		6:  __ccgo_ts(14810),
-		7:  __ccgo_ts(14833),
-		8:  __ccgo_ts(14854),
-		9:  __ccgo_ts(14874),
-		10: __ccgo_ts(14895),
-		11: __ccgo_ts(14918),
-		12: __ccgo_ts(14933),
-		13: __ccgo_ts(14950),
-		14: __ccgo_ts(14971),
-		15: __ccgo_ts(14997),
-		16: __ccgo_ts(15017),
-		17: __ccgo_ts(15038),
-		18: __ccgo_ts(15064),
-		19: __ccgo_ts(15080),
-		20: __ccgo_ts(15104),
-		21: __ccgo_ts(15122),
-		22: __ccgo_ts(15142),
-		23: __ccgo_ts(15165),
-		24: __ccgo_ts(15182),
-		25: __ccgo_ts(15194),
-		26: __ccgo_ts(15204),
-		27: __ccgo_ts(15218),
-		28: __ccgo_ts(15237),
-		29: __ccgo_ts(15258),
-		30: __ccgo_ts(15281),
-		31: __ccgo_ts(15299),
-		32: __ccgo_ts(15322),
-		33: __ccgo_ts(15350),
-		34: __ccgo_ts(15374),
-		35: __ccgo_ts(15395),
-		36: __ccgo_ts(15406),
-		37: __ccgo_ts(15406),
-		38: __ccgo_ts(15406),
-		39: __ccgo_ts(15406),
-		40: __ccgo_ts(15406),
-		41: __ccgo_ts(15406),
-		42: __ccgo_ts(15406),
-		43: __ccgo_ts(15406),
-		44: __ccgo_ts(15406),
+	mapnames = [45]string{
+		0:  __ccgo_ts_str(14692),
+		1:  __ccgo_ts_str(14705),
+		2:  __ccgo_ts_str(14725),
+		3:  __ccgo_ts_str(14746),
+		4:  __ccgo_ts_str(14768),
+		5:  __ccgo_ts_str(14785),
+		6:  __ccgo_ts_str(14810),
+		7:  __ccgo_ts_str(14833),
+		8:  __ccgo_ts_str(14854),
+		9:  __ccgo_ts_str(14874),
+		10: __ccgo_ts_str(14895),
+		11: __ccgo_ts_str(14918),
+		12: __ccgo_ts_str(14933),
+		13: __ccgo_ts_str(14950),
+		14: __ccgo_ts_str(14971),
+		15: __ccgo_ts_str(14997),
+		16: __ccgo_ts_str(15017),
+		17: __ccgo_ts_str(15038),
+		18: __ccgo_ts_str(15064),
+		19: __ccgo_ts_str(15080),
+		20: __ccgo_ts_str(15104),
+		21: __ccgo_ts_str(15122),
+		22: __ccgo_ts_str(15142),
+		23: __ccgo_ts_str(15165),
+		24: __ccgo_ts_str(15182),
+		25: __ccgo_ts_str(15194),
+		26: __ccgo_ts_str(15204),
+		27: __ccgo_ts_str(15218),
+		28: __ccgo_ts_str(15237),
+		29: __ccgo_ts_str(15258),
+		30: __ccgo_ts_str(15281),
+		31: __ccgo_ts_str(15299),
+		32: __ccgo_ts_str(15322),
+		33: __ccgo_ts_str(15350),
+		34: __ccgo_ts_str(15374),
+		35: __ccgo_ts_str(15395),
+		36: __ccgo_ts_str(15406),
+		37: __ccgo_ts_str(15406),
+		38: __ccgo_ts_str(15406),
+		39: __ccgo_ts_str(15406),
+		40: __ccgo_ts_str(15406),
+		41: __ccgo_ts_str(15406),
+		42: __ccgo_ts_str(15406),
+		43: __ccgo_ts_str(15406),
+		44: __ccgo_ts_str(15406),
 	}
 }
 
 func init() {
-	mapnames_commercial = [96]uintptr{
-		0:  __ccgo_ts(15415),
-		1:  __ccgo_ts(15433),
-		2:  __ccgo_ts(15453),
-		3:  __ccgo_ts(15474),
-		4:  __ccgo_ts(15493),
-		5:  __ccgo_ts(15520),
-		6:  __ccgo_ts(15541),
-		7:  __ccgo_ts(15562),
-		8:  __ccgo_ts(15588),
-		9:  __ccgo_ts(15605),
-		10: __ccgo_ts(15630),
-		11: __ccgo_ts(15660),
-		12: __ccgo_ts(15682),
-		13: __ccgo_ts(15701),
-		14: __ccgo_ts(15727),
-		15: __ccgo_ts(15753),
-		16: __ccgo_ts(15771),
-		17: __ccgo_ts(15791),
-		18: __ccgo_ts(15815),
-		19: __ccgo_ts(15837),
-		20: __ccgo_ts(15855),
-		21: __ccgo_ts(15873),
-		22: __ccgo_ts(15897),
-		23: __ccgo_ts(15922),
-		24: __ccgo_ts(15942),
-		25: __ccgo_ts(15963),
-		26: __ccgo_ts(15993),
-		27: __ccgo_ts(16017),
-		28: __ccgo_ts(16044),
-		29: __ccgo_ts(16069),
-		30: __ccgo_ts(16091),
-		31: __ccgo_ts(16113),
-		32: __ccgo_ts(16130),
-		33: __ccgo_ts(16145),
-		34: __ccgo_ts(16168),
-		35: __ccgo_ts(16183),
-		36: __ccgo_ts(16198),
-		37: __ccgo_ts(16218),
-		38: __ccgo_ts(16240),
-		39: __ccgo_ts(16260),
-		40: __ccgo_ts(16275),
-		41: __ccgo_ts(16294),
-		42: __ccgo_ts(16314),
-		43: __ccgo_ts(16331),
-		44: __ccgo_ts(16347),
-		45: __ccgo_ts(16367),
-		46: __ccgo_ts(16385),
-		47: __ccgo_ts(16408),
-		48: __ccgo_ts(16427),
-		49: __ccgo_ts(16446),
-		50: __ccgo_ts(16468),
-		51: __ccgo_ts(16482),
-		52: __ccgo_ts(16509),
-		53: __ccgo_ts(16526),
-		54: __ccgo_ts(16555),
-		55: __ccgo_ts(16575),
-		56: __ccgo_ts(16604),
-		57: __ccgo_ts(16637),
-		58: __ccgo_ts(16654),
-		59: __ccgo_ts(16676),
-		60: __ccgo_ts(16697),
-		61: __ccgo_ts(16725),
-		62: __ccgo_ts(16755),
-		63: __ccgo_ts(16774),
-		64: __ccgo_ts(16792),
-		65: __ccgo_ts(16816),
-		66: __ccgo_ts(16835),
-		67: __ccgo_ts(16858),
-		68: __ccgo_ts(16876),
-		69: __ccgo_ts(16892),
-		70: __ccgo_ts(16913),
-		71: __ccgo_ts(16929),
-		72: __ccgo_ts(16944),
-		73: __ccgo_ts(16964),
-		74: __ccgo_ts(16985),
-		75: __ccgo_ts(17012),
-		76: __ccgo_ts(17029),
-		77: __ccgo_ts(17057),
-		78: __ccgo_ts(17079),
-		79: __ccgo_ts(17099),
-		80: __ccgo_ts(17125),
-		81: __ccgo_ts(17151),
-		82: __ccgo_ts(17166),
-		83: __ccgo_ts(17196),
-		84: __ccgo_ts(17225),
-		85: __ccgo_ts(17257),
-		86: __ccgo_ts(17275),
-		87: __ccgo_ts(17306),
-		88: __ccgo_ts(17323),
-		89: __ccgo_ts(17345),
-		90: __ccgo_ts(17365),
-		91: __ccgo_ts(17386),
-		92: __ccgo_ts(17401),
-		93: __ccgo_ts(17422),
-		94: __ccgo_ts(17442),
-		95: __ccgo_ts(17460),
+	mapnames_commercial = [96]string{
+		0:  __ccgo_ts_str(15415),
+		1:  __ccgo_ts_str(15433),
+		2:  __ccgo_ts_str(15453),
+		3:  __ccgo_ts_str(15474),
+		4:  __ccgo_ts_str(15493),
+		5:  __ccgo_ts_str(15520),
+		6:  __ccgo_ts_str(15541),
+		7:  __ccgo_ts_str(15562),
+		8:  __ccgo_ts_str(15588),
+		9:  __ccgo_ts_str(15605),
+		10: __ccgo_ts_str(15630),
+		11: __ccgo_ts_str(15660),
+		12: __ccgo_ts_str(15682),
+		13: __ccgo_ts_str(15701),
+		14: __ccgo_ts_str(15727),
+		15: __ccgo_ts_str(15753),
+		16: __ccgo_ts_str(15771),
+		17: __ccgo_ts_str(15791),
+		18: __ccgo_ts_str(15815),
+		19: __ccgo_ts_str(15837),
+		20: __ccgo_ts_str(15855),
+		21: __ccgo_ts_str(15873),
+		22: __ccgo_ts_str(15897),
+		23: __ccgo_ts_str(15922),
+		24: __ccgo_ts_str(15942),
+		25: __ccgo_ts_str(15963),
+		26: __ccgo_ts_str(15993),
+		27: __ccgo_ts_str(16017),
+		28: __ccgo_ts_str(16044),
+		29: __ccgo_ts_str(16069),
+		30: __ccgo_ts_str(16091),
+		31: __ccgo_ts_str(16113),
+		32: __ccgo_ts_str(16130),
+		33: __ccgo_ts_str(16145),
+		34: __ccgo_ts_str(16168),
+		35: __ccgo_ts_str(16183),
+		36: __ccgo_ts_str(16198),
+		37: __ccgo_ts_str(16218),
+		38: __ccgo_ts_str(16240),
+		39: __ccgo_ts_str(16260),
+		40: __ccgo_ts_str(16275),
+		41: __ccgo_ts_str(16294),
+		42: __ccgo_ts_str(16314),
+		43: __ccgo_ts_str(16331),
+		44: __ccgo_ts_str(16347),
+		45: __ccgo_ts_str(16367),
+		46: __ccgo_ts_str(16385),
+		47: __ccgo_ts_str(16408),
+		48: __ccgo_ts_str(16427),
+		49: __ccgo_ts_str(16446),
+		50: __ccgo_ts_str(16468),
+		51: __ccgo_ts_str(16482),
+		52: __ccgo_ts_str(16509),
+		53: __ccgo_ts_str(16526),
+		54: __ccgo_ts_str(16555),
+		55: __ccgo_ts_str(16575),
+		56: __ccgo_ts_str(16604),
+		57: __ccgo_ts_str(16637),
+		58: __ccgo_ts_str(16654),
+		59: __ccgo_ts_str(16676),
+		60: __ccgo_ts_str(16697),
+		61: __ccgo_ts_str(16725),
+		62: __ccgo_ts_str(16755),
+		63: __ccgo_ts_str(16774),
+		64: __ccgo_ts_str(16792),
+		65: __ccgo_ts_str(16816),
+		66: __ccgo_ts_str(16835),
+		67: __ccgo_ts_str(16858),
+		68: __ccgo_ts_str(16876),
+		69: __ccgo_ts_str(16892),
+		70: __ccgo_ts_str(16913),
+		71: __ccgo_ts_str(16929),
+		72: __ccgo_ts_str(16944),
+		73: __ccgo_ts_str(16964),
+		74: __ccgo_ts_str(16985),
+		75: __ccgo_ts_str(17012),
+		76: __ccgo_ts_str(17029),
+		77: __ccgo_ts_str(17057),
+		78: __ccgo_ts_str(17079),
+		79: __ccgo_ts_str(17099),
+		80: __ccgo_ts_str(17125),
+		81: __ccgo_ts_str(17151),
+		82: __ccgo_ts_str(17166),
+		83: __ccgo_ts_str(17196),
+		84: __ccgo_ts_str(17225),
+		85: __ccgo_ts_str(17257),
+		86: __ccgo_ts_str(17275),
+		87: __ccgo_ts_str(17306),
+		88: __ccgo_ts_str(17323),
+		89: __ccgo_ts_str(17345),
+		90: __ccgo_ts_str(17365),
+		91: __ccgo_ts_str(17386),
+		92: __ccgo_ts_str(17401),
+		93: __ccgo_ts_str(17422),
+		94: __ccgo_ts_str(17442),
+		95: __ccgo_ts_str(17460),
 	}
 }
 
@@ -9886,7 +9881,7 @@ func HU_Stop() {
 func HU_Start() {
 	var i int32
 	var v1 GameMission_t
-	var s, v3 uintptr
+	var s string
 	if headsupactive != 0 {
 		HU_Stop()
 	}
@@ -9918,7 +9913,7 @@ func HU_Start() {
 	case pack_tnt:
 		s = mapnames_commercial[gamemap-1+int32(64)]
 	default:
-		s = __ccgo_ts(17490)
+		s = __ccgo_ts_str(17490)
 		break
 	}
 	// Chex.exe always uses the episode 1 level title
@@ -9927,11 +9922,8 @@ func HU_Start() {
 		s = mapnames[gamemap-1]
 	}
 	// dehacked substitution to get modified level name
-	s = s
-	for *(*int8)(unsafe.Pointer(s)) != 0 {
-		v3 = s
-		s++
-		HUlib_addCharToTextLine(&w_title, *(*int8)(unsafe.Pointer(v3)))
+	for _, i := range s {
+		HUlib_addCharToTextLine(&w_title, byte(i))
 	}
 	// create the chat widget
 	HUlib_initIText(&w_chat, HU_MSGX, HU_MSGY+int32(HU_MSGHEIGHT)*(int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight)+int32(1)), hu_font[:], int32('!'), &chat_on)
@@ -9980,7 +9972,7 @@ func HU_Ticker() {
 	if showMessages != 0 || message_dontfuckwithme != 0 {
 		// display message if necessary
 		if plr1.Fmessage != "" && message_nottobefuckedwith == 0 || plr1.Fmessage != "" && message_dontfuckwithme != 0 {
-			HUlib_addMessageToSText(&w_message, uintptr(0), plr1.Fmessage)
+			HUlib_addMessageToSText(&w_message, "", plr1.Fmessage)
 			plr1.Fmessage = ""
 			message_on = 1
 			message_counter = 4 * TICRATE
@@ -10009,7 +10001,7 @@ func HU_Ticker() {
 					rc = int32(HUlib_keyInIText(&w_inputbuffer[i], uint8(c)))
 					if rc != 0 && int32(c) == int32(KEY_ENTER) {
 						if w_inputbuffer[i].Fl.Flen1 != 0 && (int32(chat_dest[i]) == consoleplayer+int32(1) || int32(chat_dest[i]) == int32(HU_BROADCAST)) {
-							HUlib_addMessageToSText(&w_message, player_names[i], gostring(uintptr(unsafe.Pointer(&w_inputbuffer[i].Fl.Fl[0]))))
+							HUlib_addMessageToSText(&w_message, player_names[i], gostring_bytes(w_inputbuffer[i].Fl.Fl[:]))
 							message_nottobefuckedwith = 1
 							message_on = 1
 							message_counter = 4 * TICRATE
@@ -45908,7 +45900,7 @@ var mainzone uintptr
 // The actual names can be found in DStrings.h.
 //
 
-var mapnames [45]uintptr
+var mapnames [45]string
 
 // List of names for levels in commercial IWADs
 // (doom2.wad, plutonia.wad, tnt.wad).  These are stored in a
@@ -45916,7 +45908,7 @@ var mapnames [45]uintptr
 // the layout in the Vanilla executable, where it is possible to
 // overflow the end of one array into the next.
 
-var mapnames_commercial [96]uintptr
+var mapnames_commercial [96]string
 
 var markceiling boolean
 
@@ -46241,7 +46233,7 @@ var planezlight [][]lighttable_t
 //	//
 var player_arrow [7]mline_t
 
-var player_names [4]uintptr
+var player_names [4]string
 
 var playeringame [4]boolean
 
