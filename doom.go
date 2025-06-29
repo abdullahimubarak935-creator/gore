@@ -4497,9 +4497,9 @@ func TicdupSquash(set *ticcmd_set_t) {
 			break
 		}
 		cmd := &set.Fcmds[i]
-		cmd.Fchatchar = uint8(0)
-		if int32(cmd.Fbuttons)&int32(BT_SPECIAL) != 0 {
-			cmd.Fbuttons = uint8(0)
+		cmd.Fchatchar = 0
+		if int32(cmd.Fbuttons)&BT_SPECIAL != 0 {
+			cmd.Fbuttons = 0
 		}
 		goto _1
 	_1:
@@ -7816,11 +7816,11 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	// special buttons
 	if sendpause != 0 {
 		sendpause = 0
-		cmd.Fbuttons = uint8(int32(BT_SPECIAL) | int32(BTS_PAUSE))
+		cmd.Fbuttons = uint8(BT_SPECIAL | int32(BTS_PAUSE))
 	}
 	if sendsave != 0 {
 		sendsave = 0
-		cmd.Fbuttons = uint8(int32(BT_SPECIAL) | int32(BTS_SAVEGAME) | savegameslot<<int32(BTS_SAVESHIFT))
+		cmd.Fbuttons = uint8(BT_SPECIAL | int32(BTS_SAVEGAME) | savegameslot<<int32(BTS_SAVESHIFT))
 	}
 	// low-res turning
 	if lowres_turn != 0 {
@@ -8154,8 +8154,8 @@ func G_Ticker() {
 			break
 		}
 		if playeringame[i] != 0 {
-			if int32(players[i].Fcmd.Fbuttons)&int32(BT_SPECIAL) != 0 {
-				switch int32(players[i].Fcmd.Fbuttons) & int32(BT_SPECIALMASK) {
+			if int32(players[i].Fcmd.Fbuttons)&BT_SPECIAL != 0 {
+				switch int32(players[i].Fcmd.Fbuttons) & BT_SPECIALMASK {
 				case int32(BTS_PAUSE):
 					paused = boolean(paused ^ 1)
 					if paused != 0 {
@@ -10014,7 +10014,7 @@ func HU_Ticker() {
 						HUlib_resetIText(&w_inputbuffer[i])
 					}
 				}
-				players[i].Fcmd.Fchatchar = uint8(0)
+				players[i].Fcmd.Fchatchar = 0
 			}
 			goto _3
 		_3:
@@ -21776,260 +21776,260 @@ func M_snprintf(buf uintptr, buf_len uint64, s string, args ...any) (r int32) {
 //
 
 var rndtable = [256]uint8{
-	1:   uint8(8),
-	2:   uint8(109),
-	3:   uint8(220),
-	4:   uint8(222),
-	5:   uint8(241),
-	6:   uint8(149),
-	7:   uint8(107),
-	8:   uint8(75),
-	9:   uint8(248),
-	10:  uint8(254),
-	11:  uint8(140),
-	12:  uint8(16),
-	13:  uint8(66),
-	14:  uint8(74),
-	15:  uint8(21),
-	16:  uint8(211),
-	17:  uint8(47),
-	18:  uint8(80),
-	19:  uint8(242),
-	20:  uint8(154),
-	21:  uint8(27),
-	22:  uint8(205),
-	23:  uint8(128),
-	24:  uint8(161),
-	25:  uint8(89),
-	26:  uint8(77),
-	27:  uint8(36),
-	28:  uint8(95),
-	29:  uint8(110),
-	30:  uint8(85),
-	31:  uint8(48),
-	32:  uint8(212),
-	33:  uint8(140),
-	34:  uint8(211),
-	35:  uint8(249),
-	36:  uint8(22),
-	37:  uint8(79),
-	38:  uint8(200),
-	39:  uint8(50),
-	40:  uint8(28),
-	41:  uint8(188),
-	42:  uint8(52),
-	43:  uint8(140),
-	44:  uint8(202),
-	45:  uint8(120),
-	46:  uint8(68),
-	47:  uint8(145),
-	48:  uint8(62),
-	49:  uint8(70),
-	50:  uint8(184),
-	51:  uint8(190),
-	52:  uint8(91),
-	53:  uint8(197),
-	54:  uint8(152),
-	55:  uint8(224),
-	56:  uint8(149),
-	57:  uint8(104),
-	58:  uint8(25),
-	59:  uint8(178),
-	60:  uint8(252),
-	61:  uint8(182),
-	62:  uint8(202),
-	63:  uint8(182),
-	64:  uint8(141),
-	65:  uint8(197),
-	66:  uint8(4),
-	67:  uint8(81),
-	68:  uint8(181),
-	69:  uint8(242),
-	70:  uint8(145),
-	71:  uint8(42),
-	72:  uint8(39),
-	73:  uint8(227),
-	74:  uint8(156),
-	75:  uint8(198),
-	76:  uint8(225),
-	77:  uint8(193),
-	78:  uint8(219),
-	79:  uint8(93),
-	80:  uint8(122),
-	81:  uint8(175),
-	82:  uint8(249),
-	84:  uint8(175),
-	85:  uint8(143),
-	86:  uint8(70),
-	87:  uint8(239),
-	88:  uint8(46),
-	89:  uint8(246),
-	90:  uint8(163),
-	91:  uint8(53),
-	92:  uint8(163),
-	93:  uint8(109),
-	94:  uint8(168),
-	95:  uint8(135),
-	96:  uint8(2),
-	97:  uint8(235),
-	98:  uint8(25),
-	99:  uint8(92),
-	100: uint8(20),
-	101: uint8(145),
-	102: uint8(138),
-	103: uint8(77),
-	104: uint8(69),
-	105: uint8(166),
-	106: uint8(78),
-	107: uint8(176),
-	108: uint8(173),
-	109: uint8(212),
-	110: uint8(166),
-	111: uint8(113),
-	112: uint8(94),
-	113: uint8(161),
-	114: uint8(41),
-	115: uint8(50),
-	116: uint8(239),
-	117: uint8(49),
-	118: uint8(111),
-	119: uint8(164),
-	120: uint8(70),
-	121: uint8(60),
-	122: uint8(2),
-	123: uint8(37),
-	124: uint8(171),
-	125: uint8(75),
-	126: uint8(136),
-	127: uint8(156),
-	128: uint8(11),
-	129: uint8(56),
-	130: uint8(42),
-	131: uint8(146),
-	132: uint8(138),
-	133: uint8(229),
-	134: uint8(73),
-	135: uint8(146),
-	136: uint8(77),
-	137: uint8(61),
-	138: uint8(98),
-	139: uint8(196),
-	140: uint8(135),
-	141: uint8(106),
-	142: uint8(63),
-	143: uint8(197),
-	144: uint8(195),
-	145: uint8(86),
-	146: uint8(96),
-	147: uint8(203),
-	148: uint8(113),
-	149: uint8(101),
-	150: uint8(170),
-	151: uint8(247),
-	152: uint8(181),
-	153: uint8(113),
-	154: uint8(80),
-	155: uint8(250),
-	156: uint8(108),
-	157: uint8(7),
-	158: uint8(255),
-	159: uint8(237),
-	160: uint8(129),
-	161: uint8(226),
-	162: uint8(79),
-	163: uint8(107),
-	164: uint8(112),
-	165: uint8(166),
-	166: uint8(103),
-	167: uint8(241),
-	168: uint8(24),
-	169: uint8(223),
-	170: uint8(239),
-	171: uint8(120),
-	172: uint8(198),
-	173: uint8(58),
-	174: uint8(60),
-	175: uint8(82),
-	176: uint8(128),
-	177: uint8(3),
-	178: uint8(184),
-	179: uint8(66),
-	180: uint8(143),
-	181: uint8(224),
-	182: uint8(145),
-	183: uint8(224),
-	184: uint8(81),
-	185: uint8(206),
-	186: uint8(163),
-	187: uint8(45),
-	188: uint8(63),
-	189: uint8(90),
-	190: uint8(168),
-	191: uint8(114),
-	192: uint8(59),
-	193: uint8(33),
-	194: uint8(159),
-	195: uint8(95),
-	196: uint8(28),
-	197: uint8(139),
-	198: uint8(123),
-	199: uint8(98),
-	200: uint8(125),
-	201: uint8(196),
-	202: uint8(15),
-	203: uint8(70),
-	204: uint8(194),
-	205: uint8(253),
-	206: uint8(54),
-	207: uint8(14),
-	208: uint8(109),
-	209: uint8(226),
-	210: uint8(71),
-	211: uint8(17),
-	212: uint8(161),
-	213: uint8(93),
-	214: uint8(186),
-	215: uint8(87),
-	216: uint8(244),
-	217: uint8(138),
-	218: uint8(20),
-	219: uint8(52),
-	220: uint8(123),
-	221: uint8(251),
-	222: uint8(26),
-	223: uint8(36),
-	224: uint8(17),
-	225: uint8(46),
-	226: uint8(52),
-	227: uint8(231),
-	228: uint8(232),
-	229: uint8(76),
-	230: uint8(31),
-	231: uint8(221),
-	232: uint8(84),
-	233: uint8(37),
-	234: uint8(216),
-	235: uint8(165),
-	236: uint8(212),
-	237: uint8(106),
-	238: uint8(197),
-	239: uint8(242),
-	240: uint8(98),
-	241: uint8(43),
-	242: uint8(39),
-	243: uint8(175),
-	244: uint8(254),
-	245: uint8(145),
-	246: uint8(190),
-	247: uint8(84),
-	248: uint8(118),
-	249: uint8(222),
-	250: uint8(187),
-	251: uint8(136),
-	252: uint8(120),
-	253: uint8(163),
-	254: uint8(236),
-	255: uint8(249),
+	1:   8,
+	2:   109,
+	3:   220,
+	4:   222,
+	5:   241,
+	6:   149,
+	7:   107,
+	8:   75,
+	9:   248,
+	10:  254,
+	11:  140,
+	12:  16,
+	13:  66,
+	14:  74,
+	15:  21,
+	16:  211,
+	17:  47,
+	18:  80,
+	19:  242,
+	20:  154,
+	21:  27,
+	22:  205,
+	23:  128,
+	24:  161,
+	25:  89,
+	26:  77,
+	27:  36,
+	28:  95,
+	29:  110,
+	30:  85,
+	31:  48,
+	32:  212,
+	33:  140,
+	34:  211,
+	35:  249,
+	36:  22,
+	37:  79,
+	38:  200,
+	39:  50,
+	40:  28,
+	41:  188,
+	42:  52,
+	43:  140,
+	44:  202,
+	45:  120,
+	46:  68,
+	47:  145,
+	48:  62,
+	49:  70,
+	50:  184,
+	51:  190,
+	52:  91,
+	53:  197,
+	54:  152,
+	55:  224,
+	56:  149,
+	57:  104,
+	58:  25,
+	59:  178,
+	60:  252,
+	61:  182,
+	62:  202,
+	63:  182,
+	64:  141,
+	65:  197,
+	66:  4,
+	67:  81,
+	68:  181,
+	69:  242,
+	70:  145,
+	71:  42,
+	72:  39,
+	73:  227,
+	74:  156,
+	75:  198,
+	76:  225,
+	77:  193,
+	78:  219,
+	79:  93,
+	80:  122,
+	81:  175,
+	82:  249,
+	84:  175,
+	85:  143,
+	86:  70,
+	87:  239,
+	88:  46,
+	89:  246,
+	90:  163,
+	91:  53,
+	92:  163,
+	93:  109,
+	94:  168,
+	95:  135,
+	96:  2,
+	97:  235,
+	98:  25,
+	99:  92,
+	100: 20,
+	101: 145,
+	102: 138,
+	103: 77,
+	104: 69,
+	105: 166,
+	106: 78,
+	107: 176,
+	108: 173,
+	109: 212,
+	110: 166,
+	111: 113,
+	112: 94,
+	113: 161,
+	114: 41,
+	115: 50,
+	116: 239,
+	117: 49,
+	118: 111,
+	119: 164,
+	120: 70,
+	121: 60,
+	122: 2,
+	123: 37,
+	124: 171,
+	125: 75,
+	126: 136,
+	127: 156,
+	128: 11,
+	129: 56,
+	130: 42,
+	131: 146,
+	132: 138,
+	133: 229,
+	134: 73,
+	135: 146,
+	136: 77,
+	137: 61,
+	138: 98,
+	139: 196,
+	140: 135,
+	141: 106,
+	142: 63,
+	143: 197,
+	144: 195,
+	145: 86,
+	146: 96,
+	147: 203,
+	148: 113,
+	149: 101,
+	150: 170,
+	151: 247,
+	152: 181,
+	153: 113,
+	154: 80,
+	155: 250,
+	156: 108,
+	157: 7,
+	158: 255,
+	159: 237,
+	160: 129,
+	161: 226,
+	162: 79,
+	163: 107,
+	164: 112,
+	165: 166,
+	166: 103,
+	167: 241,
+	168: 24,
+	169: 223,
+	170: 239,
+	171: 120,
+	172: 198,
+	173: 58,
+	174: 60,
+	175: 82,
+	176: 128,
+	177: 3,
+	178: 184,
+	179: 66,
+	180: 143,
+	181: 224,
+	182: 145,
+	183: 224,
+	184: 81,
+	185: 206,
+	186: 163,
+	187: 45,
+	188: 63,
+	189: 90,
+	190: 168,
+	191: 114,
+	192: 59,
+	193: 33,
+	194: 159,
+	195: 95,
+	196: 28,
+	197: 139,
+	198: 123,
+	199: 98,
+	200: 125,
+	201: 196,
+	202: 15,
+	203: 70,
+	204: 194,
+	205: 253,
+	206: 54,
+	207: 14,
+	208: 109,
+	209: 226,
+	210: 71,
+	211: 17,
+	212: 161,
+	213: 93,
+	214: 186,
+	215: 87,
+	216: 244,
+	217: 138,
+	218: 20,
+	219: 52,
+	220: 123,
+	221: 251,
+	222: 26,
+	223: 36,
+	224: 17,
+	225: 46,
+	226: 52,
+	227: 231,
+	228: 232,
+	229: 76,
+	230: 31,
+	231: 221,
+	232: 84,
+	233: 37,
+	234: 216,
+	235: 165,
+	236: 212,
+	237: 106,
+	238: 197,
+	239: 242,
+	240: 98,
+	241: 43,
+	242: 39,
+	243: 175,
+	244: 254,
+	245: 145,
+	246: 190,
+	247: 84,
+	248: 118,
+	249: 222,
+	250: 187,
+	251: 136,
+	252: 120,
+	253: 163,
+	254: 236,
+	255: 249,
 }
 
 // C documentation
@@ -28997,7 +28997,7 @@ func A_WeaponReady(player *player_t, psp *pspdef_t) {
 	}
 	// check for fire
 	//  the missile launcher and bfg do not auto fire
-	if int32(player.Fcmd.Fbuttons)&int32(BT_ATTACK) != 0 {
+	if int32(player.Fcmd.Fbuttons)&BT_ATTACK != 0 {
 		if player.Fattackdown == 0 || player.Freadyweapon != wp_missile && player.Freadyweapon != wp_bfg {
 			player.Fattackdown = 1
 			P_FireWeapon(player)
@@ -29023,7 +29023,7 @@ func A_WeaponReady(player *player_t, psp *pspdef_t) {
 func A_ReFire(player *player_t, psp *pspdef_t) {
 	// check for fire
 	//  (if a weaponchange is pending, let it go through instead)
-	if int32(player.Fcmd.Fbuttons)&int32(BT_ATTACK) != 0 && player.Fpendingweapon == wp_nochange && player.Fhealth != 0 {
+	if int32(player.Fcmd.Fbuttons)&BT_ATTACK != 0 && player.Fpendingweapon == wp_nochange && player.Fhealth != 0 {
 		player.Frefire++
 		P_FireWeapon(player)
 	} else {
@@ -29550,7 +29550,7 @@ func saveg_write_pad() {
 		if i >= padding {
 			break
 		}
-		saveg_write8(uint8(0))
+		saveg_write8(0)
 		goto _1
 	_1:
 		;
@@ -34208,7 +34208,7 @@ func P_DeathThink(player *player_t) {
 			player.Fdamagecount--
 		}
 	}
-	if int32(player.Fcmd.Fbuttons)&int32(BT_USE) != 0 {
+	if int32(player.Fcmd.Fbuttons)&BT_USE != 0 {
 		player.Fplayerstate = int32(PST_REBORN)
 	}
 }
@@ -34252,14 +34252,14 @@ func P_PlayerThink(player *player_t) {
 	}
 	// Check for weapon change.
 	// A special event has no other buttons.
-	if int32(cmd.Fbuttons)&int32(BT_SPECIAL) != 0 {
-		cmd.Fbuttons = uint8(0)
+	if int32(cmd.Fbuttons)&BT_SPECIAL != 0 {
+		cmd.Fbuttons = 0
 	}
-	if int32(cmd.Fbuttons)&int32(BT_CHANGE) != 0 {
+	if int32(cmd.Fbuttons)&BT_CHANGE != 0 {
 		// The actual changing of the weapon is done
 		//  when the weapon psprite can do it
 		//  (read: not in the middle of an attack).
-		newweapon = weapontype_t(int32(cmd.Fbuttons) & int32(BT_WEAPONMASK) >> int32(BT_WEAPONSHIFT))
+		newweapon = weapontype_t(int32(cmd.Fbuttons) & BT_WEAPONMASK >> BT_WEAPONSHIFT)
 		if newweapon == wp_fist && player.Fweaponowned[wp_chainsaw] != 0 && !(player.Freadyweapon == wp_chainsaw && player.Fpowers[pw_strength] != 0) {
 			newweapon = wp_chainsaw
 		}
@@ -34275,7 +34275,7 @@ func P_PlayerThink(player *player_t) {
 		}
 	}
 	// check for use
-	if int32(cmd.Fbuttons)&int32(BT_USE) != 0 {
+	if int32(cmd.Fbuttons)&BT_USE != 0 {
 		if player.Fusedown == 0 {
 			P_UseLines(player)
 			player.Fusedown = 1
@@ -43351,7 +43351,7 @@ func WI_checkForAccelerate() {
 	for i := 0; i < MAXPLAYERS; i++ {
 		if playeringame[i] != 0 {
 			player := &players[i]
-			if int32(player.Fcmd.Fbuttons)&int32(BT_ATTACK) != 0 {
+			if int32(player.Fcmd.Fbuttons)&BT_ATTACK != 0 {
 				if player.Fattackdown == 0 {
 					acceleratestage = 1
 				}
@@ -43359,7 +43359,7 @@ func WI_checkForAccelerate() {
 			} else {
 				player.Fattackdown = 0
 			}
-			if int32(player.Fcmd.Fbuttons)&int32(BT_USE) != 0 {
+			if int32(player.Fcmd.Fbuttons)&BT_USE != 0 {
 				if player.Fusedown == 0 {
 					acceleratestage = 1
 				}
