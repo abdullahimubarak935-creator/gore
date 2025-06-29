@@ -7816,11 +7816,11 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	// special buttons
 	if sendpause != 0 {
 		sendpause = 0
-		cmd.Fbuttons = uint8(BT_SPECIAL | int32(BTS_PAUSE))
+		cmd.Fbuttons = uint8(BT_SPECIAL | BTS_PAUSE)
 	}
 	if sendsave != 0 {
 		sendsave = 0
-		cmd.Fbuttons = uint8(BT_SPECIAL | int32(BTS_SAVEGAME) | savegameslot<<int32(BTS_SAVESHIFT))
+		cmd.Fbuttons = uint8(BT_SPECIAL | BTS_SAVEGAME | savegameslot<<BTS_SAVESHIFT)
 	}
 	// low-res turning
 	if lowres_turn != 0 {
@@ -8156,18 +8156,18 @@ func G_Ticker() {
 		if playeringame[i] != 0 {
 			if int32(players[i].Fcmd.Fbuttons)&BT_SPECIAL != 0 {
 				switch int32(players[i].Fcmd.Fbuttons) & BT_SPECIALMASK {
-				case int32(BTS_PAUSE):
+				case BTS_PAUSE:
 					paused = boolean(paused ^ 1)
 					if paused != 0 {
 						S_PauseSound()
 					} else {
 						S_ResumeSound()
 					}
-				case int32(BTS_SAVEGAME):
+				case BTS_SAVEGAME:
 					if len(savedescription) == 0 {
 						M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(13798), 32)
 					}
-					savegameslot = int32(players[i].Fcmd.Fbuttons) & int32(BTS_SAVEMASK) >> int32(BTS_SAVESHIFT)
+					savegameslot = int32(players[i].Fcmd.Fbuttons) & BTS_SAVEMASK >> BTS_SAVESHIFT
 					gameaction = ga_savegame
 					break
 				}
