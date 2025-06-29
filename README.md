@@ -1,5 +1,5 @@
 # 🔥 GORE 🔥
-## A Minimal Platform-Agnostic Go Port of doomgeneric
+## A Minimal Go Port of doomgeneric
 
 ```
     ██████╗  ██████╗  ██████╗ ███╗   ███╗
@@ -11,19 +11,11 @@
                     .GO
 ```
 
-**"Rip and tear... in Go!"**
-
-> *The demons thought they were safe when they corrupted the C codebase.  
-> They were wrong.  
-> The Doom Slayer has learned Go.*
-
----
-
 ## 💀 WHAT FRESH HELL IS THIS?
 
 This is a **minimal, platform-agnostic Go port** of the legendary DOOM engine, transpiled from the `doomgeneric` codebase. No CGo. No platform dependencies. Just pure, unadulterated demon-slaying action powered by the glory of Go's cross-compilation.
 
-The original C code has been mechanically converted to Go using [advanced transpilation sorcery](https://gitlab.com/cznic/doomgeneric.git)
+The original C code was converted to Go using (modernc.org/ccgo/v4), by cznic (https://gitlab.com/cznic/doomgeneric.git). This was then manually cleaned up to remove a lot of manual pointer manipulation, and make things more Go-ish, whilst still maintaining compatibility with the original Doom, and its overall structure.
 
 ## 🔫 FEATURES
 
@@ -31,16 +23,17 @@ The original C code has been mechanically converted to Go using [advanced transp
 - ✅ **Minimal Dependencies**: Only requires Go standard library
 - ✅ **Multiple DOOM Versions**: Supports DOOM, DOOM II, Ultimate DOOM, Final DOOM
 - ✅ **WAD File Support**: Bring your own demons via WAD files
-- ✅ **Memory Safe**: Go's GC protects you from buffer overflows (but not from Cacodemons)
+- ✅ **Memory Safe**: Go's GC protects you from buffer overflows (but not from Cacodemons) (WIP - 95% complete)
 - ✅ **Cross Compilation**: Build for any target from any platform
 
 ## 🚀 INSTALLATION
 
 ### Prerequisites
-- Go 1.24+ (The demons fear modern Go)
-- A WAD file containing the forces of Hell
+- Go 1.24+
+- A WAD file
 
 ### Running the examples
+These examples are both very minimal, and whilst technically run the game, they are not really fully complete games in their own right (ie: Missing key bindings etc...)
 #### Web based
 ```bash
 git clone <this-repo>
@@ -79,36 +72,7 @@ type DoomFrontend interface {
 | `SetTitle()` | Set the window title as appropriate to the given WAD |
 | `GetKey()` | Handle keyboard input |
 
-## 🛠️ EXTENDING THIS PORT
-
-Want to make this actually playable? Here's what you need:
-
-1. **Display**: Replace PNG output with SDL2, OpenGL, or terminal output
-2. **Input**: Implement proper keyboard/mouse handling in `DG_GetKey()`
-3. **Audio**: Add sound system (optional, purists play in silence)
-4. **Packaging**: Bundle with shareware WAD for easy distribution
-
-## ⚡ TECHNICAL NOTES
-
-This port uses:
-- **Transpiled C Code**: Mechanical conversion from original DOOM source
-- **libc Compatibility**: `modernc.org/libc` for C standard library functions
-- **Memory Management**: Go's garbage collector handles memory (safer than malloc/free)
-- **Type Safety**: Go's type system prevents many classic C vulnerabilities
-
 ## 📜 LICENSE
 
 DOOM source code is released under the GNU General Public License.  
 This Go port maintains the same licensing terms.
-
----
-
-## 🔥 FINAL WORDS
-
-*"In the first age, in the first battle, when the shadows first lengthened, one stood. He chose the path of perpetual torment. In his ravenous hatred he found no peace, and with boiling blood he scoured the umbral plains seeking vengeance against the dark lords who had wronged him. And those that tasted the bite of his sword named him... **The Doom Slayer**."*
-
-Now go forth and **RIP AND TEAR** in Go! 🚀
-
----
-
-*Built with ❤️ and excessive violence*
