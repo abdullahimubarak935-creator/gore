@@ -445,7 +445,7 @@ type cheatseq_t struct {
 	Fparameter_chars  int32
 	Fchars_read       uint64
 	Fparam_chars_read int32
-	Fparameter_buf    [5]int8
+	Fparameter_buf    [5]byte
 }
 
 type fixed_t = int32
@@ -2700,7 +2700,7 @@ func init() {
 	cheat_amap = cheatseq_t{
 		Fsequence:      [25]int8{'i', 'd', 'd', 't'},
 		Fsequence_len:  5 - 1,
-		Fparameter_buf: [5]int8{},
+		Fparameter_buf: [5]byte{},
 	}
 }
 
@@ -7890,7 +7890,7 @@ func G_DoLoadLevel() {
 	gameaction = ga_nothing
 	Z_CheckHeap()
 	// clear cmd building stuff
-	xmemset(uintptr(unsafe.Pointer(&gamekeydown)), 0, 1024)
+	clear(gamekeydown[:])
 	v3 = 0
 	joystrafemove = v3
 	v2 = v3
@@ -7904,8 +7904,8 @@ func G_DoLoadLevel() {
 	v5 = v6
 	sendsave = v5
 	sendpause = v5
-	xmemset(uintptr(unsafe.Pointer(&mousearray)), 0, 36)
-	xmemset(uintptr(unsafe.Pointer(&joyarray)), 0, 84)
+	clear(mousearray[:])
+	clear(joyarray[:])
 	if testcontrols != 0 {
 		players[consoleplayer].Fmessage = __ccgo_ts_str(13701)
 	}
@@ -18707,7 +18707,7 @@ func cht_CheckCheat(cht *cheatseq_t, key int8) (r int32) {
 		if cht.Fparam_chars_read < cht.Fparameter_chars {
 			// we have passed the end of the cheat sequence and are
 			// entering parameters now
-			cht.Fparameter_buf[cht.Fparam_chars_read] = key
+			cht.Fparameter_buf[cht.Fparam_chars_read] = byte(key)
 			cht.Fparam_chars_read++
 		}
 	}
@@ -18721,8 +18721,8 @@ func cht_CheckCheat(cht *cheatseq_t, key int8) (r int32) {
 	return 0
 }
 
-func cht_GetParam(cht *cheatseq_t, buffer uintptr) {
-	xmemcpy(buffer, uintptr(unsafe.Pointer(&cht.Fparameter_buf[0])), uint64(cht.Fparameter_chars))
+func cht_GetParam(cht *cheatseq_t, buffer []byte) {
+	copy(buffer, cht.Fparameter_buf[:cht.Fparameter_chars])
 }
 
 const EISDIR = 21
@@ -33125,40 +33125,9 @@ func P_SpawnSpecials() {
 		;
 		i++
 	}
-	//	Init other misc stuff
-	i = 0
-	for {
-		if i >= int32(MAXCEILINGS) {
-			break
-		}
-		activeceilings[i] = nil
-		goto _3
-	_3:
-		;
-		i++
-	}
-	i = 0
-	for {
-		if i >= int32(MAXPLATS) {
-			break
-		}
-		activeplats[i] = nil
-		goto _4
-	_4:
-		;
-		i++
-	}
-	i = 0
-	for {
-		if i >= int32(MAXBUTTONS) {
-			break
-		}
-		xmemset(uintptr(unsafe.Pointer(&buttonlist))+uintptr(i)*32, 0, 32)
-		goto _5
-	_5:
-		;
-		i++
-	}
+	clear(activeceilings[:])
+	clear(activeplats[:])
+	clear(buttonlist[:])
 	// UNUSED: no horizonal sliders.
 	//	P_InitSlidingDoorFrames();
 }
@@ -36946,7 +36915,7 @@ func R_ClearPlanes() {
 	lastvisplane_index = 0
 	lastopening = uintptr(unsafe.Pointer(&openings))
 	// texture calculation
-	xmemset(uintptr(unsafe.Pointer(&cachedheight)), 0, 800)
+	clear(cachedheight[:])
 	// left to right mapping
 	angle = (viewangle - uint32(ANG909)) >> int32(ANGLETOFINESHIFT)
 	// scale will be unit scale at SCREENWIDTH/2 distance
@@ -39995,7 +39964,7 @@ func init() {
 		Fsequence:        [25]int8{'i', 'd', 'm', 'u', 's'},
 		Fsequence_len:    6 - 1,
 		Fparameter_chars: 2,
-		Fparameter_buf:   [5]int8{},
+		Fparameter_buf:   [5]byte{},
 	}
 }
 
@@ -40003,7 +39972,7 @@ func init() {
 	cheat_god = cheatseq_t{
 		Fsequence:      [25]int8{'i', 'd', 'd', 'q', 'd'},
 		Fsequence_len:  6 - 1,
-		Fparameter_buf: [5]int8{},
+		Fparameter_buf: [5]byte{},
 	}
 }
 
@@ -40011,7 +39980,7 @@ func init() {
 	cheat_ammo = cheatseq_t{
 		Fsequence:      [25]int8{'i', 'd', 'k', 'f', 'a'},
 		Fsequence_len:  6 - 1,
-		Fparameter_buf: [5]int8{},
+		Fparameter_buf: [5]byte{},
 	}
 }
 
@@ -40019,7 +39988,7 @@ func init() {
 	cheat_ammonokey = cheatseq_t{
 		Fsequence:      [25]int8{'i', 'd', 'f', 'a'},
 		Fsequence_len:  5 - 1,
-		Fparameter_buf: [5]int8{},
+		Fparameter_buf: [5]byte{},
 	}
 }
 
@@ -40027,7 +39996,7 @@ func init() {
 	cheat_noclip = cheatseq_t{
 		Fsequence:      [25]int8{'i', 'd', 's', 'p', 'i', 's', 'p', 'o', 'p', 'd'},
 		Fsequence_len:  11 - 1,
-		Fparameter_buf: [5]int8{},
+		Fparameter_buf: [5]byte{},
 	}
 }
 
@@ -40035,7 +40004,7 @@ func init() {
 	cheat_commercial_noclip = cheatseq_t{
 		Fsequence:      [25]int8{'i', 'd', 'c', 'l', 'i', 'p'},
 		Fsequence_len:  7 - 1,
-		Fparameter_buf: [5]int8{},
+		Fparameter_buf: [5]byte{},
 	}
 }
 
@@ -40044,37 +40013,37 @@ func init() {
 		0: {
 			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd', 'v'},
 			Fsequence_len:  10 - 1,
-			Fparameter_buf: [5]int8{},
+			Fparameter_buf: [5]byte{},
 		},
 		1: {
 			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd', 's'},
 			Fsequence_len:  10 - 1,
-			Fparameter_buf: [5]int8{},
+			Fparameter_buf: [5]byte{},
 		},
 		2: {
 			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd', 'i'},
 			Fsequence_len:  10 - 1,
-			Fparameter_buf: [5]int8{},
+			Fparameter_buf: [5]byte{},
 		},
 		3: {
 			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd', 'r'},
 			Fsequence_len:  10 - 1,
-			Fparameter_buf: [5]int8{},
+			Fparameter_buf: [5]byte{},
 		},
 		4: {
 			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd', 'a'},
 			Fsequence_len:  10 - 1,
-			Fparameter_buf: [5]int8{},
+			Fparameter_buf: [5]byte{},
 		},
 		5: {
 			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd', 'l'},
 			Fsequence_len:  10 - 1,
-			Fparameter_buf: [5]int8{},
+			Fparameter_buf: [5]byte{},
 		},
 		6: {
 			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd'},
 			Fsequence_len:  9 - 1,
-			Fparameter_buf: [5]int8{},
+			Fparameter_buf: [5]byte{},
 		},
 	}
 }
@@ -40083,7 +40052,7 @@ func init() {
 	cheat_choppers = cheatseq_t{
 		Fsequence:      [25]int8{'i', 'd', 'c', 'h', 'o', 'p', 'p', 'e', 'r', 's'},
 		Fsequence_len:  11 - 1,
-		Fparameter_buf: [5]int8{},
+		Fparameter_buf: [5]byte{},
 	}
 }
 
@@ -40092,7 +40061,7 @@ func init() {
 		Fsequence:        [25]int8{'i', 'd', 'c', 'l', 'e', 'v'},
 		Fsequence_len:    7 - 1,
 		Fparameter_chars: 2,
-		Fparameter_buf:   [5]int8{},
+		Fparameter_buf:   [5]byte{},
 	}
 }
 
@@ -40100,7 +40069,7 @@ func init() {
 	cheat_mypos = cheatseq_t{
 		Fsequence:      [25]int8{'i', 'd', 'm', 'y', 'p', 'o', 's'},
 		Fsequence_len:  8 - 1,
-		Fparameter_buf: [5]int8{},
+		Fparameter_buf: [5]byte{},
 	}
 }
 
@@ -40121,7 +40090,6 @@ func ST_refreshBackground() {
 //	// Respond to keyboard input events,
 //	//  intercept cheats.
 func ST_Responder(ev *event_t) (r boolean) {
-	bp := alloc(48)
 	var epsd, i, map1, musnum int32
 	var v6, v8 GameMission_t
 	var v10 bool
@@ -40217,21 +40185,22 @@ func ST_Responder(ev *event_t) (r boolean) {
 						} else {
 							if cht_CheckCheat(&cheat_mus, int8(ev.Fdata2)) != 0 {
 								plyr.Fmessage = __ccgo_ts_str(27640)
-								cht_GetParam(&cheat_mus, bp)
+								var param [5]byte
+								cht_GetParam(&cheat_mus, param[:])
 								// Note: The original v1.9 had a bug that tried to play back
 								// the Doom II music regardless of gamemode.  This was fixed
 								// in the Ultimate Doom executable so that it would work for
 								// the Doom 1 music as well.
 								if gamemode == commercial || gameversion < exe_ultimate {
-									musnum = int32(mus_runnin) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10) + int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('0') - 1
-									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('0'))*int32(10)+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('0') > 35 {
+									musnum = int32(mus_runnin) + (int32((param[0]))-int32('0'))*int32(10) + int32(param[int32(1)]) - int32('0') - 1
+									if (int32(param[0])-int32('0'))*int32(10)+int32(param[int32(1)])-int32('0') > 35 {
 										plyr.Fmessage = __ccgo_ts_str(27653)
 									} else {
 										S_ChangeMusic(musnum, 1)
 									}
 								} else {
-									musnum = int32(mus_e1m1) + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*9 + (int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)]) - int32('1'))
-									if (int32((*(*[3]int8)(unsafe.Pointer(bp)))[0])-int32('1'))*9+int32((*(*[3]int8)(unsafe.Pointer(bp)))[int32(1)])-int32('1') > 31 {
+									musnum = int32(mus_e1m1) + (int32(param[0])-int32('1'))*9 + (int32(param[int32(1)]) - int32('1'))
+									if (int32(param[0])-int32('1'))*9+int32(param[int32(1)])-int32('1') > 31 {
 										plyr.Fmessage = __ccgo_ts_str(27653)
 									} else {
 										S_ChangeMusic(musnum, 1)
@@ -40313,13 +40282,14 @@ func ST_Responder(ev *event_t) (r boolean) {
 			}
 			// 'clev' change-level cheat
 			if netgame == 0 && cht_CheckCheat(&cheat_clev, int8(ev.Fdata2)) != 0 {
-				cht_GetParam(&cheat_clev, bp+3)
+				var param [5]byte
+				cht_GetParam(&cheat_clev, param[:])
 				if gamemode == commercial {
 					epsd = 1
-					map1 = (int32((*(*[3]int8)(unsafe.Pointer(bp + 3)))[0])-int32('0'))*int32(10) + int32((*(*[3]int8)(unsafe.Pointer(bp + 3)))[int32(1)]) - int32('0')
+					map1 = (int32(param[0])-int32('0'))*int32(10) + int32(param[int32(1)]) - int32('0')
 				} else {
-					epsd = int32((*(*[3]int8)(unsafe.Pointer(bp + 3)))[0]) - int32('0')
-					map1 = int32((*(*[3]int8)(unsafe.Pointer(bp + 3)))[int32(1)]) - int32('0')
+					epsd = int32(param[0]) - int32('0')
+					map1 = int32(param[int32(1)]) - int32('0')
 				}
 				// Chex.exe always warps to episode 1.
 				if gameversion == exe_chex {
@@ -44900,7 +44870,7 @@ var TRACEANGLE int32
 // CEILINGS
 //
 
-var activeceilings [30]*ceiling_t
+var activeceilings [MAXCEILINGS]*ceiling_t
 
 //
 // Copyright(C) 1993-1996 Id Software, Inc.
@@ -44940,7 +44910,7 @@ var activeceilings [30]*ceiling_t
 //	Kept as a sample, DOOM2  sounds. Frozen.
 //
 
-var activeplats [30]*plat_t
+var activeplats [MAXPLATS]*plat_t
 
 // Used in the test suite to stop the demo running in the
 // background, as it messes with screenshots
@@ -45091,7 +45061,7 @@ var braintargets [32]*mobj_t
 //	//
 var bulletslope fixed_t
 
-var buttonlist [16]button_t
+var buttonlist [MAXBUTTONS]button_t
 
 var cacheddistance [200]fixed_t
 
