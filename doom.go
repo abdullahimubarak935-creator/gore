@@ -5909,7 +5909,7 @@ func D_DoomMain() {
 	if modifiedgame != 0 {
 		// These are the lumps that will be checked in IWAD,
 		// if any one is not present, execution will be aborted.
-		*(*[23][8]int8)(unsafe.Pointer(bp + 265)) = [23][8]int8{
+		levelLumps := [23][8]int8{
 			0:  {'e', '2', 'm', '1'},
 			1:  {'e', '2', 'm', '2'},
 			2:  {'e', '2', 'm', '3'},
@@ -5945,7 +5945,7 @@ func D_DoomMain() {
 				if i >= 23 {
 					break
 				}
-				if W_CheckNumForName(bp+265+uintptr(i)*8) < 0 {
+				if W_CheckNumForName(uintptr(unsafe.Pointer(&levelLumps[i][0]))) < 0 {
 					I_Error(4562, 0)
 				}
 				goto _2
@@ -20994,7 +20994,11 @@ func M_StartMessage(string1 string, routine func(int32), input boolean) {
 	messageLastMenuActive = int32(menuactive)
 	messageToPrint = 1
 	messageString = string1
-	messageRoutine = &routine
+	if routine == nil {
+		messageRoutine = nil
+	} else {
+		messageRoutine = &routine
+	}
 	messageNeedsInput = input
 	menuactive = 1
 }
@@ -27225,7 +27229,7 @@ func P_UnsetThingPosition(thing *mobj_t) {
 			blockx = (thing.Fx - bmaporgx) >> (FRACBITS + 7)
 			blocky = (thing.Fy - bmaporgy) >> (FRACBITS + 7)
 			if blockx >= 0 && blockx < bmapwidth && blocky >= 0 && blocky < bmapheight {
-				*(*uintptr)(unsafe.Pointer(blocklinks + uintptr(blocky*bmapwidth+blockx)*8)) = uintptr(unsafe.Pointer(thing.Fbnext))
+				blocklinks[blocky*bmapwidth+blockx] = thing.Fbnext
 			}
 		}
 	}
@@ -27241,7 +27245,6 @@ func P_UnsetThingPosition(thing *mobj_t) {
 //	//
 func P_SetThingPosition(thing *mobj_t) {
 	var blockx, blocky int32
-	var link uintptr
 	var ss *subsector_t
 	var sec *sector_t
 	// link into subsector
@@ -27263,13 +27266,13 @@ func P_SetThingPosition(thing *mobj_t) {
 		blockx = (thing.Fx - bmaporgx) >> (FRACBITS + 7)
 		blocky = (thing.Fy - bmaporgy) >> (FRACBITS + 7)
 		if blockx >= 0 && blockx < bmapwidth && blocky >= 0 && blocky < bmapheight {
-			link = blocklinks + uintptr(blocky*bmapwidth+blockx)*8
+			link := &blocklinks[blocky*bmapwidth+blockx]
 			thing.Fbprev = nil
 			thing.Fbnext = *(**mobj_t)(unsafe.Pointer(link))
-			if *(*uintptr)(unsafe.Pointer(link)) != 0 {
-				(*mobj_t)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(link)))).Fbprev = thing
+			if *link != nil {
+				(*link).Fbprev = thing
 			}
-			*(*uintptr)(unsafe.Pointer(link)) = uintptr(unsafe.Pointer(thing))
+			*link = thing
 		} else {
 			// thing is off the map
 			thing.Fbprev = nil
@@ -27331,11 +27334,10 @@ func P_BlockLinesIterator(x int32, y int32, func1 func(*line_t) boolean) (r bool
 //	// P_BlockThingsIterator
 //	//
 func P_BlockThingsIterator(x int32, y int32, func1 func(*mobj_t) boolean) (r boolean) {
-	var mobj *mobj_t
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
 		return 1
 	}
-	mobj = *(**mobj_t)(unsafe.Pointer(blocklinks + uintptr(y*bmapwidth+x)*8))
+	mobj := blocklinks[y*bmapwidth+x]
 	for {
 		if mobj == nil {
 			break
@@ -31282,9 +31284,8 @@ func P_LoadBlockMap(lump int32) {
 	bmapwidth = int32(*(*int16)(unsafe.Pointer(blockmaplump + 2*2)))
 	bmapheight = int32(*(*int16)(unsafe.Pointer(blockmaplump + 3*2)))
 	// Clear out mobj chains
-	count = int32(8 * uint64(bmapwidth) * uint64(bmapheight))
-	blocklinks = Z_Malloc(count, PU_LEVEL, uintptr(0))
-	xmemset(blocklinks, 0, uint64(count))
+	count = int32(uint64(bmapwidth) * uint64(bmapheight))
+	blocklinks = make([]*mobj_t, count)
 }
 
 // C documentation
@@ -42381,8 +42382,8 @@ func WI_drawOnLnode(n int32, c []*patch_t) {
 	fits = 0
 	i = 0
 	for cond := true; cond; cond = fits == 0 && i != 2 && c[i] != nil {
-		left = (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr(wbs.Fepsd)*72 + uintptr(n)*8))).Fx - int32(c[i].Fleftoffset)
-		top = (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr(wbs.Fepsd)*72 + uintptr(n)*8))).Fy - int32(c[i].Ftopoffset)
+		left = lnodes[wbs.Fepsd][n].Fx - int32(c[i].Fleftoffset)
+		top = lnodes[wbs.Fepsd][n].Fy - int32(c[i].Ftopoffset)
 		right = left + int32(c[i].Fwidth)
 		bottom = top + int32(c[i].Fheight)
 		if left >= 0 && right < SCREENWIDTH && top >= 0 && bottom < SCREENHEIGHT {
@@ -42392,7 +42393,7 @@ func WI_drawOnLnode(n int32, c []*patch_t) {
 		}
 	}
 	if fits != 0 && i < 2 {
-		V_DrawPatch((*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr(wbs.Fepsd)*72 + uintptr(n)*8))).Fx, (*(*point_t)(unsafe.Pointer(uintptr(unsafe.Pointer(&lnodes)) + uintptr(wbs.Fepsd)*72 + uintptr(n)*8))).Fy, c[i])
+		V_DrawPatch(lnodes[wbs.Fepsd][n].Fx, lnodes[wbs.Fepsd][n].Fy, c[i])
 	} else {
 		// DEBUG
 		fprintf_ccgo(os.Stdout, 28344, n+1)
@@ -44997,7 +44998,7 @@ var bfgedition boolean
 // C documentation
 //
 //	// for thing chains
-var blocklinks uintptr
+var blocklinks []*mobj_t
 
 var blockmap uintptr
 
