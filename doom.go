@@ -34880,7 +34880,7 @@ func R_GenerateComposite(texnum int32) {
 	var i, x, x1, x2 int32
 	var texture *texture_t
 	texture = textures[texnum]
-	block = Z_Malloc(texturecompositesize[texnum], PU_STATIC, texturecomposite+uintptr(texnum)*8)
+	block = Z_Malloc(texturecompositesize[texnum], PU_STATIC, (uintptr)(unsafe.Pointer(&texturecomposite[texnum])))
 	collump = texturecolumnlump[texnum]
 	colofs = texturecolumnofs[texnum]
 	// Composite the columns together.
@@ -34933,7 +34933,7 @@ func R_GenerateLookup(texnum int32) {
 	var i, x, x1, x2 int32
 	texture = textures[texnum]
 	// Composited texture not created yet.
-	*(*uintptr)(unsafe.Pointer(texturecomposite + uintptr(texnum)*8)) = uintptr(0)
+	texturecomposite[texnum] = nil
 	texturecompositesize[texnum] = 0
 	collump = texturecolumnlump[texnum]
 	colofs = texturecolumnofs[texnum]
@@ -35017,10 +35017,10 @@ func R_GetColumn(tex int32, col int32) (r uintptr) {
 	if lump > 0 {
 		return W_CacheLumpNum(lump, PU_CACHE) + uintptr(ofs)
 	}
-	if *(*uintptr)(unsafe.Pointer(texturecomposite + uintptr(tex)*8)) == 0 {
+	if texturecomposite[tex] == nil {
 		R_GenerateComposite(tex)
 	}
-	return *(*uintptr)(unsafe.Pointer(texturecomposite + uintptr(tex)*8)) + uintptr(ofs)
+	return *(*uintptr)(unsafe.Pointer(&texturecomposite[tex])) + uintptr(ofs)
 }
 
 func GenerateTextureHashTable() {
@@ -35106,7 +35106,7 @@ func R_InitTextures() {
 	textures = make([]*texture_t, numtextures)
 	texturecolumnlump = make([][]int16, numtextures)
 	texturecolumnofs = make([][]uint16, numtextures)
-	texturecomposite = Z_Malloc(int32(uint64(numtextures)*8), PU_STATIC, uintptr(0))
+	texturecomposite = make([]*byte, numtextures)
 	texturecompositesize = make([]int32, numtextures)
 	texturewidthmask = make([]int32, numtextures)
 	textureheight = make([]fixed_t, numtextures)
@@ -46734,7 +46734,7 @@ var texturecolumnlump [][]int16
 
 var texturecolumnofs [][]uint16
 
-var texturecomposite uintptr
+var texturecomposite []*byte
 
 var texturecompositesize []int32
 
