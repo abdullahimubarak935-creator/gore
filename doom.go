@@ -5030,7 +5030,7 @@ func D_BindVariables() {
 			break
 		}
 		M_snprintf(bp, 12, __ccgo_ts_str(1654), i)
-		M_BindVariable(bp, uintptr(unsafe.Pointer(&chat_macros))+uintptr(i)*8)
+		M_BindVariable(bp, uintptr(unsafe.Pointer(&chat_macros[i])))
 		goto _1
 	_1:
 		;
@@ -9669,17 +9669,17 @@ const HU_TITLEX = 0
 const QUEUESIZE = 128
 
 func init() {
-	chat_macros = [10]uintptr{
-		0: __ccgo_ts(14525),
-		1: __ccgo_ts(14528),
-		2: __ccgo_ts(14552),
-		3: __ccgo_ts(14560),
-		4: __ccgo_ts(14586),
-		5: __ccgo_ts(14592),
-		6: __ccgo_ts(14602),
-		7: __ccgo_ts(14624),
-		8: __ccgo_ts(14635),
-		9: __ccgo_ts(14657),
+	chat_macros = [10][]byte{
+		0: __ccgo_ts_map[14525],
+		1: __ccgo_ts_map[14528],
+		2: __ccgo_ts_map[14552],
+		3: __ccgo_ts_map[14560],
+		4: __ccgo_ts_map[14586],
+		5: __ccgo_ts_map[14592],
+		6: __ccgo_ts_map[14602],
+		7: __ccgo_ts_map[14624],
+		8: __ccgo_ts_map[14635],
+		9: __ccgo_ts_map[14657],
 	}
 }
 
@@ -10060,7 +10060,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 	var c uint8
 	var eatkey, v2, v4 boolean
 	var i, numplayers int32
-	var macromessage, v5 uintptr
+	var macromessage []byte
 	eatkey = 0
 	numplayers = 0
 	i = 0
@@ -10155,15 +10155,13 @@ func HU_Responder(ev *event_t) (r boolean) {
 			// kill last message with a '\n'
 			HU_queueChatChar(int8(KEY_ENTER)) // DEBUG!!!
 			// send the macro message
-			for *(*int8)(unsafe.Pointer(macromessage)) != 0 {
-				v5 = macromessage
-				macromessage++
-				HU_queueChatChar(*(*int8)(unsafe.Pointer(v5)))
+			for i := 0; macromessage[i] != 0; i++ {
+				HU_queueChatChar(int8(macromessage[i]))
 			}
 			HU_queueChatChar(int8(KEY_ENTER))
 			// leave chat mode and notify that it was sent
 			chat_on = 0
-			lastmessage = gostring(chat_macros[c])
+			lastmessage = gostring_bytes(chat_macros[c])
 			plr1.Fmessage = lastmessage
 			eatkey = 1
 		} else {
@@ -45168,7 +45166,7 @@ var centeryfrac fixed_t
 // Locally used constants, shortcuts.
 //
 
-var chat_macros [10]uintptr
+var chat_macros [10][]byte
 
 var chat_on boolean
 
