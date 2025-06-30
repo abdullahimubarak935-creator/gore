@@ -17849,7 +17849,7 @@ func init() {
 }
 
 func init() {
-	snd_musiccmd = __ccgo_ts(14092)
+	snd_musiccmd = __ccgo_ts_str(14092)
 }
 
 // Low-level sound and music modules we are using
@@ -34614,7 +34614,7 @@ func R_GenerateComposite(texnum int32) {
 	}
 	// Now that the texture has been built in column cache,
 	//  it is purgable from zone memory.
-	Z_ChangeTag2(block, PU_CACHE, __ccgo_ts(25929), 286)
+	Z_ChangeTag2(block, PU_CACHE, __ccgo_ts_str(25929), 286)
 }
 
 // C documentation
@@ -43620,7 +43620,7 @@ func W_CacheLumpNum(lumpnum int32, tag int32) (r uintptr) {
 	if lump.Fcache != 0 {
 		// Already cached, so just switch the zone tag.
 		result = lump.Fcache
-		Z_ChangeTag2(lump.Fcache, tag, __ccgo_ts(28866), 410)
+		Z_ChangeTag2(lump.Fcache, tag, __ccgo_ts_str(28866), 410)
 	} else {
 		// Not yet loaded, so load it now
 		lump.Fcache = Z_Malloc(W_LumpLength(uint32(lumpnum)), tag, uintptr(unsafe.Pointer(&lump.Fcache)))
@@ -43672,7 +43672,7 @@ func W_ReleaseLumpNum(lumpnum int32) {
 		I_Error(28874, lumpnum)
 	}
 	lump := &lumpinfo[lumpnum]
-	Z_ChangeTag2(lump.Fcache, PU_CACHE, __ccgo_ts(28866), 461)
+	Z_ChangeTag2(lump.Fcache, PU_CACHE, __ccgo_ts_str(28866), 461)
 }
 
 func W_ReleaseLumpName(name string) {
@@ -44037,7 +44037,7 @@ func Z_CheckHeap() {
 //	//
 //	// Z_ChangeTag
 //	//
-func Z_ChangeTag2(ptr uintptr, tag int32, file uintptr, line int32) {
+func Z_ChangeTag2(ptr uintptr, tag int32, file string, line int32) {
 	var block uintptr
 	block = ptr - uintptr(40)
 	if (*memblock_t)(unsafe.Pointer(block)).Fid != ZONEID {
@@ -46160,7 +46160,7 @@ var snd_maxslicetime_ms int32
 
 // External command to invoke to play back music.
 
-var snd_musiccmd uintptr
+var snd_musiccmd string
 
 var snd_musicdevice int32
 
@@ -46690,14 +46690,6 @@ var zlight [16][128][]lighttable_t
 
 func fprintf_ccgo(output io.Writer, index int, args ...any) {
 	fmt.Fprintf(output, __ccgo_ts_str(index), args...)
-}
-
-func __ccgo_ts(index int) uintptr {
-	val, ok := __ccgo_ts_map[index]
-	if !ok {
-		panic("index not found in __ccgo_ts_map")
-	}
-	return uintptr(unsafe.Pointer(&val[0]))
 }
 
 func __ccgo_ts_str(index int) string {
