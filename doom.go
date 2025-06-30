@@ -4558,7 +4558,7 @@ type sfxinfo_t struct {
 }
 
 type musicinfo_t struct {
-	Fname    uintptr
+	Fname    string
 	Flumpnum int32
 	Fdata    uintptr
 	Fhandle  uintptr
@@ -38236,205 +38236,205 @@ func init() {
 	S_music = [68]musicinfo_t{
 		0: {},
 		1: {
-			Fname: __ccgo_ts(27069),
+			Fname: __ccgo_ts_str(27069),
 		},
 		2: {
-			Fname: __ccgo_ts(27074),
+			Fname: __ccgo_ts_str(27074),
 		},
 		3: {
-			Fname: __ccgo_ts(27079),
+			Fname: __ccgo_ts_str(27079),
 		},
 		4: {
-			Fname: __ccgo_ts(27084),
+			Fname: __ccgo_ts_str(27084),
 		},
 		5: {
-			Fname: __ccgo_ts(27089),
+			Fname: __ccgo_ts_str(27089),
 		},
 		6: {
-			Fname: __ccgo_ts(27094),
+			Fname: __ccgo_ts_str(27094),
 		},
 		7: {
-			Fname: __ccgo_ts(27099),
+			Fname: __ccgo_ts_str(27099),
 		},
 		8: {
-			Fname: __ccgo_ts(27104),
+			Fname: __ccgo_ts_str(27104),
 		},
 		9: {
-			Fname: __ccgo_ts(27109),
+			Fname: __ccgo_ts_str(27109),
 		},
 		10: {
-			Fname: __ccgo_ts(27114),
+			Fname: __ccgo_ts_str(27114),
 		},
 		11: {
-			Fname: __ccgo_ts(27119),
+			Fname: __ccgo_ts_str(27119),
 		},
 		12: {
-			Fname: __ccgo_ts(27124),
+			Fname: __ccgo_ts_str(27124),
 		},
 		13: {
-			Fname: __ccgo_ts(27129),
+			Fname: __ccgo_ts_str(27129),
 		},
 		14: {
-			Fname: __ccgo_ts(27134),
+			Fname: __ccgo_ts_str(27134),
 		},
 		15: {
-			Fname: __ccgo_ts(27139),
+			Fname: __ccgo_ts_str(27139),
 		},
 		16: {
-			Fname: __ccgo_ts(27144),
+			Fname: __ccgo_ts_str(27144),
 		},
 		17: {
-			Fname: __ccgo_ts(27149),
+			Fname: __ccgo_ts_str(27149),
 		},
 		18: {
-			Fname: __ccgo_ts(27154),
+			Fname: __ccgo_ts_str(27154),
 		},
 		19: {
-			Fname: __ccgo_ts(27159),
+			Fname: __ccgo_ts_str(27159),
 		},
 		20: {
-			Fname: __ccgo_ts(27164),
+			Fname: __ccgo_ts_str(27164),
 		},
 		21: {
-			Fname: __ccgo_ts(27169),
+			Fname: __ccgo_ts_str(27169),
 		},
 		22: {
-			Fname: __ccgo_ts(27174),
+			Fname: __ccgo_ts_str(27174),
 		},
 		23: {
-			Fname: __ccgo_ts(27179),
+			Fname: __ccgo_ts_str(27179),
 		},
 		24: {
-			Fname: __ccgo_ts(27184),
+			Fname: __ccgo_ts_str(27184),
 		},
 		25: {
-			Fname: __ccgo_ts(27189),
+			Fname: __ccgo_ts_str(27189),
 		},
 		26: {
-			Fname: __ccgo_ts(27194),
+			Fname: __ccgo_ts_str(27194),
 		},
 		27: {
-			Fname: __ccgo_ts(27199),
+			Fname: __ccgo_ts_str(27199),
 		},
 		28: {
-			Fname: __ccgo_ts(27204),
+			Fname: __ccgo_ts_str(27204),
 		},
 		29: {
-			Fname: __ccgo_ts(27210),
+			Fname: __ccgo_ts_str(27210),
 		},
 		30: {
-			Fname: __ccgo_ts(27216),
+			Fname: __ccgo_ts_str(27216),
 		},
 		31: {
-			Fname: __ccgo_ts(27222),
+			Fname: __ccgo_ts_str(27222),
 		},
 		32: {
-			Fname: __ccgo_ts(27229),
+			Fname: __ccgo_ts_str(27229),
 		},
 		33: {
-			Fname: __ccgo_ts(27236),
+			Fname: __ccgo_ts_str(27236),
 		},
 		34: {
-			Fname: __ccgo_ts(27243),
+			Fname: __ccgo_ts_str(27243),
 		},
 		35: {
-			Fname: __ccgo_ts(27250),
+			Fname: __ccgo_ts_str(27250),
 		},
 		36: {
-			Fname: __ccgo_ts(27257),
+			Fname: __ccgo_ts_str(27257),
 		},
 		37: {
-			Fname: __ccgo_ts(5374),
+			Fname: __ccgo_ts_str(5374),
 		},
 		38: {
-			Fname: __ccgo_ts(27264),
+			Fname: __ccgo_ts_str(27264),
 		},
 		39: {
-			Fname: __ccgo_ts(27271),
+			Fname: __ccgo_ts_str(27271),
 		},
 		40: {
-			Fname: __ccgo_ts(27277),
+			Fname: __ccgo_ts_str(27277),
 		},
 		41: {
-			Fname: __ccgo_ts(27284),
+			Fname: __ccgo_ts_str(27284),
 		},
 		42: {
-			Fname: __ccgo_ts(27291),
+			Fname: __ccgo_ts_str(27291),
 		},
 		43: {
-			Fname: __ccgo_ts(27296),
+			Fname: __ccgo_ts_str(27296),
 		},
 		44: {
-			Fname: __ccgo_ts(27303),
+			Fname: __ccgo_ts_str(27303),
 		},
 		45: {
-			Fname: __ccgo_ts(2533),
+			Fname: __ccgo_ts_str(2533),
 		},
 		46: {
-			Fname: __ccgo_ts(27310),
+			Fname: __ccgo_ts_str(27310),
 		},
 		47: {
-			Fname: __ccgo_ts(27317),
+			Fname: __ccgo_ts_str(27317),
 		},
 		48: {
-			Fname: __ccgo_ts(27324),
+			Fname: __ccgo_ts_str(27324),
 		},
 		49: {
-			Fname: __ccgo_ts(27330),
+			Fname: __ccgo_ts_str(27330),
 		},
 		50: {
-			Fname: __ccgo_ts(27337),
+			Fname: __ccgo_ts_str(27337),
 		},
 		51: {
-			Fname: __ccgo_ts(27344),
+			Fname: __ccgo_ts_str(27344),
 		},
 		52: {
-			Fname: __ccgo_ts(27351),
+			Fname: __ccgo_ts_str(27351),
 		},
 		53: {
-			Fname: __ccgo_ts(27358),
+			Fname: __ccgo_ts_str(27358),
 		},
 		54: {
-			Fname: __ccgo_ts(27365),
+			Fname: __ccgo_ts_str(27365),
 		},
 		55: {
-			Fname: __ccgo_ts(27372),
+			Fname: __ccgo_ts_str(27372),
 		},
 		56: {
-			Fname: __ccgo_ts(27378),
+			Fname: __ccgo_ts_str(27378),
 		},
 		57: {
-			Fname: __ccgo_ts(27385),
+			Fname: __ccgo_ts_str(27385),
 		},
 		58: {
-			Fname: __ccgo_ts(27392),
+			Fname: __ccgo_ts_str(27392),
 		},
 		59: {
-			Fname: __ccgo_ts(27399),
+			Fname: __ccgo_ts_str(27399),
 		},
 		60: {
-			Fname: __ccgo_ts(27406),
+			Fname: __ccgo_ts_str(27406),
 		},
 		61: {
-			Fname: __ccgo_ts(27412),
+			Fname: __ccgo_ts_str(27412),
 		},
 		62: {
-			Fname: __ccgo_ts(27419),
+			Fname: __ccgo_ts_str(27419),
 		},
 		63: {
-			Fname: __ccgo_ts(27426),
+			Fname: __ccgo_ts_str(27426),
 		},
 		64: {
-			Fname: __ccgo_ts(27431),
+			Fname: __ccgo_ts_str(27431),
 		},
 		65: {
-			Fname: __ccgo_ts(27438),
+			Fname: __ccgo_ts_str(27438),
 		},
 		66: {
-			Fname: __ccgo_ts(27445),
+			Fname: __ccgo_ts_str(27445),
 		},
 		67: {
-			Fname: __ccgo_ts(27452),
+			Fname: __ccgo_ts_str(27452),
 		},
 	}
 }
@@ -41011,7 +41011,7 @@ func S_ChangeMusic(musicnum int32, looping int32) {
 	S_StopMusic()
 	// get lumpnum if neccessary
 	if music.Flumpnum == 0 {
-		bp := fmt.Sprintf(__ccgo_ts_str(28083), gostring(music.Fname))
+		bp := fmt.Sprintf(__ccgo_ts_str(28083), music.Fname)
 		music.Flumpnum = W_GetNumForName(bp)
 	}
 	music.Fdata = W_CacheLumpNum(music.Flumpnum, PU_STATIC)
