@@ -5449,52 +5449,52 @@ func PrintDehackedBanners() {
 }
 
 var gameversions = [10]struct {
-	Fdescription uintptr
+	Fdescription string
 	Fcmdline     string
 	Fversion     GameVersion_t
 }{
 	0: {
-		Fdescription: __ccgo_ts(3722),
+		Fdescription: __ccgo_ts_str(3722),
 		Fcmdline:     __ccgo_ts_str(3733),
 		Fversion:     exe_doom_1_666,
 	},
 	1: {
-		Fdescription: __ccgo_ts(3739),
+		Fdescription: __ccgo_ts_str(3739),
 		Fcmdline:     __ccgo_ts_str(3753),
 		Fversion:     exe_doom_1_7,
 	},
 	2: {
-		Fdescription: __ccgo_ts(3757),
+		Fdescription: __ccgo_ts_str(3757),
 		Fcmdline:     __ccgo_ts_str(3766),
 		Fversion:     exe_doom_1_8,
 	},
 	3: {
-		Fdescription: __ccgo_ts(3770),
+		Fdescription: __ccgo_ts_str(3770),
 		Fcmdline:     __ccgo_ts_str(3779),
 		Fversion:     exe_doom_1_9,
 	},
 	4: {
-		Fdescription: __ccgo_ts(1077),
+		Fdescription: __ccgo_ts_str(1077),
 		Fcmdline:     __ccgo_ts_str(3783),
 		Fversion:     exe_hacx,
 	},
 	5: {
-		Fdescription: __ccgo_ts(3788),
+		Fdescription: __ccgo_ts_str(3788),
 		Fcmdline:     __ccgo_ts_str(3802),
 		Fversion:     exe_ultimate,
 	},
 	6: {
-		Fdescription: __ccgo_ts(3811),
+		Fdescription: __ccgo_ts_str(3811),
 		Fcmdline:     __ccgo_ts_str(3822),
 		Fversion:     exe_final,
 	},
 	7: {
-		Fdescription: __ccgo_ts(3828),
+		Fdescription: __ccgo_ts_str(3828),
 		Fcmdline:     __ccgo_ts_str(3845),
 		Fversion:     exe_final2,
 	},
 	8: {
-		Fdescription: __ccgo_ts(1057),
+		Fdescription: __ccgo_ts_str(1057),
 		Fcmdline:     __ccgo_ts_str(3852),
 		Fversion:     exe_chex,
 	},
@@ -5516,7 +5516,7 @@ func InitGameVersion() {
 	if p != 0 {
 		i = 0
 		for {
-			if gameversions[i].Fdescription == 0 {
+			if gameversions[i].Fdescription == "" {
 				break
 			}
 			if strings.EqualFold(myargs[p+1], gameversions[i].Fcmdline) {
@@ -5528,14 +5528,14 @@ func InitGameVersion() {
 			;
 			i++
 		}
-		if gameversions[i].Fdescription == 0 {
+		if gameversions[i].Fdescription == "" {
 			fprintf_ccgo(os.Stdout, 3870)
 			i = 0
 			for {
-				if gameversions[i].Fdescription == 0 {
+				if gameversions[i].Fdescription == "" {
 					break
 				}
-				fprintf_ccgo(os.Stdout, 3896, gameversions[i].Fcmdline, gostring(gameversions[i].Fdescription))
+				fprintf_ccgo(os.Stdout, 3896, gameversions[i].Fcmdline, gameversions[i].Fdescription)
 				goto _2
 			_2:
 				;
@@ -5592,11 +5592,11 @@ func PrintGameVersion() {
 	var i int32
 	i = 0
 	for {
-		if gameversions[i].Fdescription == 0 {
+		if gameversions[i].Fdescription == "" {
 			break
 		}
 		if gameversions[i].Fversion == gameversion {
-			fprintf_ccgo(os.Stdout, 3932, gostring(gameversions[i].Fdescription))
+			fprintf_ccgo(os.Stdout, 3932, gameversions[i].Fdescription)
 			break
 		}
 		goto _1
