@@ -9015,97 +9015,54 @@ func G_InitNew(skill skill_t, episode int32, map1 int32) {
 //
 
 func G_ReadDemoTiccmd(cmd *ticcmd_t) {
-	var v1, v2, v3, v5, v6, v7 uintptr
-	if int32(*(*uint8)(unsafe.Pointer(demo_p))) == DEMOMARKER {
+	if demobuffer[demo_pos] == DEMOMARKER {
 		// end of demo data stream
 		G_CheckDemoStatus()
 		return
 	}
-	v1 = demo_p
-	demo_p++
-	cmd.Fforwardmove = int8(*(*uint8)(unsafe.Pointer(v1)))
-	v2 = demo_p
-	demo_p++
-	cmd.Fsidemove = int8(*(*uint8)(unsafe.Pointer(v2)))
+	cmd.Fforwardmove = int8(demobuffer[demo_pos])
+	demo_pos++
+	cmd.Fsidemove = int8(demobuffer[demo_pos])
+	demo_pos++
 	// If this is a longtics demo, read back in higher resolution
 	if longtics != 0 {
-		v3 = demo_p
-		demo_p++
-		cmd.Fangleturn = int16(*(*uint8)(unsafe.Pointer(v3)))
-		v5 = demo_p
-		demo_p++
-		cmd.Fangleturn |= int16(*(*uint8)(unsafe.Pointer(v5))) << 8
+		cmd.Fangleturn = int16(demobuffer[demo_pos]) | int16(demobuffer[demo_pos+1])<<8
+		demo_pos += 2
 	} else {
-		v6 = demo_p
-		demo_p++
-		cmd.Fangleturn = int16(int32(*(*uint8)(unsafe.Pointer(v6))) << 8)
+		cmd.Fangleturn = int16(demobuffer[demo_pos]) << 8
+		demo_pos++
 	}
-	v7 = demo_p
-	demo_p++
-	cmd.Fbuttons = *(*uint8)(unsafe.Pointer(v7))
-}
-
-// Increase the size of the demo buffer to allow unlimited demos
-
-func IncreaseDemoBuffer() {
-	var current_length, new_length int32
-	var new_demobuffer, new_demop uintptr
-	// Find the current size
-	current_length = int32(int64(demoend) - int64(demobuffer))
-	// Generate a new buffer twice the size
-	new_length = current_length * 2
-	new_demobuffer = Z_Malloc(new_length, PU_STATIC, 0)
-	new_demop = new_demobuffer + uintptr(int64(demo_p)-int64(demobuffer))
-	// Copy over the old data
-	xmemcpy(new_demobuffer, demobuffer, uint64(current_length))
-	// Free the old buffer and point the demo pointers at the new buffer.
-	Z_Free(demobuffer)
-	demobuffer = new_demobuffer
-	demo_p = new_demop
-	demoend = demobuffer + uintptr(new_length)
+	cmd.Fbuttons = demobuffer[demo_pos]
+	demo_pos++
 }
 
 func G_WriteDemoTiccmd(cmd *ticcmd_t) {
-	var demo_start, v1, v2, v3, v4, v5, v6 uintptr
 	if gamekeydown[key_demo_quit] != 0 { // press q to end demo recording
 		G_CheckDemoStatus()
 	}
-	demo_start = demo_p
-	v1 = demo_p
-	demo_p++
-	*(*uint8)(unsafe.Pointer(v1)) = uint8(cmd.Fforwardmove)
-	v2 = demo_p
-	demo_p++
-	*(*uint8)(unsafe.Pointer(v2)) = uint8(cmd.Fsidemove)
+	demo_start := demo_pos
+	if len(demobuffer)-demo_pos < 6 {
+		// not enough space left in the demo buffer
+		demobuffer = append(demobuffer, make([]byte, 64)...)
+	}
+	demobuffer[demo_pos] = uint8(cmd.Fforwardmove)
+	demo_pos++
+	demobuffer[demo_pos] = uint8(cmd.Fsidemove)
+	demo_pos++
 	// If this is a longtics demo, record in higher resolution
 	if longtics != 0 {
-		v3 = demo_p
-		demo_p++
-		*(*uint8)(unsafe.Pointer(v3)) = uint8(int32(cmd.Fangleturn) & 0xff)
-		v4 = demo_p
-		demo_p++
-		*(*uint8)(unsafe.Pointer(v4)) = uint8(int32(cmd.Fangleturn) >> 8 & 0xff)
+		demobuffer[demo_pos] = uint8(int32(cmd.Fangleturn) & 0xff)
+		demo_pos++
+		demobuffer[demo_pos] = uint8(int32(cmd.Fangleturn) >> 8 & 0xff)
+		demo_pos++
 	} else {
-		v5 = demo_p
-		demo_p++
-		*(*uint8)(unsafe.Pointer(v5)) = uint8(int32(cmd.Fangleturn) >> 8)
+		demobuffer[demo_pos] = uint8(int32(cmd.Fangleturn) >> 8)
+		demo_pos++
 	}
-	v6 = demo_p
-	demo_p++
-	*(*uint8)(unsafe.Pointer(v6)) = cmd.Fbuttons
+	demobuffer[demo_pos] = cmd.Fbuttons
+	demo_pos++
 	// reset demo pointer back
-	demo_p = demo_start
-	if demo_p > demoend-uintptr(16) {
-		if vanilla_demo_limit != 0 {
-			// no more space
-			G_CheckDemoStatus()
-			return
-		} else {
-			// Vanilla demo limit disabled: unlimited
-			// demo lengths!
-			IncreaseDemoBuffer()
-		}
-	}
+	demo_pos = demo_start
 	G_ReadDemoTiccmd(cmd) // make SURE it is exactly the same
 }
 
@@ -9131,8 +9088,7 @@ func G_RecordDemo(name string) {
 		v, _ := strconv.Atoi(myargs[i+1])
 		maxsize = int32(v) * 1024
 	}
-	demobuffer = Z_Malloc(maxsize, PU_STATIC, 0)
-	demoend = demobuffer + uintptr(maxsize)
+	demobuffer = make([]byte, maxsize)
 	demorecording = 1
 }
 
@@ -9160,7 +9116,6 @@ func G_VanillaVersionCode() (r int32) {
 
 func G_BeginRecording() {
 	var i int32
-	var v1, v10, v12, v2, v3, v4, v5, v6, v7, v8, v9 uintptr
 	//!
 	// @category demo
 	//
@@ -9169,49 +9124,40 @@ func G_BeginRecording() {
 	longtics = booluint32(M_CheckParm(__ccgo_ts_str(5530)) != 0)
 	// If not recording a longtics demo, record in low res
 	lowres_turn = booluint32(longtics == 0)
-	demo_p = demobuffer
+	demo_pos = 0
+	if len(demobuffer) < 64 {
+		demobuffer = append(demobuffer, make([]byte, 64)...)
+	}
 	// Save the right version code for this demo
 	if longtics != 0 {
-		v1 = demo_p
-		demo_p++
-		*(*uint8)(unsafe.Pointer(v1)) = uint8(DOOM_191_VERSION)
+		demobuffer[demo_pos] = uint8(DOOM_191_VERSION)
+		demo_pos++
 	} else {
-		v2 = demo_p
-		demo_p++
-		*(*uint8)(unsafe.Pointer(v2)) = uint8(G_VanillaVersionCode())
+		demobuffer[demo_pos] = uint8(G_VanillaVersionCode())
+		demo_pos++
 	}
-	v3 = demo_p
-	demo_p++
-	*(*uint8)(unsafe.Pointer(v3)) = uint8(gameskill)
-	v4 = demo_p
-	demo_p++
-	*(*uint8)(unsafe.Pointer(v4)) = uint8(gameepisode)
-	v5 = demo_p
-	demo_p++
-	*(*uint8)(unsafe.Pointer(v5)) = uint8(gamemap)
-	v6 = demo_p
-	demo_p++
-	*(*uint8)(unsafe.Pointer(v6)) = uint8(deathmatch)
-	v7 = demo_p
-	demo_p++
-	*(*uint8)(unsafe.Pointer(v7)) = uint8(respawnparm)
-	v8 = demo_p
-	demo_p++
-	*(*uint8)(unsafe.Pointer(v8)) = uint8(fastparm)
-	v9 = demo_p
-	demo_p++
-	*(*uint8)(unsafe.Pointer(v9)) = uint8(nomonsters)
-	v10 = demo_p
-	demo_p++
-	*(*uint8)(unsafe.Pointer(v10)) = uint8(consoleplayer)
+	demobuffer[demo_pos] = uint8(gameskill)
+	demo_pos++
+	demobuffer[demo_pos] = uint8(gameepisode)
+	demo_pos++
+	demobuffer[demo_pos] = uint8(gamemap)
+	demo_pos++
+	demobuffer[demo_pos] = uint8(deathmatch)
+	demo_pos++
+	demobuffer[demo_pos] = uint8(respawnparm)
+	demo_pos++
+	demobuffer[demo_pos] = uint8(fastparm)
+	demo_pos++
+	demobuffer[demo_pos] = uint8(nomonsters)
+	demo_pos++
+	demobuffer[demo_pos] = uint8(consoleplayer)
+	demo_pos++
 	i = 0
 	for {
 		if i >= MAXPLAYERS {
 			break
 		}
-		v12 = demo_p
-		demo_p++
-		*(*uint8)(unsafe.Pointer(v12)) = uint8(playeringame[i])
+		demobuffer[demo_pos] = uint8(playeringame[i])
 		goto _11
 	_11:
 		;
@@ -9261,15 +9207,16 @@ var resultbuf [16]int8
 
 func G_DoPlayDemo() {
 	var demoversion, episode, i, map1 int32
-	var v1, v10, v12, v2, v3, v4, v5, v6, v7, v8, v9 uintptr
 	var skill skill_t
 	gameaction = ga_nothing
-	v1 = W_CacheLumpName(defdemoname, PU_STATIC)
-	demo_p = v1
-	demobuffer = v1
-	v2 = demo_p
-	demo_p++
-	demoversion = int32(*(*uint8)(unsafe.Pointer(v2)))
+	num := W_GetNumForName(defdemoname)
+	length := W_LumpLength(uint32(num))
+	demodata := W_CacheLumpNum(num, PU_STATIC)
+	demobuffer = make([]byte, length)
+	copy(demobuffer, unsafe.Slice((*uint8)(unsafe.Pointer(demodata)), length))
+	demo_pos = 0
+	demoversion = int32(demobuffer[demo_pos])
+	demo_pos++
 	if demoversion == G_VanillaVersionCode() {
 		longtics = 0
 	} else {
@@ -9281,38 +9228,29 @@ func G_DoPlayDemo() {
 			fprintf_ccgo(os.Stdout, 14232, demoversion, G_VanillaVersionCode(), gostring(DemoVersionDescription(demoversion)))
 		}
 	}
-	v3 = demo_p
-	demo_p++
-	skill = skill_t(*(*uint8)(unsafe.Pointer(v3)))
-	v4 = demo_p
-	demo_p++
-	episode = int32(*(*uint8)(unsafe.Pointer(v4)))
-	v5 = demo_p
-	demo_p++
-	map1 = int32(*(*uint8)(unsafe.Pointer(v5)))
-	v6 = demo_p
-	demo_p++
-	deathmatch = int32(*(*uint8)(unsafe.Pointer(v6)))
-	v7 = demo_p
-	demo_p++
-	respawnparm = uint32(*(*uint8)(unsafe.Pointer(v7)))
-	v8 = demo_p
-	demo_p++
-	fastparm = uint32(*(*uint8)(unsafe.Pointer(v8)))
-	v9 = demo_p
-	demo_p++
-	nomonsters = uint32(*(*uint8)(unsafe.Pointer(v9)))
-	v10 = demo_p
-	demo_p++
-	consoleplayer = int32(*(*uint8)(unsafe.Pointer(v10)))
+	skill = skill_t(demobuffer[demo_pos])
+	demo_pos++
+	episode = int32(demobuffer[demo_pos])
+	demo_pos++
+	map1 = int32(demobuffer[demo_pos])
+	demo_pos++
+	deathmatch = int32(demobuffer[demo_pos])
+	demo_pos++
+	respawnparm = uint32(demobuffer[demo_pos])
+	demo_pos++
+	fastparm = uint32(demobuffer[demo_pos])
+	demo_pos++
+	nomonsters = uint32(demobuffer[demo_pos])
+	demo_pos++
+	consoleplayer = int32(demobuffer[demo_pos])
+	demo_pos++
 	i = 0
 	for {
 		if i >= MAXPLAYERS {
 			break
 		}
-		v12 = demo_p
-		demo_p++
-		playeringame[i] = uint32(*(*uint8)(unsafe.Pointer(v12)))
+		playeringame[i] = uint32(demobuffer[demo_pos])
+		demo_pos++
 		goto _11
 	_11:
 		;
@@ -9362,7 +9300,6 @@ func G_CheckDemoStatus() {
 	var endtime, realtics int32
 	var fps float32
 	var v1, v2 boolean
-	var v3 uintptr
 	if timingdemo != 0 {
 		endtime = I_GetTime()
 		realtics = endtime - starttime
@@ -9395,11 +9332,10 @@ func G_CheckDemoStatus() {
 		return
 	}
 	if demorecording != 0 {
-		v3 = demo_p
-		demo_p++
-		*(*uint8)(unsafe.Pointer(v3)) = uint8(DEMOMARKER)
-		M_WriteFile(demoname, demobuffer, int32(int64(demo_p)-int64(demobuffer)))
-		Z_Free(demobuffer)
+		demobuffer[demo_pos] = uint8(DEMOMARKER)
+		demo_pos++
+		M_WriteFile(demoname, byteptr(demobuffer), int32(demo_pos))
+		demobuffer = nil
 		demorecording = 0
 		I_Error(14508, demoname)
 	}
@@ -45216,11 +45152,9 @@ var deathmatchstarts [10]mapthing_t
 
 var defdemoname string
 
-var demo_p uintptr
+var demo_pos int
 
-var demobuffer uintptr
-
-var demoend uintptr
+var demobuffer []byte
 
 var demoname string
 
