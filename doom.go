@@ -1861,7 +1861,7 @@ type sector_t struct {
 	Fsoundorg       degenmobj_t
 	Fvalidcount     int32
 	Fthinglist      *mobj_t
-	Fspecialdata    uintptr
+	Fspecialdata    any
 	Flinecount      int32
 	Flines          []*line_t
 }
@@ -1893,7 +1893,7 @@ type line_t struct {
 	Ffrontsector *sector_t
 	Fbacksector  *sector_t
 	Fvalidcount  int32
-	Fspecialdata uintptr
+	Fspecialdata any
 }
 
 type subsector_t struct {
@@ -22145,14 +22145,14 @@ func EV_DoCeiling(line *line_t, type1 ceiling_e) (r int32) {
 			break
 		}
 		sec := &sectors[secnum]
-		if sec.Fspecialdata != 0 {
+		if sec.Fspecialdata != nil {
 			continue
 		}
 		// new door thinker
 		rtn = 1
 		ceiling := &ceiling_t{}
 		P_AddThinker(&ceiling.Fthinker)
-		sec.Fspecialdata = uintptr(unsafe.Pointer(ceiling))
+		sec.Fspecialdata = ceiling
 		ceiling.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveCeiling)
 		ceiling.Fsector = sec
 		ceiling.Fcrush = 0
@@ -22222,7 +22222,7 @@ func P_AddActiveCeiling(c *ceiling_t) {
 func P_RemoveActiveCeiling(c *ceiling_t) {
 	for i := 0; i < MAXCEILINGS; i++ {
 		if activeceilings[i] == c {
-			activeceilings[i].Fsector.Fspecialdata = uintptr(0)
+			activeceilings[i].Fsector.Fspecialdata = nil
 			P_RemoveThinker(&activeceilings[i].Fthinker)
 			activeceilings[i] = nil
 			break
@@ -22352,13 +22352,13 @@ func T_VerticalDoor(door *vldoor_t) {
 			case int32(vld_blazeRaise):
 				fallthrough
 			case int32(vld_blazeClose):
-				door.Fsector.Fspecialdata = uintptr(0)
+				door.Fsector.Fspecialdata = nil
 				P_RemoveThinker(&door.Fthinker) // unlink and free
 				S_StartSound(&door.Fsector.Fsoundorg, int32(sfx_bdcls))
 			case int32(vld_normal):
 				fallthrough
 			case int32(vld_close):
-				door.Fsector.Fspecialdata = uintptr(0)
+				door.Fsector.Fspecialdata = nil
 				P_RemoveThinker(&door.Fthinker) // unlink and free
 			case int32(vld_close30ThenOpen):
 				door.Fdirection = 0
@@ -22394,7 +22394,7 @@ func T_VerticalDoor(door *vldoor_t) {
 			case int32(vld_blazeOpen):
 				fallthrough
 			case int32(vld_open):
-				door.Fsector.Fspecialdata = uintptr(0)
+				door.Fsector.Fspecialdata = nil
 				P_RemoveThinker(&door.Fthinker) // unlink and free
 			default:
 				break
@@ -22455,7 +22455,6 @@ func EV_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) (r int32) {
 }
 
 func EV_DoDoor(line *line_t, type1 vldoor_e) (r int32) {
-	var door uintptr
 	var rtn, secnum, v1 int32
 	secnum = -1
 	rtn = 0
@@ -22466,15 +22465,14 @@ func EV_DoDoor(line *line_t, type1 vldoor_e) (r int32) {
 			break
 		}
 		sec := &sectors[secnum]
-		if sec.Fspecialdata != 0 {
+		if sec.Fspecialdata != nil {
 			continue
 		}
 		// new door thinker
 		rtn = 1
-		door = Z_Malloc(64, PU_LEVSPEC, uintptr(0))
-		doorP := (*vldoor_t)(unsafe.Pointer(door))
+		doorP := &vldoor_t{}
 		P_AddThinker(&doorP.Fthinker)
-		sec.Fspecialdata = door
+		sec.Fspecialdata = doorP
 		doorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_VerticalDoor)
 		doorP.Fsector = sec
 		doorP.Ftype1 = type1
@@ -22528,7 +22526,6 @@ func EV_DoDoor(line *line_t, type1 vldoor_e) (r int32) {
 //	// EV_VerticalDoor : open a door manually, no tag value
 //	//
 func EV_VerticalDoor(line *line_t, thing *mobj_t) {
-	var door, plat uintptr
 	var player *player_t
 	var sec *sector_t
 	var side int32
@@ -22573,8 +22570,8 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 	}
 	// if the sector has an active thinker, use it
 	sec = sides[line.Fsidenum[side^int32(1)]].Fsector
-	if sec.Fspecialdata != 0 {
-		door = sec.Fspecialdata
+	if sec.Fspecialdata != nil {
+		doorP := sec.Fspecialdata.(*vldoor_t)
 		switch int32(line.Fspecial) {
 		case 1: // ONLY FOR "RAISE" DOORS, NOT "OPEN"s
 			fallthrough
@@ -22585,8 +22582,8 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 		case 28:
 			fallthrough
 		case 117:
-			if (*vldoor_t)(unsafe.Pointer(door)).Fdirection == -1 {
-				(*vldoor_t)(unsafe.Pointer(door)).Fdirection = 1
+			if doorP.Fdirection == -1 {
+				doorP.Fdirection = 1
 			} else {
 				if thing.Fplayer == nil {
 					return
@@ -22594,18 +22591,18 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 				// When is a door not a door?
 				// In Vanilla, door->direction is set, even though
 				// "specialdata" might not actually point at a door.
-				if *(*actionf_p1)(unsafe.Pointer(door + 16)) == __ccgo_fp(T_VerticalDoor) {
-					(*vldoor_t)(unsafe.Pointer(door)).Fdirection = -1 // start going down immediately
+				if doorP.Fthinker.Ffunction.Facv == __ccgo_fp(T_VerticalDoor) {
+					doorP.Fdirection = -1 // start going down immediately
 				} else {
-					if *(*actionf_p1)(unsafe.Pointer(door + 16)) == __ccgo_fp(T_PlatRaise) {
-						plat = door
-						(*plat_t)(unsafe.Pointer(plat)).Fwait = -1
+					if doorP.Fthinker.Ffunction.Facv == __ccgo_fp(T_PlatRaise) {
+						platP := (*plat_t)(unsafe.Pointer(doorP))
+						platP.Fwait = -1
 					} else {
 						// This isn't a door OR a plat.  Now we're in trouble.
 						fprintf_ccgo(os.Stderr, 23591)
 						// Try closing it anyway. At least it will work on 32-bit
 						// machines.
-						(*vldoor_t)(unsafe.Pointer(door)).Fdirection = -1
+						doorP.Fdirection = -1
 					}
 				}
 			}
@@ -22627,10 +22624,9 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 		break
 	}
 	// new door thinker
-	door = Z_Malloc(64, PU_LEVSPEC, uintptr(0))
-	doorP := (*vldoor_t)(unsafe.Pointer(door))
+	doorP := &vldoor_t{}
 	P_AddThinker(&doorP.Fthinker)
-	sec.Fspecialdata = door
+	sec.Fspecialdata = doorP
 	doorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_VerticalDoor)
 	doorP.Fsector = sec
 	doorP.Fdirection = 1
@@ -22674,11 +22670,9 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 //	// Spawn a door that closes after 30 seconds
 //	//
 func P_SpawnDoorCloseIn30(sec *sector_t) {
-	var door uintptr
-	door = Z_Malloc(64, PU_LEVSPEC, uintptr(0))
-	doorP := (*vldoor_t)(unsafe.Pointer(door))
+	doorP := &vldoor_t{}
 	P_AddThinker(&doorP.Fthinker)
-	sec.Fspecialdata = door
+	sec.Fspecialdata = doorP
 	sec.Fspecial = 0
 	doorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_VerticalDoor)
 	doorP.Fsector = sec
@@ -22694,11 +22688,9 @@ func P_SpawnDoorCloseIn30(sec *sector_t) {
 //	// Spawn a door that opens after 5 minutes
 //	//
 func P_SpawnDoorRaiseIn5Mins(sec *sector_t, secnum int32) {
-	var door uintptr
-	door = Z_Malloc(64, PU_LEVSPEC, uintptr(0))
-	doorP := (*vldoor_t)(unsafe.Pointer(door))
+	doorP := &vldoor_t{}
 	P_AddThinker(&doorP.Fthinker)
-	sec.Fspecialdata = door
+	sec.Fspecialdata = doorP
 	sec.Fspecial = 0
 	doorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_VerticalDoor)
 	doorP.Fsector = sec
@@ -24526,7 +24518,7 @@ func T_MoveFloor(floor *floormove_t) {
 		S_StartSound(&floor.Fsector.Fsoundorg, int32(sfx_stnmov))
 	}
 	if res == int32(pastdest) {
-		floor.Fsector.Fspecialdata = uintptr(0)
+		floor.Fsector.Fspecialdata = nil
 		if floor.Fdirection == 1 {
 			switch floor.Ftype1 {
 			case int32(donutRaise):
@@ -24559,7 +24551,6 @@ func T_MoveFloor(floor *floormove_t) {
 //	// HANDLE FLOOR TYPES
 //	//
 func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
-	var floor uintptr
 	var side *side_t
 	var sec *sector_t
 	var i, minsize, rtn, secnum, v1 int32
@@ -24573,15 +24564,14 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 		}
 		sec = &sectors[secnum]
 		// ALREADY MOVING?  IF SO, KEEP GOING...
-		if sec.Fspecialdata != 0 {
+		if sec.Fspecialdata != nil {
 			continue
 		}
 		// new floor thinker
 		rtn = 1
-		floor = Z_Malloc(64, PU_LEVSPEC, uintptr(0))
-		floorP := (*floormove_t)(unsafe.Pointer(floor))
+		floorP := &floormove_t{}
 		P_AddThinker(&floorP.Fthinker)
-		sec.Fspecialdata = floor
+		sec.Fspecialdata = floorP
 		floorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveFloor)
 		floorP.Ftype1 = floortype
 		floorP.Fcrush = 0
@@ -24630,17 +24620,17 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 			floorP.Fdirection = 1
 			floorP.Fsector = sec
 			floorP.Fspeed = 1 << FRACBITS
-			floorP.Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + 24*(1<<FRACBITS)
+			floorP.Ffloordestheight = floorP.Fsector.Ffloorheight + 24*(1<<FRACBITS)
 		case int32(raiseFloor512):
 			floorP.Fdirection = 1
 			floorP.Fsector = sec
 			floorP.Fspeed = 1 << FRACBITS
-			floorP.Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + 512*(1<<FRACBITS)
+			floorP.Ffloordestheight = floorP.Fsector.Ffloorheight + 512*(1<<FRACBITS)
 		case int32(raiseFloor24AndChange):
 			floorP.Fdirection = 1
 			floorP.Fsector = sec
 			floorP.Fspeed = 1 << FRACBITS
-			floorP.Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + 24*(1<<FRACBITS)
+			floorP.Ffloordestheight = floorP.Fsector.Ffloorheight + 24*(1<<FRACBITS)
 			sec.Ffloorpic = line.Ffrontsector.Ffloorpic
 			sec.Fspecial = line.Ffrontsector.Fspecial
 		case int32(raiseToTexture):
@@ -24672,7 +24662,7 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 				;
 				i++
 			}
-			floorP.Ffloordestheight = (*sector_t)(unsafe.Pointer((*floormove_t)(unsafe.Pointer(floor)).Fsector)).Ffloorheight + minsize
+			floorP.Ffloordestheight = floorP.Fsector.Ffloorheight + minsize
 		case int32(lowerAndChange):
 			floorP.Fdirection = -1
 			floorP.Fsector = sec
@@ -24687,14 +24677,14 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 				if twoSided(secnum, i) != 0 {
 					if sectorIndex(getSide(secnum, i, 0).Fsector) == secnum {
 						sec = getSector(secnum, i, 1)
-						if sec.Ffloorheight == (*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight {
+						if sec.Ffloorheight == floorP.Ffloordestheight {
 							floorP.Ftexture = sec.Ffloorpic
 							floorP.Fnewspecial = int32(sec.Fspecial)
 							break
 						}
 					} else {
 						sec = getSector(secnum, i, 0)
-						if sec.Ffloorheight == (*floormove_t)(unsafe.Pointer(floor)).Ffloordestheight {
+						if sec.Ffloorheight == floorP.Ffloordestheight {
 							floorP.Ftexture = sec.Ffloorpic
 							floorP.Fnewspecial = int32(sec.Fspecial)
 							break
@@ -24720,7 +24710,6 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 //	// BUILD A STAIRCASE!
 //	//
 func EV_BuildStairs(line *line_t, type1 stair_e) (r int32) {
-	var floor uintptr
 	var sec, tsec *sector_t
 	var height, i, newsecnum, ok, rtn, secnum, texture, v1 int32
 	var speed, stairsize fixed_t
@@ -24736,16 +24725,15 @@ func EV_BuildStairs(line *line_t, type1 stair_e) (r int32) {
 		}
 		sec = &sectors[secnum]
 		// ALREADY MOVING?  IF SO, KEEP GOING...
-		if sec.Fspecialdata != 0 {
+		if sec.Fspecialdata != nil {
 			continue
 		}
 		// new floor thinker
 		rtn = 1
-		floor = Z_Malloc(64, PU_LEVSPEC, uintptr(0))
-		floorP := (*floormove_t)(unsafe.Pointer(floor))
+		floorP := &floormove_t{}
 		P_AddThinker(&floorP.Fthinker)
-		sec.Fspecialdata = floor
-		*(*actionf_p1)(unsafe.Pointer(floor + 16)) = __ccgo_fp(T_MoveFloor)
+		sec.Fspecialdata = floorP
+		floorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveFloor)
 		floorP.Fdirection = 1
 		floorP.Fsector = sec
 		switch type1 {
@@ -24790,10 +24778,9 @@ func EV_BuildStairs(line *line_t, type1 stair_e) (r int32) {
 				}
 				sec = tsec
 				secnum = newsecnum
-				floor = Z_Malloc(64, PU_LEVSPEC, uintptr(0))
-				floorP = (*floormove_t)(unsafe.Pointer(floor))
+				floorP = &floormove_t{}
 				P_AddThinker(&floorP.Fthinker)
-				sec.Fspecialdata = floor
+				sec.Fspecialdata = floorP
 				floorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveFloor)
 				floorP.Fdirection = 1
 				floorP.Fsector = sec
@@ -25613,8 +25600,7 @@ func P_SpawnFireFlicker(sector *sector_t) {
 	// Note that we are resetting sector attributes.
 	// Nothing special about it during gameplay.
 	sector.Fspecial = 0
-	mem := Z_Malloc(48, PU_LEVSPEC, uintptr(0))
-	flick := (*fireflicker_t)(unsafe.Pointer(mem))
+	flick := &fireflicker_t{}
 	P_AddThinker(&flick.Fthinker)
 	flick.Fthinker.Ffunction.Facv = __ccgo_fp(T_FireFlicker)
 	flick.Fsector = sector
@@ -25659,11 +25645,9 @@ func T_LightFlash(flash uintptr) {
 //	// for specials that spawn thinkers
 //	//
 func P_SpawnLightFlash(sector *sector_t) {
-	var flash uintptr
 	// nothing special about it during gameplay
 	sector.Fspecial = 0
-	flash = Z_Malloc(56, PU_LEVSPEC, uintptr(0))
-	flashP := (*lightflash_t)(unsafe.Pointer(flash))
+	flashP := &lightflash_t{}
 	P_AddThinker(&flashP.Fthinker)
 	flashP.Fthinker.Ffunction.Facv = __ccgo_fp(T_LightFlash)
 	flashP.Fsector = sector
@@ -25705,9 +25689,7 @@ func T_StrobeFlash(flash *strobe_t) {
 //	// for specials that spawn thinkers
 //	//
 func P_SpawnStrobeFlash(sector *sector_t, fastOrSlow int32, inSync int32) {
-	var flash uintptr
-	flash = Z_Malloc(56, PU_LEVSPEC, uintptr(0))
-	flashP := (*strobe_t)(unsafe.Pointer(flash))
+	flashP := &strobe_t{}
 	P_AddThinker(&flashP.Fthinker)
 	flashP.Fsector = sector
 	flashP.Fdarktime = fastOrSlow
@@ -25743,7 +25725,7 @@ func EV_StartLightStrobing(line *line_t) {
 			break
 		}
 		sec = &sectors[secnum]
-		if sec.Fspecialdata != 0 {
+		if sec.Fspecialdata != nil {
 			continue
 		}
 		P_SpawnStrobeFlash(sec, SLOWDARK, 0)
@@ -25867,9 +25849,7 @@ func T_Glow(g *glow_t) {
 }
 
 func P_SpawnGlowingLight(sector *sector_t) {
-	var g uintptr
-	g = Z_Malloc(48, PU_LEVSPEC, uintptr(0))
-	gP := (*glow_t)(unsafe.Pointer(g))
+	gP := &glow_t{}
 	P_AddThinker(&gP.Fthinker)
 	gP.Fsector = sector
 	gP.Fminlight = P_FindMinSurroundingLight(sector, int32(sector.Flightlevel))
@@ -28085,11 +28065,9 @@ func P_MobjThinker(mobj *mobj_t) {
 //	// P_SpawnMobj
 //	//
 func P_SpawnMobj(x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r *mobj_t) {
-	var mobj *mobj_t
 	var info *mobjinfo_t
-	mobj = (*mobj_t)(unsafe.Pointer(Z_Malloc(224, PU_LEVEL, uintptr(0))))
-	*mobj = mobj_t{}
-	info = &mobjinfo[uintptr(type1)]
+	mobj := &mobj_t{}
+	info = &mobjinfo[type1]
 	mobj.Ftype1 = type1
 	mobj.Finfo = info
 	mobj.Fx = x
@@ -28589,7 +28567,6 @@ func T_PlatRaise(plat *plat_t) {
 //	//  "amount" is only used for SOME platforms.
 //	//
 func EV_DoPlat(line *line_t, type1 plattype_e, amount int32) (r int32) {
-	var plat uintptr
 	var sec *sector_t
 	var rtn, secnum, v1 int32
 	secnum = -1
@@ -28608,17 +28585,16 @@ func EV_DoPlat(line *line_t, type1 plattype_e, amount int32) (r int32) {
 			break
 		}
 		sec = &sectors[secnum]
-		if sec.Fspecialdata != 0 {
+		if sec.Fspecialdata != nil {
 			continue
 		}
 		// Find lowest & highest floors around sector
 		rtn = 1
-		plat = Z_Malloc(72, PU_LEVSPEC, uintptr(0))
-		platP := (*plat_t)(unsafe.Pointer(plat))
+		platP := &plat_t{}
 		P_AddThinker(&platP.Fthinker)
 		platP.Ftype1 = type1
 		platP.Fsector = sec
-		platP.Fsector.Fspecialdata = plat
+		platP.Fsector.Fspecialdata = platP
 		platP.Fthinker.Ffunction.Facv = __ccgo_fp(T_PlatRaise)
 		platP.Fcrush = 0
 		platP.Ftag = int32(line.Ftag)
@@ -28743,7 +28719,7 @@ func P_RemoveActivePlat(plat *plat_t) {
 			break
 		}
 		if plat == activeplats[i] {
-			activeplats[i].Fsector.Fspecialdata = uintptr(0)
+			activeplats[i].Fsector.Fspecialdata = nil
 			P_RemoveThinker(&activeplats[i].Fthinker)
 			activeplats[i] = nil
 			return
@@ -30635,7 +30611,7 @@ func P_UnArchiveWorld() {
 		sec.Flightlevel = saveg_read16()
 		sec.Fspecial = saveg_read16() // needed?
 		sec.Ftag = saveg_read16()     // needed?
-		sec.Fspecialdata = uintptr(0)
+		sec.Fspecialdata = nil
 		sec.Fsoundtarget = nil
 	}
 	// do lines
@@ -30706,7 +30682,7 @@ func P_UnArchiveThinkers() {
 		if currentthinker.Ffunction.Facv == __ccgo_fp(P_MobjThinker) {
 			P_RemoveMobj((*mobj_t)(unsafe.Pointer(currentthinker)))
 		} else {
-			Z_Free(uintptr(unsafe.Pointer(currentthinker)))
+			//Z_Free(uintptr(unsafe.Pointer(currentthinker)))
 		}
 		currentthinker = next
 	}
@@ -30719,7 +30695,7 @@ func P_UnArchiveThinkers() {
 			return // end of list
 		case tc_mobj:
 			saveg_read_pad()
-			mobj = (*mobj_t)(unsafe.Pointer(Z_Malloc(224, PU_LEVEL, uintptr(0))))
+			mobj = &mobj_t{}
 			saveg_read_mobj_t(mobj)
 			mobj.Ftarget = nil
 			mobj.Ftracer = nil
@@ -30844,7 +30820,6 @@ func P_ArchiveSpecials() {
 //	// P_UnArchiveSpecials
 //	//
 func P_UnArchiveSpecials() {
-	var ceiling, door, flash, floor, glow, plat, strobe uintptr
 	var tclass uint8
 	// read in saved thinkers
 	for 1 != 0 {
@@ -30854,10 +30829,9 @@ func P_UnArchiveSpecials() {
 			return // end of list
 		case tc_ceiling:
 			saveg_read_pad()
-			ceiling = Z_Malloc(72, PU_LEVEL, uintptr(0))
-			ceilingP := (*ceiling_t)(unsafe.Pointer(ceiling))
+			ceilingP := &ceiling_t{}
 			saveg_read_ceiling_t(ceilingP)
-			ceilingP.Fsector.Fspecialdata = ceiling
+			ceilingP.Fsector.Fspecialdata = ceilingP
 			if ceilingP.Fthinker.Ffunction.Facv != uintptr(0) {
 				ceilingP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveCeiling)
 			}
@@ -30865,26 +30839,23 @@ func P_UnArchiveSpecials() {
 			P_AddActiveCeiling(ceilingP)
 		case tc_door:
 			saveg_read_pad()
-			door = Z_Malloc(64, PU_LEVEL, uintptr(0))
-			doorP := (*vldoor_t)(unsafe.Pointer(door))
+			doorP := &vldoor_t{}
 			saveg_read_vldoor_t(doorP)
-			doorP.Fsector.Fspecialdata = door
+			doorP.Fsector.Fspecialdata = doorP
 			doorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_VerticalDoor)
 			P_AddThinker(&doorP.Fthinker)
 		case tc_floor:
 			saveg_read_pad()
-			floor = Z_Malloc(64, PU_LEVEL, uintptr(0))
-			floorP := (*floormove_t)(unsafe.Pointer(floor))
+			floorP := &floormove_t{}
 			saveg_read_floormove_t(floorP)
-			floorP.Fsector.Fspecialdata = floor
+			floorP.Fsector.Fspecialdata = floorP
 			floorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveFloor)
 			P_AddThinker(&floorP.Fthinker)
 		case tc_plat:
 			saveg_read_pad()
-			plat = Z_Malloc(72, PU_LEVEL, uintptr(0))
-			platP := (*plat_t)(unsafe.Pointer(plat))
+			platP := &plat_t{}
 			saveg_read_plat_t(platP)
-			platP.Fsector.Fspecialdata = plat
+			platP.Fsector.Fspecialdata = platP
 			if platP.Fthinker.Ffunction.Facv != uintptr(0) {
 				platP.Fthinker.Ffunction.Facv = __ccgo_fp(T_PlatRaise)
 			}
@@ -30892,22 +30863,19 @@ func P_UnArchiveSpecials() {
 			P_AddActivePlat(platP)
 		case tc_flash:
 			saveg_read_pad()
-			flash = Z_Malloc(56, PU_LEVEL, uintptr(0))
-			flashP := (*lightflash_t)(unsafe.Pointer(flash))
+			flashP := &lightflash_t{}
 			saveg_read_lightflash_t(flashP)
 			flashP.Fthinker.Ffunction.Facv = __ccgo_fp(T_LightFlash)
 			P_AddThinker(&flashP.Fthinker)
 		case tc_strobe:
 			saveg_read_pad()
-			strobe = Z_Malloc(56, PU_LEVEL, uintptr(0))
-			strobeP := (*strobe_t)(unsafe.Pointer(strobe))
+			strobeP := &strobe_t{}
 			saveg_read_strobe_t(strobeP)
 			strobeP.Fthinker.Ffunction.Facv = __ccgo_fp(T_StrobeFlash)
 			P_AddThinker(&strobeP.Fthinker)
 		case tc_glow:
 			saveg_read_pad()
-			glow = Z_Malloc(48, PU_LEVEL, uintptr(0))
-			glowP := (*glow_t)(unsafe.Pointer(glow))
+			glowP := &glow_t{}
 			saveg_read_glow_t(glowP)
 			glowP.Fthinker.Ffunction.Facv = __ccgo_fp(T_Glow)
 			P_AddThinker(&glowP.Fthinker)
@@ -32925,9 +32893,8 @@ var tmp_s3_floorpic int32
 //	//
 func EV_DoDonut(line *line_t) (r int32) {
 	bp := alloc(16)
-	var floor uintptr
 	var s1, s2, s3 *sector_t
-	var i, rtn, secnum, v1 int32
+	var rtn, secnum, v1 int32
 	secnum = -1
 	rtn = 0
 	for {
@@ -32938,7 +32905,7 @@ func EV_DoDonut(line *line_t) (r int32) {
 		}
 		s1 = &sectors[secnum]
 		// ALREADY MOVING?  IF SO, KEEP GOING...
-		if s1.Fspecialdata != 0 {
+		if s1.Fspecialdata != nil {
 			continue
 		}
 		rtn = 1
@@ -32955,15 +32922,10 @@ func EV_DoDonut(line *line_t) (r int32) {
 			fprintf_ccgo(os.Stderr, 25590)
 			break
 		}
-		i = 0
-		for {
-			var floorP *floormove_t
-			if i >= s2.Flinecount {
-				break
-			}
+		for i := int32(0); i < s2.Flinecount; i++ {
 			s3 = s2.Flines[i].Fbacksector
 			if s3 == s1 {
-				goto _2
+				continue
 			}
 			if s3 == nil {
 				// e6y
@@ -32978,10 +32940,9 @@ func EV_DoDonut(line *line_t) (r int32) {
 				*(*int16)(unsafe.Pointer(bp + 4)) = s3.Ffloorpic
 			}
 			//	Spawn rising slime
-			floor = Z_Malloc(64, PU_LEVSPEC, uintptr(0))
-			floorP = (*floormove_t)(unsafe.Pointer(floor))
+			floorP := &floormove_t{}
 			P_AddThinker(&floorP.Fthinker)
-			s2.Fspecialdata = floor
+			s2.Fspecialdata = floorP
 			floorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveFloor)
 			floorP.Ftype1 = int32(donutRaise)
 			floorP.Fcrush = 0
@@ -32992,10 +32953,9 @@ func EV_DoDonut(line *line_t) (r int32) {
 			floorP.Fnewspecial = 0
 			floorP.Ffloordestheight = *(*fixed_t)(unsafe.Pointer(bp))
 			//	Spawn lowering donut-hole
-			floor = Z_Malloc(64, PU_LEVSPEC, uintptr(0))
-			floorP = (*floormove_t)(unsafe.Pointer(floor))
+			floorP = &floormove_t{}
 			P_AddThinker(&floorP.Fthinker)
-			s1.Fspecialdata = floor
+			s1.Fspecialdata = floorP
 			floorP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveFloor)
 			floorP.Ftype1 = int32(lowerFloor)
 			floorP.Fcrush = 0
@@ -33004,10 +32964,6 @@ func EV_DoDonut(line *line_t) (r int32) {
 			floorP.Fspeed = 1 << FRACBITS / 2
 			floorP.Ffloordestheight = *(*fixed_t)(unsafe.Pointer(bp))
 			break
-			goto _2
-		_2:
-			;
-			i++
 		}
 	}
 	return rtn
@@ -33970,7 +33926,7 @@ func P_RunThinkers() {
 			// time to remove it
 			currentthinker.Fnext.Fprev = currentthinker.Fprev
 			currentthinker.Fprev.Fnext = currentthinker.Fnext
-			Z_Free(uintptr(unsafe.Pointer(currentthinker)))
+			//Z_Free(uintptr(unsafe.Pointer(currentthinker)))
 		} else {
 			if currentthinker.Ffunction.Facv != 0 {
 				(*(*func(*thinker_t))(unsafe.Pointer(&struct{ uintptr }{*(*actionf_p1)(unsafe.Pointer(&currentthinker.Ffunction))})))(currentthinker)
@@ -35036,21 +34992,21 @@ func GenerateTextureHashTable() {
 //	//
 func R_InitTextures() {
 	bp := alloc(32)
-	var directory, maptex, maptex2, mpatch, name_p, names, patchlookup, v2 uintptr
+	var directory, maptex, maptex2, mpatch, name_p, names, v2 uintptr
 	var i, j, maxoff, maxoff2, nummappatches, numtextures1, numtextures2, offset, temp1, temp2, temp3, totalwidth int32
 	// Load the patch names from pnames.lmp.
 	(*(*[9]int8)(unsafe.Pointer(bp)))[int32(8)] = 0
 	names = W_CacheLumpName(__ccgo_ts_str(26022), PU_STATIC)
 	nummappatches = *(*int32)(unsafe.Pointer(names))
 	name_p = names + uintptr(4)
-	patchlookup = Z_Malloc(int32(uint64(nummappatches)*4), PU_STATIC, uintptr(0))
+	patchlookup := make([]int32, nummappatches)
 	i = 0
 	for {
 		if i >= nummappatches {
 			break
 		}
 		M_StringCopy(bp, name_p+uintptr(i*int32(8)), 9)
-		*(*int32)(unsafe.Pointer(patchlookup + uintptr(i)*4)) = W_CheckNumForName(gostring_n(bp, 8))
+		patchlookup[i] = W_CheckNumForName(gostring_n(bp, 8))
 		goto _1
 	_1:
 		;
@@ -35152,7 +35108,7 @@ func R_InitTextures() {
 			patch := &texture.Fpatches[j]
 			patch.Foriginx = (*mappatch_t)(unsafe.Pointer(mpatch)).Foriginx
 			patch.Foriginy = (*mappatch_t)(unsafe.Pointer(mpatch)).Foriginy
-			patch.Fpatch = *(*int32)(unsafe.Pointer(patchlookup + uintptr((*mappatch_t)(unsafe.Pointer(mpatch)).Fpatch)*4))
+			patch.Fpatch = patchlookup[(*mappatch_t)(unsafe.Pointer(mpatch)).Fpatch]
 			if patch.Fpatch == -1 {
 				I_Error(26107, texture)
 			}
@@ -35177,7 +35133,6 @@ func R_InitTextures() {
 		i++
 		directory += 4
 	}
-	Z_Free(patchlookup)
 	W_ReleaseLumpName(__ccgo_ts_str(26029))
 	if maptex2 != 0 {
 		W_ReleaseLumpName(__ccgo_ts_str(26038))
@@ -35362,7 +35317,6 @@ func R_TextureNumForName(name string) (r int32) {
 }
 
 func R_PrecacheLevel() {
-	var flatpresent, spritepresent, texturepresent uintptr
 	var texture *texture_t
 	var sf *spriteframe_t
 	var th *thinker_t
@@ -35371,16 +35325,15 @@ func R_PrecacheLevel() {
 		return
 	}
 	// Precache flats.
-	flatpresent = Z_Malloc(numflats, PU_STATIC, uintptr(0))
-	xmemset(flatpresent, 0, uint64(numflats))
+	flatpresent := make([]int8, numflats)
 	i = 0
 	for {
 		if i >= numsectors {
 			break
 		}
 		sector := &sectors[i]
-		*(*int8)(unsafe.Pointer(flatpresent + uintptr(sector.Ffloorpic))) = 1
-		*(*int8)(unsafe.Pointer(flatpresent + uintptr(sector.Fceilingpic))) = 1
+		flatpresent[sector.Ffloorpic] = 1
+		flatpresent[sector.Fceilingpic] = 1
 		goto _1
 	_1:
 		;
@@ -35391,7 +35344,7 @@ func R_PrecacheLevel() {
 		if i >= numflats {
 			break
 		}
-		if *(*int8)(unsafe.Pointer(flatpresent + uintptr(i))) != 0 {
+		if flatpresent[i] != 0 {
 			lump = firstflat + i
 			W_CacheLumpNum(lump, PU_CACHE)
 		}
@@ -35400,18 +35353,16 @@ func R_PrecacheLevel() {
 		;
 		i++
 	}
-	Z_Free(flatpresent)
 	// Precache textures.
-	texturepresent = Z_Malloc(numtextures, PU_STATIC, uintptr(0))
-	xmemset(texturepresent, 0, uint64(numtextures))
+	texturepresent := make([]int8, numtextures)
 	i = 0
 	for {
 		if i >= numsides {
 			break
 		}
-		*(*int8)(unsafe.Pointer(texturepresent + uintptr(sides[i].Ftoptexture))) = 1
-		*(*int8)(unsafe.Pointer(texturepresent + uintptr(sides[i].Fmidtexture))) = 1
-		*(*int8)(unsafe.Pointer(texturepresent + uintptr(sides[i].Fbottomtexture))) = 1
+		texturepresent[sides[i].Ftoptexture] = 1
+		texturepresent[sides[i].Fmidtexture] = 1
+		texturepresent[sides[i].Fbottomtexture] = 1
 		goto _3
 	_3:
 		;
@@ -35423,13 +35374,13 @@ func R_PrecacheLevel() {
 	//  while the sky texture is stored like
 	//  a wall texture, with an episode dependend
 	//  name.
-	*(*int8)(unsafe.Pointer(texturepresent + uintptr(skytexture))) = 1
+	texturepresent[skytexture] = 1
 	i = 0
 	for {
 		if i >= numtextures {
 			break
 		}
-		if *(*int8)(unsafe.Pointer(texturepresent + uintptr(i))) == 0 {
+		if texturepresent[i] != 0 {
 			goto _4
 		}
 		texture = textures[i]
@@ -35450,17 +35401,15 @@ func R_PrecacheLevel() {
 		;
 		i++
 	}
-	Z_Free(texturepresent)
 	// Precache sprites.
-	spritepresent = Z_Malloc(numsprites, PU_STATIC, uintptr(0))
-	xmemset(spritepresent, 0, uint64(numsprites))
+	spritepresent := make([]int8, numsprites)
 	th = thinkercap.Fnext
 	for {
 		if th == &thinkercap {
 			break
 		}
 		if th.Ffunction.Facv == __ccgo_fp(P_MobjThinker) {
-			*(*int8)(unsafe.Pointer(spritepresent + uintptr((*mobj_t)(unsafe.Pointer(th)).Fsprite))) = 1
+			spritepresent[(*mobj_t)(unsafe.Pointer(th)).Fsprite] = 1
 		}
 		goto _6
 	_6:
@@ -35472,7 +35421,7 @@ func R_PrecacheLevel() {
 		if i >= numsprites {
 			break
 		}
-		if *(*int8)(unsafe.Pointer(spritepresent + uintptr(i))) == 0 {
+		if spritepresent[i] == 0 {
 			goto _7
 		}
 		j = 0
@@ -35503,7 +35452,6 @@ func R_PrecacheLevel() {
 		;
 		i++
 	}
-	Z_Free(spritepresent)
 }
 
 const FUZZTABLE = 50
