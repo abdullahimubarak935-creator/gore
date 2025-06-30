@@ -22902,7 +22902,7 @@ func P_CheckMissileRange(actor *mobj_t) (r boolean) {
 		return 0
 	} // do not attack yet
 	// OPTIMIZE: get this from a global checksight
-	dist = P_AproxDistance(actor.Fx-(*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx, actor.Fy-(*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fy) - 64*(1<<FRACBITS)
+	dist = P_AproxDistance(actor.Fx-actor.Ftarget.Fx, actor.Fy-actor.Ftarget.Fy) - 64*(1<<FRACBITS)
 	if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fmeleestate == 0 {
 		dist -= 128 * (1 << FRACBITS)
 	} // no melee attack, so fire more
@@ -23040,8 +23040,8 @@ func P_NewChaseDir(actor *mobj_t) {
 	}
 	olddir = actor.Fmovedir
 	turnaround = opposite[olddir]
-	deltax = (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx - actor.Fx
-	deltay = (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fy - actor.Fy
+	deltax = actor.Ftarget.Fx - actor.Fx
+	deltay = actor.Ftarget.Fy - actor.Fy
 	if deltax > 10*(1<<FRACBITS) {
 		d[int32(1)] = DI_EAST
 	} else {
@@ -23303,7 +23303,7 @@ func A_Chase(actor *mobj_t) {
 	}
 	// modify target threshold
 	if actor.Fthreshold != 0 {
-		if actor.Ftarget == nil || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fhealth <= 0 {
+		if actor.Ftarget == nil || actor.Ftarget.Fhealth <= 0 {
 			actor.Fthreshold = 0
 		} else {
 			actor.Fthreshold--
@@ -23321,7 +23321,7 @@ func A_Chase(actor *mobj_t) {
 			}
 		}
 	}
-	if actor.Ftarget == nil || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fflags&MF_SHOOTABLE == 0 {
+	if actor.Ftarget == nil || actor.Ftarget.Fflags&MF_SHOOTABLE == 0 {
 		// look for a new target
 		if P_LookForPlayers(actor, 1) != 0 {
 			return
@@ -23388,8 +23388,8 @@ func A_FaceTarget(actor *mobj_t) {
 		return
 	}
 	actor.Fflags |= MF_AMBUSH
-	actor.Fangle = R_PointToAngle2(actor.Fx, actor.Fy, (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fy)
-	if (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fflags&MF_SHADOW != 0 {
+	actor.Fangle = R_PointToAngle2(actor.Fx, actor.Fy, actor.Ftarget.Fx, actor.Ftarget.Fy)
+	if actor.Ftarget.Fflags&MF_SHADOW != 0 {
 		actor.Fangle += uint32((P_Random() - P_Random()) << 21)
 	}
 }
@@ -23457,7 +23457,7 @@ func A_CPosRefire(actor *mobj_t) {
 	if P_Random() < 40 {
 		return
 	}
-	if actor.Ftarget == nil || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fhealth <= 0 || P_CheckSight(actor, actor.Ftarget) == 0 {
+	if actor.Ftarget == nil || actor.Ftarget.Fhealth <= 0 || P_CheckSight(actor, actor.Ftarget) == 0 {
 		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseestate)
 	}
 }
@@ -23468,7 +23468,7 @@ func A_SpidRefire(actor *mobj_t) {
 	if P_Random() < 10 {
 		return
 	}
-	if actor.Ftarget == nil || (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fhealth <= 0 || P_CheckSight(actor, actor.Ftarget) == 0 {
+	if actor.Ftarget == nil || actor.Ftarget.Fhealth <= 0 || P_CheckSight(actor, actor.Ftarget) == 0 {
 		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseestate)
 	}
 }
@@ -23793,7 +23793,7 @@ func A_VileTarget(actor *mobj_t) {
 		return
 	}
 	A_FaceTarget(actor)
-	fog = P_SpawnMobj((*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx, (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fz, MT_FIRE)
+	fog = P_SpawnMobj(actor.Ftarget.Fx, actor.Ftarget.Fx, actor.Ftarget.Fz, MT_FIRE)
 	actor.Ftracer = fog
 	fog.Ftarget = actor
 	fog.Ftracer = actor.Ftarget
@@ -23817,15 +23817,15 @@ func A_VileAttack(actor *mobj_t) {
 	}
 	S_StartSound(&actor.degenmobj_t, int32(sfx_barexp))
 	P_DamageMobj(actor.Ftarget, actor, actor, 20)
-	(*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fmomz = 1000 * (1 << FRACBITS) / (*mobjinfo_t)(unsafe.Pointer((*mobj_t)(unsafe.Pointer(actor.Ftarget)).Finfo)).Fmass
+	actor.Ftarget.Fmomz = 1000 * (1 << FRACBITS) / actor.Ftarget.Finfo.Fmass
 	an = int32(actor.Fangle >> ANGLETOFINESHIFT)
 	fire = actor.Ftracer
 	if fire == nil {
 		return
 	}
 	// move the fire between the vile and the player
-	fire.Fx = (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fx - FixedMul(24*(1<<FRACBITS), finecosine[an])
-	fire.Fy = (*mobj_t)(unsafe.Pointer(actor.Ftarget)).Fy - FixedMul(24*(1<<FRACBITS), finesine[an])
+	fire.Fx = actor.Ftarget.Fx - FixedMul(24*(1<<FRACBITS), finecosine[an])
+	fire.Fy = actor.Ftarget.Fy - FixedMul(24*(1<<FRACBITS), finesine[an])
 	P_RadiusAttack(fire, actor, 70)
 }
 
@@ -26100,7 +26100,7 @@ func PIT_CheckThing(thing *mobj_t) (r boolean) {
 		if tmthing.Fz+tmthing.Fheight < thing.Fz {
 			return 1
 		} // underneath
-		if tmthing.Ftarget != nil && ((*mobj_t)(unsafe.Pointer(tmthing.Ftarget)).Ftype1 == thing.Ftype1 || (*mobj_t)(unsafe.Pointer(tmthing.Ftarget)).Ftype1 == MT_KNIGHT && thing.Ftype1 == MT_BRUISER || (*mobj_t)(unsafe.Pointer(tmthing.Ftarget)).Ftype1 == MT_BRUISER && thing.Ftype1 == MT_KNIGHT) {
+		if tmthing.Ftarget != nil && (tmthing.Ftarget.Ftype1 == thing.Ftype1 || tmthing.Ftarget.Ftype1 == MT_KNIGHT && thing.Ftype1 == MT_BRUISER || tmthing.Ftarget.Ftype1 == MT_BRUISER && thing.Ftype1 == MT_KNIGHT) {
 			// Don't hit same species as originator.
 			if thing == tmthing.Ftarget {
 				return 1
@@ -27205,10 +27205,10 @@ func P_UnsetThingPosition(thing *mobj_t) {
 		// inert things don't need to be in blockmap?
 		// unlink from subsector
 		if thing.Fsnext != nil {
-			(*mobj_t)(unsafe.Pointer(thing.Fsnext)).Fsprev = thing.Fsprev
+			thing.Fsnext.Fsprev = thing.Fsprev
 		}
 		if thing.Fsprev != nil {
-			(*mobj_t)(unsafe.Pointer(thing.Fsprev)).Fsnext = thing.Fsnext
+			thing.Fsprev.Fsnext = thing.Fsnext
 		} else {
 			(*sector_t)(unsafe.Pointer(thing.Fsubsector.Fsector)).Fthinglist = thing.Fsnext
 		}
@@ -27217,10 +27217,10 @@ func P_UnsetThingPosition(thing *mobj_t) {
 		// inert things don't need to be in blockmap
 		// unlink from block map
 		if thing.Fbnext != nil {
-			(*mobj_t)(unsafe.Pointer(thing.Fbnext)).Fbprev = thing.Fbprev
+			thing.Fbnext.Fbprev = thing.Fbprev
 		}
 		if thing.Fbprev != nil {
-			(*mobj_t)(unsafe.Pointer(thing.Fbprev)).Fbnext = thing.Fbnext
+			thing.Fbprev.Fbnext = thing.Fbnext
 		} else {
 			blockx = (thing.Fx - bmaporgx) >> (FRACBITS + 7)
 			blocky = (thing.Fy - bmaporgy) >> (FRACBITS + 7)
@@ -27252,7 +27252,7 @@ func P_SetThingPosition(thing *mobj_t) {
 		thing.Fsprev = nil
 		thing.Fsnext = sec.Fthinglist
 		if sec.Fthinglist != nil {
-			(*mobj_t)(unsafe.Pointer(sec.Fthinglist)).Fsprev = thing
+			sec.Fthinglist.Fsprev = thing
 		}
 		sec.Fthinglist = thing
 	}
@@ -27907,8 +27907,8 @@ func P_ZMovement(mo *mobj_t) {
 	if mo.Fflags&MF_FLOAT != 0 && mo.Ftarget != nil {
 		// float down towards target if too close
 		if mo.Fflags&MF_SKULLFLY == 0 && mo.Fflags&MF_INFLOAT == 0 {
-			dist = P_AproxDistance(mo.Fx-(*mobj_t)(unsafe.Pointer(mo.Ftarget)).Fx, mo.Fy-(*mobj_t)(unsafe.Pointer(mo.Ftarget)).Fy)
-			delta = (*mobj_t)(unsafe.Pointer(mo.Ftarget)).Fz + mo.Fheight>>1 - mo.Fz
+			dist = P_AproxDistance(mo.Fx-mo.Ftarget.Fx, mo.Fy-mo.Ftarget.Fy)
+			delta = mo.Ftarget.Fz + mo.Fheight>>1 - mo.Fz
 			if delta < 0 && dist < -(delta*int32(3)) {
 				mo.Fz -= 1 << FRACBITS * 4
 			} else {
@@ -34149,7 +34149,7 @@ func P_DeathThink(player *player_t) {
 	onground = booluint32(player.Fmo.Fz <= player.Fmo.Ffloorz)
 	P_CalcHeight(player)
 	if player.Fattacker != nil && player.Fattacker != player.Fmo {
-		angle = R_PointToAngle2(player.Fmo.Fx, player.Fmo.Fy, (*mobj_t)(unsafe.Pointer(player.Fattacker)).Fx, (*mobj_t)(unsafe.Pointer(player.Fattacker)).Fy)
+		angle = R_PointToAngle2(player.Fmo.Fx, player.Fmo.Fy, player.Fattacker.Fx, player.Fattacker.Fy)
 		delta = angle - player.Fmo.Fangle
 		if delta < uint32(ANG907/18) || delta > uint32(-(ANG907/18)&0xffff_ffff) {
 			// Looking at killer,
@@ -40389,7 +40389,7 @@ func ST_updateFaceWidget() {
 				st_facecount = 1 * TICRATE
 				st_faceindex = ST_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
 			} else {
-				badguyangle = R_PointToAngle2(plyr.Fmo.Fx, plyr.Fmo.Fy, (*mobj_t)(unsafe.Pointer(plyr.Fattacker)).Fx, (*mobj_t)(unsafe.Pointer(plyr.Fattacker)).Fy)
+				badguyangle = R_PointToAngle2(plyr.Fmo.Fx, plyr.Fmo.Fy, plyr.Fattacker.Fx, plyr.Fattacker.Fy)
 				if badguyangle > plyr.Fmo.Fangle {
 					// whether right or left
 					diffang = badguyangle - plyr.Fmo.Fangle
