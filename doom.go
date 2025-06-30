@@ -57,17 +57,6 @@ func xabs(j int32) int32 {
 	return j
 }
 
-func xstrlen(nptr uintptr) uint64 {
-	if nptr == 0 {
-		return 0
-	}
-	var r uint64
-	for ; *(*int8)(unsafe.Pointer(nptr)) != 0; nptr++ {
-		r++
-	}
-	return r
-}
-
 func xstrncasecmp(s1, s2 uintptr, n uint64) int32 {
 	for n > 0 {
 		ch1 := *(*byte)(unsafe.Pointer(s1))
@@ -160,13 +149,6 @@ func gostring_n(s uintptr, n int) string {
 		p++
 	}
 	return string(unsafe.Slice((*byte)(unsafe.Pointer(s)), p-s))
-}
-
-func byteptr(data []byte) uintptr {
-	if len(data) == 0 {
-		panic("byteptr called with empty slice")
-	}
-	return uintptr(unsafe.Pointer(&data[0]))
 }
 
 const AM_NUMMARKPOINTS = 10
@@ -388,7 +370,7 @@ type lumpType interface {
 }
 
 type cheatseq_t struct {
-	Fsequence         [25]int8
+	Fsequence         string
 	Fsequence_len     uint64
 	Fparameter_chars  int32
 	Fchars_read       uint64
@@ -2652,7 +2634,7 @@ var followplayer int32 = 1 // specifies whether to follow the player around
 
 func init() {
 	cheat_amap = cheatseq_t{
-		Fsequence:      [25]int8{'i', 'd', 'd', 't'},
+		Fsequence:      "iddt",
 		Fsequence_len:  5 - 1,
 		Fparameter_buf: [5]byte{},
 	}
@@ -6307,7 +6289,7 @@ type textscreen_t struct {
 	Fepisode    int32
 	Flevel      int32
 	Fbackground string
-	Ftext       uintptr
+	Ftext       string
 }
 
 var textscreens = [22]textscreen_t{
@@ -6315,151 +6297,151 @@ var textscreens = [22]textscreen_t{
 		Fepisode:    1,
 		Flevel:      8,
 		Fbackground: __ccgo_ts_str(5748),
-		Ftext:       __ccgo_ts(5757),
+		Ftext:       __ccgo_ts_str(5757),
 	},
 	1: {
 		Fepisode:    2,
 		Flevel:      8,
 		Fbackground: __ccgo_ts_str(6198),
-		Ftext:       __ccgo_ts(6206),
+		Ftext:       __ccgo_ts_str(6206),
 	},
 	2: {
 		Fepisode:    3,
 		Flevel:      8,
 		Fbackground: __ccgo_ts_str(6673),
-		Ftext:       __ccgo_ts(6681),
+		Ftext:       __ccgo_ts_str(6681),
 	},
 	3: {
 		Fepisode:    4,
 		Flevel:      8,
 		Fbackground: __ccgo_ts_str(7174),
-		Ftext:       __ccgo_ts(7182),
+		Ftext:       __ccgo_ts_str(7182),
 	},
 	4: {
 		Fmission:    doom2,
 		Fepisode:    1,
 		Flevel:      6,
 		Fbackground: __ccgo_ts_str(7686),
-		Ftext:       __ccgo_ts(7694),
+		Ftext:       __ccgo_ts_str(7694),
 	},
 	5: {
 		Fmission:    doom2,
 		Fepisode:    1,
 		Flevel:      11,
 		Fbackground: __ccgo_ts_str(8100),
-		Ftext:       __ccgo_ts(8108),
+		Ftext:       __ccgo_ts_str(8108),
 	},
 	6: {
 		Fmission:    doom2,
 		Fepisode:    1,
 		Flevel:      20,
 		Fbackground: __ccgo_ts_str(8726),
-		Ftext:       __ccgo_ts(8734),
+		Ftext:       __ccgo_ts_str(8734),
 	},
 	7: {
 		Fmission:    doom2,
 		Fepisode:    1,
 		Flevel:      30,
 		Fbackground: __ccgo_ts_str(9047),
-		Ftext:       __ccgo_ts(9055),
+		Ftext:       __ccgo_ts_str(9055),
 	},
 	8: {
 		Fmission:    doom2,
 		Fepisode:    1,
 		Flevel:      15,
 		Fbackground: __ccgo_ts_str(9550),
-		Ftext:       __ccgo_ts(9558),
+		Ftext:       __ccgo_ts_str(9558),
 	},
 	9: {
 		Fmission:    doom2,
 		Fepisode:    1,
 		Flevel:      31,
 		Fbackground: __ccgo_ts_str(9723),
-		Ftext:       __ccgo_ts(9731),
+		Ftext:       __ccgo_ts_str(9731),
 	},
 	10: {
 		Fmission:    pack_tnt,
 		Fepisode:    1,
 		Flevel:      6,
 		Fbackground: __ccgo_ts_str(7686),
-		Ftext:       __ccgo_ts(9824),
+		Ftext:       __ccgo_ts_str(9824),
 	},
 	11: {
 		Fmission:    pack_tnt,
 		Fepisode:    1,
 		Flevel:      11,
 		Fbackground: __ccgo_ts_str(8100),
-		Ftext:       __ccgo_ts(10214),
+		Ftext:       __ccgo_ts_str(10214),
 	},
 	12: {
 		Fmission:    pack_tnt,
 		Fepisode:    1,
 		Flevel:      20,
 		Fbackground: __ccgo_ts_str(8726),
-		Ftext:       __ccgo_ts(10525),
+		Ftext:       __ccgo_ts_str(10525),
 	},
 	13: {
 		Fmission:    pack_tnt,
 		Fepisode:    1,
 		Flevel:      30,
 		Fbackground: __ccgo_ts_str(9047),
-		Ftext:       __ccgo_ts(10835),
+		Ftext:       __ccgo_ts_str(10835),
 	},
 	14: {
 		Fmission:    pack_tnt,
 		Fepisode:    1,
 		Flevel:      15,
 		Fbackground: __ccgo_ts_str(9550),
-		Ftext:       __ccgo_ts(11221),
+		Ftext:       __ccgo_ts_str(11221),
 	},
 	15: {
 		Fmission:    pack_tnt,
 		Fepisode:    1,
 		Flevel:      31,
 		Fbackground: __ccgo_ts_str(9723),
-		Ftext:       __ccgo_ts(11395),
+		Ftext:       __ccgo_ts_str(11395),
 	},
 	16: {
 		Fmission:    pack_plut,
 		Fepisode:    1,
 		Flevel:      6,
 		Fbackground: __ccgo_ts_str(7686),
-		Ftext:       __ccgo_ts(11749),
+		Ftext:       __ccgo_ts_str(11749),
 	},
 	17: {
 		Fmission:    pack_plut,
 		Fepisode:    1,
 		Flevel:      11,
 		Fbackground: __ccgo_ts_str(8100),
-		Ftext:       __ccgo_ts(12183),
+		Ftext:       __ccgo_ts_str(12183),
 	},
 	18: {
 		Fmission:    pack_plut,
 		Fepisode:    1,
 		Flevel:      20,
 		Fbackground: __ccgo_ts_str(8726),
-		Ftext:       __ccgo_ts(12377),
+		Ftext:       __ccgo_ts_str(12377),
 	},
 	19: {
 		Fmission:    pack_plut,
 		Fepisode:    1,
 		Flevel:      30,
 		Fbackground: __ccgo_ts_str(9047),
-		Ftext:       __ccgo_ts(12706),
+		Ftext:       __ccgo_ts_str(12706),
 	},
 	20: {
 		Fmission:    pack_plut,
 		Fepisode:    1,
 		Flevel:      15,
 		Fbackground: __ccgo_ts_str(9550),
-		Ftext:       __ccgo_ts(13167),
+		Ftext:       __ccgo_ts_str(13167),
 	},
 	21: {
 		Fmission:    pack_plut,
 		Fepisode:    1,
 		Flevel:      31,
 		Fbackground: __ccgo_ts_str(9723),
-		Ftext:       __ccgo_ts(13327),
+		Ftext:       __ccgo_ts_str(13327),
 	},
 }
 
@@ -6583,7 +6565,7 @@ func F_Ticker() {
 	if gamemode == commercial {
 		return
 	}
-	if finalestage == F_STAGE_TEXT && uint64(finalecount) > xstrlen(finaletext)*uint64(TEXTSPEED)+uint64(TEXTWAIT) {
+	if finalestage == F_STAGE_TEXT && uint64(finalecount) > uint64(len(finaletext)*TEXTSPEED+TEXTWAIT) {
 		finalecount = 0
 		finalestage = F_STAGE_ARTSCREEN
 		wipegamestate = -1 // force a wipe
@@ -6595,7 +6577,8 @@ func F_Ticker() {
 
 func F_TextWrite() {
 	var c, count, cx, cy, w, x, y int32
-	var ch, dest, src, v4 uintptr
+	var dest, src uintptr
+	var pos int
 	// erase the entire screen to a tiled background
 	src = W_CacheLumpName(finaleflat, PU_CACHE)
 	dest = I_VideoBuffer
@@ -6629,7 +6612,7 @@ func F_TextWrite() {
 	// draw some of the text onto the screen
 	cx = 10
 	cy = 10
-	ch = finaletext
+	pos = 0
 	count = (int32(finalecount) - 10) / TEXTSPEED
 	if count < 0 {
 		count = 0
@@ -6638,9 +6621,8 @@ func F_TextWrite() {
 		if count == 0 {
 			break
 		}
-		v4 = ch
-		ch++
-		c = int32(*(*int8)(unsafe.Pointer(v4)))
+		c = int32(finaletext[pos])
+		pos++
 		if c == 0 {
 			break
 		}
@@ -18565,14 +18547,14 @@ func cht_CheckCheat(cht *cheatseq_t, key int8) (r int32) {
 	var v1 int32
 	// if we make a short sequence on a cheat with parameters, this
 	// will not work in vanilla doom.  behave the same.
-	if cht.Fparameter_chars > 0 && xstrlen(uintptr(unsafe.Pointer(&cht.Fsequence[0]))) < cht.Fsequence_len {
+	if cht.Fparameter_chars > 0 && uint64(len(cht.Fsequence)) < cht.Fsequence_len {
 		return 0
 	}
-	if cht.Fchars_read < xstrlen(uintptr(unsafe.Pointer(&cht.Fsequence[0]))) {
+	if cht.Fchars_read < uint64(len(cht.Fsequence)) {
 		// still reading characters from the cheat code
 		// and verifying.  reset back to the beginning
 		// if a key is wrong
-		if int32(key) == int32(*(*int8)(unsafe.Pointer(&cht.Fsequence[cht.Fchars_read]))) {
+		if int32(key) == int32(cht.Fsequence[cht.Fchars_read]) {
 			cht.Fchars_read++
 		} else {
 			cht.Fchars_read = 0
@@ -18586,7 +18568,7 @@ func cht_CheckCheat(cht *cheatseq_t, key int8) (r int32) {
 			cht.Fparam_chars_read++
 		}
 	}
-	if cht.Fchars_read >= xstrlen(uintptr(unsafe.Pointer(&cht.Fsequence[0]))) && cht.Fparam_chars_read >= cht.Fparameter_chars {
+	if cht.Fchars_read >= uint64(len(cht.Fsequence)) && cht.Fparam_chars_read >= cht.Fparameter_chars {
 		v1 = 0
 		cht.Fparam_chars_read = v1
 		cht.Fchars_read = uint64(v1)
@@ -38278,9 +38260,8 @@ func R_DrawMasked() {
 //	/* Update the message digest with the contents
 //	 * of INBUF with length INLEN.
 //	 */
-func SHA1_Update(sha hash.Hash, inbuf uintptr, inlen uint64) {
-	inBufBytes := unsafe.Slice((*byte)(unsafe.Pointer(inbuf)), inlen)
-	sha.Write(inBufBytes)
+func SHA1_Update(sha hash.Hash, buf []byte) {
+	sha.Write(buf)
 }
 
 func SHA1_UpdateInt32(sha hash.Hash, val uint32) {
@@ -38289,11 +38270,12 @@ func SHA1_UpdateInt32(sha hash.Hash, val uint32) {
 	bp[int32(1)] = uint8(val >> 16 & 0xff)
 	bp[int32(2)] = uint8(val >> 8 & 0xff)
 	bp[int32(3)] = uint8(val & 0xff)
-	SHA1_Update(sha, byteptr(bp[:]), 4)
+	SHA1_Update(sha, bp[:])
 }
 
-func SHA1_UpdateString(sha hash.Hash, str uintptr) {
-	SHA1_Update(sha, str, xstrlen(str)+1)
+func SHA1_UpdateString(sha hash.Hash, str string) {
+	SHA1_Update(sha, []byte(str))
+	SHA1_Update(sha, []byte{0}) // Null-terminate the string
 }
 
 func init() {
@@ -39707,7 +39689,7 @@ var st_randomnumber int32
 
 func init() {
 	cheat_mus = cheatseq_t{
-		Fsequence:        [25]int8{'i', 'd', 'm', 'u', 's'},
+		Fsequence:        "idmus",
 		Fsequence_len:    6 - 1,
 		Fparameter_chars: 2,
 		Fparameter_buf:   [5]byte{},
@@ -39716,7 +39698,7 @@ func init() {
 
 func init() {
 	cheat_god = cheatseq_t{
-		Fsequence:      [25]int8{'i', 'd', 'd', 'q', 'd'},
+		Fsequence:      "iddqd",
 		Fsequence_len:  6 - 1,
 		Fparameter_buf: [5]byte{},
 	}
@@ -39724,7 +39706,7 @@ func init() {
 
 func init() {
 	cheat_ammo = cheatseq_t{
-		Fsequence:      [25]int8{'i', 'd', 'k', 'f', 'a'},
+		Fsequence:      "idkfa",
 		Fsequence_len:  6 - 1,
 		Fparameter_buf: [5]byte{},
 	}
@@ -39732,7 +39714,7 @@ func init() {
 
 func init() {
 	cheat_ammonokey = cheatseq_t{
-		Fsequence:      [25]int8{'i', 'd', 'f', 'a'},
+		Fsequence:      "idfa",
 		Fsequence_len:  5 - 1,
 		Fparameter_buf: [5]byte{},
 	}
@@ -39740,7 +39722,7 @@ func init() {
 
 func init() {
 	cheat_noclip = cheatseq_t{
-		Fsequence:      [25]int8{'i', 'd', 's', 'p', 'i', 's', 'p', 'o', 'p', 'd'},
+		Fsequence:      "idspispopd",
 		Fsequence_len:  11 - 1,
 		Fparameter_buf: [5]byte{},
 	}
@@ -39748,7 +39730,7 @@ func init() {
 
 func init() {
 	cheat_commercial_noclip = cheatseq_t{
-		Fsequence:      [25]int8{'i', 'd', 'c', 'l', 'i', 'p'},
+		Fsequence:      "idclip",
 		Fsequence_len:  7 - 1,
 		Fparameter_buf: [5]byte{},
 	}
@@ -39757,37 +39739,37 @@ func init() {
 func init() {
 	cheat_powerup = [7]cheatseq_t{
 		0: {
-			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd', 'v'},
+			Fsequence:      "idbeholdv",
 			Fsequence_len:  10 - 1,
 			Fparameter_buf: [5]byte{},
 		},
 		1: {
-			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd', 's'},
+			Fsequence:      "idbeholds",
 			Fsequence_len:  10 - 1,
 			Fparameter_buf: [5]byte{},
 		},
 		2: {
-			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd', 'i'},
+			Fsequence:      "idbeholdi",
 			Fsequence_len:  10 - 1,
 			Fparameter_buf: [5]byte{},
 		},
 		3: {
-			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd', 'r'},
+			Fsequence:      "idbeholdr",
 			Fsequence_len:  10 - 1,
 			Fparameter_buf: [5]byte{},
 		},
 		4: {
-			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd', 'a'},
+			Fsequence:      "idbeholda",
 			Fsequence_len:  10 - 1,
 			Fparameter_buf: [5]byte{},
 		},
 		5: {
-			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd', 'l'},
+			Fsequence:      "idbeholdl",
 			Fsequence_len:  10 - 1,
 			Fparameter_buf: [5]byte{},
 		},
 		6: {
-			Fsequence:      [25]int8{'i', 'd', 'b', 'e', 'h', 'o', 'l', 'd'},
+			Fsequence:      "idbehold",
 			Fsequence_len:  9 - 1,
 			Fparameter_buf: [5]byte{},
 		},
@@ -39796,7 +39778,7 @@ func init() {
 
 func init() {
 	cheat_choppers = cheatseq_t{
-		Fsequence:      [25]int8{'i', 'd', 'c', 'h', 'o', 'p', 'p', 'e', 'r', 's'},
+		Fsequence:      "idchoppers",
 		Fsequence_len:  11 - 1,
 		Fparameter_buf: [5]byte{},
 	}
@@ -39804,7 +39786,7 @@ func init() {
 
 func init() {
 	cheat_clev = cheatseq_t{
-		Fsequence:        [25]int8{'i', 'd', 'c', 'l', 'e', 'v'},
+		Fsequence:        "idclev",
 		Fsequence_len:    7 - 1,
 		Fparameter_chars: 2,
 		Fparameter_buf:   [5]byte{},
@@ -39813,7 +39795,7 @@ func init() {
 
 func init() {
 	cheat_mypos = cheatseq_t{
-		Fsequence:      [25]int8{'i', 'd', 'm', 'y', 'p', 'o', 's'},
+		Fsequence:      "idmypos",
 		Fsequence_len:  8 - 1,
 		Fparameter_buf: [5]byte{},
 	}
@@ -43379,7 +43361,7 @@ func GetFileNumber(handle *os.File) (r int32) {
 }
 
 func ChecksumAddLump(sha hash.Hash, lump *lumpinfo_t) {
-	SHA1_UpdateString(sha, lump.NamePtr())
+	SHA1_UpdateString(sha, lump.Name())
 	SHA1_UpdateInt32(sha, uint32(GetFileNumber(lump.Fwad_file)))
 	SHA1_UpdateInt32(sha, uint32(lump.Fposition))
 	SHA1_UpdateInt32(sha, uint32(lump.Fsize))
@@ -45159,7 +45141,7 @@ var finaleflat string
 //	// Stage of animation:
 var finalestage finalestage_t
 
-var finaletext uintptr
+var finaletext string
 
 var finecosine []fixed_t
 
