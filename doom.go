@@ -42924,7 +42924,7 @@ func WI_updateStats() {
 		sp_state = 10
 	}
 	if sp_state == 2 {
-		*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_kills)))) += 2
+		cnt_kills[0] += 2
 		if bcnt&3 == 0 {
 			S_StartSound(nil, int32(sfx_pistol))
 		}
@@ -42935,7 +42935,7 @@ func WI_updateStats() {
 		}
 	} else {
 		if sp_state == 4 {
-			*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_items)))) += 2
+			cnt_items[0] += 2
 			if bcnt&3 == 0 {
 				S_StartSound(nil, int32(sfx_pistol))
 			}
@@ -42946,7 +42946,7 @@ func WI_updateStats() {
 			}
 		} else {
 			if sp_state == 6 {
-				*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_secret)))) += 2
+				cnt_secret[0] += 2
 				if bcnt&3 == 0 {
 					S_StartSound(nil, int32(sfx_pistol))
 				}
@@ -43305,7 +43305,7 @@ func WI_initVariables(wbstartstruct *wbstartstruct_t) {
 	}
 	if gamemode != retail {
 		if wbs.Fepsd > 2 {
-			*(*int32)(unsafe.Pointer(wbs)) -= 3
+			wbs.Fepsd -= 3
 		}
 	}
 }
