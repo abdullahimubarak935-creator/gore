@@ -37668,8 +37668,9 @@ func R_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation u
 			if r >= 8 {
 				break
 			}
-			*(*int16)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 4 + uintptr(r)*2)) = int16(lump - firstspritelump)
-			*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 20 + uintptr(r))) = uint8(flipped)
+
+			sprtemp[frame].Flump[r] = int16(lump - firstspritelump)
+			sprtemp[frame].Fflip[r] = uint8(flipped)
 			goto _1
 		_1:
 			;
@@ -37684,11 +37685,11 @@ func R_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation u
 	sprtemp[frame].Frotate = 1
 	// make 0 based
 	rotation--
-	if int32(*(*int16)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 4 + uintptr(rotation)*2))) != -1 {
+	if int32(sprtemp[frame].Flump[rotation]) != -1 {
 		I_Error(26777, spritename, uint32('A')+frame, uint32('1')+rotation)
 	}
-	*(*int16)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 4 + uintptr(rotation)*2)) = int16(lump - firstspritelump)
-	*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 20 + uintptr(rotation))) = uint8(flipped)
+	sprtemp[frame].Flump[rotation] = int16(lump - firstspritelump)
+	sprtemp[frame].Fflip[rotation] = uint8(flipped)
 }
 
 // C documentation
@@ -37795,7 +37796,7 @@ func R_InitSpriteDefs(namelist []uintptr) {
 			if rotation >= 8 {
 				goto _8
 			}
-			if int32(*(*int16)(unsafe.Pointer(uintptr(unsafe.Pointer(&sprtemp)) + uintptr(frame)*28 + 4 + uintptr(rotation)*2))) == -1 {
+			if int32(sprtemp[frame].Flump[rotation]) == -1 {
 				I_Error(26887, spritename, frame+int32('A'))
 			}
 			goto _9
