@@ -21042,7 +21042,7 @@ func M_Responder(ev *event_t) (r boolean) {
 			if ch != ' ' && (ch-'!' < 0 || ch-'!' >= '_'-'!'+1) {
 				break
 			}
-			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(gostring(uintptr(unsafe.Pointer(&savegamestrings[saveSlot])))) < (SAVESTRINGSIZE-2)*8 {
+			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(savegamestrings[saveSlot]) < (SAVESTRINGSIZE-2)*8 {
 				savegamestrings[saveSlot] += string(ch)
 				saveCharIndex++
 			}
@@ -22146,7 +22146,7 @@ func T_VerticalDoor(door *vldoor_t) {
 		// DOWN
 		res = T_MovePlane(door.Fsector, door.Fspeed, door.Fsector.Ffloorheight, 0, 1, door.Fdirection)
 		if res == int32(pastdest) {
-			switch (*vldoor_t)(unsafe.Pointer(door)).Ftype1 {
+			switch door.Ftype1 {
 			case int32(vld_blazeRaise):
 				fallthrough
 			case int32(vld_blazeClose):
@@ -24330,8 +24330,8 @@ func T_MoveFloor(floor *floormove_t) {
 			if floor.Fdirection == -1 {
 				switch floor.Ftype1 {
 				case int32(lowerAndChange):
-					floor.Fsector.Fspecial = int16((*floormove_t)(unsafe.Pointer(floor)).Fnewspecial)
-					floor.Fsector.Ffloorpic = (*floormove_t)(unsafe.Pointer(floor)).Ftexture
+					floor.Fsector.Fspecial = int16(floor.Fnewspecial)
+					floor.Fsector.Ffloorpic = floor.Ftexture
 					fallthrough
 				default:
 					break
@@ -24443,13 +24443,13 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 				}
 				if twoSided(secnum, i) != 0 {
 					side = getSide(secnum, i, 0)
-					if int32((*side_t)(unsafe.Pointer(side)).Fbottomtexture) >= 0 {
+					if int32(side.Fbottomtexture) >= 0 {
 						if textureheight[side.Fbottomtexture] < minsize {
 							minsize = textureheight[side.Fbottomtexture]
 						}
 					}
 					side = getSide(secnum, i, 1)
-					if int32((*side_t)(unsafe.Pointer(side)).Fbottomtexture) >= 0 {
+					if int32(side.Fbottomtexture) >= 0 {
 						if textureheight[side.Fbottomtexture] < minsize {
 							minsize = textureheight[side.Fbottomtexture]
 						}
@@ -25283,7 +25283,7 @@ func P_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int3
 	// player specific
 	if player != nil {
 		// end of game hell hack
-		if int32((*sector_t)(unsafe.Pointer(target.Fsubsector.Fsector)).Fspecial) == 11 && damage >= target.Fhealth {
+		if int32(target.Fsubsector.Fsector.Fspecial) == 11 && damage >= target.Fhealth {
 			damage = target.Fhealth - 1
 		}
 		// Below certain threshold,
@@ -25417,21 +25417,17 @@ func P_SpawnFireFlicker(sector *sector_t) {
 //	// T_LightFlash
 //	// Do flashing lights.
 //	//
-func T_LightFlash(flash uintptr) {
-	var v1 int32
-	var v2 uintptr
-	v2 = flash + 32
-	*(*int32)(unsafe.Pointer(v2))--
-	v1 = *(*int32)(unsafe.Pointer(v2))
-	if v1 != 0 {
+func T_LightFlash(flash *lightflash_t) {
+	flash.Fcount--
+	if flash.Fcount != 0 {
 		return
 	}
-	if int32((*sector_t)(unsafe.Pointer((*lightflash_t)(unsafe.Pointer(flash)).Fsector)).Flightlevel) == (*lightflash_t)(unsafe.Pointer(flash)).Fmaxlight {
-		(*sector_t)(unsafe.Pointer((*lightflash_t)(unsafe.Pointer(flash)).Fsector)).Flightlevel = int16((*lightflash_t)(unsafe.Pointer(flash)).Fminlight)
-		(*lightflash_t)(unsafe.Pointer(flash)).Fcount = P_Random()&(*lightflash_t)(unsafe.Pointer(flash)).Fmintime + 1
+	if int32(flash.Fsector.Flightlevel) == flash.Fmaxlight {
+		flash.Fsector.Flightlevel = int16(flash.Fminlight)
+		flash.Fcount = P_Random()&flash.Fmintime + 1
 	} else {
-		(*sector_t)(unsafe.Pointer((*lightflash_t)(unsafe.Pointer(flash)).Fsector)).Flightlevel = int16((*lightflash_t)(unsafe.Pointer(flash)).Fmaxlight)
-		(*lightflash_t)(unsafe.Pointer(flash)).Fcount = P_Random()&(*lightflash_t)(unsafe.Pointer(flash)).Fmaxtime + 1
+		flash.Fsector.Flightlevel = int16(flash.Fmaxlight)
+		flash.Fcount = P_Random()&flash.Fmaxtime + 1
 	}
 }
 
@@ -26971,7 +26967,7 @@ func P_UnsetThingPosition(thing *mobj_t) {
 		if thing.Fsprev != nil {
 			thing.Fsprev.Fsnext = thing.Fsnext
 		} else {
-			(*sector_t)(unsafe.Pointer(thing.Fsubsector.Fsector)).Fthinglist = thing.Fsnext
+			thing.Fsubsector.Fsector.Fthinglist = thing.Fsnext
 		}
 	}
 	if thing.Fflags&MF_NOBLOCKMAP == 0 {
@@ -27025,7 +27021,7 @@ func P_SetThingPosition(thing *mobj_t) {
 		if blockx >= 0 && blockx < bmapwidth && blocky >= 0 && blocky < bmapheight {
 			link := &blocklinks[blocky*bmapwidth+blockx]
 			thing.Fbprev = nil
-			thing.Fbnext = *(**mobj_t)(unsafe.Pointer(link))
+			thing.Fbnext = *link
 			if *link != nil {
 				(*link).Fbprev = thing
 			}
@@ -27632,7 +27628,7 @@ func P_XYMovement(mo *mobj_t) {
 		// do not stop sliding
 		//  if halfway off a step with some momentum
 		if mo.Fmomx > 1<<FRACBITS/4 || mo.Fmomx < -(1<<FRACBITS)/4 || mo.Fmomy > 1<<FRACBITS/4 || mo.Fmomy < -(1<<FRACBITS)/4 {
-			if mo.Ffloorz != (*sector_t)(unsafe.Pointer(mo.Fsubsector.Fsector)).Ffloorheight {
+			if mo.Ffloorz != mo.Fsubsector.Fsector.Ffloorheight {
 				return
 			}
 		}
@@ -27777,7 +27773,7 @@ func P_NightmareRespawn(mobj *mobj_t) {
 	} // no respwan
 	// spawn a teleport fog at old spot
 	// because of removal of the body?
-	mo = P_SpawnMobj(mobj.Fx, mobj.Fy, (*sector_t)(unsafe.Pointer(mobj.Fsubsector.Fsector)).Ffloorheight, MT_TFOG)
+	mo = P_SpawnMobj(mobj.Fx, mobj.Fy, mobj.Fsubsector.Fsector.Ffloorheight, MT_TFOG)
 	// initiate teleport sound
 	S_StartSound(&mo.degenmobj_t, int32(sfx_telept))
 	// spawn a teleport fog at the new spot
@@ -27887,8 +27883,8 @@ func P_SpawnMobj(x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r *mobj_t) 
 	mobj.Fframe = st.Fframe
 	// set subsector and/or block links
 	P_SetThingPosition(mobj)
-	mobj.Ffloorz = (*sector_t)(unsafe.Pointer(mobj.Fsubsector.Fsector)).Ffloorheight
-	mobj.Fceilingz = (*sector_t)(unsafe.Pointer(mobj.Fsubsector.Fsector)).Fceilingheight
+	mobj.Ffloorz = mobj.Fsubsector.Fsector.Ffloorheight
+	mobj.Fceilingz = mobj.Fsubsector.Fsector.Fceilingheight
 	if z == -1-0x7fffffff {
 		mobj.Fz = mobj.Ffloorz
 	} else {
@@ -28338,7 +28334,7 @@ func T_PlatRaise(plat *plat_t) {
 	case int32(down):
 		res = T_MovePlane(plat.Fsector, plat.Fspeed, plat.Flow, 0, 0, -1)
 		if res == int32(pastdest) {
-			plat.Fcount = (*plat_t)(unsafe.Pointer(plat)).Fwait
+			plat.Fcount = plat.Fwait
 			plat.Fstatus = int32(waiting)
 			S_StartSound(&plat.Fsector.Fsoundorg, int32(sfx_pstop))
 		}
@@ -28461,7 +28457,7 @@ func P_ActivateInStasis(tag int32) {
 			break
 		}
 		if activeplats[i] != nil && activeplats[i].Ftag == tag && activeplats[i].Fstatus == int32(in_stasis) {
-			activeplats[i].Fstatus = (*plat_t)(unsafe.Pointer(activeplats[i])).Foldstatus
+			activeplats[i].Fstatus = activeplats[i].Foldstatus
 			activeplats[i].Fthinker.Ffunction.Facv = __ccgo_fp(T_PlatRaise)
 		}
 		goto _1
@@ -28479,7 +28475,7 @@ func EV_StopPlat(line *line_t) {
 			break
 		}
 		if activeplats[j] != nil && activeplats[j].Fstatus != int32(in_stasis) && activeplats[j].Ftag == int32(line.Ftag) {
-			activeplats[j].Foldstatus = (*plat_t)(unsafe.Pointer(activeplats[j])).Fstatus
+			activeplats[j].Foldstatus = activeplats[j].Fstatus
 			activeplats[j].Fstatus = int32(in_stasis)
 			activeplats[j].Fthinker.Ffunction.Facv = 0
 		}
@@ -28623,7 +28619,7 @@ func P_BringUpWeapon(player *player_t) {
 	}
 	newstate = weaponinfo[player.Fpendingweapon].Fupstate
 	player.Fpendingweapon = wp_nochange
-	(*(*pspdef_t)(unsafe.Pointer(&player.Fpsprites[ps_weapon]))).Fsy = 128 * (1 << FRACBITS)
+	player.Fpsprites[ps_weapon].Fsy = 128 * (1 << FRACBITS)
 	P_SetPsprite(player, int32(ps_weapon), newstate)
 }
 
@@ -29158,7 +29154,7 @@ func P_SetupPsprites(player *player_t) {
 		if i >= NUMPSPRITES {
 			break
 		}
-		(*(*pspdef_t)(unsafe.Pointer(&player.Fpsprites[i]))).Fstate = nil
+		player.Fpsprites[i].Fstate = nil
 		goto _1
 	_1:
 		;
@@ -30378,11 +30374,11 @@ func P_ArchiveWorld() {
 				continue
 			}
 			si = &sides[li.Fsidenum[j]]
-			saveg_write16(int16((*side_t)(unsafe.Pointer(si)).Ftextureoffset >> FRACBITS))
-			saveg_write16(int16((*side_t)(unsafe.Pointer(si)).Frowoffset >> FRACBITS))
-			saveg_write16((*side_t)(unsafe.Pointer(si)).Ftoptexture)
-			saveg_write16((*side_t)(unsafe.Pointer(si)).Fbottomtexture)
-			saveg_write16((*side_t)(unsafe.Pointer(si)).Fmidtexture)
+			saveg_write16(int16(si.Ftextureoffset >> FRACBITS))
+			saveg_write16(int16(si.Frowoffset >> FRACBITS))
+			saveg_write16(si.Ftoptexture)
+			saveg_write16(si.Fbottomtexture)
+			saveg_write16(si.Fmidtexture)
 		}
 	}
 }
@@ -30418,11 +30414,11 @@ func P_UnArchiveWorld() {
 				continue
 			}
 			si = &sides[li.Fsidenum[j]]
-			(*side_t)(unsafe.Pointer(si)).Ftextureoffset = int32(saveg_read16()) << FRACBITS
-			(*side_t)(unsafe.Pointer(si)).Frowoffset = int32(saveg_read16()) << FRACBITS
-			(*side_t)(unsafe.Pointer(si)).Ftoptexture = saveg_read16()
-			(*side_t)(unsafe.Pointer(si)).Fbottomtexture = saveg_read16()
-			(*side_t)(unsafe.Pointer(si)).Fmidtexture = saveg_read16()
+			si.Ftextureoffset = int32(saveg_read16()) << FRACBITS
+			si.Frowoffset = int32(saveg_read16()) << FRACBITS
+			si.Ftoptexture = saveg_read16()
+			si.Fbottomtexture = saveg_read16()
+			si.Fmidtexture = saveg_read16()
 		}
 	}
 }
@@ -30494,8 +30490,8 @@ func P_UnArchiveThinkers() {
 			mobj.Ftracer = nil
 			P_SetThingPosition(mobj)
 			mobj.Finfo = &mobjinfo[mobj.Ftype1]
-			mobj.Ffloorz = (*sector_t)(unsafe.Pointer(mobj.Fsubsector.Fsector)).Ffloorheight
-			mobj.Fceilingz = (*sector_t)(unsafe.Pointer(mobj.Fsubsector.Fsector)).Fceilingheight
+			mobj.Ffloorz = mobj.Fsubsector.Fsector.Ffloorheight
+			mobj.Fceilingz = mobj.Fsubsector.Fsector.Fceilingheight
 			mobj.Fthinker.Ffunction.Facv = __ccgo_fp(P_MobjThinker)
 			P_AddThinker(&mobj.Fthinker)
 		default:
@@ -31791,7 +31787,7 @@ func P_InitPicAnims() {
 		if lastanim.Fnumpics < 2 {
 			I_Error(25279, startname, endname)
 		}
-		(*anim_t)(unsafe.Pointer(lastanim)).Fspeed = animdefs[i].Fspeed
+		lastanim.Fspeed = animdefs[i].Fspeed
 		animPos++
 		lastanim = &anims[animPos]
 	}
@@ -34247,7 +34243,7 @@ func R_AddLine(line *seg_t) {
 	// Identical floor and ceiling on both sides,
 	// identical light levels on both sides,
 	// and no middle texture.
-	if int32(backsector.Fceilingpic) == int32(frontsector.Fceilingpic) && int32(backsector.Ffloorpic) == int32(frontsector.Ffloorpic) && int32(backsector.Flightlevel) == int32(frontsector.Flightlevel) && int32((*side_t)(unsafe.Pointer(curline.Fsidedef)).Fmidtexture) == 0 {
+	if int32(backsector.Fceilingpic) == int32(frontsector.Fceilingpic) && int32(backsector.Ffloorpic) == int32(frontsector.Ffloorpic) && int32(backsector.Flightlevel) == int32(frontsector.Flightlevel) && int32(curline.Fsidedef.Fmidtexture) == 0 {
 		return
 	}
 	goto clippass
@@ -36850,7 +36846,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 	curline = ds.Fcurline
 	frontsector = curline.Ffrontsector
 	backsector = curline.Fbacksector
-	texnum = texturetranslation[(*side_t)(unsafe.Pointer(curline.Fsidedef)).Fmidtexture]
+	texnum = texturetranslation[curline.Fsidedef.Fmidtexture]
 	lightnum = int32(frontsector.Flightlevel)>>LIGHTSEGSHIFT + extralight
 	if curline.Fv1.Fy == curline.Fv2.Fy {
 		lightnum--
@@ -36891,7 +36887,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 		dc_texturemid = v2
 		dc_texturemid = dc_texturemid - viewz
 	}
-	dc_texturemid += (*side_t)(unsafe.Pointer(curline.Fsidedef)).Frowoffset
+	dc_texturemid += curline.Fsidedef.Frowoffset
 	if fixedcolormap != nil {
 		dc_colormap = fixedcolormap
 	}
@@ -37718,11 +37714,11 @@ func R_ProjectSprite(thing *mobj_t) {
 		I_Error(26979, thing.Fsprite)
 	}
 	sprdef = &sprites[thing.Fsprite]
-	if thing.Fframe&int32(FF_FRAMEMASK3) >= (*spritedef_t)(unsafe.Pointer(sprdef)).Fnumframes {
+	if thing.Fframe&int32(FF_FRAMEMASK3) >= sprdef.Fnumframes {
 		I_Error(27022, thing.Fsprite, thing.Fframe)
 	}
 	sprframe = &sprdef.Fspriteframes[thing.Fframe&int32(FF_FRAMEMASK3)]
-	if (*spriteframe_t)(unsafe.Pointer(sprframe)).Frotate != 0 {
+	if sprframe.Frotate != 0 {
 		// choose a different rotation based on player view
 		ang = R_PointToAngle(thing.Fx, thing.Fy)
 		rot = (ang - thing.Fangle + uint32(ANG455/2)*9) >> 29
@@ -37863,7 +37859,7 @@ func R_DrawPSprite(psp *pspdef_t) {
 		I_Error(26979, psp.Fstate.Fsprite)
 	}
 	sprdef = &sprites[psp.Fstate.Fsprite]
-	if psp.Fstate.Fframe&int32(FF_FRAMEMASK3) >= (*spritedef_t)(unsafe.Pointer(sprdef)).Fnumframes {
+	if psp.Fstate.Fframe&int32(FF_FRAMEMASK3) >= sprdef.Fnumframes {
 		I_Error(27022, psp.Fstate.Fsprite, psp.Fstate.Fframe)
 	}
 	sprframe = &sprdef.Fspriteframes[psp.Fstate.Fframe&int32(FF_FRAMEMASK3)]
