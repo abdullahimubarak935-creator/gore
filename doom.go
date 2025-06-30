@@ -68,51 +68,6 @@ func xstrlen(nptr uintptr) uint64 {
 	return r
 }
 
-func xstrcmp(s1, s2 uintptr) int32 {
-	for {
-		ch1 := *(*byte)(unsafe.Pointer(s1))
-		s1++
-		ch2 := *(*byte)(unsafe.Pointer(s2))
-		s2++
-		if ch1 != ch2 || ch1 == 0 || ch2 == 0 {
-			return int32(ch1) - int32(ch2)
-		}
-	}
-}
-
-func xstrncmp(s1, s2 uintptr, n uint64) int32 {
-	var ch1, ch2 byte
-	for ; n != 0; n-- {
-		ch1 = *(*byte)(unsafe.Pointer(s1))
-		s1++
-		ch2 = *(*byte)(unsafe.Pointer(s2))
-		s2++
-		if ch1 != ch2 {
-			return int32(ch1) - int32(ch2)
-		}
-
-		if ch1 == 0 {
-			return 0
-		}
-	}
-	return 0
-}
-
-func xstrncpy(dest, src uintptr, n uint64) (r uintptr) {
-	r = dest
-	for c := *(*int8)(unsafe.Pointer(src)); c != 0 && n > 0; n-- {
-		*(*int8)(unsafe.Pointer(dest)) = c
-		dest++
-		src++
-		c = *(*int8)(unsafe.Pointer(src))
-	}
-	for ; uintptr(n) > 0; n-- {
-		*(*int8)(unsafe.Pointer(dest)) = 0
-		dest++
-	}
-	return r
-}
-
 func xstrncasecmp(s1, s2 uintptr, n uint64) int32 {
 	for n > 0 {
 		ch1 := *(*byte)(unsafe.Pointer(s1))
@@ -205,16 +160,6 @@ func gostring_n(s uintptr, n int) string {
 		p++
 	}
 	return string(unsafe.Slice((*byte)(unsafe.Pointer(s)), p-s))
-}
-
-func bytestring(s string) []byte {
-	if len(s) == 0 {
-		return []byte{0}
-	}
-	data := make([]byte, len(s)+1)
-	copy(data, s)
-	data[len(s)] = 0 // null-terminate
-	return data
 }
 
 func byteptr(data []byte) uintptr {
@@ -8168,7 +8113,7 @@ func G_Ticker() {
 					}
 				case BTS_SAVEGAME:
 					if len(savedescription) == 0 {
-						M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(13798), 32)
+						savedescription = __ccgo_ts_str(13798)
 					}
 					savegameslot = int32(players[i].Fcmd.Fbuttons) & BTS_SAVEMASK >> BTS_SAVESHIFT
 					gameaction = ga_savegame
@@ -8822,7 +8767,7 @@ func G_DoSaveGame() {
 	os.Remove(savegame_file) // remove the old savegame file
 	os.Rename(temp_savegame_file, savegame_file)
 	gameaction = ga_nothing
-	M_StringCopy(uintptr(unsafe.Pointer(&savedescription)), __ccgo_ts(14092), 32)
+	savedescription = __ccgo_ts_str(14092)
 	players[consoleplayer].Fmessage = __ccgo_ts_str(14093)
 	// draw the pattern into the back screen
 	R_FillBackScreen()
@@ -9175,35 +9120,31 @@ func G_DeferedPlayDemo(name string) {
 
 // Generate a string describing a demo version
 
-func DemoVersionDescription(version int32) (r uintptr) {
+func DemoVersionDescription(version int32) string {
 	switch version {
 	case 104:
-		return __ccgo_ts(14158)
+		return __ccgo_ts_str(14158)
 	case 105:
-		return __ccgo_ts(14163)
+		return __ccgo_ts_str(14163)
 	case 106:
-		return __ccgo_ts(14168)
+		return __ccgo_ts_str(14168)
 	case 107:
-		return __ccgo_ts(14180)
+		return __ccgo_ts_str(14180)
 	case 108:
-		return __ccgo_ts(14191)
+		return __ccgo_ts_str(14191)
 	case 109:
-		return __ccgo_ts(14196)
+		return __ccgo_ts_str(14196)
 	default:
 		break
 	}
 	// Unknown version.  Perhaps this is a pre-v1.4 IWAD?  If the version
 	// byte is in the range 0-4 then it can be a v1.0-v1.2 demo.
 	if version >= 0 && version <= 4 {
-		return __ccgo_ts(14201)
+		return __ccgo_ts_str(14201)
 	} else {
-		M_snprintf(uintptr(unsafe.Pointer(&resultbuf)), 16, __ccgo_ts_str(14216), version/int32(100), version%int32(100))
-		return uintptr(unsafe.Pointer(&resultbuf))
+		return fmt.Sprintf(__ccgo_ts_str(14216), version/100, version%100)
 	}
-	return r
 }
-
-var resultbuf [16]int8
 
 func G_DoPlayDemo() {
 	var demoversion, episode, i, map1 int32
@@ -9225,7 +9166,7 @@ func G_DoPlayDemo() {
 			longtics = 1
 		} else {
 			//I_Error(message, demoversion, G_VanillaVersionCode(),
-			fprintf_ccgo(os.Stdout, 14232, demoversion, G_VanillaVersionCode(), gostring(DemoVersionDescription(demoversion)))
+			fprintf_ccgo(os.Stdout, 14232, demoversion, G_VanillaVersionCode(), DemoVersionDescription(demoversion))
 		}
 	}
 	skill = skill_t(demobuffer[demo_pos])
@@ -9334,7 +9275,7 @@ func G_CheckDemoStatus() {
 	if demorecording != 0 {
 		demobuffer[demo_pos] = uint8(DEMOMARKER)
 		demo_pos++
-		M_WriteFile(demoname, byteptr(demobuffer), int32(demo_pos))
+		M_WriteFile(demoname, demobuffer[:demo_pos])
 		demobuffer = nil
 		demorecording = 0
 		I_Error(14508, demoname)
@@ -21120,15 +21061,7 @@ func M_Responder(ev *event_t) (r boolean) {
 			}
 		case KEY_ESCAPE:
 			saveStringEnter = 0
-			bString := bytestring(savegamestrings[saveSlot])
-			if len(bString) == 0 {
-				bString = []byte{0}
-			}
-			oldString := bytestring(saveOldString)
-			if len(oldString) == 0 {
-				oldString = []byte{0}
-			}
-			M_StringCopy(uintptr(unsafe.Pointer(&bString[0])), uintptr(unsafe.Pointer(&oldString[0])), uint64(SAVESTRINGSIZE))
+			savegamestrings[saveSlot] = saveOldString
 		case KEY_ENTER:
 			saveStringEnter = 0
 			if len(savegamestrings[saveSlot]) > 0 {
@@ -21614,9 +21547,8 @@ func M_FileExists(filename string) (r boolean) {
 // M_WriteFile
 //
 
-func M_WriteFile(name string, source uintptr, length int32) (r boolean) {
-	sourceBytes := unsafe.Slice((*byte)(unsafe.Pointer(source)), int(length))
-	if err := os.WriteFile(name, sourceBytes, 0644); err != nil {
+func M_WriteFile(name string, source []byte) (r boolean) {
+	if err := os.WriteFile(name, source, 0644); err != nil {
 		return 0
 	}
 	return 1
@@ -21631,44 +21563,13 @@ func M_TempFile(s string) string {
 	return __ccgo_ts_str(23139) + __ccgo_ts_str(1252) + s
 }
 
-func M_ExtractFileBase(path string, dest uintptr) {
+func M_ExtractFileBase(path string, dest []byte) {
 	src := filepath.Base(path)
 	// Copy up to eight characters
 	// Note: Vanilla Doom exits with an error if a filename is specified
 	// with a base of more than eight characters.  To remove the 8.3
 	// filename limit, instead we simply truncate the name.
-	xmemset(dest, 0, 8)
-	maxLen := uint64(min(len(src), 8))
-	xmemcpy(dest, uintptr(unsafe.Pointer(&[]byte(src)[0])), maxLen)
-}
-
-// Safe string copy function that works like OpenBSD's strlcpy().
-// Returns true if the string was not truncated.
-
-func M_StringCopy(dest uintptr, src uintptr, dest_size uint64) (r boolean) {
-	var len1 uint64
-	if dest_size >= 1 {
-		*(*int8)(unsafe.Pointer(dest + uintptr(dest_size-1))) = int8('\000')
-		xstrncpy(dest, src, dest_size-1)
-	} else {
-		return 0
-	}
-	len1 = xstrlen(dest)
-	return booluint32(int32(*(*int8)(unsafe.Pointer(src + uintptr(len1)))) == int32('\000'))
-}
-
-// C documentation
-//
-//	// Safe, portable snprintf().
-func M_snprintf(buf uintptr, buf_len uint64, s string, args ...any) (r int32) {
-	val := fmt.Sprintf(s, args...)
-	i := 0
-	bufBytes := unsafe.Slice((*byte)(unsafe.Pointer(buf)), int(buf_len))
-	for ; i < len(val) && i < int(buf_len-1); i++ {
-		bufBytes[i] = val[i]
-	}
-	bufBytes[i] = 0 // Null-terminate the string
-	return int32(i)
+	copy(dest, src)
 }
 
 //
@@ -30333,7 +30234,6 @@ func saveg_write_glow_t(str *glow_t) {
 
 func P_WriteSaveGameHeader(description string) {
 	var i int
-	bp := alloc(32)
 	for i = 0; i < SAVESTRINGSIZE; i++ {
 		if i < len(description) {
 			saveg_write8(uint8(description[i]))
@@ -30341,17 +30241,17 @@ func P_WriteSaveGameHeader(description string) {
 			saveg_write8(0)
 		}
 	}
-	xmemset(bp, 0, 16)
-	M_snprintf(bp, 16, __ccgo_ts_str(25058), G_VanillaVersionCode())
+	bp := fmt.Sprintf(__ccgo_ts_str(25058), G_VanillaVersionCode())
 	i = 0
 	for {
 		if i >= VERSIONSIZE {
 			break
 		}
-		saveg_write8(uint8((*(*[16]int8)(unsafe.Pointer(bp)))[i]))
-		goto _3
-	_3:
-		;
+		if i < len(bp) {
+			saveg_write8(uint8(bp[i]))
+		} else {
+			saveg_write8(0)
+		}
 		i++
 	}
 	saveg_write8(uint8(gameskill))
@@ -30378,7 +30278,6 @@ func P_WriteSaveGameHeader(description string) {
 //
 
 func P_ReadSaveGameHeader() (r boolean) {
-	bp := alloc(48)
 	var a, b, c uint8
 	var i int32
 	// skip the description field
@@ -30394,19 +30293,16 @@ func P_ReadSaveGameHeader() (r boolean) {
 		i++
 	}
 	i = 0
+	var bp [VERSIONSIZE]byte
 	for {
 		if i >= VERSIONSIZE {
 			break
 		}
-		(*(*[16]int8)(unsafe.Pointer(bp + 16)))[i] = int8(saveg_read8())
-		goto _2
-	_2:
-		;
+		bp[i] = saveg_read8()
 		i++
 	}
-	xmemset(bp, 0, 16)
-	M_snprintf(bp, 16, __ccgo_ts_str(25058), G_VanillaVersionCode())
-	if xstrcmp(bp+16, bp) != 0 {
+	vanilla := fmt.Sprintf(__ccgo_ts_str(25058), G_VanillaVersionCode())
+	if vanilla != gostring_bytes(bp[:]) {
 		return 0
 	} // bad version
 	gameskill = skill_t(saveg_read8())
@@ -34924,11 +34820,9 @@ func GenerateTextureHashTable() {
 //	//  with the textures from the world map.
 //	//
 func R_InitTextures() {
-	bp := alloc(32)
 	var directory, maptex, maptex2, mpatch, name_p, names, v2 uintptr
 	var i, j, maxoff, maxoff2, nummappatches, numtextures1, numtextures2, offset, temp1, temp2, temp3, totalwidth int32
 	// Load the patch names from pnames.lmp.
-	(*(*[9]int8)(unsafe.Pointer(bp)))[int32(8)] = 0
 	names = W_CacheLumpName(__ccgo_ts_str(26022), PU_STATIC)
 	nummappatches = *(*int32)(unsafe.Pointer(names))
 	name_p = names + uintptr(4)
@@ -34938,8 +34832,7 @@ func R_InitTextures() {
 		if i >= nummappatches {
 			break
 		}
-		M_StringCopy(bp, name_p+uintptr(i*int32(8)), 9)
-		patchlookup[i] = W_CheckNumForName(gostring_n(bp, 8))
+		patchlookup[i] = W_CheckNumForName(gostring_n(name_p+uintptr(i*8), 8))
 		goto _1
 	_1:
 		;
@@ -43652,15 +43545,15 @@ func W_AddFile(filename string) *os.File {
 		fileinfo[0].Fsize = int32(stat.Size())
 		// Name the lump after the base of the filename (without the
 		// extension).
-		M_ExtractFileBase(filename, byteptr(fileinfo[0].Fname[:]))
+		M_ExtractFileBase(filename, fileinfo[0].Fname[:])
 		newnumlumps++
 	} else {
 		var wadinfo wadinfo_t
 		// WAD file
 		W_Read(wad_file, 0, (uintptr)(unsafe.Pointer(&wadinfo)), 12)
-		if xstrncmp(byteptr(wadinfo.Fidentification[:]), __ccgo_ts(28654), 4) != 0 {
+		if gostring_bytes(wadinfo.Fidentification[:]) != __ccgo_ts_str(28654) {
 			// Homebrew levels?
-			if xstrncmp(byteptr(wadinfo.Fidentification[:]), __ccgo_ts(28659), 4) != 0 {
+			if gostring_bytes(wadinfo.Fidentification[:]) != __ccgo_ts_str(28659) {
 				I_Error(28664, filename)
 			}
 			// ???modifiedgame = true;
