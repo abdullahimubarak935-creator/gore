@@ -2216,10 +2216,6 @@ type lumpinfo_t struct {
 	Fnext     *lumpinfo_t
 }
 
-func (l *lumpinfo_t) NamePtr() uintptr {
-	return uintptr(unsafe.Pointer(&l.Fname[0]))
-}
-
 func (l *lumpinfo_t) Name() string {
 	for i := 0; i < len(l.Fname); i++ {
 		if l.Fname[i] == 0 {
@@ -5798,7 +5794,7 @@ func D_DoomMain() {
 			name = fmt.Sprintf(__ccgo_ts_str(4481), myargs[p+1])
 		}
 		if D_AddFile(name) != 0 {
-			argDemoName = gostring_n(lumpinfo[numlumps-1].NamePtr(), 8)
+			argDemoName = lumpinfo[numlumps-1].Name()
 		} else {
 			// If file failed to load, still continue trying to play
 			// the demo in the same way as Vanilla Doom.  This makes
