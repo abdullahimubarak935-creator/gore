@@ -57,27 +57,6 @@ func xabs(j int32) int32 {
 	return j
 }
 
-func xstrncasecmp(s1, s2 uintptr, n uint64) int32 {
-	for n > 0 {
-		ch1 := *(*byte)(unsafe.Pointer(s1))
-		if ch1 >= 'a' && ch1 <= 'z' {
-			ch1 = ch1 - ('a' - 'A')
-		}
-		s1++
-		ch2 := *(*byte)(unsafe.Pointer(s2))
-		if ch2 >= 'a' && ch2 <= 'z' {
-			ch2 = ch2 - ('a' - 'A')
-		}
-		s2++
-		if ch1 != ch2 || ch1 == 0 || ch2 == 0 {
-			r := int32(ch1) - int32(ch2)
-			return r
-		}
-		n--
-	}
-	return 0
-}
-
 func xtoupper(c int32) int32 {
 	if c >= 'a' && c <= 'z' {
 		return c - ('a' - 'A')
