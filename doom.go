@@ -6615,7 +6615,7 @@ func F_TextWrite() {
 			cx += 4
 			goto _3
 		}
-		w = int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
+		w = int32(hu_font[c].Fwidth)
 		if cx+w > SCREENWIDTH {
 			break
 		}
@@ -6905,7 +6905,7 @@ func F_CastPrint(text uintptr) {
 			width += 4
 			continue
 		}
-		w = int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
+		w = int32(hu_font[c].Fwidth)
 		width += w
 	}
 	// draw it
@@ -6923,7 +6923,7 @@ func F_CastPrint(text uintptr) {
 			cx += 4
 			continue
 		}
-		w = int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
+		w = int32(hu_font[c].Fwidth)
 		V_DrawPatch(cx, 180, hu_font[c])
 		cx += w
 	}
@@ -9730,7 +9730,7 @@ func HU_Start() {
 	// create the message widget
 	HUlib_initSText(&w_message, HU_MSGX, HU_MSGY, HU_MSGHEIGHT, hu_font[:], '!', &message_on)
 	// create the map title widget
-	HUlib_initTextLine(&w_title, HU_TITLEX, 167-int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight), hu_font[:], '!')
+	HUlib_initTextLine(&w_title, HU_TITLEX, 167-int32(hu_font[0].Fheight), hu_font[:], '!')
 	if gamemission == pack_chex {
 		v1 = doom
 	} else {
@@ -9763,7 +9763,7 @@ func HU_Start() {
 		HUlib_addCharToTextLine(&w_title, byte(i))
 	}
 	// create the chat widget
-	HUlib_initIText(&w_chat, HU_MSGX, HU_MSGY+HU_MSGHEIGHT*(int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight)+int32(1)), hu_font[:], '!', &chat_on)
+	HUlib_initIText(&w_chat, HU_MSGX, HU_MSGY+HU_MSGHEIGHT*(int32(hu_font[0].Fheight)+int32(1)), hu_font[:], '!', &chat_on)
 	// create the inputbuffer widgets
 	i = 0
 	for {
@@ -20834,7 +20834,7 @@ func M_StringWidth(string1 string) (r int32) {
 		if c < 0 || c >= '_'-'!'+1 {
 			w += 4
 		} else {
-			w += int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
+			w += int32(hu_font[c].Fwidth)
 		}
 	}
 	return w
@@ -20847,7 +20847,7 @@ func M_StringWidth(string1 string) (r int32) {
 //	//
 func M_StringHeight(string1 string) (r int32) {
 	var h, height int32
-	height = int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight)
+	height = int32(hu_font[0].Fheight)
 	h = height
 	for i := 0; i < len(string1); i++ {
 		if string1[i] == '\n' {
@@ -20881,7 +20881,7 @@ func M_WriteText(x int32, y int32, string1 string) {
 			cx += 4
 			continue
 		}
-		w = int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
+		w = int32(hu_font[c].Fwidth)
 		if cx+w > SCREENWIDTH {
 			break
 		}
@@ -21358,7 +21358,7 @@ func M_Drawer() {
 			}
 			x = int16(SCREENWIDTH/2 - M_StringWidth(bp)/int32(2))
 			M_WriteText(int32(x), int32(y2), bp)
-			y2 = int16(int32(y2) + int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight))
+			y2 = int16(int32(y2) + int32(hu_font[0].Fheight))
 		}
 		return
 	}
@@ -39426,10 +39426,10 @@ func STlib_initBinIcon(st *st_binicon_t, x int32, y int32, i *patch_t, val *bool
 func STlib_updateBinIcon(bi *st_binicon_t, refresh boolean) {
 	var h, w, x, y int32
 	if *bi.Fon != 0 && (bi.Foldval != *(*boolean)(unsafe.Pointer(bi.Fval)) || refresh != 0) {
-		x = bi.Fx - int32((*patch_t)(unsafe.Pointer(bi.Fp)).Fleftoffset)
-		y = bi.Fy - int32((*patch_t)(unsafe.Pointer(bi.Fp)).Ftopoffset)
-		w = int32((*patch_t)(unsafe.Pointer(bi.Fp)).Fwidth)
-		h = int32((*patch_t)(unsafe.Pointer(bi.Fp)).Fheight)
+		x = bi.Fx - int32(bi.Fp.Fleftoffset)
+		y = bi.Fy - int32(bi.Fp.Ftopoffset)
+		w = int32(bi.Fp.Fwidth)
+		h = int32(bi.Fp.Fheight)
 		if y-(SCREENHEIGHT-ST_HEIGHT) < 0 {
 			I_Error(27522, 0)
 		}
@@ -42222,7 +42222,7 @@ func WI_drawAnimatedBack() {
 
 func WI_drawNum(x int32, y int32, n int32, digits int32) (r int32) {
 	var fontwidth, neg, temp, v1 int32
-	fontwidth = int32((*patch_t)(unsafe.Pointer(num[0])).Fwidth)
+	fontwidth = int32(num[0].Fwidth)
 	if digits < 0 {
 		if n == 0 {
 			// make variable-length zeros 1 digit long
@@ -42585,11 +42585,11 @@ func WI_drawDeathmatchStats() {
 			break
 		}
 		if playeringame[i] != 0 {
-			V_DrawPatch(x-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY, p[i])
-			V_DrawPatch(DM_MATRIXX-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth)/int32(2), y, p[i])
+			V_DrawPatch(x-int32(p[i].Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY, p[i])
+			V_DrawPatch(DM_MATRIXX-int32(p[i].Fwidth)/int32(2), y, p[i])
 			if i == me {
-				V_DrawPatch(x-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY, bstar)
-				V_DrawPatch(DM_MATRIXX-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth)/int32(2), y, star)
+				V_DrawPatch(x-int32(p[i].Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY, bstar)
+				V_DrawPatch(DM_MATRIXX-int32(p[i].Fwidth)/int32(2), y, star)
 			}
 		} else {
 			// V_DrawPatch(x-SHORT(bp[i]->width)/2,
@@ -42606,7 +42606,7 @@ func WI_drawDeathmatchStats() {
 	}
 	// draw stats
 	y = DM_MATRIXY + 10
-	w = int32((*patch_t)(unsafe.Pointer(num[0])).Fwidth)
+	w = int32(num[0].Fwidth)
 	i = 0
 	for {
 		if i >= MAXPLAYERS {
@@ -42869,9 +42869,9 @@ func WI_drawNetgameStats() {
 			goto _1
 		}
 		x = 32 + int32(star.Fwidth)/int32(2) + 32*boolint32(dofrags == 0)
-		V_DrawPatch(x-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth), y, p[i])
+		V_DrawPatch(x-int32(p[i].Fwidth), y, p[i])
 		if i == me {
-			V_DrawPatch(x-int32((*patch_t)(unsafe.Pointer(p[i])).Fwidth), y, star)
+			V_DrawPatch(x-int32(p[i].Fwidth), y, star)
 		}
 		x += NG_SPACINGX
 		WI_drawPercent(x-pwidth, y+int32(10), cnt_kills[i])
@@ -43000,7 +43000,7 @@ func WI_updateStats() {
 
 func WI_drawStats() {
 	var lh int32
-	lh = 3 * int32((*patch_t)(unsafe.Pointer(num[0])).Fheight) / 2
+	lh = 3 * int32(num[0].Fheight) / 2
 	WI_slamBackground()
 	// draw animated background
 	WI_drawAnimatedBack()
