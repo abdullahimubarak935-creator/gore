@@ -5309,11 +5309,11 @@ func D_IdentifyVersion() {
 			if i >= numlumps {
 				break
 			}
-			if xstrncasecmp(lumpinfo[i].NamePtr(), __ccgo_ts(2613), 8) == 0 {
+			if strings.EqualFold(lumpinfo[i].Name(), __ccgo_ts_str(2613)) {
 				gamemission = doom2
 				break
 			} else {
-				if xstrncasecmp(lumpinfo[i].NamePtr(), __ccgo_ts(2619), 8) == 0 {
+				if strings.EqualFold(lumpinfo[i].Name(), __ccgo_ts_str(2619)) {
 					gamemission = doom
 					break
 				}
