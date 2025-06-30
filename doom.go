@@ -5614,7 +5614,7 @@ func InitGameVersion() {
 	if p != 0 {
 		i = 0
 		for {
-			if gameversions[i].Fdescription == uintptr(0) {
+			if gameversions[i].Fdescription == 0 {
 				break
 			}
 			if strings.EqualFold(myargs[p+1], gameversions[i].Fcmdline) {
@@ -5626,11 +5626,11 @@ func InitGameVersion() {
 			;
 			i++
 		}
-		if gameversions[i].Fdescription == uintptr(0) {
+		if gameversions[i].Fdescription == 0 {
 			fprintf_ccgo(os.Stdout, 3870)
 			i = 0
 			for {
-				if gameversions[i].Fdescription == uintptr(0) {
+				if gameversions[i].Fdescription == 0 {
 					break
 				}
 				fprintf_ccgo(os.Stdout, 3896, gameversions[i].Fcmdline, gostring(gameversions[i].Fdescription))
@@ -5690,7 +5690,7 @@ func PrintGameVersion() {
 	var i int32
 	i = 0
 	for {
-		if gameversions[i].Fdescription == uintptr(0) {
+		if gameversions[i].Fdescription == 0 {
 			break
 		}
 		if gameversions[i].Fversion == gameversion {
@@ -6328,7 +6328,7 @@ func D_CheckNetGame() {
 	}
 	D_RegisterLoopCallbacks(&doom_loop_interface)
 	SaveGameSettings(settings)
-	D_StartNetGame(settings, uintptr(0))
+	D_StartNetGame(settings, 0)
 	LoadGameSettings(settings)
 	fprintf_ccgo(os.Stdout, 5563, startskill, deathmatch, startmap, startepisode)
 	fprintf_ccgo(os.Stdout, 5626, consoleplayer+int32(1), settings.Fnum_players, settings.Fnum_players)
@@ -6841,7 +6841,7 @@ func F_CastTicker() {
 		// switch from deathstate to next monster
 		castnum++
 		castdeath = 0
-		if castorder[castnum].Fname == uintptr(0) {
+		if castorder[castnum].Fname == 0 {
 			castnum = 0
 		}
 		if mobjinfo[castorder[castnum].Ftype1].Fseesound != 0 {
@@ -7270,7 +7270,7 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 	wipe_shittyColMajorXform(wipe_scr_end, width/int32(2), height)
 	// setup initial column positions
 	// (y<0 => not ready to scroll yet)
-	y_screen = Z_Malloc(int32(uint64(width)*4), PU_STATIC, uintptr(0))
+	y_screen = Z_Malloc(int32(uint64(width)*4), PU_STATIC, 0)
 	*(*int32)(unsafe.Pointer(y_screen)) = -(M_Random() % 16)
 	i = 1
 	for {
@@ -7380,13 +7380,13 @@ func wipe_exitMelt(width int32, height int32, ticks int32) (r int32) {
 }
 
 func wipe_StartScreen(x int32, y int32, width int32, height int32) (r int32) {
-	wipe_scr_start = Z_Malloc(SCREENWIDTH*SCREENHEIGHT, PU_STATIC, uintptr(0))
+	wipe_scr_start = Z_Malloc(SCREENWIDTH*SCREENHEIGHT, PU_STATIC, 0)
 	I_ReadScreen(wipe_scr_start)
 	return 0
 }
 
 func wipe_EndScreen(x int32, y int32, width int32, height int32) (r int32) {
-	wipe_scr_end = Z_Malloc(SCREENWIDTH*SCREENHEIGHT, PU_STATIC, uintptr(0))
+	wipe_scr_end = Z_Malloc(SCREENWIDTH*SCREENHEIGHT, PU_STATIC, 0)
 	I_ReadScreen(wipe_scr_end)
 	V_DrawBlock(x, y, width, height, wipe_scr_start) // restore start scr.
 	return 0
@@ -9054,7 +9054,7 @@ func IncreaseDemoBuffer() {
 	current_length = int32(int64(demoend) - int64(demobuffer))
 	// Generate a new buffer twice the size
 	new_length = current_length * 2
-	new_demobuffer = Z_Malloc(new_length, PU_STATIC, uintptr(0))
+	new_demobuffer = Z_Malloc(new_length, PU_STATIC, 0)
 	new_demop = new_demobuffer + uintptr(int64(demo_p)-int64(demobuffer))
 	// Copy over the old data
 	xmemcpy(new_demobuffer, demobuffer, uint64(current_length))
@@ -9131,7 +9131,7 @@ func G_RecordDemo(name string) {
 		v, _ := strconv.Atoi(myargs[i+1])
 		maxsize = int32(v) * 1024
 	}
-	demobuffer = Z_Malloc(maxsize, PU_STATIC, uintptr(0))
+	demobuffer = Z_Malloc(maxsize, PU_STATIC, 0)
 	demoend = demobuffer + uintptr(maxsize)
 	demorecording = 1
 }
@@ -18253,7 +18253,7 @@ func I_RegisterSong(data uintptr, len1 int32) (r uintptr) {
 	if music_module != nil {
 		music_module.FRegisterSong(data, len1)
 	} else {
-		return uintptr(0)
+		return 0
 	}
 	return r
 }
@@ -18330,8 +18330,8 @@ func AutoAllocMemory(size *int32, default_ram int32, min_ram int32) (r uintptr) 
 	// zone sizes until a size is found that can be allocated.
 	// If we used the -mb command line parameter, only the parameter
 	// provided is accepted.
-	zonemem = uintptr(0)
-	for zonemem == uintptr(0) {
+	zonemem = 0
+	for zonemem == 0 {
 		// We need a reasonable minimum amount of RAM to start.
 		if default_ram < min_ram {
 			I_Error(18832, default_ram)
@@ -18341,7 +18341,7 @@ func AutoAllocMemory(size *int32, default_ram int32, min_ram int32) (r uintptr) 
 		zonemem = xmalloc(uint64(*size))
 		// Failed to allocate?  Reduce zone size until we reach a size
 		// that is acceptable.
-		if zonemem == uintptr(0) {
+		if zonemem == 0 {
 			default_ram -= 1
 		}
 	}
@@ -27550,7 +27550,7 @@ func InterceptsMemoryOverrun(location int32, value int32) {
 			addr = intercepts_overrun[i].Faddr
 			// Write the value to the memory location.
 			// 16-bit and 32-bit values are written differently.
-			if addr != uintptr(0) {
+			if addr != 0 {
 				if intercepts_overrun[i].Fint16_array != 0 {
 					index = (location - offset) / 2
 					*(*int16)(unsafe.Pointer(addr + uintptr(index)*2)) = int16(value & 0xffff)
@@ -30832,7 +30832,7 @@ func P_UnArchiveSpecials() {
 			ceilingP := &ceiling_t{}
 			saveg_read_ceiling_t(ceilingP)
 			ceilingP.Fsector.Fspecialdata = ceilingP
-			if ceilingP.Fthinker.Ffunction.Facv != uintptr(0) {
+			if ceilingP.Fthinker.Ffunction.Facv != 0 {
 				ceilingP.Fthinker.Ffunction.Facv = __ccgo_fp(T_MoveCeiling)
 			}
 			P_AddThinker(&ceilingP.Fthinker)
@@ -30856,7 +30856,7 @@ func P_UnArchiveSpecials() {
 			platP := &plat_t{}
 			saveg_read_plat_t(platP)
 			platP.Fsector.Fspecialdata = platP
-			if platP.Fthinker.Ffunction.Facv != uintptr(0) {
+			if platP.Fthinker.Ffunction.Facv != 0 {
 				platP.Fthinker.Ffunction.Facv = __ccgo_fp(T_PlatRaise)
 			}
 			P_AddThinker(&platP.Fthinker)
@@ -31209,7 +31209,7 @@ func P_LoadBlockMap(lump int32) {
 	var count, i, lumplen int32
 	lumplen = W_LumpLength(uint32(lump))
 	count = lumplen / 2
-	blockmaplump = Z_Malloc(lumplen, PU_LEVEL, uintptr(0))
+	blockmaplump = Z_Malloc(lumplen, PU_LEVEL, 0)
 	W_ReadLump(uint32(lump), blockmaplump)
 	blockmap = blockmaplump + uintptr(4)*2
 	// Swap all short integers to native byte ordering.
@@ -35026,7 +35026,7 @@ func R_InitTextures() {
 		numtextures2 = *(*int32)(unsafe.Pointer(maptex2))
 		maxoff2 = W_LumpLength(uint32(W_GetNumForName(__ccgo_ts_str(26038))))
 	} else {
-		maptex2 = uintptr(0)
+		maptex2 = 0
 		numtextures2 = 0
 		maxoff2 = 0
 	}
@@ -35460,7 +35460,7 @@ const SBARHEIGHT = 32
 // Backing buffer containing the bezel drawn around the screen and
 // surrounding background.
 
-var background_buffer = uintptr(0)
+var background_buffer uintptr
 
 // C documentation
 //
@@ -35999,15 +35999,15 @@ func R_FillBackScreen() {
 	// If we are running full screen, there is no need to do any of this,
 	// and the background buffer can be freed if it was previously in use.
 	if scaledviewwidth == SCREENWIDTH {
-		if background_buffer != uintptr(0) {
+		if background_buffer != 0 {
 			Z_Free(background_buffer)
-			background_buffer = uintptr(0)
+			background_buffer = 0
 		}
 		return
 	}
 	// Allocate the background buffer if necessary
-	if background_buffer == uintptr(0) {
-		background_buffer = Z_Malloc(SCREENWIDTH*(SCREENHEIGHT-SBARHEIGHT), PU_STATIC, uintptr(0))
+	if background_buffer == 0 {
+		background_buffer = Z_Malloc(SCREENWIDTH*(SCREENHEIGHT-SBARHEIGHT), PU_STATIC, 0)
 	}
 	if gamemode == commercial {
 		name = name2
@@ -36111,7 +36111,7 @@ func R_VideoErase(ofs uint32, count int32) {
 	//  is not optiomal, e.g. byte by byte on
 	//  a 32bit CPU, as GNU GCC/Linux libc did
 	//  at one point.
-	if background_buffer != uintptr(0) {
+	if background_buffer != 0 {
 		xmemcpy(I_VideoBuffer+uintptr(ofs), background_buffer+uintptr(ofs), uint64(count))
 	}
 }
@@ -37353,7 +37353,7 @@ func R_StoreWallRange(start int32, stop int32) {
 	v5 = v6
 	toptexture = v5
 	midtexture = v5
-	drawsegs[ds_index].Fmaskedtexturecol = uintptr(0)
+	drawsegs[ds_index].Fmaskedtexturecol = 0
 	if backsector == nil {
 		// single sided line
 		midtexture = texturetranslation[sidedef.Fmidtexture]
@@ -37377,7 +37377,7 @@ func R_StoreWallRange(start int32, stop int32) {
 		drawsegs[ds_index].Ftsilheight = -1 - 0x7fffffff
 	} else {
 		// two sided line
-		v9 = uintptr(0)
+		v9 = 0
 		drawsegs[ds_index].Fsprbottomclip = v9
 		drawsegs[ds_index].Fsprtopclip = v9
 		drawsegs[ds_index].Fsilhouette = 0
@@ -40790,7 +40790,7 @@ func ST_Stop() {
 
 func ST_Init() {
 	ST_loadData()
-	st_backing_screen = Z_Malloc(SCREENWIDTH*ST_HEIGHT, PU_STATIC, uintptr(0))
+	st_backing_screen = Z_Malloc(SCREENWIDTH*ST_HEIGHT, PU_STATIC, 0)
 }
 
 const NORM_SEP = 128
@@ -41267,7 +41267,7 @@ func S_StopMusic() {
 		I_StopSong()
 		I_UnRegisterSong(mus_playing.Fhandle)
 		W_ReleaseLumpNum(mus_playing.Flumpnum)
-		mus_playing.Fdata = uintptr(0)
+		mus_playing.Fdata = 0
 		mus_playing = nil
 	}
 }
@@ -41327,7 +41327,7 @@ const MOUSE_SPEED_BOX_WIDTH = 120
 
 // The screen buffer that the v_video.c code draws to.
 
-var dest_screen = uintptr(0)
+var dest_screen uintptr
 
 // C documentation
 //
@@ -43646,7 +43646,7 @@ type wadinfo_t struct {
 type filelump_t struct {
 	Ffilepos int32
 	Fsize    int32
-	Fname    [8]int8
+	Fname    [8]byte
 }
 
 // Hash table for fast lookups
@@ -43692,10 +43692,10 @@ var wad_files = map[uintptr]*os.File{}
 //  for the lump name.
 
 func W_AddFile(filename string) *os.File {
-	var fileinfo, filerover uintptr
+	var fileinfo []filelump_t
 	var wad_file *os.File
-	var i uint32
-	var length, newnumlumps, startlump int32
+	var length, newnumlumps int32
+	var startlump uint32
 	// open the file and add to directory
 	stat, err := os.Stat(filename)
 	if err != nil {
@@ -43714,12 +43714,12 @@ func W_AddFile(filename string) *os.File {
 		// parsing code expects a little-endian directory, so will swap
 		// them back.  Effectively we're constructing a "fake WAD directory"
 		// here, as it would appear on disk.
-		fileinfo = Z_Malloc(16, PU_STATIC, uintptr(0))
-		(*filelump_t)(unsafe.Pointer(fileinfo)).Ffilepos = 0
-		(*filelump_t)(unsafe.Pointer(fileinfo)).Fsize = int32(stat.Size())
+		fileinfo = make([]filelump_t, 1)
+		fileinfo[0].Ffilepos = 0
+		fileinfo[0].Fsize = int32(stat.Size())
 		// Name the lump after the base of the filename (without the
 		// extension).
-		M_ExtractFileBase(filename, fileinfo+8)
+		M_ExtractFileBase(filename, byteptr(fileinfo[0].Fname[:]))
 		newnumlumps++
 	} else {
 		var wadinfo wadinfo_t
@@ -43735,32 +43735,21 @@ func W_AddFile(filename string) *os.File {
 		wadinfo.Fnumlumps = wadinfo.Fnumlumps
 		wadinfo.Finfotableofs = wadinfo.Finfotableofs
 		length = int32(uint64(wadinfo.Fnumlumps) * 16)
-		fileinfo = Z_Malloc(length, PU_STATIC, uintptr(0))
-		W_Read(wad_file, uint32(wadinfo.Finfotableofs), fileinfo, uint64(length))
+		fileinfo = make([]filelump_t, wadinfo.Fnumlumps)
+		W_Read(wad_file, uint32(wadinfo.Finfotableofs), (uintptr)(unsafe.Pointer(&fileinfo[0])), uint64(length))
 		newnumlumps += wadinfo.Fnumlumps
 	}
 	// Increase size of numlumps array to accomodate the new file.
-	startlump = int32(numlumps)
+	startlump = numlumps
 	ExtendLumpInfo(newnumlumps)
-	filerover = fileinfo
-	i = uint32(startlump)
-	for {
-		if i >= numlumps {
-			break
-		}
+	for i := startlump; i < numlumps; i++ {
 		lump_p := &lumpinfo[i]
 		lump_p.Fwad_file = wad_file
-		lump_p.Fposition = (*filelump_t)(unsafe.Pointer(filerover)).Ffilepos
-		lump_p.Fsize = (*filelump_t)(unsafe.Pointer(filerover)).Fsize
-		lump_p.Fcache = uintptr(0)
-		xstrncpy(lump_p.NamePtr(), filerover+8, 8)
-		filerover += 16
-		goto _1
-	_1:
-		;
-		i++
+		lump_p.Fposition = fileinfo[i].Ffilepos
+		lump_p.Fsize = fileinfo[i].Fsize
+		lump_p.Fcache = 0
+		lump_p.Fname = fileinfo[i].Fname
 	}
-	Z_Free(fileinfo)
 	lumphash = nil
 	wad_files[wad_file.Fd()] = wad_file
 	return wad_file
@@ -43866,7 +43855,7 @@ func W_CacheLumpNum(lumpnum int32, tag int32) (r uintptr) {
 	// file, we can just return a pointer to within the memory-mapped
 	// region.  If the lump is in an ordinary file, we may already
 	// have it cached; otherwise, load it into memory.
-	if lump.Fcache != uintptr(0) {
+	if lump.Fcache != 0 {
 		// Already cached, so just switch the zone tag.
 		result = lump.Fcache
 		Z_ChangeTag2(lump.Fcache, tag, __ccgo_ts(28866), 410)
@@ -43882,7 +43871,7 @@ func W_CacheLumpNum(lumpnum int32, tag int32) (r uintptr) {
 func W_CacheLumpNumT[T lumpType](lumpnum int32, tag int32) T {
 	var result uintptr
 	result = W_CacheLumpNum(lumpnum, tag)
-	if result == uintptr(0) {
+	if result == 0 {
 		panic("lump failure")
 	}
 	return (T)(unsafe.Pointer(result))
@@ -43900,7 +43889,7 @@ func W_CacheLumpName(name string, tag int32) (r uintptr) {
 func W_CacheLumpNameT[T lumpType](name string, tag int32) T {
 	var result uintptr
 	result = W_CacheLumpName(name, tag)
-	if result == uintptr(0) {
+	if result == 0 {
 		panic("lump failure")
 	}
 	return (T)(unsafe.Pointer(result))
@@ -44117,13 +44106,13 @@ func Z_Free(ptr uintptr) {
 	if (*memblock_t)(unsafe.Pointer(block)).Fid != ZONEID {
 		I_Error(29075, 0)
 	}
-	if (*memblock_t)(unsafe.Pointer(block)).Ftag != PU_FREE && (*memblock_t)(unsafe.Pointer(block)).Fuser != uintptr(0) {
+	if (*memblock_t)(unsafe.Pointer(block)).Ftag != PU_FREE && (*memblock_t)(unsafe.Pointer(block)).Fuser != 0 {
 		// clear the user's mark
-		*(*uintptr)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(block)).Fuser)) = uintptr(0)
+		*(*uintptr)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(block)).Fuser)) = 0
 	}
 	// mark as free
 	(*memblock_t)(unsafe.Pointer(block)).Ftag = PU_FREE
-	(*memblock_t)(unsafe.Pointer(block)).Fuser = uintptr(0)
+	(*memblock_t)(unsafe.Pointer(block)).Fuser = 0
 	(*memblock_t)(unsafe.Pointer(block)).Fid = 0
 	other = (*memblock_t)(unsafe.Pointer(block)).Fprev
 	if (*memblock_t)(unsafe.Pointer(other)).Ftag == PU_FREE {
@@ -44202,14 +44191,14 @@ func Z_Malloc(size int32, tag int32, user uintptr) (r uintptr) {
 		newblock = base + uintptr(size)
 		(*memblock_t)(unsafe.Pointer(newblock)).Fsize = extra
 		(*memblock_t)(unsafe.Pointer(newblock)).Ftag = PU_FREE
-		(*memblock_t)(unsafe.Pointer(newblock)).Fuser = uintptr(0)
+		(*memblock_t)(unsafe.Pointer(newblock)).Fuser = 0
 		(*memblock_t)(unsafe.Pointer(newblock)).Fprev = base
 		(*memblock_t)(unsafe.Pointer(newblock)).Fnext = (*memblock_t)(unsafe.Pointer(base)).Fnext
 		(*memblock_t)(unsafe.Pointer((*memblock_t)(unsafe.Pointer(newblock)).Fnext)).Fprev = newblock
 		(*memblock_t)(unsafe.Pointer(base)).Fnext = newblock
 		(*memblock_t)(unsafe.Pointer(base)).Fsize = size
 	}
-	if user == uintptr(0) && tag >= PU_PURGELEVEL {
+	if user == 0 && tag >= PU_PURGELEVEL {
 		I_Error(29157, 0)
 	}
 	(*memblock_t)(unsafe.Pointer(base)).Fuser = user
@@ -44292,7 +44281,7 @@ func Z_ChangeTag2(ptr uintptr, tag int32, file uintptr, line int32) {
 	if (*memblock_t)(unsafe.Pointer(block)).Fid != ZONEID {
 		I_Error(29588, file, line)
 	}
-	if tag >= PU_PURGELEVEL && (*memblock_t)(unsafe.Pointer(block)).Fuser == uintptr(0) {
+	if tag >= PU_PURGELEVEL && (*memblock_t)(unsafe.Pointer(block)).Fuser == 0 {
 		I_Error(29632, file, line)
 	}
 	(*memblock_t)(unsafe.Pointer(block)).Ftag = tag
@@ -44534,7 +44523,7 @@ func init() {
 
 func I_InitGraphics() {
 	/* Allocate screen to draw to */
-	I_VideoBuffer = Z_Malloc(SCREENWIDTH*SCREENHEIGHT, PU_STATIC, uintptr(0)) // For DOOM to draw on
+	I_VideoBuffer = Z_Malloc(SCREENWIDTH*SCREENHEIGHT, PU_STATIC, 0) // For DOOM to draw on
 	I_InitInput()
 }
 
