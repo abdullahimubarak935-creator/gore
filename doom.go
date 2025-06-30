@@ -46747,15 +46747,7 @@ func __ccgo_ts(index int) uintptr {
 }
 
 func __ccgo_ts_str(index int) string {
-	val, ok := __ccgo_ts_map[index]
-	if !ok {
-		panic("index not found in __ccgo_ts_map")
-	}
-	if len(val) > 0 && val[len(val)-1] == 0 {
-		// Remove the null terminator for string representation
-		return string(val[:len(val)-1])
-	}
-	return string(val)
+	return gostring_bytes(__ccgo_ts_map[index])
 }
 
 var __ccgo_ts_map = map[int][]byte{
