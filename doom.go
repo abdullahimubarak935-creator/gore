@@ -6632,78 +6632,78 @@ func F_TextWrite() {
 //	//   in order of appearance
 //	//
 type castinfo_t struct {
-	Fname  uintptr
+	Fname  string
 	Ftype1 mobjtype_t
 }
 
 func init() {
 	castorder = [18]castinfo_t{
 		0: {
-			Fname:  __ccgo_ts(13434),
+			Fname:  __ccgo_ts_str(13434),
 			Ftype1: MT_POSSESSED,
 		},
 		1: {
-			Fname:  __ccgo_ts(13444),
+			Fname:  __ccgo_ts_str(13444),
 			Ftype1: MT_SHOTGUY,
 		},
 		2: {
-			Fname:  __ccgo_ts(13456),
+			Fname:  __ccgo_ts_str(13456),
 			Ftype1: MT_CHAINGUY,
 		},
 		3: {
-			Fname:  __ccgo_ts(13474),
+			Fname:  __ccgo_ts_str(13474),
 			Ftype1: MT_TROOP,
 		},
 		4: {
-			Fname:  __ccgo_ts(13478),
+			Fname:  __ccgo_ts_str(13478),
 			Ftype1: MT_SERGEANT,
 		},
 		5: {
-			Fname:  __ccgo_ts(13484),
+			Fname:  __ccgo_ts_str(13484),
 			Ftype1: MT_SKULL,
 		},
 		6: {
-			Fname:  __ccgo_ts(13494),
+			Fname:  __ccgo_ts_str(13494),
 			Ftype1: MT_HEAD,
 		},
 		7: {
-			Fname:  __ccgo_ts(13504),
+			Fname:  __ccgo_ts_str(13504),
 			Ftype1: MT_KNIGHT,
 		},
 		8: {
-			Fname:  __ccgo_ts(13516),
+			Fname:  __ccgo_ts_str(13516),
 			Ftype1: MT_BRUISER,
 		},
 		9: {
-			Fname:  __ccgo_ts(13530),
+			Fname:  __ccgo_ts_str(13530),
 			Ftype1: MT_BABY,
 		},
 		10: {
-			Fname:  __ccgo_ts(13542),
+			Fname:  __ccgo_ts_str(13542),
 			Ftype1: MT_PAIN,
 		},
 		11: {
-			Fname:  __ccgo_ts(13557),
+			Fname:  __ccgo_ts_str(13557),
 			Ftype1: MT_UNDEAD,
 		},
 		12: {
-			Fname:  __ccgo_ts(13566),
+			Fname:  __ccgo_ts_str(13566),
 			Ftype1: MT_FATSO,
 		},
 		13: {
-			Fname:  __ccgo_ts(13575),
+			Fname:  __ccgo_ts_str(13575),
 			Ftype1: MT_VILE,
 		},
 		14: {
-			Fname:  __ccgo_ts(13585),
+			Fname:  __ccgo_ts_str(13585),
 			Ftype1: MT_SPIDER,
 		},
 		15: {
-			Fname:  __ccgo_ts(13607),
+			Fname:  __ccgo_ts_str(13607),
 			Ftype1: MT_CYBORG,
 		},
 		16: {
-			Fname: __ccgo_ts(13622),
+			Fname: __ccgo_ts_str(13622),
 		},
 		17: {},
 	}
@@ -6743,7 +6743,7 @@ func F_CastTicker() {
 		// switch from deathstate to next monster
 		castnum++
 		castdeath = 0
-		if castorder[castnum].Fname == 0 {
+		if castorder[castnum].Fname == "" {
 			castnum = 0
 		}
 		if mobjinfo[castorder[castnum].Ftype1].Fseesound != 0 {
@@ -6883,20 +6883,12 @@ func F_CastResponder(ev *event_t) (r boolean) {
 	return 1
 }
 
-func F_CastPrint(text uintptr) {
+func F_CastPrint(text string) {
 	var c, cx, w, width int32
-	var ch, v1, v2 uintptr
 	// find width
-	ch = text
 	width = 0
-	for ch != 0 {
-		v1 = ch
-		ch++
-		c = int32(*(*int8)(unsafe.Pointer(v1)))
-		if c == 0 {
-			break
-		}
-		c = xtoupper(c) - '!'
+	for i := 0; i < len(text); i++ {
+		c = xtoupper(int32(text[i])) - '!'
 		if c < 0 || c > '_'-'!'+1 {
 			width += 4
 			continue
@@ -6906,15 +6898,8 @@ func F_CastPrint(text uintptr) {
 	}
 	// draw it
 	cx = 160 - width/int32(2)
-	ch = text
-	for ch != 0 {
-		v2 = ch
-		ch++
-		c = int32(*(*int8)(unsafe.Pointer(v2)))
-		if c == 0 {
-			break
-		}
-		c = xtoupper(c) - '!'
+	for i := 0; i < len(text); i++ {
+		c = xtoupper(int32(text[i])) - '!'
 		if c < 0 || c > '_'-'!'+1 {
 			cx += 4
 			continue
