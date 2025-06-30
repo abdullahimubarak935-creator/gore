@@ -4925,16 +4925,16 @@ func D_BindVariables() {
 	key_multi_msgplayer[int32(1)] = 'i'
 	key_multi_msgplayer[int32(2)] = 'b'
 	key_multi_msgplayer[int32(3)] = 'r'
-	M_BindVariable(__ccgo_ts_str(1506), uintptr(unsafe.Pointer(&mouseSensitivity)))
-	M_BindVariable(__ccgo_ts_str(1524), uintptr(unsafe.Pointer(&sfxVolume)))
-	M_BindVariable(__ccgo_ts_str(1535), uintptr(unsafe.Pointer(&musicVolume)))
-	M_BindVariable(__ccgo_ts_str(1548), uintptr(unsafe.Pointer(&showMessages)))
-	M_BindVariable(__ccgo_ts_str(1562), uintptr(unsafe.Pointer(&screenblocks)))
-	M_BindVariable(__ccgo_ts_str(1575), uintptr(unsafe.Pointer(&detailLevel)))
-	M_BindVariable(__ccgo_ts_str(1587), uintptr(unsafe.Pointer(&snd_channels)))
-	M_BindVariable(__ccgo_ts_str(1600), uintptr(unsafe.Pointer(&vanilla_savegame_limit)))
-	M_BindVariable(__ccgo_ts_str(1623), uintptr(unsafe.Pointer(&vanilla_demo_limit)))
-	M_BindVariable(__ccgo_ts_str(1642), uintptr(unsafe.Pointer(&show_endoom)))
+	M_BindVariable(__ccgo_ts_str(1506), &mouseSensitivity)
+	M_BindVariable(__ccgo_ts_str(1524), &sfxVolume)
+	M_BindVariable(__ccgo_ts_str(1535), &musicVolume)
+	M_BindVariable(__ccgo_ts_str(1548), &showMessages)
+	M_BindVariable(__ccgo_ts_str(1562), &screenblocks)
+	M_BindVariable(__ccgo_ts_str(1575), &detailLevel)
+	M_BindVariable(__ccgo_ts_str(1587), &snd_channels)
+	M_BindVariable(__ccgo_ts_str(1600), &vanilla_savegame_limit)
+	M_BindVariable(__ccgo_ts_str(1623), &vanilla_demo_limit)
+	M_BindVariable(__ccgo_ts_str(1642), &show_endoom)
 	// Multiplayer chat macros
 	i = 0
 	for {
@@ -4942,7 +4942,7 @@ func D_BindVariables() {
 			break
 		}
 		name := fmt.Sprintf(__ccgo_ts_str(1654), i)
-		M_BindVariable(name, uintptr(unsafe.Pointer(&chat_macros[i])))
+		M_BindVariable(name, &chat_macros[i])
 		goto _1
 	_1:
 		;
@@ -17830,21 +17830,21 @@ var joystick_physical_buttons = [10]int32{
 
 func I_BindJoystickVariables() {
 	var i int32
-	M_BindVariable(__ccgo_ts_str(18302), uintptr(unsafe.Pointer(&usejoystick)))
-	M_BindVariable(__ccgo_ts_str(18315), uintptr(unsafe.Pointer(&joystick_index)))
-	M_BindVariable(__ccgo_ts_str(18330), uintptr(unsafe.Pointer(&joystick_x_axis)))
-	M_BindVariable(__ccgo_ts_str(18346), uintptr(unsafe.Pointer(&joystick_y_axis)))
-	M_BindVariable(__ccgo_ts_str(18362), uintptr(unsafe.Pointer(&joystick_strafe_axis)))
-	M_BindVariable(__ccgo_ts_str(18383), uintptr(unsafe.Pointer(&joystick_x_invert)))
-	M_BindVariable(__ccgo_ts_str(18401), uintptr(unsafe.Pointer(&joystick_y_invert)))
-	M_BindVariable(__ccgo_ts_str(18419), uintptr(unsafe.Pointer(&joystick_strafe_invert)))
+	M_BindVariable(__ccgo_ts_str(18302), &usejoystick)
+	M_BindVariable(__ccgo_ts_str(18315), &joystick_index)
+	M_BindVariable(__ccgo_ts_str(18330), &joystick_x_axis)
+	M_BindVariable(__ccgo_ts_str(18346), &joystick_y_axis)
+	M_BindVariable(__ccgo_ts_str(18362), &joystick_strafe_axis)
+	M_BindVariable(__ccgo_ts_str(18383), &joystick_x_invert)
+	M_BindVariable(__ccgo_ts_str(18401), &joystick_y_invert)
+	M_BindVariable(__ccgo_ts_str(18419), &joystick_strafe_invert)
 	i = 0
 	for {
 		if i >= NUM_VIRTUAL_BUTTONS {
 			break
 		}
 		name := fmt.Sprintf(__ccgo_ts_str(18442), i)
-		M_BindVariable(name, uintptr(unsafe.Pointer(&joystick_physical_buttons))+uintptr(i)*4)
+		M_BindVariable(name, &joystick_physical_buttons[i])
 		goto _1
 	_1:
 		;
@@ -18115,16 +18115,16 @@ func I_StopSong() {
 }
 
 func I_BindSoundVariables() {
-	M_BindVariable(__ccgo_ts_str(18699), uintptr(unsafe.Pointer(&snd_musicdevice)))
-	M_BindVariable(__ccgo_ts_str(18715), uintptr(unsafe.Pointer(&snd_sfxdevice)))
-	M_BindVariable(__ccgo_ts_str(18729), uintptr(unsafe.Pointer(&snd_sbport)))
-	M_BindVariable(__ccgo_ts_str(18740), uintptr(unsafe.Pointer(&snd_sbirq)))
-	M_BindVariable(__ccgo_ts_str(18750), uintptr(unsafe.Pointer(&snd_sbdma)))
-	M_BindVariable(__ccgo_ts_str(18760), uintptr(unsafe.Pointer(&snd_mport)))
-	M_BindVariable(__ccgo_ts_str(18770), uintptr(unsafe.Pointer(&snd_maxslicetime_ms)))
-	M_BindVariable(__ccgo_ts_str(18790), uintptr(unsafe.Pointer(&snd_musiccmd)))
-	M_BindVariable(__ccgo_ts_str(18803), uintptr(unsafe.Pointer(&snd_samplerate)))
-	M_BindVariable(__ccgo_ts_str(18818), uintptr(unsafe.Pointer(&snd_cachesize)))
+	M_BindVariable(__ccgo_ts_str(18699), &snd_musicdevice)
+	M_BindVariable(__ccgo_ts_str(18715), &snd_sfxdevice)
+	M_BindVariable(__ccgo_ts_str(18729), &snd_sbport)
+	M_BindVariable(__ccgo_ts_str(18740), &snd_sbirq)
+	M_BindVariable(__ccgo_ts_str(18750), &snd_sbdma)
+	M_BindVariable(__ccgo_ts_str(18760), &snd_mport)
+	M_BindVariable(__ccgo_ts_str(18770), &snd_maxslicetime_ms)
+	M_BindVariable(__ccgo_ts_str(18790), &snd_musiccmd)
+	M_BindVariable(__ccgo_ts_str(18803), &snd_samplerate)
+	M_BindVariable(__ccgo_ts_str(18818), &snd_cachesize)
 	// Before SDL_mixer version 1.2.11, MIDI music caused the game
 	// to crash when it looped.  If this is an old SDL_mixer version,
 	// disable MIDI.
@@ -18584,7 +18584,7 @@ const DEFAULT_KEY = 4
 
 type default_t struct {
 	Fname                string
-	Flocation            uintptr
+	Flocation            any
 	Ftype1               default_type_t
 	Funtranslated        int32
 	Foriginal_translated int32
@@ -19420,7 +19420,7 @@ func GetDefaultForName(name string) *default_t {
 // Bind a variable to a given configuration file variable, by name.
 //
 
-func M_BindVariable(name string, location uintptr) {
+func M_BindVariable(name string, location any) {
 	var variable *default_t
 	variable = GetDefaultForName(name)
 	variable.Flocation = location
@@ -19592,106 +19592,106 @@ func init() {
 //
 
 func M_BindBaseControls() {
-	M_BindVariable(__ccgo_ts_str(19425), uintptr(unsafe.Pointer(&key_right)))
-	M_BindVariable(__ccgo_ts_str(19435), uintptr(unsafe.Pointer(&key_left)))
-	M_BindVariable(__ccgo_ts_str(19444), uintptr(unsafe.Pointer(&key_up)))
-	M_BindVariable(__ccgo_ts_str(19451), uintptr(unsafe.Pointer(&key_down)))
-	M_BindVariable(__ccgo_ts_str(19460), uintptr(unsafe.Pointer(&key_strafeleft)))
-	M_BindVariable(__ccgo_ts_str(19475), uintptr(unsafe.Pointer(&key_straferight)))
-	M_BindVariable(__ccgo_ts_str(19772), uintptr(unsafe.Pointer(&key_fire)))
-	M_BindVariable(__ccgo_ts_str(19781), uintptr(unsafe.Pointer(&key_use)))
-	M_BindVariable(__ccgo_ts_str(19789), uintptr(unsafe.Pointer(&key_strafe)))
-	M_BindVariable(__ccgo_ts_str(19800), uintptr(unsafe.Pointer(&key_speed)))
-	M_BindVariable(__ccgo_ts_str(19820), uintptr(unsafe.Pointer(&mousebfire)))
-	M_BindVariable(__ccgo_ts_str(19832), uintptr(unsafe.Pointer(&mousebstrafe)))
-	M_BindVariable(__ccgo_ts_str(19846), uintptr(unsafe.Pointer(&mousebforward)))
-	M_BindVariable(__ccgo_ts_str(19873), uintptr(unsafe.Pointer(&joybfire)))
-	M_BindVariable(__ccgo_ts_str(19883), uintptr(unsafe.Pointer(&joybstrafe)))
-	M_BindVariable(__ccgo_ts_str(19895), uintptr(unsafe.Pointer(&joybuse)))
-	M_BindVariable(__ccgo_ts_str(19904), uintptr(unsafe.Pointer(&joybspeed)))
-	M_BindVariable(__ccgo_ts_str(20656), uintptr(unsafe.Pointer(&joybmenu)))
+	M_BindVariable(__ccgo_ts_str(19425), &key_right)
+	M_BindVariable(__ccgo_ts_str(19435), &key_left)
+	M_BindVariable(__ccgo_ts_str(19444), &key_up)
+	M_BindVariable(__ccgo_ts_str(19451), &key_down)
+	M_BindVariable(__ccgo_ts_str(19460), &key_strafeleft)
+	M_BindVariable(__ccgo_ts_str(19475), &key_straferight)
+	M_BindVariable(__ccgo_ts_str(19772), &key_fire)
+	M_BindVariable(__ccgo_ts_str(19781), &key_use)
+	M_BindVariable(__ccgo_ts_str(19789), &key_strafe)
+	M_BindVariable(__ccgo_ts_str(19800), &key_speed)
+	M_BindVariable(__ccgo_ts_str(19820), &mousebfire)
+	M_BindVariable(__ccgo_ts_str(19832), &mousebstrafe)
+	M_BindVariable(__ccgo_ts_str(19846), &mousebforward)
+	M_BindVariable(__ccgo_ts_str(19873), &joybfire)
+	M_BindVariable(__ccgo_ts_str(19883), &joybstrafe)
+	M_BindVariable(__ccgo_ts_str(19895), &joybuse)
+	M_BindVariable(__ccgo_ts_str(19904), &joybspeed)
+	M_BindVariable(__ccgo_ts_str(20656), &joybmenu)
 	// Extra controls that are not in the Vanilla versions:
-	M_BindVariable(__ccgo_ts_str(20623), uintptr(unsafe.Pointer(&joybstrafeleft)))
-	M_BindVariable(__ccgo_ts_str(20639), uintptr(unsafe.Pointer(&joybstraferight)))
-	M_BindVariable(__ccgo_ts_str(20707), uintptr(unsafe.Pointer(&mousebstrafeleft)))
-	M_BindVariable(__ccgo_ts_str(20725), uintptr(unsafe.Pointer(&mousebstraferight)))
-	M_BindVariable(__ccgo_ts_str(20744), uintptr(unsafe.Pointer(&mousebuse)))
-	M_BindVariable(__ccgo_ts_str(20755), uintptr(unsafe.Pointer(&mousebbackward)))
-	M_BindVariable(__ccgo_ts_str(20807), uintptr(unsafe.Pointer(&dclick_use)))
-	M_BindVariable(__ccgo_ts_str(20818), uintptr(unsafe.Pointer(&key_pause)))
-	M_BindVariable(__ccgo_ts_str(21647), uintptr(unsafe.Pointer(&key_message_refresh)))
+	M_BindVariable(__ccgo_ts_str(20623), &joybstrafeleft)
+	M_BindVariable(__ccgo_ts_str(20639), &joybstraferight)
+	M_BindVariable(__ccgo_ts_str(20707), &mousebstrafeleft)
+	M_BindVariable(__ccgo_ts_str(20725), &mousebstraferight)
+	M_BindVariable(__ccgo_ts_str(20744), &mousebuse)
+	M_BindVariable(__ccgo_ts_str(20755), &mousebbackward)
+	M_BindVariable(__ccgo_ts_str(20807), &dclick_use)
+	M_BindVariable(__ccgo_ts_str(20818), &key_pause)
+	M_BindVariable(__ccgo_ts_str(21647), &key_message_refresh)
 }
 
 func M_BindWeaponControls() {
-	M_BindVariable(__ccgo_ts_str(21373), uintptr(unsafe.Pointer(&key_weapon1)))
-	M_BindVariable(__ccgo_ts_str(21385), uintptr(unsafe.Pointer(&key_weapon2)))
-	M_BindVariable(__ccgo_ts_str(21397), uintptr(unsafe.Pointer(&key_weapon3)))
-	M_BindVariable(__ccgo_ts_str(21409), uintptr(unsafe.Pointer(&key_weapon4)))
-	M_BindVariable(__ccgo_ts_str(21421), uintptr(unsafe.Pointer(&key_weapon5)))
-	M_BindVariable(__ccgo_ts_str(21433), uintptr(unsafe.Pointer(&key_weapon6)))
-	M_BindVariable(__ccgo_ts_str(21445), uintptr(unsafe.Pointer(&key_weapon7)))
-	M_BindVariable(__ccgo_ts_str(21457), uintptr(unsafe.Pointer(&key_weapon8)))
-	M_BindVariable(__ccgo_ts_str(21469), uintptr(unsafe.Pointer(&key_prevweapon)))
-	M_BindVariable(__ccgo_ts_str(21484), uintptr(unsafe.Pointer(&key_nextweapon)))
-	M_BindVariable(__ccgo_ts_str(20675), uintptr(unsafe.Pointer(&joybprevweapon)))
-	M_BindVariable(__ccgo_ts_str(20691), uintptr(unsafe.Pointer(&joybnextweapon)))
-	M_BindVariable(__ccgo_ts_str(20771), uintptr(unsafe.Pointer(&mousebprevweapon)))
-	M_BindVariable(__ccgo_ts_str(20789), uintptr(unsafe.Pointer(&mousebnextweapon)))
+	M_BindVariable(__ccgo_ts_str(21373), &key_weapon1)
+	M_BindVariable(__ccgo_ts_str(21385), &key_weapon2)
+	M_BindVariable(__ccgo_ts_str(21397), &key_weapon3)
+	M_BindVariable(__ccgo_ts_str(21409), &key_weapon4)
+	M_BindVariable(__ccgo_ts_str(21421), &key_weapon5)
+	M_BindVariable(__ccgo_ts_str(21433), &key_weapon6)
+	M_BindVariable(__ccgo_ts_str(21445), &key_weapon7)
+	M_BindVariable(__ccgo_ts_str(21457), &key_weapon8)
+	M_BindVariable(__ccgo_ts_str(21469), &key_prevweapon)
+	M_BindVariable(__ccgo_ts_str(21484), &key_nextweapon)
+	M_BindVariable(__ccgo_ts_str(20675), &joybprevweapon)
+	M_BindVariable(__ccgo_ts_str(20691), &joybnextweapon)
+	M_BindVariable(__ccgo_ts_str(20771), &mousebprevweapon)
+	M_BindVariable(__ccgo_ts_str(20789), &mousebnextweapon)
 }
 
 func M_BindMapControls() {
-	M_BindVariable(__ccgo_ts_str(21213), uintptr(unsafe.Pointer(&key_map_north)))
-	M_BindVariable(__ccgo_ts_str(21227), uintptr(unsafe.Pointer(&key_map_south)))
-	M_BindVariable(__ccgo_ts_str(21241), uintptr(unsafe.Pointer(&key_map_east)))
-	M_BindVariable(__ccgo_ts_str(21254), uintptr(unsafe.Pointer(&key_map_west)))
-	M_BindVariable(__ccgo_ts_str(21267), uintptr(unsafe.Pointer(&key_map_zoomin)))
-	M_BindVariable(__ccgo_ts_str(21282), uintptr(unsafe.Pointer(&key_map_zoomout)))
-	M_BindVariable(__ccgo_ts_str(21198), uintptr(unsafe.Pointer(&key_map_toggle)))
-	M_BindVariable(__ccgo_ts_str(21298), uintptr(unsafe.Pointer(&key_map_maxzoom)))
-	M_BindVariable(__ccgo_ts_str(21314), uintptr(unsafe.Pointer(&key_map_follow)))
-	M_BindVariable(__ccgo_ts_str(21329), uintptr(unsafe.Pointer(&key_map_grid)))
-	M_BindVariable(__ccgo_ts_str(21342), uintptr(unsafe.Pointer(&key_map_mark)))
-	M_BindVariable(__ccgo_ts_str(21355), uintptr(unsafe.Pointer(&key_map_clearmark)))
+	M_BindVariable(__ccgo_ts_str(21213), &key_map_north)
+	M_BindVariable(__ccgo_ts_str(21227), &key_map_south)
+	M_BindVariable(__ccgo_ts_str(21241), &key_map_east)
+	M_BindVariable(__ccgo_ts_str(21254), &key_map_west)
+	M_BindVariable(__ccgo_ts_str(21267), &key_map_zoomin)
+	M_BindVariable(__ccgo_ts_str(21282), &key_map_zoomout)
+	M_BindVariable(__ccgo_ts_str(21198), &key_map_toggle)
+	M_BindVariable(__ccgo_ts_str(21298), &key_map_maxzoom)
+	M_BindVariable(__ccgo_ts_str(21314), &key_map_follow)
+	M_BindVariable(__ccgo_ts_str(21329), &key_map_grid)
+	M_BindVariable(__ccgo_ts_str(21342), &key_map_mark)
+	M_BindVariable(__ccgo_ts_str(21355), &key_map_clearmark)
 }
 
 func M_BindMenuControls() {
-	M_BindVariable(__ccgo_ts_str(20828), uintptr(unsafe.Pointer(&key_menu_activate)))
-	M_BindVariable(__ccgo_ts_str(20846), uintptr(unsafe.Pointer(&key_menu_up)))
-	M_BindVariable(__ccgo_ts_str(20858), uintptr(unsafe.Pointer(&key_menu_down)))
-	M_BindVariable(__ccgo_ts_str(20872), uintptr(unsafe.Pointer(&key_menu_left)))
-	M_BindVariable(__ccgo_ts_str(20886), uintptr(unsafe.Pointer(&key_menu_right)))
-	M_BindVariable(__ccgo_ts_str(20901), uintptr(unsafe.Pointer(&key_menu_back)))
-	M_BindVariable(__ccgo_ts_str(20915), uintptr(unsafe.Pointer(&key_menu_forward)))
-	M_BindVariable(__ccgo_ts_str(20932), uintptr(unsafe.Pointer(&key_menu_confirm)))
-	M_BindVariable(__ccgo_ts_str(20949), uintptr(unsafe.Pointer(&key_menu_abort)))
-	M_BindVariable(__ccgo_ts_str(20964), uintptr(unsafe.Pointer(&key_menu_help)))
-	M_BindVariable(__ccgo_ts_str(20978), uintptr(unsafe.Pointer(&key_menu_save)))
-	M_BindVariable(__ccgo_ts_str(20992), uintptr(unsafe.Pointer(&key_menu_load)))
-	M_BindVariable(__ccgo_ts_str(21006), uintptr(unsafe.Pointer(&key_menu_volume)))
-	M_BindVariable(__ccgo_ts_str(21022), uintptr(unsafe.Pointer(&key_menu_detail)))
-	M_BindVariable(__ccgo_ts_str(21038), uintptr(unsafe.Pointer(&key_menu_qsave)))
-	M_BindVariable(__ccgo_ts_str(21053), uintptr(unsafe.Pointer(&key_menu_endgame)))
-	M_BindVariable(__ccgo_ts_str(21070), uintptr(unsafe.Pointer(&key_menu_messages)))
-	M_BindVariable(__ccgo_ts_str(21088), uintptr(unsafe.Pointer(&key_menu_qload)))
-	M_BindVariable(__ccgo_ts_str(21103), uintptr(unsafe.Pointer(&key_menu_quit)))
-	M_BindVariable(__ccgo_ts_str(21117), uintptr(unsafe.Pointer(&key_menu_gamma)))
-	M_BindVariable(__ccgo_ts_str(21140), uintptr(unsafe.Pointer(&key_menu_incscreen)))
-	M_BindVariable(__ccgo_ts_str(21159), uintptr(unsafe.Pointer(&key_menu_decscreen)))
-	M_BindVariable(__ccgo_ts_str(21178), uintptr(unsafe.Pointer(&key_menu_screenshot)))
-	M_BindVariable(__ccgo_ts_str(21667), uintptr(unsafe.Pointer(&key_demo_quit)))
-	M_BindVariable(__ccgo_ts_str(21132), uintptr(unsafe.Pointer(&key_spy)))
+	M_BindVariable(__ccgo_ts_str(20828), &key_menu_activate)
+	M_BindVariable(__ccgo_ts_str(20846), &key_menu_up)
+	M_BindVariable(__ccgo_ts_str(20858), &key_menu_down)
+	M_BindVariable(__ccgo_ts_str(20872), &key_menu_left)
+	M_BindVariable(__ccgo_ts_str(20886), &key_menu_right)
+	M_BindVariable(__ccgo_ts_str(20901), &key_menu_back)
+	M_BindVariable(__ccgo_ts_str(20915), &key_menu_forward)
+	M_BindVariable(__ccgo_ts_str(20932), &key_menu_confirm)
+	M_BindVariable(__ccgo_ts_str(20949), &key_menu_abort)
+	M_BindVariable(__ccgo_ts_str(20964), &key_menu_help)
+	M_BindVariable(__ccgo_ts_str(20978), &key_menu_save)
+	M_BindVariable(__ccgo_ts_str(20992), &key_menu_load)
+	M_BindVariable(__ccgo_ts_str(21006), &key_menu_volume)
+	M_BindVariable(__ccgo_ts_str(21022), &key_menu_detail)
+	M_BindVariable(__ccgo_ts_str(21038), &key_menu_qsave)
+	M_BindVariable(__ccgo_ts_str(21053), &key_menu_endgame)
+	M_BindVariable(__ccgo_ts_str(21070), &key_menu_messages)
+	M_BindVariable(__ccgo_ts_str(21088), &key_menu_qload)
+	M_BindVariable(__ccgo_ts_str(21103), &key_menu_quit)
+	M_BindVariable(__ccgo_ts_str(21117), &key_menu_gamma)
+	M_BindVariable(__ccgo_ts_str(21140), &key_menu_incscreen)
+	M_BindVariable(__ccgo_ts_str(21159), &key_menu_decscreen)
+	M_BindVariable(__ccgo_ts_str(21178), &key_menu_screenshot)
+	M_BindVariable(__ccgo_ts_str(21667), &key_demo_quit)
+	M_BindVariable(__ccgo_ts_str(21132), &key_spy)
 }
 
 func M_BindChatControls(num_players uint32) {
 	var i uint32
-	M_BindVariable(__ccgo_ts_str(21681), uintptr(unsafe.Pointer(&key_multi_msg)))
+	M_BindVariable(__ccgo_ts_str(21681), &key_multi_msg)
 	i = 0
 	for {
 		if i >= num_players {
 			break
 		}
 		name := fmt.Sprintf(__ccgo_ts_str(22078), i+1)
-		M_BindVariable(name, uintptr(unsafe.Pointer(&key_multi_msgplayer))+uintptr(i)*4)
+		M_BindVariable(name, &key_multi_msgplayer[i])
 		goto _1
 	_1:
 		;
