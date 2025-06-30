@@ -22873,7 +22873,7 @@ func P_CheckMeleeRange(actor *mobj_t) (r boolean) {
 	}
 	pl = actor.Ftarget
 	dist = P_AproxDistance(pl.Fx-actor.Fx, pl.Fy-actor.Fy)
-	if dist >= 64*(1<<FRACBITS)-20*(1<<FRACBITS)+(*mobjinfo_t)(unsafe.Pointer(pl.Finfo)).Fradius {
+	if dist >= 64*(1<<FRACBITS)-20*(1<<FRACBITS)+pl.Finfo.Fradius {
 		return 0
 	}
 	if P_CheckSight(actor, actor.Ftarget) == 0 {
@@ -22903,7 +22903,7 @@ func P_CheckMissileRange(actor *mobj_t) (r boolean) {
 	} // do not attack yet
 	// OPTIMIZE: get this from a global checksight
 	dist = P_AproxDistance(actor.Fx-actor.Ftarget.Fx, actor.Fy-actor.Ftarget.Fy) - 64*(1<<FRACBITS)
-	if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fmeleestate == 0 {
+	if actor.Finfo.Fmeleestate == 0 {
 		dist -= 128 * (1 << FRACBITS)
 	} // no melee attack, so fire more
 	dist >>= 16
@@ -22965,8 +22965,8 @@ func P_Move(actor *mobj_t) (r boolean) {
 	if uint32(actor.Fmovedir) >= 8 {
 		I_Error(23654, 0)
 	}
-	tryx = actor.Fx + (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed*xspeed[actor.Fmovedir]
-	tryy = actor.Fy + (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed*yspeed[actor.Fmovedir]
+	tryx = actor.Fx + actor.Finfo.Fspeed*xspeed[actor.Fmovedir]
+	tryy = actor.Fy + actor.Finfo.Fspeed*yspeed[actor.Fmovedir]
 	try_ok = P_TryMove(actor, tryx, tryy)
 	if try_ok == 0 {
 		// open any specials
@@ -23263,8 +23263,8 @@ func A_Look(actor *mobj_t) {
 	goto seeyou
 seeyou:
 	;
-	if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseesound != 0 {
-		switch (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseesound {
+	if actor.Finfo.Fseesound != 0 {
+		switch actor.Finfo.Fseesound {
 		case int32(sfx_posit1):
 			fallthrough
 		case int32(sfx_posit2):
@@ -23276,7 +23276,7 @@ seeyou:
 		case int32(sfx_bgsit2):
 			sound = int32(sfx_bgsit1) + P_Random()%int32(2)
 		default:
-			sound = (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseesound
+			sound = actor.Finfo.Fseesound
 			break
 		}
 		if actor.Ftype1 == MT_SPIDER || actor.Ftype1 == MT_CYBORG {
@@ -23286,7 +23286,7 @@ seeyou:
 			S_StartSound(&actor.degenmobj_t, sound)
 		}
 	}
-	P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseestate)
+	P_SetMobjState(actor, actor.Finfo.Fseestate)
 }
 
 // C documentation
@@ -23326,7 +23326,7 @@ func A_Chase(actor *mobj_t) {
 		if P_LookForPlayers(actor, 1) != 0 {
 			return
 		} // got a new target
-		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspawnstate)
+		P_SetMobjState(actor, actor.Finfo.Fspawnstate)
 		return
 	}
 	// do not attack twice in a row
@@ -23338,22 +23338,22 @@ func A_Chase(actor *mobj_t) {
 		return
 	}
 	// check for melee attack
-	if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fmeleestate != 0 && P_CheckMeleeRange(actor) != 0 {
-		if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fattacksound != 0 {
-			S_StartSound(&actor.degenmobj_t, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fattacksound)
+	if actor.Finfo.Fmeleestate != 0 && P_CheckMeleeRange(actor) != 0 {
+		if actor.Finfo.Fattacksound != 0 {
+			S_StartSound(&actor.degenmobj_t, actor.Finfo.Fattacksound)
 		}
-		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fmeleestate)
+		P_SetMobjState(actor, actor.Finfo.Fmeleestate)
 		return
 	}
 	// check for missile attack
-	if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fmissilestate != 0 {
+	if actor.Finfo.Fmissilestate != 0 {
 		if gameskill < sk_nightmare && fastparm == 0 && actor.Fmovecount != 0 {
 			goto nomissile
 		}
 		if P_CheckMissileRange(actor) == 0 {
 			goto nomissile
 		}
-		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fmissilestate)
+		P_SetMobjState(actor, actor.Finfo.Fmissilestate)
 		actor.Fflags |= MF_JUSTATTACKED
 		return
 	}
@@ -23373,8 +23373,8 @@ nomissile:
 		P_NewChaseDir(actor)
 	}
 	// make active sound
-	if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Factivesound != 0 && P_Random() < 3 {
-		S_StartSound(&actor.degenmobj_t, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Factivesound)
+	if actor.Finfo.Factivesound != 0 && P_Random() < 3 {
+		S_StartSound(&actor.degenmobj_t, actor.Finfo.Factivesound)
 	}
 }
 
@@ -23458,7 +23458,7 @@ func A_CPosRefire(actor *mobj_t) {
 		return
 	}
 	if actor.Ftarget == nil || actor.Ftarget.Fhealth <= 0 || P_CheckSight(actor, actor.Ftarget) == 0 {
-		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseestate)
+		P_SetMobjState(actor, actor.Finfo.Fseestate)
 	}
 }
 
@@ -23469,7 +23469,7 @@ func A_SpidRefire(actor *mobj_t) {
 		return
 	}
 	if actor.Ftarget == nil || actor.Ftarget.Fhealth <= 0 || P_CheckSight(actor, actor.Ftarget) == 0 {
-		P_SetMobjState(actor, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fseestate)
+		P_SetMobjState(actor, actor.Finfo.Fseestate)
 	}
 }
 
@@ -23613,11 +23613,11 @@ func A_Tracer(actor *mobj_t) {
 		}
 	}
 	exact = actor.Fangle >> ANGLETOFINESHIFT
-	actor.Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed, finecosine[exact])
-	actor.Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed, finesine[exact])
+	actor.Fmomx = FixedMul(actor.Finfo.Fspeed, finecosine[exact])
+	actor.Fmomy = FixedMul(actor.Finfo.Fspeed, finesine[exact])
 	// change slope
 	dist = P_AproxDistance(dest.Fx-actor.Fx, dest.Fy-actor.Fy)
-	dist = dist / (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed
+	dist = dist / actor.Finfo.Fspeed
 	if dist < 1 {
 		dist = 1
 	}
@@ -23660,10 +23660,10 @@ func PIT_VileCheck(thing *mobj_t) (r boolean) {
 	if thing.Ftics != -1 {
 		return 1
 	} // not lying still yet
-	if (*mobjinfo_t)(unsafe.Pointer(thing.Finfo)).Fraisestate == S_NULL {
+	if thing.Finfo.Fraisestate == S_NULL {
 		return 1
 	} // monster doesn't have a raise state
-	maxdist = (*mobjinfo_t)(unsafe.Pointer(thing.Finfo)).Fradius + mobjinfo[MT_VILE].Fradius
+	maxdist = thing.Finfo.Fradius + mobjinfo[MT_VILE].Fradius
 	if xabs(thing.Fx-viletryx) > maxdist || xabs(thing.Fy-viletryy) > maxdist {
 		return 1
 	} // not actually touching
@@ -23692,8 +23692,8 @@ func A_VileChase(actor *mobj_t) {
 	var info *mobjinfo_t
 	if actor.Fmovedir != DI_NODIR {
 		// check for corpses to raise
-		viletryx = actor.Fx + (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed*xspeed[actor.Fmovedir]
-		viletryy = actor.Fy + (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fspeed*yspeed[actor.Fmovedir]
+		viletryx = actor.Fx + actor.Finfo.Fspeed*xspeed[actor.Fmovedir]
+		viletryy = actor.Fy + actor.Finfo.Fspeed*yspeed[actor.Fmovedir]
 		xl = (viletryx - bmaporgx - 32*(1<<FRACBITS)*2) >> (FRACBITS + 7)
 		xh = (viletryx - bmaporgx + 32*(1<<FRACBITS)*2) >> (FRACBITS + 7)
 		yl = (viletryy - bmaporgy - 32*(1<<FRACBITS)*2) >> (FRACBITS + 7)
@@ -23720,10 +23720,10 @@ func A_VileChase(actor *mobj_t) {
 					P_SetMobjState(actor, S_VILE_HEAL1)
 					S_StartSound(&corpsehit.degenmobj_t, int32(sfx_slop))
 					info = corpsehit.Finfo
-					P_SetMobjState(corpsehit, (*mobjinfo_t)(unsafe.Pointer(info)).Fraisestate)
+					P_SetMobjState(corpsehit, info.Fraisestate)
 					corpsehit.Fheight <<= 2
-					corpsehit.Fflags = (*mobjinfo_t)(unsafe.Pointer(info)).Fflags
-					corpsehit.Fhealth = (*mobjinfo_t)(unsafe.Pointer(info)).Fspawnhealth
+					corpsehit.Fflags = info.Fflags
+					corpsehit.Fhealth = info.Fspawnhealth
 					corpsehit.Ftarget = nil
 					return
 				}
@@ -23852,8 +23852,8 @@ func A_FatAttack1(actor *mobj_t) {
 	mo = P_SpawnMissile(actor, target, MT_FATSHOT)
 	mo.Fangle += uint32(ANG903 / 8 * 2)
 	an = int32(mo.Fangle >> ANGLETOFINESHIFT)
-	mo.Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finecosine[an])
-	mo.Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finesine[an])
+	mo.Fmomx = FixedMul(mo.Finfo.Fspeed, finecosine[an])
+	mo.Fmomy = FixedMul(mo.Finfo.Fspeed, finesine[an])
 }
 
 func A_FatAttack2(actor *mobj_t) {
@@ -23867,8 +23867,8 @@ func A_FatAttack2(actor *mobj_t) {
 	mo = P_SpawnMissile(actor, target, MT_FATSHOT)
 	mo.Fangle -= uint32(ANG903 / 8 * 2)
 	an = int32(mo.Fangle >> ANGLETOFINESHIFT)
-	mo.Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finecosine[an])
-	mo.Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finesine[an])
+	mo.Fmomx = FixedMul(mo.Finfo.Fspeed, finecosine[an])
+	mo.Fmomy = FixedMul(mo.Finfo.Fspeed, finesine[an])
 }
 
 func A_FatAttack3(actor *mobj_t) {
@@ -23879,13 +23879,13 @@ func A_FatAttack3(actor *mobj_t) {
 	mo = P_SpawnMissile(actor, target, MT_FATSHOT)
 	mo.Fangle -= uint32(ANG903 / 8 / 2)
 	an = int32(mo.Fangle >> ANGLETOFINESHIFT)
-	mo.Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finecosine[an])
-	mo.Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finesine[an])
+	mo.Fmomx = FixedMul(mo.Finfo.Fspeed, finecosine[an])
+	mo.Fmomy = FixedMul(mo.Finfo.Fspeed, finesine[an])
 	mo = P_SpawnMissile(actor, target, MT_FATSHOT)
 	mo.Fangle += uint32(ANG903 / 8 / 2)
 	an = int32(mo.Fangle >> ANGLETOFINESHIFT)
-	mo.Fmomx = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finecosine[an])
-	mo.Fmomy = FixedMul((*mobjinfo_t)(unsafe.Pointer(mo.Finfo)).Fspeed, finesine[an])
+	mo.Fmomx = FixedMul(mo.Finfo.Fspeed, finecosine[an])
+	mo.Fmomy = FixedMul(mo.Finfo.Fspeed, finesine[an])
 }
 
 //
@@ -23902,7 +23902,7 @@ func A_SkullAttack(actor *mobj_t) {
 	}
 	dest = actor.Ftarget
 	actor.Fflags |= MF_SKULLFLY
-	S_StartSound(&actor.degenmobj_t, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fattacksound)
+	S_StartSound(&actor.degenmobj_t, actor.Finfo.Fattacksound)
 	A_FaceTarget(actor)
 	an = actor.Fangle >> ANGLETOFINESHIFT
 	actor.Fmomx = FixedMul(20*(1<<FRACBITS), finecosine[an])
@@ -23943,7 +23943,7 @@ func A_PainShootSkull(actor *mobj_t, angle angle_t) {
 	}
 	// okay, there's playe for another one
 	an = angle >> ANGLETOFINESHIFT
-	prestep = 4*(1<<FRACBITS) + 3*((*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fradius+mobjinfo[MT_SKULL].Fradius)/int32(2)
+	prestep = 4*(1<<FRACBITS) + 3*(actor.Finfo.Fradius+mobjinfo[MT_SKULL].Fradius)/int32(2)
 	x = actor.Fx + FixedMul(prestep, finecosine[an])
 	y = actor.Fy + FixedMul(prestep, finesine[an])
 	z = actor.Fz + 8*(1<<FRACBITS)
@@ -23981,7 +23981,7 @@ func A_PainDie(actor *mobj_t) {
 
 func A_Scream(actor *mobj_t) {
 	var sound int32
-	switch (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fdeathsound {
+	switch actor.Finfo.Fdeathsound {
 	case 0:
 		return
 	case int32(sfx_podth1):
@@ -23995,7 +23995,7 @@ func A_Scream(actor *mobj_t) {
 	case int32(sfx_bgdth2):
 		sound = int32(sfx_bgdth1) + P_Random()%int32(2)
 	default:
-		sound = (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fdeathsound
+		sound = actor.Finfo.Fdeathsound
 		break
 	}
 	// Check for bosses.
@@ -24012,8 +24012,8 @@ func A_XScream(actor *mobj_t) {
 }
 
 func A_Pain(actor *mobj_t) {
-	if (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fpainsound != 0 {
-		S_StartSound(&actor.degenmobj_t, (*mobjinfo_t)(unsafe.Pointer(actor.Finfo)).Fpainsound)
+	if actor.Finfo.Fpainsound != 0 {
+		S_StartSound(&actor.degenmobj_t, actor.Finfo.Fpainsound)
 	}
 }
 
@@ -24351,7 +24351,7 @@ func A_SpawnFly(mo *mobj_t) {
 	}
 	newmobj = P_SpawnMobj(targ.Fx, targ.Fy, targ.Fz, type1)
 	if P_LookForPlayers(newmobj, 1) != 0 {
-		P_SetMobjState(newmobj, (*mobjinfo_t)(unsafe.Pointer(newmobj.Finfo)).Fseestate)
+		P_SetMobjState(newmobj, newmobj.Finfo.Fseestate)
 	}
 	// telefrag anything in this spot
 	P_TeleportMove(newmobj, newmobj.Fx, newmobj.Fy)
@@ -25429,10 +25429,10 @@ func P_KillMobj(source *mobj_t, target *mobj_t) {
 			AM_Stop()
 		}
 	}
-	if target.Fhealth < -(*mobjinfo_t)(unsafe.Pointer(target.Finfo)).Fspawnhealth && (*mobjinfo_t)(unsafe.Pointer(target.Finfo)).Fxdeathstate != 0 {
-		P_SetMobjState(target, (*mobjinfo_t)(unsafe.Pointer(target.Finfo)).Fxdeathstate)
+	if target.Fhealth < -target.Finfo.Fspawnhealth && target.Finfo.Fxdeathstate != 0 {
+		P_SetMobjState(target, target.Finfo.Fxdeathstate)
 	} else {
-		P_SetMobjState(target, (*mobjinfo_t)(unsafe.Pointer(target.Finfo)).Fdeathstate)
+		P_SetMobjState(target, target.Finfo.Fdeathstate)
 	}
 	target.Ftics -= P_Random() & 3
 	if target.Ftics < 1 {
