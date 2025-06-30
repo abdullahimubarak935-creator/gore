@@ -221,6 +221,13 @@ func bytestring(s string) []byte {
 	return data
 }
 
+func byteptr(data []byte) uintptr {
+	if len(data) == 0 {
+		panic("byteptr called with empty slice")
+	}
+	return uintptr(unsafe.Pointer(&data[0]))
+}
+
 const AM_NUMMARKPOINTS = 10
 const ANGLETOFINESHIFT = 19
 const BACKUPTICS = 128
@@ -1911,10 +1918,7 @@ type seg_t struct {
 }
 
 type node_t struct {
-	Fx        fixed_t
-	Fy        fixed_t
-	Fdx       fixed_t
-	Fdy       fixed_t
+	divline_t
 	Fbbox     [2]box_t
 	Fchildren [2]uint16
 }
@@ -2902,15 +2906,14 @@ var st_notify = event_t{
 //	//
 //	//
 func AM_loadPics() {
-	bp := alloc(32)
 	var i int32
 	i = 0
 	for {
 		if i >= 10 {
 			break
 		}
-		snprintf_ccgo(bp, 9, 0, i)
-		marknums[i] = W_CacheLumpNameT(bp, PU_STATIC)
+		name := sprintf_ccgo_bytes(0, i)
+		marknums[i] = W_CacheLumpNameT(byteptr(name), PU_STATIC)
 		goto _1
 	_1:
 		;
@@ -2919,15 +2922,14 @@ func AM_loadPics() {
 }
 
 func AM_unloadPics() {
-	bp := alloc(32)
 	var i int32
 	i = 0
 	for {
 		if i >= 10 {
 			break
 		}
-		snprintf_ccgo(bp, 9, 0, i)
-		W_ReleaseLumpName(bp)
+		name := sprintf_ccgo_bytes(0, i)
+		W_ReleaseLumpName(byteptr(name))
 		goto _1
 	_1:
 		;
@@ -4998,7 +5000,6 @@ var borderdrawcount int32
 //
 
 func D_BindVariables() {
-	bp := alloc(32)
 	var i int32
 	M_ApplyPlatformDefaults()
 	I_BindVideoVariables()
@@ -5029,8 +5030,8 @@ func D_BindVariables() {
 		if i >= 10 {
 			break
 		}
-		M_snprintf(bp, 12, __ccgo_ts_str(1654), i)
-		M_BindVariable(bp, uintptr(unsafe.Pointer(&chat_macros[i])))
+		name := sprintf_ccgo_bytes(1654, i)
+		M_BindVariable(byteptr(name), uintptr(unsafe.Pointer(&chat_macros[i])))
 		goto _1
 	_1:
 		;
@@ -5720,7 +5721,6 @@ func D_Endoom() {
 //	// D_DoomMain
 //	//
 func D_DoomMain() {
-	bp := alloc(480)
 	var argDemoName string
 	var i, p, v1 int32
 	I_AtExit(D_Endoom, 0)
@@ -5894,7 +5894,7 @@ func D_DoomMain() {
 			// tricks like "-playdemo demo1" possible.
 			argDemoName = myargs[p+1]
 		}
-		fprintf_ccgo(os.Stdout, 4488, gostring(bp))
+		fprintf_ccgo(os.Stdout, 4488, name)
 	}
 	I_AtExit(G_CheckDemoStatus, 1)
 	// Generate the WAD hash table.  Speed things up a bit.
@@ -7080,7 +7080,6 @@ func F_DrawPatchCol(x int32, patch uintptr, col int32) {
 //	// F_BunnyScroll
 //	//
 func F_BunnyScroll() {
-	bp := alloc(32)
 	var p1, p2 uintptr
 	var scrolled, stage, x int32
 	p1 = W_CacheLumpName(__ccgo_ts(13640), PU_LEVEL)
@@ -7124,8 +7123,8 @@ func F_BunnyScroll() {
 		S_StartSound(nil, int32(sfx_pistol))
 		laststage = stage
 	}
-	snprintf_ccgo(bp, 10, 13657, stage)
-	V_DrawPatch((SCREENWIDTH-13*8)/2, (SCREENHEIGHT-8*8)/2, W_CacheLumpNameT(bp, PU_CACHE))
+	name := sprintf_ccgo_bytes(13657, stage)
+	V_DrawPatch((SCREENWIDTH-13*8)/2, (SCREENHEIGHT-8*8)/2, W_CacheLumpNameT(byteptr(name), PU_CACHE))
 }
 
 var laststage int32
@@ -9854,7 +9853,6 @@ func init() {
 }
 
 func HU_Init() {
-	bp := alloc(32)
 	var i, j, v2 int32
 	// load the heads-up font
 	j = int32('!')
@@ -9865,8 +9863,8 @@ func HU_Init() {
 		}
 		v2 = j
 		j++
-		snprintf_ccgo(bp, 9, 17480, v2)
-		hu_font[i] = W_CacheLumpNameT(bp, PU_STATIC)
+		name := sprintf_ccgo_bytes(17480, v2)
+		hu_font[i] = W_CacheLumpNameT(byteptr(name), PU_STATIC)
 		goto _1
 	_1:
 		;
@@ -17992,7 +17990,6 @@ var joystick_physical_buttons = [10]int32{
 }
 
 func I_BindJoystickVariables() {
-	bp := alloc(48)
 	var i int32
 	M_BindVariable(__ccgo_ts(18302), uintptr(unsafe.Pointer(&usejoystick)))
 	M_BindVariable(__ccgo_ts(18315), uintptr(unsafe.Pointer(&joystick_index)))
@@ -18007,8 +18004,8 @@ func I_BindJoystickVariables() {
 		if i >= NUM_VIRTUAL_BUTTONS {
 			break
 		}
-		M_snprintf(bp, 32, __ccgo_ts_str(18442), i)
-		M_BindVariable(bp, uintptr(unsafe.Pointer(&joystick_physical_buttons))+uintptr(i)*4)
+		name := sprintf_ccgo_bytes(18442, i)
+		M_BindVariable(byteptr(name), uintptr(unsafe.Pointer(&joystick_physical_buttons))+uintptr(i)*4)
 		goto _1
 	_1:
 		;
@@ -19847,7 +19844,6 @@ func M_BindMenuControls() {
 }
 
 func M_BindChatControls(num_players uint32) {
-	bp := alloc(48)
 	var i uint32
 	M_BindVariable(__ccgo_ts(21681), uintptr(unsafe.Pointer(&key_multi_msg)))
 	i = 0
@@ -19855,8 +19851,8 @@ func M_BindChatControls(num_players uint32) {
 		if i >= num_players {
 			break
 		}
-		M_snprintf(bp, 32, __ccgo_ts_str(22078), i+1)
-		M_BindVariable(bp, uintptr(unsafe.Pointer(&key_multi_msgplayer))+uintptr(i)*4)
+		name := sprintf_ccgo_bytes(22078, i+1)
+		M_BindVariable(byteptr(name), uintptr(unsafe.Pointer(&key_multi_msgplayer))+uintptr(i)*4)
 		goto _1
 	_1:
 		;
@@ -27138,11 +27134,11 @@ func P_PointOnDivlineSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
 //	//
 //	// P_MakeDivline
 //	//
-func P_MakeDivline(li *line_t, dl uintptr) {
-	(*divline_t)(unsafe.Pointer(dl)).Fx = li.Fv1.Fx
-	(*divline_t)(unsafe.Pointer(dl)).Fy = li.Fv1.Fy
-	(*divline_t)(unsafe.Pointer(dl)).Fdx = li.Fdx
-	(*divline_t)(unsafe.Pointer(dl)).Fdy = li.Fdy
+func P_MakeDivline(li *line_t, dl *divline_t) {
+	dl.Fx = li.Fv1.Fx
+	dl.Fy = li.Fv1.Fy
+	dl.Fdx = li.Fdx
+	dl.Fdy = li.Fdy
 }
 
 // C documentation
@@ -27154,14 +27150,14 @@ func P_MakeDivline(li *line_t, dl uintptr) {
 //	// This is only called by the addthings
 //	// and addlines traversers.
 //	//
-func P_InterceptVector(v2 uintptr, v1 uintptr) (r fixed_t) {
+func P_InterceptVector(v2 *divline_t, v1 *divline_t) (r fixed_t) {
 	var den, frac, num fixed_t
-	den = FixedMul((*divline_t)(unsafe.Pointer(v1)).Fdy>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdx) - FixedMul((*divline_t)(unsafe.Pointer(v1)).Fdx>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdy)
+	den = FixedMul(v1.Fdy>>int32(8), v2.Fdx) - FixedMul(v1.Fdx>>int32(8), v2.Fdy)
 	if den == 0 {
 		return 0
 	}
 	//	I_Error ("P_InterceptVector: parallel");
-	num = FixedMul(((*divline_t)(unsafe.Pointer(v1)).Fx-(*divline_t)(unsafe.Pointer(v2)).Fx)>>int32(8), (*divline_t)(unsafe.Pointer(v1)).Fdy) + FixedMul(((*divline_t)(unsafe.Pointer(v2)).Fy-(*divline_t)(unsafe.Pointer(v1)).Fy)>>int32(8), (*divline_t)(unsafe.Pointer(v1)).Fdx)
+	num = FixedMul((v1.Fx-v2.Fx)>>int32(8), v1.Fdy) + FixedMul((v2.Fy-v1.Fy)>>int32(8), v1.Fdx)
 	frac = FixedDiv(num, den)
 	return frac
 }
@@ -27366,7 +27362,6 @@ func P_BlockThingsIterator(x int32, y int32, func1 func(*mobj_t) boolean) (r boo
 //	// Returns true if earlyout and a solid line hit.
 //	//
 func PIT_AddLineIntercepts(ld *line_t) (r boolean) {
-	bp := alloc(16)
 	var frac fixed_t
 	var s1, s2 int32
 	// avoid precision problems with two routines
@@ -27381,8 +27376,9 @@ func PIT_AddLineIntercepts(ld *line_t) (r boolean) {
 		return 1
 	} // line isn't crossed
 	// hit the line
-	P_MakeDivline(ld, bp)
-	frac = P_InterceptVector(uintptr(unsafe.Pointer(&trace)), bp)
+	var divline divline_t
+	P_MakeDivline(ld, &divline)
+	frac = P_InterceptVector(&trace, &divline)
 	if frac < 0 {
 		return 1
 	} // behind source
@@ -27404,7 +27400,7 @@ func PIT_AddLineIntercepts(ld *line_t) (r boolean) {
 //	// PIT_AddThingIntercepts
 //	//
 func PIT_AddThingIntercepts(thing *mobj_t) (r boolean) {
-	bp := alloc(16)
+	var divline divline_t
 	var frac, x1, x2, y1, y2 fixed_t
 	var s1, s2 int32
 	var tracepositive boolean
@@ -27426,11 +27422,11 @@ func PIT_AddThingIntercepts(thing *mobj_t) (r boolean) {
 	if s1 == s2 {
 		return 1
 	} // line isn't crossed
-	(*(*divline_t)(unsafe.Pointer(bp))).Fx = x1
-	(*(*divline_t)(unsafe.Pointer(bp))).Fy = y1
-	(*(*divline_t)(unsafe.Pointer(bp))).Fdx = x2 - x1
-	(*(*divline_t)(unsafe.Pointer(bp))).Fdy = y2 - y1
-	frac = P_InterceptVector(uintptr(unsafe.Pointer(&trace)), bp)
+	divline.Fx = x1
+	divline.Fy = y1
+	divline.Fdx = x2 - x1
+	divline.Fdy = y2 - y1
+	frac = P_InterceptVector(&trace, &divline)
 	if frac < 0 {
 		return 1
 	} // behind source
@@ -31474,7 +31470,6 @@ func P_LoadReject(lumpnum int32) {
 //	// P_SetupLevel
 //	//
 func P_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
-	bp := alloc(32)
 	var i, lumpnum, v1, v2, v3, v5, v6, v8 int32
 	v3 = 0
 	wminfo.Fmaxfrags = v3
@@ -31508,20 +31503,17 @@ func P_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
 	// UNUSED W_Profile ();
 	P_InitThinkers()
 	// find map name
+	var bp []byte
 	if gamemode == commercial {
 		if map1 < 10 {
-			snprintf_ccgo(bp, 9, 25226, map1)
+			bp = sprintf_ccgo_bytes(25226, map1)
 		} else {
-			snprintf_ccgo(bp, 9, 25233, map1)
+			bp = sprintf_ccgo_bytes(25233, map1)
 		}
 	} else {
-		(*(*[9]int8)(unsafe.Pointer(bp)))[0] = int8('E')
-		(*(*[9]int8)(unsafe.Pointer(bp)))[int32(1)] = int8(int32('0') + episode)
-		(*(*[9]int8)(unsafe.Pointer(bp)))[int32(2)] = int8('M')
-		(*(*[9]int8)(unsafe.Pointer(bp)))[int32(3)] = int8(int32('0') + map1)
-		(*(*[9]int8)(unsafe.Pointer(bp)))[int32(4)] = 0
+		bp = []byte{'E', '0' + byte(episode), 'M', '0' + byte(map1), 0}
 	}
-	lumpnum = W_GetNumForName(bp)
+	lumpnum = W_GetNumForName(byteptr(bp))
 	leveltime = 0
 	// note: most of this ordering is important
 	P_LoadBlockMap(lumpnum + ML_BLOCKMAP)
@@ -31588,30 +31580,30 @@ const NF_SUBSECTOR1 = 32768
 //	// P_DivlineSide
 //	// Returns side 0 (front), 1 (back), or 2 (on).
 //	//
-func P_DivlineSide(x fixed_t, y fixed_t, node uintptr) (r int32) {
+func P_DivlineSide(x fixed_t, y fixed_t, node *divline_t) (r int32) {
 	var dx, dy, left, right fixed_t
-	if (*divline_t)(unsafe.Pointer(node)).Fdx == 0 {
-		if x == (*divline_t)(unsafe.Pointer(node)).Fx {
+	if node.Fdx == 0 {
+		if x == node.Fx {
 			return 2
 		}
-		if x <= (*divline_t)(unsafe.Pointer(node)).Fx {
-			return boolint32((*divline_t)(unsafe.Pointer(node)).Fdy > 0)
+		if x <= node.Fx {
+			return boolint32(node.Fdy > 0)
 		}
-		return boolint32((*divline_t)(unsafe.Pointer(node)).Fdy < 0)
+		return boolint32(node.Fdy < 0)
 	}
-	if (*divline_t)(unsafe.Pointer(node)).Fdy == 0 {
-		if x == (*divline_t)(unsafe.Pointer(node)).Fy {
+	if node.Fdy == 0 {
+		if x == node.Fy {
 			return 2
 		}
-		if y <= (*divline_t)(unsafe.Pointer(node)).Fy {
-			return boolint32((*divline_t)(unsafe.Pointer(node)).Fdx < 0)
+		if y <= node.Fy {
+			return boolint32(node.Fdx < 0)
 		}
-		return boolint32((*divline_t)(unsafe.Pointer(node)).Fdx > 0)
+		return boolint32(node.Fdx > 0)
 	}
-	dx = x - (*divline_t)(unsafe.Pointer(node)).Fx
-	dy = y - (*divline_t)(unsafe.Pointer(node)).Fy
-	left = (*divline_t)(unsafe.Pointer(node)).Fdy >> FRACBITS * (dx >> FRACBITS)
-	right = dy >> FRACBITS * ((*divline_t)(unsafe.Pointer(node)).Fdx >> FRACBITS)
+	dx = x - node.Fx
+	dy = y - node.Fy
+	left = node.Fdy >> FRACBITS * (dx >> FRACBITS)
+	right = dy >> FRACBITS * (node.Fdx >> FRACBITS)
 	if right < left {
 		return 0
 	} // front side
@@ -31629,14 +31621,14 @@ func P_DivlineSide(x fixed_t, y fixed_t, node uintptr) (r int32) {
 //	// along the first divline.
 //	// This is only called by the addthings and addlines traversers.
 //	//
-func P_InterceptVector2(v2 uintptr, v1 uintptr) (r fixed_t) {
+func P_InterceptVector2(v2 *divline_t, v1 *divline_t) (r fixed_t) {
 	var den, frac, num fixed_t
-	den = FixedMul((*divline_t)(unsafe.Pointer(v1)).Fdy>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdx) - FixedMul((*divline_t)(unsafe.Pointer(v1)).Fdx>>int32(8), (*divline_t)(unsafe.Pointer(v2)).Fdy)
+	den = FixedMul(v1.Fdy>>int32(8), v2.Fdx) - FixedMul(v1.Fdx>>int32(8), v2.Fdy)
 	if den == 0 {
 		return 0
 	}
 	//	I_Error ("P_InterceptVector: parallel");
-	num = FixedMul(((*divline_t)(unsafe.Pointer(v1)).Fx-(*divline_t)(unsafe.Pointer(v2)).Fx)>>int32(8), (*divline_t)(unsafe.Pointer(v1)).Fdy) + FixedMul(((*divline_t)(unsafe.Pointer(v2)).Fy-(*divline_t)(unsafe.Pointer(v1)).Fy)>>int32(8), (*divline_t)(unsafe.Pointer(v1)).Fdx)
+	num = FixedMul((v1.Fx-v2.Fx)>>int32(8), v1.Fdy) + FixedMul((v2.Fy-v1.Fy)>>int32(8), v1.Fdx)
 	frac = FixedDiv(num, den)
 	return frac
 }
@@ -31649,7 +31641,7 @@ func P_InterceptVector2(v2 uintptr, v1 uintptr) (r fixed_t) {
 //	//  if strace crosses the given subsector successfully.
 //	//
 func P_CrossSubsector(num int32) (r boolean) {
-	bp := alloc(48)
+	var divline divline_t
 	var v1, v2 *vertex_t
 	var line *line_t
 	var front, back *sector_t
@@ -31674,18 +31666,18 @@ func P_CrossSubsector(num int32) (r boolean) {
 		line.Fvalidcount = validcount
 		v1 = line.Fv1
 		v2 = line.Fv2
-		s1 = P_DivlineSide(v1.Fx, v1.Fy, uintptr(unsafe.Pointer(&strace)))
-		s2 = P_DivlineSide(v2.Fx, v2.Fy, uintptr(unsafe.Pointer(&strace)))
+		s1 = P_DivlineSide(v1.Fx, v1.Fy, &strace)
+		s2 = P_DivlineSide(v2.Fx, v2.Fy, &strace)
 		// line isn't crossed?
 		if s1 == s2 {
 			goto _1
 		}
-		(*(*divline_t)(unsafe.Pointer(bp))).Fx = v1.Fx
-		(*(*divline_t)(unsafe.Pointer(bp))).Fy = v1.Fy
-		(*(*divline_t)(unsafe.Pointer(bp))).Fdx = v2.Fx - v1.Fx
-		(*(*divline_t)(unsafe.Pointer(bp))).Fdy = v2.Fy - v1.Fy
-		s1 = P_DivlineSide(strace.Fx, strace.Fy, bp)
-		s2 = P_DivlineSide(t2x, t2y, bp)
+		divline.Fx = v1.Fx
+		divline.Fy = v1.Fy
+		divline.Fdx = v2.Fx - v1.Fx
+		divline.Fdy = v2.Fy - v1.Fy
+		s1 = P_DivlineSide(strace.Fx, strace.Fy, &divline)
+		s2 = P_DivlineSide(t2x, t2y, &divline)
 		// line isn't crossed?
 		if s1 == s2 {
 			goto _1
@@ -31724,7 +31716,7 @@ func P_CrossSubsector(num int32) (r boolean) {
 		if openbottom >= opentop {
 			return 0
 		} // stop
-		frac = P_InterceptVector2(uintptr(unsafe.Pointer(&strace)), bp)
+		frac = P_InterceptVector2(&strace, &divline)
 		if front.Ffloorheight != back.Ffloorheight {
 			slope = FixedDiv(openbottom-sightzstart, frac)
 			if slope > bottomslope {
@@ -31765,23 +31757,23 @@ func P_CrossBSPNode(bspnum int32) (r boolean) {
 			return P_CrossSubsector(bspnum & ^NF_SUBSECTOR1)
 		}
 	}
-	bsp := uintptr(unsafe.Pointer(&nodes[bspnum]))
+	bsp := &nodes[bspnum]
 	// decide which side the start point is on
-	side = P_DivlineSide(strace.Fx, strace.Fy, bsp)
+	side = P_DivlineSide(strace.Fx, strace.Fy, &bsp.divline_t)
 	if side == 2 {
 		side = 0
 	} // an "on" should cross both sides
 	// cross the starting side
-	if P_CrossBSPNode(int32(*(*uint16)(unsafe.Pointer(bsp + 48 + uintptr(side)*2)))) == 0 {
+	if P_CrossBSPNode(int32(bsp.Fchildren[side])) == 0 {
 		return 0
 	}
 	// the partition plane is crossed here
-	if side == P_DivlineSide(t2x, t2y, bsp) {
+	if side == P_DivlineSide(t2x, t2y, &bsp.divline_t) {
 		// the line doesn't touch the other side
 		return 1
 	}
 	// cross the ending side
-	return P_CrossBSPNode(int32(*(*uint16)(unsafe.Pointer(bsp + 48 + uintptr(side^int32(1))*2))))
+	return P_CrossBSPNode(int32(bsp.Fchildren[side^1]))
 }
 
 // C documentation
@@ -35340,13 +35332,10 @@ func R_InitData() {
 //	// Retrieval, get a flat number for a flat name.
 //	//
 func R_FlatNumForName(name uintptr) (r int32) {
-	bp := alloc(32)
 	var i int32
 	i = W_CheckNumForName(name)
 	if i == -1 {
-		(*(*[9]int8)(unsafe.Pointer(bp)))[int32(8)] = 0
-		xmemcpy(bp, name, 8)
-		I_Error(26174, bp)
+		I_Error(26174, gostring_n(name, 8))
 	}
 	return i - firstflat
 }
@@ -38539,12 +38528,12 @@ func SHA1_Update(sha hash.Hash, inbuf uintptr, inlen uint64) {
 }
 
 func SHA1_UpdateInt32(sha hash.Hash, val uint32) {
-	bp := alloc(16)
-	(*(*[4]uint8)(unsafe.Pointer(bp)))[0] = uint8(val >> 24 & 0xff)
-	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(1)] = uint8(val >> 16 & 0xff)
-	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(2)] = uint8(val >> 8 & 0xff)
-	(*(*[4]uint8)(unsafe.Pointer(bp)))[int32(3)] = uint8(val & 0xff)
-	SHA1_Update(sha, bp, 4)
+	var bp [4]byte
+	bp[0] = uint8(val >> 24 & 0xff)
+	bp[int32(1)] = uint8(val >> 16 & 0xff)
+	bp[int32(2)] = uint8(val >> 8 & 0xff)
+	bp[int32(3)] = uint8(val & 0xff)
+	SHA1_Update(sha, byteptr(bp[:]), 4)
 }
 
 func SHA1_UpdateString(sha hash.Hash, str uintptr) {
@@ -40668,7 +40657,6 @@ func ST_Drawer(fullscreen boolean, refresh boolean) {
 // the variable they use, invoking the specified callback function.
 
 func ST_loadUnloadGraphics(callback func(uintptr, **patch_t)) {
-	bp := alloc(48)
 	var facenum, i, j int32
 	// Load the numbers, tall and short
 	i = 0
@@ -40676,10 +40664,10 @@ func ST_loadUnloadGraphics(callback func(uintptr, **patch_t)) {
 		if i >= 10 {
 			break
 		}
-		snprintf_ccgo(bp, 9, 27843, i)
-		callback(bp, &tallnum[i])
-		snprintf_ccgo(bp, 9, 27852, i)
-		callback(bp, &shortnum[i])
+		bp := sprintf_ccgo_bytes(27843, i)
+		callback(byteptr(bp), &tallnum[i])
+		bp = sprintf_ccgo_bytes(27852, i)
+		callback(byteptr(bp), &shortnum[i])
 		goto _1
 	_1:
 		;
@@ -40694,8 +40682,8 @@ func ST_loadUnloadGraphics(callback func(uintptr, **patch_t)) {
 		if i >= NUMCARDS {
 			break
 		}
-		snprintf_ccgo(bp, 9, 27871, i)
-		callback(bp, &keys[i])
+		name := sprintf_ccgo_bytes(27871, i)
+		callback(byteptr(name), &keys[i])
 		goto _2
 	_2:
 		;
@@ -40709,9 +40697,9 @@ func ST_loadUnloadGraphics(callback func(uintptr, **patch_t)) {
 		if i >= 6 {
 			break
 		}
-		snprintf_ccgo(bp, 9, 27887, i+2)
+		name := sprintf_ccgo_bytes(27887, i+2)
 		// gray #
-		callback(bp, &arms[i][0])
+		callback(byteptr(name), &arms[i][0])
 		// yellow #
 		arms[i][1] = shortnum[i+int32(2)]
 		goto _3
@@ -40720,8 +40708,8 @@ func ST_loadUnloadGraphics(callback func(uintptr, **patch_t)) {
 		i++
 	}
 	// face backgrounds for different color players
-	snprintf_ccgo(bp, 9, 27896, consoleplayer)
-	callback(bp, &faceback)
+	name := sprintf_ccgo_bytes(27896, consoleplayer)
+	callback(byteptr(name), &faceback)
 	// status bar background bits
 	callback(__ccgo_ts(27903), &sbar)
 	// face states
@@ -40736,28 +40724,28 @@ func ST_loadUnloadGraphics(callback func(uintptr, **patch_t)) {
 			if j >= ST_NUMSTRAIGHTFACES {
 				break
 			}
-			snprintf_ccgo(bp, 9, 27909, i, j)
-			callback(bp, &faces[facenum])
+			name := sprintf_ccgo_bytes(27909, i, j)
+			callback(byteptr(name), &faces[facenum])
 			facenum++
 			goto _5
 		_5:
 			;
 			j++
 		}
-		snprintf_ccgo(bp, 9, 27919, i) // turn right
-		callback(bp, &faces[facenum])
+		name := sprintf_ccgo_bytes(27919, i) // turn right
+		callback(byteptr(name), &faces[facenum])
 		facenum++
-		snprintf_ccgo(bp, 9, 27928, i) // turn left
-		callback(bp, &faces[facenum])
+		name = sprintf_ccgo_bytes(27928, i) // turn left
+		callback(byteptr(name), &faces[facenum])
 		facenum++
-		snprintf_ccgo(bp, 9, 27937, i) // ouch!
-		callback(bp, &faces[facenum])
+		name = sprintf_ccgo_bytes(27937, i) // ouch!
+		callback(byteptr(name), &faces[facenum])
 		facenum++
-		snprintf_ccgo(bp, 9, 27947, i) // evil grin ;)
-		callback(bp, &faces[facenum])
+		name = sprintf_ccgo_bytes(27947, i) // evil grin ;)
+		callback(byteptr(name), &faces[facenum])
 		facenum++
-		snprintf_ccgo(bp, 9, 27956, i) // pissed off
-		callback(bp, &faces[facenum])
+		name = sprintf_ccgo_bytes(27956, i) // pissed off
+		callback(byteptr(name), &faces[facenum])
 		facenum++
 		goto _4
 	_4:
@@ -43636,16 +43624,13 @@ func GetFileNumber(handle *os.File) (r int32) {
 }
 
 func ChecksumAddLump(sha hash.Hash, lump *lumpinfo_t) {
-	bp := alloc(16)
-	M_StringCopy(bp, lump.NamePtr(), 9)
-	SHA1_UpdateString(sha, bp)
+	SHA1_UpdateString(sha, lump.NamePtr())
 	SHA1_UpdateInt32(sha, uint32(GetFileNumber(lump.Fwad_file)))
 	SHA1_UpdateInt32(sha, uint32(lump.Fposition))
 	SHA1_UpdateInt32(sha, uint32(lump.Fsize))
 }
 
 func W_Checksum(digest *sha1_digest_t) {
-	//bp := alloc(96)
 	var i uint32
 	//SHA1_Init(bp)
 	sha := sha1.New()
@@ -43724,7 +43709,7 @@ func W_ParseCommandLine() (r boolean) {
 }
 
 type wadinfo_t struct {
-	Fidentification [4]int8
+	Fidentification [4]byte
 	Fnumlumps       int32
 	Finfotableofs   int32
 }
@@ -43787,7 +43772,6 @@ var wad_files = map[uintptr]*os.File{}
 //  for the lump name.
 
 func W_AddFile(filename string) *os.File {
-	bp := alloc(32)
 	var fileinfo, filerover uintptr
 	var wad_file *os.File
 	var i uint32
@@ -43818,21 +43802,22 @@ func W_AddFile(filename string) *os.File {
 		M_ExtractFileBase(filename, fileinfo+8)
 		newnumlumps++
 	} else {
+		var wadinfo wadinfo_t
 		// WAD file
-		W_Read(wad_file, 0, bp, 12)
-		if xstrncmp(bp, __ccgo_ts(28654), 4) != 0 {
+		W_Read(wad_file, 0, (uintptr)(unsafe.Pointer(&wadinfo)), 12)
+		if xstrncmp(byteptr(wadinfo.Fidentification[:]), __ccgo_ts(28654), 4) != 0 {
 			// Homebrew levels?
-			if xstrncmp(bp, __ccgo_ts(28659), 4) != 0 {
+			if xstrncmp(byteptr(wadinfo.Fidentification[:]), __ccgo_ts(28659), 4) != 0 {
 				I_Error(28664, filename)
 			}
 			// ???modifiedgame = true;
 		}
-		(*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps = (*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps
-		(*(*wadinfo_t)(unsafe.Pointer(bp))).Finfotableofs = (*(*wadinfo_t)(unsafe.Pointer(bp))).Finfotableofs
-		length = int32(uint64((*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps) * 16)
+		wadinfo.Fnumlumps = wadinfo.Fnumlumps
+		wadinfo.Finfotableofs = wadinfo.Finfotableofs
+		length = int32(uint64(wadinfo.Fnumlumps) * 16)
 		fileinfo = Z_Malloc(length, PU_STATIC, uintptr(0))
-		W_Read(wad_file, uint32((*(*wadinfo_t)(unsafe.Pointer(bp))).Finfotableofs), fileinfo, uint64(length))
-		newnumlumps += (*(*wadinfo_t)(unsafe.Pointer(bp))).Fnumlumps
+		W_Read(wad_file, uint32(wadinfo.Finfotableofs), fileinfo, uint64(length))
+		newnumlumps += wadinfo.Fnumlumps
 	}
 	// Increase size of numlumps array to accomodate the new file.
 	startlump = int32(numlumps)
@@ -47061,6 +47046,19 @@ func snprintf_ccgo(bp uintptr, maxlen int, index int, args ...any) {
 	}
 	output := unsafe.Slice((*uint8)(unsafe.Pointer(bp)), maxlen)
 	copy(output, copyBytes)
+}
+
+func sprintf_ccgo_bytes(index int, args ...any) []byte {
+	fmtStr, ok := __ccgo_ts_map[index]
+	if !ok {
+		panic(fmt.Sprintf("index %d not found in __ccgo_ts_map", index))
+	}
+	if len(fmtStr) > 0 && fmtStr[len(fmtStr)-1] == 0 {
+		// Remove the null terminator for printing
+		fmtStr = fmtStr[:len(fmtStr)-1]
+	}
+	n := fmt.Sprintf(string(fmtStr), args...)
+	return []byte(n)
 }
 
 func __ccgo_ts(index int) uintptr {
