@@ -5014,24 +5014,24 @@ func D_BindVariables() {
 	key_multi_msgplayer[int32(1)] = int32('i')
 	key_multi_msgplayer[int32(2)] = int32('b')
 	key_multi_msgplayer[int32(3)] = int32('r')
-	M_BindVariable(__ccgo_ts(1506), uintptr(unsafe.Pointer(&mouseSensitivity)))
-	M_BindVariable(__ccgo_ts(1524), uintptr(unsafe.Pointer(&sfxVolume)))
-	M_BindVariable(__ccgo_ts(1535), uintptr(unsafe.Pointer(&musicVolume)))
-	M_BindVariable(__ccgo_ts(1548), uintptr(unsafe.Pointer(&showMessages)))
-	M_BindVariable(__ccgo_ts(1562), uintptr(unsafe.Pointer(&screenblocks)))
-	M_BindVariable(__ccgo_ts(1575), uintptr(unsafe.Pointer(&detailLevel)))
-	M_BindVariable(__ccgo_ts(1587), uintptr(unsafe.Pointer(&snd_channels)))
-	M_BindVariable(__ccgo_ts(1600), uintptr(unsafe.Pointer(&vanilla_savegame_limit)))
-	M_BindVariable(__ccgo_ts(1623), uintptr(unsafe.Pointer(&vanilla_demo_limit)))
-	M_BindVariable(__ccgo_ts(1642), uintptr(unsafe.Pointer(&show_endoom)))
+	M_BindVariable(__ccgo_ts_str(1506), uintptr(unsafe.Pointer(&mouseSensitivity)))
+	M_BindVariable(__ccgo_ts_str(1524), uintptr(unsafe.Pointer(&sfxVolume)))
+	M_BindVariable(__ccgo_ts_str(1535), uintptr(unsafe.Pointer(&musicVolume)))
+	M_BindVariable(__ccgo_ts_str(1548), uintptr(unsafe.Pointer(&showMessages)))
+	M_BindVariable(__ccgo_ts_str(1562), uintptr(unsafe.Pointer(&screenblocks)))
+	M_BindVariable(__ccgo_ts_str(1575), uintptr(unsafe.Pointer(&detailLevel)))
+	M_BindVariable(__ccgo_ts_str(1587), uintptr(unsafe.Pointer(&snd_channels)))
+	M_BindVariable(__ccgo_ts_str(1600), uintptr(unsafe.Pointer(&vanilla_savegame_limit)))
+	M_BindVariable(__ccgo_ts_str(1623), uintptr(unsafe.Pointer(&vanilla_demo_limit)))
+	M_BindVariable(__ccgo_ts_str(1642), uintptr(unsafe.Pointer(&show_endoom)))
 	// Multiplayer chat macros
 	i = 0
 	for {
 		if i >= 10 {
 			break
 		}
-		name := sprintf_ccgo_bytes(1654, i)
-		M_BindVariable(byteptr(name), uintptr(unsafe.Pointer(&chat_macros[i])))
+		name := fmt.Sprintf(__ccgo_ts_str(1654), i)
+		M_BindVariable(name, uintptr(unsafe.Pointer(&chat_macros[i])))
 		goto _1
 	_1:
 		;
@@ -17991,21 +17991,21 @@ var joystick_physical_buttons = [10]int32{
 
 func I_BindJoystickVariables() {
 	var i int32
-	M_BindVariable(__ccgo_ts(18302), uintptr(unsafe.Pointer(&usejoystick)))
-	M_BindVariable(__ccgo_ts(18315), uintptr(unsafe.Pointer(&joystick_index)))
-	M_BindVariable(__ccgo_ts(18330), uintptr(unsafe.Pointer(&joystick_x_axis)))
-	M_BindVariable(__ccgo_ts(18346), uintptr(unsafe.Pointer(&joystick_y_axis)))
-	M_BindVariable(__ccgo_ts(18362), uintptr(unsafe.Pointer(&joystick_strafe_axis)))
-	M_BindVariable(__ccgo_ts(18383), uintptr(unsafe.Pointer(&joystick_x_invert)))
-	M_BindVariable(__ccgo_ts(18401), uintptr(unsafe.Pointer(&joystick_y_invert)))
-	M_BindVariable(__ccgo_ts(18419), uintptr(unsafe.Pointer(&joystick_strafe_invert)))
+	M_BindVariable(__ccgo_ts_str(18302), uintptr(unsafe.Pointer(&usejoystick)))
+	M_BindVariable(__ccgo_ts_str(18315), uintptr(unsafe.Pointer(&joystick_index)))
+	M_BindVariable(__ccgo_ts_str(18330), uintptr(unsafe.Pointer(&joystick_x_axis)))
+	M_BindVariable(__ccgo_ts_str(18346), uintptr(unsafe.Pointer(&joystick_y_axis)))
+	M_BindVariable(__ccgo_ts_str(18362), uintptr(unsafe.Pointer(&joystick_strafe_axis)))
+	M_BindVariable(__ccgo_ts_str(18383), uintptr(unsafe.Pointer(&joystick_x_invert)))
+	M_BindVariable(__ccgo_ts_str(18401), uintptr(unsafe.Pointer(&joystick_y_invert)))
+	M_BindVariable(__ccgo_ts_str(18419), uintptr(unsafe.Pointer(&joystick_strafe_invert)))
 	i = 0
 	for {
 		if i >= NUM_VIRTUAL_BUTTONS {
 			break
 		}
-		name := sprintf_ccgo_bytes(18442, i)
-		M_BindVariable(byteptr(name), uintptr(unsafe.Pointer(&joystick_physical_buttons))+uintptr(i)*4)
+		name := fmt.Sprintf(__ccgo_ts_str(18442), i)
+		M_BindVariable(name, uintptr(unsafe.Pointer(&joystick_physical_buttons))+uintptr(i)*4)
 		goto _1
 	_1:
 		;
@@ -18276,16 +18276,16 @@ func I_StopSong() {
 }
 
 func I_BindSoundVariables() {
-	M_BindVariable(__ccgo_ts(18699), uintptr(unsafe.Pointer(&snd_musicdevice)))
-	M_BindVariable(__ccgo_ts(18715), uintptr(unsafe.Pointer(&snd_sfxdevice)))
-	M_BindVariable(__ccgo_ts(18729), uintptr(unsafe.Pointer(&snd_sbport)))
-	M_BindVariable(__ccgo_ts(18740), uintptr(unsafe.Pointer(&snd_sbirq)))
-	M_BindVariable(__ccgo_ts(18750), uintptr(unsafe.Pointer(&snd_sbdma)))
-	M_BindVariable(__ccgo_ts(18760), uintptr(unsafe.Pointer(&snd_mport)))
-	M_BindVariable(__ccgo_ts(18770), uintptr(unsafe.Pointer(&snd_maxslicetime_ms)))
-	M_BindVariable(__ccgo_ts(18790), uintptr(unsafe.Pointer(&snd_musiccmd)))
-	M_BindVariable(__ccgo_ts(18803), uintptr(unsafe.Pointer(&snd_samplerate)))
-	M_BindVariable(__ccgo_ts(18818), uintptr(unsafe.Pointer(&snd_cachesize)))
+	M_BindVariable(__ccgo_ts_str(18699), uintptr(unsafe.Pointer(&snd_musicdevice)))
+	M_BindVariable(__ccgo_ts_str(18715), uintptr(unsafe.Pointer(&snd_sfxdevice)))
+	M_BindVariable(__ccgo_ts_str(18729), uintptr(unsafe.Pointer(&snd_sbport)))
+	M_BindVariable(__ccgo_ts_str(18740), uintptr(unsafe.Pointer(&snd_sbirq)))
+	M_BindVariable(__ccgo_ts_str(18750), uintptr(unsafe.Pointer(&snd_sbdma)))
+	M_BindVariable(__ccgo_ts_str(18760), uintptr(unsafe.Pointer(&snd_mport)))
+	M_BindVariable(__ccgo_ts_str(18770), uintptr(unsafe.Pointer(&snd_maxslicetime_ms)))
+	M_BindVariable(__ccgo_ts_str(18790), uintptr(unsafe.Pointer(&snd_musiccmd)))
+	M_BindVariable(__ccgo_ts_str(18803), uintptr(unsafe.Pointer(&snd_samplerate)))
+	M_BindVariable(__ccgo_ts_str(18818), uintptr(unsafe.Pointer(&snd_cachesize)))
 	// Before SDL_mixer version 1.2.11, MIDI music caused the game
 	// to crash when it looped.  If this is an old SDL_mixer version,
 	// disable MIDI.
@@ -18744,7 +18744,7 @@ const DEFAULT_FLOAT = 3
 const DEFAULT_KEY = 4
 
 type default_t struct {
-	Fname                uintptr
+	Fname                string
 	Flocation            uintptr
 	Ftype1               default_type_t
 	Funtranslated        int32
@@ -18762,278 +18762,278 @@ type default_collection_t struct {
 
 var doom_defaults_list = [76]default_t{
 	0: {
-		Fname: __ccgo_ts(1506),
+		Fname: __ccgo_ts_str(1506),
 	},
 	1: {
-		Fname: __ccgo_ts(1524),
+		Fname: __ccgo_ts_str(1524),
 	},
 	2: {
-		Fname: __ccgo_ts(1535),
+		Fname: __ccgo_ts_str(1535),
 	},
 	3: {
-		Fname: __ccgo_ts(19402),
+		Fname: __ccgo_ts_str(19402),
 	},
 	4: {
-		Fname: __ccgo_ts(19412),
+		Fname: __ccgo_ts_str(19412),
 	},
 	5: {
-		Fname: __ccgo_ts(1548),
+		Fname: __ccgo_ts_str(1548),
 	},
 	6: {
-		Fname:  __ccgo_ts(19425),
+		Fname:  __ccgo_ts_str(19425),
 		Ftype1: DEFAULT_KEY,
 	},
 	7: {
-		Fname:  __ccgo_ts(19435),
+		Fname:  __ccgo_ts_str(19435),
 		Ftype1: DEFAULT_KEY,
 	},
 	8: {
-		Fname:  __ccgo_ts(19444),
+		Fname:  __ccgo_ts_str(19444),
 		Ftype1: DEFAULT_KEY,
 	},
 	9: {
-		Fname:  __ccgo_ts(19451),
+		Fname:  __ccgo_ts_str(19451),
 		Ftype1: DEFAULT_KEY,
 	},
 	10: {
-		Fname:  __ccgo_ts(19460),
+		Fname:  __ccgo_ts_str(19460),
 		Ftype1: DEFAULT_KEY,
 	},
 	11: {
-		Fname:  __ccgo_ts(19475),
+		Fname:  __ccgo_ts_str(19475),
 		Ftype1: DEFAULT_KEY,
 	},
 	12: {
-		Fname:  __ccgo_ts(19491),
+		Fname:  __ccgo_ts_str(19491),
 		Ftype1: DEFAULT_KEY,
 	},
 	13: {
-		Fname:  __ccgo_ts(19505),
+		Fname:  __ccgo_ts_str(19505),
 		Ftype1: DEFAULT_KEY,
 	},
 	14: {
-		Fname:  __ccgo_ts(19514),
+		Fname:  __ccgo_ts_str(19514),
 		Ftype1: DEFAULT_KEY,
 	},
 	15: {
-		Fname:  __ccgo_ts(19524),
+		Fname:  __ccgo_ts_str(19524),
 		Ftype1: DEFAULT_KEY,
 	},
 	16: {
-		Fname:  __ccgo_ts(19536),
+		Fname:  __ccgo_ts_str(19536),
 		Ftype1: DEFAULT_KEY,
 	},
 	17: {
-		Fname:  __ccgo_ts(19550),
+		Fname:  __ccgo_ts_str(19550),
 		Ftype1: DEFAULT_KEY,
 	},
 	18: {
-		Fname:  __ccgo_ts(19561),
+		Fname:  __ccgo_ts_str(19561),
 		Ftype1: DEFAULT_KEY,
 	},
 	19: {
-		Fname:  __ccgo_ts(19574),
+		Fname:  __ccgo_ts_str(19574),
 		Ftype1: DEFAULT_KEY,
 	},
 	20: {
-		Fname:  __ccgo_ts(19589),
+		Fname:  __ccgo_ts_str(19589),
 		Ftype1: DEFAULT_KEY,
 	},
 	21: {
-		Fname:  __ccgo_ts(19602),
+		Fname:  __ccgo_ts_str(19602),
 		Ftype1: DEFAULT_KEY,
 	},
 	22: {
-		Fname:  __ccgo_ts(19614),
+		Fname:  __ccgo_ts_str(19614),
 		Ftype1: DEFAULT_KEY,
 	},
 	23: {
-		Fname:  __ccgo_ts(19625),
+		Fname:  __ccgo_ts_str(19625),
 		Ftype1: DEFAULT_KEY,
 	},
 	24: {
-		Fname:  __ccgo_ts(19636),
+		Fname:  __ccgo_ts_str(19636),
 		Ftype1: DEFAULT_KEY,
 	},
 	25: {
-		Fname:  __ccgo_ts(19648),
+		Fname:  __ccgo_ts_str(19648),
 		Ftype1: DEFAULT_KEY,
 	},
 	26: {
-		Fname:  __ccgo_ts(19659),
+		Fname:  __ccgo_ts_str(19659),
 		Ftype1: DEFAULT_KEY,
 	},
 	27: {
-		Fname:  __ccgo_ts(19671),
+		Fname:  __ccgo_ts_str(19671),
 		Ftype1: DEFAULT_KEY,
 	},
 	28: {
-		Fname:  __ccgo_ts(19684),
+		Fname:  __ccgo_ts_str(19684),
 		Ftype1: DEFAULT_KEY,
 	},
 	29: {
-		Fname:  __ccgo_ts(19696),
+		Fname:  __ccgo_ts_str(19696),
 		Ftype1: DEFAULT_KEY,
 	},
 	30: {
-		Fname:  __ccgo_ts(19709),
+		Fname:  __ccgo_ts_str(19709),
 		Ftype1: DEFAULT_KEY,
 	},
 	31: {
-		Fname:  __ccgo_ts(19725),
+		Fname:  __ccgo_ts_str(19725),
 		Ftype1: DEFAULT_KEY,
 	},
 	32: {
-		Fname:  __ccgo_ts(19736),
+		Fname:  __ccgo_ts_str(19736),
 		Ftype1: DEFAULT_KEY,
 	},
 	33: {
-		Fname:  __ccgo_ts(19748),
+		Fname:  __ccgo_ts_str(19748),
 		Ftype1: DEFAULT_KEY,
 	},
 	34: {
-		Fname:  __ccgo_ts(19759),
+		Fname:  __ccgo_ts_str(19759),
 		Ftype1: DEFAULT_KEY,
 	},
 	35: {
-		Fname:  __ccgo_ts(19772),
+		Fname:  __ccgo_ts_str(19772),
 		Ftype1: DEFAULT_KEY,
 	},
 	36: {
-		Fname:  __ccgo_ts(19781),
+		Fname:  __ccgo_ts_str(19781),
 		Ftype1: DEFAULT_KEY,
 	},
 	37: {
-		Fname:  __ccgo_ts(19789),
+		Fname:  __ccgo_ts_str(19789),
 		Ftype1: DEFAULT_KEY,
 	},
 	38: {
-		Fname:  __ccgo_ts(19800),
+		Fname:  __ccgo_ts_str(19800),
 		Ftype1: DEFAULT_KEY,
 	},
 	39: {
-		Fname: __ccgo_ts(19810),
+		Fname: __ccgo_ts_str(19810),
 	},
 	40: {
-		Fname: __ccgo_ts(19820),
+		Fname: __ccgo_ts_str(19820),
 	},
 	41: {
-		Fname: __ccgo_ts(19832),
+		Fname: __ccgo_ts_str(19832),
 	},
 	42: {
-		Fname: __ccgo_ts(19846),
+		Fname: __ccgo_ts_str(19846),
 	},
 	43: {
-		Fname: __ccgo_ts(19861),
+		Fname: __ccgo_ts_str(19861),
 	},
 	44: {
-		Fname: __ccgo_ts(18302),
+		Fname: __ccgo_ts_str(18302),
 	},
 	45: {
-		Fname: __ccgo_ts(19873),
+		Fname: __ccgo_ts_str(19873),
 	},
 	46: {
-		Fname: __ccgo_ts(19883),
+		Fname: __ccgo_ts_str(19883),
 	},
 	47: {
-		Fname: __ccgo_ts(19895),
+		Fname: __ccgo_ts_str(19895),
 	},
 	48: {
-		Fname: __ccgo_ts(19904),
+		Fname: __ccgo_ts_str(19904),
 	},
 	49: {
-		Fname: __ccgo_ts(19915),
+		Fname: __ccgo_ts_str(19915),
 	},
 	50: {
-		Fname: __ccgo_ts(1562),
+		Fname: __ccgo_ts_str(1562),
 	},
 	51: {
-		Fname: __ccgo_ts(19925),
+		Fname: __ccgo_ts_str(19925),
 	},
 	52: {
-		Fname: __ccgo_ts(1575),
+		Fname: __ccgo_ts_str(1575),
 	},
 	53: {
-		Fname: __ccgo_ts(1587),
+		Fname: __ccgo_ts_str(1587),
 	},
 	54: {
-		Fname: __ccgo_ts(18699),
+		Fname: __ccgo_ts_str(18699),
 	},
 	55: {
-		Fname: __ccgo_ts(18715),
+		Fname: __ccgo_ts_str(18715),
 	},
 	56: {
-		Fname: __ccgo_ts(18729),
+		Fname: __ccgo_ts_str(18729),
 	},
 	57: {
-		Fname: __ccgo_ts(18740),
+		Fname: __ccgo_ts_str(18740),
 	},
 	58: {
-		Fname: __ccgo_ts(18750),
+		Fname: __ccgo_ts_str(18750),
 	},
 	59: {
-		Fname: __ccgo_ts(18760),
+		Fname: __ccgo_ts_str(18760),
 	},
 	60: {
-		Fname: __ccgo_ts(19936),
+		Fname: __ccgo_ts_str(19936),
 	},
 	61: {
-		Fname:  __ccgo_ts(19945),
+		Fname:  __ccgo_ts_str(19945),
 		Ftype1: DEFAULT_STRING,
 	},
 	62: {
-		Fname: __ccgo_ts(19953),
+		Fname: __ccgo_ts_str(19953),
 	},
 	63: {
-		Fname:  __ccgo_ts(19964),
+		Fname:  __ccgo_ts_str(19964),
 		Ftype1: DEFAULT_STRING,
 	},
 	64: {
-		Fname:  __ccgo_ts(19974),
+		Fname:  __ccgo_ts_str(19974),
 		Ftype1: DEFAULT_STRING,
 	},
 	65: {
-		Fname:  __ccgo_ts(19983),
+		Fname:  __ccgo_ts_str(19983),
 		Ftype1: DEFAULT_STRING,
 	},
 	66: {
-		Fname:  __ccgo_ts(19994),
+		Fname:  __ccgo_ts_str(19994),
 		Ftype1: DEFAULT_STRING,
 	},
 	67: {
-		Fname:  __ccgo_ts(20005),
+		Fname:  __ccgo_ts_str(20005),
 		Ftype1: DEFAULT_STRING,
 	},
 	68: {
-		Fname:  __ccgo_ts(20016),
+		Fname:  __ccgo_ts_str(20016),
 		Ftype1: DEFAULT_STRING,
 	},
 	69: {
-		Fname:  __ccgo_ts(20027),
+		Fname:  __ccgo_ts_str(20027),
 		Ftype1: DEFAULT_STRING,
 	},
 	70: {
-		Fname:  __ccgo_ts(20038),
+		Fname:  __ccgo_ts_str(20038),
 		Ftype1: DEFAULT_STRING,
 	},
 	71: {
-		Fname:  __ccgo_ts(20049),
+		Fname:  __ccgo_ts_str(20049),
 		Ftype1: DEFAULT_STRING,
 	},
 	72: {
-		Fname:  __ccgo_ts(20060),
+		Fname:  __ccgo_ts_str(20060),
 		Ftype1: DEFAULT_STRING,
 	},
 	73: {
-		Fname:  __ccgo_ts(20071),
+		Fname:  __ccgo_ts_str(20071),
 		Ftype1: DEFAULT_STRING,
 	},
 	74: {
-		Fname:  __ccgo_ts(20082),
+		Fname:  __ccgo_ts_str(20082),
 		Ftype1: DEFAULT_STRING,
 	},
 	75: {
-		Fname: __ccgo_ts(20093),
+		Fname: __ccgo_ts_str(20093),
 	},
 }
 
@@ -19046,431 +19046,431 @@ var doom_defaults = default_collection_t{
 
 var extra_defaults_list = [119]default_t{
 	0: {
-		Fname: __ccgo_ts(20101),
+		Fname: __ccgo_ts_str(20101),
 	},
 	1: {
-		Fname: __ccgo_ts(20119),
+		Fname: __ccgo_ts_str(20119),
 	},
 	2: {
-		Fname: __ccgo_ts(20145),
+		Fname: __ccgo_ts_str(20145),
 	},
 	3: {
-		Fname: __ccgo_ts(20156),
+		Fname: __ccgo_ts_str(20156),
 	},
 	4: {
-		Fname: __ccgo_ts(20177),
+		Fname: __ccgo_ts_str(20177),
 	},
 	5: {
-		Fname: __ccgo_ts(20191),
+		Fname: __ccgo_ts_str(20191),
 	},
 	6: {
-		Fname: __ccgo_ts(20204),
+		Fname: __ccgo_ts_str(20204),
 	},
 	7: {
-		Fname: __ccgo_ts(20218),
+		Fname: __ccgo_ts_str(20218),
 	},
 	8: {
-		Fname: __ccgo_ts(20229),
+		Fname: __ccgo_ts_str(20229),
 	},
 	9: {
-		Fname: __ccgo_ts(20239),
+		Fname: __ccgo_ts_str(20239),
 	},
 	10: {
-		Fname:  __ccgo_ts(20246),
+		Fname:  __ccgo_ts_str(20246),
 		Ftype1: DEFAULT_FLOAT,
 	},
 	11: {
-		Fname: __ccgo_ts(20265),
+		Fname: __ccgo_ts_str(20265),
 	},
 	12: {
-		Fname: __ccgo_ts(18803),
+		Fname: __ccgo_ts_str(18803),
 	},
 	13: {
-		Fname: __ccgo_ts(18818),
+		Fname: __ccgo_ts_str(18818),
 	},
 	14: {
-		Fname: __ccgo_ts(18770),
+		Fname: __ccgo_ts_str(18770),
 	},
 	15: {
-		Fname:  __ccgo_ts(18790),
+		Fname:  __ccgo_ts_str(18790),
 		Ftype1: DEFAULT_STRING,
 	},
 	16: {
-		Fname:  __ccgo_ts(20281),
+		Fname:  __ccgo_ts_str(20281),
 		Ftype1: DEFAULT_INT_HEX,
 	},
 	17: {
-		Fname: __ccgo_ts(1642),
+		Fname: __ccgo_ts_str(1642),
 	},
 	18: {
-		Fname: __ccgo_ts(20293),
+		Fname: __ccgo_ts_str(20293),
 	},
 	19: {
-		Fname: __ccgo_ts(1600),
+		Fname: __ccgo_ts_str(1600),
 	},
 	20: {
-		Fname: __ccgo_ts(1623),
+		Fname: __ccgo_ts_str(1623),
 	},
 	21: {
-		Fname: __ccgo_ts(20309),
+		Fname: __ccgo_ts_str(20309),
 	},
 	22: {
-		Fname:  __ccgo_ts(20334),
+		Fname:  __ccgo_ts_str(20334),
 		Ftype1: DEFAULT_STRING,
 	},
 	23: {
-		Fname:  __ccgo_ts(20347),
+		Fname:  __ccgo_ts_str(20347),
 		Ftype1: DEFAULT_STRING,
 	},
 	24: {
-		Fname: __ccgo_ts(18315),
+		Fname: __ccgo_ts_str(18315),
 	},
 	25: {
-		Fname: __ccgo_ts(18330),
+		Fname: __ccgo_ts_str(18330),
 	},
 	26: {
-		Fname: __ccgo_ts(18383),
+		Fname: __ccgo_ts_str(18383),
 	},
 	27: {
-		Fname: __ccgo_ts(18346),
+		Fname: __ccgo_ts_str(18346),
 	},
 	28: {
-		Fname: __ccgo_ts(18401),
+		Fname: __ccgo_ts_str(18401),
 	},
 	29: {
-		Fname: __ccgo_ts(18362),
+		Fname: __ccgo_ts_str(18362),
 	},
 	30: {
-		Fname: __ccgo_ts(18419),
+		Fname: __ccgo_ts_str(18419),
 	},
 	31: {
-		Fname: __ccgo_ts(20363),
+		Fname: __ccgo_ts_str(20363),
 	},
 	32: {
-		Fname: __ccgo_ts(20389),
+		Fname: __ccgo_ts_str(20389),
 	},
 	33: {
-		Fname: __ccgo_ts(20415),
+		Fname: __ccgo_ts_str(20415),
 	},
 	34: {
-		Fname: __ccgo_ts(20441),
+		Fname: __ccgo_ts_str(20441),
 	},
 	35: {
-		Fname: __ccgo_ts(20467),
+		Fname: __ccgo_ts_str(20467),
 	},
 	36: {
-		Fname: __ccgo_ts(20493),
+		Fname: __ccgo_ts_str(20493),
 	},
 	37: {
-		Fname: __ccgo_ts(20519),
+		Fname: __ccgo_ts_str(20519),
 	},
 	38: {
-		Fname: __ccgo_ts(20545),
+		Fname: __ccgo_ts_str(20545),
 	},
 	39: {
-		Fname: __ccgo_ts(20571),
+		Fname: __ccgo_ts_str(20571),
 	},
 	40: {
-		Fname: __ccgo_ts(20597),
+		Fname: __ccgo_ts_str(20597),
 	},
 	41: {
-		Fname: __ccgo_ts(20623),
+		Fname: __ccgo_ts_str(20623),
 	},
 	42: {
-		Fname: __ccgo_ts(20639),
+		Fname: __ccgo_ts_str(20639),
 	},
 	43: {
-		Fname: __ccgo_ts(20656),
+		Fname: __ccgo_ts_str(20656),
 	},
 	44: {
-		Fname: __ccgo_ts(20675),
+		Fname: __ccgo_ts_str(20675),
 	},
 	45: {
-		Fname: __ccgo_ts(20691),
+		Fname: __ccgo_ts_str(20691),
 	},
 	46: {
-		Fname: __ccgo_ts(20707),
+		Fname: __ccgo_ts_str(20707),
 	},
 	47: {
-		Fname: __ccgo_ts(20725),
+		Fname: __ccgo_ts_str(20725),
 	},
 	48: {
-		Fname: __ccgo_ts(20744),
+		Fname: __ccgo_ts_str(20744),
 	},
 	49: {
-		Fname: __ccgo_ts(20755),
+		Fname: __ccgo_ts_str(20755),
 	},
 	50: {
-		Fname: __ccgo_ts(20771),
+		Fname: __ccgo_ts_str(20771),
 	},
 	51: {
-		Fname: __ccgo_ts(20789),
+		Fname: __ccgo_ts_str(20789),
 	},
 	52: {
-		Fname: __ccgo_ts(20807),
+		Fname: __ccgo_ts_str(20807),
 	},
 	53: {
-		Fname:  __ccgo_ts(20818),
+		Fname:  __ccgo_ts_str(20818),
 		Ftype1: DEFAULT_KEY,
 	},
 	54: {
-		Fname:  __ccgo_ts(20828),
+		Fname:  __ccgo_ts_str(20828),
 		Ftype1: DEFAULT_KEY,
 	},
 	55: {
-		Fname:  __ccgo_ts(20846),
+		Fname:  __ccgo_ts_str(20846),
 		Ftype1: DEFAULT_KEY,
 	},
 	56: {
-		Fname:  __ccgo_ts(20858),
+		Fname:  __ccgo_ts_str(20858),
 		Ftype1: DEFAULT_KEY,
 	},
 	57: {
-		Fname:  __ccgo_ts(20872),
+		Fname:  __ccgo_ts_str(20872),
 		Ftype1: DEFAULT_KEY,
 	},
 	58: {
-		Fname:  __ccgo_ts(20886),
+		Fname:  __ccgo_ts_str(20886),
 		Ftype1: DEFAULT_KEY,
 	},
 	59: {
-		Fname:  __ccgo_ts(20901),
+		Fname:  __ccgo_ts_str(20901),
 		Ftype1: DEFAULT_KEY,
 	},
 	60: {
-		Fname:  __ccgo_ts(20915),
+		Fname:  __ccgo_ts_str(20915),
 		Ftype1: DEFAULT_KEY,
 	},
 	61: {
-		Fname:  __ccgo_ts(20932),
+		Fname:  __ccgo_ts_str(20932),
 		Ftype1: DEFAULT_KEY,
 	},
 	62: {
-		Fname:  __ccgo_ts(20949),
+		Fname:  __ccgo_ts_str(20949),
 		Ftype1: DEFAULT_KEY,
 	},
 	63: {
-		Fname:  __ccgo_ts(20964),
+		Fname:  __ccgo_ts_str(20964),
 		Ftype1: DEFAULT_KEY,
 	},
 	64: {
-		Fname:  __ccgo_ts(20978),
+		Fname:  __ccgo_ts_str(20978),
 		Ftype1: DEFAULT_KEY,
 	},
 	65: {
-		Fname:  __ccgo_ts(20992),
+		Fname:  __ccgo_ts_str(20992),
 		Ftype1: DEFAULT_KEY,
 	},
 	66: {
-		Fname:  __ccgo_ts(21006),
+		Fname:  __ccgo_ts_str(21006),
 		Ftype1: DEFAULT_KEY,
 	},
 	67: {
-		Fname:  __ccgo_ts(21022),
+		Fname:  __ccgo_ts_str(21022),
 		Ftype1: DEFAULT_KEY,
 	},
 	68: {
-		Fname:  __ccgo_ts(21038),
+		Fname:  __ccgo_ts_str(21038),
 		Ftype1: DEFAULT_KEY,
 	},
 	69: {
-		Fname:  __ccgo_ts(21053),
+		Fname:  __ccgo_ts_str(21053),
 		Ftype1: DEFAULT_KEY,
 	},
 	70: {
-		Fname:  __ccgo_ts(21070),
+		Fname:  __ccgo_ts_str(21070),
 		Ftype1: DEFAULT_KEY,
 	},
 	71: {
-		Fname:  __ccgo_ts(21088),
+		Fname:  __ccgo_ts_str(21088),
 		Ftype1: DEFAULT_KEY,
 	},
 	72: {
-		Fname:  __ccgo_ts(21103),
+		Fname:  __ccgo_ts_str(21103),
 		Ftype1: DEFAULT_KEY,
 	},
 	73: {
-		Fname:  __ccgo_ts(21117),
+		Fname:  __ccgo_ts_str(21117),
 		Ftype1: DEFAULT_KEY,
 	},
 	74: {
-		Fname:  __ccgo_ts(21132),
+		Fname:  __ccgo_ts_str(21132),
 		Ftype1: DEFAULT_KEY,
 	},
 	75: {
-		Fname:  __ccgo_ts(21140),
+		Fname:  __ccgo_ts_str(21140),
 		Ftype1: DEFAULT_KEY,
 	},
 	76: {
-		Fname:  __ccgo_ts(21159),
+		Fname:  __ccgo_ts_str(21159),
 		Ftype1: DEFAULT_KEY,
 	},
 	77: {
-		Fname:  __ccgo_ts(21178),
+		Fname:  __ccgo_ts_str(21178),
 		Ftype1: DEFAULT_KEY,
 	},
 	78: {
-		Fname:  __ccgo_ts(21198),
+		Fname:  __ccgo_ts_str(21198),
 		Ftype1: DEFAULT_KEY,
 	},
 	79: {
-		Fname:  __ccgo_ts(21213),
+		Fname:  __ccgo_ts_str(21213),
 		Ftype1: DEFAULT_KEY,
 	},
 	80: {
-		Fname:  __ccgo_ts(21227),
+		Fname:  __ccgo_ts_str(21227),
 		Ftype1: DEFAULT_KEY,
 	},
 	81: {
-		Fname:  __ccgo_ts(21241),
+		Fname:  __ccgo_ts_str(21241),
 		Ftype1: DEFAULT_KEY,
 	},
 	82: {
-		Fname:  __ccgo_ts(21254),
+		Fname:  __ccgo_ts_str(21254),
 		Ftype1: DEFAULT_KEY,
 	},
 	83: {
-		Fname:  __ccgo_ts(21267),
+		Fname:  __ccgo_ts_str(21267),
 		Ftype1: DEFAULT_KEY,
 	},
 	84: {
-		Fname:  __ccgo_ts(21282),
+		Fname:  __ccgo_ts_str(21282),
 		Ftype1: DEFAULT_KEY,
 	},
 	85: {
-		Fname:  __ccgo_ts(21298),
+		Fname:  __ccgo_ts_str(21298),
 		Ftype1: DEFAULT_KEY,
 	},
 	86: {
-		Fname:  __ccgo_ts(21314),
+		Fname:  __ccgo_ts_str(21314),
 		Ftype1: DEFAULT_KEY,
 	},
 	87: {
-		Fname:  __ccgo_ts(21329),
+		Fname:  __ccgo_ts_str(21329),
 		Ftype1: DEFAULT_KEY,
 	},
 	88: {
-		Fname:  __ccgo_ts(21342),
+		Fname:  __ccgo_ts_str(21342),
 		Ftype1: DEFAULT_KEY,
 	},
 	89: {
-		Fname:  __ccgo_ts(21355),
+		Fname:  __ccgo_ts_str(21355),
 		Ftype1: DEFAULT_KEY,
 	},
 	90: {
-		Fname:  __ccgo_ts(21373),
+		Fname:  __ccgo_ts_str(21373),
 		Ftype1: DEFAULT_KEY,
 	},
 	91: {
-		Fname:  __ccgo_ts(21385),
+		Fname:  __ccgo_ts_str(21385),
 		Ftype1: DEFAULT_KEY,
 	},
 	92: {
-		Fname:  __ccgo_ts(21397),
+		Fname:  __ccgo_ts_str(21397),
 		Ftype1: DEFAULT_KEY,
 	},
 	93: {
-		Fname:  __ccgo_ts(21409),
+		Fname:  __ccgo_ts_str(21409),
 		Ftype1: DEFAULT_KEY,
 	},
 	94: {
-		Fname:  __ccgo_ts(21421),
+		Fname:  __ccgo_ts_str(21421),
 		Ftype1: DEFAULT_KEY,
 	},
 	95: {
-		Fname:  __ccgo_ts(21433),
+		Fname:  __ccgo_ts_str(21433),
 		Ftype1: DEFAULT_KEY,
 	},
 	96: {
-		Fname:  __ccgo_ts(21445),
+		Fname:  __ccgo_ts_str(21445),
 		Ftype1: DEFAULT_KEY,
 	},
 	97: {
-		Fname:  __ccgo_ts(21457),
+		Fname:  __ccgo_ts_str(21457),
 		Ftype1: DEFAULT_KEY,
 	},
 	98: {
-		Fname:  __ccgo_ts(21469),
+		Fname:  __ccgo_ts_str(21469),
 		Ftype1: DEFAULT_KEY,
 	},
 	99: {
-		Fname:  __ccgo_ts(21484),
+		Fname:  __ccgo_ts_str(21484),
 		Ftype1: DEFAULT_KEY,
 	},
 	100: {
-		Fname:  __ccgo_ts(21499),
+		Fname:  __ccgo_ts_str(21499),
 		Ftype1: DEFAULT_KEY,
 	},
 	101: {
-		Fname:  __ccgo_ts(21512),
+		Fname:  __ccgo_ts_str(21512),
 		Ftype1: DEFAULT_KEY,
 	},
 	102: {
-		Fname:  __ccgo_ts(21528),
+		Fname:  __ccgo_ts_str(21528),
 		Ftype1: DEFAULT_KEY,
 	},
 	103: {
-		Fname:  __ccgo_ts(21547),
+		Fname:  __ccgo_ts_str(21547),
 		Ftype1: DEFAULT_KEY,
 	},
 	104: {
-		Fname:  __ccgo_ts(21568),
+		Fname:  __ccgo_ts_str(21568),
 		Ftype1: DEFAULT_KEY,
 	},
 	105: {
-		Fname:  __ccgo_ts(21586),
+		Fname:  __ccgo_ts_str(21586),
 		Ftype1: DEFAULT_KEY,
 	},
 	106: {
-		Fname:  __ccgo_ts(21609),
+		Fname:  __ccgo_ts_str(21609),
 		Ftype1: DEFAULT_KEY,
 	},
 	107: {
-		Fname:  __ccgo_ts(21622),
+		Fname:  __ccgo_ts_str(21622),
 		Ftype1: DEFAULT_KEY,
 	},
 	108: {
-		Fname:  __ccgo_ts(21647),
+		Fname:  __ccgo_ts_str(21647),
 		Ftype1: DEFAULT_KEY,
 	},
 	109: {
-		Fname:  __ccgo_ts(21667),
+		Fname:  __ccgo_ts_str(21667),
 		Ftype1: DEFAULT_KEY,
 	},
 	110: {
-		Fname:  __ccgo_ts(21681),
+		Fname:  __ccgo_ts_str(21681),
 		Ftype1: DEFAULT_KEY,
 	},
 	111: {
-		Fname:  __ccgo_ts(21695),
+		Fname:  __ccgo_ts_str(21695),
 		Ftype1: DEFAULT_KEY,
 	},
 	112: {
-		Fname:  __ccgo_ts(21716),
+		Fname:  __ccgo_ts_str(21716),
 		Ftype1: DEFAULT_KEY,
 	},
 	113: {
-		Fname:  __ccgo_ts(21737),
+		Fname:  __ccgo_ts_str(21737),
 		Ftype1: DEFAULT_KEY,
 	},
 	114: {
-		Fname:  __ccgo_ts(21758),
+		Fname:  __ccgo_ts_str(21758),
 		Ftype1: DEFAULT_KEY,
 	},
 	115: {
-		Fname:  __ccgo_ts(21779),
+		Fname:  __ccgo_ts_str(21779),
 		Ftype1: DEFAULT_KEY,
 	},
 	116: {
-		Fname:  __ccgo_ts(21800),
+		Fname:  __ccgo_ts_str(21800),
 		Ftype1: DEFAULT_KEY,
 	},
 	117: {
-		Fname:  __ccgo_ts(21821),
+		Fname:  __ccgo_ts_str(21821),
 		Ftype1: DEFAULT_KEY,
 	},
 	118: {
-		Fname:  __ccgo_ts(21842),
+		Fname:  __ccgo_ts_str(21842),
 		Ftype1: DEFAULT_KEY,
 	},
 }
@@ -19482,14 +19482,14 @@ var extra_defaults = default_collection_t{
 
 // Search a collection for a variable
 
-func SearchCollection(collection *default_collection_t, name uintptr) *default_t {
+func SearchCollection(collection *default_collection_t, name string) *default_t {
 	var i int32
 	i = 0
 	for {
 		if i >= collection.Fnumdefaults {
 			break
 		}
-		if xstrcmp(name, collection.Fdefaults[i].Fname) == 0 {
+		if strings.EqualFold(name, collection.Fdefaults[i].Fname) {
 			return &collection.Fdefaults[i]
 		}
 		goto _1
@@ -19563,7 +19563,7 @@ func M_LoadDefaults() {
 
 // Get a configuration file variable by its name
 
-func GetDefaultForName(name uintptr) *default_t {
+func GetDefaultForName(name string) *default_t {
 	var result *default_t
 	// Try the main list and the extras
 	result = SearchCollection(&doom_defaults, name)
@@ -19581,7 +19581,7 @@ func GetDefaultForName(name uintptr) *default_t {
 // Bind a variable to a given configuration file variable, by name.
 //
 
-func M_BindVariable(name uintptr, location uintptr) {
+func M_BindVariable(name string, location uintptr) {
 	var variable *default_t
 	variable = GetDefaultForName(name)
 	variable.Flocation = location
@@ -19753,106 +19753,106 @@ func init() {
 //
 
 func M_BindBaseControls() {
-	M_BindVariable(__ccgo_ts(19425), uintptr(unsafe.Pointer(&key_right)))
-	M_BindVariable(__ccgo_ts(19435), uintptr(unsafe.Pointer(&key_left)))
-	M_BindVariable(__ccgo_ts(19444), uintptr(unsafe.Pointer(&key_up)))
-	M_BindVariable(__ccgo_ts(19451), uintptr(unsafe.Pointer(&key_down)))
-	M_BindVariable(__ccgo_ts(19460), uintptr(unsafe.Pointer(&key_strafeleft)))
-	M_BindVariable(__ccgo_ts(19475), uintptr(unsafe.Pointer(&key_straferight)))
-	M_BindVariable(__ccgo_ts(19772), uintptr(unsafe.Pointer(&key_fire)))
-	M_BindVariable(__ccgo_ts(19781), uintptr(unsafe.Pointer(&key_use)))
-	M_BindVariable(__ccgo_ts(19789), uintptr(unsafe.Pointer(&key_strafe)))
-	M_BindVariable(__ccgo_ts(19800), uintptr(unsafe.Pointer(&key_speed)))
-	M_BindVariable(__ccgo_ts(19820), uintptr(unsafe.Pointer(&mousebfire)))
-	M_BindVariable(__ccgo_ts(19832), uintptr(unsafe.Pointer(&mousebstrafe)))
-	M_BindVariable(__ccgo_ts(19846), uintptr(unsafe.Pointer(&mousebforward)))
-	M_BindVariable(__ccgo_ts(19873), uintptr(unsafe.Pointer(&joybfire)))
-	M_BindVariable(__ccgo_ts(19883), uintptr(unsafe.Pointer(&joybstrafe)))
-	M_BindVariable(__ccgo_ts(19895), uintptr(unsafe.Pointer(&joybuse)))
-	M_BindVariable(__ccgo_ts(19904), uintptr(unsafe.Pointer(&joybspeed)))
-	M_BindVariable(__ccgo_ts(20656), uintptr(unsafe.Pointer(&joybmenu)))
+	M_BindVariable(__ccgo_ts_str(19425), uintptr(unsafe.Pointer(&key_right)))
+	M_BindVariable(__ccgo_ts_str(19435), uintptr(unsafe.Pointer(&key_left)))
+	M_BindVariable(__ccgo_ts_str(19444), uintptr(unsafe.Pointer(&key_up)))
+	M_BindVariable(__ccgo_ts_str(19451), uintptr(unsafe.Pointer(&key_down)))
+	M_BindVariable(__ccgo_ts_str(19460), uintptr(unsafe.Pointer(&key_strafeleft)))
+	M_BindVariable(__ccgo_ts_str(19475), uintptr(unsafe.Pointer(&key_straferight)))
+	M_BindVariable(__ccgo_ts_str(19772), uintptr(unsafe.Pointer(&key_fire)))
+	M_BindVariable(__ccgo_ts_str(19781), uintptr(unsafe.Pointer(&key_use)))
+	M_BindVariable(__ccgo_ts_str(19789), uintptr(unsafe.Pointer(&key_strafe)))
+	M_BindVariable(__ccgo_ts_str(19800), uintptr(unsafe.Pointer(&key_speed)))
+	M_BindVariable(__ccgo_ts_str(19820), uintptr(unsafe.Pointer(&mousebfire)))
+	M_BindVariable(__ccgo_ts_str(19832), uintptr(unsafe.Pointer(&mousebstrafe)))
+	M_BindVariable(__ccgo_ts_str(19846), uintptr(unsafe.Pointer(&mousebforward)))
+	M_BindVariable(__ccgo_ts_str(19873), uintptr(unsafe.Pointer(&joybfire)))
+	M_BindVariable(__ccgo_ts_str(19883), uintptr(unsafe.Pointer(&joybstrafe)))
+	M_BindVariable(__ccgo_ts_str(19895), uintptr(unsafe.Pointer(&joybuse)))
+	M_BindVariable(__ccgo_ts_str(19904), uintptr(unsafe.Pointer(&joybspeed)))
+	M_BindVariable(__ccgo_ts_str(20656), uintptr(unsafe.Pointer(&joybmenu)))
 	// Extra controls that are not in the Vanilla versions:
-	M_BindVariable(__ccgo_ts(20623), uintptr(unsafe.Pointer(&joybstrafeleft)))
-	M_BindVariable(__ccgo_ts(20639), uintptr(unsafe.Pointer(&joybstraferight)))
-	M_BindVariable(__ccgo_ts(20707), uintptr(unsafe.Pointer(&mousebstrafeleft)))
-	M_BindVariable(__ccgo_ts(20725), uintptr(unsafe.Pointer(&mousebstraferight)))
-	M_BindVariable(__ccgo_ts(20744), uintptr(unsafe.Pointer(&mousebuse)))
-	M_BindVariable(__ccgo_ts(20755), uintptr(unsafe.Pointer(&mousebbackward)))
-	M_BindVariable(__ccgo_ts(20807), uintptr(unsafe.Pointer(&dclick_use)))
-	M_BindVariable(__ccgo_ts(20818), uintptr(unsafe.Pointer(&key_pause)))
-	M_BindVariable(__ccgo_ts(21647), uintptr(unsafe.Pointer(&key_message_refresh)))
+	M_BindVariable(__ccgo_ts_str(20623), uintptr(unsafe.Pointer(&joybstrafeleft)))
+	M_BindVariable(__ccgo_ts_str(20639), uintptr(unsafe.Pointer(&joybstraferight)))
+	M_BindVariable(__ccgo_ts_str(20707), uintptr(unsafe.Pointer(&mousebstrafeleft)))
+	M_BindVariable(__ccgo_ts_str(20725), uintptr(unsafe.Pointer(&mousebstraferight)))
+	M_BindVariable(__ccgo_ts_str(20744), uintptr(unsafe.Pointer(&mousebuse)))
+	M_BindVariable(__ccgo_ts_str(20755), uintptr(unsafe.Pointer(&mousebbackward)))
+	M_BindVariable(__ccgo_ts_str(20807), uintptr(unsafe.Pointer(&dclick_use)))
+	M_BindVariable(__ccgo_ts_str(20818), uintptr(unsafe.Pointer(&key_pause)))
+	M_BindVariable(__ccgo_ts_str(21647), uintptr(unsafe.Pointer(&key_message_refresh)))
 }
 
 func M_BindWeaponControls() {
-	M_BindVariable(__ccgo_ts(21373), uintptr(unsafe.Pointer(&key_weapon1)))
-	M_BindVariable(__ccgo_ts(21385), uintptr(unsafe.Pointer(&key_weapon2)))
-	M_BindVariable(__ccgo_ts(21397), uintptr(unsafe.Pointer(&key_weapon3)))
-	M_BindVariable(__ccgo_ts(21409), uintptr(unsafe.Pointer(&key_weapon4)))
-	M_BindVariable(__ccgo_ts(21421), uintptr(unsafe.Pointer(&key_weapon5)))
-	M_BindVariable(__ccgo_ts(21433), uintptr(unsafe.Pointer(&key_weapon6)))
-	M_BindVariable(__ccgo_ts(21445), uintptr(unsafe.Pointer(&key_weapon7)))
-	M_BindVariable(__ccgo_ts(21457), uintptr(unsafe.Pointer(&key_weapon8)))
-	M_BindVariable(__ccgo_ts(21469), uintptr(unsafe.Pointer(&key_prevweapon)))
-	M_BindVariable(__ccgo_ts(21484), uintptr(unsafe.Pointer(&key_nextweapon)))
-	M_BindVariable(__ccgo_ts(20675), uintptr(unsafe.Pointer(&joybprevweapon)))
-	M_BindVariable(__ccgo_ts(20691), uintptr(unsafe.Pointer(&joybnextweapon)))
-	M_BindVariable(__ccgo_ts(20771), uintptr(unsafe.Pointer(&mousebprevweapon)))
-	M_BindVariable(__ccgo_ts(20789), uintptr(unsafe.Pointer(&mousebnextweapon)))
+	M_BindVariable(__ccgo_ts_str(21373), uintptr(unsafe.Pointer(&key_weapon1)))
+	M_BindVariable(__ccgo_ts_str(21385), uintptr(unsafe.Pointer(&key_weapon2)))
+	M_BindVariable(__ccgo_ts_str(21397), uintptr(unsafe.Pointer(&key_weapon3)))
+	M_BindVariable(__ccgo_ts_str(21409), uintptr(unsafe.Pointer(&key_weapon4)))
+	M_BindVariable(__ccgo_ts_str(21421), uintptr(unsafe.Pointer(&key_weapon5)))
+	M_BindVariable(__ccgo_ts_str(21433), uintptr(unsafe.Pointer(&key_weapon6)))
+	M_BindVariable(__ccgo_ts_str(21445), uintptr(unsafe.Pointer(&key_weapon7)))
+	M_BindVariable(__ccgo_ts_str(21457), uintptr(unsafe.Pointer(&key_weapon8)))
+	M_BindVariable(__ccgo_ts_str(21469), uintptr(unsafe.Pointer(&key_prevweapon)))
+	M_BindVariable(__ccgo_ts_str(21484), uintptr(unsafe.Pointer(&key_nextweapon)))
+	M_BindVariable(__ccgo_ts_str(20675), uintptr(unsafe.Pointer(&joybprevweapon)))
+	M_BindVariable(__ccgo_ts_str(20691), uintptr(unsafe.Pointer(&joybnextweapon)))
+	M_BindVariable(__ccgo_ts_str(20771), uintptr(unsafe.Pointer(&mousebprevweapon)))
+	M_BindVariable(__ccgo_ts_str(20789), uintptr(unsafe.Pointer(&mousebnextweapon)))
 }
 
 func M_BindMapControls() {
-	M_BindVariable(__ccgo_ts(21213), uintptr(unsafe.Pointer(&key_map_north)))
-	M_BindVariable(__ccgo_ts(21227), uintptr(unsafe.Pointer(&key_map_south)))
-	M_BindVariable(__ccgo_ts(21241), uintptr(unsafe.Pointer(&key_map_east)))
-	M_BindVariable(__ccgo_ts(21254), uintptr(unsafe.Pointer(&key_map_west)))
-	M_BindVariable(__ccgo_ts(21267), uintptr(unsafe.Pointer(&key_map_zoomin)))
-	M_BindVariable(__ccgo_ts(21282), uintptr(unsafe.Pointer(&key_map_zoomout)))
-	M_BindVariable(__ccgo_ts(21198), uintptr(unsafe.Pointer(&key_map_toggle)))
-	M_BindVariable(__ccgo_ts(21298), uintptr(unsafe.Pointer(&key_map_maxzoom)))
-	M_BindVariable(__ccgo_ts(21314), uintptr(unsafe.Pointer(&key_map_follow)))
-	M_BindVariable(__ccgo_ts(21329), uintptr(unsafe.Pointer(&key_map_grid)))
-	M_BindVariable(__ccgo_ts(21342), uintptr(unsafe.Pointer(&key_map_mark)))
-	M_BindVariable(__ccgo_ts(21355), uintptr(unsafe.Pointer(&key_map_clearmark)))
+	M_BindVariable(__ccgo_ts_str(21213), uintptr(unsafe.Pointer(&key_map_north)))
+	M_BindVariable(__ccgo_ts_str(21227), uintptr(unsafe.Pointer(&key_map_south)))
+	M_BindVariable(__ccgo_ts_str(21241), uintptr(unsafe.Pointer(&key_map_east)))
+	M_BindVariable(__ccgo_ts_str(21254), uintptr(unsafe.Pointer(&key_map_west)))
+	M_BindVariable(__ccgo_ts_str(21267), uintptr(unsafe.Pointer(&key_map_zoomin)))
+	M_BindVariable(__ccgo_ts_str(21282), uintptr(unsafe.Pointer(&key_map_zoomout)))
+	M_BindVariable(__ccgo_ts_str(21198), uintptr(unsafe.Pointer(&key_map_toggle)))
+	M_BindVariable(__ccgo_ts_str(21298), uintptr(unsafe.Pointer(&key_map_maxzoom)))
+	M_BindVariable(__ccgo_ts_str(21314), uintptr(unsafe.Pointer(&key_map_follow)))
+	M_BindVariable(__ccgo_ts_str(21329), uintptr(unsafe.Pointer(&key_map_grid)))
+	M_BindVariable(__ccgo_ts_str(21342), uintptr(unsafe.Pointer(&key_map_mark)))
+	M_BindVariable(__ccgo_ts_str(21355), uintptr(unsafe.Pointer(&key_map_clearmark)))
 }
 
 func M_BindMenuControls() {
-	M_BindVariable(__ccgo_ts(20828), uintptr(unsafe.Pointer(&key_menu_activate)))
-	M_BindVariable(__ccgo_ts(20846), uintptr(unsafe.Pointer(&key_menu_up)))
-	M_BindVariable(__ccgo_ts(20858), uintptr(unsafe.Pointer(&key_menu_down)))
-	M_BindVariable(__ccgo_ts(20872), uintptr(unsafe.Pointer(&key_menu_left)))
-	M_BindVariable(__ccgo_ts(20886), uintptr(unsafe.Pointer(&key_menu_right)))
-	M_BindVariable(__ccgo_ts(20901), uintptr(unsafe.Pointer(&key_menu_back)))
-	M_BindVariable(__ccgo_ts(20915), uintptr(unsafe.Pointer(&key_menu_forward)))
-	M_BindVariable(__ccgo_ts(20932), uintptr(unsafe.Pointer(&key_menu_confirm)))
-	M_BindVariable(__ccgo_ts(20949), uintptr(unsafe.Pointer(&key_menu_abort)))
-	M_BindVariable(__ccgo_ts(20964), uintptr(unsafe.Pointer(&key_menu_help)))
-	M_BindVariable(__ccgo_ts(20978), uintptr(unsafe.Pointer(&key_menu_save)))
-	M_BindVariable(__ccgo_ts(20992), uintptr(unsafe.Pointer(&key_menu_load)))
-	M_BindVariable(__ccgo_ts(21006), uintptr(unsafe.Pointer(&key_menu_volume)))
-	M_BindVariable(__ccgo_ts(21022), uintptr(unsafe.Pointer(&key_menu_detail)))
-	M_BindVariable(__ccgo_ts(21038), uintptr(unsafe.Pointer(&key_menu_qsave)))
-	M_BindVariable(__ccgo_ts(21053), uintptr(unsafe.Pointer(&key_menu_endgame)))
-	M_BindVariable(__ccgo_ts(21070), uintptr(unsafe.Pointer(&key_menu_messages)))
-	M_BindVariable(__ccgo_ts(21088), uintptr(unsafe.Pointer(&key_menu_qload)))
-	M_BindVariable(__ccgo_ts(21103), uintptr(unsafe.Pointer(&key_menu_quit)))
-	M_BindVariable(__ccgo_ts(21117), uintptr(unsafe.Pointer(&key_menu_gamma)))
-	M_BindVariable(__ccgo_ts(21140), uintptr(unsafe.Pointer(&key_menu_incscreen)))
-	M_BindVariable(__ccgo_ts(21159), uintptr(unsafe.Pointer(&key_menu_decscreen)))
-	M_BindVariable(__ccgo_ts(21178), uintptr(unsafe.Pointer(&key_menu_screenshot)))
-	M_BindVariable(__ccgo_ts(21667), uintptr(unsafe.Pointer(&key_demo_quit)))
-	M_BindVariable(__ccgo_ts(21132), uintptr(unsafe.Pointer(&key_spy)))
+	M_BindVariable(__ccgo_ts_str(20828), uintptr(unsafe.Pointer(&key_menu_activate)))
+	M_BindVariable(__ccgo_ts_str(20846), uintptr(unsafe.Pointer(&key_menu_up)))
+	M_BindVariable(__ccgo_ts_str(20858), uintptr(unsafe.Pointer(&key_menu_down)))
+	M_BindVariable(__ccgo_ts_str(20872), uintptr(unsafe.Pointer(&key_menu_left)))
+	M_BindVariable(__ccgo_ts_str(20886), uintptr(unsafe.Pointer(&key_menu_right)))
+	M_BindVariable(__ccgo_ts_str(20901), uintptr(unsafe.Pointer(&key_menu_back)))
+	M_BindVariable(__ccgo_ts_str(20915), uintptr(unsafe.Pointer(&key_menu_forward)))
+	M_BindVariable(__ccgo_ts_str(20932), uintptr(unsafe.Pointer(&key_menu_confirm)))
+	M_BindVariable(__ccgo_ts_str(20949), uintptr(unsafe.Pointer(&key_menu_abort)))
+	M_BindVariable(__ccgo_ts_str(20964), uintptr(unsafe.Pointer(&key_menu_help)))
+	M_BindVariable(__ccgo_ts_str(20978), uintptr(unsafe.Pointer(&key_menu_save)))
+	M_BindVariable(__ccgo_ts_str(20992), uintptr(unsafe.Pointer(&key_menu_load)))
+	M_BindVariable(__ccgo_ts_str(21006), uintptr(unsafe.Pointer(&key_menu_volume)))
+	M_BindVariable(__ccgo_ts_str(21022), uintptr(unsafe.Pointer(&key_menu_detail)))
+	M_BindVariable(__ccgo_ts_str(21038), uintptr(unsafe.Pointer(&key_menu_qsave)))
+	M_BindVariable(__ccgo_ts_str(21053), uintptr(unsafe.Pointer(&key_menu_endgame)))
+	M_BindVariable(__ccgo_ts_str(21070), uintptr(unsafe.Pointer(&key_menu_messages)))
+	M_BindVariable(__ccgo_ts_str(21088), uintptr(unsafe.Pointer(&key_menu_qload)))
+	M_BindVariable(__ccgo_ts_str(21103), uintptr(unsafe.Pointer(&key_menu_quit)))
+	M_BindVariable(__ccgo_ts_str(21117), uintptr(unsafe.Pointer(&key_menu_gamma)))
+	M_BindVariable(__ccgo_ts_str(21140), uintptr(unsafe.Pointer(&key_menu_incscreen)))
+	M_BindVariable(__ccgo_ts_str(21159), uintptr(unsafe.Pointer(&key_menu_decscreen)))
+	M_BindVariable(__ccgo_ts_str(21178), uintptr(unsafe.Pointer(&key_menu_screenshot)))
+	M_BindVariable(__ccgo_ts_str(21667), uintptr(unsafe.Pointer(&key_demo_quit)))
+	M_BindVariable(__ccgo_ts_str(21132), uintptr(unsafe.Pointer(&key_spy)))
 }
 
 func M_BindChatControls(num_players uint32) {
 	var i uint32
-	M_BindVariable(__ccgo_ts(21681), uintptr(unsafe.Pointer(&key_multi_msg)))
+	M_BindVariable(__ccgo_ts_str(21681), uintptr(unsafe.Pointer(&key_multi_msg)))
 	i = 0
 	for {
 		if i >= num_players {
 			break
 		}
-		name := sprintf_ccgo_bytes(22078, i+1)
-		M_BindVariable(byteptr(name), uintptr(unsafe.Pointer(&key_multi_msgplayer))+uintptr(i)*4)
+		name := fmt.Sprintf(__ccgo_ts_str(22078), i+1)
+		M_BindVariable(name, uintptr(unsafe.Pointer(&key_multi_msgplayer))+uintptr(i)*4)
 		goto _1
 	_1:
 		;
