@@ -34853,7 +34853,6 @@ func R_GenerateComposite(texnum int32) {
 //	// R_GenerateLookup
 //	//
 func R_GenerateLookup(texnum int32) {
-	bp := alloc(32)
 	var realpatch *patch_t
 	var colofs []uint16
 	var collump []int16
@@ -34869,8 +34868,7 @@ func R_GenerateLookup(texnum int32) {
 	//  that are covered by more than one patch.
 	// Fill in the lump / offset, so columns
 	//  with only a single patch are all done.
-	*(*uintptr)(unsafe.Pointer(bp)) = Z_Malloc(int32(texture.Fwidth), PU_STATIC, bp)
-	xmemset(*(*uintptr)(unsafe.Pointer(bp)), 0, uint64(texture.Fwidth))
+	widths := make([]int32, texture.Fwidth)
 	i = 0
 	for {
 		if i >= int32(texture.Fpatchcount) {
@@ -34892,7 +34890,7 @@ func R_GenerateLookup(texnum int32) {
 			if x >= x2 {
 				break
 			}
-			*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))++
+			widths[x]++
 			collump[x] = int16(patch.Fpatch)
 			colofs[x] = uint16(realpatch.Fcolumnofs[x-x1] + 3)
 			goto _2
@@ -34910,12 +34908,12 @@ func R_GenerateLookup(texnum int32) {
 		if x >= int32(texture.Fwidth) {
 			break
 		}
-		if *(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x))) == 0 {
+		if widths[x] == 0 {
 			fprintf_ccgo(os.Stdout, 25938, texture)
 			return
 		}
 		// I_Error ("R_GenerateLookup: column without a patch");
-		if int32(*(*uint8)(unsafe.Pointer(*(*uintptr)(unsafe.Pointer(bp)) + uintptr(x)))) > 1 {
+		if int32(widths[x]) > 1 {
 			// Use the cached block.
 			collump[x] = -1
 			colofs[x] = uint16(texturecompositesize[texnum])
@@ -34929,7 +34927,6 @@ func R_GenerateLookup(texnum int32) {
 		;
 		x++
 	}
-	Z_Free(*(*uintptr)(unsafe.Pointer(bp)))
 }
 
 // C documentation
