@@ -42714,7 +42714,7 @@ func WI_updateNetgameStats() {
 			if playeringame[i] == 0 {
 				goto _2
 			}
-			*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_kills)) + uintptr(i)*4)) += 2
+			cnt_kills[i] += 2
 			if cnt_kills[i] >= plrs[i].Fskills*int32(100)/wbs.Fmaxkills {
 				cnt_kills[i] = plrs[i].Fskills * 100 / wbs.Fmaxkills
 			} else {
@@ -42743,7 +42743,7 @@ func WI_updateNetgameStats() {
 				if playeringame[i] == 0 {
 					goto _3
 				}
-				*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_items)) + uintptr(i)*4)) += 2
+				cnt_items[i] += 2
 				if cnt_items[i] >= plrs[i].Fsitems*int32(100)/wbs.Fmaxitems {
 					cnt_items[i] = plrs[i].Fsitems * 100 / wbs.Fmaxitems
 				} else {
@@ -42772,7 +42772,7 @@ func WI_updateNetgameStats() {
 					if playeringame[i] == 0 {
 						goto _4
 					}
-					*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_secret)) + uintptr(i)*4)) += 2
+					cnt_secret[i] += 2
 					if cnt_secret[i] >= plrs[i].Fssecret*int32(100)/wbs.Fmaxsecret {
 						cnt_secret[i] = plrs[i].Fssecret * 100 / wbs.Fmaxsecret
 					} else {
@@ -42801,7 +42801,7 @@ func WI_updateNetgameStats() {
 						if playeringame[i] == 0 {
 							goto _5
 						}
-						*(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&cnt_frags)) + uintptr(i)*4)) += 1
+						cnt_frags[i] += 1
 						v6 = WI_fragSum(i)
 						fsum = v6
 						if cnt_frags[i] >= v6 {
