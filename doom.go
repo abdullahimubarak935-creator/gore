@@ -2829,7 +2829,7 @@ func AM_initVariables() {
 
 var st_notify = event_t{
 	Ftype1: ev_keyup,
-	Fdata1: int32('a')<<24 + int32('m')<<16 | int32('e')<<8,
+	Fdata1: 'a'<<24 + 'm'<<16 | 'e'<<8,
 }
 
 // C documentation
@@ -2919,7 +2919,7 @@ func AM_Stop() {
 
 var st_notify1 = event_t{
 	Fdata1: ev_keyup,
-	Fdata2: int32('a')<<24 + int32('m')<<16 | int32('x')<<8,
+	Fdata2: 'a'<<24 + 'm'<<16 | 'x'<<8,
 }
 
 // C documentation
@@ -4942,10 +4942,10 @@ func D_BindVariables() {
 	M_BindMapControls()
 	M_BindMenuControls()
 	M_BindChatControls(MAXPLAYERS)
-	key_multi_msgplayer[0] = int32('g')
-	key_multi_msgplayer[int32(1)] = int32('i')
-	key_multi_msgplayer[int32(2)] = int32('b')
-	key_multi_msgplayer[int32(3)] = int32('r')
+	key_multi_msgplayer[0] = 'g'
+	key_multi_msgplayer[int32(1)] = 'i'
+	key_multi_msgplayer[int32(2)] = 'b'
+	key_multi_msgplayer[int32(3)] = 'r'
 	M_BindVariable(__ccgo_ts_str(1506), uintptr(unsafe.Pointer(&mouseSensitivity)))
 	M_BindVariable(__ccgo_ts_str(1524), uintptr(unsafe.Pointer(&sfxVolume)))
 	M_BindVariable(__ccgo_ts_str(1535), uintptr(unsafe.Pointer(&musicVolume)))
@@ -5192,7 +5192,7 @@ func GetGameName(gamename string) string {
 			for {
 				if len(gamename) >= 1 {
 					v2 = int32(gamename[0])
-					v3 = boolint32(v2 == int32(' ') || uint32(v2)-uint32('\t') < 5)
+					v3 = boolint32(v2 == ' ' || uint32(v2)-'\t' < 5)
 					goto _4
 				_4:
 				}
@@ -5204,7 +5204,7 @@ func GetGameName(gamename string) string {
 			for {
 				if len(gamename) >= 1 {
 					v6 = int32(gamename[len(gamename)-1])
-					v7 = boolint32(v6 == int32(' ') || uint32(v6)-uint32('\t') < 5)
+					v7 = boolint32(v6 == ' ' || uint32(v6)-'\t' < 5)
 					goto _8
 				_8:
 				}
@@ -6626,13 +6626,13 @@ func F_TextWrite() {
 		if c == 0 {
 			break
 		}
-		if c == int32('\n') {
+		if c == '\n' {
 			cx = 10
 			cy += 11
 			goto _3
 		}
-		c = xtoupper(c) - int32('!')
-		if c < 0 || c > int32('_')-int32('!')+1 {
+		c = xtoupper(c) - '!'
+		if c < 0 || c > '_'-'!'+1 {
 			cx += 4
 			goto _3
 		}
@@ -6921,8 +6921,8 @@ func F_CastPrint(text uintptr) {
 		if c == 0 {
 			break
 		}
-		c = xtoupper(c) - int32('!')
-		if c < 0 || c > int32('_')-int32('!')+1 {
+		c = xtoupper(c) - '!'
+		if c < 0 || c > '_'-'!'+1 {
 			width += 4
 			continue
 		}
@@ -6939,8 +6939,8 @@ func F_CastPrint(text uintptr) {
 		if c == 0 {
 			break
 		}
-		c = xtoupper(c) - int32('!')
-		if c < 0 || c > int32('_')-int32('!')+1 {
+		c = xtoupper(c) - '!'
+		if c < 0 || c > '_'-'!'+1 {
 			cx += 4
 			continue
 		}
@@ -9341,7 +9341,7 @@ func HUlib_drawTextLine(l *hu_textline_t, drawcursor boolean) {
 			break
 		}
 		c = uint8(xtoupper(int32(l.Fl[i])))
-		if int32(c) != int32(' ') && int32(c) >= l.Fsc && int32(c) <= int32('_') {
+		if int32(c) != ' ' && int32(c) >= l.Fsc && int32(c) <= '_' {
 			w = int32(l.Ff[int32(c)-l.Fsc].Fwidth)
 			if x+w > SCREENWIDTH {
 				break
@@ -9360,7 +9360,7 @@ func HUlib_drawTextLine(l *hu_textline_t, drawcursor boolean) {
 		i++
 	}
 	// draw the cursor if requested
-	if drawcursor != 0 && x+int32(l.Ff[int32('_')-l.Fsc].Fwidth) <= SCREENWIDTH {
+	if drawcursor != 0 && x+int32(l.Ff['_'-l.Fsc].Fwidth) <= SCREENWIDTH {
 		V_DrawPatchDirect(x, l.Fy, l.Ff['_'-l.Fsc])
 	}
 }
@@ -9490,7 +9490,7 @@ func HUlib_resetIText(it *hu_itext_t) {
 //	// returns true if it ate the key
 func HUlib_keyInIText(it *hu_itext_t, ch uint8) (r boolean) {
 	ch = uint8(xtoupper(int32(ch)))
-	if int32(ch) >= int32(' ') && int32(ch) <= int32('_') {
+	if int32(ch) >= ' ' && int32(ch) <= '_' {
 		HUlib_addCharToTextLine(&it.Fl, ch)
 	} else {
 		if int32(ch) == int32(KEY_BACKSPACE1) {
@@ -9715,10 +9715,10 @@ func init() {
 func HU_Init() {
 	var i, j, v2 int32
 	// load the heads-up font
-	j = int32('!')
+	j = '!'
 	i = 0
 	for {
-		if i >= int32('_')-int32('!')+1 {
+		if i >= '_'-'!'+1 {
 			break
 		}
 		v2 = j
@@ -9749,9 +9749,9 @@ func HU_Start() {
 	message_nottobefuckedwith = 0
 	chat_on = 0
 	// create the message widget
-	HUlib_initSText(&w_message, HU_MSGX, HU_MSGY, HU_MSGHEIGHT, hu_font[:], int32('!'), &message_on)
+	HUlib_initSText(&w_message, HU_MSGX, HU_MSGY, HU_MSGHEIGHT, hu_font[:], '!', &message_on)
 	// create the map title widget
-	HUlib_initTextLine(&w_title, HU_TITLEX, 167-int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight), hu_font[:], int32('!'))
+	HUlib_initTextLine(&w_title, HU_TITLEX, 167-int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight), hu_font[:], '!')
 	if gamemission == pack_chex {
 		v1 = doom
 	} else {
@@ -9784,7 +9784,7 @@ func HU_Start() {
 		HUlib_addCharToTextLine(&w_title, byte(i))
 	}
 	// create the chat widget
-	HUlib_initIText(&w_chat, HU_MSGX, HU_MSGY+HU_MSGHEIGHT*(int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight)+int32(1)), hu_font[:], int32('!'), &chat_on)
+	HUlib_initIText(&w_chat, HU_MSGX, HU_MSGY+HU_MSGHEIGHT*(int32((*patch_t)(unsafe.Pointer(hu_font[0])).Fheight)+int32(1)), hu_font[:], '!', &chat_on)
 	// create the inputbuffer widgets
 	i = 0
 	for {
@@ -9996,7 +9996,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 	} else {
 		// send a macro
 		if altdown != 0 {
-			c = uint8(ev.Fdata1 - int32('0'))
+			c = uint8(ev.Fdata1 - '0')
 			if int32(c) > 9 {
 				return 0
 			}
@@ -19519,23 +19519,23 @@ func init() {
 	key_lookup = 0x80 + 0x51
 	key_lookdown = 0x80 + 0x53
 	key_lookcenter = 0x80 + 0x4f
-	key_invleft = int32('[')
-	key_invright = int32(']')
+	key_invleft = '['
+	key_invright = ']'
 	key_useartifact = KEY_ENTER
-	key_jump = int32('/')
+	key_jump = '/'
 	key_arti_all = int32(KEY_BACKSPACE3)
-	key_arti_health = int32('\\')
-	key_arti_poisonbag = int32('0')
-	key_arti_blastradius = int32('9')
-	key_arti_teleport = int32('8')
-	key_arti_teleportother = int32('7')
-	key_arti_egg = int32('6')
-	key_arti_invulnerability = int32('5')
-	key_usehealth = int32('h')
-	key_invquery = int32('q')
-	key_mission = int32('w')
-	key_invpop = int32('z')
-	key_invkey = int32('k')
+	key_arti_health = '\\'
+	key_arti_poisonbag = '0'
+	key_arti_blastradius = '9'
+	key_arti_teleport = '8'
+	key_arti_teleportother = '7'
+	key_arti_egg = '6'
+	key_arti_invulnerability = '5'
+	key_usehealth = 'h'
+	key_invquery = 'q'
+	key_mission = 'w'
+	key_invpop = 'z'
+	key_invkey = 'k'
 	key_invhome = 0x80 + 0x47
 	key_invend = 0x80 + 0x4f
 	key_invuse = KEY_ENTER
@@ -19551,29 +19551,29 @@ func init() {
 	mousebnextweapon = -1
 	key_message_refresh = KEY_ENTER
 	key_pause = int32(KEY_PAUSE1)
-	key_demo_quit = int32('q')
+	key_demo_quit = 'q'
 	key_spy = 0x80 + 0x58
-	key_multi_msg = int32('t')
-	key_weapon1 = int32('1')
-	key_weapon2 = int32('2')
-	key_weapon3 = int32('3')
-	key_weapon4 = int32('4')
-	key_weapon5 = int32('5')
-	key_weapon6 = int32('6')
-	key_weapon7 = int32('7')
-	key_weapon8 = int32('8')
+	key_multi_msg = 't'
+	key_weapon1 = '1'
+	key_weapon2 = '2'
+	key_weapon3 = '3'
+	key_weapon4 = '4'
+	key_weapon5 = '5'
+	key_weapon6 = '6'
+	key_weapon7 = '7'
+	key_weapon8 = '8'
 	key_map_north = int32(KEY_UPARROW1)
 	key_map_south = int32(KEY_DOWNARROW1)
 	key_map_east = int32(KEY_RIGHTARROW1)
 	key_map_west = int32(KEY_LEFTARROW1)
-	key_map_zoomin = int32('=')
-	key_map_zoomout = int32('-')
+	key_map_zoomin = '='
+	key_map_zoomout = '-'
 	key_map_toggle = KEY_TAB
-	key_map_maxzoom = int32('0')
-	key_map_follow = int32('f')
-	key_map_grid = int32('g')
-	key_map_mark = int32('m')
-	key_map_clearmark = int32('c')
+	key_map_maxzoom = '0'
+	key_map_follow = 'f'
+	key_map_grid = 'g'
+	key_map_mark = 'm'
+	key_map_clearmark = 'c'
 	key_menu_activate = KEY_ESCAPE
 	key_menu_up = int32(KEY_UPARROW1)
 	key_menu_down = int32(KEY_DOWNARROW1)
@@ -19581,8 +19581,8 @@ func init() {
 	key_menu_right = int32(KEY_RIGHTARROW1)
 	key_menu_back = int32(KEY_BACKSPACE3)
 	key_menu_forward = KEY_ENTER
-	key_menu_confirm = int32('y')
-	key_menu_abort = int32('n')
+	key_menu_confirm = 'y'
+	key_menu_abort = 'n'
 	key_menu_help = 0x80 + 0x3b
 	key_menu_save = 0x80 + 0x3c
 	key_menu_load = 0x80 + 0x3d
@@ -19813,37 +19813,37 @@ func init() {
 		0: {
 			Fstatus:   1,
 			Fname:     "M_NGAME",
-			FalphaKey: int8('n'),
+			FalphaKey: 'n',
 			Froutine:  M_NewGame,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     "M_OPTION",
-			FalphaKey: int8('o'),
+			FalphaKey: 'o',
 			Froutine:  M_Options,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     "M_LOADG",
-			FalphaKey: int8('l'),
+			FalphaKey: 'l',
 			Froutine:  M_LoadGame,
 		},
 		3: {
 			Fstatus:   1,
 			Fname:     "M_SAVEG",
-			FalphaKey: int8('s'),
+			FalphaKey: 's',
 			Froutine:  M_SaveGame,
 		},
 		4: {
 			Fstatus:   1,
 			Fname:     "M_RDTHIS",
-			FalphaKey: int8('r'),
+			FalphaKey: 'r',
 			Froutine:  M_ReadThis,
 		},
 		5: {
 			Fstatus:   1,
 			Fname:     "M_QUITG",
-			FalphaKey: int8('q'),
+			FalphaKey: 'q',
 			Froutine:  M_QuitDOOM,
 		},
 	}
@@ -19866,25 +19866,25 @@ func init() {
 		0: {
 			Fstatus:   1,
 			Fname:     "M_EPI1",
-			FalphaKey: int8('k'),
+			FalphaKey: 'k',
 			Froutine:  M_Episode,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     "M_EPI2",
-			FalphaKey: int8('t'),
+			FalphaKey: 't',
 			Froutine:  M_Episode,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     "M_EPI3",
-			FalphaKey: int8('i'),
+			FalphaKey: 'i',
 			Froutine:  M_Episode,
 		},
 		3: {
 			Fstatus:   1,
 			Fname:     "M_EPI4",
-			FalphaKey: int8('t'),
+			FalphaKey: 't',
 			Froutine:  M_Episode,
 		},
 	}
@@ -19911,31 +19911,31 @@ func init() {
 		0: {
 			Fstatus:   1,
 			Fname:     "M_JKILL",
-			FalphaKey: int8('i'),
+			FalphaKey: 'i',
 			Froutine:  M_ChooseSkill,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     "M_ROUGH",
-			FalphaKey: int8('h'),
+			FalphaKey: 'h',
 			Froutine:  M_ChooseSkill,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     "M_HURT",
-			FalphaKey: int8('h'),
+			FalphaKey: 'h',
 			Froutine:  M_ChooseSkill,
 		},
 		3: {
 			Fstatus:   1,
 			Fname:     "M_ULTRA",
-			FalphaKey: int8('u'),
+			FalphaKey: 'u',
 			Froutine:  M_ChooseSkill,
 		},
 		4: {
 			Fstatus:   1,
 			Fname:     "M_NMARE",
-			FalphaKey: int8('n'),
+			FalphaKey: 'n',
 			Froutine:  M_ChooseSkill,
 		},
 	}
@@ -19964,25 +19964,25 @@ func init() {
 		0: {
 			Fstatus:   1,
 			Fname:     "M_ENDGAM",
-			FalphaKey: int8('e'),
+			FalphaKey: 'e',
 			Froutine:  M_EndGame,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     "M_MESSG",
-			FalphaKey: int8('m'),
+			FalphaKey: 'm',
 			Froutine:  M_ChangeMessages,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     "M_DETAIL",
-			FalphaKey: int8('g'),
+			FalphaKey: 'g',
 			Froutine:  M_ChangeDetail,
 		},
 		3: {
 			Fstatus:   2,
 			Fname:     "M_SCRNSZ",
-			FalphaKey: int8('s'),
+			FalphaKey: 's',
 			Froutine:  M_SizeDisplay,
 		},
 		4: {
@@ -19992,7 +19992,7 @@ func init() {
 		5: {
 			Fstatus:   2,
 			Fname:     "M_MSENS",
-			FalphaKey: int8('m'),
+			FalphaKey: 'm',
 			Froutine:  M_ChangeSensitivity,
 		},
 		6: {
@@ -20002,7 +20002,7 @@ func init() {
 		7: {
 			Fstatus:   1,
 			Fname:     "M_SVOL",
-			FalphaKey: int8('s'),
+			FalphaKey: 's',
 			Froutine:  M_Sound,
 		},
 	}
@@ -20072,7 +20072,7 @@ func init() {
 		0: {
 			Fstatus:   2,
 			Fname:     "M_SFXVOL",
-			FalphaKey: int8('s'),
+			FalphaKey: 's',
 			Froutine:  M_SfxVol,
 		},
 		1: {
@@ -20081,7 +20081,7 @@ func init() {
 		2: {
 			Fstatus:   2,
 			Fname:     "M_MUSVOL",
-			FalphaKey: int8('m'),
+			FalphaKey: 'm',
 			Froutine:  M_MusicVol,
 		},
 		3: {
@@ -20107,32 +20107,32 @@ func init() {
 	LoadMenu = [6]menuitem_t{
 		0: {
 			Fstatus:   1,
-			FalphaKey: int8('1'),
+			FalphaKey: '1',
 			Froutine:  M_LoadSelect,
 		},
 		1: {
 			Fstatus:   1,
-			FalphaKey: int8('2'),
+			FalphaKey: '2',
 			Froutine:  M_LoadSelect,
 		},
 		2: {
 			Fstatus:   1,
-			FalphaKey: int8('3'),
+			FalphaKey: '3',
 			Froutine:  M_LoadSelect,
 		},
 		3: {
 			Fstatus:   1,
-			FalphaKey: int8('4'),
+			FalphaKey: '4',
 			Froutine:  M_LoadSelect,
 		},
 		4: {
 			Fstatus:   1,
-			FalphaKey: int8('5'),
+			FalphaKey: '5',
 			Froutine:  M_LoadSelect,
 		},
 		5: {
 			Fstatus:   1,
-			FalphaKey: int8('6'),
+			FalphaKey: '6',
 			Froutine:  M_LoadSelect,
 		},
 	}
@@ -20153,32 +20153,32 @@ func init() {
 	SaveMenu = [6]menuitem_t{
 		0: {
 			Fstatus:   1,
-			FalphaKey: int8('1'),
+			FalphaKey: '1',
 			Froutine:  M_SaveSelect,
 		},
 		1: {
 			Fstatus:   1,
-			FalphaKey: int8('2'),
+			FalphaKey: '2',
 			Froutine:  M_SaveSelect,
 		},
 		2: {
 			Fstatus:   1,
-			FalphaKey: int8('3'),
+			FalphaKey: '3',
 			Froutine:  M_SaveSelect,
 		},
 		3: {
 			Fstatus:   1,
-			FalphaKey: int8('4'),
+			FalphaKey: '4',
 			Froutine:  M_SaveSelect,
 		},
 		4: {
 			Fstatus:   1,
-			FalphaKey: int8('5'),
+			FalphaKey: '5',
 			Froutine:  M_SaveSelect,
 		},
 		5: {
 			Fstatus:   1,
-			FalphaKey: int8('6'),
+			FalphaKey: '6',
 			Froutine:  M_SaveSelect,
 		},
 	}
@@ -20851,8 +20851,8 @@ func M_StringWidth(string1 string) (r int32) {
 	var c, w int32
 	w = 0
 	for i := 0; i < len(string1); i++ {
-		c = xtoupper(int32(string1[i])) - int32('!')
-		if c < 0 || c >= int32('_')-int32('!')+1 {
+		c = xtoupper(int32(string1[i])) - '!'
+		if c < 0 || c >= '_'-'!'+1 {
 			w += 4
 		} else {
 			w += int32((*patch_t)(unsafe.Pointer(hu_font[c])).Fwidth)
@@ -20892,13 +20892,13 @@ func M_WriteText(x int32, y int32, string1 string) {
 		if c == 0 {
 			break
 		}
-		if c == int32('\n') {
+		if c == '\n' {
 			cx = x
 			cy += 12
 			continue
 		}
-		c = xtoupper(c) - int32('!')
-		if c < 0 || c >= int32('_')-int32('!')+1 {
+		c = xtoupper(c) - '!'
+		if c < 0 || c >= '_'-'!'+1 {
 			cx += 4
 			continue
 		}
@@ -21060,7 +21060,7 @@ func M_Responder(ev *event_t) (r boolean) {
 				ch = key
 			}
 			ch = xtoupper(ch)
-			if ch != int32(' ') && (ch-int32('!') < 0 || ch-int32('!') >= int32('_')-int32('!')+1) {
+			if ch != ' ' && (ch-'!' < 0 || ch-'!' >= '_'-'!'+1) {
 				break
 			}
 			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(gostring(uintptr(unsafe.Pointer(&savegamestrings[saveSlot])))) < (SAVESTRINGSIZE-2)*8 {
@@ -21074,7 +21074,7 @@ func M_Responder(ev *event_t) (r boolean) {
 	// Take care of any messages that need input
 	if messageToPrint != 0 {
 		if messageNeedsInput != 0 {
-			if key != int32(' ') && key != KEY_ESCAPE && key != key_menu_confirm && key != key_menu_abort {
+			if key != ' ' && key != KEY_ESCAPE && key != key_menu_confirm && key != key_menu_abort {
 				return 0
 			}
 		}
@@ -37413,10 +37413,10 @@ func R_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation u
 	if rotation == 0 {
 		// the lump should be used for all rotations
 		if sprtemp[frame].Frotate == 0 {
-			I_Error(26656, spritename, uint32('A')+frame)
+			I_Error(26656, spritename, 'A'+frame)
 		}
 		if sprtemp[frame].Frotate == 1 {
-			I_Error(26712, spritename, uint32('A')+frame)
+			I_Error(26712, spritename, 'A'+frame)
 		}
 		sprtemp[frame].Frotate = 0
 		r = 0
@@ -37436,13 +37436,13 @@ func R_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation u
 	}
 	// the lump is only used for one rotation
 	if sprtemp[frame].Frotate == 0 {
-		I_Error(26712, spritename, uint32('A')+frame)
+		I_Error(26712, spritename, 'A'+frame)
 	}
 	sprtemp[frame].Frotate = 1
 	// make 0 based
 	rotation--
 	if int32(sprtemp[frame].Flump[rotation]) != -1 {
-		I_Error(26777, spritename, uint32('A')+frame, uint32('1')+rotation)
+		I_Error(26777, spritename, 'A'+frame, '1'+rotation)
 	}
 	sprtemp[frame].Flump[rotation] = int16(lump - firstspritelump)
 	sprtemp[frame].Fflip[rotation] = uint8(flipped)
@@ -37537,7 +37537,7 @@ func R_InitSpriteDefs(namelist []uintptr) {
 		_4:
 			;
 			// no rotations were found for that frame at all
-			I_Error(26839, spritename, frame+int32('A'))
+			I_Error(26839, spritename, frame+'A')
 			goto _7
 		_5:
 			;
@@ -37553,7 +37553,7 @@ func R_InitSpriteDefs(namelist []uintptr) {
 				goto _8
 			}
 			if int32(sprtemp[frame].Flump[rotation]) == -1 {
-				I_Error(26887, spritename, frame+int32('A'))
+				I_Error(26887, spritename, frame+'A')
 			}
 			goto _9
 		_9:
@@ -39822,11 +39822,11 @@ func ST_Responder(ev *event_t) (r boolean) {
 	var v6, v8 GameMission_t
 	var v10 bool
 	// Filter automap on/off.
-	if ev.Ftype1 == ev_keyup && uint32(ev.Fdata1)&0xffff0000 == uint32(int32('a')<<24+int32('m')<<16) {
+	if ev.Ftype1 == ev_keyup && uint32(ev.Fdata1)&0xffff0000 == 'a'<<24+'m'<<16 {
 		switch ev.Fdata1 {
-		case int32('a')<<24 + int32('m')<<16 | int32('e')<<8:
+		case 'a'<<24 + 'm'<<16 | 'e'<<8:
 			st_firsttime = 1
-		case int32('a')<<24 + int32('m')<<16 | int32('x')<<8:
+		case 'a'<<24 + 'm'<<16 | 'x'<<8:
 			//	fprintf(stderr, "AM exited\n");
 			break
 		}
@@ -39920,15 +39920,15 @@ func ST_Responder(ev *event_t) (r boolean) {
 								// in the Ultimate Doom executable so that it would work for
 								// the Doom 1 music as well.
 								if gamemode == commercial || gameversion < exe_ultimate {
-									musnum = int32(mus_runnin) + (int32((param[0]))-int32('0'))*int32(10) + int32(param[int32(1)]) - int32('0') - 1
-									if (int32(param[0])-int32('0'))*int32(10)+int32(param[int32(1)])-int32('0') > 35 {
+									musnum = int32(mus_runnin) + (int32((param[0]))-'0')*int32(10) + int32(param[int32(1)]) - '0' - 1
+									if (int32(param[0])-'0')*int32(10)+int32(param[int32(1)])-'0' > 35 {
 										plyr.Fmessage = __ccgo_ts_str(27653)
 									} else {
 										S_ChangeMusic(musnum, 1)
 									}
 								} else {
-									musnum = int32(mus_e1m1) + (int32(param[0])-int32('1'))*9 + (int32(param[int32(1)]) - int32('1'))
-									if (int32(param[0])-int32('1'))*9+int32(param[int32(1)])-int32('1') > 31 {
+									musnum = int32(mus_e1m1) + (int32(param[0])-'1')*9 + (int32(param[int32(1)]) - '1')
+									if (int32(param[0])-'1')*9+int32(param[int32(1)])-'1' > 31 {
 										plyr.Fmessage = __ccgo_ts_str(27653)
 									} else {
 										S_ChangeMusic(musnum, 1)
@@ -40014,10 +40014,10 @@ func ST_Responder(ev *event_t) (r boolean) {
 				cht_GetParam(&cheat_clev, param[:])
 				if gamemode == commercial {
 					epsd = 1
-					map1 = (int32(param[0])-int32('0'))*int32(10) + int32(param[int32(1)]) - int32('0')
+					map1 = (int32(param[0])-'0')*int32(10) + int32(param[int32(1)]) - '0'
 				} else {
-					epsd = int32(param[0]) - int32('0')
-					map1 = int32(param[int32(1)]) - int32('0')
+					epsd = int32(param[0]) - '0'
+					map1 = int32(param[int32(1)]) - '0'
 				}
 				// Chex.exe always warps to episode 1.
 				if gameversion == exe_chex {
