@@ -26009,7 +26009,7 @@ func PIT_CheckLine(ld *line_t) (r boolean) {
 	if tmbbox[BOXRIGHT] <= ld.Fbbox[BOXLEFT] || tmbbox[BOXLEFT] >= ld.Fbbox[BOXRIGHT] || tmbbox[BOXTOP] <= ld.Fbbox[BOXBOTTOM] || tmbbox[BOXBOTTOM] >= ld.Fbbox[BOXTOP] {
 		return 1
 	}
-	if P_BoxOnLineSide(uintptr(unsafe.Pointer(&tmbbox)), ld) != -1 {
+	if P_BoxOnLineSide(&tmbbox, ld) != -1 {
 		return 1
 	}
 	// A line has been hit
@@ -27059,31 +27059,31 @@ func P_PointOnLineSide(x fixed_t, y fixed_t, line *line_t) (r int32) {
 //	// Considers the line to be infinite
 //	// Returns side 0 or 1, -1 if box crosses the line.
 //	//
-func P_BoxOnLineSide(tmbox uintptr, ld *line_t) (r int32) {
+func P_BoxOnLineSide(tmbox *box_t, ld *line_t) (r int32) {
 	var p1, p2 int32
 	p1 = 0
 	p2 = 0
 	switch ld.Fslopetype {
 	case ST_HORIZONTAL:
-		p1 = boolint32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXTOP)*4)) > ld.Fv1.Fy)
-		p2 = boolint32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXBOTTOM)*4)) > ld.Fv1.Fy)
+		p1 = boolint32(tmbox[BOXTOP] > ld.Fv1.Fy)
+		p2 = boolint32(tmbox[BOXBOTTOM] > ld.Fv1.Fy)
 		if ld.Fdx < 0 {
 			p1 ^= 1
 			p2 ^= 1
 		}
 	case ST_VERTICAL:
-		p1 = boolint32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXRIGHT)*4)) < ld.Fv1.Fx)
-		p2 = boolint32(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXLEFT)*4)) < ld.Fv1.Fx)
+		p1 = boolint32(tmbox[BOXRIGHT] < ld.Fv1.Fx)
+		p2 = boolint32(tmbox[BOXLEFT] < ld.Fv1.Fx)
 		if ld.Fdy < 0 {
 			p1 ^= 1
 			p2 ^= 1
 		}
 	case ST_POSITIVE:
-		p1 = P_PointOnLineSide(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXLEFT)*4)), *(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXTOP)*4)), ld)
-		p2 = P_PointOnLineSide(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXRIGHT)*4)), *(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXBOTTOM)*4)), ld)
+		p1 = P_PointOnLineSide(tmbox[BOXLEFT], tmbox[BOXTOP], ld)
+		p2 = P_PointOnLineSide(tmbox[BOXRIGHT], tmbox[BOXBOTTOM], ld)
 	case ST_NEGATIVE:
-		p1 = P_PointOnLineSide(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXRIGHT)*4)), *(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXTOP)*4)), ld)
-		p2 = P_PointOnLineSide(*(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXLEFT)*4)), *(*fixed_t)(unsafe.Pointer(tmbox + uintptr(BOXBOTTOM)*4)), ld)
+		p1 = P_PointOnLineSide(tmbox[BOXRIGHT], tmbox[BOXTOP], ld)
+		p2 = P_PointOnLineSide(tmbox[BOXLEFT], tmbox[BOXBOTTOM], ld)
 		break
 	}
 	if p1 == p2 {
@@ -27098,31 +27098,31 @@ func P_BoxOnLineSide(tmbox uintptr, ld *line_t) (r int32) {
 //	// P_PointOnDivlineSide
 //	// Returns 0 or 1.
 //	//
-func P_PointOnDivlineSide(x fixed_t, y fixed_t, line uintptr) (r int32) {
+func P_PointOnDivlineSide(x fixed_t, y fixed_t, line *divline_t) (r int32) {
 	var dx, dy, left, right fixed_t
-	if (*divline_t)(unsafe.Pointer(line)).Fdx == 0 {
-		if x <= (*divline_t)(unsafe.Pointer(line)).Fx {
-			return boolint32((*divline_t)(unsafe.Pointer(line)).Fdy > 0)
+	if line.Fdx == 0 {
+		if x <= line.Fx {
+			return boolint32(line.Fdy > 0)
 		}
-		return boolint32((*divline_t)(unsafe.Pointer(line)).Fdy < 0)
+		return boolint32(line.Fdy < 0)
 	}
-	if (*divline_t)(unsafe.Pointer(line)).Fdy == 0 {
-		if y <= (*divline_t)(unsafe.Pointer(line)).Fy {
-			return boolint32((*divline_t)(unsafe.Pointer(line)).Fdx < 0)
+	if line.Fdy == 0 {
+		if y <= line.Fy {
+			return boolint32(line.Fdx < 0)
 		}
-		return boolint32((*divline_t)(unsafe.Pointer(line)).Fdx > 0)
+		return boolint32(line.Fdx > 0)
 	}
-	dx = x - (*divline_t)(unsafe.Pointer(line)).Fx
-	dy = y - (*divline_t)(unsafe.Pointer(line)).Fy
+	dx = x - line.Fx
+	dy = y - line.Fy
 	// try to quickly decide by looking at sign bits
-	if uint32((*divline_t)(unsafe.Pointer(line)).Fdy^(*divline_t)(unsafe.Pointer(line)).Fdx^dx^dy)&0x80000000 != 0 {
-		if uint32((*divline_t)(unsafe.Pointer(line)).Fdy^dx)&0x80000000 != 0 {
+	if uint32(line.Fdy^line.Fdx^dx^dy)&0x80000000 != 0 {
+		if uint32(line.Fdy^dx)&0x80000000 != 0 {
 			return 1
 		} // (left is negative)
 		return 0
 	}
-	left = FixedMul((*divline_t)(unsafe.Pointer(line)).Fdy>>int32(8), dx>>int32(8))
-	right = FixedMul(dy>>int32(8), (*divline_t)(unsafe.Pointer(line)).Fdx>>int32(8))
+	left = FixedMul(line.Fdy>>int32(8), dx>>int32(8))
+	right = FixedMul(dy>>int32(8), line.Fdx>>int32(8))
 	if right < left {
 		return 0
 	} // front side
@@ -27366,8 +27366,8 @@ func PIT_AddLineIntercepts(ld *line_t) (r boolean) {
 	var s1, s2 int32
 	// avoid precision problems with two routines
 	if trace.Fdx > 1<<FRACBITS*16 || trace.Fdy > 1<<FRACBITS*16 || trace.Fdx < -(1<<FRACBITS)*16 || trace.Fdy < -(1<<FRACBITS)*16 {
-		s1 = P_PointOnDivlineSide(ld.Fv1.Fx, ld.Fv1.Fy, uintptr(unsafe.Pointer(&trace)))
-		s2 = P_PointOnDivlineSide(ld.Fv2.Fx, ld.Fv2.Fy, uintptr(unsafe.Pointer(&trace)))
+		s1 = P_PointOnDivlineSide(ld.Fv1.Fx, ld.Fv1.Fy, &trace)
+		s2 = P_PointOnDivlineSide(ld.Fv2.Fx, ld.Fv2.Fy, &trace)
 	} else {
 		s1 = P_PointOnLineSide(trace.Fx, trace.Fy, ld)
 		s2 = P_PointOnLineSide(trace.Fx+trace.Fdx, trace.Fy+trace.Fdy, ld)
@@ -27417,8 +27417,8 @@ func PIT_AddThingIntercepts(thing *mobj_t) (r boolean) {
 		x2 = thing.Fx + thing.Fradius
 		y2 = thing.Fy + thing.Fradius
 	}
-	s1 = P_PointOnDivlineSide(x1, y1, uintptr(unsafe.Pointer(&trace)))
-	s2 = P_PointOnDivlineSide(x2, y2, uintptr(unsafe.Pointer(&trace)))
+	s1 = P_PointOnDivlineSide(x1, y1, &trace)
+	s2 = P_PointOnDivlineSide(x2, y2, &trace)
 	if s1 == s2 {
 		return 1
 	} // line isn't crossed
