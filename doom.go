@@ -39247,7 +39247,7 @@ type st_number_t struct {
 	Fy      int32
 	Fwidth  int32
 	Foldnum int32
-	Fnum    uintptr
+	Fnum    *int32
 	Fon     *boolean
 	Fp      []*patch_t
 	Fdata   weapontype_t
@@ -39285,7 +39285,7 @@ func STlib_init() {
 // C documentation
 //
 //	// ?
-func STlib_initNum(st *st_number_t, x int32, y int32, pl []*patch_t, num uintptr, on *boolean, width int32) {
+func STlib_initNum(st *st_number_t, x int32, y int32, pl []*patch_t, num *int32, on *boolean, width int32) {
 	st.Fx = x
 	st.Fy = y
 	st.Foldnum = 0
@@ -39306,14 +39306,14 @@ func STlib_drawNum(n *st_number_t, refresh boolean) {
 	var h, neg, num, numdigits, w, x, v1 int32
 	var v2 bool
 	numdigits = n.Fwidth
-	num = *(*int32)(unsafe.Pointer(n.Fnum))
+	num = *n.Fnum
 	w = int32(n.Fp[0].Fwidth)
 	h = int32(n.Fp[0].Fheight)
 	// [crispy] redraw only if necessary
 	if n.Foldnum == num && refresh == 0 {
 		return
 	}
-	n.Foldnum = *(*int32)(unsafe.Pointer(n.Fnum))
+	n.Foldnum = *n.Fnum
 	neg = boolint32(num < 0)
 	if neg != 0 {
 		if numdigits == 2 && num < -9 {
@@ -39371,7 +39371,7 @@ func STlib_updateNum(n *st_number_t, refresh boolean) {
 // C documentation
 //
 //	//
-func STlib_initPercent(st *st_percent_t, x int32, y int32, pl []*patch_t, num uintptr, on *boolean, percent *patch_t) {
+func STlib_initPercent(st *st_percent_t, x int32, y int32, pl []*patch_t, num *int32, on *boolean, percent *patch_t) {
 	STlib_initNum(&st.Fn, x, y, pl, num, on, 3)
 	st.Fp = percent
 }
@@ -39394,7 +39394,7 @@ func STlib_initMultIcon(st *st_multicon_t, x int32, y int32, il []*patch_t, inum
 
 func STlib_updateMultIcon(mi *st_multicon_t, refresh boolean) {
 	var h, w, x, y int32
-	if *mi.Fon != 0 && (mi.Foldinum != *(*int32)(unsafe.Pointer(mi.Finum)) || refresh != 0) && *(*int32)(unsafe.Pointer(mi.Finum)) != -1 {
+	if *mi.Fon != 0 && (mi.Foldinum != *mi.Finum || refresh != 0) && *mi.Finum != -1 {
 		if mi.Foldinum != -1 {
 			x = mi.Fx - int32(mi.Fp[mi.Foldinum].Fleftoffset)
 			y = mi.Fy - int32(mi.Fp[mi.Foldinum].Ftopoffset)
@@ -40187,9 +40187,9 @@ func ST_updateWidgets() {
 	//  if (w_ready.data != plyr->readyweapon)
 	//  {
 	if weaponinfo[plyr.Freadyweapon].Fammo == am_noammo {
-		w_ready.Fnum = uintptr(unsafe.Pointer(&largeammo))
+		w_ready.Fnum = &largeammo
 	} else {
-		w_ready.Fnum = uintptr(unsafe.Pointer(&plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo]))
+		w_ready.Fnum = &plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo]
 	}
 	//{
 	// static int tic=0;
@@ -40517,11 +40517,11 @@ func ST_initData() {
 
 func ST_createWidgets() {
 	// ready weapon ammo
-	STlib_initNum(&w_ready, ST_AMMOX, ST_AMMOY, tallnum[:], uintptr(unsafe.Pointer(&plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo])), &st_statusbaron, ST_AMMOWIDTH)
+	STlib_initNum(&w_ready, ST_AMMOX, ST_AMMOY, tallnum[:], &plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo], &st_statusbaron, ST_AMMOWIDTH)
 	// the last weapon type
 	w_ready.Fdata = plyr.Freadyweapon
 	// health percentage
-	STlib_initPercent(&w_health, ST_HEALTHX, ST_HEALTHY, tallnum[:], uintptr(unsafe.Pointer(&plyr.Fhealth)), &st_statusbaron, tallpercent)
+	STlib_initPercent(&w_health, ST_HEALTHX, ST_HEALTHY, tallnum[:], &plyr.Fhealth, &st_statusbaron, tallpercent)
 	// arms background
 	STlib_initBinIcon(&w_armsbg, ST_ARMSBGX, ST_ARMSBGY, armsbg, &st_notdeathmatch, &st_statusbaron)
 	// weapons owned
@@ -40529,25 +40529,25 @@ func ST_createWidgets() {
 		STlib_initMultIcon(&w_arms[i], ST_ARMSX+i%3*ST_ARMSXSPACE, ST_ARMSY+i/int32(3)*ST_ARMSYSPACE, arms[i][:], (*int32)(unsafe.Pointer(&plyr.Fweaponowned[i+1])), &st_armson)
 	}
 	// frags sum
-	STlib_initNum(&w_frags, ST_FRAGSX, ST_FRAGSY, tallnum[:], uintptr(unsafe.Pointer(&st_fragscount)), &st_fragson, ST_FRAGSWIDTH)
+	STlib_initNum(&w_frags, ST_FRAGSX, ST_FRAGSY, tallnum[:], &st_fragscount, &st_fragson, ST_FRAGSWIDTH)
 	// faces
 	STlib_initMultIcon(&w_faces, ST_FACESX, ST_FACESY, faces[:], &st_faceindex, &st_statusbaron)
 	// armor percentage - should be colored later
-	STlib_initPercent(&w_armor, ST_ARMORX, ST_ARMORY, tallnum[:], uintptr(unsafe.Pointer(&plyr.Farmorpoints)), &st_statusbaron, tallpercent)
+	STlib_initPercent(&w_armor, ST_ARMORX, ST_ARMORY, tallnum[:], &plyr.Farmorpoints, &st_statusbaron, tallpercent)
 	// keyboxes 0-2
 	STlib_initMultIcon(&w_keyboxes[0], ST_KEY0X, ST_KEY0Y, keys[:], &keyboxes[0], &st_statusbaron)
 	STlib_initMultIcon(&w_keyboxes[1], ST_KEY1X, ST_KEY1Y, keys[:], &keyboxes[1], &st_statusbaron)
 	STlib_initMultIcon(&w_keyboxes[2], ST_KEY2X, ST_KEY2Y, keys[:], &keyboxes[2], &st_statusbaron)
 	// ammo count (all four kinds)
-	STlib_initNum(&w_ammo[0], ST_AMMO0X, ST_AMMO0Y, shortnum[:], uintptr(unsafe.Pointer(&plyr.Fammo[0])), &st_statusbaron, ST_AMMO0WIDTH)
-	STlib_initNum(&w_ammo[1], ST_AMMO1X, ST_AMMO1Y, shortnum[:], uintptr(unsafe.Pointer(&plyr.Fammo[1])), &st_statusbaron, ST_AMMO0WIDTH)
-	STlib_initNum(&w_ammo[2], ST_AMMO2X, ST_AMMO2Y, shortnum[:], uintptr(unsafe.Pointer(&plyr.Fammo[2])), &st_statusbaron, ST_AMMO0WIDTH)
-	STlib_initNum(&w_ammo[3], ST_AMMO3X, ST_AMMO3Y, shortnum[:], uintptr(unsafe.Pointer(&plyr.Fammo[3])), &st_statusbaron, ST_AMMO0WIDTH)
+	STlib_initNum(&w_ammo[0], ST_AMMO0X, ST_AMMO0Y, shortnum[:], &plyr.Fammo[0], &st_statusbaron, ST_AMMO0WIDTH)
+	STlib_initNum(&w_ammo[1], ST_AMMO1X, ST_AMMO1Y, shortnum[:], &plyr.Fammo[1], &st_statusbaron, ST_AMMO0WIDTH)
+	STlib_initNum(&w_ammo[2], ST_AMMO2X, ST_AMMO2Y, shortnum[:], &plyr.Fammo[2], &st_statusbaron, ST_AMMO0WIDTH)
+	STlib_initNum(&w_ammo[3], ST_AMMO3X, ST_AMMO3Y, shortnum[:], &plyr.Fammo[3], &st_statusbaron, ST_AMMO0WIDTH)
 	// max ammo count (all four kinds)
-	STlib_initNum(&w_maxammo[0], ST_MAXAMMO0X, ST_MAXAMMO0Y, shortnum[:], uintptr(unsafe.Pointer(&plyr.Fmaxammo[0])), &st_statusbaron, ST_MAXAMMO0WIDTH)
-	STlib_initNum(&w_maxammo[1], ST_MAXAMMO1X, ST_MAXAMMO1Y, shortnum[:], uintptr(unsafe.Pointer(&plyr.Fmaxammo[1])), &st_statusbaron, ST_MAXAMMO0WIDTH)
-	STlib_initNum(&w_maxammo[2], ST_MAXAMMO2X, ST_MAXAMMO2Y, shortnum[:], uintptr(unsafe.Pointer(&plyr.Fmaxammo[2])), &st_statusbaron, ST_MAXAMMO0WIDTH)
-	STlib_initNum(&w_maxammo[3], ST_MAXAMMO3X, ST_MAXAMMO3Y, shortnum[:], uintptr(unsafe.Pointer(&plyr.Fmaxammo[3])), &st_statusbaron, ST_MAXAMMO0WIDTH)
+	STlib_initNum(&w_maxammo[0], ST_MAXAMMO0X, ST_MAXAMMO0Y, shortnum[:], &plyr.Fmaxammo[0], &st_statusbaron, ST_MAXAMMO0WIDTH)
+	STlib_initNum(&w_maxammo[1], ST_MAXAMMO1X, ST_MAXAMMO1Y, shortnum[:], &plyr.Fmaxammo[1], &st_statusbaron, ST_MAXAMMO0WIDTH)
+	STlib_initNum(&w_maxammo[2], ST_MAXAMMO2X, ST_MAXAMMO2Y, shortnum[:], &plyr.Fmaxammo[2], &st_statusbaron, ST_MAXAMMO0WIDTH)
+	STlib_initNum(&w_maxammo[3], ST_MAXAMMO3X, ST_MAXAMMO3Y, shortnum[:], &plyr.Fmaxammo[3], &st_statusbaron, ST_MAXAMMO0WIDTH)
 }
 
 var st_stopped int32 = 1
