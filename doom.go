@@ -31062,10 +31062,10 @@ func P_GroupLines() {
 // Pad the REJECT lump with extra data when the lump is too small,
 // to simulate a REJECT buffer overflow in Vanilla Doom.
 
-func PadRejectArray(array uintptr, len1 uint32) {
-	var byte_num, i uint32
+func PadRejectArray(array []uint8, len1 uint32) {
+	var byte_num uint32
 	var padvalue uint8
-	var dest uintptr
+	var pos int
 	var rejectpad [4]uint32
 	// Values to pad the REJECT array with:
 	rejectpad = [4]uint32{
@@ -31074,19 +31074,10 @@ func PadRejectArray(array uintptr, len1 uint32) {
 		3: 0x1d4a11,
 	}
 	// Copy values from rejectpad into the destination array.
-	dest = array
-	i = 0
-	for {
-		if !(i < len1 && uint64(i) < 16) {
-			break
-		}
+	for i := uint32(0); i < len1 && i < 16; i++ {
 		byte_num = i % 4
-		*(*uint8)(unsafe.Pointer(dest)) = uint8(rejectpad[i/4] >> (byte_num * 8) & 0xff)
-		dest++
-		goto _1
-	_1:
-		;
-		i++
+		array[pos] = uint8(rejectpad[i/4] >> (byte_num * 8) & 0xff)
+		pos++
 	}
 	// We only have a limited pad size.  Print a warning if the
 	// REJECT lump is too small.
@@ -31098,7 +31089,9 @@ func PadRejectArray(array uintptr, len1 uint32) {
 		} else {
 			padvalue = 0x00
 		}
-		xmemset(array+uintptr(16), padvalue, uint64(len1)-16)
+		for i := uint32(0); i < len1-16; i++ {
+			array[16+i] = padvalue
+		}
 	}
 }
 
@@ -31111,11 +31104,12 @@ func P_LoadReject(lumpnum int32) {
 	// and pad it with appropriate data.
 	lumplen = W_LumpLength(uint32(lumpnum))
 	if lumplen >= minlength {
-		rejectmatrix = W_CacheLumpNum(lumpnum, PU_LEVEL)
+		data := W_CacheLumpNum(lumpnum, PU_LEVEL)
+		rejectmatrix = unsafe.Slice((*uint8)(unsafe.Pointer(data)), lumplen)
 	} else {
-		rejectmatrix = Z_Malloc(minlength, PU_LEVEL, uintptr(unsafe.Pointer(&rejectmatrix)))
-		W_ReadLump(uint32(lumpnum), rejectmatrix)
-		PadRejectArray(rejectmatrix+uintptr(lumplen), uint32(minlength-lumplen))
+		rejectmatrix = W_ReadLumpBytes(uint32(lumpnum))
+		rejectmatrix = append(rejectmatrix, make([]uint8, minlength-lumplen)...)
+		PadRejectArray(rejectmatrix[lumplen:], uint32(minlength-lumplen))
 	}
 }
 
@@ -31449,7 +31443,7 @@ func P_CheckSight(t1 *mobj_t, t2 *mobj_t) (r boolean) {
 	bytenum = pnum >> 3
 	bitnum = 1 << (pnum & 7)
 	// Check in REJECT table.
-	if int32(*(*uint8)(unsafe.Pointer(rejectmatrix + uintptr(bytenum))))&bitnum != 0 {
+	if int32(rejectmatrix[bytenum])&bitnum != 0 {
 		sightcounts[0]++
 		// can't possibly be connected
 		return 0
@@ -45644,7 +45638,7 @@ var quitsounds2 [8]int32
 //	// Without special effect, this could be
 //	//  used as a PVS lookup as well.
 //	//
-var rejectmatrix uintptr
+var rejectmatrix []byte
 
 var respawnmonsters boolean
 
