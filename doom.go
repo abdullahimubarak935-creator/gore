@@ -1715,16 +1715,25 @@ type patch_t struct {
 	Fcolumnofs [320]int32
 }
 
-func (p *patch_t) GetColumn(i int32) uintptr {
+func (p *patch_t) GetColumn(i int32) *column_t {
 	if i < 0 || i >= int32(p.Fwidth) {
 		panic("GetColumn: index out of bounds")
 	}
-	return (uintptr)(unsafe.Pointer(p)) + uintptr(p.Fcolumnofs[i])
+	return (*column_t)(unsafe.Pointer((uintptr)(unsafe.Pointer(p)) + uintptr(p.Fcolumnofs[i])))
 }
 
 type column_t struct {
 	Ftopdelta uint8
 	Flength   uint8
+}
+
+func (c *column_t) Next() *column_t {
+	return (*column_t)(unsafe.Pointer(uintptr(unsafe.Pointer(c)) + uintptr(c.Flength+4)))
+}
+
+func (c *column_t) Data() []byte {
+	source := (uintptr)(unsafe.Pointer(c)) + uintptr(3)
+	return unsafe.Slice((*byte)(unsafe.Pointer(source)), c.Flength)
 }
 
 type vertex_t struct {
@@ -6915,28 +6924,21 @@ func F_CastDrawer() {
 //	//
 //	// F_DrawPatchCol
 //	//
-func F_DrawPatchCol(x int32, patch uintptr, col int32) {
-	var column, dest, desttop, source, v2 uintptr
-	var count, v1 int32
-	column = patch + uintptr(*(*int32)(unsafe.Pointer(patch + 8 + uintptr(col)*4)))
+func F_DrawPatchCol(x int32, patch *patch_t, col int32) {
+	var dest, desttop uintptr
+	var count int32
+	column := patch.GetColumn(col)
 	desttop = I_VideoBuffer + uintptr(x)
 	// step through the posts in a column
-	for int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != 0xff {
-		source = column + uintptr(3)
-		dest = desttop + uintptr(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)*SCREENWIDTH)
-		count = int32((*column_t)(unsafe.Pointer(column)).Flength)
-		for {
-			v1 = count
-			count--
-			if v1 == 0 {
-				break
-			}
-			v2 = source
-			source++
-			*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(v2))
+	for int32(column.Ftopdelta) != 0xff {
+		source := column.Data()
+		dest = desttop + uintptr(int32(column.Ftopdelta)*SCREENWIDTH)
+		count = int32(column.Flength)
+		for i := int32(0); i < count; i++ {
+			*(*uint8)(unsafe.Pointer(dest)) = source[i]
 			dest += SCREENWIDTH
 		}
-		column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + uintptr(4)
+		column = column.Next()
 	}
 }
 
@@ -6946,10 +6948,9 @@ func F_DrawPatchCol(x int32, patch uintptr, col int32) {
 //	// F_BunnyScroll
 //	//
 func F_BunnyScroll() {
-	var p1, p2 uintptr
 	var scrolled, stage, x int32
-	p1 = W_CacheLumpName("PFUB2", PU_LEVEL)
-	p2 = W_CacheLumpName("PFUB1", PU_LEVEL)
+	p1 := W_CacheLumpNameT("PFUB2", PU_LEVEL)
+	p2 := W_CacheLumpNameT("PFUB1", PU_LEVEL)
 	V_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT)
 	scrolled = 320 - (int32(finalecount)-int32(230))/int32(2)
 	if scrolled > 320 {
@@ -34470,13 +34471,13 @@ type texture_t struct {
 //	// Clip and draw a column
 //	//  from a patch into a cached post.
 //	//
-func R_DrawColumnInCache(patch uintptr, cache []byte, originy int32, cacheheight int32) {
+func R_DrawColumnInCache(patch *column_t, cache []byte, originy int32, cacheheight int32) {
 	var count, position int32
 	var source uintptr
-	for int32((*column_t)(unsafe.Pointer(patch)).Ftopdelta) != 0xff {
-		source = patch + uintptr(3)
-		count = int32((*column_t)(unsafe.Pointer(patch)).Flength)
-		position = originy + int32((*column_t)(unsafe.Pointer(patch)).Ftopdelta)
+	for int32(patch.Ftopdelta) != 0xff {
+		source = (uintptr)(unsafe.Pointer(patch)) + uintptr(3)
+		count = int32(patch.Flength)
+		position = originy + int32(patch.Ftopdelta)
 		if position < 0 {
 			count += position
 			position = 0
@@ -34487,7 +34488,7 @@ func R_DrawColumnInCache(patch uintptr, cache []byte, originy int32, cacheheight
 		if count > 0 {
 			copy(cache[position:], unsafe.Slice((*byte)(unsafe.Pointer(source)), count))
 		}
-		patch = patch + uintptr((*column_t)(unsafe.Pointer(patch)).Flength) + uintptr(4)
+		patch = patch.Next()
 	}
 }
 
@@ -36743,7 +36744,7 @@ const SHRT_MAX1 = 32767
 //	// R_RenderMaskedSegRange
 //	//
 func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
-	var col uintptr
+	var col *column_t
 	var index uint32
 	var lightnum, texnum, v1, v2 int32
 	// Calculate light table.
@@ -36816,7 +36817,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 			sprtopscreen = centeryfrac - FixedMul(dc_texturemid, spryscale)
 			dc_iscale = int32(0xffffffff / uint32(spryscale))
 			// draw the texture
-			col = R_GetColumn(texnum, int32(*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2)))) - uintptr(3)
+			col = (*column_t)(unsafe.Pointer(R_GetColumn(texnum, int32(*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2)))) - uintptr(3)))
 			R_DrawMaskedColumn(col)
 			*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2)) = int16(SHRT_MAX1)
 		}
@@ -37502,18 +37503,18 @@ func R_NewVisSprite() *vissprite_t {
 	return &vissprites[vissprite_n-1]
 }
 
-func R_DrawMaskedColumn(column uintptr) {
+func R_DrawMaskedColumn(column *column_t) {
 	var basetexturemid fixed_t
 	var bottomscreen, topscreen int32
 	basetexturemid = dc_texturemid
 	for {
-		if int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) == 0xff {
+		if int32(column.Ftopdelta) == 0xff {
 			break
 		}
 		// calculate unclipped screen coordinates
 		//  for post
-		topscreen = sprtopscreen + spryscale*int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)
-		bottomscreen = topscreen + spryscale*int32((*column_t)(unsafe.Pointer(column)).Flength)
+		topscreen = sprtopscreen + spryscale*int32(column.Ftopdelta)
+		bottomscreen = topscreen + spryscale*int32(column.Flength)
 		dc_yl = (topscreen + 1<<FRACBITS - 1) >> FRACBITS
 		dc_yh = (bottomscreen - 1) >> FRACBITS
 		if dc_yh >= int32(*(*int16)(unsafe.Pointer(mfloorclip + uintptr(dc_x)*2))) {
@@ -37523,14 +37524,14 @@ func R_DrawMaskedColumn(column uintptr) {
 			dc_yl = int32(*(*int16)(unsafe.Pointer(mceilingclip + uintptr(dc_x)*2))) + 1
 		}
 		if dc_yl <= dc_yh {
-			dc_source = column + uintptr(3)
-			dc_texturemid = basetexturemid - int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)<<FRACBITS
+			dc_source = (uintptr)(unsafe.Pointer(column)) + uintptr(3)
+			dc_texturemid = basetexturemid - int32(column.Ftopdelta)<<FRACBITS
 			// dc_source = (byte *)column + 3 - column->topdelta;
 			// Drawn by either R_DrawColumn
 			//  or (SHADOW) R_DrawFuzzColumn.
 			colfunc()
 		}
-		column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + uintptr(4)
+		column = column.Next()
 		goto _1
 	_1:
 	}
@@ -40756,10 +40757,10 @@ func S_AdjustSoundParams(listener *degenmobj_t, source *degenmobj_t, vol *int32,
 	}
 	angle >>= ANGLETOFINESHIFT
 	// stereo separation
-	*(*int32)(unsafe.Pointer(sep)) = 128 - FixedMul(96*(1<<FRACBITS), finesine[angle])>>FRACBITS
+	*sep = 128 - FixedMul(96*(1<<FRACBITS), finesine[angle])>>FRACBITS
 	// volume calculation
 	if approx_dist < 200*(1<<FRACBITS) {
-		*(*int32)(unsafe.Pointer(vol)) = snd_SfxVolume
+		*vol = snd_SfxVolume
 	} else {
 		if gamemap == 8 {
 			if approx_dist > 1200*(1<<FRACBITS) {
@@ -41065,8 +41066,8 @@ func V_CopyRect(srcx int32, srcy int32, source uintptr, width int32, height int3
 //
 
 func V_DrawPatch(x int32, y int32, patch *patch_t) {
-	var col, count, w, v2 int32
-	var dest, desttop, source, v3 uintptr
+	var col, w int32
+	var dest, desttop uintptr
 	y -= int32(patch.Ftopoffset)
 	x -= int32(patch.Fleftoffset)
 	if x < 0 || x+int32(patch.Fwidth) > SCREENWIDTH || y < 0 || y+int32(patch.Fheight) > SCREENHEIGHT {
@@ -41082,22 +41083,14 @@ func V_DrawPatch(x int32, y int32, patch *patch_t) {
 		}
 		column := patch.GetColumn(col)
 		// step through the posts in a column
-		for int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != 0xff {
-			source = column + uintptr(3)
-			dest = desttop + uintptr(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)*SCREENWIDTH)
-			count = int32((*column_t)(unsafe.Pointer(column)).Flength)
-			for {
-				v2 = count
-				count--
-				if v2 == 0 {
-					break
-				}
-				v3 = source
-				source++
-				*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(v3))
+		for int32(column.Ftopdelta) != 0xff {
+			source := column.Data()
+			dest = desttop + uintptr(int32(column.Ftopdelta)*SCREENWIDTH)
+			for i := int32(0); i < int32(column.Flength); i++ {
+				*(*uint8)(unsafe.Pointer(dest)) = source[i]
 				dest += SCREENWIDTH
 			}
-			column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + uintptr(4)
+			column = column.Next()
 		}
 		goto _1
 	_1:
@@ -41114,8 +41107,8 @@ func V_DrawPatch(x int32, y int32, patch *patch_t) {
 //
 
 func V_DrawPatchFlipped(x int32, y int32, patch *patch_t) {
-	var col, count, w, v2 int32
-	var dest, desttop, source, v3 uintptr
+	var col, w int32
+	var dest, desttop uintptr
 	y -= int32(patch.Ftopoffset)
 	x -= int32(patch.Fleftoffset)
 	if x < 0 || x+int32(patch.Fwidth) > SCREENWIDTH || y < 0 || y+int32(patch.Fheight) > SCREENHEIGHT {
@@ -41131,22 +41124,14 @@ func V_DrawPatchFlipped(x int32, y int32, patch *patch_t) {
 		}
 		column := patch.GetColumn(w - 1 - col)
 		// step through the posts in a column
-		for int32((*column_t)(unsafe.Pointer(column)).Ftopdelta) != 0xff {
-			source = column + uintptr(3)
-			dest = desttop + uintptr(int32((*column_t)(unsafe.Pointer(column)).Ftopdelta)*SCREENWIDTH)
-			count = int32((*column_t)(unsafe.Pointer(column)).Flength)
-			for {
-				v2 = count
-				count--
-				if v2 == 0 {
-					break
-				}
-				v3 = source
-				source++
-				*(*uint8)(unsafe.Pointer(dest)) = *(*uint8)(unsafe.Pointer(v3))
+		for int32(column.Ftopdelta) != 0xff {
+			source := column.Data()
+			dest = desttop + uintptr(int32(column.Ftopdelta)*SCREENWIDTH)
+			for i := uint8(0); i < column.Flength; i++ {
+				*(*uint8)(unsafe.Pointer(dest)) = source[i]
 				dest += SCREENWIDTH
 			}
-			column = column + uintptr((*column_t)(unsafe.Pointer(column)).Flength) + uintptr(4)
+			column = column.Next()
 		}
 		goto _1
 	_1:
