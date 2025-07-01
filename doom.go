@@ -30816,22 +30816,23 @@ func P_LoadThings(lump int32) {
 //	// Also counts secret lines for intermissions.
 //	//
 func P_LoadLineDefs(lump int32) {
-	var data, mld uintptr
+	var data uintptr
 	var v1, v2, v21, v3 *vertex_t
 	var i int32
 	numlines = int32(uint64(W_LumpLength(uint32(lump))) / 14)
 	lines = make([]line_t, numlines)
 	data = W_CacheLumpNum(lump, PU_STATIC)
-	mld = data
+	ml := unsafe.Slice((*maplinedef_t)(unsafe.Pointer(data)), numlines)
 	for i = 0; i < numlines; i++ {
 		ld := &lines[i]
-		ld.Fflags = (*maplinedef_t)(unsafe.Pointer(mld)).Fflags
-		ld.Fspecial = (*maplinedef_t)(unsafe.Pointer(mld)).Fspecial
-		ld.Ftag = (*maplinedef_t)(unsafe.Pointer(mld)).Ftag
-		v21 = &vertexes[(*maplinedef_t)(unsafe.Pointer(mld)).Fv1]
+		mld := ml[i]
+		ld.Fflags = mld.Fflags
+		ld.Fspecial = mld.Fspecial
+		ld.Ftag = mld.Ftag
+		v21 = &vertexes[mld.Fv1]
 		ld.Fv1 = v21
 		v1 = v21
-		v3 = &vertexes[(*maplinedef_t)(unsafe.Pointer(mld)).Fv2]
+		v3 = &vertexes[mld.Fv2]
 		ld.Fv2 = v3
 		v2 = v3
 		ld.Fdx = v2.Fx - v1.Fx
@@ -30863,8 +30864,8 @@ func P_LoadLineDefs(lump int32) {
 			ld.Fbbox[BOXBOTTOM] = v2.Fy
 			ld.Fbbox[BOXTOP] = v1.Fy
 		}
-		ld.Fsidenum[0] = *(*int16)(unsafe.Pointer(mld + 10))
-		ld.Fsidenum[1] = *(*int16)(unsafe.Pointer(mld + 10 + 1*2))
+		ld.Fsidenum[0] = mld.Fsidenum[0]
+		ld.Fsidenum[1] = mld.Fsidenum[1]
 		if ld.Fsidenum[0] != -1 {
 			ld.Ffrontsector = sides[ld.Fsidenum[0]].Fsector
 		} else {
@@ -30875,7 +30876,6 @@ func P_LoadLineDefs(lump int32) {
 		} else {
 			ld.Fbacksector = nil
 		}
-		mld += 14
 	}
 	W_ReleaseLumpNum(lump)
 }
@@ -39291,7 +39291,7 @@ func STlib_initPercent(st *st_percent_t, x int32, y int32, pl []*patch_t, num *i
 }
 
 func STlib_updatePercent(per *st_percent_t, refresh int32) {
-	if refresh != 0 && *(*boolean)(unsafe.Pointer(per.Fn.Fon)) != 0 {
+	if refresh != 0 && *per.Fn.Fon != 0 {
 		V_DrawPatch(per.Fn.Fx, per.Fn.Fy, per.Fp)
 	}
 	STlib_updateNum(&per.Fn, uint32(refresh))
@@ -39335,7 +39335,7 @@ func STlib_initBinIcon(st *st_binicon_t, x int32, y int32, i *patch_t, val *bool
 
 func STlib_updateBinIcon(bi *st_binicon_t, refresh boolean) {
 	var h, w, x, y int32
-	if *bi.Fon != 0 && (bi.Foldval != *(*boolean)(unsafe.Pointer(bi.Fval)) || refresh != 0) {
+	if *bi.Fon != 0 && (bi.Foldval != *bi.Fval || refresh != 0) {
 		x = bi.Fx - int32(bi.Fp.Fleftoffset)
 		y = bi.Fy - int32(bi.Fp.Ftopoffset)
 		w = int32(bi.Fp.Fwidth)
@@ -39343,12 +39343,12 @@ func STlib_updateBinIcon(bi *st_binicon_t, refresh boolean) {
 		if y-(SCREENHEIGHT-ST_HEIGHT) < 0 {
 			I_Error("updateBinIcon: y - ST_Y < 0")
 		}
-		if *(*boolean)(unsafe.Pointer(bi.Fval)) != 0 {
+		if *bi.Fval != 0 {
 			V_DrawPatch(bi.Fx, bi.Fy, bi.Fp)
 		} else {
 			V_CopyRect(x, y-(SCREENHEIGHT-ST_HEIGHT), st_backing_screen, w, h, x, y)
 		}
-		bi.Foldval = *(*boolean)(unsafe.Pointer(bi.Fval))
+		bi.Foldval = *bi.Fval
 	}
 }
 
@@ -42029,7 +42029,7 @@ func WI_initAnimatedBack() {
 		}
 		a = &anims1[wbs.Fepsd][i]
 		// init variables
-		(*anim_t1)(unsafe.Pointer(a)).Fctr = -1
+		a.Fctr = -1
 		// specify the next time to draw it
 		if a.Ftype1 == ANIM_ALWAYS {
 			a.Fnexttic = bcnt + 1 + M_Random()%a.Fperiod
@@ -42064,8 +42064,8 @@ func WI_updateAnimatedBack() {
 			break
 		}
 		a = &anims1[wbs.Fepsd][i]
-		if bcnt == (*anim_t1)(unsafe.Pointer(a)).Fnexttic {
-			switch (*anim_t1)(unsafe.Pointer(a)).Ftype1 {
+		if bcnt == a.Fnexttic {
+			switch a.Ftype1 {
 			case ANIM_ALWAYS:
 				a.Fctr++
 				if a.Fctr >= a.Fnanims {
