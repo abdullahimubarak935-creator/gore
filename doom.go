@@ -43130,8 +43130,10 @@ func WI_loadCallback(name string, variable **patch_t) {
 func WI_loadData() {
 	if gamemode == commercial {
 		NUMCMAPS = 32
+		lnames = make([]*patch_t, NUMCMAPS)
+	} else {
+		lnames = make([]*patch_t, NUMMAPS)
 	}
-	lnames = make([]*patch_t, NUMMAPS)
 	WI_loadUnloadData(WI_loadCallback)
 	// These two graphics are special cased because we're sharing
 	// them with the status bar code
