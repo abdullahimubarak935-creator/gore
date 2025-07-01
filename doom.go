@@ -30685,15 +30685,14 @@ func P_LoadSegs(lump int32) {
 //	// P_LoadSubsectors
 //	//
 func P_LoadSubsectors(lump int32) {
-	var data, ms uintptr
+	var data uintptr
 	numsubsectors = int32(uint64(W_LumpLength(uint32(lump))) / 4)
 	subsectors = make([]subsector_t, numsubsectors)
 	data = W_CacheLumpNum(lump, PU_STATIC)
-	ms = data
+	ms := unsafe.Slice((*mapsubsector_t)(unsafe.Pointer(data)), numsubsectors)
 	for i := int32(0); i < numsubsectors; i++ {
-		subsectors[i].Fnumlines = (*mapsubsector_t)(unsafe.Pointer(ms)).Fnumsegs
-		subsectors[i].Ffirstline = (*mapsubsector_t)(unsafe.Pointer(ms)).Ffirstseg
-		ms += 4
+		subsectors[i].Fnumlines = ms[i].Fnumsegs
+		subsectors[i].Ffirstline = ms[i].Ffirstseg
 	}
 	W_ReleaseLumpNum(lump)
 }
