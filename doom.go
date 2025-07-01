@@ -7510,7 +7510,7 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	var desired_angleturn int16
 	var forward, side, speed, tspeed, v1, v16 int32
 	*cmd = ticcmd_t{}
-	cmd.Fconsistancy = *(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(consoleplayer)*128 + uintptr(maketic%BACKUPTICS)))
+	cmd.Fconsistancy = consistancy[consoleplayer][maketic%BACKUPTICS]
 	strafe = booluint32(gamekeydown[key_strafe] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
 	// fraggle: support the old "joyb_speed = 31" hack which
 	// allowed an autorun effect
@@ -8004,13 +8004,13 @@ func G_Ticker() {
 				turbodetected[i] = 0
 			}
 			if netgame != 0 && netdemo == 0 && gametic%ticdup == 0 {
-				if gametic > BACKUPTICS && int32(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))) != int32(cmd.Fconsistancy) {
-					I_Error("consistency failure (%d should be %d)", int32(cmd.Fconsistancy), int32(*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf)))))
+				if gametic > BACKUPTICS && int32(consistancy[i][buf]) != int32(cmd.Fconsistancy) {
+					I_Error("consistency failure (%d should be %d)", int32(cmd.Fconsistancy), int32(consistancy[i][buf]))
 				}
 				if players[i].Fmo != nil {
-					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = uint8(players[i].Fmo.Fx)
+					consistancy[i][buf] = uint8(players[i].Fmo.Fx)
 				} else {
-					*(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&consistancy)) + uintptr(i)*128 + uintptr(buf))) = uint8(rndindex)
+					consistancy[i][buf] = uint8(rndindex)
 				}
 			}
 		}
@@ -8522,7 +8522,7 @@ func G_DoCompleted() {
 		wminfo.Fpartime = TICRATE * cpars[gamemap-1]
 	} else {
 		if gameepisode < 4 {
-			wminfo.Fpartime = TICRATE * *(*int32)(unsafe.Pointer(uintptr(unsafe.Pointer(&pars)) + uintptr(gameepisode)*40 + uintptr(gamemap)*4))
+			wminfo.Fpartime = TICRATE * pars[gameepisode][gamemap]
 		} else {
 			wminfo.Fpartime = TICRATE * cpars[gamemap]
 		}
@@ -9968,7 +9968,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 			if int32(c) == KEY_ENTER {
 				chat_on = 0
 				if w_chat.Fl.Flen1 != 0 {
-					lastmessage = gostring(uintptr(unsafe.Pointer(&w_chat.Fl.Fl[0])))
+					lastmessage = gostring_bytes(w_chat.Fl.Fl[:])
 					plr1.Fmessage = lastmessage
 				}
 			} else {
