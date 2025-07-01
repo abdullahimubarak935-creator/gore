@@ -18356,7 +18356,6 @@ var basetime uint32 = 0
 
 func I_GetTicks() (r int32) {
 	return int32(float64(time.Since(start_time).Milliseconds()) * dg_speed_ratio)
-	//return int32(DG_GetTicksMs())
 }
 
 func I_GetTime() (r int32) {
@@ -27016,30 +27015,21 @@ func P_SetThingPosition(thing *mobj_t) {
 //	// to it.
 //	//
 func P_BlockLinesIterator(x int32, y int32, func1 func(*line_t) boolean) (r boolean) {
-	var list uintptr
 	var offset int32
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
 		return 1
 	}
 	offset = y*bmapwidth + x
-	offset = int32(*(*int16)(unsafe.Pointer(blockmap + uintptr(offset)*2)))
-	list = blockmaplump + uintptr(offset)*2
-	for {
-		if int32(*(*int16)(unsafe.Pointer(list))) == -1 {
-			break
-		}
-		ld := &lines[*(*int16)(unsafe.Pointer(list))]
+	offset = int32(blockmap[offset])
+	for listpos := offset; blockmaplump[listpos] != -1; listpos++ {
+		ld := &lines[blockmaplump[listpos]]
 		if ld.Fvalidcount == validcount {
-			goto _1
+			continue
 		} // line has already been checked
 		ld.Fvalidcount = validcount
 		if func1(ld) == 0 {
 			return 0
 		}
-		goto _1
-	_1:
-		;
-		list += 2
 	}
 	return 1 // everything was checked
 }
@@ -30961,26 +30951,28 @@ func P_LoadBlockMap(lump int32) {
 	var count, i, lumplen int32
 	lumplen = W_LumpLength(uint32(lump))
 	count = lumplen / 2
-	blockmaplump = Z_Malloc(lumplen, PU_LEVEL, 0)
-	W_ReadLump(uint32(lump), blockmaplump)
-	blockmap = blockmaplump + uintptr(4)*2
+	rawLump := Z_Malloc(lumplen, PU_LEVEL, 0)
+	W_ReadLump(uint32(lump), rawLump)
+	blockmaplump = unsafe.Slice((*int16)(unsafe.Pointer(rawLump)), count)
+	blockmap = blockmaplump[4:]
 	// Swap all short integers to native byte ordering.
+	// TODO: GORE: We've lost endian fixes here
 	i = 0
 	for {
 		if i >= count {
 			break
 		}
-		*(*int16)(unsafe.Pointer(blockmaplump + uintptr(i)*2)) = *(*int16)(unsafe.Pointer(blockmaplump + uintptr(i)*2))
+		blockmaplump[i] = blockmaplump[i]
 		goto _1
 	_1:
 		;
 		i++
 	}
 	// Read the header
-	bmaporgx = int32(*(*int16)(unsafe.Pointer(blockmaplump))) << FRACBITS
-	bmaporgy = int32(*(*int16)(unsafe.Pointer(blockmaplump + 1*2))) << FRACBITS
-	bmapwidth = int32(*(*int16)(unsafe.Pointer(blockmaplump + 2*2)))
-	bmapheight = int32(*(*int16)(unsafe.Pointer(blockmaplump + 3*2)))
+	bmaporgx = int32(blockmaplump[0]) << FRACBITS
+	bmaporgy = int32(blockmaplump[1]) << FRACBITS
+	bmapwidth = int32(blockmaplump[2])
+	bmapheight = int32(blockmaplump[3])
 	// Clear out mobj chains
 	count = int32(uint64(bmapwidth) * uint64(bmapheight))
 	blocklinks = make([]*mobj_t, count)
@@ -44638,10 +44630,10 @@ var bfgedition boolean
 //	// for thing chains
 var blocklinks []*mobj_t
 
-var blockmap uintptr
+var blockmap []int16
 
 // offsets in blockmap are from here
-var blockmaplump uintptr
+var blockmaplump []int16
 
 var bmapheight int32
 
