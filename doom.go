@@ -2212,7 +2212,7 @@ type lumpinfo_t struct {
 	Fwad_file *os.File
 	Fposition int32
 	Fsize     int32
-	Fcache    uintptr
+	Fcache    []byte
 	Fnext     *lumpinfo_t
 }
 
@@ -34516,7 +34516,7 @@ type texture_t struct {
 //	// Clip and draw a column
 //	//  from a patch into a cached post.
 //	//
-func R_DrawColumnInCache(patch uintptr, cache uintptr, originy int32, cacheheight int32) {
+func R_DrawColumnInCache(patch uintptr, cache []byte, originy int32, cacheheight int32) {
 	var count, position int32
 	var source uintptr
 	for int32((*column_t)(unsafe.Pointer(patch)).Ftopdelta) != 0xff {
@@ -34531,7 +34531,7 @@ func R_DrawColumnInCache(patch uintptr, cache uintptr, originy int32, cacheheigh
 			count = cacheheight - position
 		}
 		if count > 0 {
-			xmemcpy(cache+uintptr(position), source, uint64(count))
+			copy(cache[position:], unsafe.Slice((*byte)(unsafe.Pointer(source)), count))
 		}
 		patch = patch + uintptr((*column_t)(unsafe.Pointer(patch)).Flength) + uintptr(4)
 	}
@@ -34546,13 +34546,12 @@ func R_DrawColumnInCache(patch uintptr, cache uintptr, originy int32, cacheheigh
 //	//  and each column is cached.
 //	//
 func R_GenerateComposite(texnum int32) {
-	var block uintptr
 	var collump []int16
 	var colofs []uint16
 	var i, x, x1, x2 int32
 	var texture *texture_t
 	texture = textures[texnum]
-	block = Z_Malloc(texturecompositesize[texnum], PU_STATIC, (uintptr)(unsafe.Pointer(&texturecomposite[texnum])))
+	texturecomposite[texnum] = make([]byte, texturecompositesize[texnum])
 	collump = texturecolumnlump[texnum]
 	colofs = texturecolumnofs[texnum]
 	// Composite the columns together.
@@ -34579,7 +34578,7 @@ func R_GenerateComposite(texnum int32) {
 				continue
 			}
 			patchcol := realpatch.GetColumn(x - x1)
-			R_DrawColumnInCache(patchcol, block+uintptr(colofs[x]), int32(patch.Foriginy), int32(texture.Fheight))
+			R_DrawColumnInCache(patchcol, texturecomposite[texnum][colofs[x]:], int32(patch.Foriginy), int32(texture.Fheight))
 		}
 		goto _1
 	_1:
@@ -34588,7 +34587,6 @@ func R_GenerateComposite(texnum int32) {
 	}
 	// Now that the texture has been built in column cache,
 	//  it is purgable from zone memory.
-	Z_ChangeTag2(block, PU_CACHE, "r_data.c", 286)
 }
 
 // C documentation
@@ -34772,7 +34770,7 @@ func R_InitTextures() {
 	textures = make([]*texture_t, numtextures)
 	texturecolumnlump = make([][]int16, numtextures)
 	texturecolumnofs = make([][]uint16, numtextures)
-	texturecomposite = make([]*byte, numtextures)
+	texturecomposite = make([][]byte, numtextures)
 	texturecompositesize = make([]int32, numtextures)
 	texturewidthmask = make([]int32, numtextures)
 	textureheight = make([]fixed_t, numtextures)
@@ -43483,7 +43481,7 @@ func W_AddFile(filename string) *os.File {
 		lump_p.Fwad_file = wad_file
 		lump_p.Fposition = fileinfo[i].Ffilepos
 		lump_p.Fsize = fileinfo[i].Fsize
-		lump_p.Fcache = 0
+		lump_p.Fcache = nil
 		lump_p.Fname = fileinfo[i].Fname
 	}
 	lumphash = nil
@@ -43569,6 +43567,20 @@ func W_ReadLump(lump uint32, dest uintptr) {
 	I_EndRead()
 }
 
+func W_ReadLumpBytes(lump uint32) []byte {
+	if lump >= numlumps {
+		I_Error("W_ReadLumpBytes: %d >= numlumps", lump)
+	}
+	l := &lumpinfo[lump]
+	res := make([]byte, l.Fsize)
+	if n, err := l.Fwad_file.ReadAt(res, int64(l.Fposition)); err != nil {
+		log.Fatalf("W_ReadLumpBytes: error reading lump %d (%dB at %d): %v", lump, l.Fsize, l.Fposition, err)
+	} else if n < int(l.Fsize) {
+		log.Fatalf("W_ReadLumpBytes: only read %d of %d on lump %d", n, l.Fsize, lump)
+	}
+	return res
+}
+
 //
 // W_CacheLumpNum
 //
@@ -43582,26 +43594,14 @@ func W_ReadLump(lump uint32, dest uintptr) {
 //
 
 func W_CacheLumpNum(lumpnum int32, tag int32) (r uintptr) {
-	var result uintptr
 	if uint32(lumpnum) >= numlumps {
 		I_Error("W_CacheLumpNum: %d >= numlumps", lumpnum)
 	}
 	lump := &lumpinfo[lumpnum]
-	// Get the pointer to return.  If the lump is in a memory-mapped
-	// file, we can just return a pointer to within the memory-mapped
-	// region.  If the lump is in an ordinary file, we may already
-	// have it cached; otherwise, load it into memory.
-	if lump.Fcache != 0 {
-		// Already cached, so just switch the zone tag.
-		result = lump.Fcache
-		Z_ChangeTag2(lump.Fcache, tag, "w_wad.c", 410)
-	} else {
-		// Not yet loaded, so load it now
-		lump.Fcache = Z_Malloc(W_LumpLength(uint32(lumpnum)), tag, uintptr(unsafe.Pointer(&lump.Fcache)))
-		W_ReadLump(uint32(lumpnum), lump.Fcache)
-		result = lump.Fcache
+	if lump.Fcache == nil {
+		lump.Fcache = W_ReadLumpBytes(uint32(lumpnum))
 	}
-	return result
+	return (uintptr)(unsafe.Pointer(&lump.Fcache[0]))
 }
 
 func W_CacheLumpNumT[T lumpType](lumpnum int32, tag int32) T {
@@ -43645,8 +43645,7 @@ func W_ReleaseLumpNum(lumpnum int32) {
 	if uint32(lumpnum) >= numlumps {
 		I_Error("W_ReleaseLumpNum: %d >= numlumps", lumpnum)
 	}
-	lump := &lumpinfo[lumpnum]
-	Z_ChangeTag2(lump.Fcache, PU_CACHE, "w_wad.c", 461)
+	// TODO/GORE: We don't do anything here. Lumps are just progressively cached & never released. It's a finite number
 }
 
 func W_ReleaseLumpName(name string) {
@@ -44004,23 +44003,6 @@ func Z_CheckHeap() {
 		;
 		block = (*memblock_t)(unsafe.Pointer(block)).Fnext
 	}
-}
-
-// C documentation
-//
-//	//
-//	// Z_ChangeTag
-//	//
-func Z_ChangeTag2(ptr uintptr, tag int32, file string, line int32) {
-	var block uintptr
-	block = ptr - uintptr(40)
-	if (*memblock_t)(unsafe.Pointer(block)).Fid != ZONEID {
-		I_Error("%s:%d: Z_ChangeTag: block without a ZONEID!", file, line)
-	}
-	if tag >= PU_PURGELEVEL && (*memblock_t)(unsafe.Pointer(block)).Fuser == 0 {
-		I_Error("%s:%d: Z_ChangeTag: an owner is required for purgable blocks", file, line)
-	}
-	(*memblock_t)(unsafe.Pointer(block)).Ftag = tag
 }
 
 // Read data from the specified position in the file into the
@@ -46362,7 +46344,7 @@ var texturecolumnlump [][]int16
 
 var texturecolumnofs [][]uint16
 
-var texturecomposite []*byte
+var texturecomposite [][]byte
 
 var texturecompositesize []int32
 
