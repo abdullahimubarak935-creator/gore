@@ -5199,32 +5199,14 @@ func GetGameName(gamename string) string {
 }
 
 func SetMissionForPackName(pack_name string) {
-	var i int32
-	i = 0
-	for {
-		if uint64(i) >= 48/16 {
-			break
-		}
-		if strings.EqualFold(pack_name, packs[i].Fname) {
-			gamemission = packs[i].Fmission
+	for p := range(packs) {
+		if strings.EqualFold(pack_name, p.Fname) {
+			gamemission = p.Fmission
 			return
-		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	fprintf_ccgo(os.Stdout, "Valid mission packs are:\n")
-	i = 0
-	for {
-		if uint64(i) >= 48/16 {
-			break
-		}
-		fprintf_ccgo(os.Stdout, "\t%s\n", packs[i].Fname)
-		goto _2
-	_2:
-		;
-		i++
+	for p := range(packs) {
+		fprintf_ccgo(os.Stdout, "\t%s\n", p.Fname)
 	}
 	I_Error("Unknown mission pack name: %s", pack_name)
 }
