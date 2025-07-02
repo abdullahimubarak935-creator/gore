@@ -199,13 +199,6 @@ const VDOORWAIT = 150
 
 type sha1_digest_t = [20]uint8
 
-const PU_STATIC = 1
-const PU_FREE = 4
-const PU_LEVEL = 5
-const PU_LEVSPEC = 6
-const PU_PURGELEVEL = 7
-const PU_CACHE = 8
-
 type GameMission_t int32
 
 const doom GameMission_t = 0
@@ -2820,7 +2813,7 @@ func AM_loadPics() {
 			break
 		}
 		name := fmt.Sprintf("AMMNUM%d", i)
-		marknums[i] = W_CacheLumpNameT(name, PU_STATIC)
+		marknums[i] = W_CacheLumpNameT(name)
 		goto _1
 	_1:
 		;
@@ -4829,7 +4822,7 @@ func D_Display() {
 	}
 	// clean up border stuff
 	if gamestate != oldgamestate1 && gamestate != GS_LEVEL {
-		I_SetPalette(W_CacheLumpName("PLAYPAL", PU_CACHE))
+		I_SetPalette(W_CacheLumpName("PLAYPAL"))
 	}
 	// see if the border needs to be initially drawn
 	if gamestate == GS_LEVEL && oldgamestate1 != GS_LEVEL {
@@ -4863,7 +4856,7 @@ func D_Display() {
 		} else {
 			y = viewwindowy + 4
 		}
-		V_DrawPatchDirect(viewwindowx+(scaledviewwidth-int32(68))/int32(2), y, W_CacheLumpNameT("M_PAUSE", PU_CACHE))
+		V_DrawPatchDirect(viewwindowx+(scaledviewwidth-int32(68))/int32(2), y, W_CacheLumpNameT("M_PAUSE"))
 	}
 	// menus go directly to the screen
 	M_Drawer()  // menu is drawn even on top of everything
@@ -5027,7 +5020,7 @@ func D_PageTicker() {
 //	// D_PageDrawer
 //	//
 func D_PageDrawer() {
-	V_DrawPatch(0, 0, W_CacheLumpNameT(pagename, PU_CACHE))
+	V_DrawPatch(0, 0, W_CacheLumpNameT(pagename))
 }
 
 // C documentation
@@ -5599,7 +5592,7 @@ func D_Endoom() {
 	if show_endoom == 0 || main_loop_started == 0 || screensaver_mode != 0 || M_CheckParm("-testcontrols") > 0 {
 		return
 	}
-	endoom = W_CacheLumpName("ENDOOM", PU_STATIC)
+	endoom = W_CacheLumpName("ENDOOM")
 	I_Endoom(endoom)
 	log.Printf("Exiting - outstanding memory: %d", len(dg_alloced))
 	dg_exiting = true
@@ -6538,7 +6531,7 @@ func F_TextWrite() {
 	var dest, src uintptr
 	var pos int
 	// erase the entire screen to a tiled background
-	src = W_CacheLumpName(finaleflat, PU_CACHE)
+	src = W_CacheLumpName(finaleflat)
 	dest = I_VideoBuffer
 	y = 0
 	for {
@@ -6904,14 +6897,14 @@ func F_CastDrawer() {
 	var sprdef *spritedef_t
 	var sprframe *spriteframe_t
 	// erase the entire screen to a background
-	V_DrawPatch(0, 0, W_CacheLumpNameT("BOSSBACK", PU_CACHE))
+	V_DrawPatch(0, 0, W_CacheLumpNameT("BOSSBACK"))
 	F_CastPrint(castorder[castnum].Fname)
 	// draw the current frame in the middle of the screen
 	sprdef = &sprites[caststate.Fsprite]
 	sprframe = &sprdef.Fspriteframes[caststate.Fframe&int32(FF_FRAMEMASK1)]
 	lump = int32(sprframe.Flump[0])
 	flip = uint32(sprframe.Fflip[0])
-	patch = W_CacheLumpNumT(lump+firstspritelump, PU_CACHE)
+	patch = W_CacheLumpNumT(lump + firstspritelump)
 	if flip != 0 {
 		V_DrawPatchFlipped(160, 170, patch)
 	} else {
@@ -6949,8 +6942,8 @@ func F_DrawPatchCol(x int32, patch *patch_t, col int32) {
 //	//
 func F_BunnyScroll() {
 	var scrolled, stage, x int32
-	p1 := W_CacheLumpNameT("PFUB2", PU_LEVEL)
-	p2 := W_CacheLumpNameT("PFUB1", PU_LEVEL)
+	p1 := W_CacheLumpNameT("PFUB2")
+	p2 := W_CacheLumpNameT("PFUB1")
 	V_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT)
 	scrolled = 320 - (int32(finalecount)-int32(230))/int32(2)
 	if scrolled > 320 {
@@ -6978,7 +6971,7 @@ func F_BunnyScroll() {
 		return
 	}
 	if finalecount < 1180 {
-		V_DrawPatch((SCREENWIDTH-13*8)/2, (SCREENHEIGHT-8*8)/2, W_CacheLumpNameT("END0", PU_CACHE))
+		V_DrawPatch((SCREENWIDTH-13*8)/2, (SCREENHEIGHT-8*8)/2, W_CacheLumpNameT("END0"))
 		laststage = 0
 		return
 	}
@@ -6991,7 +6984,7 @@ func F_BunnyScroll() {
 		laststage = stage
 	}
 	name := fmt.Sprintf("END%d", stage)
-	V_DrawPatch((SCREENWIDTH-13*8)/2, (SCREENHEIGHT-8*8)/2, W_CacheLumpNameT(name, PU_CACHE))
+	V_DrawPatch((SCREENWIDTH-13*8)/2, (SCREENHEIGHT-8*8)/2, W_CacheLumpNameT(name))
 }
 
 var laststage int32
@@ -7015,7 +7008,7 @@ func F_ArtScreenDrawer() {
 		default:
 			return
 		}
-		V_DrawPatch(0, 0, W_CacheLumpNameT(lumpname, PU_CACHE))
+		V_DrawPatch(0, 0, W_CacheLumpNameT(lumpname))
 	}
 }
 
@@ -7132,7 +7125,7 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 	wipe_shittyColMajorXform(wipe_scr_end, width/int32(2), height)
 	// setup initial column positions
 	// (y<0 => not ready to scroll yet)
-	y_screen = Z_Malloc(int32(uint64(width)*4), PU_STATIC, 0)
+	y_screen = Z_Malloc(int32(uint64(width) * 4))
 	*(*int32)(unsafe.Pointer(y_screen)) = -(M_Random() % 16)
 	i = 1
 	for {
@@ -7242,13 +7235,13 @@ func wipe_exitMelt(width int32, height int32, ticks int32) (r int32) {
 }
 
 func wipe_StartScreen(x int32, y int32, width int32, height int32) (r int32) {
-	wipe_scr_start = Z_Malloc(SCREENWIDTH*SCREENHEIGHT, PU_STATIC, 0)
+	wipe_scr_start = Z_Malloc(SCREENWIDTH * SCREENHEIGHT)
 	I_ReadScreen(wipe_scr_start)
 	return 0
 }
 
 func wipe_EndScreen(x int32, y int32, width int32, height int32) (r int32) {
-	wipe_scr_end = Z_Malloc(SCREENWIDTH*SCREENHEIGHT, PU_STATIC, 0)
+	wipe_scr_end = Z_Malloc(SCREENWIDTH * SCREENHEIGHT)
 	I_ReadScreen(wipe_scr_end)
 	V_DrawBlock(x, y, width, height, wipe_scr_start) // restore start scr.
 	return 0
@@ -7259,7 +7252,6 @@ func wipe_ScreenWipe(wipeno int32, x int32, y int32, width int32, height int32, 
 	// initial stuff
 	if wipe_running == 0 {
 		wipe_running = 1
-		// wipe_scr = (byte *) Z_Malloc(width*height, PU_STATIC, 0); // DEBUG
 		wipe_scr = I_VideoBuffer
 		wipes[wipeno*3](width, height, ticks)
 	}
@@ -7753,7 +7745,6 @@ func G_DoLoadLevel() {
 	P_SetupLevel(gameepisode, gamemap, 0, gameskill)
 	displayplayer = consoleplayer // view the guy you are playing
 	gameaction = ga_nothing
-	Z_CheckHeap()
 	// clear cmd building stuff
 	clear(gamekeydown[:])
 	v3 = 0
@@ -9069,7 +9060,7 @@ func G_DoPlayDemo() {
 	gameaction = ga_nothing
 	num := W_GetNumForName(defdemoname)
 	length := W_LumpLength(uint32(num))
-	demodata := W_CacheLumpNum(num, PU_STATIC)
+	demodata := W_CacheLumpNum(num)
 	demobuffer = make([]byte, length)
 	copy(demobuffer, unsafe.Slice((*uint8)(unsafe.Pointer(demodata)), length))
 	demo_pos = 0
@@ -9659,7 +9650,7 @@ func HU_Init() {
 		v2 = j
 		j++
 		name := fmt.Sprintf("STCFN%.3d", v2)
-		hu_font[i] = W_CacheLumpNameT(name, PU_STATIC)
+		hu_font[i] = W_CacheLumpNameT(name)
 		goto _1
 	_1:
 		;
@@ -20118,7 +20109,7 @@ func M_ReadSaveStrings() {
 //	//
 func M_DrawLoad() {
 	var i int32
-	V_DrawPatchDirect(72, 28, W_CacheLumpNameT("M_LOADG", PU_CACHE))
+	V_DrawPatchDirect(72, 28, W_CacheLumpNameT("M_LOADG"))
 	i = 0
 	for {
 		if i >= int32(load_end) {
@@ -20140,20 +20131,20 @@ func M_DrawLoad() {
 //	//
 func M_DrawSaveLoadBorder(x int32, y int32) {
 	var i int32
-	V_DrawPatchDirect(x-int32(8), y+int32(7), W_CacheLumpNameT("M_LSLEFT", PU_CACHE))
+	V_DrawPatchDirect(x-int32(8), y+int32(7), W_CacheLumpNameT("M_LSLEFT"))
 	i = 0
 	for {
 		if i >= 24 {
 			break
 		}
-		V_DrawPatchDirect(x, y+int32(7), W_CacheLumpNameT("M_LSCNTR", PU_CACHE))
+		V_DrawPatchDirect(x, y+int32(7), W_CacheLumpNameT("M_LSCNTR"))
 		x += 8
 		goto _1
 	_1:
 		;
 		i++
 	}
-	V_DrawPatchDirect(x, y+int32(7), W_CacheLumpNameT("M_LSRGHT", PU_CACHE))
+	V_DrawPatchDirect(x, y+int32(7), W_CacheLumpNameT("M_LSRGHT"))
 }
 
 // C documentation
@@ -20187,7 +20178,7 @@ func M_LoadGame(choice int32) {
 //	//
 func M_DrawSave() {
 	var i int32
-	V_DrawPatchDirect(72, 28, W_CacheLumpNameT("M_SAVEG", PU_CACHE))
+	V_DrawPatchDirect(72, 28, W_CacheLumpNameT("M_SAVEG"))
 	i = 0
 	for {
 		if i >= int32(load_end) {
@@ -20356,7 +20347,7 @@ func M_DrawReadThis1() {
 		I_Error("Unhandled game version")
 		break
 	}
-	V_DrawPatchDirect(0, 0, W_CacheLumpNameT(lumpname, PU_CACHE))
+	V_DrawPatchDirect(0, 0, W_CacheLumpNameT(lumpname))
 	ReadDef1.Fx = int16(skullx)
 	ReadDef1.Fy = int16(skully)
 }
@@ -20370,7 +20361,7 @@ func M_DrawReadThis2() {
 	inhelpscreens = 1
 	// We only ever draw the second page if this is
 	// gameversion == exe_doom_1_9 and gamemode == registered
-	V_DrawPatchDirect(0, 0, W_CacheLumpNameT("HELP1", PU_CACHE))
+	V_DrawPatchDirect(0, 0, W_CacheLumpNameT("HELP1"))
 }
 
 // C documentation
@@ -20379,7 +20370,7 @@ func M_DrawReadThis2() {
 //	// Change Sfx & Music volumes
 //	//
 func M_DrawSound() {
-	V_DrawPatchDirect(60, 38, W_CacheLumpNameT("M_SVOL", PU_CACHE))
+	V_DrawPatchDirect(60, 38, W_CacheLumpNameT("M_SVOL"))
 	M_DrawThermo(int32(SoundDef.Fx), int32(SoundDef.Fy)+LINEHEIGHT*(int32(sfx_vol)+1), 16, sfxVolume)
 	M_DrawThermo(int32(SoundDef.Fx), int32(SoundDef.Fy)+LINEHEIGHT*(int32(music_vol)+1), 16, musicVolume)
 }
@@ -20424,7 +20415,7 @@ func M_MusicVol(choice int32) {
 //	// M_DrawMainMenu
 //	//
 func M_DrawMainMenu() {
-	V_DrawPatchDirect(94, 2, W_CacheLumpNameT("M_DOOM", PU_CACHE))
+	V_DrawPatchDirect(94, 2, W_CacheLumpNameT("M_DOOM"))
 }
 
 // C documentation
@@ -20433,8 +20424,8 @@ func M_DrawMainMenu() {
 //	// M_NewGame
 //	//
 func M_DrawNewGame() {
-	V_DrawPatchDirect(96, 14, W_CacheLumpNameT("M_NEWG", PU_CACHE))
-	V_DrawPatchDirect(54, 38, W_CacheLumpNameT("M_SKILL", PU_CACHE))
+	V_DrawPatchDirect(96, 14, W_CacheLumpNameT("M_NEWG"))
+	V_DrawPatchDirect(54, 38, W_CacheLumpNameT("M_SKILL"))
 }
 
 func M_NewGame(choice int32) {
@@ -20451,7 +20442,7 @@ func M_NewGame(choice int32) {
 }
 
 func M_DrawEpisode() {
-	V_DrawPatchDirect(54, 38, W_CacheLumpNameT("M_EPISOD", PU_CACHE))
+	V_DrawPatchDirect(54, 38, W_CacheLumpNameT("M_EPISOD"))
 }
 
 func M_VerifyNightmare(key int32) {
@@ -20501,9 +20492,9 @@ var msgNames = [2]string{
 }
 
 func M_DrawOptions() {
-	V_DrawPatchDirect(108, 15, W_CacheLumpNameT("M_OPTTTL", PU_CACHE))
-	V_DrawPatchDirect(int32(OptionsDef.Fx)+int32(175), int32(OptionsDef.Fy)+LINEHEIGHT*int32(detail), W_CacheLumpNameT(detailNames[detailLevel], PU_CACHE))
-	V_DrawPatchDirect(int32(OptionsDef.Fx)+int32(120), int32(OptionsDef.Fy)+LINEHEIGHT*int32(messages), W_CacheLumpNameT(msgNames[showMessages], PU_CACHE))
+	V_DrawPatchDirect(108, 15, W_CacheLumpNameT("M_OPTTTL"))
+	V_DrawPatchDirect(int32(OptionsDef.Fx)+int32(175), int32(OptionsDef.Fy)+LINEHEIGHT*int32(detail), W_CacheLumpNameT(detailNames[detailLevel]))
+	V_DrawPatchDirect(int32(OptionsDef.Fx)+int32(120), int32(OptionsDef.Fy)+LINEHEIGHT*int32(messages), W_CacheLumpNameT(msgNames[showMessages]))
 	M_DrawThermo(int32(OptionsDef.Fx), int32(OptionsDef.Fy)+LINEHEIGHT*(int32(mousesens)+1), 10, mouseSensitivity)
 	M_DrawThermo(int32(OptionsDef.Fx), int32(OptionsDef.Fy)+LINEHEIGHT*(int32(scrnsize)+1), 9, screenSize)
 }
@@ -20694,22 +20685,22 @@ func M_SizeDisplay(choice int32) {
 func M_DrawThermo(x int32, y int32, thermWidth int32, thermDot int32) {
 	var i, xx int32
 	xx = x
-	V_DrawPatchDirect(xx, y, W_CacheLumpNameT("M_THERML", PU_CACHE))
+	V_DrawPatchDirect(xx, y, W_CacheLumpNameT("M_THERML"))
 	xx += 8
 	i = 0
 	for {
 		if i >= thermWidth {
 			break
 		}
-		V_DrawPatchDirect(xx, y, W_CacheLumpNameT("M_THERMM", PU_CACHE))
+		V_DrawPatchDirect(xx, y, W_CacheLumpNameT("M_THERMM"))
 		xx += 8
 		goto _1
 	_1:
 		;
 		i++
 	}
-	V_DrawPatchDirect(xx, y, W_CacheLumpNameT("M_THERMR", PU_CACHE))
-	V_DrawPatchDirect(x+int32(8)+thermDot*int32(8), y, W_CacheLumpNameT("M_THERMO", PU_CACHE))
+	V_DrawPatchDirect(xx, y, W_CacheLumpNameT("M_THERMR"))
+	V_DrawPatchDirect(x+int32(8)+thermDot*int32(8), y, W_CacheLumpNameT("M_THERMO"))
 }
 
 func M_StartMessage(string1 string, routine func(int32), input boolean) {
@@ -21054,7 +21045,7 @@ func M_Responder(ev *event_t) (r boolean) {
 																usegamma = 0
 															}
 															players[consoleplayer].Fmessage = gammamsg[usegamma]
-															I_SetPalette(W_CacheLumpName("PLAYPAL", PU_CACHE))
+															I_SetPalette(W_CacheLumpName("PLAYPAL"))
 															return 1
 														}
 													}
@@ -21287,7 +21278,7 @@ func M_Drawer() {
 		}
 		name := currentMenu.Fmenuitems[i].Fname[:]
 		if name != "" {
-			V_DrawPatchDirect(int32(x), int32(y2), W_CacheLumpNameT(name, PU_CACHE))
+			V_DrawPatchDirect(int32(x), int32(y2), W_CacheLumpNameT(name))
 		}
 		y2 = int16(int32(y2) + LINEHEIGHT)
 		goto _2
@@ -21296,7 +21287,7 @@ func M_Drawer() {
 		i++
 	}
 	// DRAW SKULL
-	V_DrawPatchDirect(int32(x)+-int32(32), int32(currentMenu.Fy)-int32(5)+int32(itemOn)*LINEHEIGHT, W_CacheLumpNameT(skullName[whichSkull], PU_CACHE))
+	V_DrawPatchDirect(int32(x)+-int32(32), int32(currentMenu.Fy)-int32(5)+int32(itemOn)*LINEHEIGHT, W_CacheLumpNameT(skullName[whichSkull]))
 }
 
 var x int16
@@ -30604,7 +30595,7 @@ func P_LoadVertexes(lump int32) {
 	// Allocate zone memory for buffer.
 	vertexes = make([]vertex_t, numvertexes)
 	// Load data into cache.
-	data = W_CacheLumpNum(lump, PU_STATIC)
+	data = W_CacheLumpNum(lump)
 	ml := unsafe.Slice((*mapvertex_t)(unsafe.Pointer(data)), numvertexes)
 	// Copy and convert vertex coordinates,
 	// internal representation as fixed.
@@ -30647,7 +30638,7 @@ func P_LoadSegs(lump int32) {
 	var linedef, side, sidenum int32
 	numsegs = int32(uint64(W_LumpLength(uint32(lump))) / 12)
 	segs = make([]seg_t, numsegs)
-	data = W_CacheLumpNum(lump, PU_STATIC)
+	data = W_CacheLumpNum(lump)
 	ml := unsafe.Slice((*mapseg_t)(unsafe.Pointer(data)), numsegs)
 	for i := int32(0); i < numsegs; i++ {
 		li := &segs[i]
@@ -30689,7 +30680,7 @@ func P_LoadSubsectors(lump int32) {
 	var data uintptr
 	numsubsectors = int32(uint64(W_LumpLength(uint32(lump))) / 4)
 	subsectors = make([]subsector_t, numsubsectors)
-	data = W_CacheLumpNum(lump, PU_STATIC)
+	data = W_CacheLumpNum(lump)
 	ms := unsafe.Slice((*mapsubsector_t)(unsafe.Pointer(data)), numsubsectors)
 	for i := int32(0); i < numsubsectors; i++ {
 		subsectors[i].Fnumlines = ms[i].Fnumsegs
@@ -30707,7 +30698,7 @@ func P_LoadSectors(lump int32) {
 	var data uintptr
 	numsectors = int32(uint64(W_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapsector_t{})))
 	sectors = make([]sector_t, numsectors)
-	data = W_CacheLumpNum(lump, PU_STATIC)
+	data = W_CacheLumpNum(lump)
 	mapsectors := unsafe.Slice((*mapsector_t)(unsafe.Pointer(data)), numsectors)
 	for i := int32(0); i < numsectors; i++ {
 		ms := &mapsectors[i]
@@ -30733,7 +30724,7 @@ func P_LoadNodes(lump int32) {
 	var data uintptr
 	numnodes = int32(uint64(W_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapnode_t{})))
 	nodes = make([]node_t, numnodes)
-	data = W_CacheLumpNum(lump, PU_STATIC)
+	data = W_CacheLumpNum(lump)
 	mapnodes := unsafe.Slice((*mapnode_t)(unsafe.Pointer(data)), numnodes)
 	for i := 0; i < int(numnodes); i++ {
 		no := &nodes[i]
@@ -30761,7 +30752,7 @@ func P_LoadThings(lump int32) {
 	var data uintptr
 	var numthings int32
 	var spawn boolean
-	data = W_CacheLumpNum(lump, PU_STATIC)
+	data = W_CacheLumpNum(lump)
 	numthings = int32(uint64(W_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapthing_t{})))
 	mthings := unsafe.Slice((*mapthing_t)(unsafe.Pointer(data)), numthings)
 	for i := int32(0); i < numthings; i++ {
@@ -30821,7 +30812,7 @@ func P_LoadLineDefs(lump int32) {
 	var i int32
 	numlines = int32(uint64(W_LumpLength(uint32(lump))) / 14)
 	lines = make([]line_t, numlines)
-	data = W_CacheLumpNum(lump, PU_STATIC)
+	data = W_CacheLumpNum(lump)
 	ml := unsafe.Slice((*maplinedef_t)(unsafe.Pointer(data)), numlines)
 	for i = 0; i < numlines; i++ {
 		ld := &lines[i]
@@ -30889,7 +30880,7 @@ func P_LoadSideDefs(lump int32) {
 	var data uintptr
 	numsides = int32(uint64(W_LumpLength(uint32(lump))) / 30)
 	sides = make([]side_t, numsides)
-	data = W_CacheLumpNum(lump, PU_STATIC)
+	data = W_CacheLumpNum(lump)
 	msd := unsafe.Slice((*mapsidedef_t)(unsafe.Pointer(data)), numsides)
 	for i := int32(0); i < numsides; i++ {
 		sd := &sides[i]
@@ -30912,7 +30903,7 @@ func P_LoadBlockMap(lump int32) {
 	var count, i, lumplen int32
 	lumplen = W_LumpLength(uint32(lump))
 	count = lumplen / 2
-	rawLump := Z_Malloc(lumplen, PU_LEVEL, 0)
+	rawLump := Z_Malloc(lumplen)
 	W_ReadLump(uint32(lump), rawLump)
 	blockmaplump = unsafe.Slice((*int16)(unsafe.Pointer(rawLump)), count)
 	blockmap = blockmaplump[4:]
@@ -31104,7 +31095,7 @@ func P_LoadReject(lumpnum int32) {
 	// and pad it with appropriate data.
 	lumplen = W_LumpLength(uint32(lumpnum))
 	if lumplen >= minlength {
-		data := W_CacheLumpNum(lumpnum, PU_LEVEL)
+		data := W_CacheLumpNum(lumpnum)
 		rejectmatrix = unsafe.Slice((*uint8)(unsafe.Pointer(data)), lumplen)
 	} else {
 		rejectmatrix = W_ReadLumpBytes(uint32(lumpnum))
@@ -31148,7 +31139,6 @@ func P_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
 	players[consoleplayer].Fviewz = 1
 	// Make sure all sounds are stopped before Z_FreeTags.
 	S_Start()
-	Z_FreeTags(PU_LEVEL, PU_PURGELEVEL-1)
 	// UNUSED W_Profile ();
 	P_InitThinkers()
 	// find map name
@@ -34516,7 +34506,7 @@ func R_GenerateComposite(texnum int32) {
 			break
 		}
 		patch := &texture.Fpatches[i]
-		realpatch := W_CacheLumpNumT(patch.Fpatch, PU_CACHE)
+		realpatch := W_CacheLumpNumT(patch.Fpatch)
 		x1 = int32(patch.Foriginx)
 		x2 = x1 + int32(realpatch.Fwidth)
 		if x1 < 0 {
@@ -34572,7 +34562,7 @@ func R_GenerateLookup(texnum int32) {
 			break
 		}
 		patch := &texture.Fpatches[i]
-		realpatch = W_CacheLumpNumT(patch.Fpatch, PU_CACHE)
+		realpatch = W_CacheLumpNumT(patch.Fpatch)
 		x1 = int32(patch.Foriginx)
 		x2 = x1 + int32(realpatch.Fwidth)
 		if x1 < 0 {
@@ -34637,7 +34627,7 @@ func R_GetColumn(tex int32, col int32) (r uintptr) {
 	lump = int32(texturecolumnlump[tex][col])
 	ofs = int32(texturecolumnofs[tex][col])
 	if lump > 0 {
-		return W_CacheLumpNum(lump, PU_CACHE) + uintptr(ofs)
+		return W_CacheLumpNum(lump) + uintptr(ofs)
 	}
 	if texturecomposite[tex] == nil {
 		R_GenerateComposite(tex)
@@ -34688,7 +34678,7 @@ func R_InitTextures() {
 	var directory, maptex, maptex2, mpatch, name_p, names, v2 uintptr
 	var i, j, maxoff, maxoff2, nummappatches, numtextures1, numtextures2, offset, temp1, temp2, temp3, totalwidth int32
 	// Load the patch names from pnames.lmp.
-	names = W_CacheLumpName("PNAMES", PU_STATIC)
+	names = W_CacheLumpName("PNAMES")
 	nummappatches = *(*int32)(unsafe.Pointer(names))
 	name_p = names + uintptr(4)
 	patchlookup := make([]int32, nummappatches)
@@ -34707,13 +34697,13 @@ func R_InitTextures() {
 	// Load the map texture definitions from textures.lmp.
 	// The data is contained in one or two lumps,
 	//  TEXTURE1 for shareware, plus TEXTURE2 for commercial.
-	v2 = W_CacheLumpName("TEXTURE1", PU_STATIC)
+	v2 = W_CacheLumpName("TEXTURE1")
 	maptex = v2
 	numtextures1 = *(*int32)(unsafe.Pointer(maptex))
 	maxoff = W_LumpLength(uint32(W_GetNumForName("TEXTURE1")))
 	directory = maptex + uintptr(1)*4
 	if W_CheckNumForName("TEXTURE2") != -1 {
-		maptex2 = W_CacheLumpName("TEXTURE2", PU_STATIC)
+		maptex2 = W_CacheLumpName("TEXTURE2")
 		numtextures2 = *(*int32)(unsafe.Pointer(maptex2))
 		maxoff2 = W_LumpLength(uint32(W_GetNumForName("TEXTURE2")))
 	} else {
@@ -34905,7 +34895,7 @@ func R_InitSpriteLumps() {
 		if i&63 == 0 {
 			fprintf_ccgo(os.Stdout, ".")
 		}
-		patch := W_CacheLumpNumT[*patch_t](firstspritelump+i, PU_CACHE)
+		patch := W_CacheLumpNumT[*patch_t](firstspritelump + i)
 		spritewidth[i] = int32(patch.Fwidth) << FRACBITS
 		spriteoffset[i] = int32(patch.Fleftoffset) << FRACBITS
 		spritetopoffset[i] = int32(patch.Ftopoffset) << FRACBITS
@@ -34929,7 +34919,7 @@ func R_InitColormaps() {
 	//  256 byte align tables.
 	lump = W_GetNumForName("COLORMAP")
 	size = W_LumpLength(uint32(lump))
-	data = W_CacheLumpNum(lump, PU_STATIC)
+	data = W_CacheLumpNum(lump)
 	colormaps = unsafe.Slice((*lighttable_t)(unsafe.Pointer(data)), size)
 }
 
@@ -35037,7 +35027,7 @@ func R_PrecacheLevel() {
 		}
 		if flatpresent[i] != 0 {
 			lump = firstflat + i
-			W_CacheLumpNum(lump, PU_CACHE)
+			W_CacheLumpNum(lump)
 		}
 		goto _2
 	_2:
@@ -35081,7 +35071,7 @@ func R_PrecacheLevel() {
 				break
 			}
 			lump = texture.Fpatches[j].Fpatch
-			W_CacheLumpNum(lump, PU_CACHE)
+			W_CacheLumpNum(lump)
 			goto _5
 		_5:
 			;
@@ -35127,7 +35117,7 @@ func R_PrecacheLevel() {
 					break
 				}
 				lump = firstspritelump + int32(sf.Flump[k])
-				W_CacheLumpNum(lump, PU_CACHE)
+				W_CacheLumpNum(lump)
 				goto _9
 			_9:
 				;
@@ -35698,14 +35688,14 @@ func R_FillBackScreen() {
 	}
 	// Allocate the background buffer if necessary
 	if background_buffer == 0 {
-		background_buffer = Z_Malloc(SCREENWIDTH*(SCREENHEIGHT-SBARHEIGHT), PU_STATIC, 0)
+		background_buffer = Z_Malloc(SCREENWIDTH * (SCREENHEIGHT - SBARHEIGHT))
 	}
 	if gamemode == commercial {
 		name = name2
 	} else {
 		name = name1
 	}
-	src = W_CacheLumpName(name, PU_CACHE)
+	src = W_CacheLumpName(name)
 	dest = background_buffer
 	y = 0
 	for {
@@ -35735,7 +35725,7 @@ func R_FillBackScreen() {
 	}
 	// Draw screen and bezel; this is done to a separate screen buffer.
 	V_UseBuffer(background_buffer)
-	patch = W_CacheLumpNameT("brdr_t", PU_CACHE)
+	patch = W_CacheLumpNameT("brdr_t")
 	x = 0
 	for {
 		if x >= scaledviewwidth {
@@ -35747,7 +35737,7 @@ func R_FillBackScreen() {
 		;
 		x += 8
 	}
-	patch = W_CacheLumpNameT("brdr_b", PU_CACHE)
+	patch = W_CacheLumpNameT("brdr_b")
 	x = 0
 	for {
 		if x >= scaledviewwidth {
@@ -35759,7 +35749,7 @@ func R_FillBackScreen() {
 		;
 		x += 8
 	}
-	patch = W_CacheLumpNameT("brdr_l", PU_CACHE)
+	patch = W_CacheLumpNameT("brdr_l")
 	y = 0
 	for {
 		if y >= viewheight {
@@ -35771,7 +35761,7 @@ func R_FillBackScreen() {
 		;
 		y += 8
 	}
-	patch = W_CacheLumpNameT("brdr_r", PU_CACHE)
+	patch = W_CacheLumpNameT("brdr_r")
 	y = 0
 	for {
 		if y >= viewheight {
@@ -35784,10 +35774,10 @@ func R_FillBackScreen() {
 		y += 8
 	}
 	// Draw beveled edge.
-	V_DrawPatch(viewwindowx-int32(8), viewwindowy-int32(8), W_CacheLumpNameT("brdr_tl", PU_CACHE))
-	V_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy-int32(8), W_CacheLumpNameT("brdr_tr", PU_CACHE))
-	V_DrawPatch(viewwindowx-int32(8), viewwindowy+viewheight, W_CacheLumpNameT("brdr_bl", PU_CACHE))
-	V_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy+viewheight, W_CacheLumpNameT("brdr_br", PU_CACHE))
+	V_DrawPatch(viewwindowx-int32(8), viewwindowy-int32(8), W_CacheLumpNameT("brdr_tl"))
+	V_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy-int32(8), W_CacheLumpNameT("brdr_tr"))
+	V_DrawPatch(viewwindowx-int32(8), viewwindowy+viewheight, W_CacheLumpNameT("brdr_bl"))
+	V_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy+viewheight, W_CacheLumpNameT("brdr_br"))
 	V_RestoreBuffer()
 }
 
@@ -36672,7 +36662,7 @@ func R_DrawPlanes() {
 		}
 		// regular flat
 		lumpnum = firstflat + flattranslation[pl.Fpicnum]
-		ds_source = W_CacheLumpNum(lumpnum, PU_STATIC)
+		ds_source = W_CacheLumpNum(lumpnum)
 		planeheight = xabs(pl.Fheight - viewz)
 		light = pl.Flightlevel>>LIGHTSEGSHIFT + extralight
 		if light >= LIGHTLEVELS {
@@ -37548,7 +37538,7 @@ func R_DrawVisSprite(vis *vissprite_t, x1 int32, x2 int32) {
 	var patch *patch_t
 	var frac fixed_t
 	var texturecolumn int32
-	patch = W_CacheLumpNumT(vis.Fpatch+firstspritelump, PU_CACHE)
+	patch = W_CacheLumpNumT(vis.Fpatch + firstspritelump)
 	dc_colormap = vis.Fcolormap
 	if dc_colormap == nil {
 		// NULL colormap = shadow draw
@@ -39187,7 +39177,7 @@ type st_binicon_t struct {
 }
 
 func STlib_init() {
-	sttminus = W_CacheLumpNameT("STTMINUS", PU_STATIC)
+	sttminus = W_CacheLumpNameT("STTMINUS")
 }
 
 // C documentation
@@ -40218,7 +40208,7 @@ func ST_doPaletteStuff() {
 	}
 	if palette != st_palette {
 		st_palette = palette
-		pal = W_CacheLumpNum(lu_palette, PU_CACHE) + uintptr(palette*int32(768))
+		pal = W_CacheLumpNum(lu_palette) + uintptr(palette*int32(768))
 		I_SetPalette(pal)
 	}
 }
@@ -40378,7 +40368,7 @@ func ST_loadUnloadGraphics(callback func(string, **patch_t)) {
 }
 
 func ST_loadCallback(lumpname string, variable **patch_t) {
-	*variable = W_CacheLumpNameT(lumpname, PU_STATIC)
+	*variable = W_CacheLumpNameT(lumpname)
 }
 
 func ST_loadGraphics() {
@@ -40473,13 +40463,13 @@ func ST_Stop() {
 	if st_stopped != 0 {
 		return
 	}
-	I_SetPalette(W_CacheLumpNum(lu_palette, PU_CACHE))
+	I_SetPalette(W_CacheLumpNum(lu_palette))
 	st_stopped = 1
 }
 
 func ST_Init() {
 	ST_loadData()
-	st_backing_screen = Z_Malloc(SCREENWIDTH*ST_HEIGHT, PU_STATIC, 0)
+	st_backing_screen = Z_Malloc(SCREENWIDTH * ST_HEIGHT)
 }
 
 const NORM_SEP = 128
@@ -40942,7 +40932,7 @@ func S_ChangeMusic(musicnum int32, looping int32) {
 		bp := fmt.Sprintf("d_%s", music.Fname)
 		music.Flumpnum = W_GetNumForName(bp)
 	}
-	music.Fdata = W_CacheLumpNum(music.Flumpnum, PU_STATIC)
+	music.Fdata = W_CacheLumpNum(music.Flumpnum)
 	handle = I_RegisterSong(music.Fdata, W_LumpLength(uint32(music.Flumpnum)))
 	music.Fhandle = handle
 	I_PlaySong(handle, uint32(looping))
@@ -43124,7 +43114,7 @@ func WI_loadUnloadData(callback func(string, **patch_t)) {
 }
 
 func WI_loadCallback(name string, variable **patch_t) {
-	*variable = W_CacheLumpNameT(name, PU_STATIC)
+	*variable = W_CacheLumpNameT(name)
 }
 
 func WI_loadData() {
@@ -43138,9 +43128,9 @@ func WI_loadData() {
 	// These two graphics are special cased because we're sharing
 	// them with the status bar code
 	// your face
-	star = W_CacheLumpNameT("STFST01", PU_STATIC)
+	star = W_CacheLumpNameT("STFST01")
 	// dead face
-	bstar = W_CacheLumpNameT("STFDEAD0", PU_STATIC)
+	bstar = W_CacheLumpNameT("STFDEAD0")
 }
 
 func WI_unloadCallback(name string, variable **patch_t) {
@@ -43529,13 +43519,8 @@ func W_ReadLumpBytes(lump uint32) []byte {
 // Load a lump into memory and return a pointer to a buffer containing
 // the lump data.
 //
-// 'tag' is the type of zone memory buffer to allocate for the lump
-// (usually PU_STATIC or PU_CACHE).  If the lump is loaded as
-// PU_STATIC, it should be released back using W_ReleaseLumpNum
-// when no longer needed (do not use Z_ChangeTag).
-//
 
-func W_CacheLumpNum(lumpnum int32, tag int32) (r uintptr) {
+func W_CacheLumpNum(lumpnum int32) (r uintptr) {
 	if uint32(lumpnum) >= numlumps {
 		I_Error("W_CacheLumpNum: %d >= numlumps", lumpnum)
 	}
@@ -43546,9 +43531,9 @@ func W_CacheLumpNum(lumpnum int32, tag int32) (r uintptr) {
 	return (uintptr)(unsafe.Pointer(&lump.Fcache[0]))
 }
 
-func W_CacheLumpNumT[T lumpType](lumpnum int32, tag int32) T {
+func W_CacheLumpNumT[T lumpType](lumpnum int32) T {
 	var result uintptr
-	result = W_CacheLumpNum(lumpnum, tag)
+	result = W_CacheLumpNum(lumpnum)
 	if result == 0 {
 		panic("lump failure")
 	}
@@ -43560,13 +43545,13 @@ func W_CacheLumpNumT[T lumpType](lumpnum int32, tag int32) T {
 //	//
 //	// W_CacheLumpName
 //	//
-func W_CacheLumpName(name string, tag int32) (r uintptr) {
-	return W_CacheLumpNum(W_GetNumForName(name), tag)
+func W_CacheLumpName(name string) (r uintptr) {
+	return W_CacheLumpNum(W_GetNumForName(name))
 }
 
-func W_CacheLumpNameT[T lumpType](name string, tag int32) T {
+func W_CacheLumpNameT[T lumpType](name string) T {
 	var result uintptr
-	result = W_CacheLumpName(name, tag)
+	result = W_CacheLumpName(name)
 	if result == 0 {
 		panic("lump failure")
 	}
@@ -43739,29 +43724,10 @@ func Z_Free(ptr uintptr) {
 
 //
 // Z_Malloc
-// You can pass a NULL user if the tag is < PU_PURGELEVEL.
 //
 
-func Z_Malloc(size int32, tag int32, user uintptr) (r uintptr) {
+func Z_Malloc(size int32) (r uintptr) {
 	return xmalloc(uint64(size))
-}
-
-// C documentation
-//
-//	//
-//	// Z_FreeTags
-//	//
-func Z_FreeTags(lowtag int32, hightag int32) {
-	return
-}
-
-// C documentation
-//
-//	//
-//	// Z_CheckHeap
-//	//
-func Z_CheckHeap() {
-	return
 }
 
 // Read data from the specified position in the file into the
@@ -44020,7 +43986,7 @@ func init() {
 
 func I_InitGraphics() {
 	/* Allocate screen to draw to */
-	I_VideoBuffer = Z_Malloc(SCREENWIDTH*SCREENHEIGHT, PU_STATIC, 0) // For DOOM to draw on
+	I_VideoBuffer = Z_Malloc(SCREENWIDTH * SCREENHEIGHT) // For DOOM to draw on
 	I_InitInput()
 }
 
