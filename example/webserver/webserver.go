@@ -127,5 +127,7 @@ func main() {
 		}
 	}()
 
+	defer gore.Stop()
+
 	gore.Run(frontend, os.Args[1:])
 }
