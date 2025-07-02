@@ -227,7 +227,7 @@ func TestDoomDemo(t *testing.T) {
 		time.Sleep(2 * time.Second)
 
 		// Quit
-		D_Endoom()
+		Stop()
 	}()
 	Run(game, []string{"-iwad", "doom1.wad"})
 }
@@ -438,7 +438,7 @@ func TestDoomLevels(t *testing.T) {
 		}...)
 	}
 	// Quit the game
-	game.keys = append(game.keys, delayedEvent{ticks: 1000, callback: func(d *doomTestHeadless) { D_Endoom() }})
+	game.keys = append(game.keys, delayedEvent{ticks: 1000, callback: func(d *doomTestHeadless) { Stop() }})
 	Run(game, []string{"-iwad", "doom1.wad"})
 }
 
@@ -583,7 +583,7 @@ func TestMenus(t *testing.T) {
 		confirmMenu(t, game, "load")
 
 		// Quit
-		D_Endoom()
+		Stop()
 	}()
 	Run(game, []string{"-iwad", "doom1.wad"})
 }

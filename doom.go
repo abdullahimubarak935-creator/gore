@@ -2615,7 +2615,7 @@ var stopped int32 = 1
 //	//
 //	//
 //	//
-func AM_activateNewScale() {
+func am_activateNewScale() {
 	m_x += m_w / 2
 	m_y += m_h / 2
 	m_w = FixedMul(f_w<<16, scale_ftom)
@@ -2631,7 +2631,7 @@ func AM_activateNewScale() {
 //	//
 //	//
 //	//
-func AM_saveScaleAndLoc() {
+func am_saveScaleAndLoc() {
 	old_m_x = m_x
 	old_m_y = m_y
 	old_m_w = m_w
@@ -2643,7 +2643,7 @@ func AM_saveScaleAndLoc() {
 //	//
 //	//
 //	//
-func AM_restoreScaleAndLoc() {
+func am_restoreScaleAndLoc() {
 	m_w = old_m_w
 	m_h = old_m_h
 	if followplayer == 0 {
@@ -2665,7 +2665,7 @@ func AM_restoreScaleAndLoc() {
 //	//
 //	// adds a marker at the current location
 //	//
-func AM_addMark() {
+func am_addMark() {
 	markpoints[markpointnum].Fx = m_x + m_w/int32(2)
 	markpoints[markpointnum].Fy = m_y + m_h/int32(2)
 	markpointnum = (markpointnum + 1) % AM_NUMMARKPOINTS
@@ -2677,7 +2677,7 @@ func AM_addMark() {
 //	// Determines bounding box of all vertices,
 //	// sets global variables controlling zoom range.
 //	//
-func AM_findMinMaxBoundaries() {
+func am_findMinMaxBoundaries() {
 	var a, b, v1, v2 fixed_t
 	var i, v4 int32
 	v1 = INT_MAX1
@@ -2728,7 +2728,7 @@ func AM_findMinMaxBoundaries() {
 //	//
 //	//
 //	//
-func AM_changeWindowLoc() {
+func am_changeWindowLoc() {
 	if m_paninc.Fx != 0 || m_paninc.Fy != 0 {
 		followplayer = 0
 		f_oldloc.Fx = int32(INT_MAX1)
@@ -2758,7 +2758,7 @@ func AM_changeWindowLoc() {
 //	//
 //	//
 //	//
-func AM_initVariables() {
+func am_initVariables() {
 	var v1 fixed_t
 	automapactive = 1
 	fb = I_VideoBuffer
@@ -2785,14 +2785,14 @@ func AM_initVariables() {
 	}
 	m_x = plr.Fmo.Fx - m_w/int32(2)
 	m_y = plr.Fmo.Fy - m_h/int32(2)
-	AM_changeWindowLoc()
+	am_changeWindowLoc()
 	// for saving & restoring
 	old_m_x = m_x
 	old_m_y = m_y
 	old_m_w = m_w
 	old_m_h = m_h
 	// inform the status bar of the change
-	ST_Responder(&st_notify)
+	st_Responder(&st_notify)
 }
 
 var st_notify = event_t{
@@ -2805,7 +2805,7 @@ var st_notify = event_t{
 //	//
 //	//
 //	//
-func AM_loadPics() {
+func am_loadPics() {
 	var i int32
 	i = 0
 	for {
@@ -2821,7 +2821,7 @@ func AM_loadPics() {
 	}
 }
 
-func AM_unloadPics() {
+func am_unloadPics() {
 	var i int32
 	i = 0
 	for {
@@ -2829,7 +2829,7 @@ func AM_unloadPics() {
 			break
 		}
 		name := fmt.Sprintf("AMMNUM%d", i)
-		W_ReleaseLumpName(name)
+		w_ReleaseLumpName(name)
 		goto _1
 	_1:
 		;
@@ -2837,7 +2837,7 @@ func AM_unloadPics() {
 	}
 }
 
-func AM_clearMarks() {
+func am_clearMarks() {
 	var i int32
 	i = 0
 	for {
@@ -2859,13 +2859,13 @@ func AM_clearMarks() {
 //	// should be called at the start of every level
 //	// right now, i figure it out myself
 //	//
-func AM_LevelInit() {
+func am_LevelInit() {
 	f_y = 0
 	f_x = 0
 	f_w = finit_width
 	f_h = finit_height
-	AM_clearMarks()
-	AM_findMinMaxBoundaries()
+	am_clearMarks()
+	am_findMinMaxBoundaries()
 	scale_mtof = FixedDiv(min_scale_mtof, float2fixed(0.7))
 	if scale_mtof > max_scale_mtof {
 		scale_mtof = min_scale_mtof
@@ -2878,10 +2878,10 @@ func AM_LevelInit() {
 //	//
 //	//
 //	//
-func AM_Stop() {
-	AM_unloadPics()
+func am_Stop() {
+	am_unloadPics()
 	automapactive = 0
-	ST_Responder(&st_notify1)
+	st_Responder(&st_notify1)
 	stopped = 1
 }
 
@@ -2895,18 +2895,18 @@ var st_notify1 = event_t{
 //	//
 //	//
 //	//
-func AM_Start() {
+func am_Start() {
 	if stopped == 0 {
-		AM_Stop()
+		am_Stop()
 	}
 	stopped = 0
 	if lastlevel != gamemap || lastepisode != gameepisode {
-		AM_LevelInit()
+		am_LevelInit()
 		lastlevel = gamemap
 		lastepisode = gameepisode
 	}
-	AM_initVariables()
-	AM_loadPics()
+	am_initVariables()
+	am_loadPics()
 }
 
 var lastlevel int32 = -1
@@ -2918,10 +2918,10 @@ var lastepisode int32 = -1
 //	//
 //	// set the window scale to the maximum size
 //	//
-func AM_minOutWindowScale() {
+func am_minOutWindowScale() {
 	scale_mtof = min_scale_mtof
 	scale_ftom = FixedDiv(1<<FRACBITS, scale_mtof)
-	AM_activateNewScale()
+	am_activateNewScale()
 }
 
 // C documentation
@@ -2929,10 +2929,10 @@ func AM_minOutWindowScale() {
 //	//
 //	// set the window scale to the minimum size
 //	//
-func AM_maxOutWindowScale() {
+func am_maxOutWindowScale() {
 	scale_mtof = max_scale_mtof
 	scale_ftom = FixedDiv(1<<FRACBITS, scale_mtof)
-	AM_activateNewScale()
+	am_activateNewScale()
 }
 
 // C documentation
@@ -2940,12 +2940,12 @@ func AM_maxOutWindowScale() {
 //	//
 //	// Handle events (user inputs) in automap mode
 //	//
-func AM_Responder(ev *event_t) (r boolean) {
+func am_Responder(ev *event_t) (r boolean) {
 	var key, rc int32
 	rc = 0
 	if automapactive == 0 {
 		if ev.Ftype1 == Ev_keydown && ev.Fdata1 == key_map_toggle {
-			AM_Start()
+			am_Start()
 			viewactive = 0
 			rc = 1
 		}
@@ -2992,15 +2992,15 @@ func AM_Responder(ev *event_t) (r boolean) {
 									if key == key_map_toggle {
 										bigstate = 0
 										viewactive = 1
-										AM_Stop()
+										am_Stop()
 									} else {
 										if key == key_map_maxzoom {
 											bigstate = boolint32(bigstate == 0)
 											if bigstate != 0 {
-												AM_saveScaleAndLoc()
-												AM_minOutWindowScale()
+												am_saveScaleAndLoc()
+												am_minOutWindowScale()
 											} else {
-												AM_restoreScaleAndLoc()
+												am_restoreScaleAndLoc()
 											}
 										} else {
 											if key == key_map_follow {
@@ -3022,10 +3022,10 @@ func AM_Responder(ev *event_t) (r boolean) {
 												} else {
 													if key == key_map_mark {
 														plr.Fmessage = fmt.Sprintf("%s %d", "Marked Spot", markpointnum)
-														AM_addMark()
+														am_addMark()
 													} else {
 														if key == key_map_clearmark {
-															AM_clearMarks()
+															am_clearMarks()
 															plr.Fmessage = "All Marks Cleared"
 														} else {
 															rc = 0
@@ -3090,17 +3090,17 @@ var bigstate int32
 //	//
 //	// Zooming
 //	//
-func AM_changeWindowScale() {
+func am_changeWindowScale() {
 	// Change the scaling multipliers
 	scale_mtof = FixedMul(scale_mtof, mtof_zoommul)
 	scale_ftom = FixedDiv(1<<FRACBITS, scale_mtof)
 	if scale_mtof < min_scale_mtof {
-		AM_minOutWindowScale()
+		am_minOutWindowScale()
 	} else {
 		if scale_mtof > max_scale_mtof {
-			AM_maxOutWindowScale()
+			am_maxOutWindowScale()
 		} else {
-			AM_activateNewScale()
+			am_activateNewScale()
 		}
 	}
 }
@@ -3110,7 +3110,7 @@ func AM_changeWindowScale() {
 //	//
 //	//
 //	//
-func AM_doFollowPlayer() {
+func am_doFollowPlayer() {
 	if f_oldloc.Fx != plr.Fmo.Fx || f_oldloc.Fy != plr.Fmo.Fy {
 		m_x = FixedMul(FixedMul(plr.Fmo.Fx, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_w/int32(2)
 		m_y = FixedMul(FixedMul(plr.Fmo.Fy, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_h/int32(2)
@@ -3130,20 +3130,20 @@ func AM_doFollowPlayer() {
 //	//
 //	// Updates on Game Tick
 //	//
-func AM_Ticker() {
+func am_Ticker() {
 	if automapactive == 0 {
 		return
 	}
 	if followplayer != 0 {
-		AM_doFollowPlayer()
+		am_doFollowPlayer()
 	}
 	// Change the zoom if necessary
 	if ftom_zoommul != 1<<FRACBITS {
-		AM_changeWindowScale()
+		am_changeWindowScale()
 	}
 	// Change x,y location
 	if m_paninc.Fx != 0 || m_paninc.Fy != 0 {
-		AM_changeWindowLoc()
+		am_changeWindowLoc()
 	}
 	// Update light level
 	// AM_updateLightLev();
@@ -3154,7 +3154,7 @@ func AM_Ticker() {
 //	//
 //	// Clear automap frame buffer.
 //	//
-func AM_clearFB(color uint8) {
+func am_clearFB(color uint8) {
 	xmemset(fb, color, uint64(f_w*f_h))
 }
 
@@ -3167,7 +3167,7 @@ func AM_clearFB(color uint8) {
 //	// faster reject and precalculated slopes.  If the speed is needed,
 //	// use a hash algorithm to handle  the common cases.
 //	//
-func AM_clipMline(ml *mline_t, fl *fline_t) (r boolean) {
+func am_clipMline(ml *mline_t, fl *fline_t) (r boolean) {
 	var dx, dy, outcode1, outcode2, outside int32
 	var tmp fpoint_t
 	outcode1 = 0
@@ -3331,7 +3331,7 @@ func AM_clipMline(ml *mline_t, fl *fline_t) (r boolean) {
 //	//
 //	// Classic Bresenham w/ whatever optimizations needed for speed
 //	//
-func AM_drawFline(fl *fline_t, color int32) {
+func am_drawFline(fl *fline_t, color int32) {
 	var ax, ay, d, dx, dy, sx, sy, x, y, v1, v2, v3, v4, v5 int32
 	// For debugging only
 	if fl.Fa.Fx < 0 || fl.Fa.Fx >= f_w || fl.Fa.Fy < 0 || fl.Fa.Fy >= f_h || fl.Fb.Fx < 0 || fl.Fb.Fx >= f_w || fl.Fb.Fy < 0 || fl.Fb.Fy >= f_h {
@@ -3407,9 +3407,9 @@ var fuck int32
 //	//
 //	// Clip lines, draw visible part sof lines.
 //	//
-func AM_drawMline(ml *mline_t, color int32) {
-	if AM_clipMline(ml, &fl) != 0 {
-		AM_drawFline(&fl, color)
+func am_drawMline(ml *mline_t, color int32) {
+	if am_clipMline(ml, &fl) != 0 {
+		am_drawFline(&fl, color)
 	} // draws it on frame buffer using fb coords
 }
 
@@ -3420,7 +3420,7 @@ var fl fline_t
 //	//
 //	// Draws flat (floor/ceiling tile) aligned grid lines.
 //	//
-func AM_drawGrid(color int32) {
+func am_drawGrid(color int32) {
 	bp := &mline_t{}
 	var end, start, x, y fixed_t
 	// Figure out start of vertical gridlines
@@ -3439,7 +3439,7 @@ func AM_drawGrid(color int32) {
 		}
 		bp.Fa.Fx = x
 		bp.Fb.Fx = x
-		AM_drawMline(bp, color)
+		am_drawMline(bp, color)
 		goto _1
 	_1:
 		;
@@ -3461,7 +3461,7 @@ func AM_drawGrid(color int32) {
 		}
 		bp.Fa.Fy = y
 		bp.Fb.Fy = y
-		AM_drawMline(bp, color)
+		am_drawMline(bp, color)
 		goto _2
 	_2:
 		;
@@ -3475,7 +3475,7 @@ func AM_drawGrid(color int32) {
 //	// Determines visible lines, draws them.
 //	// This is LineDef based, not LineSeg based.
 //	//
-func AM_drawWalls() {
+func am_drawWalls() {
 	for i := int32(0); i < numlines; i++ {
 		line := &lines[i]
 		l.Fa.Fx = line.Fv1.Fx
@@ -3487,27 +3487,27 @@ func AM_drawWalls() {
 				continue
 			}
 			if line.Fbacksector == nil {
-				AM_drawMline(&l, 256-5*16+lightlev)
+				am_drawMline(&l, 256-5*16+lightlev)
 			} else {
 				if int32(line.Fspecial) == 39 {
 					// teleporters
-					AM_drawMline(&l, 256-5*16+REDRANGE/2)
+					am_drawMline(&l, 256-5*16+REDRANGE/2)
 				} else {
 					if int32(line.Fflags)&ML_SECRET != 0 { // secret door
 						if cheating != 0 {
-							AM_drawMline(&l, 256-5*16+lightlev)
+							am_drawMline(&l, 256-5*16+lightlev)
 						} else {
-							AM_drawMline(&l, 256-5*16+lightlev)
+							am_drawMline(&l, 256-5*16+lightlev)
 						}
 					} else {
 						if line.Fbacksector.Ffloorheight != line.Ffrontsector.Ffloorheight {
-							AM_drawMline(&l, 4*16+lightlev) // floor level change
+							am_drawMline(&l, 4*16+lightlev) // floor level change
 						} else {
 							if line.Fbacksector.Fceilingheight != line.Ffrontsector.Fceilingheight {
-								AM_drawMline(&l, 256-32+7+lightlev) // ceiling level change
+								am_drawMline(&l, 256-32+7+lightlev) // ceiling level change
 							} else {
 								if cheating != 0 {
-									AM_drawMline(&l, 6*16+lightlev)
+									am_drawMline(&l, 6*16+lightlev)
 								}
 							}
 						}
@@ -3517,7 +3517,7 @@ func AM_drawWalls() {
 		} else {
 			if plr.Fpowers[pw_allmap] != 0 {
 				if int32(line.Fflags)&ML_DONTDRAW == 0 {
-					AM_drawMline(&l, 6*16+3)
+					am_drawMline(&l, 6*16+3)
 				}
 			}
 		}
@@ -3532,13 +3532,13 @@ var l mline_t
 //	// Rotation in 2D.
 //	// Used to rotate player arrow line character.
 //	//
-func AM_rotate(x *fixed_t, y *fixed_t, a angle_t) {
+func am_rotate(x *fixed_t, y *fixed_t, a angle_t) {
 	tmpx := FixedMul(*y, finecosine[a>>ANGLETOFINESHIFT]) - FixedMul(*y, finesine[a>>ANGLETOFINESHIFT])
 	*y = FixedMul(*x, finesine[a>>ANGLETOFINESHIFT]) + FixedMul(*y, finecosine[a>>ANGLETOFINESHIFT])
 	*x = tmpx
 }
 
-func AM_drawLineCharacter(lineguy []mline_t, scale fixed_t, angle angle_t, color int32, x fixed_t, y fixed_t) {
+func am_drawLineCharacter(lineguy []mline_t, scale fixed_t, angle angle_t, color int32, x fixed_t, y fixed_t) {
 	for i := range lineguy {
 		var bp mline_t
 		bp.Fa.Fx = lineguy[i].Fa.Fx
@@ -3548,7 +3548,7 @@ func AM_drawLineCharacter(lineguy []mline_t, scale fixed_t, angle angle_t, color
 			bp.Fa.Fy = FixedMul(scale, bp.Fa.Fy)
 		}
 		if angle != 0 {
-			AM_rotate(&bp.Fa.Fx, &bp.Fb.Fy, angle)
+			am_rotate(&bp.Fa.Fx, &bp.Fb.Fy, angle)
 		}
 		bp.Fa.Fx += x
 		bp.Fa.Fy += y
@@ -3559,22 +3559,22 @@ func AM_drawLineCharacter(lineguy []mline_t, scale fixed_t, angle angle_t, color
 			bp.Fb.Fy = FixedMul(scale, bp.Fb.Fy)
 		}
 		if angle != 0 {
-			AM_rotate(&bp.Fb.Fx, &bp.Fb.Fy, angle)
+			am_rotate(&bp.Fb.Fx, &bp.Fb.Fy, angle)
 		}
 		bp.Fb.Fx += x
 		bp.Fb.Fy += y
-		AM_drawMline(&bp, color)
+		am_drawMline(&bp, color)
 	}
 }
 
-func AM_drawPlayers() {
+func am_drawPlayers() {
 	var color, their_color int32
 	their_color = -1
 	if netgame == 0 {
 		if cheating != 0 {
-			AM_drawLineCharacter(cheat_player_arrow[:], 0, plr.Fmo.Fangle, 256-47, plr.Fmo.Fx, plr.Fmo.Fy)
+			am_drawLineCharacter(cheat_player_arrow[:], 0, plr.Fmo.Fangle, 256-47, plr.Fmo.Fx, plr.Fmo.Fy)
 		} else {
-			AM_drawLineCharacter(player_arrow[:], 0, plr.Fmo.Fangle, 256-47, plr.Fmo.Fx, plr.Fmo.Fy)
+			am_drawLineCharacter(player_arrow[:], 0, plr.Fmo.Fangle, 256-47, plr.Fmo.Fx, plr.Fmo.Fy)
 		}
 		return
 	}
@@ -3592,7 +3592,7 @@ func AM_drawPlayers() {
 		} else {
 			color = their_colors[their_color]
 		}
-		AM_drawLineCharacter(player_arrow[:], 0, p.Fmo.Fangle, color, p.Fmo.Fx, p.Fmo.Fy)
+		am_drawLineCharacter(player_arrow[:], 0, p.Fmo.Fangle, color, p.Fmo.Fx, p.Fmo.Fy)
 	}
 }
 
@@ -3603,18 +3603,18 @@ var their_colors = [4]int32{
 	3: 256 - 5*16,
 }
 
-func AM_drawThings(colors int32, colorrange int32) {
+func am_drawThings(colors int32, colorrange int32) {
 	var t *mobj_t
 	for i := int32(0); i < numsectors; i++ {
 		t = sectors[i].Fthinglist
 		for t != nil {
-			AM_drawLineCharacter(thintriangle_guy[:], 16<<FRACBITS, t.Fangle, colors+lightlev, t.Fx, t.Fy)
+			am_drawLineCharacter(thintriangle_guy[:], 16<<FRACBITS, t.Fangle, colors+lightlev, t.Fx, t.Fy)
 			t = t.Fsnext
 		}
 	}
 }
 
-func AM_drawMarks() {
+func am_drawMarks() {
 	var fx, fy, h, w int32
 	for i := 0; i < AM_NUMMARKPOINTS; i++ {
 		if markpoints[i].Fx != -1 {
@@ -3625,32 +3625,32 @@ func AM_drawMarks() {
 			fx = f_x + FixedMul(markpoints[i].Fx-m_x, scale_mtof)>>16
 			fy = f_y + (f_h - FixedMul(markpoints[i].Fy-m_y, scale_mtof)>>16)
 			if fx >= f_x && fx <= f_w-w && fy >= f_y && fy <= f_h-h {
-				V_DrawPatch(fx, fy, marknums[i])
+				v_DrawPatch(fx, fy, marknums[i])
 			}
 		}
 	}
 }
 
-func AM_drawCrosshair(color int32) {
+func am_drawCrosshair(color int32) {
 	*(*uint8)(unsafe.Pointer(fb + uintptr(f_w*(f_h+int32(1))/int32(2)))) = uint8(color) // single point for now
 }
 
-func AM_Drawer() {
+func am_Drawer() {
 	if automapactive == 0 {
 		return
 	}
-	AM_clearFB(BLACK)
+	am_clearFB(BLACK)
 	if grid != 0 {
-		AM_drawGrid(6*16 + GRAYSRANGE/2)
+		am_drawGrid(6*16 + GRAYSRANGE/2)
 	}
-	AM_drawWalls()
-	AM_drawPlayers()
+	am_drawWalls()
+	am_drawPlayers()
 	if cheating == 2 {
-		AM_drawThings(7*16, GREENRANGE)
+		am_drawThings(7*16, GREENRANGE)
 	}
-	AM_drawCrosshair(6 * 16)
-	AM_drawMarks()
-	V_MarkRect(f_x, f_y, f_w, f_h)
+	am_drawCrosshair(6 * 16)
+	am_drawMarks()
+	v_MarkRect(f_x, f_y, f_w, f_h)
 }
 
 func init() {
@@ -3690,14 +3690,14 @@ var eventtail int32
 //	// D_PostEvent
 //	// Called by the I/O functions when input is detected
 //	//
-func D_PostEvent(ev *event_t) {
+func d_PostEvent(ev *event_t) {
 	events[eventhead] = *ev
 	eventhead = (eventhead + 1) % MAXEVENTS
 }
 
 // Read an event from the queue.
 
-func D_PopEvent() *event_t {
+func d_PopEvent() *event_t {
 	// No more events waiting.
 	if eventtail == eventhead {
 		return nil
@@ -3913,7 +3913,7 @@ func CheckDirectoryHasIWAD(dir string, iwadname string) string {
 	var filename string
 	// As a special case, the "directory" may refer directly to an
 	// IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
-	if DirIsFile(dir, iwadname) != 0 && M_FileExists(dir) != 0 {
+	if DirIsFile(dir, iwadname) != 0 && m_FileExists(dir) != 0 {
 		return dir
 	}
 	// Construct the full path to the IWAD if it is located in
@@ -3924,7 +3924,7 @@ func CheckDirectoryHasIWAD(dir string, iwadname string) string {
 		filename = dir + "/" + iwadname
 	}
 	fprintf_ccgo(os.Stdout, "Trying IWAD file:%s\n", filename)
-	if M_FileExists(filename) != 0 {
+	if m_FileExists(filename) != 0 {
 		return filename
 	}
 	return ""
@@ -3999,10 +3999,10 @@ func BuildIWADDirList() {
 // Searches WAD search paths for an WAD with a specific filename.
 //
 
-func D_FindWADByName(name string) string {
+func d_FindWADByName(name string) string {
 	var i int32
 	// Absolute path?
-	if M_FileExists(name) != 0 {
+	if m_FileExists(name) != 0 {
 		return name
 	}
 	BuildIWADDirList()
@@ -4015,12 +4015,12 @@ func D_FindWADByName(name string) string {
 		// As a special case, if this is in DOOMWADDIR or DOOMWADPATH,
 		// the "directory" may actually refer directly to an IWAD
 		// file.
-		if DirIsFile(iwad_dirs[i], name) != 0 && M_FileExists(iwad_dirs[i]) != 0 {
+		if DirIsFile(iwad_dirs[i], name) != 0 && m_FileExists(iwad_dirs[i]) != 0 {
 			return iwad_dirs[i]
 		}
 		// Construct a string for the full path
 		path := iwad_dirs[i] + "/"
-		if M_FileExists(path) != 0 {
+		if m_FileExists(path) != 0 {
 			return path
 		}
 		goto _1
@@ -4039,8 +4039,8 @@ func D_FindWADByName(name string) string {
 // if not found.
 //
 
-func D_TryFindWADByName(filename string) string {
-	result := D_FindWADByName(filename)
+func d_TryFindWADByName(filename string) string {
+	result := d_FindWADByName(filename)
 	if result != "" {
 		return result
 	} else {
@@ -4055,7 +4055,7 @@ func D_TryFindWADByName(filename string) string {
 // should be executed (notably loading PWADs).
 //
 
-func D_FindIWAD(mask int32, mission *GameMission_t) string {
+func d_FindIWAD(mask int32, mission *GameMission_t) string {
 	var i, iwadparm int32
 	var result string
 	var iwadfile string
@@ -4065,13 +4065,13 @@ func D_FindIWAD(mask int32, mission *GameMission_t) string {
 	//
 	// @arg <file>
 	//
-	iwadparm = M_CheckParmWithArgs("-iwad", 1)
+	iwadparm = m_CheckParmWithArgs("-iwad", 1)
 	if iwadparm != 0 {
 		// Search through IWAD dirs for an IWAD with the given name.
 		iwadfile = myargs[iwadparm+1]
-		result = D_FindWADByName(iwadfile)
+		result = d_FindWADByName(iwadfile)
 		if result == "" {
-			I_Error("IWAD file '%s' not found!", iwadfile)
+			i_Error("IWAD file '%s' not found!", iwadfile)
 		}
 		*mission = IdentifyIWADByName(result, mask)
 	} else {
@@ -4098,7 +4098,7 @@ func D_FindIWAD(mask int32, mission *GameMission_t) string {
 // Get the IWAD name used for savegames.
 //
 
-func D_SaveGameIWADName(gamemission GameMission_t) string {
+func d_SaveGameIWADName(gamemission GameMission_t) string {
 	var i uint64
 	// Determine the IWAD name to use for savegames.
 	// This determines the directory the savegame files get put into.
@@ -4123,7 +4123,7 @@ func D_SaveGameIWADName(gamemission GameMission_t) string {
 	return "unknown.wad"
 }
 
-func D_SuggestGameName(mission GameMission_t, mode GameMode_t) string {
+func d_SuggestGameName(mission GameMission_t, mode GameMode_t) string {
 	for i := 0; i < len(iwads); i++ {
 		if iwads[i].Fmission == mission && (mode == indetermined || iwads[i].Fmode == mode) {
 			return iwads[i].Fdescription
@@ -4203,7 +4203,7 @@ func BuildNewTic() (r boolean) {
 	var cmd ticcmd_t
 	var gameticdiv int32
 	gameticdiv = gametic / ticdup
-	I_StartTic()
+	i_StartTic()
 	loop_interface.FProcessEvents()
 	// Always run the menu
 	loop_interface.FRunMenu()
@@ -4276,11 +4276,11 @@ func NetUpdate() {
 // Called after the screen is set but before the game starts running.
 //
 
-func D_StartGameLoop() {
+func d_StartGameLoop() {
 	lasttime = GetAdjustedTime() / ticdup
 }
 
-func D_StartNetGame(settings *net_gamesettings_t, callback netgame_startup_callback_t) {
+func d_StartNetGame(settings *net_gamesettings_t, callback netgame_startup_callback_t) {
 	settings.Fconsoleplayer = 0
 	settings.Fnum_players = 1
 	settings.Fplayer_classes[0] = player_class
@@ -4291,9 +4291,9 @@ func D_StartNetGame(settings *net_gamesettings_t, callback netgame_startup_callb
 	new_sync = uint32(settings.Fnew_sync)
 }
 
-func D_InitNetGame(connect_data *net_connect_data_t) (r boolean) {
-	// Call D_QuitNetGame on exit:
-	I_AtExit(D_QuitNetGame, 1)
+func d_InitNetGame(connect_data *net_connect_data_t) (r boolean) {
+	// Call d_QuitNetGame on exit:
+	i_AtExit(d_QuitNetGame, 1)
 	player_class = connect_data.Fplayer_class
 	return 0
 }
@@ -4305,7 +4305,7 @@ func D_InitNetGame(connect_data *net_connect_data_t) (r boolean) {
 //	// Called before quitting to leave a net game
 //	// without hanging the other players
 //	//
-func D_QuitNetGame() {
+func d_QuitNetGame() {
 }
 
 func GetLowTic() (r int32) {
@@ -4438,7 +4438,7 @@ func TryRunTics() {
 	var availabletics, counts, entertic, i, lowtic, realtics, v1 int32
 	var set *ticcmd_set_t
 	// get real tics
-	entertic = I_GetTime() / ticdup
+	entertic = i_GetTime() / ticdup
 	realtics = entertic - oldentertics
 	oldentertics = entertic
 	// in singletics mode, run a single tic every time this function
@@ -4479,14 +4479,14 @@ func TryRunTics() {
 		NetUpdate()
 		lowtic = GetLowTic()
 		if lowtic < gametic/ticdup {
-			I_Error("TryRunTics: lowtic < gametic")
+			i_Error("TryRunTics: lowtic < gametic")
 		}
 		// Don't stay in this loop forever.  The menu is still running,
 		// so return to update the screen
-		if I_GetTime()/ticdup-entertic > 0 {
+		if i_GetTime()/ticdup-entertic > 0 {
 			return
 		}
-		I_Sleep(1)
+		i_Sleep(1)
 	}
 	// run the count * ticdup dics
 	for {
@@ -4508,7 +4508,7 @@ func TryRunTics() {
 				break
 			}
 			if gametic/ticdup > lowtic {
-				I_Error("gametic>lowtic")
+				i_Error("gametic>lowtic")
 			}
 			local_playeringame = set.Fingame
 			loop_interface.FRunTic(set.Fcmds[:], set.Fingame[:])
@@ -4526,7 +4526,7 @@ func TryRunTics() {
 
 var oldentertics int32
 
-func D_RegisterLoopCallbacks(i *loop_interface_t) {
+func d_RegisterLoopCallbacks(i *loop_interface_t) {
 	loop_interface = i
 }
 
@@ -4741,20 +4741,20 @@ func init() {
 //	// D_ProcessEvents
 //	// Send all the events of the given timestamp down the responder chain
 //	//
-func D_ProcessEvents() {
+func d_ProcessEvents() {
 	// IF STORE DEMO, DO NOT ACCEPT INPUT
 	if storedemo != 0 {
 		return
 	}
 	for {
-		ev := D_PopEvent()
+		ev := d_PopEvent()
 		if ev == nil {
 			break
 		}
-		if M_Responder(ev) != 0 {
+		if m_Responder(ev) != 0 {
 			continue
 		} // menu ate the event
-		G_Responder(ev)
+		g_Responder(ev)
 	}
 }
 
@@ -4762,7 +4762,7 @@ func init() {
 	wipegamestate = GS_DEMOSCREEN
 }
 
-func D_Display() {
+func d_Display() {
 	var done, redrawsbar, wipe boolean
 	var nowtime, tics, wipestart, y int32
 	var v1 gamestate_t
@@ -4772,7 +4772,7 @@ func D_Display() {
 	redrawsbar = 0
 	// change the view size if needed
 	if setsizeneeded != 0 {
-		R_ExecuteSetViewSize()
+		r_ExecuteSetViewSize()
 		oldgamestate1 = -1 // force background redraw
 		borderdrawcount = 3
 	}
@@ -4784,7 +4784,7 @@ func D_Display() {
 		wipe = 0
 	}
 	if gamestate == GS_LEVEL && gametic != 0 {
-		HU_Erase()
+		hu_Erase()
 	}
 	// do buffered drawing
 	switch gamestate {
@@ -4793,7 +4793,7 @@ func D_Display() {
 			break
 		}
 		if automapactive != 0 {
-			AM_Drawer()
+			am_Drawer()
 		}
 		if wipe != 0 || viewheight != 200 && fullscreen != 0 {
 			redrawsbar = 1
@@ -4801,33 +4801,33 @@ func D_Display() {
 		if inhelpscreensstate != 0 && inhelpscreens == 0 {
 			redrawsbar = 1
 		} // just put away the help screen
-		ST_Drawer(booluint32(viewheight == 200), redrawsbar)
+		st_Drawer(booluint32(viewheight == 200), redrawsbar)
 		fullscreen = booluint32(viewheight == 200)
 	case GS_INTERMISSION:
-		WI_Drawer()
+		wi_Drawer()
 	case GS_FINALE:
-		F_Drawer()
+		f_Drawer()
 	case GS_DEMOSCREEN:
-		D_PageDrawer()
+		d_PageDrawer()
 		break
 	}
 	// draw buffered stuff to screen
-	I_UpdateNoBlit()
+	i_UpdateNoBlit()
 	// draw the view directly
 	if gamestate == GS_LEVEL && automapactive == 0 && gametic != 0 {
-		R_RenderPlayerView(&players[displayplayer])
+		r_RenderPlayerView(&players[displayplayer])
 	}
 	if gamestate == GS_LEVEL && gametic != 0 {
-		HU_Drawer()
+		hu_Drawer()
 	}
 	// clean up border stuff
 	if gamestate != oldgamestate1 && gamestate != GS_LEVEL {
-		I_SetPalette(W_CacheLumpName("PLAYPAL"))
+		i_SetPalette(w_CacheLumpName("PLAYPAL"))
 	}
 	// see if the border needs to be initially drawn
 	if gamestate == GS_LEVEL && oldgamestate1 != GS_LEVEL {
 		viewactivestate = 0 // view was not active
-		R_FillBackScreen()  // draw the pattern into the back screen
+		r_FillBackScreen()  // draw the pattern into the back screen
 	}
 	// see if the border needs to be updated to the screen
 	if gamestate == GS_LEVEL && automapactive == 0 && scaledviewwidth != 320 {
@@ -4835,13 +4835,13 @@ func D_Display() {
 			borderdrawcount = 3
 		}
 		if borderdrawcount != 0 {
-			R_DrawViewBorder() // erase old menu stuff
+			r_DrawViewBorder() // erase old menu stuff
 			borderdrawcount--
 		}
 	}
 	if testcontrols != 0 {
 		// Box showing current mouse speed
-		V_DrawMouseSpeedBox(testcontrols_mousespeed)
+		v_DrawMouseSpeedBox(testcontrols_mousespeed)
 	}
 	menuactivestate = menuactive
 	viewactivestate = viewactive
@@ -4856,30 +4856,30 @@ func D_Display() {
 		} else {
 			y = viewwindowy + 4
 		}
-		V_DrawPatchDirect(viewwindowx+(scaledviewwidth-int32(68))/int32(2), y, W_CacheLumpNameT("M_PAUSE"))
+		v_DrawPatchDirect(viewwindowx+(scaledviewwidth-int32(68))/int32(2), y, W_CacheLumpNameT("M_PAUSE"))
 	}
 	// menus go directly to the screen
-	M_Drawer()  // menu is drawn even on top of everything
+	m_Drawer()  // menu is drawn even on top of everything
 	NetUpdate() // send out any new accumulation
 	// normal update
 	if wipe == 0 {
-		I_FinishUpdate() // page flip or blit buffer
+		i_FinishUpdate() // page flip or blit buffer
 		return
 	}
 	// wipe update
 	wipe_EndScreen(0, 0, SCREENWIDTH, SCREENHEIGHT)
-	wipestart = I_GetTime() - 1
+	wipestart = i_GetTime() - 1
 	for cond := true; cond; cond = done == 0 {
 		for cond := true; cond; cond = tics <= 0 {
-			nowtime = I_GetTime()
+			nowtime = i_GetTime()
 			tics = nowtime - wipestart
-			I_Sleep(1)
+			i_Sleep(1)
 		}
 		wipestart = nowtime
 		done = uint32(wipe_ScreenWipe(int32(wipe_Melt), 0, 0, SCREENWIDTH, SCREENHEIGHT, tics))
-		I_UpdateNoBlit()
-		M_Drawer()       // menu is drawn even on top of wipes
-		I_FinishUpdate() // page flip or blit buffer
+		i_UpdateNoBlit()
+		m_Drawer()       // menu is drawn even on top of wipes
+		i_FinishUpdate() // page flip or blit buffer
 	}
 }
 
@@ -4899,31 +4899,31 @@ var borderdrawcount int32
 // Add configuration file variable bindings.
 //
 
-func D_BindVariables() {
+func d_BindVariables() {
 	var i int32
-	M_ApplyPlatformDefaults()
-	I_BindVideoVariables()
-	I_BindJoystickVariables()
-	I_BindSoundVariables()
-	M_BindBaseControls()
-	M_BindWeaponControls()
-	M_BindMapControls()
-	M_BindMenuControls()
-	M_BindChatControls(MAXPLAYERS)
+	m_ApplyPlatformDefaults()
+	i_BindVideoVariables()
+	i_BindJoystickVariables()
+	i_BindSoundVariables()
+	m_BindBaseControls()
+	m_BindWeaponControls()
+	m_BindMapControls()
+	m_BindMenuControls()
+	m_BindChatControls(MAXPLAYERS)
 	key_multi_msgplayer[0] = 'g'
 	key_multi_msgplayer[int32(1)] = 'i'
 	key_multi_msgplayer[int32(2)] = 'b'
 	key_multi_msgplayer[int32(3)] = 'r'
-	M_BindVariable("mouse_sensitivity", &mouseSensitivity)
-	M_BindVariable("sfx_volume", &sfxVolume)
-	M_BindVariable("music_volume", &musicVolume)
-	M_BindVariable("show_messages", &showMessages)
-	M_BindVariable("screenblocks", &screenblocks)
-	M_BindVariable("detaillevel", &detailLevel)
-	M_BindVariable("snd_channels", &snd_channels)
-	M_BindVariable("vanilla_savegame_limit", &vanilla_savegame_limit)
-	M_BindVariable("vanilla_demo_limit", &vanilla_demo_limit)
-	M_BindVariable("show_endoom", &show_endoom)
+	m_BindVariable("mouse_sensitivity", &mouseSensitivity)
+	m_BindVariable("sfx_volume", &sfxVolume)
+	m_BindVariable("music_volume", &musicVolume)
+	m_BindVariable("show_messages", &showMessages)
+	m_BindVariable("screenblocks", &screenblocks)
+	m_BindVariable("detaillevel", &detailLevel)
+	m_BindVariable("snd_channels", &snd_channels)
+	m_BindVariable("vanilla_savegame_limit", &vanilla_savegame_limit)
+	m_BindVariable("vanilla_demo_limit", &vanilla_demo_limit)
+	m_BindVariable("show_endoom", &show_endoom)
 	// Multiplayer chat macros
 	i = 0
 	for {
@@ -4931,7 +4931,7 @@ func D_BindVariables() {
 			break
 		}
 		name := fmt.Sprintf("chatmacro%d", i)
-		M_BindVariable(name, &chat_macros[i])
+		m_BindVariable(name, &chat_macros[i])
 		goto _1
 	_1:
 		;
@@ -4945,7 +4945,7 @@ func D_BindVariables() {
 // Called to determine whether to grab the mouse pointer
 //
 
-func D_GrabMouseCallback() (r boolean) {
+func d_GrabMouseCallback() (r boolean) {
 	// Drone players don't need mouse focus
 	if drone != 0 {
 		return 0
@@ -4960,15 +4960,15 @@ func D_GrabMouseCallback() (r boolean) {
 
 func doomgeneric_Tick() {
 	// frame syncronous IO operations
-	I_StartFrame()
+	i_StartFrame()
 	TryRunTics() // will run at least one tic
 	var dmo *degenmobj_t
 	if players[consoleplayer].Fmo != nil {
 		dmo = &players[consoleplayer].Fmo.degenmobj_t // console player
 	}
-	S_UpdateSounds(dmo) // move positional sounds
+	s_UpdateSounds(dmo) // move positional sounds
 	// Update display, next frame, with current state.
-	D_Display()
+	d_Display()
 }
 
 // C documentation
@@ -4976,23 +4976,23 @@ func doomgeneric_Tick() {
 //	//
 //	//  D_DoomLoop
 //	//
-func D_DoomLoop() {
+func d_DoomLoop() {
 	if bfgedition != 0 && (demorecording != 0 || gameaction == ga_playdemo || netgame != 0) {
 		fprintf_ccgo(os.Stdout, " WARNING: You are playing using one of the Doom Classic\n IWAD files shipped with the Doom 3: BFG Edition. These are\n known to be incompatible with the regular IWAD files and\n may cause demos and network games to get out of sync.\n")
 	}
 	if demorecording != 0 {
-		G_BeginRecording()
+		g_BeginRecording()
 	}
 	main_loop_started = 1
 	TryRunTics()
-	I_SetWindowTitle(gamedescription)
-	I_GraphicsCheckCommandLine()
-	I_SetGrabMouseCallback(D_GrabMouseCallback)
-	I_InitGraphics()
-	I_EnableLoadingDisk()
-	V_RestoreBuffer()
-	R_ExecuteSetViewSize()
-	D_StartGameLoop()
+	i_SetWindowTitle(gamedescription)
+	i_GraphicsCheckCommandLine()
+	i_SetGrabMouseCallback(d_GrabMouseCallback)
+	i_InitGraphics()
+	i_EnableLoadingDisk()
+	v_RestoreBuffer()
+	r_ExecuteSetViewSize()
+	d_StartGameLoop()
 	if testcontrols != 0 {
 		wipegamestate = gamestate
 	}
@@ -5005,12 +5005,12 @@ func D_DoomLoop() {
 //	// D_PageTicker
 //	// Handles timing for warped projection
 //	//
-func D_PageTicker() {
+func d_PageTicker() {
 	var v1 int32
 	pagetic--
 	v1 = pagetic
 	if v1 < 0 {
-		D_AdvanceDemo()
+		d_AdvanceDemo()
 	}
 }
 
@@ -5019,8 +5019,8 @@ func D_PageTicker() {
 //	//
 //	// D_PageDrawer
 //	//
-func D_PageDrawer() {
-	V_DrawPatch(0, 0, W_CacheLumpNameT(pagename))
+func d_PageDrawer() {
+	v_DrawPatch(0, 0, W_CacheLumpNameT(pagename))
 }
 
 // C documentation
@@ -5029,7 +5029,7 @@ func D_PageDrawer() {
 //	// D_AdvanceDemo
 //	// Called after each demo or intro demosequence finishes
 //	//
-func D_AdvanceDemo() {
+func d_AdvanceDemo() {
 	advancedemo = 1
 }
 
@@ -5039,7 +5039,7 @@ func D_AdvanceDemo() {
 //	// This cycles through the demo sequences.
 //	// FIXME - version dependend demo numbers?
 //	//
-func D_DoAdvanceDemo() {
+func d_DoAdvanceDemo() {
 	players[consoleplayer].Fplayerstate = PST_LIVE // not reborn
 	advancedemo = 0
 	usergame = 0 // no save / end game here
@@ -5067,24 +5067,24 @@ func D_DoAdvanceDemo() {
 		gamestate = GS_DEMOSCREEN
 		pagename = "TITLEPIC"
 		if gamemode == commercial {
-			S_StartMusic(int32(mus_dm2ttl))
+			s_StartMusic(int32(mus_dm2ttl))
 		} else {
-			S_StartMusic(int32(mus_intro))
+			s_StartMusic(int32(mus_intro))
 		}
 	case 1:
-		G_DeferedPlayDemo("demo1")
+		g_DeferedPlayDemo("demo1")
 	case 2:
 		pagetic = 200
 		gamestate = GS_DEMOSCREEN
 		pagename = "CREDIT"
 	case 3:
-		G_DeferedPlayDemo("demo2")
+		g_DeferedPlayDemo("demo2")
 	case 4:
 		gamestate = GS_DEMOSCREEN
 		if gamemode == commercial {
 			pagetic = TICRATE * 11
 			pagename = "TITLEPIC"
-			S_StartMusic(int32(mus_dm2ttl))
+			s_StartMusic(int32(mus_dm2ttl))
 		} else {
 			pagetic = 200
 			if gamemode == retail {
@@ -5094,17 +5094,17 @@ func D_DoAdvanceDemo() {
 			}
 		}
 	case 5:
-		G_DeferedPlayDemo("demo3")
+		g_DeferedPlayDemo("demo3")
 		break
 		// THE DEFINITIVE DOOM Special Edition demo
 		fallthrough
 	case 6:
-		G_DeferedPlayDemo("demo4")
+		g_DeferedPlayDemo("demo4")
 		break
 	}
 	// The Doom 3: BFG Edition version of doom2.wad does not have a
 	// TITLETPIC lump. Use INTERPIC instead as a workaround.
-	if bfgedition != 0 && strings.EqualFold(pagename, "TITLEPIC") && W_CheckNumForName("titlepic") < 0 {
+	if bfgedition != 0 && strings.EqualFold(pagename, "TITLEPIC") && w_CheckNumForName("titlepic") < 0 {
 		pagename = "INTERPIC"
 	}
 }
@@ -5114,10 +5114,10 @@ func D_DoAdvanceDemo() {
 //	//
 //	// D_StartTitle
 //	//
-func D_StartTitle() {
+func d_StartTitle() {
 	gameaction = ga_nothing
 	demosequence = -1
-	D_AdvanceDemo()
+	d_AdvanceDemo()
 }
 
 // Strings for dehacked replacements of the startup banner
@@ -5155,7 +5155,7 @@ func GetGameName(gamename string) string {
 			// Has been replaced.
 			// We need to expand via printf to include the Doom version number
 			// We also need to cut off spaces to get the basic name
-			version = G_VanillaVersionCode()
+			version = g_VanillaVersionCode()
 			gamename = fmt.Sprintf(deh_sub, version/int32(100), version%int32(100))
 			for {
 				if len(gamename) >= 1 {
@@ -5202,7 +5202,7 @@ func SetMissionForPackName(pack_name string) {
 	for i := range packs {
 		fprintf_ccgo(os.Stdout, "\t%s\n", packs[i].Fname)
 	}
-	I_Error("Unknown mission pack name: %s", pack_name)
+	i_Error("Unknown mission pack name: %s", pack_name)
 }
 
 var packs = [3]struct {
@@ -5227,11 +5227,11 @@ var packs = [3]struct {
 // Find out what version of Doom is playing.
 //
 
-func D_IdentifyVersion() {
+func d_IdentifyVersion() {
 	var i uint32
 	var p int32
 	var v2, v3 GameMission_t
-	// gamemission is set up by the D_FindIWAD function.  But if
+	// gamemission is set up by the d_FindIWAD function.  But if
 	// we specify '-iwad', we have to identify using
 	// IdentifyIWADByName.  However, if the iwad does not match
 	// any known IWAD name, we may have a dilemma.  Try to
@@ -5258,7 +5258,7 @@ func D_IdentifyVersion() {
 		}
 		if gamemission == none {
 			// Still no idea.  I don't think this is going to work.
-			I_Error("Unknown or invalid IWAD file.")
+			i_Error("Unknown or invalid IWAD file.")
 		}
 	}
 	// Make sure gamemode is set up correctly
@@ -5274,11 +5274,11 @@ func D_IdentifyVersion() {
 	}
 	if v2 == doom {
 		// Doom 1.  But which version?
-		if W_CheckNumForName("E4M1") > 0 {
+		if w_CheckNumForName("E4M1") > 0 {
 			// Ultimate Doom
 			gamemode = retail
 		} else {
-			if W_CheckNumForName("E3M1") > 0 {
+			if w_CheckNumForName("E3M1") > 0 {
 				gamemode = registered
 			} else {
 				gamemode = shareware
@@ -5297,7 +5297,7 @@ func D_IdentifyVersion() {
 		// detecting it based on the filename. Valid values are: "doom2",
 		// "tnt" and "plutonia".
 		//
-		p = M_CheckParmWithArgs("-pack", 1)
+		p = m_CheckParmWithArgs("-pack", 1)
 		if p > 0 {
 			SetMissionForPackName(myargs[p+1])
 		}
@@ -5306,11 +5306,11 @@ func D_IdentifyVersion() {
 
 // Set the gamedescription string
 
-func D_SetGameDescription() {
+func d_SetGameDescription() {
 	var is_freedm, is_freedoom boolean
 	var v7, v5, v3, v1 GameMission_t
-	is_freedoom = booluint32(W_CheckNumForName("FREEDOOM") >= 0)
-	is_freedm = booluint32(W_CheckNumForName("FREEDM") >= 0)
+	is_freedoom = booluint32(w_CheckNumForName("FREEDOOM") >= 0)
+	is_freedm = booluint32(w_CheckNumForName("FREEDM") >= 0)
 	gamedescription = "Unknown"
 	if gamemission == pack_chex {
 		v1 = doom
@@ -5390,10 +5390,10 @@ func D_SetGameDescription() {
 	}
 }
 
-func D_AddFile(filename string) (r boolean) {
+func d_AddFile(filename string) (r boolean) {
 	var handle *os.File
 	fprintf_ccgo(os.Stdout, " adding %s\n", filename)
-	handle = W_AddFile(filename)
+	handle = w_AddFile(filename)
 	return booluint32(handle != nil)
 }
 
@@ -5488,7 +5488,7 @@ func InitGameVersion() {
 	// Emulate a specific version of Doom.  Valid values are "1.9",
 	// "ultimate", "final", "final2", "hacx" and "chex".
 	//
-	p = M_CheckParmWithArgs("-gameversion", 1)
+	p = m_CheckParmWithArgs("-gameversion", 1)
 	if p != 0 {
 		i = 0
 		for {
@@ -5517,7 +5517,7 @@ func InitGameVersion() {
 				;
 				i++
 			}
-			I_Error("Unknown game version '%s'", myargs[p+1])
+			i_Error("Unknown game version '%s'", myargs[p+1])
 		}
 	} else {
 		// Determine automatically
@@ -5584,16 +5584,16 @@ func PrintGameVersion() {
 
 // Function called at exit to display the ENDOOM screen
 
-func D_Endoom() {
+func d_Endoom() {
 	var endoom uintptr
 	// Don't show ENDOOM if we have it disabled, or we're running
 	// in screensaver or control test mode. Only show it once the
 	// game has actually started.
-	if show_endoom == 0 || main_loop_started == 0 || screensaver_mode != 0 || M_CheckParm("-testcontrols") > 0 {
+	if show_endoom == 0 || main_loop_started == 0 || screensaver_mode != 0 || m_CheckParm("-testcontrols") > 0 {
 		return
 	}
-	endoom = W_CacheLumpName("ENDOOM")
-	I_Endoom(endoom)
+	endoom = w_CacheLumpName("ENDOOM")
+	i_Endoom(endoom)
 	log.Printf("Exiting - outstanding memory: %d", len(dg_alloced))
 	dg_exiting = true
 }
@@ -5603,47 +5603,47 @@ func D_Endoom() {
 //	//
 //	// D_DoomMain
 //	//
-func D_DoomMain() {
+func d_DoomMain() {
 	var argDemoName string
 	var i, p, v1 int32
-	I_AtExit(D_Endoom, 0)
+	i_AtExit(d_Endoom, 0)
 	// print banner
-	I_PrintBanner("Doom Generic 0.1")
-	fprintf_ccgo(os.Stdout, "Z_Init: Init zone memory allocation daemon. \n")
-	Z_Init()
+	i_PrintBanner("Doom Generic 0.1")
+	fprintf_ccgo(os.Stdout, "z_Init: Init zone memory allocation daemon. \n")
+	z_Init()
 	//!
 	// @vanilla
 	//
 	// Disable monsters.
 	//
-	nomonsters = uint32(M_CheckParm("-nomonsters"))
+	nomonsters = uint32(m_CheckParm("-nomonsters"))
 	//!
 	// @vanilla
 	//
 	// Monsters respawn after being killed.
 	//
-	respawnparm = uint32(M_CheckParm("-respawn"))
+	respawnparm = uint32(m_CheckParm("-respawn"))
 	//!
 	// @vanilla
 	//
 	// Monsters move faster.
 	//
-	fastparm = uint32(M_CheckParm("-fast"))
+	fastparm = uint32(m_CheckParm("-fast"))
 	//!
 	// @vanilla
 	//
 	// Developer mode.  F1 saves a screenshot in the current working
 	// directory.
 	//
-	devparm = uint32(M_CheckParm("-devparm"))
-	I_DisplayFPSDots(devparm)
+	devparm = uint32(m_CheckParm("-devparm"))
+	i_DisplayFPSDots(devparm)
 	//!
 	// @category net
 	// @vanilla
 	//
 	// Start a deathmatch game.
 	//
-	if M_CheckParm("-deathmatch") != 0 {
+	if m_CheckParm("-deathmatch") != 0 {
 		deathmatch = 1
 	}
 	//!
@@ -5653,7 +5653,7 @@ func D_DoomMain() {
 	// Start a deathmatch 2.0 game.  Weapons do not stay in place and
 	// all items respawn after 30 seconds.
 	//
-	if M_CheckParm("-altdeath") != 0 {
+	if m_CheckParm("-altdeath") != 0 {
 		deathmatch = 2
 	}
 	if devparm != 0 {
@@ -5661,7 +5661,7 @@ func D_DoomMain() {
 	}
 	// find which dir to use for config files
 	// Auto-detect the configuration dir.
-	M_SetConfigDir("")
+	m_SetConfigDir("")
 	//!
 	// @arg <x>
 	// @vanilla
@@ -5669,7 +5669,7 @@ func D_DoomMain() {
 	// Turbo mode.  The player's speed is multiplied by x%.  If unspecified,
 	// x defaults to 200.  Values are rounded up to 10 and down to 400.
 	//
-	v1 = M_CheckParm("-turbo")
+	v1 = m_CheckParm("-turbo")
 	p = v1
 	if v1 != 0 {
 		scale := 200
@@ -5689,28 +5689,28 @@ func D_DoomMain() {
 		sidemove[int32(1)] = sidemove[int32(1)] * int32(scale) / 100
 	}
 	// init subsystems
-	fprintf_ccgo(os.Stdout, "V_Init: allocate screens.\n")
-	V_Init()
+	fprintf_ccgo(os.Stdout, "v_Init: allocate screens.\n")
+	v_Init()
 	// Load configuration files before initialising other subsystems.
-	fprintf_ccgo(os.Stdout, "M_LoadDefaults: Load system defaults.\n")
-	M_SetConfigFilenames("default.cfg", "doomgenericdoom.cfg")
-	D_BindVariables()
-	M_LoadDefaults()
+	fprintf_ccgo(os.Stdout, "m_LoadDefaults: Load system defaults.\n")
+	m_SetConfigFilenames("default.cfg", "doomgenericdoom.cfg")
+	d_BindVariables()
+	m_LoadDefaults()
 	// Save configuration at exit.
-	I_AtExit(M_SaveDefaults, 0)
+	i_AtExit(m_SaveDefaults, 0)
 	// Find main IWAD file and load it.
-	iwadfile = D_FindIWAD(1<<int32(doom)|1<<int32(doom2)|1<<int32(pack_tnt)|1<<int32(pack_plut)|1<<int32(pack_chex)|1<<int32(pack_hacx), &gamemission)
+	iwadfile = d_FindIWAD(1<<int32(doom)|1<<int32(doom2)|1<<int32(pack_tnt)|1<<int32(pack_plut)|1<<int32(pack_chex)|1<<int32(pack_hacx), &gamemission)
 	// None found?
 	if iwadfile == "" {
-		I_Error("Game mode indeterminate.  No IWAD file was found.  Try\nspecifying one with the '-iwad' command line parameter.\n")
+		i_Error("Game mode indeterminate.  No IWAD file was found.  Try\nspecifying one with the '-iwad' command line parameter.\n")
 	}
 	modifiedgame = 0
 	fprintf_ccgo(os.Stdout, "W_Init: Init WADfiles.\n")
-	D_AddFile(iwadfile)
-	W_CheckCorrectIWAD(doom)
+	d_AddFile(iwadfile)
+	w_CheckCorrectIWAD(doom)
 	// Now that we've loaded the IWAD, we can figure out what gamemission
 	// we're playing and which version of Vanilla Doom we need to emulate.
-	D_IdentifyVersion()
+	d_IdentifyVersion()
 	InitGameVersion()
 	// Doom 3: BFG Edition includes modified versions of the classic
 	// IWADs which can be identified by an additional DMENUPIC lump.
@@ -5719,7 +5719,7 @@ func D_DoomMain() {
 	// of doom2.wad is missing the TITLEPIC lump.
 	// We specifically check for DMENUPIC here, before PWADs have been
 	// loaded which could probably include a lump of that name.
-	if W_CheckNumForName("dmenupic") >= 0 {
+	if w_CheckNumForName("dmenupic") >= 0 {
 		fprintf_ccgo(os.Stdout, "BFG Edition: Using workarounds as needed.\n")
 		bfgedition = 1
 		// BFG Edition changes the names of the secret levels to
@@ -5738,7 +5738,7 @@ func D_DoomMain() {
 		// the BFG edition IWADs, use the "ON"/"OFF" graphics instead.
 	}
 	// Load PWAD files.
-	modifiedgame = W_ParseCommandLine()
+	modifiedgame = w_ParseCommandLine()
 	// Debug:
 	//    W_PrintDirectory();
 	//!
@@ -5748,7 +5748,7 @@ func D_DoomMain() {
 	//
 	// Play back the demo named demo.lmp.
 	//
-	p = M_CheckParmWithArgs("-playdemo", 1)
+	p = m_CheckParmWithArgs("-playdemo", 1)
 	if p == 0 {
 		//!
 		// @arg <demo>
@@ -5758,7 +5758,7 @@ func D_DoomMain() {
 		// Play back the demo named demo.lmp, determining the framerate
 		// of the screen.
 		//
-		p = M_CheckParmWithArgs("-timedemo", 1)
+		p = m_CheckParmWithArgs("-timedemo", 1)
 	}
 	if p != 0 {
 		// With Vanilla you have to specify the file without extension,
@@ -5769,7 +5769,7 @@ func D_DoomMain() {
 		} else {
 			name = fmt.Sprintf("%s.lmp", myargs[p+1])
 		}
-		if D_AddFile(name) != 0 {
+		if d_AddFile(name) != 0 {
 			argDemoName = lumpinfo[numlumps-1].Name()
 		} else {
 			// If file failed to load, still continue trying to play
@@ -5779,15 +5779,15 @@ func D_DoomMain() {
 		}
 		fprintf_ccgo(os.Stdout, "Playing demo %s.\n", name)
 	}
-	I_AtExit(G_CheckDemoStatus, 1)
+	i_AtExit(g_CheckDemoStatus, 1)
 	// Generate the WAD hash table.  Speed things up a bit.
-	W_GenerateHashTable()
+	w_GenerateHashTable()
 	// Load DEHACKED lumps from WAD files - but only if we give the right
 	// command line parameter.
 	// Set the gamedescription string. This is only possible now that
 	// we've finished loading Dehacked patches.
-	D_SetGameDescription()
-	savegamedir = M_GetSaveGameDir(D_SaveGameIWADName(gamemission))
+	d_SetGameDescription()
+	savegamedir = m_GetSaveGameDir(d_SaveGameIWADName(gamemission))
 	// Check for -file in shareware
 	if modifiedgame != 0 {
 		// These are the lumps that will be checked in IWAD,
@@ -5818,7 +5818,7 @@ func D_DoomMain() {
 			22: "spida1d1",
 		}
 		if gamemode == shareware {
-			I_Error("\nYou cannot -file with the shareware version. Register!")
+			i_Error("\nYou cannot -file with the shareware version. Register!")
 		}
 		// Check for fake IWAD with right name,
 		// but w/o all the lumps of the registered version.
@@ -5828,8 +5828,8 @@ func D_DoomMain() {
 				if i >= 23 {
 					break
 				}
-				if W_CheckNumForName(levelLumps[i]) < 0 {
-					I_Error("\nThis is not the registered version.")
+				if w_CheckNumForName(levelLumps[i]) < 0 {
+					i_Error("\nThis is not the registered version.")
 				}
 				goto _2
 			_2:
@@ -5838,25 +5838,25 @@ func D_DoomMain() {
 			}
 		}
 	}
-	if W_CheckNumForName("SS_START") >= 0 || W_CheckNumForName("FF_END") >= 0 {
-		I_PrintDivider()
+	if w_CheckNumForName("SS_START") >= 0 || w_CheckNumForName("FF_END") >= 0 {
+		i_PrintDivider()
 		fprintf_ccgo(os.Stdout, " WARNING: The loaded WAD file contains modified sprites or\n floor textures.  You may want to use the '-merge' command\n line option instead of '-file'.\n")
 	}
-	I_PrintStartupBanner(gamedescription)
+	i_PrintStartupBanner(gamedescription)
 	PrintDehackedBanners()
 	// Freedoom's IWADs are Boom-compatible, which means they usually
 	// don't work in Vanilla (though FreeDM is okay). Show a warning
 	// message and give a link to the website.
-	if W_CheckNumForName("FREEDOOM") >= 0 && W_CheckNumForName("FREEDM") < 0 {
+	if w_CheckNumForName("FREEDOOM") >= 0 && w_CheckNumForName("FREEDM") < 0 {
 		fprintf_ccgo(os.Stdout, " WARNING: You are playing using one of the Freedoom IWAD\n files, which might not work in this port. See this page\n for more information on how to play using Freedoom:\n   http://www.chocolate-doom.org/wiki/index.php/Freedoom\n")
-		I_PrintDivider()
+		i_PrintDivider()
 	}
 	fprintf_ccgo(os.Stdout, "I_Init: Setting up machine state.\n")
-	I_CheckIsScreensaver()
-	I_InitSound(1)
-	I_InitMusic()
+	i_CheckIsScreensaver()
+	i_InitSound(1)
+	i_InitMusic()
 	// Initial netgame startup. Connect to server etc.
-	D_ConnectNetGame()
+	d_ConnectNetGame()
 	// get skill / episode / map from parms
 	startskill = sk_medium
 	startepisode = 1
@@ -5869,7 +5869,7 @@ func D_DoomMain() {
 	// Set the game skill, 1-5 (1: easiest, 5: hardest).  A skill of
 	// 0 disables all monsters.
 	//
-	p = M_CheckParmWithArgs("-skill", 1)
+	p = m_CheckParmWithArgs("-skill", 1)
 	if p != 0 {
 		startskill = skill_t(myargs[p+1][0] - '1')
 		autostart = 1
@@ -5880,7 +5880,7 @@ func D_DoomMain() {
 	//
 	// Start playing on episode n (1-4)
 	//
-	p = M_CheckParmWithArgs("-episode", 1)
+	p = m_CheckParmWithArgs("-episode", 1)
 	if p != 0 {
 		startepisode = int32(myargs[p+1][0] - '0')
 		startmap = 1
@@ -5894,7 +5894,7 @@ func D_DoomMain() {
 	//
 	// For multiplayer games: exit each level after n minutes.
 	//
-	p = M_CheckParmWithArgs("-timer", 1)
+	p = m_CheckParmWithArgs("-timer", 1)
 	if p != 0 {
 		v, _ := strconv.Atoi(myargs[p+1])
 		timelimit = int32(v)
@@ -5905,7 +5905,7 @@ func D_DoomMain() {
 	//
 	// Austin Virtual Gaming: end levels after 20 minutes.
 	//
-	p = M_CheckParm("-avg")
+	p = m_CheckParm("-avg")
 	if p != 0 {
 		timelimit = 20
 	}
@@ -5916,7 +5916,7 @@ func D_DoomMain() {
 	// Start a game immediately, warping to ExMy (Doom 1) or MAPxy
 	// (Doom 2)
 	//
-	p = M_CheckParmWithArgs("-warp", 1)
+	p = m_CheckParmWithArgs("-warp", 1)
 	if p != 0 {
 		if gamemode == commercial {
 			v, _ := strconv.Atoi(myargs[p+1])
@@ -5933,7 +5933,7 @@ func D_DoomMain() {
 	}
 	// Undocumented:
 	// Invoked by setup to test the controls.
-	p = M_CheckParm("-testcontrols")
+	p = m_CheckParm("-testcontrols")
 	if p > 0 {
 		startepisode = 1
 		startmap = 1
@@ -5949,7 +5949,7 @@ func D_DoomMain() {
 	//
 	// Load the game in slot s.
 	//
-	p = M_CheckParmWithArgs("-loadgame", 1)
+	p = m_CheckParmWithArgs("-loadgame", 1)
 	if p != 0 {
 		v, _ := strconv.Atoi(myargs[p+1])
 		startloadgame = int32(v)
@@ -5957,29 +5957,29 @@ func D_DoomMain() {
 		// Not loading a game
 		startloadgame = -1
 	}
-	fprintf_ccgo(os.Stdout, "M_Init: Init miscellaneous info.\n")
-	M_Init()
-	fprintf_ccgo(os.Stdout, "R_Init: Init DOOM refresh daemon - ")
-	R_Init()
+	fprintf_ccgo(os.Stdout, "m_Init: Init miscellaneous info.\n")
+	m_Init()
+	fprintf_ccgo(os.Stdout, "r_Init: Init DOOM refresh daemon - ")
+	r_Init()
 	fprintf_ccgo(os.Stdout, "\nP_Init: Init Playloop state.\n")
-	P_Init()
-	fprintf_ccgo(os.Stdout, "S_Init: Setting up sound.\n")
-	S_Init(sfxVolume*int32(8), musicVolume*int32(8))
-	fprintf_ccgo(os.Stdout, "D_CheckNetGame: Checking network game status.\n")
-	D_CheckNetGame()
+	p_Init()
+	fprintf_ccgo(os.Stdout, "s_Init: Setting up sound.\n")
+	s_Init(sfxVolume*int32(8), musicVolume*int32(8))
+	fprintf_ccgo(os.Stdout, "d_CheckNetGame: Checking network game status.\n")
+	d_CheckNetGame()
 	PrintGameVersion()
-	fprintf_ccgo(os.Stdout, "HU_Init: Setting up heads up display.\n")
-	HU_Init()
-	fprintf_ccgo(os.Stdout, "ST_Init: Init status bar.\n")
-	ST_Init()
+	fprintf_ccgo(os.Stdout, "hu_Init: Setting up heads up display.\n")
+	hu_Init()
+	fprintf_ccgo(os.Stdout, "st_Init: Init status bar.\n")
+	st_Init()
 	// If Doom II without a MAP01 lump, this is a store demo.
 	// Moved this here so that MAP01 isn't constantly looked up
 	// in the main loop.
-	if gamemode == commercial && W_CheckNumForName("map01") < 0 {
+	if gamemode == commercial && w_CheckNumForName("map01") < 0 {
 		storedemo = 1
 	}
-	if M_CheckParmWithArgs("-statdump", 1) != 0 {
-		I_AtExit(StatDump, 1)
+	if m_CheckParmWithArgs("-statdump", 1) != 0 {
+		i_AtExit(StatDump, 1)
 		fprintf_ccgo(os.Stdout, "External statistics registered.\n")
 	}
 	//!
@@ -5989,38 +5989,38 @@ func D_DoomMain() {
 	//
 	// Record a demo named x.lmp.
 	//
-	p = M_CheckParmWithArgs("-record", 1)
+	p = m_CheckParmWithArgs("-record", 1)
 	if p != 0 {
-		G_RecordDemo(myargs[p+1])
+		g_RecordDemo(myargs[p+1])
 		autostart = 1
 	}
-	p = M_CheckParmWithArgs("-playdemo", 1)
+	p = m_CheckParmWithArgs("-playdemo", 1)
 	if p != 0 {
 		singledemo = 1 // quit after one demo
-		G_DeferedPlayDemo(argDemoName)
-		D_DoomLoop()
+		g_DeferedPlayDemo(argDemoName)
+		d_DoomLoop()
 		return
 	}
-	p = M_CheckParmWithArgs("-timedemo", 1)
+	p = m_CheckParmWithArgs("-timedemo", 1)
 	if p != 0 {
-		G_TimeDemo(argDemoName)
-		D_DoomLoop()
+		g_TimeDemo(argDemoName)
+		d_DoomLoop()
 		return
 	}
 	if startloadgame >= 0 {
-		G_LoadGame(P_SaveGameFile(startloadgame))
+		g_LoadGame(p_SaveGameFile(startloadgame))
 	}
 	if gameaction != ga_loadgame {
 		if autostart != 0 || netgame != 0 {
-			G_InitNew(startskill, startepisode, startmap)
+			g_InitNew(startskill, startepisode, startmap)
 		} else {
-			D_StartTitle()
+			d_StartTitle()
 		} // start up intro loop
 	}
-	D_DoomLoop()
+	d_DoomLoop()
 }
 
-func D_GameMissionString(mission GameMission_t) string {
+func d_GameMissionString(mission GameMission_t) string {
 	switch mission {
 	case none:
 		fallthrough
@@ -6062,7 +6062,7 @@ func PlayerQuitGame(player *player_t) {
 	players[consoleplayer].Fmessage = exitmsg
 	// TODO: check if it is sensible to do this:
 	if demorecording != 0 {
-		G_CheckDemoStatus()
+		g_CheckDemoStatus()
 	}
 }
 
@@ -6088,16 +6088,16 @@ func RunTic(cmds []ticcmd_t, ingame []boolean) {
 	// check that there are players in the game.  if not, we cannot
 	// run a tic.
 	if advancedemo != 0 {
-		D_DoAdvanceDemo()
+		d_DoAdvanceDemo()
 	}
-	G_Ticker()
+	g_Ticker()
 }
 
 var doom_loop_interface = loop_interface_t{
-	D_ProcessEvents,
-	G_BuildTiccmd,
+	d_ProcessEvents,
+	g_BuildTiccmd,
 	RunTic,
-	M_Ticker,
+	m_Ticker,
 }
 
 // Load game settings from the specified structure and
@@ -6139,7 +6139,7 @@ func SaveGameSettings(settings *net_gamesettings_t) {
 	settings.Ffast_monsters = int32(fastparm)
 	settings.Frespawn_monsters = int32(respawnparm)
 	settings.Ftimelimit = timelimit
-	settings.Flowres_turn = boolint32(M_CheckParm("-record") > 0 && M_CheckParm("-longtics") == 0)
+	settings.Flowres_turn = boolint32(m_CheckParm("-record") > 0 && m_CheckParm("-longtics") == 0)
 }
 
 func InitConnectData(connect_data *net_connect_data_t) {
@@ -6150,7 +6150,7 @@ func InitConnectData(connect_data *net_connect_data_t) {
 	//
 	// Run as the left screen in three screen mode.
 	//
-	if M_CheckParm("-left") > 0 {
+	if m_CheckParm("-left") > 0 {
 		viewangleoffset = ANG901
 		connect_data.Fdrone = 1
 	}
@@ -6159,7 +6159,7 @@ func InitConnectData(connect_data *net_connect_data_t) {
 	//
 	// Run as the right screen in three screen mode.
 	//
-	if M_CheckParm("-right") > 0 {
+	if m_CheckParm("-right") > 0 {
 		viewangleoffset = ANG2701
 		connect_data.Fdrone = 1
 	}
@@ -6170,17 +6170,17 @@ func InitConnectData(connect_data *net_connect_data_t) {
 	connect_data.Fgamemode = gamemode
 	connect_data.Fgamemission = gamemission
 	// Are we recording a demo? Possibly set lowres turn mode
-	connect_data.Flowres_turn = boolint32(M_CheckParm("-record") > 0 && M_CheckParm("-longtics") == 0)
+	connect_data.Flowres_turn = boolint32(m_CheckParm("-record") > 0 && m_CheckParm("-longtics") == 0)
 	// Read checksums of our WAD directory and dehacked information
-	W_Checksum(&connect_data.Fwad_sha1sum)
+	w_Checksum(&connect_data.Fwad_sha1sum)
 	// Are we playing with the Freedoom IWAD?
-	connect_data.Fis_freedoom = boolint32(W_CheckNumForName("FREEDOOM") >= 0)
+	connect_data.Fis_freedoom = boolint32(w_CheckNumForName("FREEDOOM") >= 0)
 }
 
-func D_ConnectNetGame() {
+func d_ConnectNetGame() {
 	connect_data := &net_connect_data_t{}
 	InitConnectData(connect_data)
-	netgame = D_InitNetGame(connect_data)
+	netgame = d_InitNetGame(connect_data)
 	//!
 	// @category net
 	//
@@ -6188,7 +6188,7 @@ func D_ConnectNetGame() {
 	// player.  This can also be used to play back single player netgame
 	// demos.
 	//
-	if M_CheckParm("-solo-net") > 0 {
+	if m_CheckParm("-solo-net") > 0 {
 		netgame = 1
 	}
 }
@@ -6199,21 +6199,21 @@ func D_ConnectNetGame() {
 //	// D_CheckNetGame
 //	// Works out player numbers among the net participants
 //	//
-func D_CheckNetGame() {
+func d_CheckNetGame() {
 	settings := &net_gamesettings_t{}
 	if netgame != 0 {
 		autostart = 1
 	}
-	D_RegisterLoopCallbacks(&doom_loop_interface)
+	d_RegisterLoopCallbacks(&doom_loop_interface)
 	SaveGameSettings(settings)
-	D_StartNetGame(settings, 0)
+	d_StartNetGame(settings, 0)
 	LoadGameSettings(settings)
 	fprintf_ccgo(os.Stdout, "startskill %d  deathmatch: %d  startmap: %d  startepisode: %d\n", startskill, deathmatch, startmap, startepisode)
 	fprintf_ccgo(os.Stdout, "player %d of %d (%d nodes)\n", consoleplayer+int32(1), settings.Fnum_players, settings.Fnum_players)
 	// Show players here; the server might have specified a time limit
 	if timelimit > 0 && deathmatch != 0 {
 		// Gross hack to work like Vanilla:
-		if timelimit == 20 && M_CheckParm("-avg") != 0 {
+		if timelimit == 20 && m_CheckParm("-avg") != 0 {
 			fprintf_ccgo(os.Stdout, "Austin Virtual Gaming: Levels will end after 20 minutes\n")
 		} else {
 			fprintf_ccgo(os.Stdout, "Levels will end after %d minute", timelimit)
@@ -6401,7 +6401,7 @@ var textscreens = [22]textscreen_t{
 //	//
 //	// F_StartFinale
 //	//
-func F_StartFinale() {
+func f_StartFinale() {
 	var i uint64
 	var screen *textscreen_t
 	var v1, v4, v6 GameMission_t
@@ -6420,9 +6420,9 @@ func F_StartFinale() {
 		}
 	}
 	if v1 == doom {
-		S_ChangeMusic(int32(mus_victor), 1)
+		s_ChangeMusic(int32(mus_victor), 1)
 	} else {
-		S_ChangeMusic(int32(mus_read_m), 1)
+		s_ChangeMusic(int32(mus_read_m), 1)
 	}
 	// Find the right screen and set the text and background
 	i = 0
@@ -6469,9 +6469,9 @@ func F_StartFinale() {
 	finalecount = 0
 }
 
-func F_Responder(event *event_t) (r boolean) {
+func f_Responder(event *event_t) (r boolean) {
 	if finalestage == F_STAGE_CAST {
-		return F_CastResponder(event)
+		return f_CastResponder(event)
 	}
 	return 0
 }
@@ -6481,7 +6481,7 @@ func F_Responder(event *event_t) (r boolean) {
 //	//
 //	// F_Ticker
 //	//
-func F_Ticker() {
+func f_Ticker() {
 	var i uint64
 	// check for skipping
 	if gamemode == commercial && finalecount > 50 {
@@ -6501,7 +6501,7 @@ func F_Ticker() {
 		}
 		if i < uint64(MAXPLAYERS) {
 			if gamemap == 30 {
-				F_StartCast()
+				f_StartCast()
 			} else {
 				gameaction = ga_worlddone
 			}
@@ -6510,7 +6510,7 @@ func F_Ticker() {
 	// advance animation
 	finalecount++
 	if finalestage == F_STAGE_CAST {
-		F_CastTicker()
+		f_CastTicker()
 		return
 	}
 	if gamemode == commercial {
@@ -6521,17 +6521,17 @@ func F_Ticker() {
 		finalestage = F_STAGE_ARTSCREEN
 		wipegamestate = -1 // force a wipe
 		if gameepisode == 3 {
-			S_StartMusic(int32(mus_bunny))
+			s_StartMusic(int32(mus_bunny))
 		}
 	}
 }
 
-func F_TextWrite() {
+func f_TextWrite() {
 	var c, count, cx, cy, w, x, y int32
 	var dest, src uintptr
 	var pos int
 	// erase the entire screen to a tiled background
-	src = W_CacheLumpName(finaleflat)
+	src = w_CacheLumpName(finaleflat)
 	dest = I_VideoBuffer
 	y = 0
 	for {
@@ -6559,7 +6559,7 @@ func F_TextWrite() {
 		;
 		y++
 	}
-	V_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT)
+	v_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT)
 	// draw some of the text onto the screen
 	cx = 10
 	cy = 10
@@ -6591,7 +6591,7 @@ func F_TextWrite() {
 		if cx+w > SCREENWIDTH {
 			break
 		}
-		V_DrawPatch(cx, cy, hu_font[c])
+		v_DrawPatch(cx, cy, hu_font[c])
 		cx += w
 		goto _3
 	_3:
@@ -6690,7 +6690,7 @@ func init() {
 //	//
 //	// F_StartCast
 //	//
-func F_StartCast() {
+func f_StartCast() {
 	wipegamestate = -1 // force a screen wipe
 	castnum = 0
 	caststate = &states[mobjinfo[castorder[castnum].Ftype1].Fseestate]
@@ -6700,7 +6700,7 @@ func F_StartCast() {
 	castframes = 0
 	castonmelee = 0
 	castattacking = 0
-	S_ChangeMusic(int32(mus_evil), 1)
+	s_ChangeMusic(int32(mus_evil), 1)
 }
 
 // C documentation
@@ -6708,7 +6708,7 @@ func F_StartCast() {
 //	//
 //	// F_CastTicker
 //	//
-func F_CastTicker() {
+func f_CastTicker() {
 	var sfx, st, v1 int32
 	casttics--
 	v1 = casttics
@@ -6723,7 +6723,7 @@ func F_CastTicker() {
 			castnum = 0
 		}
 		if mobjinfo[castorder[castnum].Ftype1].Fseesound != 0 {
-			S_StartSound(nil, mobjinfo[castorder[castnum].Ftype1].Fseesound)
+			s_StartSound(nil, mobjinfo[castorder[castnum].Ftype1].Fseesound)
 		}
 		caststate = &states[mobjinfo[castorder[castnum].Ftype1].Fseestate]
 		castframes = 0
@@ -6794,7 +6794,7 @@ func F_CastTicker() {
 			break
 		}
 		if sfx != 0 {
-			S_StartSound(nil, sfx)
+			s_StartSound(nil, sfx)
 		}
 	}
 	if castframes == 12 {
@@ -6840,7 +6840,7 @@ _2:
 // F_CastResponder
 //
 
-func F_CastResponder(ev *event_t) (r boolean) {
+func f_CastResponder(ev *event_t) (r boolean) {
 	if ev.Ftype1 != Ev_keydown {
 		return 0
 	}
@@ -6854,12 +6854,12 @@ func F_CastResponder(ev *event_t) (r boolean) {
 	castframes = 0
 	castattacking = 0
 	if mobjinfo[castorder[castnum].Ftype1].Fdeathsound != 0 {
-		S_StartSound(nil, mobjinfo[castorder[castnum].Ftype1].Fdeathsound)
+		s_StartSound(nil, mobjinfo[castorder[castnum].Ftype1].Fdeathsound)
 	}
 	return 1
 }
 
-func F_CastPrint(text string) {
+func f_CastPrint(text string) {
 	var c, cx, w, width int32
 	// find width
 	width = 0
@@ -6881,7 +6881,7 @@ func F_CastPrint(text string) {
 			continue
 		}
 		w = int32(hu_font[c].Fwidth)
-		V_DrawPatch(cx, 180, hu_font[c])
+		v_DrawPatch(cx, 180, hu_font[c])
 		cx += w
 	}
 }
@@ -6890,15 +6890,15 @@ func F_CastPrint(text string) {
 // F_CastDrawer
 //
 
-func F_CastDrawer() {
+func f_CastDrawer() {
 	var flip boolean
 	var lump int32
 	var patch *patch_t
 	var sprdef *spritedef_t
 	var sprframe *spriteframe_t
 	// erase the entire screen to a background
-	V_DrawPatch(0, 0, W_CacheLumpNameT("BOSSBACK"))
-	F_CastPrint(castorder[castnum].Fname)
+	v_DrawPatch(0, 0, W_CacheLumpNameT("BOSSBACK"))
+	f_CastPrint(castorder[castnum].Fname)
 	// draw the current frame in the middle of the screen
 	sprdef = &sprites[caststate.Fsprite]
 	sprframe = &sprdef.Fspriteframes[caststate.Fframe&int32(FF_FRAMEMASK1)]
@@ -6906,9 +6906,9 @@ func F_CastDrawer() {
 	flip = uint32(sprframe.Fflip[0])
 	patch = W_CacheLumpNumT(lump + firstspritelump)
 	if flip != 0 {
-		V_DrawPatchFlipped(160, 170, patch)
+		v_DrawPatchFlipped(160, 170, patch)
 	} else {
-		V_DrawPatch(160, 170, patch)
+		v_DrawPatch(160, 170, patch)
 	}
 }
 
@@ -6917,7 +6917,7 @@ func F_CastDrawer() {
 //	//
 //	// F_DrawPatchCol
 //	//
-func F_DrawPatchCol(x int32, patch *patch_t, col int32) {
+func f_DrawPatchCol(x int32, patch *patch_t, col int32) {
 	var dest, desttop uintptr
 	var count int32
 	column := patch.GetColumn(col)
@@ -6940,11 +6940,11 @@ func F_DrawPatchCol(x int32, patch *patch_t, col int32) {
 //	//
 //	// F_BunnyScroll
 //	//
-func F_BunnyScroll() {
+func f_BunnyScroll() {
 	var scrolled, stage, x int32
 	p1 := W_CacheLumpNameT("PFUB2")
 	p2 := W_CacheLumpNameT("PFUB1")
-	V_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT)
+	v_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT)
 	scrolled = 320 - (int32(finalecount)-int32(230))/int32(2)
 	if scrolled > 320 {
 		scrolled = 320
@@ -6958,9 +6958,9 @@ func F_BunnyScroll() {
 			break
 		}
 		if x+scrolled < 320 {
-			F_DrawPatchCol(x, p1, x+scrolled)
+			f_DrawPatchCol(x, p1, x+scrolled)
 		} else {
-			F_DrawPatchCol(x, p2, x+scrolled-int32(320))
+			f_DrawPatchCol(x, p2, x+scrolled-int32(320))
 		}
 		goto _1
 	_1:
@@ -6971,7 +6971,7 @@ func F_BunnyScroll() {
 		return
 	}
 	if finalecount < 1180 {
-		V_DrawPatch((SCREENWIDTH-13*8)/2, (SCREENHEIGHT-8*8)/2, W_CacheLumpNameT("END0"))
+		v_DrawPatch((SCREENWIDTH-13*8)/2, (SCREENHEIGHT-8*8)/2, W_CacheLumpNameT("END0"))
 		laststage = 0
 		return
 	}
@@ -6980,19 +6980,19 @@ func F_BunnyScroll() {
 		stage = 6
 	}
 	if stage > laststage {
-		S_StartSound(nil, int32(sfx_pistol))
+		s_StartSound(nil, int32(sfx_pistol))
 		laststage = stage
 	}
 	name := fmt.Sprintf("END%d", stage)
-	V_DrawPatch((SCREENWIDTH-13*8)/2, (SCREENHEIGHT-8*8)/2, W_CacheLumpNameT(name))
+	v_DrawPatch((SCREENWIDTH-13*8)/2, (SCREENHEIGHT-8*8)/2, W_CacheLumpNameT(name))
 }
 
 var laststage int32
 
-func F_ArtScreenDrawer() {
+func f_ArtScreenDrawer() {
 	var lumpname string
 	if gameepisode == 3 {
-		F_BunnyScroll()
+		f_BunnyScroll()
 	} else {
 		switch gameepisode {
 		case 1:
@@ -7008,7 +7008,7 @@ func F_ArtScreenDrawer() {
 		default:
 			return
 		}
-		V_DrawPatch(0, 0, W_CacheLumpNameT(lumpname))
+		v_DrawPatch(0, 0, W_CacheLumpNameT(lumpname))
 	}
 }
 
@@ -7017,14 +7017,14 @@ func F_ArtScreenDrawer() {
 //	//
 //	// F_Drawer
 //	//
-func F_Drawer() {
+func f_Drawer() {
 	switch finalestage {
 	case F_STAGE_CAST:
-		F_CastDrawer()
+		f_CastDrawer()
 	case F_STAGE_TEXT:
-		F_TextWrite()
+		f_TextWrite()
 	case F_STAGE_ARTSCREEN:
-		F_ArtScreenDrawer()
+		f_ArtScreenDrawer()
 		break
 	}
 }
@@ -7125,14 +7125,14 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 	wipe_shittyColMajorXform(wipe_scr_end, width/int32(2), height)
 	// setup initial column positions
 	// (y<0 => not ready to scroll yet)
-	y_screen = Z_Malloc(int32(uint64(width) * 4))
-	*(*int32)(unsafe.Pointer(y_screen)) = -(M_Random() % 16)
+	y_screen = z_Malloc(int32(uint64(width) * 4))
+	*(*int32)(unsafe.Pointer(y_screen)) = -(m_Random() % 16)
 	i = 1
 	for {
 		if i >= width {
 			break
 		}
-		r = M_Random()%int32(3) - 1
+		r = m_Random()%int32(3) - 1
 		*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) = *(*int32)(unsafe.Pointer(y_screen + uintptr(i-1)*4)) + r
 		if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) > 0 {
 			*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) = 0
@@ -7228,22 +7228,22 @@ func wipe_doMelt(width int32, height int32, ticks int32) (r int32) {
 }
 
 func wipe_exitMelt(width int32, height int32, ticks int32) (r int32) {
-	Z_Free(y_screen)
-	Z_Free(wipe_scr_start)
-	Z_Free(wipe_scr_end)
+	z_Free(y_screen)
+	z_Free(wipe_scr_start)
+	z_Free(wipe_scr_end)
 	return 0
 }
 
 func wipe_StartScreen(x int32, y int32, width int32, height int32) (r int32) {
-	wipe_scr_start = Z_Malloc(SCREENWIDTH * SCREENHEIGHT)
-	I_ReadScreen(wipe_scr_start)
+	wipe_scr_start = z_Malloc(SCREENWIDTH * SCREENHEIGHT)
+	i_ReadScreen(wipe_scr_start)
 	return 0
 }
 
 func wipe_EndScreen(x int32, y int32, width int32, height int32) (r int32) {
-	wipe_scr_end = Z_Malloc(SCREENWIDTH * SCREENHEIGHT)
-	I_ReadScreen(wipe_scr_end)
-	V_DrawBlock(x, y, width, height, wipe_scr_start) // restore start scr.
+	wipe_scr_end = z_Malloc(SCREENWIDTH * SCREENHEIGHT)
+	i_ReadScreen(wipe_scr_end)
+	v_DrawBlock(x, y, width, height, wipe_scr_start) // restore start scr.
 	return 0
 }
 
@@ -7256,9 +7256,9 @@ func wipe_ScreenWipe(wipeno int32, x int32, y int32, width int32, height int32, 
 		wipes[wipeno*3](width, height, ticks)
 	}
 	// do a piece of wipe-in
-	V_MarkRect(0, 0, width, height)
+	v_MarkRect(0, 0, width, height)
 	rc = wipes[wipeno*3+1](width, height, ticks)
-	//  V_DrawBlock(x, y, 0, width, height, wipe_scr); // DEBUG
+	//  v_DrawBlock(x, y, 0, width, height, wipe_scr); // DEBUG
 	// final stuff
 	if rc != 0 {
 		wipe_running = 0
@@ -7465,7 +7465,7 @@ func WeaponSelectable(weapon weapontype_t) (r boolean) {
 	return 1
 }
 
-func G_NextWeapon(direction int32) weapontype_t {
+func g_NextWeapon(direction int32) weapontype_t {
 	var i, start_i int32
 	var weapon weapontype_t
 	// Find index in the table.
@@ -7504,7 +7504,7 @@ func G_NextWeapon(direction int32) weapontype_t {
 //	// or reads it from the demo buffer.
 //	// If recording a demo, write it out
 //	//
-func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
+func g_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	var bstrafe, strafe boolean
 	var desired_angleturn int16
 	var forward, side, speed, tspeed, v1, v16 int32
@@ -7580,7 +7580,7 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 		side += sidemove[speed]
 	}
 	// buttons
-	cmd.Fchatchar = uint8(HU_dequeueChatChar())
+	cmd.Fchatchar = uint8(hu_dequeueChatChar())
 	if gamekeydown[key_fire] || mouseButton(mousebfire) || joyButton(joybfire) {
 		cmd.Fbuttons |= BT_ATTACK
 	}
@@ -7593,7 +7593,7 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	// next_weapon variable is set to change weapons when
 	// we generate a ticcmd.  Choose a new weapon.
 	if gamestate == GS_LEVEL && next_weapon != 0 {
-		i := G_NextWeapon(int32(next_weapon))
+		i := g_NextWeapon(int32(next_weapon))
 		cmd.Fbuttons |= BT_CHANGE
 		cmd.Fbuttons |= uint8(i << BT_WEAPONSHIFT)
 	} else {
@@ -7712,7 +7712,7 @@ var carry int16
 //	//
 //	// G_DoLoadLevel
 //	//
-func G_DoLoadLevel() {
+func g_DoLoadLevel() {
 	var i, v2, v3, v4 int32
 	var skytexturename string
 	var v5, v6 boolean
@@ -7721,7 +7721,7 @@ func G_DoLoadLevel() {
 	//  a flat. The data is in the WAD only because
 	//  we look for an actual index, instead of simply
 	//  setting one.
-	skyflatnum = R_FlatNumForName("F_SKY1")
+	skyflatnum = r_FlatNumForName("F_SKY1")
 	// The "Sky never changes in Doom II" bug was fixed in
 	// the id Anthology version of doom2.exe for Final Doom.
 	if gamemode == commercial && (gameversion == exe_final2 || gameversion == exe_chex) {
@@ -7735,7 +7735,7 @@ func G_DoLoadLevel() {
 			}
 		}
 		skytexturename = skytexturename
-		skytexture = R_TextureNumForName(skytexturename)
+		skytexture = r_TextureNumForName(skytexturename)
 	}
 	if wipegamestate == GS_LEVEL {
 		wipegamestate = -1
@@ -7756,7 +7756,7 @@ func G_DoLoadLevel() {
 		;
 		i++
 	}
-	P_SetupLevel(gameepisode, gamemap, 0, gameskill)
+	p_SetupLevel(gameepisode, gamemap, 0, gameskill)
 	displayplayer = consoleplayer // view the guy you are playing
 	gameaction = ga_nothing
 	// clear cmd building stuff
@@ -7841,7 +7841,7 @@ func SetMouseButtons(buttons_mask uint32) {
 //	// G_Responder
 //	// Get info needed to make ticcmd_ts for the players.
 //	//
-func G_Responder(ev *event_t) (r boolean) {
+func g_Responder(ev *event_t) (r boolean) {
 	// allow spy mode changes even during the demo
 	if gamestate == GS_LEVEL && ev.Ftype1 == Ev_keydown && ev.Fdata1 == key_spy && (singledemo != 0 || deathmatch == 0) {
 		// spy mode
@@ -7856,24 +7856,24 @@ func G_Responder(ev *event_t) (r boolean) {
 	// any other key pops up menu if in demos
 	if gameaction == ga_nothing && singledemo == 0 && (demoplayback != 0 || gamestate == GS_DEMOSCREEN) {
 		if ev.Ftype1 == Ev_keydown || ev.Ftype1 == Ev_mouse && ev.Fdata1 != 0 || ev.Ftype1 == Ev_joystick && ev.Fdata1 != 0 {
-			M_StartControlPanel()
+			m_StartControlPanel()
 			return 1
 		}
 		return 0
 	}
 	if gamestate == GS_LEVEL {
-		if HU_Responder(ev) != 0 {
+		if hu_Responder(ev) != 0 {
 			return 1
 		} // chat ate the event
-		if ST_Responder(ev) != 0 {
+		if st_Responder(ev) != 0 {
 			return 1
 		} // status window ate it
-		if AM_Responder(ev) != 0 {
+		if am_Responder(ev) != 0 {
 			return 1
 		} // automap ate it
 	}
 	if gamestate == GS_FINALE {
-		if F_Responder(ev) != 0 {
+		if f_Responder(ev) != 0 {
 			return 1
 		} // finale ate the event
 	}
@@ -7931,7 +7931,7 @@ func G_Responder(ev *event_t) (r boolean) {
 //	// G_Ticker
 //	// Make ticcmd_ts for the players.
 //	//
-func G_Ticker() {
+func g_Ticker() {
 	var buf, i int32
 	var cmd *ticcmd_t
 	// do player reborns if needed
@@ -7941,7 +7941,7 @@ func G_Ticker() {
 			break
 		}
 		if playeringame[i] != 0 && players[i].Fplayerstate == PST_REBORN {
-			G_DoReborn(i)
+			g_DoReborn(i)
 		}
 		goto _1
 	_1:
@@ -7952,21 +7952,21 @@ func G_Ticker() {
 	for gameaction != ga_nothing {
 		switch gameaction {
 		case ga_loadlevel:
-			G_DoLoadLevel()
+			g_DoLoadLevel()
 		case ga_newgame:
-			G_DoNewGame()
+			g_DoNewGame()
 		case ga_loadgame:
-			G_DoLoadGame()
+			g_DoLoadGame()
 		case ga_savegame:
-			G_DoSaveGame()
+			g_DoSaveGame()
 		case ga_playdemo:
-			G_DoPlayDemo()
+			g_DoPlayDemo()
 		case ga_completed:
-			G_DoCompleted()
+			g_DoCompleted()
 		case ga_victory:
-			F_StartFinale()
+			f_StartFinale()
 		case ga_worlddone:
-			G_DoWorldDone()
+			g_DoWorldDone()
 		case ga_nothing:
 			break
 		}
@@ -7983,10 +7983,10 @@ func G_Ticker() {
 			cmd = &players[i].Fcmd
 			*cmd = netcmds[i]
 			if demoplayback != 0 {
-				G_ReadDemoTiccmd(cmd)
+				g_ReadDemoTiccmd(cmd)
 			}
 			if demorecording != 0 {
-				G_WriteDemoTiccmd(cmd)
+				g_WriteDemoTiccmd(cmd)
 			}
 			// check for turbo cheats
 			// check ~ 4 seconds whether to display the turbo message.
@@ -8003,7 +8003,7 @@ func G_Ticker() {
 			}
 			if netgame != 0 && netdemo == 0 && gametic%ticdup == 0 {
 				if gametic > BACKUPTICS && int32(consistancy[i][buf]) != int32(cmd.Fconsistancy) {
-					I_Error("consistency failure (%d should be %d)", int32(cmd.Fconsistancy), int32(consistancy[i][buf]))
+					i_Error("consistency failure (%d should be %d)", int32(cmd.Fconsistancy), int32(consistancy[i][buf]))
 				}
 				if players[i].Fmo != nil {
 					consistancy[i][buf] = uint8(players[i].Fmo.Fx)
@@ -8029,9 +8029,9 @@ func G_Ticker() {
 				case BTS_PAUSE:
 					paused = boolean(paused ^ 1)
 					if paused != 0 {
-						S_PauseSound()
+						s_PauseSound()
 					} else {
-						S_ResumeSound()
+						s_ResumeSound()
 					}
 				case BTS_SAVEGAME:
 					if len(savedescription) == 0 {
@@ -8050,22 +8050,22 @@ func G_Ticker() {
 	}
 	// Have we just finished displaying an intermission screen?
 	if oldgamestate == GS_INTERMISSION && gamestate != GS_INTERMISSION {
-		WI_End()
+		wi_End()
 	}
 	oldgamestate = gamestate
 	// do main actions
 	switch gamestate {
 	case GS_LEVEL:
-		P_Ticker()
-		ST_Ticker()
-		AM_Ticker()
-		HU_Ticker()
+		p_Ticker()
+		st_Ticker()
+		am_Ticker()
+		hu_Ticker()
 	case GS_INTERMISSION:
-		WI_Ticker()
+		wi_Ticker()
 	case GS_FINALE:
-		F_Ticker()
+		f_Ticker()
 	case GS_DEMOSCREEN:
-		D_PageTicker()
+		d_PageTicker()
 		break
 	}
 }
@@ -8076,7 +8076,7 @@ func G_Ticker() {
 //	// G_PlayerFinishLevel
 //	// Can when a player completes a level.
 //	//
-func G_PlayerFinishLevel(player int32) {
+func g_PlayerFinishLevel(player int32) {
 	p := &players[player]
 	clear(p.Fpowers[:])
 	clear(p.Fcards[:])
@@ -8094,7 +8094,7 @@ func G_PlayerFinishLevel(player int32) {
 //	// Called after a player dies
 //	// almost everything is cleared and initialized
 //	//
-func G_PlayerReborn(player int32) {
+func g_PlayerReborn(player int32) {
 	var itemcount, killcount, secretcount int32
 	var frags [4]int32
 
@@ -8122,7 +8122,7 @@ func G_PlayerReborn(player int32) {
 	}
 }
 
-func G_CheckSpot(playernum int32, mthing *mapthing_t) (r boolean) {
+func g_CheckSpot(playernum int32, mthing *mapthing_t) (r boolean) {
 	var an, i int32
 	var mo *mobj_t
 	var ss *subsector_t
@@ -8146,22 +8146,22 @@ func G_CheckSpot(playernum int32, mthing *mapthing_t) (r boolean) {
 	}
 	x = int32(mthing.Fx) << FRACBITS
 	y = int32(mthing.Fy) << FRACBITS
-	if P_CheckPosition(players[playernum].Fmo, x, y) == 0 {
+	if p_CheckPosition(players[playernum].Fmo, x, y) == 0 {
 		return 0
 	}
 	// flush an old corpse if needed
 	if bodyqueslot >= BODYQUESIZE {
-		P_RemoveMobj(bodyque[bodyqueslot%BODYQUESIZE])
+		p_RemoveMobj(bodyque[bodyqueslot%BODYQUESIZE])
 	}
 	bodyque[bodyqueslot%BODYQUESIZE] = players[playernum].Fmo
 	bodyqueslot++
 	// spawn a teleport fog
-	ss = R_PointInSubsector(x, y)
+	ss = r_PointInSubsector(x, y)
 	// The code in the released source looks like this:
 	//
 	//    an = ( ANG45 * (((unsigned int) mthing->angle)/45) )
 	//         >> ANGLETOFINESHIFT;
-	//    mo = P_SpawnMobj (x+20*finecosine[an], y+20*finesine[an]
+	//    mo = p_SpawnMobj (x+20*finecosine[an], y+20*finesine[an]
 	//                     , ss->sector->floorheight
 	//                     , MT_TFOG);
 	//
@@ -8199,15 +8199,15 @@ func G_CheckSpot(playernum int32, mthing *mapthing_t) (r boolean) {
 		xa = finecosine[an]
 		ya = finesine[an]
 	default:
-		I_Error("G_CheckSpot: unexpected angle %d\n", an)
+		i_Error("g_CheckSpot: unexpected angle %d\n", an)
 		v2 = 0
 		ya = v2
 		xa = v2
 		break
 	}
-	mo = P_SpawnMobj(x+int32(20)*xa, y+int32(20)*ya, ss.Fsector.Ffloorheight, MT_TFOG)
+	mo = p_SpawnMobj(x+int32(20)*xa, y+int32(20)*ya, ss.Fsector.Ffloorheight, MT_TFOG)
 	if players[consoleplayer].Fviewz != 1 {
-		S_StartSound(&mo.degenmobj_t, int32(sfx_telept))
+		s_StartSound(&mo.degenmobj_t, int32(sfx_telept))
 	} // don't start sound on first frame
 	return 1
 }
@@ -8219,21 +8219,21 @@ func G_CheckSpot(playernum int32, mthing *mapthing_t) (r boolean) {
 //	// Spawns a player at one of the random death match spots
 //	// called at level load and each death
 //	//
-func G_DeathMatchSpawnPlayer(playernum int32) {
+func g_DeathMatchSpawnPlayer(playernum int32) {
 	var i, j, selections int32
 	selections = int32(deathmatch_pos)
 	if selections < 4 {
-		I_Error("Only %d deathmatch spots, 4 required", selections)
+		i_Error("Only %d deathmatch spots, 4 required", selections)
 	}
 	j = 0
 	for {
 		if j >= 20 {
 			break
 		}
-		i = P_Random() % selections
-		if G_CheckSpot(playernum, &deathmatchstarts[i]) != 0 {
+		i = p_Random() % selections
+		if g_CheckSpot(playernum, &deathmatchstarts[i]) != 0 {
 			deathmatchstarts[i].Ftype1 = int16(playernum + 1)
-			P_SpawnPlayer(&deathmatchstarts[i])
+			p_SpawnPlayer(&deathmatchstarts[i])
 			return
 		}
 		goto _1
@@ -8242,7 +8242,7 @@ func G_DeathMatchSpawnPlayer(playernum int32) {
 		j++
 	}
 	// no good spot, so the player will probably get stuck
-	P_SpawnPlayer(&playerstarts[playernum])
+	p_SpawnPlayer(&playerstarts[playernum])
 }
 
 // C documentation
@@ -8250,7 +8250,7 @@ func G_DeathMatchSpawnPlayer(playernum int32) {
 //	//
 //	// G_DoReborn
 //	//
-func G_DoReborn(playernum int32) {
+func g_DoReborn(playernum int32) {
 	var i int32
 	if netgame == 0 {
 		// reload the level from scratch
@@ -8261,11 +8261,11 @@ func G_DoReborn(playernum int32) {
 		players[playernum].Fmo.Fplayer = nil
 		// spawn at random spot if in death match
 		if deathmatch != 0 {
-			G_DeathMatchSpawnPlayer(playernum)
+			g_DeathMatchSpawnPlayer(playernum)
 			return
 		}
-		if G_CheckSpot(playernum, &playerstarts[playernum]) != 0 {
-			P_SpawnPlayer(&playerstarts[playernum])
+		if g_CheckSpot(playernum, &playerstarts[playernum]) != 0 {
+			p_SpawnPlayer(&playerstarts[playernum])
 			return
 		}
 		// try to spawn at one of the other players spots
@@ -8274,9 +8274,9 @@ func G_DoReborn(playernum int32) {
 			if i >= MAXPLAYERS {
 				break
 			}
-			if G_CheckSpot(playernum, &playerstarts[i]) != 0 {
+			if g_CheckSpot(playernum, &playerstarts[i]) != 0 {
 				playerstarts[i].Ftype1 = int16(playernum + 1) // fake as other player
-				P_SpawnPlayer(&playerstarts[i])
+				p_SpawnPlayer(&playerstarts[i])
 				playerstarts[i].Ftype1 = int16(i + 1) // restore
 				return
 			}
@@ -8286,7 +8286,7 @@ func G_DoReborn(playernum int32) {
 			;
 			i++
 		}
-		P_SpawnPlayer(&playerstarts[playernum])
+		p_SpawnPlayer(&playerstarts[playernum])
 	}
 }
 
@@ -8366,7 +8366,7 @@ func init() {
 	}
 }
 
-func G_ExitLevel() {
+func g_ExitLevel() {
 	secretexit = 0
 	gameaction = ga_completed
 }
@@ -8374,9 +8374,9 @@ func G_ExitLevel() {
 // C documentation
 //
 //	// Here's for the german edition.
-func G_SecretExitLevel() {
+func g_SecretExitLevel() {
 	// IF NO WOLF3D LEVELS, NO SECRET EXIT!
-	if gamemode == commercial && W_CheckNumForName("map31") < 0 {
+	if gamemode == commercial && w_CheckNumForName("map31") < 0 {
 		secretexit = 0
 	} else {
 		secretexit = 1
@@ -8384,7 +8384,7 @@ func G_SecretExitLevel() {
 	gameaction = ga_completed
 }
 
-func G_DoCompleted() {
+func g_DoCompleted() {
 	var i int32
 	gameaction = ga_nothing
 	i = 0
@@ -8393,7 +8393,7 @@ func G_DoCompleted() {
 			break
 		}
 		if playeringame[i] != 0 {
-			G_PlayerFinishLevel(i)
+			g_PlayerFinishLevel(i)
 		}
 		goto _1
 	_1:
@@ -8401,7 +8401,7 @@ func G_DoCompleted() {
 		i++
 	} // take away cards and stuff
 	if automapactive != 0 {
-		AM_Stop()
+		am_Stop()
 	}
 	if gamemode != commercial {
 		// Chex Quest ends after 5 levels, rather than 8.
@@ -8546,7 +8546,7 @@ func G_DoCompleted() {
 	viewactive = 0
 	automapactive = 0
 	StatCopy(&wminfo)
-	WI_Start(&wminfo)
+	wi_Start(&wminfo)
 }
 
 // C documentation
@@ -8554,7 +8554,7 @@ func G_DoCompleted() {
 //	//
 //	// G_WorldDone
 //	//
-func G_WorldDone() {
+func g_WorldDone() {
 	gameaction = ga_worlddone
 	if secretexit != 0 {
 		players[consoleplayer].Fdidsecret = 1
@@ -8575,57 +8575,57 @@ func G_WorldDone() {
 		case 20:
 			fallthrough
 		case 30:
-			F_StartFinale()
+			f_StartFinale()
 			break
 		}
 	}
 }
 
-func G_DoWorldDone() {
+func g_DoWorldDone() {
 	gamestate = GS_LEVEL
 	gamemap = wminfo.Fnext + 1
-	G_DoLoadLevel()
+	g_DoLoadLevel()
 	gameaction = ga_nothing
 	viewactive = 1
 }
 
-func G_LoadGame(name string) {
+func g_LoadGame(name string) {
 	savename = name
 	gameaction = ga_loadgame
 }
 
-func G_DoLoadGame() {
+func g_DoLoadGame() {
 	var savedleveltime int32
 	var err error
 	gameaction = ga_nothing
 	save_stream, err = os.Open(savename)
 	if err != nil {
-		log.Printf("G_DoLoadGame: error opening savegame file %s: %v\n", savename, err)
+		log.Printf("g_DoLoadGame: error opening savegame file %s: %v\n", savename, err)
 		return
 	}
 	defer save_stream.Close()
 	savegame_error = 0
-	if P_ReadSaveGameHeader() == 0 {
+	if p_ReadSaveGameHeader() == 0 {
 		save_stream.Close()
 		return
 	}
 	savedleveltime = leveltime
 	// load a base level
-	G_InitNew(gameskill, gameepisode, gamemap)
+	g_InitNew(gameskill, gameepisode, gamemap)
 	leveltime = savedleveltime
 	// dearchive all the modifications
-	P_UnArchivePlayers()
-	P_UnArchiveWorld()
-	P_UnArchiveThinkers()
-	P_UnArchiveSpecials()
-	if P_ReadSaveGameEOF() == 0 {
-		I_Error("Bad savegame")
+	p_UnArchivePlayers()
+	p_UnArchiveWorld()
+	p_UnArchiveThinkers()
+	p_UnArchiveSpecials()
+	if p_ReadSaveGameEOF() == 0 {
+		i_Error("Bad savegame")
 	}
 	if setsizeneeded != 0 {
-		R_ExecuteSetViewSize()
+		r_ExecuteSetViewSize()
 	}
 	// draw the pattern into the back screen
-	R_FillBackScreen()
+	r_FillBackScreen()
 }
 
 // C documentation
@@ -8635,17 +8635,17 @@ func G_DoLoadGame() {
 //	// Called by the menu task.
 //	// Description is a 24 byte text string
 //	//
-func G_SaveGame(slot int32, description string) {
+func g_SaveGame(slot int32, description string) {
 	savegameslot = slot
 	savedescription = description
 	sendsave = 1
 }
 
-func G_DoSaveGame() {
+func g_DoSaveGame() {
 	var recovery_savegame_file, savegame_file, temp_savegame_file string
 	recovery_savegame_file = ""
-	temp_savegame_file = P_TempSaveGameFile()
-	savegame_file = P_SaveGameFile(savegameslot)
+	temp_savegame_file = p_TempSaveGameFile()
+	savegame_file = p_SaveGameFile(savegameslot)
 	// Open the savegame file for writing.  We write to a temporary file
 	// and then rename it at the end if it was successfully written.
 	// This prevents an existing savegame from being overwritten by
@@ -8653,28 +8653,28 @@ func G_DoSaveGame() {
 	var err error
 	save_stream, err = os.OpenFile(temp_savegame_file, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
-		log.Printf("G_DoSaveGame: error opening savegame file %s: %v\n", temp_savegame_file, err)
+		log.Printf("g_DoSaveGame: error opening savegame file %s: %v\n", temp_savegame_file, err)
 		// Failed to save the game, so we're going to have to abort. But
-		// to be nice, save to somewhere else before we call I_Error().
-		recovery_savegame_file = M_TempFile("recovery.dsg")
+		// to be nice, save to somewhere else before we call i_Error().
+		recovery_savegame_file = m_TempFile("recovery.dsg")
 		save_stream, err = os.OpenFile(recovery_savegame_file, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 		if err != nil {
-			log.Printf("G_DoSaveGame: error opening recovery savegame file %s: %v\n", recovery_savegame_file, err)
-			I_Error("Failed to open either '%s' or '%s' to write savegame.", temp_savegame_file, recovery_savegame_file)
+			log.Printf("g_DoSaveGame: error opening recovery savegame file %s: %v\n", recovery_savegame_file, err)
+			i_Error("Failed to open either '%s' or '%s' to write savegame.", temp_savegame_file, recovery_savegame_file)
 		}
 	}
 	savegame_error = 0
-	P_WriteSaveGameHeader(savedescription)
-	P_ArchivePlayers()
-	P_ArchiveWorld()
-	P_ArchiveThinkers()
-	P_ArchiveSpecials()
-	P_WriteSaveGameEOF()
+	p_WriteSaveGameHeader(savedescription)
+	p_ArchivePlayers()
+	p_ArchiveWorld()
+	p_ArchiveThinkers()
+	p_ArchiveSpecials()
+	p_WriteSaveGameEOF()
 	// Enforce the same savegame size limit as in Vanilla Doom,
 	// except if the vanilla_savegame_limit setting is turned off.
 	pos, err := save_stream.Seek(0, io.SeekCurrent)
 	if vanilla_savegame_limit != 0 && pos > SAVEGAMESIZE {
-		I_Error("Savegame buffer overrun")
+		i_Error("Savegame buffer overrun")
 	}
 	// Finish up, close the savegame file.
 	save_stream.Close()
@@ -8682,7 +8682,7 @@ func G_DoSaveGame() {
 		// We failed to save to the normal location, but we wrote a
 		// recovery file to the temp directory. Now we can bomb out
 		// with an error.
-		I_Error("Failed to open savegame file '%s' for writing.\nBut your game has been saved to '%s' for recovery.", temp_savegame_file, recovery_savegame_file)
+		i_Error("Failed to open savegame file '%s' for writing.\nBut your game has been saved to '%s' for recovery.", temp_savegame_file, recovery_savegame_file)
 	}
 	// Now rename the temporary savegame file to the actual savegame
 	// file, overwriting the old savegame if there was one there.
@@ -8692,17 +8692,17 @@ func G_DoSaveGame() {
 	savedescription = ""
 	players[consoleplayer].Fmessage = "game saved."
 	// draw the pattern into the back screen
-	R_FillBackScreen()
+	r_FillBackScreen()
 }
 
-func G_DeferedInitNew(skill skill_t, episode int32, map1 int32) {
+func g_DeferedInitNew(skill skill_t, episode int32, map1 int32) {
 	d_skill = skill
 	d_episode = episode
 	d_map = map1
 	gameaction = ga_newgame
 }
 
-func G_DoNewGame() {
+func g_DoNewGame() {
 	var v1, v2 boolean
 	demoplayback = 0
 	netdemo = 0
@@ -8717,16 +8717,16 @@ func G_DoNewGame() {
 	fastparm = 0
 	nomonsters = 0
 	consoleplayer = 0
-	G_InitNew(d_skill, d_episode, d_map)
+	g_InitNew(d_skill, d_episode, d_map)
 	gameaction = ga_nothing
 }
 
-func G_InitNew(skill skill_t, episode int32, map1 int32) {
+func g_InitNew(skill skill_t, episode int32, map1 int32) {
 	var i int32
 	var skytexturename string
 	if paused != 0 {
 		paused = 0
-		S_ResumeSound()
+		s_ResumeSound()
 	}
 	/*
 		    // Note: This commented-out block of code was added at some point
@@ -8779,7 +8779,7 @@ func G_InitNew(skill skill_t, episode int32, map1 int32) {
 	if map1 > 9 && gamemode != commercial {
 		map1 = 9
 	}
-	M_ClearRandom()
+	m_ClearRandom()
 	if skill == sk_nightmare || respawnparm != 0 {
 		respawnmonsters = 1
 	} else {
@@ -8873,18 +8873,18 @@ func G_InitNew(skill skill_t, episode int32, map1 int32) {
 			break
 		}
 	}
-	skytexture = R_TextureNumForName(skytexturename)
-	G_DoLoadLevel()
+	skytexture = r_TextureNumForName(skytexturename)
+	g_DoLoadLevel()
 }
 
 //
 // DEMO RECORDING
 //
 
-func G_ReadDemoTiccmd(cmd *ticcmd_t) {
+func g_ReadDemoTiccmd(cmd *ticcmd_t) {
 	if demobuffer[demo_pos] == DEMOMARKER {
 		// end of demo data stream
-		G_CheckDemoStatus()
+		g_CheckDemoStatus()
 		return
 	}
 	cmd.Fforwardmove = int8(demobuffer[demo_pos])
@@ -8903,9 +8903,9 @@ func G_ReadDemoTiccmd(cmd *ticcmd_t) {
 	demo_pos++
 }
 
-func G_WriteDemoTiccmd(cmd *ticcmd_t) {
+func g_WriteDemoTiccmd(cmd *ticcmd_t) {
 	if gamekeydown[key_demo_quit] { // press q to end demo recording
-		G_CheckDemoStatus()
+		g_CheckDemoStatus()
 	}
 	demo_start := demo_pos
 	if len(demobuffer)-demo_pos < 6 {
@@ -8930,7 +8930,7 @@ func G_WriteDemoTiccmd(cmd *ticcmd_t) {
 	demo_pos++
 	// reset demo pointer back
 	demo_pos = demo_start
-	G_ReadDemoTiccmd(cmd) // make SURE it is exactly the same
+	g_ReadDemoTiccmd(cmd) // make SURE it is exactly the same
 }
 
 // C documentation
@@ -8938,7 +8938,7 @@ func G_WriteDemoTiccmd(cmd *ticcmd_t) {
 //	//
 //	// G_RecordDemo
 //	//
-func G_RecordDemo(name string) {
+func g_RecordDemo(name string) {
 	var i, maxsize int32
 	usergame = 0
 	demoname = fmt.Sprintf("%s.lmp", name)
@@ -8950,7 +8950,7 @@ func G_RecordDemo(name string) {
 	//
 	// Specify the demo buffer size (KiB)
 	//
-	i = M_CheckParmWithArgs("-maxdemo", 1)
+	i = m_CheckParmWithArgs("-maxdemo", 1)
 	if i != 0 {
 		v, _ := strconv.Atoi(myargs[i+1])
 		maxsize = int32(v) * 1024
@@ -8962,10 +8962,10 @@ func G_RecordDemo(name string) {
 // C documentation
 //
 //	// Get the demo version code appropriate for the version set in gameversion.
-func G_VanillaVersionCode() (r int32) {
+func g_VanillaVersionCode() (r int32) {
 	switch gameversion {
 	case exe_doom_1_2:
-		I_Error("Doom 1.2 does not have a version code!")
+		i_Error("Doom 1.2 does not have a version code!")
 		fallthrough
 	case exe_doom_1_666:
 		return 106
@@ -8981,14 +8981,14 @@ func G_VanillaVersionCode() (r int32) {
 	return r
 }
 
-func G_BeginRecording() {
+func g_BeginRecording() {
 	var i int32
 	//!
 	// @category demo
 	//
 	// Record a high resolution "Doom 1.91" demo.
 	//
-	longtics = booluint32(M_CheckParm("-longtics") != 0)
+	longtics = booluint32(m_CheckParm("-longtics") != 0)
 	// If not recording a longtics demo, record in low res
 	lowres_turn = booluint32(longtics == 0)
 	demo_pos = 0
@@ -9000,7 +9000,7 @@ func G_BeginRecording() {
 		demobuffer[demo_pos] = uint8(DOOM_191_VERSION)
 		demo_pos++
 	} else {
-		demobuffer[demo_pos] = uint8(G_VanillaVersionCode())
+		demobuffer[demo_pos] = uint8(g_VanillaVersionCode())
 		demo_pos++
 	}
 	demobuffer[demo_pos] = uint8(gameskill)
@@ -9032,7 +9032,7 @@ func G_BeginRecording() {
 	}
 }
 
-func G_DeferedPlayDemo(name string) {
+func g_DeferedPlayDemo(name string) {
 	if dont_run_demo {
 		return
 	}
@@ -9068,27 +9068,27 @@ func DemoVersionDescription(version int32) string {
 	}
 }
 
-func G_DoPlayDemo() {
+func g_DoPlayDemo() {
 	var demoversion, episode, i, map1 int32
 	var skill skill_t
 	gameaction = ga_nothing
-	num := W_GetNumForName(defdemoname)
-	length := W_LumpLength(uint32(num))
-	demodata := W_CacheLumpNum(num)
+	num := w_GetNumForName(defdemoname)
+	length := w_LumpLength(uint32(num))
+	demodata := w_CacheLumpNum(num)
 	demobuffer = make([]byte, length)
 	copy(demobuffer, unsafe.Slice((*uint8)(unsafe.Pointer(demodata)), length))
 	demo_pos = 0
 	demoversion = int32(demobuffer[demo_pos])
 	demo_pos++
-	if demoversion == G_VanillaVersionCode() {
+	if demoversion == g_VanillaVersionCode() {
 		longtics = 0
 	} else {
 		if demoversion == int32(DOOM_191_VERSION) {
 			// demo recorded with cph's modified "v1.91" doom exe
 			longtics = 1
 		} else {
-			//I_Error(message, demoversion, G_VanillaVersionCode(),
-			fprintf_ccgo(os.Stdout, "Demo is from a different game version!\n(read %d, should be %d)\n\n*** You may need to upgrade your version of Doom to v1.9. ***\n    See: https://www.doomworld.com/classicdoom/info/patches.php\n    This appears to be %s.", demoversion, G_VanillaVersionCode(), DemoVersionDescription(demoversion))
+			//i_Error(message, demoversion, g_VanillaVersionCode(),
+			fprintf_ccgo(os.Stdout, "Demo is from a different game version!\n(read %d, should be %d)\n\n*** You may need to upgrade your version of Doom to v1.9. ***\n    See: https://www.doomworld.com/classicdoom/info/patches.php\n    This appears to be %s.", demoversion, g_VanillaVersionCode(), DemoVersionDescription(demoversion))
 		}
 	}
 	skill = skill_t(demobuffer[demo_pos])
@@ -9119,15 +9119,15 @@ func G_DoPlayDemo() {
 		;
 		i++
 	}
-	if playeringame[int32(1)] != 0 || M_CheckParm("-solo-net") > 0 || M_CheckParm("-netdemo") > 0 {
+	if playeringame[int32(1)] != 0 || m_CheckParm("-solo-net") > 0 || m_CheckParm("-netdemo") > 0 {
 		netgame = 1
 		netdemo = 1
 	}
 	// don't spend a lot of time in loadlevel
 	precache = 0
-	G_InitNew(skill, episode, map1)
+	g_InitNew(skill, episode, map1)
 	precache = 1
-	starttime = I_GetTime()
+	starttime = i_GetTime()
 	usergame = 0
 	demoplayback = 1
 }
@@ -9137,13 +9137,13 @@ func G_DoPlayDemo() {
 //	//
 //	// G_TimeDemo
 //	//
-func G_TimeDemo(name string) {
+func g_TimeDemo(name string) {
 	//!
 	// @vanilla
 	//
 	// Disable rendering the screen entirely.
 	//
-	nodrawers = uint32(M_CheckParm("-nodraw"))
+	nodrawers = uint32(m_CheckParm("-nodraw"))
 	timingdemo = 1
 	singletics = 1
 	defdemoname = name
@@ -9159,21 +9159,21 @@ func G_TimeDemo(name string) {
 = Returns true if a new demo loop action will take place
 ===================
 */
-func G_CheckDemoStatus() {
+func g_CheckDemoStatus() {
 	var endtime, realtics int32
 	var fps float32
 	var v1, v2 boolean
 	if timingdemo != 0 {
-		endtime = I_GetTime()
+		endtime = i_GetTime()
 		realtics = endtime - starttime
 		fps = float32(gametic) * float32(TICRATE) / float32(realtics)
 		// Prevent recursive calls
 		timingdemo = 0
 		demoplayback = 0
-		I_Error("timed %d gametics in %d realtics (%f fps)", gametic, realtics, float64(fps))
+		i_Error("timed %d gametics in %d realtics (%f fps)", gametic, realtics, float64(fps))
 	}
 	if demoplayback != 0 {
-		W_ReleaseLumpName(defdemoname)
+		w_ReleaseLumpName(defdemoname)
 		demoplayback = 0
 		netdemo = 0
 		netgame = 0
@@ -9188,19 +9188,19 @@ func G_CheckDemoStatus() {
 		nomonsters = 0
 		consoleplayer = 0
 		if singledemo != 0 {
-			I_Quit()
+			i_Quit()
 		} else {
-			D_AdvanceDemo()
+			d_AdvanceDemo()
 		}
 		return
 	}
 	if demorecording != 0 {
 		demobuffer[demo_pos] = uint8(DEMOMARKER)
 		demo_pos++
-		M_WriteFile(demoname, demobuffer[:demo_pos])
+		m_WriteFile(demoname, demobuffer[:demo_pos])
 		demobuffer = nil
 		demorecording = 0
-		I_Error("Demo %s recorded", demoname)
+		i_Error("Demo %s recorded", demoname)
 	}
 	return
 }
@@ -9286,7 +9286,7 @@ func HUlib_drawTextLine(l *hu_textline_t, drawcursor boolean) {
 			if x+w > SCREENWIDTH {
 				break
 			}
-			V_DrawPatchDirect(x, l.Fy, l.Ff[int32(c)-l.Fsc])
+			v_DrawPatchDirect(x, l.Fy, l.Ff[int32(c)-l.Fsc])
 			x += w
 		} else {
 			x += 4
@@ -9301,13 +9301,13 @@ func HUlib_drawTextLine(l *hu_textline_t, drawcursor boolean) {
 	}
 	// draw the cursor if requested
 	if drawcursor != 0 && x+int32(l.Ff['_'-l.Fsc].Fwidth) <= SCREENWIDTH {
-		V_DrawPatchDirect(x, l.Fy, l.Ff['_'-l.Fsc])
+		v_DrawPatchDirect(x, l.Fy, l.Ff['_'-l.Fsc])
 	}
 }
 
 // C documentation
 //
-//	// sorta called by HU_Erase and just better darn get things straight
+//	// sorta called by hu_Erase and just better darn get things straight
 func HUlib_eraseTextLine(l *hu_textline_t) {
 	var lh, y, yoffset int32
 	// Only erases when NOT in automap and the screen is reduced,
@@ -9322,10 +9322,10 @@ func HUlib_eraseTextLine(l *hu_textline_t) {
 				break
 			}
 			if y < viewwindowy || y >= viewwindowy+viewheight {
-				R_VideoErase(uint32(yoffset), SCREENWIDTH)
+				r_VideoErase(uint32(yoffset), SCREENWIDTH)
 			} else {
-				R_VideoErase(uint32(yoffset), viewwindowx) // erase left border
-				R_VideoErase(uint32(yoffset+viewwindowx+viewwidth), viewwindowx)
+				r_VideoErase(uint32(yoffset), viewwindowx) // erase left border
+				r_VideoErase(uint32(yoffset+viewwindowx+viewwidth), viewwindowx)
 				// erase right border
 			}
 			goto _1
@@ -9652,7 +9652,7 @@ func init() {
 	}
 }
 
-func HU_Init() {
+func hu_Init() {
 	var i, j, v2 int32
 	// load the heads-up font
 	j = '!'
@@ -9672,16 +9672,16 @@ func HU_Init() {
 	}
 }
 
-func HU_Stop() {
+func hu_Stop() {
 	headsupactive = 0
 }
 
-func HU_Start() {
+func hu_Start() {
 	var i int32
 	var v1 GameMission_t
 	var s string
 	if headsupactive != 0 {
-		HU_Stop()
+		hu_Stop()
 	}
 	plr1 = &players[consoleplayer]
 	message_on = 0
@@ -9740,7 +9740,7 @@ func HU_Start() {
 	headsupactive = 1
 }
 
-func HU_Drawer() {
+func hu_Drawer() {
 	HUlib_drawSText(&w_message)
 	HUlib_drawIText(&w_chat)
 	if automapactive != 0 {
@@ -9748,13 +9748,13 @@ func HU_Drawer() {
 	}
 }
 
-func HU_Erase() {
+func hu_Erase() {
 	HUlib_eraseSText(&w_message)
 	HUlib_eraseIText(&w_chat)
 	HUlib_eraseTextLine(&w_title)
 }
 
-func HU_Ticker() {
+func hu_Ticker() {
 	var c, v4 int8
 	var i, rc, v1 int32
 	var v2, v5 bool
@@ -9804,9 +9804,9 @@ func HU_Ticker() {
 							message_on = 1
 							message_counter = 4 * TICRATE
 							if gamemode == commercial {
-								S_StartSound(nil, int32(sfx_radio))
+								s_StartSound(nil, int32(sfx_radio))
 							} else {
-								S_StartSound(nil, int32(sfx_tink))
+								s_StartSound(nil, int32(sfx_tink))
 							}
 						}
 						HUlib_resetIText(&w_inputbuffer[i])
@@ -9826,7 +9826,7 @@ var chatchars [128]int8
 var head = 0
 var tail = 0
 
-func HU_queueChatChar(c int8) {
+func hu_queueChatChar(c int8) {
 	if (head+1)&(QUEUESIZE-1) == tail {
 		plr1.Fmessage = "[Message unsent]"
 	} else {
@@ -9835,7 +9835,7 @@ func HU_queueChatChar(c int8) {
 	}
 }
 
-func HU_dequeueChatChar() (r int8) {
+func hu_dequeueChatChar() (r int8) {
 	var c int8
 	if head != tail {
 		c = chatchars[tail]
@@ -9846,7 +9846,7 @@ func HU_dequeueChatChar() (r int8) {
 	return c
 }
 
-func HU_Responder(ev *event_t) (r boolean) {
+func hu_Responder(ev *event_t) (r boolean) {
 	var c uint8
 	var eatkey, v2, v4 boolean
 	var i, numplayers int32
@@ -9886,7 +9886,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 				chat_on = v2
 				eatkey = v2
 				HUlib_resetIText(&w_chat)
-				HU_queueChatChar(int8(HU_BROADCAST))
+				hu_queueChatChar(int8(HU_BROADCAST))
 			} else {
 				if netgame != 0 && numplayers > 2 {
 					i = 0
@@ -9900,7 +9900,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 								chat_on = v4
 								eatkey = v4
 								HUlib_resetIText(&w_chat)
-								HU_queueChatChar(int8(i + 1))
+								hu_queueChatChar(int8(i + 1))
 								break
 							} else {
 								if i == consoleplayer {
@@ -9943,12 +9943,12 @@ func HU_Responder(ev *event_t) (r boolean) {
 			// fprintf(stderr, "got here\n");
 			macromessage = chat_macros[c]
 			// kill last message with a '\n'
-			HU_queueChatChar(int8(KEY_ENTER)) // DEBUG!!!
+			hu_queueChatChar(int8(KEY_ENTER)) // DEBUG!!!
 			// send the macro message
 			for i := 0; macromessage[i] != 0; i++ {
-				HU_queueChatChar(int8(macromessage[i]))
+				hu_queueChatChar(int8(macromessage[i]))
 			}
-			HU_queueChatChar(int8(KEY_ENTER))
+			hu_queueChatChar(int8(KEY_ENTER))
 			// leave chat mode and notify that it was sent
 			chat_on = 0
 			lastmessage = chat_macros[c]
@@ -9959,7 +9959,7 @@ func HU_Responder(ev *event_t) (r boolean) {
 			eatkey = HUlib_keyInIText(&w_chat, c)
 			if eatkey != 0 {
 				// static unsigned char buf[20]; // DEBUG
-				HU_queueChatChar(int8(c))
+				hu_queueChatChar(int8(c))
 				// M_snprintf(buf, sizeof(buf), "KEY: %d => %d", ev->data1, c);
 				//        plr->message = buf;
 			}
@@ -10152,24 +10152,24 @@ func init() {
 		1: {
 			Fsprite: SPR_SHTG,
 			Fframe:  4,
-			Faction: playerFuncToAction(A_Light0),
+			Faction: playerFuncToAction(a_Light0),
 		},
 		2: {
 			Fsprite:    SPR_PUNG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_WeaponReady),
+			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: S_PUNCH,
 		},
 		3: {
 			Fsprite:    SPR_PUNG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Lower),
+			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: S_PUNCHDOWN,
 		},
 		4: {
 			Fsprite:    SPR_PUNG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Raise),
+			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: S_PUNCHUP,
 		},
 		5: {
@@ -10182,7 +10182,7 @@ func init() {
 			Fsprite:    SPR_PUNG,
 			Fframe:     2,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_Punch),
+			Faction:    playerFuncToAction(a_Punch),
 			Fnextstate: S_PUNCH3,
 		},
 		7: {
@@ -10201,25 +10201,25 @@ func init() {
 			Fsprite:    SPR_PUNG,
 			Fframe:     1,
 			Ftics:      5,
-			Faction:    playerFuncToAction(A_ReFire),
+			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: S_PUNCH,
 		},
 		10: {
 			Fsprite:    SPR_PISG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_WeaponReady),
+			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: S_PISTOL,
 		},
 		11: {
 			Fsprite:    SPR_PISG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Lower),
+			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: S_PISTOLDOWN,
 		},
 		12: {
 			Fsprite:    SPR_PISG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Raise),
+			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: S_PISTOLUP,
 		},
 		13: {
@@ -10231,7 +10231,7 @@ func init() {
 			Fsprite:    SPR_PISG,
 			Fframe:     1,
 			Ftics:      6,
-			Faction:    playerFuncToAction(A_FirePistol),
+			Faction:    playerFuncToAction(a_FirePistol),
 			Fnextstate: S_PISTOL3,
 		},
 		15: {
@@ -10244,32 +10244,32 @@ func init() {
 			Fsprite:    SPR_PISG,
 			Fframe:     1,
 			Ftics:      5,
-			Faction:    playerFuncToAction(A_ReFire),
+			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: S_PISTOL,
 		},
 		17: {
 			Fsprite:    SPR_PISF,
 			Fframe:     32768,
 			Ftics:      7,
-			Faction:    playerFuncToAction(A_Light1),
+			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: S_LIGHTDONE,
 		},
 		18: {
 			Fsprite:    SPR_SHTG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_WeaponReady),
+			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: S_SGUN,
 		},
 		19: {
 			Fsprite:    SPR_SHTG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Lower),
+			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: S_SGUNDOWN,
 		},
 		20: {
 			Fsprite:    SPR_SHTG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Raise),
+			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: S_SGUNUP,
 		},
 		21: {
@@ -10280,7 +10280,7 @@ func init() {
 		22: {
 			Fsprite:    SPR_SHTG,
 			Ftics:      7,
-			Faction:    playerFuncToAction(A_FireShotgun),
+			Faction:    playerFuncToAction(a_FireShotgun),
 			Fnextstate: S_SGUN3,
 		},
 		23: {
@@ -10321,39 +10321,39 @@ func init() {
 		29: {
 			Fsprite:    SPR_SHTG,
 			Ftics:      7,
-			Faction:    playerFuncToAction(A_ReFire),
+			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: S_SGUN,
 		},
 		30: {
 			Fsprite:    SPR_SHTF,
 			Fframe:     32768,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_Light1),
+			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: S_SGUNFLASH2,
 		},
 		31: {
 			Fsprite:    SPR_SHTF,
 			Fframe:     32769,
 			Ftics:      3,
-			Faction:    playerFuncToAction(A_Light2),
+			Faction:    playerFuncToAction(a_Light2),
 			Fnextstate: S_LIGHTDONE,
 		},
 		32: {
 			Fsprite:    SPR_SHT2,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_WeaponReady),
+			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: S_DSGUN,
 		},
 		33: {
 			Fsprite:    SPR_SHT2,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Lower),
+			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: S_DSGUNDOWN,
 		},
 		34: {
 			Fsprite:    SPR_SHT2,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Raise),
+			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: S_DSGUNUP,
 		},
 		35: {
@@ -10364,7 +10364,7 @@ func init() {
 		36: {
 			Fsprite:    SPR_SHT2,
 			Ftics:      7,
-			Faction:    playerFuncToAction(A_FireShotgun2),
+			Faction:    playerFuncToAction(a_FireShotgun2),
 			Fnextstate: S_DSGUN3,
 		},
 		37: {
@@ -10377,14 +10377,14 @@ func init() {
 			Fsprite:    SPR_SHT2,
 			Fframe:     2,
 			Ftics:      7,
-			Faction:    playerFuncToAction(A_CheckReload),
+			Faction:    playerFuncToAction(a_CheckReload),
 			Fnextstate: S_DSGUN5,
 		},
 		39: {
 			Fsprite:    SPR_SHT2,
 			Fframe:     3,
 			Ftics:      7,
-			Faction:    playerFuncToAction(A_OpenShotgun2),
+			Faction:    playerFuncToAction(a_OpenShotgun2),
 			Fnextstate: S_DSGUN6,
 		},
 		40: {
@@ -10397,7 +10397,7 @@ func init() {
 			Fsprite:    SPR_SHT2,
 			Fframe:     5,
 			Ftics:      7,
-			Faction:    playerFuncToAction(A_LoadShotgun2),
+			Faction:    playerFuncToAction(a_LoadShotgun2),
 			Fnextstate: S_DSGUN8,
 		},
 		42: {
@@ -10410,13 +10410,13 @@ func init() {
 			Fsprite:    SPR_SHT2,
 			Fframe:     7,
 			Ftics:      6,
-			Faction:    playerFuncToAction(A_CloseShotgun2),
+			Faction:    playerFuncToAction(a_CloseShotgun2),
 			Fnextstate: S_DSGUN10,
 		},
 		44: {
 			Fsprite:    SPR_SHT2,
 			Ftics:      5,
-			Faction:    playerFuncToAction(A_ReFire),
+			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: S_DSGUN,
 		},
 		45: {
@@ -10434,110 +10434,110 @@ func init() {
 			Fsprite:    SPR_SHT2,
 			Fframe:     32776,
 			Ftics:      5,
-			Faction:    playerFuncToAction(A_Light1),
+			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: S_DSGUNFLASH2,
 		},
 		48: {
 			Fsprite:    SPR_SHT2,
 			Fframe:     32777,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_Light2),
+			Faction:    playerFuncToAction(a_Light2),
 			Fnextstate: S_LIGHTDONE,
 		},
 		49: {
 			Fsprite:    SPR_CHGG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_WeaponReady),
+			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: S_CHAIN,
 		},
 		50: {
 			Fsprite:    SPR_CHGG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Lower),
+			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: S_CHAINDOWN,
 		},
 		51: {
 			Fsprite:    SPR_CHGG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Raise),
+			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: S_CHAINUP,
 		},
 		52: {
 			Fsprite:    SPR_CHGG,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_FireCGun),
+			Faction:    playerFuncToAction(a_FireCGun),
 			Fnextstate: S_CHAIN2,
 		},
 		53: {
 			Fsprite:    SPR_CHGG,
 			Fframe:     1,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_FireCGun),
+			Faction:    playerFuncToAction(a_FireCGun),
 			Fnextstate: S_CHAIN3,
 		},
 		54: {
 			Fsprite:    SPR_CHGG,
 			Fframe:     1,
-			Faction:    playerFuncToAction(A_ReFire),
+			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: S_CHAIN,
 		},
 		55: {
 			Fsprite:    SPR_CHGF,
 			Fframe:     32768,
 			Ftics:      5,
-			Faction:    playerFuncToAction(A_Light1),
+			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: S_LIGHTDONE,
 		},
 		56: {
 			Fsprite:    SPR_CHGF,
 			Fframe:     32769,
 			Ftics:      5,
-			Faction:    playerFuncToAction(A_Light2),
+			Faction:    playerFuncToAction(a_Light2),
 			Fnextstate: S_LIGHTDONE,
 		},
 		57: {
 			Fsprite:    SPR_MISG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_WeaponReady),
+			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: S_MISSILE,
 		},
 		58: {
 			Fsprite:    SPR_MISG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Lower),
+			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: S_MISSILEDOWN,
 		},
 		59: {
 			Fsprite:    SPR_MISG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Raise),
+			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: S_MISSILEUP,
 		},
 		60: {
 			Fsprite:    SPR_MISG,
 			Fframe:     1,
 			Ftics:      8,
-			Faction:    playerFuncToAction(A_GunFlash),
+			Faction:    playerFuncToAction(a_GunFlash),
 			Fnextstate: S_MISSILE2,
 		},
 		61: {
 			Fsprite:    SPR_MISG,
 			Fframe:     1,
 			Ftics:      12,
-			Faction:    playerFuncToAction(A_FireMissile),
+			Faction:    playerFuncToAction(a_FireMissile),
 			Fnextstate: S_MISSILE3,
 		},
 		62: {
 			Fsprite:    SPR_MISG,
 			Fframe:     1,
-			Faction:    playerFuncToAction(A_ReFire),
+			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: S_MISSILE,
 		},
 		63: {
 			Fsprite:    SPR_MISF,
 			Fframe:     32768,
 			Ftics:      3,
-			Faction:    playerFuncToAction(A_Light1),
+			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: S_MISSILEFLASH2,
 		},
 		64: {
@@ -10550,165 +10550,165 @@ func init() {
 			Fsprite:    SPR_MISF,
 			Fframe:     32770,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_Light2),
+			Faction:    playerFuncToAction(a_Light2),
 			Fnextstate: S_MISSILEFLASH4,
 		},
 		66: {
 			Fsprite:    SPR_MISF,
 			Fframe:     32771,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_Light2),
+			Faction:    playerFuncToAction(a_Light2),
 			Fnextstate: S_LIGHTDONE,
 		},
 		67: {
 			Fsprite:    SPR_SAWG,
 			Fframe:     2,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_WeaponReady),
+			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: S_SAWB,
 		},
 		68: {
 			Fsprite:    SPR_SAWG,
 			Fframe:     3,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_WeaponReady),
+			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: S_SAW,
 		},
 		69: {
 			Fsprite:    SPR_SAWG,
 			Fframe:     2,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Lower),
+			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: S_SAWDOWN,
 		},
 		70: {
 			Fsprite:    SPR_SAWG,
 			Fframe:     2,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Raise),
+			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: S_SAWUP,
 		},
 		71: {
 			Fsprite:    SPR_SAWG,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_Saw),
+			Faction:    playerFuncToAction(a_Saw),
 			Fnextstate: S_SAW2,
 		},
 		72: {
 			Fsprite:    SPR_SAWG,
 			Fframe:     1,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_Saw),
+			Faction:    playerFuncToAction(a_Saw),
 			Fnextstate: S_SAW3,
 		},
 		73: {
 			Fsprite:    SPR_SAWG,
 			Fframe:     1,
-			Faction:    playerFuncToAction(A_ReFire),
+			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: S_SAW,
 		},
 		74: {
 			Fsprite:    SPR_PLSG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_WeaponReady),
+			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: S_PLASMA,
 		},
 		75: {
 			Fsprite:    SPR_PLSG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Lower),
+			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: S_PLASMADOWN,
 		},
 		76: {
 			Fsprite:    SPR_PLSG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Raise),
+			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: S_PLASMAUP,
 		},
 		77: {
 			Fsprite:    SPR_PLSG,
 			Ftics:      3,
-			Faction:    playerFuncToAction(A_FirePlasma),
+			Faction:    playerFuncToAction(a_FirePlasma),
 			Fnextstate: S_PLASMA2,
 		},
 		78: {
 			Fsprite:    SPR_PLSG,
 			Fframe:     1,
 			Ftics:      20,
-			Faction:    playerFuncToAction(A_ReFire),
+			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: S_PLASMA,
 		},
 		79: {
 			Fsprite:    SPR_PLSF,
 			Fframe:     32768,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_Light1),
+			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: S_LIGHTDONE,
 		},
 		80: {
 			Fsprite:    SPR_PLSF,
 			Fframe:     32769,
 			Ftics:      4,
-			Faction:    playerFuncToAction(A_Light1),
+			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: S_LIGHTDONE,
 		},
 		81: {
 			Fsprite:    SPR_BFGG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_WeaponReady),
+			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: S_BFG,
 		},
 		82: {
 			Fsprite:    SPR_BFGG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Lower),
+			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: S_BFGDOWN,
 		},
 		83: {
 			Fsprite:    SPR_BFGG,
 			Ftics:      1,
-			Faction:    playerFuncToAction(A_Raise),
+			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: S_BFGUP,
 		},
 		84: {
 			Fsprite:    SPR_BFGG,
 			Ftics:      20,
-			Faction:    playerFuncToAction(A_BFGsound),
+			Faction:    playerFuncToAction(a_BFGsound),
 			Fnextstate: S_BFG2,
 		},
 		85: {
 			Fsprite:    SPR_BFGG,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    playerFuncToAction(A_GunFlash),
+			Faction:    playerFuncToAction(a_GunFlash),
 			Fnextstate: S_BFG3,
 		},
 		86: {
 			Fsprite:    SPR_BFGG,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    playerFuncToAction(A_FireBFG),
+			Faction:    playerFuncToAction(a_FireBFG),
 			Fnextstate: S_BFG4,
 		},
 		87: {
 			Fsprite:    SPR_BFGG,
 			Fframe:     1,
 			Ftics:      20,
-			Faction:    playerFuncToAction(A_ReFire),
+			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: S_BFG,
 		},
 		88: {
 			Fsprite:    SPR_BFGF,
 			Fframe:     32768,
 			Ftics:      11,
-			Faction:    playerFuncToAction(A_Light1),
+			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: S_BFGFLASH2,
 		},
 		89: {
 			Fsprite:    SPR_BFGF,
 			Fframe:     32769,
 			Ftics:      6,
-			Faction:    playerFuncToAction(A_Light2),
+			Faction:    playerFuncToAction(a_Light2),
 			Fnextstate: S_LIGHTDONE,
 		},
 		90: {
@@ -10883,7 +10883,7 @@ func init() {
 			Fsprite:    SPR_BFE1,
 			Fframe:     32770,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_BFGSpray),
+			Faction:    mobjFuncToAction(a_BFGSpray),
 			Fnextstate: S_BFGLAND4,
 		},
 		120: {
@@ -10930,7 +10930,7 @@ func init() {
 			Fsprite:    SPR_MISL,
 			Fframe:     32769,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_Explode),
+			Faction:    mobjFuncToAction(a_Explode),
 			Fnextstate: S_EXPLODE2,
 		},
 		128: {
@@ -11105,7 +11105,7 @@ func init() {
 			Fsprite:    SPR_PLAY,
 			Fframe:     6,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_PLAY,
 		},
 		158: {
@@ -11118,14 +11118,14 @@ func init() {
 			Fsprite:    SPR_PLAY,
 			Fframe:     8,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_PlayerScream),
+			Faction:    mobjFuncToAction(a_PlayerScream),
 			Fnextstate: S_PLAY_DIE3,
 		},
 		160: {
 			Fsprite:    SPR_PLAY,
 			Fframe:     9,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_PLAY_DIE4,
 		},
 		161: {
@@ -11161,14 +11161,14 @@ func init() {
 			Fsprite:    SPR_PLAY,
 			Fframe:     15,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_XScream),
+			Faction:    mobjFuncToAction(a_XScream),
 			Fnextstate: S_PLAY_XDIE3,
 		},
 		167: {
 			Fsprite:    SPR_PLAY,
 			Fframe:     16,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_PLAY_XDIE4,
 		},
 		168: {
@@ -11209,82 +11209,82 @@ func init() {
 		174: {
 			Fsprite:    SPR_POSS,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_POSS_STND2,
 		},
 		175: {
 			Fsprite:    SPR_POSS,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_POSS_STND,
 		},
 		176: {
 			Fsprite:    SPR_POSS,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_POSS_RUN2,
 		},
 		177: {
 			Fsprite:    SPR_POSS,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_POSS_RUN3,
 		},
 		178: {
 			Fsprite:    SPR_POSS,
 			Fframe:     1,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_POSS_RUN4,
 		},
 		179: {
 			Fsprite:    SPR_POSS,
 			Fframe:     1,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_POSS_RUN5,
 		},
 		180: {
 			Fsprite:    SPR_POSS,
 			Fframe:     2,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_POSS_RUN6,
 		},
 		181: {
 			Fsprite:    SPR_POSS,
 			Fframe:     2,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_POSS_RUN7,
 		},
 		182: {
 			Fsprite:    SPR_POSS,
 			Fframe:     3,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_POSS_RUN8,
 		},
 		183: {
 			Fsprite:    SPR_POSS,
 			Fframe:     3,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_POSS_RUN1,
 		},
 		184: {
 			Fsprite:    SPR_POSS,
 			Fframe:     4,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_POSS_ATK2,
 		},
 		185: {
 			Fsprite:    SPR_POSS,
 			Fframe:     5,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_PosAttack),
+			Faction:    mobjFuncToAction(a_PosAttack),
 			Fnextstate: S_POSS_ATK3,
 		},
 		186: {
@@ -11303,7 +11303,7 @@ func init() {
 			Fsprite:    SPR_POSS,
 			Fframe:     6,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_POSS_RUN1,
 		},
 		189: {
@@ -11316,14 +11316,14 @@ func init() {
 			Fsprite:    SPR_POSS,
 			Fframe:     8,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_POSS_DIE3,
 		},
 		191: {
 			Fsprite:    SPR_POSS,
 			Fframe:     9,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_POSS_DIE4,
 		},
 		192: {
@@ -11347,14 +11347,14 @@ func init() {
 			Fsprite:    SPR_POSS,
 			Fframe:     13,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_XScream),
+			Faction:    mobjFuncToAction(a_XScream),
 			Fnextstate: S_POSS_XDIE3,
 		},
 		196: {
 			Fsprite:    SPR_POSS,
 			Fframe:     14,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_POSS_XDIE4,
 		},
 		197: {
@@ -11419,82 +11419,82 @@ func init() {
 		207: {
 			Fsprite:    SPR_SPOS,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_SPOS_STND2,
 		},
 		208: {
 			Fsprite:    SPR_SPOS,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_SPOS_STND,
 		},
 		209: {
 			Fsprite:    SPR_SPOS,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPOS_RUN2,
 		},
 		210: {
 			Fsprite:    SPR_SPOS,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPOS_RUN3,
 		},
 		211: {
 			Fsprite:    SPR_SPOS,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPOS_RUN4,
 		},
 		212: {
 			Fsprite:    SPR_SPOS,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPOS_RUN5,
 		},
 		213: {
 			Fsprite:    SPR_SPOS,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPOS_RUN6,
 		},
 		214: {
 			Fsprite:    SPR_SPOS,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPOS_RUN7,
 		},
 		215: {
 			Fsprite:    SPR_SPOS,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPOS_RUN8,
 		},
 		216: {
 			Fsprite:    SPR_SPOS,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPOS_RUN1,
 		},
 		217: {
 			Fsprite:    SPR_SPOS,
 			Fframe:     4,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SPOS_ATK2,
 		},
 		218: {
 			Fsprite:    SPR_SPOS,
 			Fframe:     32773,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_SPosAttack),
+			Faction:    mobjFuncToAction(a_SPosAttack),
 			Fnextstate: S_SPOS_ATK3,
 		},
 		219: {
@@ -11513,7 +11513,7 @@ func init() {
 			Fsprite:    SPR_SPOS,
 			Fframe:     6,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_SPOS_RUN1,
 		},
 		222: {
@@ -11526,14 +11526,14 @@ func init() {
 			Fsprite:    SPR_SPOS,
 			Fframe:     8,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_SPOS_DIE3,
 		},
 		224: {
 			Fsprite:    SPR_SPOS,
 			Fframe:     9,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_SPOS_DIE4,
 		},
 		225: {
@@ -11557,14 +11557,14 @@ func init() {
 			Fsprite:    SPR_SPOS,
 			Fframe:     13,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_XScream),
+			Faction:    mobjFuncToAction(a_XScream),
 			Fnextstate: S_SPOS_XDIE3,
 		},
 		229: {
 			Fsprite:    SPR_SPOS,
 			Fframe:     14,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_SPOS_XDIE4,
 		},
 		230: {
@@ -11635,165 +11635,165 @@ func init() {
 		241: {
 			Fsprite:    SPR_VILE,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_VILE_STND2,
 		},
 		242: {
 			Fsprite:    SPR_VILE,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_VILE_STND,
 		},
 		243: {
 			Fsprite:    SPR_VILE,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_VileChase),
+			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: S_VILE_RUN2,
 		},
 		244: {
 			Fsprite:    SPR_VILE,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_VileChase),
+			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: S_VILE_RUN3,
 		},
 		245: {
 			Fsprite:    SPR_VILE,
 			Fframe:     1,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_VileChase),
+			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: S_VILE_RUN4,
 		},
 		246: {
 			Fsprite:    SPR_VILE,
 			Fframe:     1,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_VileChase),
+			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: S_VILE_RUN5,
 		},
 		247: {
 			Fsprite:    SPR_VILE,
 			Fframe:     2,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_VileChase),
+			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: S_VILE_RUN6,
 		},
 		248: {
 			Fsprite:    SPR_VILE,
 			Fframe:     2,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_VileChase),
+			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: S_VILE_RUN7,
 		},
 		249: {
 			Fsprite:    SPR_VILE,
 			Fframe:     3,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_VileChase),
+			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: S_VILE_RUN8,
 		},
 		250: {
 			Fsprite:    SPR_VILE,
 			Fframe:     3,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_VileChase),
+			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: S_VILE_RUN9,
 		},
 		251: {
 			Fsprite:    SPR_VILE,
 			Fframe:     4,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_VileChase),
+			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: S_VILE_RUN10,
 		},
 		252: {
 			Fsprite:    SPR_VILE,
 			Fframe:     4,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_VileChase),
+			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: S_VILE_RUN11,
 		},
 		253: {
 			Fsprite:    SPR_VILE,
 			Fframe:     5,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_VileChase),
+			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: S_VILE_RUN12,
 		},
 		254: {
 			Fsprite:    SPR_VILE,
 			Fframe:     5,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_VileChase),
+			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: S_VILE_RUN1,
 		},
 		255: {
 			Fsprite:    SPR_VILE,
 			Fframe:     32774,
-			Faction:    mobjFuncToAction(A_VileStart),
+			Faction:    mobjFuncToAction(a_VileStart),
 			Fnextstate: S_VILE_ATK2,
 		},
 		256: {
 			Fsprite:    SPR_VILE,
 			Fframe:     32774,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_VILE_ATK3,
 		},
 		257: {
 			Fsprite:    SPR_VILE,
 			Fframe:     32775,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_VileTarget),
+			Faction:    mobjFuncToAction(a_VileTarget),
 			Fnextstate: S_VILE_ATK4,
 		},
 		258: {
 			Fsprite:    SPR_VILE,
 			Fframe:     32776,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_VILE_ATK5,
 		},
 		259: {
 			Fsprite:    SPR_VILE,
 			Fframe:     32777,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_VILE_ATK6,
 		},
 		260: {
 			Fsprite:    SPR_VILE,
 			Fframe:     32778,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_VILE_ATK7,
 		},
 		261: {
 			Fsprite:    SPR_VILE,
 			Fframe:     32779,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_VILE_ATK8,
 		},
 		262: {
 			Fsprite:    SPR_VILE,
 			Fframe:     32780,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_VILE_ATK9,
 		},
 		263: {
 			Fsprite:    SPR_VILE,
 			Fframe:     32781,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_VILE_ATK10,
 		},
 		264: {
 			Fsprite:    SPR_VILE,
 			Fframe:     32782,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_VileAttack),
+			Faction:    mobjFuncToAction(a_VileAttack),
 			Fnextstate: S_VILE_ATK11,
 		},
 		265: {
@@ -11830,7 +11830,7 @@ func init() {
 			Fsprite:    SPR_VILE,
 			Fframe:     16,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_VILE_RUN1,
 		},
 		271: {
@@ -11843,14 +11843,14 @@ func init() {
 			Fsprite:    SPR_VILE,
 			Fframe:     17,
 			Ftics:      7,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_VILE_DIE3,
 		},
 		273: {
 			Fsprite:    SPR_VILE,
 			Fframe:     18,
 			Ftics:      7,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_VILE_DIE4,
 		},
 		274: {
@@ -11898,210 +11898,210 @@ func init() {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32768,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_StartFire),
+			Faction:    mobjFuncToAction(a_StartFire),
 			Fnextstate: S_FIRE2,
 		},
 		282: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32769,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE3,
 		},
 		283: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32768,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE4,
 		},
 		284: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32769,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE5,
 		},
 		285: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32770,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_FireCrackle),
+			Faction:    mobjFuncToAction(a_FireCrackle),
 			Fnextstate: S_FIRE6,
 		},
 		286: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32769,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE7,
 		},
 		287: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32770,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE8,
 		},
 		288: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32769,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE9,
 		},
 		289: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32770,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE10,
 		},
 		290: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32771,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE11,
 		},
 		291: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32770,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE12,
 		},
 		292: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32771,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE13,
 		},
 		293: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32770,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE14,
 		},
 		294: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32771,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE15,
 		},
 		295: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32772,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE16,
 		},
 		296: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32771,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE17,
 		},
 		297: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32772,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE18,
 		},
 		298: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32771,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE19,
 		},
 		299: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32772,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_FireCrackle),
+			Faction:    mobjFuncToAction(a_FireCrackle),
 			Fnextstate: S_FIRE20,
 		},
 		300: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32773,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE21,
 		},
 		301: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32772,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE22,
 		},
 		302: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32773,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE23,
 		},
 		303: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32772,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE24,
 		},
 		304: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32773,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE25,
 		},
 		305: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32774,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE26,
 		},
 		306: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32775,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE27,
 		},
 		307: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32774,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE28,
 		},
 		308: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32775,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE29,
 		},
 		309: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32774,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_FIRE30,
 		},
 		310: {
 			Fsprite: SPR_FIRE,
 			Fframe:  32775,
 			Ftics:   2,
-			Faction: mobjFuncToAction(A_Fire),
+			Faction: mobjFuncToAction(a_Fire),
 		},
 		311: {
 			Fsprite:    SPR_PUFF,
@@ -12136,14 +12136,14 @@ func init() {
 			Fsprite:    SPR_FATB,
 			Fframe:     32768,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Tracer),
+			Faction:    mobjFuncToAction(a_Tracer),
 			Fnextstate: S_TRACER2,
 		},
 		317: {
 			Fsprite:    SPR_FATB,
 			Fframe:     32769,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Tracer),
+			Faction:    mobjFuncToAction(a_Tracer),
 			Fnextstate: S_TRACER,
 		},
 		318: {
@@ -12166,150 +12166,150 @@ func init() {
 		321: {
 			Fsprite:    SPR_SKEL,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_SKEL_STND2,
 		},
 		322: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_SKEL_STND,
 		},
 		323: {
 			Fsprite:    SPR_SKEL,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKEL_RUN2,
 		},
 		324: {
 			Fsprite:    SPR_SKEL,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKEL_RUN3,
 		},
 		325: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     1,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKEL_RUN4,
 		},
 		326: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     1,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKEL_RUN5,
 		},
 		327: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     2,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKEL_RUN6,
 		},
 		328: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     2,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKEL_RUN7,
 		},
 		329: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     3,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKEL_RUN8,
 		},
 		330: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     3,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKEL_RUN9,
 		},
 		331: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     4,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKEL_RUN10,
 		},
 		332: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     4,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKEL_RUN11,
 		},
 		333: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     5,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKEL_RUN12,
 		},
 		334: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     5,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKEL_RUN1,
 		},
 		335: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     6,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SKEL_FIST2,
 		},
 		336: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     6,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_SkelWhoosh),
+			Faction:    mobjFuncToAction(a_SkelWhoosh),
 			Fnextstate: S_SKEL_FIST3,
 		},
 		337: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     7,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SKEL_FIST4,
 		},
 		338: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     8,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_SkelFist),
+			Faction:    mobjFuncToAction(a_SkelFist),
 			Fnextstate: S_SKEL_RUN1,
 		},
 		339: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     32777,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SKEL_MISS2,
 		},
 		340: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     32777,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SKEL_MISS3,
 		},
 		341: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     10,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_SkelMissile),
+			Faction:    mobjFuncToAction(a_SkelMissile),
 			Fnextstate: S_SKEL_MISS4,
 		},
 		342: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     10,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SKEL_RUN1,
 		},
 		343: {
@@ -12322,7 +12322,7 @@ func init() {
 			Fsprite:    SPR_SKEL,
 			Fframe:     11,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_SKEL_RUN1,
 		},
 		345: {
@@ -12341,14 +12341,14 @@ func init() {
 			Fsprite:    SPR_SKEL,
 			Fframe:     13,
 			Ftics:      7,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_SKEL_DIE4,
 		},
 		348: {
 			Fsprite:    SPR_SKEL,
 			Fframe:     14,
 			Ftics:      7,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_SKEL_DIE5,
 		},
 		349: {
@@ -12430,166 +12430,166 @@ func init() {
 		362: {
 			Fsprite:    SPR_FATT,
 			Ftics:      15,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_FATT_STND2,
 		},
 		363: {
 			Fsprite:    SPR_FATT,
 			Fframe:     1,
 			Ftics:      15,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_FATT_STND,
 		},
 		364: {
 			Fsprite:    SPR_FATT,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_FATT_RUN2,
 		},
 		365: {
 			Fsprite:    SPR_FATT,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_FATT_RUN3,
 		},
 		366: {
 			Fsprite:    SPR_FATT,
 			Fframe:     1,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_FATT_RUN4,
 		},
 		367: {
 			Fsprite:    SPR_FATT,
 			Fframe:     1,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_FATT_RUN5,
 		},
 		368: {
 			Fsprite:    SPR_FATT,
 			Fframe:     2,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_FATT_RUN6,
 		},
 		369: {
 			Fsprite:    SPR_FATT,
 			Fframe:     2,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_FATT_RUN7,
 		},
 		370: {
 			Fsprite:    SPR_FATT,
 			Fframe:     3,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_FATT_RUN8,
 		},
 		371: {
 			Fsprite:    SPR_FATT,
 			Fframe:     3,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_FATT_RUN9,
 		},
 		372: {
 			Fsprite:    SPR_FATT,
 			Fframe:     4,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_FATT_RUN10,
 		},
 		373: {
 			Fsprite:    SPR_FATT,
 			Fframe:     4,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_FATT_RUN11,
 		},
 		374: {
 			Fsprite:    SPR_FATT,
 			Fframe:     5,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_FATT_RUN12,
 		},
 		375: {
 			Fsprite:    SPR_FATT,
 			Fframe:     5,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_FATT_RUN1,
 		},
 		376: {
 			Fsprite:    SPR_FATT,
 			Fframe:     6,
 			Ftics:      20,
-			Faction:    mobjFuncToAction(A_FatRaise),
+			Faction:    mobjFuncToAction(a_FatRaise),
 			Fnextstate: S_FATT_ATK2,
 		},
 		377: {
 			Fsprite:    SPR_FATT,
 			Fframe:     32775,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_FatAttack1),
+			Faction:    mobjFuncToAction(a_FatAttack1),
 			Fnextstate: S_FATT_ATK3,
 		},
 		378: {
 			Fsprite:    SPR_FATT,
 			Fframe:     8,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_FATT_ATK4,
 		},
 		379: {
 			Fsprite:    SPR_FATT,
 			Fframe:     6,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_FATT_ATK5,
 		},
 		380: {
 			Fsprite:    SPR_FATT,
 			Fframe:     32775,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_FatAttack2),
+			Faction:    mobjFuncToAction(a_FatAttack2),
 			Fnextstate: S_FATT_ATK6,
 		},
 		381: {
 			Fsprite:    SPR_FATT,
 			Fframe:     8,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_FATT_ATK7,
 		},
 		382: {
 			Fsprite:    SPR_FATT,
 			Fframe:     6,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_FATT_ATK8,
 		},
 		383: {
 			Fsprite:    SPR_FATT,
 			Fframe:     32775,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_FatAttack3),
+			Faction:    mobjFuncToAction(a_FatAttack3),
 			Fnextstate: S_FATT_ATK9,
 		},
 		384: {
 			Fsprite:    SPR_FATT,
 			Fframe:     8,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_FATT_ATK10,
 		},
 		385: {
 			Fsprite:    SPR_FATT,
 			Fframe:     6,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_FATT_RUN1,
 		},
 		386: {
@@ -12602,7 +12602,7 @@ func init() {
 			Fsprite:    SPR_FATT,
 			Fframe:     9,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_FATT_RUN1,
 		},
 		388: {
@@ -12615,14 +12615,14 @@ func init() {
 			Fsprite:    SPR_FATT,
 			Fframe:     11,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_FATT_DIE3,
 		},
 		390: {
 			Fsprite:    SPR_FATT,
 			Fframe:     12,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_FATT_DIE4,
 		},
 		391: {
@@ -12665,7 +12665,7 @@ func init() {
 			Fsprite: SPR_FATT,
 			Fframe:  19,
 			Ftics:   -1,
-			Faction: mobjFuncToAction(A_BossDeath),
+			Faction: mobjFuncToAction(a_BossDeath),
 		},
 		398: {
 			Fsprite:    SPR_FATT,
@@ -12718,96 +12718,96 @@ func init() {
 		406: {
 			Fsprite:    SPR_CPOS,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_CPOS_STND2,
 		},
 		407: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_CPOS_STND,
 		},
 		408: {
 			Fsprite:    SPR_CPOS,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CPOS_RUN2,
 		},
 		409: {
 			Fsprite:    SPR_CPOS,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CPOS_RUN3,
 		},
 		410: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CPOS_RUN4,
 		},
 		411: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CPOS_RUN5,
 		},
 		412: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CPOS_RUN6,
 		},
 		413: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CPOS_RUN7,
 		},
 		414: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CPOS_RUN8,
 		},
 		415: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CPOS_RUN1,
 		},
 		416: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     4,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_CPOS_ATK2,
 		},
 		417: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     32773,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_CPosAttack),
+			Faction:    mobjFuncToAction(a_CPosAttack),
 			Fnextstate: S_CPOS_ATK3,
 		},
 		418: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     32772,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_CPosAttack),
+			Faction:    mobjFuncToAction(a_CPosAttack),
 			Fnextstate: S_CPOS_ATK4,
 		},
 		419: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     5,
 			Ftics:      1,
-			Faction:    mobjFuncToAction(A_CPosRefire),
+			Faction:    mobjFuncToAction(a_CPosRefire),
 			Fnextstate: S_CPOS_ATK2,
 		},
 		420: {
@@ -12820,7 +12820,7 @@ func init() {
 			Fsprite:    SPR_CPOS,
 			Fframe:     6,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_CPOS_RUN1,
 		},
 		422: {
@@ -12833,14 +12833,14 @@ func init() {
 			Fsprite:    SPR_CPOS,
 			Fframe:     8,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_CPOS_DIE3,
 		},
 		424: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     9,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_CPOS_DIE4,
 		},
 		425: {
@@ -12876,14 +12876,14 @@ func init() {
 			Fsprite:    SPR_CPOS,
 			Fframe:     15,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_XScream),
+			Faction:    mobjFuncToAction(a_XScream),
 			Fnextstate: S_CPOS_XDIE3,
 		},
 		431: {
 			Fsprite:    SPR_CPOS,
 			Fframe:     16,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_CPOS_XDIE4,
 		},
 		432: {
@@ -12947,77 +12947,77 @@ func init() {
 		},
 		442: {
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_TROO_STND2,
 		},
 		443: {
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_TROO_STND,
 		},
 		444: {
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_TROO_RUN2,
 		},
 		445: {
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_TROO_RUN3,
 		},
 		446: {
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_TROO_RUN4,
 		},
 		447: {
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_TROO_RUN5,
 		},
 		448: {
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_TROO_RUN6,
 		},
 		449: {
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_TROO_RUN7,
 		},
 		450: {
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_TROO_RUN8,
 		},
 		451: {
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_TROO_RUN1,
 		},
 		452: {
 			Fframe:     4,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_TROO_ATK2,
 		},
 		453: {
 			Fframe:     5,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_TROO_ATK3,
 		},
 		454: {
 			Fframe:     6,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_TroopAttack),
+			Faction:    mobjFuncToAction(a_TroopAttack),
 			Fnextstate: S_TROO_RUN1,
 		},
 		455: {
@@ -13028,7 +13028,7 @@ func init() {
 		456: {
 			Fframe:     7,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_TROO_RUN1,
 		},
 		457: {
@@ -13039,7 +13039,7 @@ func init() {
 		458: {
 			Fframe:     9,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_TROO_DIE3,
 		},
 		459: {
@@ -13050,7 +13050,7 @@ func init() {
 		460: {
 			Fframe:     11,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_TROO_DIE5,
 		},
 		461: {
@@ -13065,7 +13065,7 @@ func init() {
 		463: {
 			Fframe:     14,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_XScream),
+			Faction:    mobjFuncToAction(a_XScream),
 			Fnextstate: S_TROO_XDIE3,
 		},
 		464: {
@@ -13076,7 +13076,7 @@ func init() {
 		465: {
 			Fframe:     16,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_TROO_XDIE5,
 		},
 		466: {
@@ -13126,89 +13126,89 @@ func init() {
 		475: {
 			Fsprite:    SPR_SARG,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_SARG_STND2,
 		},
 		476: {
 			Fsprite:    SPR_SARG,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_SARG_STND,
 		},
 		477: {
 			Fsprite:    SPR_SARG,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SARG_RUN2,
 		},
 		478: {
 			Fsprite:    SPR_SARG,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SARG_RUN3,
 		},
 		479: {
 			Fsprite:    SPR_SARG,
 			Fframe:     1,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SARG_RUN4,
 		},
 		480: {
 			Fsprite:    SPR_SARG,
 			Fframe:     1,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SARG_RUN5,
 		},
 		481: {
 			Fsprite:    SPR_SARG,
 			Fframe:     2,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SARG_RUN6,
 		},
 		482: {
 			Fsprite:    SPR_SARG,
 			Fframe:     2,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SARG_RUN7,
 		},
 		483: {
 			Fsprite:    SPR_SARG,
 			Fframe:     3,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SARG_RUN8,
 		},
 		484: {
 			Fsprite:    SPR_SARG,
 			Fframe:     3,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SARG_RUN1,
 		},
 		485: {
 			Fsprite:    SPR_SARG,
 			Fframe:     4,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SARG_ATK2,
 		},
 		486: {
 			Fsprite:    SPR_SARG,
 			Fframe:     5,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SARG_ATK3,
 		},
 		487: {
 			Fsprite:    SPR_SARG,
 			Fframe:     6,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_SargAttack),
+			Faction:    mobjFuncToAction(a_SargAttack),
 			Fnextstate: S_SARG_RUN1,
 		},
 		488: {
@@ -13221,7 +13221,7 @@ func init() {
 			Fsprite:    SPR_SARG,
 			Fframe:     7,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_SARG_RUN1,
 		},
 		490: {
@@ -13234,7 +13234,7 @@ func init() {
 			Fsprite:    SPR_SARG,
 			Fframe:     9,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_SARG_DIE3,
 		},
 		492: {
@@ -13247,7 +13247,7 @@ func init() {
 			Fsprite:    SPR_SARG,
 			Fframe:     11,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_SARG_DIE5,
 		},
 		494: {
@@ -13300,34 +13300,34 @@ func init() {
 		502: {
 			Fsprite:    SPR_HEAD,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_HEAD_STND,
 		},
 		503: {
 			Fsprite:    SPR_HEAD,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_HEAD_RUN1,
 		},
 		504: {
 			Fsprite:    SPR_HEAD,
 			Fframe:     1,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_HEAD_ATK2,
 		},
 		505: {
 			Fsprite:    SPR_HEAD,
 			Fframe:     2,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_HEAD_ATK3,
 		},
 		506: {
 			Fsprite:    SPR_HEAD,
 			Fframe:     32771,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_HeadAttack),
+			Faction:    mobjFuncToAction(a_HeadAttack),
 			Fnextstate: S_HEAD_RUN1,
 		},
 		507: {
@@ -13340,7 +13340,7 @@ func init() {
 			Fsprite:    SPR_HEAD,
 			Fframe:     4,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_HEAD_PAIN3,
 		},
 		509: {
@@ -13359,7 +13359,7 @@ func init() {
 			Fsprite:    SPR_HEAD,
 			Fframe:     7,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_HEAD_DIE3,
 		},
 		512: {
@@ -13378,7 +13378,7 @@ func init() {
 			Fsprite:    SPR_HEAD,
 			Fframe:     10,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_HEAD_DIE6,
 		},
 		515: {
@@ -13454,89 +13454,89 @@ func init() {
 		527: {
 			Fsprite:    SPR_BOSS,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_BOSS_STND2,
 		},
 		528: {
 			Fsprite:    SPR_BOSS,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_BOSS_STND,
 		},
 		529: {
 			Fsprite:    SPR_BOSS,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOSS_RUN2,
 		},
 		530: {
 			Fsprite:    SPR_BOSS,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOSS_RUN3,
 		},
 		531: {
 			Fsprite:    SPR_BOSS,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOSS_RUN4,
 		},
 		532: {
 			Fsprite:    SPR_BOSS,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOSS_RUN5,
 		},
 		533: {
 			Fsprite:    SPR_BOSS,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOSS_RUN6,
 		},
 		534: {
 			Fsprite:    SPR_BOSS,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOSS_RUN7,
 		},
 		535: {
 			Fsprite:    SPR_BOSS,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOSS_RUN8,
 		},
 		536: {
 			Fsprite:    SPR_BOSS,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOSS_RUN1,
 		},
 		537: {
 			Fsprite:    SPR_BOSS,
 			Fframe:     4,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_BOSS_ATK2,
 		},
 		538: {
 			Fsprite:    SPR_BOSS,
 			Fframe:     5,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_BOSS_ATK3,
 		},
 		539: {
 			Fsprite:    SPR_BOSS,
 			Fframe:     6,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_BruisAttack),
+			Faction:    mobjFuncToAction(a_BruisAttack),
 			Fnextstate: S_BOSS_RUN1,
 		},
 		540: {
@@ -13549,7 +13549,7 @@ func init() {
 			Fsprite:    SPR_BOSS,
 			Fframe:     7,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_BOSS_RUN1,
 		},
 		542: {
@@ -13562,7 +13562,7 @@ func init() {
 			Fsprite:    SPR_BOSS,
 			Fframe:     9,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_BOSS_DIE3,
 		},
 		544: {
@@ -13575,7 +13575,7 @@ func init() {
 			Fsprite:    SPR_BOSS,
 			Fframe:     11,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_BOSS_DIE5,
 		},
 		546: {
@@ -13594,7 +13594,7 @@ func init() {
 			Fsprite: SPR_BOSS,
 			Fframe:  14,
 			Ftics:   -1,
-			Faction: mobjFuncToAction(A_BossDeath),
+			Faction: mobjFuncToAction(a_BossDeath),
 		},
 		549: {
 			Fsprite:    SPR_BOSS,
@@ -13641,89 +13641,89 @@ func init() {
 		556: {
 			Fsprite:    SPR_BOS2,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_BOS2_STND2,
 		},
 		557: {
 			Fsprite:    SPR_BOS2,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_BOS2_STND,
 		},
 		558: {
 			Fsprite:    SPR_BOS2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOS2_RUN2,
 		},
 		559: {
 			Fsprite:    SPR_BOS2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOS2_RUN3,
 		},
 		560: {
 			Fsprite:    SPR_BOS2,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOS2_RUN4,
 		},
 		561: {
 			Fsprite:    SPR_BOS2,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOS2_RUN5,
 		},
 		562: {
 			Fsprite:    SPR_BOS2,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOS2_RUN6,
 		},
 		563: {
 			Fsprite:    SPR_BOS2,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOS2_RUN7,
 		},
 		564: {
 			Fsprite:    SPR_BOS2,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOS2_RUN8,
 		},
 		565: {
 			Fsprite:    SPR_BOS2,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BOS2_RUN1,
 		},
 		566: {
 			Fsprite:    SPR_BOS2,
 			Fframe:     4,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_BOS2_ATK2,
 		},
 		567: {
 			Fsprite:    SPR_BOS2,
 			Fframe:     5,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_BOS2_ATK3,
 		},
 		568: {
 			Fsprite:    SPR_BOS2,
 			Fframe:     6,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_BruisAttack),
+			Faction:    mobjFuncToAction(a_BruisAttack),
 			Fnextstate: S_BOS2_RUN1,
 		},
 		569: {
@@ -13736,7 +13736,7 @@ func init() {
 			Fsprite:    SPR_BOS2,
 			Fframe:     7,
 			Ftics:      2,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_BOS2_RUN1,
 		},
 		571: {
@@ -13749,7 +13749,7 @@ func init() {
 			Fsprite:    SPR_BOS2,
 			Fframe:     9,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_BOS2_DIE3,
 		},
 		573: {
@@ -13762,7 +13762,7 @@ func init() {
 			Fsprite:    SPR_BOS2,
 			Fframe:     11,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_BOS2_DIE5,
 		},
 		575: {
@@ -13828,42 +13828,42 @@ func init() {
 			Fsprite:    SPR_SKUL,
 			Fframe:     32768,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_SKULL_STND2,
 		},
 		586: {
 			Fsprite:    SPR_SKUL,
 			Fframe:     32769,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_SKULL_STND,
 		},
 		587: {
 			Fsprite:    SPR_SKUL,
 			Fframe:     32768,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKULL_RUN2,
 		},
 		588: {
 			Fsprite:    SPR_SKUL,
 			Fframe:     32769,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SKULL_RUN1,
 		},
 		589: {
 			Fsprite:    SPR_SKUL,
 			Fframe:     32770,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SKULL_ATK2,
 		},
 		590: {
 			Fsprite:    SPR_SKUL,
 			Fframe:     32771,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_SkullAttack),
+			Faction:    mobjFuncToAction(a_SkullAttack),
 			Fnextstate: S_SKULL_ATK3,
 		},
 		591: {
@@ -13888,7 +13888,7 @@ func init() {
 			Fsprite:    SPR_SKUL,
 			Fframe:     32772,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_SKULL_RUN1,
 		},
 		595: {
@@ -13901,7 +13901,7 @@ func init() {
 			Fsprite:    SPR_SKUL,
 			Fframe:     32774,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_SKULL_DIE3,
 		},
 		597: {
@@ -13914,7 +13914,7 @@ func init() {
 			Fsprite:    SPR_SKUL,
 			Fframe:     32776,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_SKULL_DIE5,
 		},
 		599: {
@@ -13931,124 +13931,124 @@ func init() {
 		601: {
 			Fsprite:    SPR_SPID,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_SPID_STND2,
 		},
 		602: {
 			Fsprite:    SPR_SPID,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_SPID_STND,
 		},
 		603: {
 			Fsprite:    SPR_SPID,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Metal),
+			Faction:    mobjFuncToAction(a_Metal),
 			Fnextstate: S_SPID_RUN2,
 		},
 		604: {
 			Fsprite:    SPR_SPID,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPID_RUN3,
 		},
 		605: {
 			Fsprite:    SPR_SPID,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPID_RUN4,
 		},
 		606: {
 			Fsprite:    SPR_SPID,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPID_RUN5,
 		},
 		607: {
 			Fsprite:    SPR_SPID,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Metal),
+			Faction:    mobjFuncToAction(a_Metal),
 			Fnextstate: S_SPID_RUN6,
 		},
 		608: {
 			Fsprite:    SPR_SPID,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPID_RUN7,
 		},
 		609: {
 			Fsprite:    SPR_SPID,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPID_RUN8,
 		},
 		610: {
 			Fsprite:    SPR_SPID,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPID_RUN9,
 		},
 		611: {
 			Fsprite:    SPR_SPID,
 			Fframe:     4,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Metal),
+			Faction:    mobjFuncToAction(a_Metal),
 			Fnextstate: S_SPID_RUN10,
 		},
 		612: {
 			Fsprite:    SPR_SPID,
 			Fframe:     4,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPID_RUN11,
 		},
 		613: {
 			Fsprite:    SPR_SPID,
 			Fframe:     5,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPID_RUN12,
 		},
 		614: {
 			Fsprite:    SPR_SPID,
 			Fframe:     5,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SPID_RUN1,
 		},
 		615: {
 			Fsprite:    SPR_SPID,
 			Fframe:     32768,
 			Ftics:      20,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SPID_ATK2,
 		},
 		616: {
 			Fsprite:    SPR_SPID,
 			Fframe:     32774,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_SPosAttack),
+			Faction:    mobjFuncToAction(a_SPosAttack),
 			Fnextstate: S_SPID_ATK3,
 		},
 		617: {
 			Fsprite:    SPR_SPID,
 			Fframe:     32775,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_SPosAttack),
+			Faction:    mobjFuncToAction(a_SPosAttack),
 			Fnextstate: S_SPID_ATK4,
 		},
 		618: {
 			Fsprite:    SPR_SPID,
 			Fframe:     32775,
 			Ftics:      1,
-			Faction:    mobjFuncToAction(A_SpidRefire),
+			Faction:    mobjFuncToAction(a_SpidRefire),
 			Fnextstate: S_SPID_ATK2,
 		},
 		619: {
@@ -14061,21 +14061,21 @@ func init() {
 			Fsprite:    SPR_SPID,
 			Fframe:     8,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_SPID_RUN1,
 		},
 		621: {
 			Fsprite:    SPR_SPID,
 			Fframe:     9,
 			Ftics:      20,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_SPID_DIE2,
 		},
 		622: {
 			Fsprite:    SPR_SPID,
 			Fframe:     10,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_SPID_DIE3,
 		},
 		623: {
@@ -14130,19 +14130,19 @@ func init() {
 			Fsprite: SPR_SPID,
 			Fframe:  18,
 			Ftics:   -1,
-			Faction: mobjFuncToAction(A_BossDeath),
+			Faction: mobjFuncToAction(a_BossDeath),
 		},
 		632: {
 			Fsprite:    SPR_BSPI,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_BSPI_STND2,
 		},
 		633: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_BSPI_STND,
 		},
 		634: {
@@ -14153,97 +14153,97 @@ func init() {
 		635: {
 			Fsprite:    SPR_BSPI,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_BabyMetal),
+			Faction:    mobjFuncToAction(a_BabyMetal),
 			Fnextstate: S_BSPI_RUN2,
 		},
 		636: {
 			Fsprite:    SPR_BSPI,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BSPI_RUN3,
 		},
 		637: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BSPI_RUN4,
 		},
 		638: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BSPI_RUN5,
 		},
 		639: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BSPI_RUN6,
 		},
 		640: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BSPI_RUN7,
 		},
 		641: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_BabyMetal),
+			Faction:    mobjFuncToAction(a_BabyMetal),
 			Fnextstate: S_BSPI_RUN8,
 		},
 		642: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BSPI_RUN9,
 		},
 		643: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     4,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BSPI_RUN10,
 		},
 		644: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     4,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BSPI_RUN11,
 		},
 		645: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     5,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BSPI_RUN12,
 		},
 		646: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     5,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_BSPI_RUN1,
 		},
 		647: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     32768,
 			Ftics:      20,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_BSPI_ATK2,
 		},
 		648: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     32774,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_BspiAttack),
+			Faction:    mobjFuncToAction(a_BspiAttack),
 			Fnextstate: S_BSPI_ATK3,
 		},
 		649: {
@@ -14256,7 +14256,7 @@ func init() {
 			Fsprite:    SPR_BSPI,
 			Fframe:     32775,
 			Ftics:      1,
-			Faction:    mobjFuncToAction(A_SpidRefire),
+			Faction:    mobjFuncToAction(a_SpidRefire),
 			Fnextstate: S_BSPI_ATK2,
 		},
 		651: {
@@ -14269,21 +14269,21 @@ func init() {
 			Fsprite:    SPR_BSPI,
 			Fframe:     8,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_BSPI_RUN1,
 		},
 		653: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     9,
 			Ftics:      20,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_BSPI_DIE2,
 		},
 		654: {
 			Fsprite:    SPR_BSPI,
 			Fframe:     10,
 			Ftics:      7,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_BSPI_DIE3,
 		},
 		655: {
@@ -14314,7 +14314,7 @@ func init() {
 			Fsprite: SPR_BSPI,
 			Fframe:  15,
 			Ftics:   -1,
-			Faction: mobjFuncToAction(A_BossDeath),
+			Faction: mobjFuncToAction(a_BossDeath),
 		},
 		660: {
 			Fsprite:    SPR_BSPI,
@@ -14402,117 +14402,117 @@ func init() {
 		674: {
 			Fsprite:    SPR_CYBR,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_CYBER_STND2,
 		},
 		675: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_CYBER_STND,
 		},
 		676: {
 			Fsprite:    SPR_CYBR,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Hoof),
+			Faction:    mobjFuncToAction(a_Hoof),
 			Fnextstate: S_CYBER_RUN2,
 		},
 		677: {
 			Fsprite:    SPR_CYBR,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CYBER_RUN3,
 		},
 		678: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CYBER_RUN4,
 		},
 		679: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CYBER_RUN5,
 		},
 		680: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CYBER_RUN6,
 		},
 		681: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CYBER_RUN7,
 		},
 		682: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Metal),
+			Faction:    mobjFuncToAction(a_Metal),
 			Fnextstate: S_CYBER_RUN8,
 		},
 		683: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_CYBER_RUN1,
 		},
 		684: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     4,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_CYBER_ATK2,
 		},
 		685: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     5,
 			Ftics:      12,
-			Faction:    mobjFuncToAction(A_CyberAttack),
+			Faction:    mobjFuncToAction(a_CyberAttack),
 			Fnextstate: S_CYBER_ATK3,
 		},
 		686: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     4,
 			Ftics:      12,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_CYBER_ATK4,
 		},
 		687: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     5,
 			Ftics:      12,
-			Faction:    mobjFuncToAction(A_CyberAttack),
+			Faction:    mobjFuncToAction(a_CyberAttack),
 			Fnextstate: S_CYBER_ATK5,
 		},
 		688: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     4,
 			Ftics:      12,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_CYBER_ATK6,
 		},
 		689: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     5,
 			Ftics:      12,
-			Faction:    mobjFuncToAction(A_CyberAttack),
+			Faction:    mobjFuncToAction(a_CyberAttack),
 			Fnextstate: S_CYBER_RUN1,
 		},
 		690: {
 			Fsprite:    SPR_CYBR,
 			Fframe:     6,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_CYBER_RUN1,
 		},
 		691: {
@@ -14525,7 +14525,7 @@ func init() {
 			Fsprite:    SPR_CYBR,
 			Fframe:     8,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_CYBER_DIE3,
 		},
 		693: {
@@ -14550,7 +14550,7 @@ func init() {
 			Fsprite:    SPR_CYBR,
 			Fframe:     12,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_CYBER_DIE7,
 		},
 		697: {
@@ -14575,79 +14575,79 @@ func init() {
 			Fsprite: SPR_CYBR,
 			Fframe:  15,
 			Ftics:   -1,
-			Faction: mobjFuncToAction(A_BossDeath),
+			Faction: mobjFuncToAction(a_BossDeath),
 		},
 		701: {
 			Fsprite:    SPR_PAIN,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_PAIN_STND,
 		},
 		702: {
 			Fsprite:    SPR_PAIN,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_PAIN_RUN2,
 		},
 		703: {
 			Fsprite:    SPR_PAIN,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_PAIN_RUN3,
 		},
 		704: {
 			Fsprite:    SPR_PAIN,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_PAIN_RUN4,
 		},
 		705: {
 			Fsprite:    SPR_PAIN,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_PAIN_RUN5,
 		},
 		706: {
 			Fsprite:    SPR_PAIN,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_PAIN_RUN6,
 		},
 		707: {
 			Fsprite:    SPR_PAIN,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_PAIN_RUN1,
 		},
 		708: {
 			Fsprite:    SPR_PAIN,
 			Fframe:     3,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_PAIN_ATK2,
 		},
 		709: {
 			Fsprite:    SPR_PAIN,
 			Fframe:     4,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_PAIN_ATK3,
 		},
 		710: {
 			Fsprite:    SPR_PAIN,
 			Fframe:     32773,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_PAIN_ATK4,
 		},
 		711: {
 			Fsprite:    SPR_PAIN,
 			Fframe:     32773,
-			Faction:    mobjFuncToAction(A_PainAttack),
+			Faction:    mobjFuncToAction(a_PainAttack),
 			Fnextstate: S_PAIN_RUN1,
 		},
 		712: {
@@ -14660,7 +14660,7 @@ func init() {
 			Fsprite:    SPR_PAIN,
 			Fframe:     6,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_PAIN_RUN1,
 		},
 		714: {
@@ -14673,7 +14673,7 @@ func init() {
 			Fsprite:    SPR_PAIN,
 			Fframe:     32776,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_PAIN_DIE3,
 		},
 		716: {
@@ -14692,7 +14692,7 @@ func init() {
 			Fsprite:    SPR_PAIN,
 			Fframe:     32779,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_PainDie),
+			Faction:    mobjFuncToAction(a_PainDie),
 			Fnextstate: S_PAIN_DIE6,
 		},
 		719: {
@@ -14739,110 +14739,110 @@ func init() {
 		726: {
 			Fsprite:    SPR_SSWV,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_SSWV_STND2,
 		},
 		727: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     1,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_SSWV_STND,
 		},
 		728: {
 			Fsprite:    SPR_SSWV,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SSWV_RUN2,
 		},
 		729: {
 			Fsprite:    SPR_SSWV,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SSWV_RUN3,
 		},
 		730: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SSWV_RUN4,
 		},
 		731: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     1,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SSWV_RUN5,
 		},
 		732: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SSWV_RUN6,
 		},
 		733: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     2,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SSWV_RUN7,
 		},
 		734: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SSWV_RUN8,
 		},
 		735: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     3,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Chase),
+			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: S_SSWV_RUN1,
 		},
 		736: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     4,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SSWV_ATK2,
 		},
 		737: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     5,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SSWV_ATK3,
 		},
 		738: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     32774,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_CPosAttack),
+			Faction:    mobjFuncToAction(a_CPosAttack),
 			Fnextstate: S_SSWV_ATK4,
 		},
 		739: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     5,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_FaceTarget),
+			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: S_SSWV_ATK5,
 		},
 		740: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     32774,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_CPosAttack),
+			Faction:    mobjFuncToAction(a_CPosAttack),
 			Fnextstate: S_SSWV_ATK6,
 		},
 		741: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     5,
 			Ftics:      1,
-			Faction:    mobjFuncToAction(A_CPosRefire),
+			Faction:    mobjFuncToAction(a_CPosRefire),
 			Fnextstate: S_SSWV_ATK2,
 		},
 		742: {
@@ -14855,7 +14855,7 @@ func init() {
 			Fsprite:    SPR_SSWV,
 			Fframe:     7,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_SSWV_RUN1,
 		},
 		744: {
@@ -14868,14 +14868,14 @@ func init() {
 			Fsprite:    SPR_SSWV,
 			Fframe:     9,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_SSWV_DIE3,
 		},
 		746: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     10,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_SSWV_DIE4,
 		},
 		747: {
@@ -14899,14 +14899,14 @@ func init() {
 			Fsprite:    SPR_SSWV,
 			Fframe:     14,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_XScream),
+			Faction:    mobjFuncToAction(a_XScream),
 			Fnextstate: S_SSWV_XDIE3,
 		},
 		751: {
 			Fsprite:    SPR_SSWV,
 			Fframe:     15,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Fall),
+			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: S_SSWV_XDIE4,
 		},
 		752: {
@@ -14994,7 +14994,7 @@ func init() {
 			Fsprite:    SPR_KEEN,
 			Fframe:     2,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_COMMKEEN4,
 		},
 		767: {
@@ -15043,7 +15043,7 @@ func init() {
 			Fsprite:    SPR_KEEN,
 			Fframe:     10,
 			Ftics:      6,
-			Faction:    mobjFuncToAction(A_KeenDie),
+			Faction:    mobjFuncToAction(a_KeenDie),
 			Fnextstate: S_COMMKEEN12,
 		},
 		775: {
@@ -15061,7 +15061,7 @@ func init() {
 			Fsprite:    SPR_KEEN,
 			Fframe:     12,
 			Ftics:      8,
-			Faction:    mobjFuncToAction(A_Pain),
+			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: S_KEENSTND,
 		},
 		778: {
@@ -15072,13 +15072,13 @@ func init() {
 			Fsprite:    SPR_BBRN,
 			Fframe:     1,
 			Ftics:      36,
-			Faction:    mobjFuncToAction(A_BrainPain),
+			Faction:    mobjFuncToAction(a_BrainPain),
 			Fnextstate: S_BRAIN,
 		},
 		780: {
 			Fsprite:    SPR_BBRN,
 			Ftics:      100,
-			Faction:    mobjFuncToAction(A_BrainScream),
+			Faction:    mobjFuncToAction(a_BrainScream),
 			Fnextstate: S_BRAIN_DIE2,
 		},
 		781: {
@@ -15094,108 +15094,108 @@ func init() {
 		783: {
 			Fsprite: SPR_BBRN,
 			Ftics:   -1,
-			Faction: mobjFuncToAction(A_BrainDie),
+			Faction: mobjFuncToAction(a_BrainDie),
 		},
 		784: {
 			Fsprite:    SPR_SSWV,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Look),
+			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: S_BRAINEYE,
 		},
 		785: {
 			Fsprite:    SPR_SSWV,
 			Ftics:      181,
-			Faction:    mobjFuncToAction(A_BrainAwake),
+			Faction:    mobjFuncToAction(a_BrainAwake),
 			Fnextstate: S_BRAINEYE1,
 		},
 		786: {
 			Fsprite:    SPR_SSWV,
 			Ftics:      150,
-			Faction:    mobjFuncToAction(A_BrainSpit),
+			Faction:    mobjFuncToAction(a_BrainSpit),
 			Fnextstate: S_BRAINEYE1,
 		},
 		787: {
 			Fsprite:    SPR_BOSF,
 			Fframe:     32768,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_SpawnSound),
+			Faction:    mobjFuncToAction(a_SpawnSound),
 			Fnextstate: S_SPAWN2,
 		},
 		788: {
 			Fsprite:    SPR_BOSF,
 			Fframe:     32769,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_SpawnFly),
+			Faction:    mobjFuncToAction(a_SpawnFly),
 			Fnextstate: S_SPAWN3,
 		},
 		789: {
 			Fsprite:    SPR_BOSF,
 			Fframe:     32770,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_SpawnFly),
+			Faction:    mobjFuncToAction(a_SpawnFly),
 			Fnextstate: S_SPAWN4,
 		},
 		790: {
 			Fsprite:    SPR_BOSF,
 			Fframe:     32771,
 			Ftics:      3,
-			Faction:    mobjFuncToAction(A_SpawnFly),
+			Faction:    mobjFuncToAction(a_SpawnFly),
 			Fnextstate: S_SPAWN1,
 		},
 		791: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32768,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_SPAWNFIRE2,
 		},
 		792: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32769,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_SPAWNFIRE3,
 		},
 		793: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32770,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_SPAWNFIRE4,
 		},
 		794: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32771,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_SPAWNFIRE5,
 		},
 		795: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32772,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_SPAWNFIRE6,
 		},
 		796: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32773,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_SPAWNFIRE7,
 		},
 		797: {
 			Fsprite:    SPR_FIRE,
 			Fframe:     32774,
 			Ftics:      4,
-			Faction:    mobjFuncToAction(A_Fire),
+			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: S_SPAWNFIRE8,
 		},
 		798: {
 			Fsprite: SPR_FIRE,
 			Fframe:  32775,
 			Ftics:   4,
-			Faction: mobjFuncToAction(A_Fire),
+			Faction: mobjFuncToAction(a_Fire),
 		},
 		799: {
 			Fsprite:    SPR_MISL,
@@ -15213,7 +15213,7 @@ func init() {
 			Fsprite: SPR_MISL,
 			Fframe:  32771,
 			Ftics:   10,
-			Faction: mobjFuncToAction(A_BrainExplode),
+			Faction: mobjFuncToAction(a_BrainExplode),
 		},
 		802: {
 			Fsprite:    SPR_ARM1,
@@ -15258,7 +15258,7 @@ func init() {
 			Fsprite:    SPR_BEXP,
 			Fframe:     32769,
 			Ftics:      5,
-			Faction:    mobjFuncToAction(A_Scream),
+			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: S_BEXP3,
 		},
 		810: {
@@ -15271,7 +15271,7 @@ func init() {
 			Fsprite:    SPR_BEXP,
 			Fframe:     32771,
 			Ftics:      10,
-			Faction:    mobjFuncToAction(A_Explode),
+			Faction:    mobjFuncToAction(a_Explode),
 			Fnextstate: S_BEXP5,
 		},
 		812: {
@@ -17740,7 +17740,7 @@ func init() {
 // Displays the text mode ending screen after the game quits
 //
 
-func I_Endoom(endoom_data uintptr) {
+func i_Endoom(endoom_data uintptr) {
 }
 
 // When an axis is within the dead zone, it is set to zero.
@@ -17789,23 +17789,23 @@ var joystick_physical_buttons = [10]int32{
 	9: 9,
 }
 
-func I_BindJoystickVariables() {
+func i_BindJoystickVariables() {
 	var i int32
-	M_BindVariable("use_joystick", &usejoystick)
-	M_BindVariable("joystick_index", &joystick_index)
-	M_BindVariable("joystick_x_axis", &joystick_x_axis)
-	M_BindVariable("joystick_y_axis", &joystick_y_axis)
-	M_BindVariable("joystick_strafe_axis", &joystick_strafe_axis)
-	M_BindVariable("joystick_x_invert", &joystick_x_invert)
-	M_BindVariable("joystick_y_invert", &joystick_y_invert)
-	M_BindVariable("joystick_strafe_invert", &joystick_strafe_invert)
+	m_BindVariable("use_joystick", &usejoystick)
+	m_BindVariable("joystick_index", &joystick_index)
+	m_BindVariable("joystick_x_axis", &joystick_x_axis)
+	m_BindVariable("joystick_y_axis", &joystick_y_axis)
+	m_BindVariable("joystick_strafe_axis", &joystick_strafe_axis)
+	m_BindVariable("joystick_x_invert", &joystick_x_invert)
+	m_BindVariable("joystick_y_invert", &joystick_y_invert)
+	m_BindVariable("joystick_strafe_invert", &joystick_strafe_invert)
 	i = 0
 	for {
 		if i >= NUM_VIRTUAL_BUTTONS {
 			break
 		}
 		name := fmt.Sprintf("joystick_physical_button%d", i)
-		M_BindVariable(name, &joystick_physical_buttons[i])
+		m_BindVariable(name, &joystick_physical_buttons[i])
 		goto _1
 	_1:
 		;
@@ -17907,26 +17907,26 @@ func InitMusicModule() {
 //  allocates channel buffer, sets S_sfx lookup.
 //
 
-func I_InitSound(use_sfx_prefix boolean) {
+func i_InitSound(use_sfx_prefix boolean) {
 	var nomusic, nosfx, nosound boolean
 	//!
 	// @vanilla
 	//
 	// Disable all sound output.
 	//
-	nosound = booluint32(M_CheckParm("-nosound") > 0)
+	nosound = booluint32(m_CheckParm("-nosound") > 0)
 	//!
 	// @vanilla
 	//
 	// Disable sound effects.
 	//
-	nosfx = booluint32(M_CheckParm("-nosfx") > 0)
+	nosfx = booluint32(m_CheckParm("-nosfx") > 0)
 	//!
 	// @vanilla
 	//
 	// Disable music.
 	//
-	nomusic = booluint32(M_CheckParm("-nomusic") > 0)
+	nomusic = booluint32(m_CheckParm("-nomusic") > 0)
 	// Initialize the sound and music subsystems.
 	if nosound == 0 && screensaver_mode == 0 {
 		// This is kind of a hack. If native MIDI is enabled, set up
@@ -17944,7 +17944,7 @@ func I_InitSound(use_sfx_prefix boolean) {
 	}
 }
 
-func I_ShutdownSound() {
+func i_ShutdownSound() {
 	if sound_module != nil {
 		sound_module.FShutdown()
 	}
@@ -17953,7 +17953,7 @@ func I_ShutdownSound() {
 	}
 }
 
-func I_GetSfxLumpNum(sfxinfo *sfxinfo_t) (r int32) {
+func i_GetSfxLumpNum(sfxinfo *sfxinfo_t) (r int32) {
 	if sound_module != nil {
 		return sound_module.FGetSfxLumpNum(sfxinfo)
 	} else {
@@ -17961,7 +17961,7 @@ func I_GetSfxLumpNum(sfxinfo *sfxinfo_t) (r int32) {
 	}
 }
 
-func I_UpdateSound() {
+func i_UpdateSound() {
 	if sound_module != nil {
 		sound_module.FUpdate()
 	}
@@ -17987,14 +17987,14 @@ func CheckVolumeSeparation(vol *int32, sep *int32) {
 	}
 }
 
-func I_UpdateSoundParams(channel int32, vol int32, sep int32) {
+func i_UpdateSoundParams(channel int32, vol int32, sep int32) {
 	if sound_module != nil {
 		CheckVolumeSeparation(&vol, &sep)
 		sound_module.FUpdateSoundParams(channel, vol, sep)
 	}
 }
 
-func I_StartSound(sfxinfo *sfxinfo_t, channel int32, vol int32, sep int32) (r int32) {
+func i_StartSound(sfxinfo *sfxinfo_t, channel int32, vol int32, sep int32) (r int32) {
 	if sound_module != nil {
 		CheckVolumeSeparation(&vol, &sep)
 		return sound_module.FStartSound(sfxinfo, channel, vol, sep)
@@ -18002,53 +18002,53 @@ func I_StartSound(sfxinfo *sfxinfo_t, channel int32, vol int32, sep int32) (r in
 	return 0
 }
 
-func I_StopSound(channel int32) {
+func i_StopSound(channel int32) {
 	if sound_module != nil {
 		sound_module.FStopSound(channel)
 	}
 }
 
-func I_SoundIsPlaying(channel int32) (r boolean) {
+func i_SoundIsPlaying(channel int32) (r boolean) {
 	if sound_module != nil {
 		return sound_module.FSoundIsPlaying(channel)
 	}
 	return 0
 }
 
-func I_PrecacheSounds(sounds []sfxinfo_t) {
+func i_PrecacheSounds(sounds []sfxinfo_t) {
 	if sound_module != nil && sound_module.FCacheSounds != nil {
 		sound_module.FCacheSounds(sounds)
 	}
 }
 
-func I_InitMusic() {
+func i_InitMusic() {
 	if music_module != nil {
 		music_module.FInit()
 	}
 }
 
-func I_ShutdownMusic() {
+func i_ShutdownMusic() {
 }
 
-func I_SetMusicVolume(volume int32) {
+func i_SetMusicVolume(volume int32) {
 	if music_module != nil {
 		music_module.FSetMusicVolume(volume)
 	}
 }
 
-func I_PauseSong() {
+func i_PauseSong() {
 	if music_module != nil {
 		music_module.FPauseMusic()
 	}
 }
 
-func I_ResumeSong() {
+func i_ResumeSong() {
 	if music_module != nil {
 		music_module.FResumeMusic()
 	}
 }
 
-func I_RegisterSong(data uintptr, len1 int32) (r uintptr) {
+func i_RegisterSong(data uintptr, len1 int32) (r uintptr) {
 	if music_module != nil {
 		music_module.FRegisterSong(data, len1)
 	} else {
@@ -18057,35 +18057,35 @@ func I_RegisterSong(data uintptr, len1 int32) (r uintptr) {
 	return r
 }
 
-func I_UnRegisterSong(handle uintptr) {
+func i_UnRegisterSong(handle uintptr) {
 	if music_module != nil {
 		music_module.FUnRegisterSong(handle)
 	}
 }
 
-func I_PlaySong(handle uintptr, looping boolean) {
+func i_PlaySong(handle uintptr, looping boolean) {
 	if music_module != nil {
 		music_module.FPlaySong(handle, looping)
 	}
 }
 
-func I_StopSong() {
+func i_StopSong() {
 	if music_module != nil {
 		music_module.FStopSong()
 	}
 }
 
-func I_BindSoundVariables() {
-	M_BindVariable("snd_musicdevice", &snd_musicdevice)
-	M_BindVariable("snd_sfxdevice", &snd_sfxdevice)
-	M_BindVariable("snd_sbport", &snd_sbport)
-	M_BindVariable("snd_sbirq", &snd_sbirq)
-	M_BindVariable("snd_sbdma", &snd_sbdma)
-	M_BindVariable("snd_mport", &snd_mport)
-	M_BindVariable("snd_maxslicetime_ms", &snd_maxslicetime_ms)
-	M_BindVariable("snd_musiccmd", &snd_musiccmd)
-	M_BindVariable("snd_samplerate", &snd_samplerate)
-	M_BindVariable("snd_cachesize", &snd_cachesize)
+func i_BindSoundVariables() {
+	m_BindVariable("snd_musicdevice", &snd_musicdevice)
+	m_BindVariable("snd_sfxdevice", &snd_sfxdevice)
+	m_BindVariable("snd_sbport", &snd_sbport)
+	m_BindVariable("snd_sbirq", &snd_sbirq)
+	m_BindVariable("snd_sbdma", &snd_sbdma)
+	m_BindVariable("snd_mport", &snd_mport)
+	m_BindVariable("snd_maxslicetime_ms", &snd_maxslicetime_ms)
+	m_BindVariable("snd_musiccmd", &snd_musiccmd)
+	m_BindVariable("snd_samplerate", &snd_samplerate)
+	m_BindVariable("snd_cachesize", &snd_cachesize)
 	// Before SDL_mixer version 1.2.11, MIDI music caused the game
 	// to crash when it looped.  If this is an old SDL_mixer version,
 	// disable MIDI.
@@ -18107,7 +18107,7 @@ type atexit_listentry_t struct {
 
 var exit_funcs []atexit_listentry_t
 
-func I_AtExit(func1 func(), run_on_error boolean) {
+func i_AtExit(func1 func(), run_on_error boolean) {
 	exit_funcs = append(exit_funcs, atexit_listentry_t{
 		Ffunc:         func1,
 		Frun_on_error: run_on_error,
@@ -18116,10 +18116,10 @@ func I_AtExit(func1 func(), run_on_error boolean) {
 
 // Tactile feedback function, probably used for the Logitech Cyberman
 
-func I_Tactile(on int32, off int32, total int32) {
+func i_Tactile(on int32, off int32, total int32) {
 }
 
-func I_PrintBanner(msg string) {
+func i_PrintBanner(msg string) {
 	spaces := 35 - len(msg)/2
 	for i := 0; i < spaces; i++ {
 		fmt.Print(" ")
@@ -18127,7 +18127,7 @@ func I_PrintBanner(msg string) {
 	fmt.Printf("%s\n", msg)
 }
 
-func I_PrintDivider() {
+func i_PrintDivider() {
 	var i int32
 	i = 0
 	for {
@@ -18143,12 +18143,12 @@ func I_PrintDivider() {
 	fmt.Print("\n")
 }
 
-func I_PrintStartupBanner(gamedescription string) {
-	I_PrintDivider()
-	I_PrintBanner(gamedescription)
-	I_PrintDivider()
+func i_PrintStartupBanner(gamedescription string) {
+	i_PrintDivider()
+	i_PrintBanner(gamedescription)
+	i_PrintDivider()
 	fprintf_ccgo(os.Stdout, " Doom Generic is free software, covered by the GNU General Public\n License.  There is NO warranty; not even for MERCHANTABILITY or FITNESS\n FOR A PARTICULAR PURPOSE. You are welcome to change and distribute\n copies under certain conditions. See the source for more information.\n")
-	I_PrintDivider()
+	i_PrintDivider()
 }
 
 //
@@ -18157,7 +18157,7 @@ func I_PrintStartupBanner(gamedescription string) {
 // Returns true if stdout is a real console, false if it is a file
 //
 
-func I_ConsoleStdout() (r boolean) {
+func i_ConsoleStdout() (r boolean) {
 	return 0
 }
 
@@ -18165,7 +18165,7 @@ func I_ConsoleStdout() (r boolean) {
 // I_Quit
 //
 
-func I_Quit() {
+func i_Quit() {
 	// Run through all exit functions, from last to first
 	for i := len(exit_funcs) - 1; i >= 0; i-- {
 		// Call the exit function.
@@ -18179,10 +18179,10 @@ func I_Quit() {
 
 var already_quitting = 0
 
-func I_Error(errStr string, args ...any) {
+func i_Error(errStr string, args ...any) {
 	var exit_gui_popup boolean
 	if already_quitting != 0 {
-		fprintf_ccgo(os.Stderr, "Warning: recursive call to I_Error detected.\n")
+		fprintf_ccgo(os.Stderr, "Warning: recursive call to i_Error detected.\n")
 	} else {
 		already_quitting = 1
 	}
@@ -18199,11 +18199,11 @@ func I_Error(errStr string, args ...any) {
 			exit_funcs[i].Ffunc()
 		}
 	}
-	exit_gui_popup = booluint32(M_ParmExists("-nogui") == 0)
+	exit_gui_popup = booluint32(m_ParmExists("-nogui") == 0)
 	// Pop up a GUI dialog box to show the error message, if the
 	// game was not run from the console (and the user will
 	// therefore be unable to otherwise see the message).
-	if exit_gui_popup != 0 && I_ConsoleStdout() == 0 {
+	if exit_gui_popup != 0 && i_ConsoleStdout() == 0 {
 		// TODO: Expose error message somehow?
 	}
 	// abort();
@@ -18236,7 +18236,7 @@ var mem_dump_custom [DOS_MEM_DUMP_SIZE]uint8
 
 var dos_mem_dump []byte = mem_dump_dos622[:]
 
-func I_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
+func i_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
 	var i, p, v2 int32
 	if firsttime != 0 {
 		firsttime = 0
@@ -18249,7 +18249,7 @@ func I_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
 		// emulation.  Supported versions are: dos622, dos71, dosbox.
 		// The default is to emulate DOS 7.1 (Windows 98).
 		//
-		p = M_CheckParmWithArgs("-setmem", 1)
+		p = m_CheckParmWithArgs("-setmem", 1)
 		if p > 0 {
 			if strings.EqualFold(myargs[p+1], "dos622") {
 				dos_mem_dump = mem_dump_dos622[:]
@@ -18301,13 +18301,13 @@ var firsttime = 1
 
 var basetime uint32 = 0
 
-func I_GetTicks() (r int32) {
+func i_GetTicks() (r int32) {
 	return int32(float64(time.Since(start_time).Milliseconds()) * dg_speed_ratio)
 }
 
-func I_GetTime() (r int32) {
+func i_GetTime() (r int32) {
 	var ticks uint32
-	ticks = uint32(I_GetTicks())
+	ticks = uint32(i_GetTicks())
 	if basetime == 0 {
 		basetime = ticks
 	}
@@ -18316,12 +18316,12 @@ func I_GetTime() (r int32) {
 }
 
 //
-// Same as I_GetTime, but returns time in milliseconds
+// Same as i_GetTime, but returns time in milliseconds
 //
 
 func I_GetTimeMS() (r int32) {
 	var ticks uint32
-	ticks = uint32(I_GetTicks())
+	ticks = uint32(i_GetTicks())
 	if basetime == 0 {
 		basetime = ticks
 	}
@@ -18330,7 +18330,7 @@ func I_GetTimeMS() (r int32) {
 
 // Sleep for a specified number of ms
 
-func I_Sleep(ms uint32) {
+func i_Sleep(ms uint32) {
 	time.Sleep(time.Duration(float64(ms)/dg_speed_ratio) * time.Millisecond)
 }
 
@@ -18342,7 +18342,7 @@ func I_Sleep(ms uint32) {
 // or 0 if not present
 //
 
-func M_CheckParmWithArgs(check string, num_args int32) (r int32) {
+func m_CheckParmWithArgs(check string, num_args int32) (r int32) {
 	for i := int32(1); i < int32(len(myargs))-num_args; i++ {
 		if strings.EqualFold(myargs[i], check) {
 			return i
@@ -18358,12 +18358,12 @@ func M_CheckParmWithArgs(check string, num_args int32) (r int32) {
 // line arguments, false if not.
 //
 
-func M_ParmExists(check string) (r boolean) {
-	return booluint32(M_CheckParm(check) != 0)
+func m_ParmExists(check string) (r boolean) {
+	return booluint32(m_CheckParm(check) != 0)
 }
 
-func M_CheckParm(check string) (r int32) {
-	return M_CheckParmWithArgs(check, 0)
+func m_CheckParm(check string) (r int32) {
+	return m_CheckParmWithArgs(check, 0)
 }
 
 func LoadResponseFile(argv_index int32) {
@@ -18373,7 +18373,7 @@ func LoadResponseFile(argv_index int32) {
 // Find a Response File
 //
 
-func M_FindResponseFile() {
+func m_FindResponseFile() {
 	var i int32
 	i = 1
 	for {
@@ -18397,14 +18397,14 @@ const BOXBOTTOM = 1
 const BOXLEFT = 2
 const BOXRIGHT = 3
 
-func M_ClearBox(box *box_t) {
+func m_ClearBox(box *box_t) {
 	box[BOXRIGHT] = -1 - 0x7fffffff
 	box[BOXRIGHT] = -1 - 0x7fffffff
 	box[BOXLEFT] = INT_MAX5
 	box[BOXBOTTOM] = INT_MAX5
 }
 
-func M_AddToBox(box *box_t, x fixed_t, y fixed_t) {
+func m_AddToBox(box *box_t, x fixed_t, y fixed_t) {
 	if x < box[BOXLEFT] {
 		box[BOXLEFT] = x
 	} else {
@@ -19256,7 +19256,7 @@ func LoadDefaultCollection(collection *default_collection_t) {
 
 // Set the default filenames to use for configuration files.
 
-func M_SetConfigFilenames(main_config string, extra_config string) {
+func m_SetConfigFilenames(main_config string, extra_config string) {
 	default_main_config = main_config
 	default_extra_config = extra_config
 }
@@ -19265,7 +19265,7 @@ func M_SetConfigFilenames(main_config string, extra_config string) {
 // M_SaveDefaults
 //
 
-func M_SaveDefaults() {
+func m_SaveDefaults() {
 	SaveDefaultCollection(&doom_defaults)
 	SaveDefaultCollection(&extra_defaults)
 }
@@ -19274,7 +19274,7 @@ func M_SaveDefaults() {
 // M_LoadDefaults
 //
 
-func M_LoadDefaults() {
+func m_LoadDefaults() {
 	var i int32
 	// check for a custom default file
 	//!
@@ -19284,7 +19284,7 @@ func M_LoadDefaults() {
 	// Load main configuration from the specified file, instead of the
 	// default.
 	//
-	i = M_CheckParmWithArgs("-config", 1)
+	i = m_CheckParmWithArgs("-config", 1)
 	if i != 0 {
 		doom_defaults.Ffilename = myargs[i+1]
 		fprintf_ccgo(os.Stdout, "\tdefault file: %s\n", doom_defaults.Ffilename)
@@ -19298,7 +19298,7 @@ func M_LoadDefaults() {
 	// Load additional configuration from the specified file, instead of
 	// the default.
 	//
-	i = M_CheckParmWithArgs("-extraconfig", 1)
+	i = m_CheckParmWithArgs("-extraconfig", 1)
 	if i != 0 {
 		extra_defaults.Ffilename = myargs[i+1]
 		fprintf_ccgo(os.Stdout, "        extra configuration file: %s\n", extra_defaults.Ffilename)
@@ -19320,7 +19320,7 @@ func GetDefaultForName(name string) *default_t {
 	}
 	// Not found? Internal error.
 	if result == nil {
-		I_Error("Unknown configuration variable: '%s'", name)
+		i_Error("Unknown configuration variable: '%s'", name)
 	}
 	return result
 }
@@ -19329,7 +19329,7 @@ func GetDefaultForName(name string) *default_t {
 // Bind a variable to a given configuration file variable, by name.
 //
 
-func M_BindVariable(name string, location any) {
+func m_BindVariable(name string, location any) {
 	var variable *default_t
 	variable = GetDefaultForName(name)
 	variable.Flocation = location
@@ -19337,7 +19337,7 @@ func M_BindVariable(name string, location any) {
 }
 
 // Get the path to the default configuration dir to use, if NULL
-// is passed to M_SetConfigDir.
+// is passed to m_SetConfigDir.
 
 func GetDefaultConfigDir() string {
 	return "."
@@ -19350,7 +19350,7 @@ func GetDefaultConfigDir() string {
 // files are stored - default.cfg, chocolate-doom.cfg, savegames, etc.
 //
 
-func M_SetConfigDir(dir string) {
+func m_SetConfigDir(dir string) {
 	// Use the directory that was passed, or find the default.
 	if dir != "" {
 		configdir = dir
@@ -19362,7 +19362,7 @@ func M_SetConfigDir(dir string) {
 		}
 	}
 	// Make the directory if it doesn't already exist:
-	M_MakeDirectory(configdir)
+	m_MakeDirectory(configdir)
 }
 
 //
@@ -19370,7 +19370,7 @@ func M_SetConfigDir(dir string) {
 // Creates the directory as necessary.
 //
 
-func M_GetSaveGameDir(iwadname string) string {
+func m_GetSaveGameDir(iwadname string) string {
 	var savegamedir string
 	// If not "doing" a configuration directory (Windows), don't "do"
 	// a savegame directory, either.
@@ -19378,7 +19378,7 @@ func M_GetSaveGameDir(iwadname string) string {
 		savegamedir = ""
 	} else {
 		savegamedir = configdir + "/" + ".savegame/"
-		M_MakeDirectory(savegamedir)
+		m_MakeDirectory(savegamedir)
 		fprintf_ccgo(os.Stdout, "Using %s for savegames\n", savegamedir)
 	}
 	return savegamedir
@@ -19500,107 +19500,107 @@ func init() {
 // Bind all of the common controls used by Doom and all other games.
 //
 
-func M_BindBaseControls() {
-	M_BindVariable("key_right", &key_right)
-	M_BindVariable("key_left", &key_left)
-	M_BindVariable("key_up", &key_up)
-	M_BindVariable("key_down", &key_down)
-	M_BindVariable("key_strafeleft", &key_strafeleft)
-	M_BindVariable("key_straferight", &key_straferight)
-	M_BindVariable("key_fire", &key_fire)
-	M_BindVariable("key_use", &key_use)
-	M_BindVariable("key_strafe", &key_strafe)
-	M_BindVariable("key_speed", &key_speed)
-	M_BindVariable("mouseb_fire", &mousebfire)
-	M_BindVariable("mouseb_strafe", &mousebstrafe)
-	M_BindVariable("mouseb_forward", &mousebforward)
-	M_BindVariable("joyb_fire", &joybfire)
-	M_BindVariable("joyb_strafe", &joybstrafe)
-	M_BindVariable("joyb_use", &joybuse)
-	M_BindVariable("joyb_speed", &joybspeed)
-	M_BindVariable("joyb_menu_activate", &joybmenu)
+func m_BindBaseControls() {
+	m_BindVariable("key_right", &key_right)
+	m_BindVariable("key_left", &key_left)
+	m_BindVariable("key_up", &key_up)
+	m_BindVariable("key_down", &key_down)
+	m_BindVariable("key_strafeleft", &key_strafeleft)
+	m_BindVariable("key_straferight", &key_straferight)
+	m_BindVariable("key_fire", &key_fire)
+	m_BindVariable("key_use", &key_use)
+	m_BindVariable("key_strafe", &key_strafe)
+	m_BindVariable("key_speed", &key_speed)
+	m_BindVariable("mouseb_fire", &mousebfire)
+	m_BindVariable("mouseb_strafe", &mousebstrafe)
+	m_BindVariable("mouseb_forward", &mousebforward)
+	m_BindVariable("joyb_fire", &joybfire)
+	m_BindVariable("joyb_strafe", &joybstrafe)
+	m_BindVariable("joyb_use", &joybuse)
+	m_BindVariable("joyb_speed", &joybspeed)
+	m_BindVariable("joyb_menu_activate", &joybmenu)
 	// Extra controls that are not in the Vanilla versions:
-	M_BindVariable("joyb_strafeleft", &joybstrafeleft)
-	M_BindVariable("joyb_straferight", &joybstraferight)
-	M_BindVariable("mouseb_strafeleft", &mousebstrafeleft)
-	M_BindVariable("mouseb_straferight", &mousebstraferight)
-	M_BindVariable("mouseb_use", &mousebuse)
-	M_BindVariable("mouseb_backward", &mousebbackward)
-	M_BindVariable("dclick_use", &dclick_use)
-	M_BindVariable("key_pause", &key_pause)
-	M_BindVariable("key_message_refresh", &key_message_refresh)
+	m_BindVariable("joyb_strafeleft", &joybstrafeleft)
+	m_BindVariable("joyb_straferight", &joybstraferight)
+	m_BindVariable("mouseb_strafeleft", &mousebstrafeleft)
+	m_BindVariable("mouseb_straferight", &mousebstraferight)
+	m_BindVariable("mouseb_use", &mousebuse)
+	m_BindVariable("mouseb_backward", &mousebbackward)
+	m_BindVariable("dclick_use", &dclick_use)
+	m_BindVariable("key_pause", &key_pause)
+	m_BindVariable("key_message_refresh", &key_message_refresh)
 }
 
-func M_BindWeaponControls() {
-	M_BindVariable("key_weapon1", &key_weapon1)
-	M_BindVariable("key_weapon2", &key_weapon2)
-	M_BindVariable("key_weapon3", &key_weapon3)
-	M_BindVariable("key_weapon4", &key_weapon4)
-	M_BindVariable("key_weapon5", &key_weapon5)
-	M_BindVariable("key_weapon6", &key_weapon6)
-	M_BindVariable("key_weapon7", &key_weapon7)
-	M_BindVariable("key_weapon8", &key_weapon8)
-	M_BindVariable("key_prevweapon", &key_prevweapon)
-	M_BindVariable("key_nextweapon", &key_nextweapon)
-	M_BindVariable("joyb_prevweapon", &joybprevweapon)
-	M_BindVariable("joyb_nextweapon", &joybnextweapon)
-	M_BindVariable("mouseb_prevweapon", &mousebprevweapon)
-	M_BindVariable("mouseb_nextweapon", &mousebnextweapon)
+func m_BindWeaponControls() {
+	m_BindVariable("key_weapon1", &key_weapon1)
+	m_BindVariable("key_weapon2", &key_weapon2)
+	m_BindVariable("key_weapon3", &key_weapon3)
+	m_BindVariable("key_weapon4", &key_weapon4)
+	m_BindVariable("key_weapon5", &key_weapon5)
+	m_BindVariable("key_weapon6", &key_weapon6)
+	m_BindVariable("key_weapon7", &key_weapon7)
+	m_BindVariable("key_weapon8", &key_weapon8)
+	m_BindVariable("key_prevweapon", &key_prevweapon)
+	m_BindVariable("key_nextweapon", &key_nextweapon)
+	m_BindVariable("joyb_prevweapon", &joybprevweapon)
+	m_BindVariable("joyb_nextweapon", &joybnextweapon)
+	m_BindVariable("mouseb_prevweapon", &mousebprevweapon)
+	m_BindVariable("mouseb_nextweapon", &mousebnextweapon)
 }
 
-func M_BindMapControls() {
-	M_BindVariable("key_map_north", &key_map_north)
-	M_BindVariable("key_map_south", &key_map_south)
-	M_BindVariable("key_map_east", &key_map_east)
-	M_BindVariable("key_map_west", &key_map_west)
-	M_BindVariable("key_map_zoomin", &key_map_zoomin)
-	M_BindVariable("key_map_zoomout", &key_map_zoomout)
-	M_BindVariable("key_map_toggle", &key_map_toggle)
-	M_BindVariable("key_map_maxzoom", &key_map_maxzoom)
-	M_BindVariable("key_map_follow", &key_map_follow)
-	M_BindVariable("key_map_grid", &key_map_grid)
-	M_BindVariable("key_map_mark", &key_map_mark)
-	M_BindVariable("key_map_clearmark", &key_map_clearmark)
+func m_BindMapControls() {
+	m_BindVariable("key_map_north", &key_map_north)
+	m_BindVariable("key_map_south", &key_map_south)
+	m_BindVariable("key_map_east", &key_map_east)
+	m_BindVariable("key_map_west", &key_map_west)
+	m_BindVariable("key_map_zoomin", &key_map_zoomin)
+	m_BindVariable("key_map_zoomout", &key_map_zoomout)
+	m_BindVariable("key_map_toggle", &key_map_toggle)
+	m_BindVariable("key_map_maxzoom", &key_map_maxzoom)
+	m_BindVariable("key_map_follow", &key_map_follow)
+	m_BindVariable("key_map_grid", &key_map_grid)
+	m_BindVariable("key_map_mark", &key_map_mark)
+	m_BindVariable("key_map_clearmark", &key_map_clearmark)
 }
 
-func M_BindMenuControls() {
-	M_BindVariable("key_menu_activate", &key_menu_activate)
-	M_BindVariable("key_menu_up", &key_menu_up)
-	M_BindVariable("key_menu_down", &key_menu_down)
-	M_BindVariable("key_menu_left", &key_menu_left)
-	M_BindVariable("key_menu_right", &key_menu_right)
-	M_BindVariable("key_menu_back", &key_menu_back)
-	M_BindVariable("key_menu_forward", &key_menu_forward)
-	M_BindVariable("key_menu_confirm", &key_menu_confirm)
-	M_BindVariable("key_menu_abort", &key_menu_abort)
-	M_BindVariable("key_menu_help", &key_menu_help)
-	M_BindVariable("key_menu_save", &key_menu_save)
-	M_BindVariable("key_menu_load", &key_menu_load)
-	M_BindVariable("key_menu_volume", &key_menu_volume)
-	M_BindVariable("key_menu_detail", &key_menu_detail)
-	M_BindVariable("key_menu_qsave", &key_menu_qsave)
-	M_BindVariable("key_menu_endgame", &key_menu_endgame)
-	M_BindVariable("key_menu_messages", &key_menu_messages)
-	M_BindVariable("key_menu_qload", &key_menu_qload)
-	M_BindVariable("key_menu_quit", &key_menu_quit)
-	M_BindVariable("key_menu_gamma", &key_menu_gamma)
-	M_BindVariable("key_menu_incscreen", &key_menu_incscreen)
-	M_BindVariable("key_menu_decscreen", &key_menu_decscreen)
-	M_BindVariable("key_menu_screenshot", &key_menu_screenshot)
-	M_BindVariable("key_demo_quit", &key_demo_quit)
-	M_BindVariable("key_spy", &key_spy)
+func m_BindMenuControls() {
+	m_BindVariable("key_menu_activate", &key_menu_activate)
+	m_BindVariable("key_menu_up", &key_menu_up)
+	m_BindVariable("key_menu_down", &key_menu_down)
+	m_BindVariable("key_menu_left", &key_menu_left)
+	m_BindVariable("key_menu_right", &key_menu_right)
+	m_BindVariable("key_menu_back", &key_menu_back)
+	m_BindVariable("key_menu_forward", &key_menu_forward)
+	m_BindVariable("key_menu_confirm", &key_menu_confirm)
+	m_BindVariable("key_menu_abort", &key_menu_abort)
+	m_BindVariable("key_menu_help", &key_menu_help)
+	m_BindVariable("key_menu_save", &key_menu_save)
+	m_BindVariable("key_menu_load", &key_menu_load)
+	m_BindVariable("key_menu_volume", &key_menu_volume)
+	m_BindVariable("key_menu_detail", &key_menu_detail)
+	m_BindVariable("key_menu_qsave", &key_menu_qsave)
+	m_BindVariable("key_menu_endgame", &key_menu_endgame)
+	m_BindVariable("key_menu_messages", &key_menu_messages)
+	m_BindVariable("key_menu_qload", &key_menu_qload)
+	m_BindVariable("key_menu_quit", &key_menu_quit)
+	m_BindVariable("key_menu_gamma", &key_menu_gamma)
+	m_BindVariable("key_menu_incscreen", &key_menu_incscreen)
+	m_BindVariable("key_menu_decscreen", &key_menu_decscreen)
+	m_BindVariable("key_menu_screenshot", &key_menu_screenshot)
+	m_BindVariable("key_demo_quit", &key_demo_quit)
+	m_BindVariable("key_spy", &key_spy)
 }
 
-func M_BindChatControls(num_players uint32) {
+func m_BindChatControls(num_players uint32) {
 	var i uint32
-	M_BindVariable("key_multi_msg", &key_multi_msg)
+	m_BindVariable("key_multi_msg", &key_multi_msg)
 	i = 0
 	for {
 		if i >= num_players {
 			break
 		}
 		name := fmt.Sprintf("key_multi_msgplayer%d", i+1)
-		M_BindVariable(name, &key_multi_msgplayer[i])
+		m_BindVariable(name, &key_multi_msgplayer[i])
 		goto _1
 	_1:
 		;
@@ -19613,7 +19613,7 @@ func M_BindChatControls(num_players uint32) {
 // platform we are running on.
 //
 
-func M_ApplyPlatformDefaults() {
+func m_ApplyPlatformDefaults() {
 	// no-op. Add your platform-specific patches here.
 }
 
@@ -19702,37 +19702,37 @@ func init() {
 			Fstatus:   1,
 			Fname:     "M_NGAME",
 			FalphaKey: 'n',
-			Froutine:  M_NewGame,
+			Froutine:  m_NewGame,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     "M_OPTION",
 			FalphaKey: 'o',
-			Froutine:  M_Options,
+			Froutine:  m_Options,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     "M_LOADG",
 			FalphaKey: 'l',
-			Froutine:  M_LoadGame,
+			Froutine:  m_LoadGame,
 		},
 		3: {
 			Fstatus:   1,
 			Fname:     "M_SAVEG",
 			FalphaKey: 's',
-			Froutine:  M_SaveGame,
+			Froutine:  m_SaveGame,
 		},
 		4: {
 			Fstatus:   1,
 			Fname:     "M_RDTHIS",
 			FalphaKey: 'r',
-			Froutine:  M_ReadThis,
+			Froutine:  m_ReadThis,
 		},
 		5: {
 			Fstatus:   1,
 			Fname:     "M_QUITG",
 			FalphaKey: 'q',
-			Froutine:  M_QuitDOOM,
+			Froutine:  m_QuitDOOM,
 		},
 	}
 }
@@ -19741,7 +19741,7 @@ func init() {
 	MainDef = menu_t{
 		Fnumitems:  int16(main_end),
 		Fmenuitems: MainMenu[:],
-		Froutine:   M_DrawMainMenu,
+		Froutine:   m_DrawMainMenu,
 		Fx:         97,
 		Fy:         64,
 	}
@@ -19755,25 +19755,25 @@ func init() {
 			Fstatus:   1,
 			Fname:     "M_EPI1",
 			FalphaKey: 'k',
-			Froutine:  M_Episode,
+			Froutine:  m_Episode,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     "M_EPI2",
 			FalphaKey: 't',
-			Froutine:  M_Episode,
+			Froutine:  m_Episode,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     "M_EPI3",
 			FalphaKey: 'i',
-			Froutine:  M_Episode,
+			Froutine:  m_Episode,
 		},
 		3: {
 			Fstatus:   1,
 			Fname:     "M_EPI4",
 			FalphaKey: 't',
-			Froutine:  M_Episode,
+			Froutine:  m_Episode,
 		},
 	}
 }
@@ -19783,7 +19783,7 @@ func init() {
 		Fnumitems:  int16(ep_end),
 		FprevMenu:  &MainDef,
 		Fmenuitems: EpisodeMenu[:],
-		Froutine:   M_DrawEpisode,
+		Froutine:   m_DrawEpisode,
 		Fx:         48,
 		Fy:         63,
 	}
@@ -19800,31 +19800,31 @@ func init() {
 			Fstatus:   1,
 			Fname:     "M_JKILL",
 			FalphaKey: 'i',
-			Froutine:  M_ChooseSkill,
+			Froutine:  m_ChooseSkill,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     "M_ROUGH",
 			FalphaKey: 'h',
-			Froutine:  M_ChooseSkill,
+			Froutine:  m_ChooseSkill,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     "M_HURT",
 			FalphaKey: 'h',
-			Froutine:  M_ChooseSkill,
+			Froutine:  m_ChooseSkill,
 		},
 		3: {
 			Fstatus:   1,
 			Fname:     "M_ULTRA",
 			FalphaKey: 'u',
-			Froutine:  M_ChooseSkill,
+			Froutine:  m_ChooseSkill,
 		},
 		4: {
 			Fstatus:   1,
 			Fname:     "M_NMARE",
 			FalphaKey: 'n',
-			Froutine:  M_ChooseSkill,
+			Froutine:  m_ChooseSkill,
 		},
 	}
 }
@@ -19834,7 +19834,7 @@ func init() {
 		Fnumitems:  int16(newg_end),
 		FprevMenu:  &EpiDef,
 		Fmenuitems: NewGameMenu[:],
-		Froutine:   M_DrawNewGame,
+		Froutine:   m_DrawNewGame,
 		Fx:         48,
 		Fy:         63,
 		FlastOn:    int16(hurtme),
@@ -19853,25 +19853,25 @@ func init() {
 			Fstatus:   1,
 			Fname:     "M_ENDGAM",
 			FalphaKey: 'e',
-			Froutine:  M_EndGame,
+			Froutine:  m_EndGame,
 		},
 		1: {
 			Fstatus:   1,
 			Fname:     "M_MESSG",
 			FalphaKey: 'm',
-			Froutine:  M_ChangeMessages,
+			Froutine:  m_ChangeMessages,
 		},
 		2: {
 			Fstatus:   1,
 			Fname:     "M_DETAIL",
 			FalphaKey: 'g',
-			Froutine:  M_ChangeDetail,
+			Froutine:  m_ChangeDetail,
 		},
 		3: {
 			Fstatus:   2,
 			Fname:     "M_SCRNSZ",
 			FalphaKey: 's',
-			Froutine:  M_SizeDisplay,
+			Froutine:  m_SizeDisplay,
 		},
 		4: {
 			Fstatus: int16(-1),
@@ -19881,7 +19881,7 @@ func init() {
 			Fstatus:   2,
 			Fname:     "M_MSENS",
 			FalphaKey: 'm',
-			Froutine:  M_ChangeSensitivity,
+			Froutine:  m_ChangeSensitivity,
 		},
 		6: {
 			Fstatus: int16(-1),
@@ -19891,7 +19891,7 @@ func init() {
 			Fstatus:   1,
 			Fname:     "M_SVOL",
 			FalphaKey: 's',
-			Froutine:  M_Sound,
+			Froutine:  m_Sound,
 		},
 	}
 }
@@ -19901,7 +19901,7 @@ func init() {
 		Fnumitems:  int16(opt_end),
 		FprevMenu:  &MainDef,
 		Fmenuitems: OptionsMenu[:],
-		Froutine:   M_DrawOptions,
+		Froutine:   m_DrawOptions,
 		Fx:         60,
 		Fy:         37,
 	}
@@ -19913,7 +19913,7 @@ func init() {
 	ReadMenu1 = [1]menuitem_t{
 		0: {
 			Fstatus:  1,
-			Froutine: M_ReadThis2,
+			Froutine: m_ReadThis2,
 		},
 	}
 }
@@ -19923,7 +19923,7 @@ func init() {
 		Fnumitems:  int16(read1_end),
 		FprevMenu:  &MainDef,
 		Fmenuitems: ReadMenu1[:],
-		Froutine:   M_DrawReadThis1,
+		Froutine:   m_DrawReadThis1,
 		Fx:         280,
 		Fy:         185,
 	}
@@ -19935,7 +19935,7 @@ func init() {
 	ReadMenu2 = [1]menuitem_t{
 		0: {
 			Fstatus:  1,
-			Froutine: M_FinishReadThis,
+			Froutine: m_FinishReadThis,
 		},
 	}
 }
@@ -19945,7 +19945,7 @@ func init() {
 		Fnumitems:  int16(read2_end),
 		FprevMenu:  &ReadDef1,
 		Fmenuitems: ReadMenu2[:],
-		Froutine:   M_DrawReadThis2,
+		Froutine:   m_DrawReadThis2,
 		Fx:         330,
 		Fy:         175,
 	}
@@ -19961,7 +19961,7 @@ func init() {
 			Fstatus:   2,
 			Fname:     "M_SFXVOL",
 			FalphaKey: 's',
-			Froutine:  M_SfxVol,
+			Froutine:  m_SfxVol,
 		},
 		1: {
 			Fstatus: int16(-1),
@@ -19970,7 +19970,7 @@ func init() {
 			Fstatus:   2,
 			Fname:     "M_MUSVOL",
 			FalphaKey: 'm',
-			Froutine:  M_MusicVol,
+			Froutine:  m_MusicVol,
 		},
 		3: {
 			Fstatus: int16(-1),
@@ -19983,7 +19983,7 @@ func init() {
 		Fnumitems:  int16(sound_end),
 		FprevMenu:  &OptionsDef,
 		Fmenuitems: SoundMenu[:],
-		Froutine:   M_DrawSound,
+		Froutine:   m_DrawSound,
 		Fx:         80,
 		Fy:         64,
 	}
@@ -19996,32 +19996,32 @@ func init() {
 		0: {
 			Fstatus:   1,
 			FalphaKey: '1',
-			Froutine:  M_LoadSelect,
+			Froutine:  m_LoadSelect,
 		},
 		1: {
 			Fstatus:   1,
 			FalphaKey: '2',
-			Froutine:  M_LoadSelect,
+			Froutine:  m_LoadSelect,
 		},
 		2: {
 			Fstatus:   1,
 			FalphaKey: '3',
-			Froutine:  M_LoadSelect,
+			Froutine:  m_LoadSelect,
 		},
 		3: {
 			Fstatus:   1,
 			FalphaKey: '4',
-			Froutine:  M_LoadSelect,
+			Froutine:  m_LoadSelect,
 		},
 		4: {
 			Fstatus:   1,
 			FalphaKey: '5',
-			Froutine:  M_LoadSelect,
+			Froutine:  m_LoadSelect,
 		},
 		5: {
 			Fstatus:   1,
 			FalphaKey: '6',
-			Froutine:  M_LoadSelect,
+			Froutine:  m_LoadSelect,
 		},
 	}
 }
@@ -20031,7 +20031,7 @@ func init() {
 		Fnumitems:  int16(load_end),
 		FprevMenu:  &MainDef,
 		Fmenuitems: LoadMenu[:],
-		Froutine:   M_DrawLoad,
+		Froutine:   m_DrawLoad,
 		Fx:         80,
 		Fy:         54,
 	}
@@ -20042,32 +20042,32 @@ func init() {
 		0: {
 			Fstatus:   1,
 			FalphaKey: '1',
-			Froutine:  M_SaveSelect,
+			Froutine:  m_SaveSelect,
 		},
 		1: {
 			Fstatus:   1,
 			FalphaKey: '2',
-			Froutine:  M_SaveSelect,
+			Froutine:  m_SaveSelect,
 		},
 		2: {
 			Fstatus:   1,
 			FalphaKey: '3',
-			Froutine:  M_SaveSelect,
+			Froutine:  m_SaveSelect,
 		},
 		3: {
 			Fstatus:   1,
 			FalphaKey: '4',
-			Froutine:  M_SaveSelect,
+			Froutine:  m_SaveSelect,
 		},
 		4: {
 			Fstatus:   1,
 			FalphaKey: '5',
-			Froutine:  M_SaveSelect,
+			Froutine:  m_SaveSelect,
 		},
 		5: {
 			Fstatus:   1,
 			FalphaKey: '6',
-			Froutine:  M_SaveSelect,
+			Froutine:  m_SaveSelect,
 		},
 	}
 }
@@ -20077,7 +20077,7 @@ func init() {
 		Fnumitems:  int16(load_end),
 		FprevMenu:  &MainDef,
 		Fmenuitems: SaveMenu[:],
-		Froutine:   M_DrawSave,
+		Froutine:   m_DrawSave,
 		Fx:         80,
 		Fy:         54,
 	}
@@ -20089,7 +20089,7 @@ func init() {
 //	// M_ReadSaveStrings
 //	//  read the strings from the savegame files
 //	//
-func M_ReadSaveStrings() {
+func m_ReadSaveStrings() {
 	var i int32
 	i = 0
 	for {
@@ -20098,7 +20098,7 @@ func M_ReadSaveStrings() {
 			break
 		}
 		var err error
-		handle, err := os.Open(P_SaveGameFile(i))
+		handle, err := os.Open(p_SaveGameFile(i))
 		if err != nil {
 			savegamestrings[i] = "empty slot"
 			LoadMenu[i].Fstatus = 0
@@ -20119,18 +20119,18 @@ func M_ReadSaveStrings() {
 // C documentation
 //
 //	//
-//	// M_LoadGame & Cie.
+//	// m_LoadGame & Cie.
 //	//
-func M_DrawLoad() {
+func m_DrawLoad() {
 	var i int32
-	V_DrawPatchDirect(72, 28, W_CacheLumpNameT("M_LOADG"))
+	v_DrawPatchDirect(72, 28, W_CacheLumpNameT("M_LOADG"))
 	i = 0
 	for {
 		if i >= int32(load_end) {
 			break
 		}
-		M_DrawSaveLoadBorder(int32(LoadDef.Fx), int32(LoadDef.Fy)+LINEHEIGHT*i)
-		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+LINEHEIGHT*i, savegamestrings[i])
+		m_DrawSaveLoadBorder(int32(LoadDef.Fx), int32(LoadDef.Fy)+LINEHEIGHT*i)
+		m_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+LINEHEIGHT*i, savegamestrings[i])
 		goto _1
 	_1:
 		;
@@ -20143,22 +20143,22 @@ func M_DrawLoad() {
 //	//
 //	// Draw border for the savegame description
 //	//
-func M_DrawSaveLoadBorder(x int32, y int32) {
+func m_DrawSaveLoadBorder(x int32, y int32) {
 	var i int32
-	V_DrawPatchDirect(x-int32(8), y+int32(7), W_CacheLumpNameT("M_LSLEFT"))
+	v_DrawPatchDirect(x-int32(8), y+int32(7), W_CacheLumpNameT("M_LSLEFT"))
 	i = 0
 	for {
 		if i >= 24 {
 			break
 		}
-		V_DrawPatchDirect(x, y+int32(7), W_CacheLumpNameT("M_LSCNTR"))
+		v_DrawPatchDirect(x, y+int32(7), W_CacheLumpNameT("M_LSCNTR"))
 		x += 8
 		goto _1
 	_1:
 		;
 		i++
 	}
-	V_DrawPatchDirect(x, y+int32(7), W_CacheLumpNameT("M_LSRGHT"))
+	v_DrawPatchDirect(x, y+int32(7), W_CacheLumpNameT("M_LSRGHT"))
 }
 
 // C documentation
@@ -20166,9 +20166,9 @@ func M_DrawSaveLoadBorder(x int32, y int32) {
 //	//
 //	// User wants to load this game
 //	//
-func M_LoadSelect(choice int32) {
-	G_LoadGame(P_SaveGameFile(choice))
-	M_ClearMenus()
+func m_LoadSelect(choice int32) {
+	g_LoadGame(p_SaveGameFile(choice))
+	m_ClearMenus()
 }
 
 // C documentation
@@ -20176,49 +20176,49 @@ func M_LoadSelect(choice int32) {
 //	//
 //	// Selected from DOOM menu
 //	//
-func M_LoadGame(choice int32) {
+func m_LoadGame(choice int32) {
 	if netgame != 0 {
-		M_StartMessage("you can't do load while in a net game!\n\npress a key.", nil, 0)
+		m_StartMessage("you can't do load while in a net game!\n\npress a key.", nil, 0)
 		return
 	}
-	M_SetupNextMenu(&LoadDef)
-	M_ReadSaveStrings()
+	m_SetupNextMenu(&LoadDef)
+	m_ReadSaveStrings()
 }
 
 // C documentation
 //
 //	//
-//	//  M_SaveGame & Cie.
+//	//  m_SaveGame & Cie.
 //	//
-func M_DrawSave() {
+func m_DrawSave() {
 	var i int32
-	V_DrawPatchDirect(72, 28, W_CacheLumpNameT("M_SAVEG"))
+	v_DrawPatchDirect(72, 28, W_CacheLumpNameT("M_SAVEG"))
 	i = 0
 	for {
 		if i >= int32(load_end) {
 			break
 		}
-		M_DrawSaveLoadBorder(int32(LoadDef.Fx), int32(LoadDef.Fy)+LINEHEIGHT*i)
-		M_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+LINEHEIGHT*i, savegamestrings[i])
+		m_DrawSaveLoadBorder(int32(LoadDef.Fx), int32(LoadDef.Fy)+LINEHEIGHT*i)
+		m_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+LINEHEIGHT*i, savegamestrings[i])
 		goto _1
 	_1:
 		;
 		i++
 	}
 	if saveStringEnter != 0 {
-		i = M_StringWidth(savegamestrings[saveSlot])
-		M_WriteText(int32(LoadDef.Fx)+i, int32(LoadDef.Fy)+LINEHEIGHT*saveSlot, "_")
+		i = m_StringWidth(savegamestrings[saveSlot])
+		m_WriteText(int32(LoadDef.Fx)+i, int32(LoadDef.Fy)+LINEHEIGHT*saveSlot, "_")
 	}
 }
 
 // C documentation
 //
 //	//
-//	// M_Responder calls this when user is finished
+//	// m_Responder calls this when user is finished
 //	//
-func M_DoSave(slot int32) {
-	G_SaveGame(slot, savegamestrings[slot])
-	M_ClearMenus()
+func m_DoSave(slot int32) {
+	g_SaveGame(slot, savegamestrings[slot])
+	m_ClearMenus()
 	// PICK QUICKSAVE SLOT YET?
 	if quickSaveSlot == -int32(2) {
 		quickSaveSlot = slot
@@ -20230,7 +20230,7 @@ func M_DoSave(slot int32) {
 //	//
 //	// User wants to save. Start string input for M_Responder
 //	//
-func M_SaveSelect(choice int32) {
+func m_SaveSelect(choice int32) {
 	// we are going to be intercepting all chars
 	saveStringEnter = 1
 	saveSlot = choice
@@ -20246,42 +20246,42 @@ func M_SaveSelect(choice int32) {
 //	//
 //	// Selected from DOOM menu
 //	//
-func M_SaveGame(choice int32) {
+func m_SaveGame(choice int32) {
 	if usergame == 0 {
-		M_StartMessage("you can't save if you aren't playing!\n\npress a key.", nil, 0)
+		m_StartMessage("you can't save if you aren't playing!\n\npress a key.", nil, 0)
 		return
 	}
 	if gamestate != GS_LEVEL {
 		return
 	}
-	M_SetupNextMenu(&SaveDef)
-	M_ReadSaveStrings()
+	m_SetupNextMenu(&SaveDef)
+	m_ReadSaveStrings()
 }
 
-func M_QuickSaveResponse(key int32) {
+func m_QuickSaveResponse(key int32) {
 	if key == key_menu_confirm {
-		M_DoSave(quickSaveSlot)
-		S_StartSound(nil, int32(sfx_swtchx))
+		m_DoSave(quickSaveSlot)
+		s_StartSound(nil, int32(sfx_swtchx))
 	}
 }
 
-func M_QuickSave() {
+func m_QuickSave() {
 	if usergame == 0 {
-		S_StartSound(nil, int32(sfx_oof))
+		s_StartSound(nil, int32(sfx_oof))
 		return
 	}
 	if gamestate != GS_LEVEL {
 		return
 	}
 	if quickSaveSlot < 0 {
-		M_StartControlPanel()
-		M_ReadSaveStrings()
-		M_SetupNextMenu(&SaveDef)
+		m_StartControlPanel()
+		m_ReadSaveStrings()
+		m_SetupNextMenu(&SaveDef)
 		quickSaveSlot = -int32(2) // means to pick a slot now
 		return
 	}
 	tempstring := fmt.Sprintf("quicksave over your game named\n\n'%s'?\n\npress y or n.", savegamestrings[quickSaveSlot])
-	M_StartMessage(tempstring, M_QuickSaveResponse, 1)
+	m_StartMessage(tempstring, m_QuickSaveResponse, 1)
 }
 
 // C documentation
@@ -20289,24 +20289,24 @@ func M_QuickSave() {
 //	//
 //	// M_QuickLoad
 //	//
-func M_QuickLoadResponse(key int32) {
+func m_QuickLoadResponse(key int32) {
 	if key == key_menu_confirm {
-		M_LoadSelect(quickSaveSlot)
-		S_StartSound(nil, int32(sfx_swtchx))
+		m_LoadSelect(quickSaveSlot)
+		s_StartSound(nil, int32(sfx_swtchx))
 	}
 }
 
-func M_QuickLoad() {
+func m_QuickLoad() {
 	if netgame != 0 {
-		M_StartMessage("you can't quickload during a netgame!\n\npress a key.", nil, 0)
+		m_StartMessage("you can't quickload during a netgame!\n\npress a key.", nil, 0)
 		return
 	}
 	if quickSaveSlot < 0 {
-		M_StartMessage("you haven't picked a quicksave slot yet!\n\npress a key.", nil, 0)
+		m_StartMessage("you haven't picked a quicksave slot yet!\n\npress a key.", nil, 0)
 		return
 	}
 	tempstring := fmt.Sprintf("do you want to quickload the game named\n\n'%s'?\n\npress y or n.", savegamestrings[quickSaveSlot])
-	M_StartMessage(tempstring, M_QuickLoadResponse, 1)
+	m_StartMessage(tempstring, m_QuickLoadResponse, 1)
 }
 
 // C documentation
@@ -20315,7 +20315,7 @@ func M_QuickLoad() {
 //	// Read This Menus
 //	// Had a "quick hack to fix romero bug"
 //	//
-func M_DrawReadThis1() {
+func m_DrawReadThis1() {
 	var lumpname string
 	var skullx, skully int32
 	lumpname = "CREDIT"
@@ -20358,10 +20358,10 @@ func M_DrawReadThis1() {
 		// Final Doom always displays "HELP".
 		lumpname = "HELP"
 	default:
-		I_Error("Unhandled game version")
+		i_Error("Unhandled game version")
 		break
 	}
-	V_DrawPatchDirect(0, 0, W_CacheLumpNameT(lumpname))
+	v_DrawPatchDirect(0, 0, W_CacheLumpNameT(lumpname))
 	ReadDef1.Fx = int16(skullx)
 	ReadDef1.Fy = int16(skully)
 }
@@ -20371,11 +20371,11 @@ func M_DrawReadThis1() {
 //	//
 //	// Read This Menus - optional second page.
 //	//
-func M_DrawReadThis2() {
+func m_DrawReadThis2() {
 	inhelpscreens = 1
 	// We only ever draw the second page if this is
 	// gameversion == exe_doom_1_9 and gamemode == registered
-	V_DrawPatchDirect(0, 0, W_CacheLumpNameT("HELP1"))
+	v_DrawPatchDirect(0, 0, W_CacheLumpNameT("HELP1"))
 }
 
 // C documentation
@@ -20383,17 +20383,17 @@ func M_DrawReadThis2() {
 //	//
 //	// Change Sfx & Music volumes
 //	//
-func M_DrawSound() {
-	V_DrawPatchDirect(60, 38, W_CacheLumpNameT("M_SVOL"))
-	M_DrawThermo(int32(SoundDef.Fx), int32(SoundDef.Fy)+LINEHEIGHT*(int32(sfx_vol)+1), 16, sfxVolume)
-	M_DrawThermo(int32(SoundDef.Fx), int32(SoundDef.Fy)+LINEHEIGHT*(int32(music_vol)+1), 16, musicVolume)
+func m_DrawSound() {
+	v_DrawPatchDirect(60, 38, W_CacheLumpNameT("M_SVOL"))
+	m_DrawThermo(int32(SoundDef.Fx), int32(SoundDef.Fy)+LINEHEIGHT*(int32(sfx_vol)+1), 16, sfxVolume)
+	m_DrawThermo(int32(SoundDef.Fx), int32(SoundDef.Fy)+LINEHEIGHT*(int32(music_vol)+1), 16, musicVolume)
 }
 
-func M_Sound(choice int32) {
-	M_SetupNextMenu(&SoundDef)
+func m_Sound(choice int32) {
+	m_SetupNextMenu(&SoundDef)
 }
 
-func M_SfxVol(choice int32) {
+func m_SfxVol(choice int32) {
 	switch choice {
 	case 0:
 		if sfxVolume != 0 {
@@ -20405,10 +20405,10 @@ func M_SfxVol(choice int32) {
 		}
 		break
 	}
-	S_SetSfxVolume(sfxVolume * int32(8))
+	s_SetSfxVolume(sfxVolume * int32(8))
 }
 
-func M_MusicVol(choice int32) {
+func m_MusicVol(choice int32) {
 	switch choice {
 	case 0:
 		if musicVolume != 0 {
@@ -20420,7 +20420,7 @@ func M_MusicVol(choice int32) {
 		}
 		break
 	}
-	S_SetMusicVolume(musicVolume * int32(8))
+	s_SetMusicVolume(musicVolume * int32(8))
 }
 
 // C documentation
@@ -20428,8 +20428,8 @@ func M_MusicVol(choice int32) {
 //	//
 //	// M_DrawMainMenu
 //	//
-func M_DrawMainMenu() {
-	V_DrawPatchDirect(94, 2, W_CacheLumpNameT("M_DOOM"))
+func m_DrawMainMenu() {
+	v_DrawPatchDirect(94, 2, W_CacheLumpNameT("M_DOOM"))
 }
 
 // C documentation
@@ -20437,58 +20437,58 @@ func M_DrawMainMenu() {
 //	//
 //	// M_NewGame
 //	//
-func M_DrawNewGame() {
-	V_DrawPatchDirect(96, 14, W_CacheLumpNameT("M_NEWG"))
-	V_DrawPatchDirect(54, 38, W_CacheLumpNameT("M_SKILL"))
+func m_DrawNewGame() {
+	v_DrawPatchDirect(96, 14, W_CacheLumpNameT("M_NEWG"))
+	v_DrawPatchDirect(54, 38, W_CacheLumpNameT("M_SKILL"))
 }
 
-func M_NewGame(choice int32) {
+func m_NewGame(choice int32) {
 	if netgame != 0 && demoplayback == 0 {
-		M_StartMessage("you can't start a new game\nwhile in a network game.\n\npress a key.", nil, 0)
+		m_StartMessage("you can't start a new game\nwhile in a network game.\n\npress a key.", nil, 0)
 		return
 	}
 	// Chex Quest disabled the episode select screen, as did Doom II.
 	if gamemode == commercial || gameversion == exe_chex {
-		M_SetupNextMenu(&NewDef)
+		m_SetupNextMenu(&NewDef)
 	} else {
-		M_SetupNextMenu(&EpiDef)
+		m_SetupNextMenu(&EpiDef)
 	}
 }
 
-func M_DrawEpisode() {
-	V_DrawPatchDirect(54, 38, W_CacheLumpNameT("M_EPISOD"))
+func m_DrawEpisode() {
+	v_DrawPatchDirect(54, 38, W_CacheLumpNameT("M_EPISOD"))
 }
 
-func M_VerifyNightmare(key int32) {
+func m_VerifyNightmare(key int32) {
 	if key != key_menu_confirm {
 		return
 	}
-	G_DeferedInitNew(sk_nightmare, epi+int32(1), 1)
-	M_ClearMenus()
+	g_DeferedInitNew(sk_nightmare, epi+int32(1), 1)
+	m_ClearMenus()
 }
 
-func M_ChooseSkill(choice int32) {
+func m_ChooseSkill(choice int32) {
 	if skill_t(choice) == sk_nightmare {
-		M_StartMessage("are you sure? this skill level\nisn't even remotely fair.\n\npress y or n.", M_VerifyNightmare, 1)
+		m_StartMessage("are you sure? this skill level\nisn't even remotely fair.\n\npress y or n.", m_VerifyNightmare, 1)
 		return
 	}
-	G_DeferedInitNew(skill_t(choice), epi+int32(1), 1)
-	M_ClearMenus()
+	g_DeferedInitNew(skill_t(choice), epi+int32(1), 1)
+	m_ClearMenus()
 }
 
-func M_Episode(choice int32) {
+func m_Episode(choice int32) {
 	if gamemode == shareware && choice != 0 {
-		M_StartMessage("this is the shareware version of doom.\n\nyou need to order the entire trilogy.\n\npress a key.", nil, 0)
-		M_SetupNextMenu(&ReadDef1)
+		m_StartMessage("this is the shareware version of doom.\n\nyou need to order the entire trilogy.\n\npress a key.", nil, 0)
+		m_SetupNextMenu(&ReadDef1)
 		return
 	}
 	// Yet another hack...
 	if gamemode == registered && choice > 2 {
-		fprintf_ccgo(os.Stderr, "M_Episode: 4th episode requires UltimateDOOM\n")
+		fprintf_ccgo(os.Stderr, "m_Episode: 4th episode requires UltimateDOOM\n")
 		choice = 0
 	}
 	epi = choice
-	M_SetupNextMenu(&NewDef)
+	m_SetupNextMenu(&NewDef)
 }
 
 // C documentation
@@ -20505,16 +20505,16 @@ var msgNames = [2]string{
 	1: "M_MSGON",
 }
 
-func M_DrawOptions() {
-	V_DrawPatchDirect(108, 15, W_CacheLumpNameT("M_OPTTTL"))
-	V_DrawPatchDirect(int32(OptionsDef.Fx)+int32(175), int32(OptionsDef.Fy)+LINEHEIGHT*int32(detail), W_CacheLumpNameT(detailNames[detailLevel]))
-	V_DrawPatchDirect(int32(OptionsDef.Fx)+int32(120), int32(OptionsDef.Fy)+LINEHEIGHT*int32(messages), W_CacheLumpNameT(msgNames[showMessages]))
-	M_DrawThermo(int32(OptionsDef.Fx), int32(OptionsDef.Fy)+LINEHEIGHT*(int32(mousesens)+1), 10, mouseSensitivity)
-	M_DrawThermo(int32(OptionsDef.Fx), int32(OptionsDef.Fy)+LINEHEIGHT*(int32(scrnsize)+1), 9, screenSize)
+func m_DrawOptions() {
+	v_DrawPatchDirect(108, 15, W_CacheLumpNameT("M_OPTTTL"))
+	v_DrawPatchDirect(int32(OptionsDef.Fx)+int32(175), int32(OptionsDef.Fy)+LINEHEIGHT*int32(detail), W_CacheLumpNameT(detailNames[detailLevel]))
+	v_DrawPatchDirect(int32(OptionsDef.Fx)+int32(120), int32(OptionsDef.Fy)+LINEHEIGHT*int32(messages), W_CacheLumpNameT(msgNames[showMessages]))
+	m_DrawThermo(int32(OptionsDef.Fx), int32(OptionsDef.Fy)+LINEHEIGHT*(int32(mousesens)+1), 10, mouseSensitivity)
+	m_DrawThermo(int32(OptionsDef.Fx), int32(OptionsDef.Fy)+LINEHEIGHT*(int32(scrnsize)+1), 9, screenSize)
 }
 
-func M_Options(choice int32) {
-	M_SetupNextMenu(&OptionsDef)
+func m_Options(choice int32) {
+	m_SetupNextMenu(&OptionsDef)
 }
 
 // C documentation
@@ -20522,7 +20522,7 @@ func M_Options(choice int32) {
 //	//
 //	//      Toggle messages on/off
 //	//
-func M_ChangeMessages(choice int32) {
+func m_ChangeMessages(choice int32) {
 	showMessages = 1 - showMessages
 	if showMessages == 0 {
 		players[consoleplayer].Fmessage = "Messages OFF"
@@ -20537,25 +20537,25 @@ func M_ChangeMessages(choice int32) {
 //	//
 //	// M_EndGame
 //	//
-func M_EndGameResponse(key int32) {
+func m_EndGameResponse(key int32) {
 	if key != key_menu_confirm {
 		return
 	}
 	currentMenu.FlastOn = itemOn
-	M_ClearMenus()
-	D_StartTitle()
+	m_ClearMenus()
+	d_StartTitle()
 }
 
-func M_EndGame(choice int32) {
+func m_EndGame(choice int32) {
 	if usergame == 0 {
-		S_StartSound(nil, int32(sfx_oof))
+		s_StartSound(nil, int32(sfx_oof))
 		return
 	}
 	if netgame != 0 {
-		M_StartMessage("you can't end a netgame!\n\npress a key.", nil, 0)
+		m_StartMessage("you can't end a netgame!\n\npress a key.", nil, 0)
 		return
 	}
-	M_StartMessage("are you sure you want to end the game?\n\npress y or n.", M_EndGameResponse, 1)
+	m_StartMessage("are you sure you want to end the game?\n\npress y or n.", m_EndGameResponse, 1)
 }
 
 // C documentation
@@ -20563,23 +20563,23 @@ func M_EndGame(choice int32) {
 //	//
 //	// M_ReadThis
 //	//
-func M_ReadThis(choice int32) {
-	M_SetupNextMenu(&ReadDef1)
+func m_ReadThis(choice int32) {
+	m_SetupNextMenu(&ReadDef1)
 }
 
-func M_ReadThis2(choice int32) {
+func m_ReadThis2(choice int32) {
 	// Doom 1.9 had two menus when playing Doom 1
 	// All others had only one
 	if gameversion <= exe_doom_1_9 && gamemode != commercial {
-		M_SetupNextMenu(&ReadDef2)
+		m_SetupNextMenu(&ReadDef2)
 	} else {
 		// Close the menu
-		M_FinishReadThis(0)
+		m_FinishReadThis(0)
 	}
 }
 
-func M_FinishReadThis(choice int32) {
-	M_SetupNextMenu(&MainDef)
+func m_FinishReadThis(choice int32) {
+	m_SetupNextMenu(&MainDef)
 }
 
 func init() {
@@ -20614,15 +20614,15 @@ var M_QuitResponse = func(key int32) {
 	}
 	if netgame == 0 {
 		if gamemode == commercial {
-			S_StartSound(nil, quitsounds2[gametic>>int32(2)&int32(7)])
+			s_StartSound(nil, quitsounds2[gametic>>int32(2)&int32(7)])
 		} else {
-			S_StartSound(nil, quitsounds[gametic>>int32(2)&int32(7)])
+			s_StartSound(nil, quitsounds[gametic>>int32(2)&int32(7)])
 		}
 	}
-	I_Quit()
+	i_Quit()
 }
 
-func M_SelectEndMessage() string {
+func m_SelectEndMessage() string {
 	var endmsg []string
 	var v1 GameMission_t
 	if gamemission == pack_chex {
@@ -20644,12 +20644,12 @@ func M_SelectEndMessage() string {
 	return endmsg[gametic%NUM_QUITMESSAGES]
 }
 
-func M_QuitDOOM(choice int32) {
-	endstring = fmt.Sprintf("%s\n\n(press y to quit to dos.)", M_SelectEndMessage())
-	M_StartMessage(endstring, M_QuitResponse, 1)
+func m_QuitDOOM(choice int32) {
+	endstring = fmt.Sprintf("%s\n\n(press y to quit to dos.)", m_SelectEndMessage())
+	m_StartMessage(endstring, M_QuitResponse, 1)
 }
 
-func M_ChangeSensitivity(choice int32) {
+func m_ChangeSensitivity(choice int32) {
 	switch choice {
 	case 0:
 		if mouseSensitivity != 0 {
@@ -20663,10 +20663,10 @@ func M_ChangeSensitivity(choice int32) {
 	}
 }
 
-func M_ChangeDetail(choice int32) {
+func m_ChangeDetail(choice int32) {
 	choice = 0
 	detailLevel = 1 - detailLevel
-	R_SetViewSize(screenblocks, detailLevel)
+	r_SetViewSize(screenblocks, detailLevel)
 	if detailLevel == 0 {
 		players[consoleplayer].Fmessage = "High detail"
 	} else {
@@ -20674,7 +20674,7 @@ func M_ChangeDetail(choice int32) {
 	}
 }
 
-func M_SizeDisplay(choice int32) {
+func m_SizeDisplay(choice int32) {
 	switch choice {
 	case 0:
 		if screenSize > 0 {
@@ -20688,7 +20688,7 @@ func M_SizeDisplay(choice int32) {
 		}
 		break
 	}
-	R_SetViewSize(screenblocks, detailLevel)
+	r_SetViewSize(screenblocks, detailLevel)
 }
 
 // C documentation
@@ -20696,28 +20696,28 @@ func M_SizeDisplay(choice int32) {
 //	//
 //	//      Menu Functions
 //	//
-func M_DrawThermo(x int32, y int32, thermWidth int32, thermDot int32) {
+func m_DrawThermo(x int32, y int32, thermWidth int32, thermDot int32) {
 	var i, xx int32
 	xx = x
-	V_DrawPatchDirect(xx, y, W_CacheLumpNameT("M_THERML"))
+	v_DrawPatchDirect(xx, y, W_CacheLumpNameT("M_THERML"))
 	xx += 8
 	i = 0
 	for {
 		if i >= thermWidth {
 			break
 		}
-		V_DrawPatchDirect(xx, y, W_CacheLumpNameT("M_THERMM"))
+		v_DrawPatchDirect(xx, y, W_CacheLumpNameT("M_THERMM"))
 		xx += 8
 		goto _1
 	_1:
 		;
 		i++
 	}
-	V_DrawPatchDirect(xx, y, W_CacheLumpNameT("M_THERMR"))
-	V_DrawPatchDirect(x+int32(8)+thermDot*int32(8), y, W_CacheLumpNameT("M_THERMO"))
+	v_DrawPatchDirect(xx, y, W_CacheLumpNameT("M_THERMR"))
+	v_DrawPatchDirect(x+int32(8)+thermDot*int32(8), y, W_CacheLumpNameT("M_THERMO"))
 }
 
-func M_StartMessage(string1 string, routine func(int32), input boolean) {
+func m_StartMessage(string1 string, routine func(int32), input boolean) {
 	messageLastMenuActive = int32(menuactive)
 	messageToPrint = 1
 	messageString = string1
@@ -20735,7 +20735,7 @@ func M_StartMessage(string1 string, routine func(int32), input boolean) {
 //	//
 //	// Find string width from hu_font chars
 //	//
-func M_StringWidth(string1 string) (r int32) {
+func m_StringWidth(string1 string) (r int32) {
 	var c, w int32
 	w = 0
 	for i := 0; i < len(string1); i++ {
@@ -20754,7 +20754,7 @@ func M_StringWidth(string1 string) (r int32) {
 //	//
 //	//      Find string height from hu_font chars
 //	//
-func M_StringHeight(string1 string) (r int32) {
+func m_StringHeight(string1 string) (r int32) {
 	var h, height int32
 	height = int32(hu_font[0].Fheight)
 	h = height
@@ -20771,7 +20771,7 @@ func M_StringHeight(string1 string) (r int32) {
 //	//
 //	//      Write a string using the hu_font
 //	//
-func M_WriteText(x int32, y int32, string1 string) {
+func m_WriteText(x int32, y int32, string1 string) {
 	var c, cx, cy, w int32
 	cx = x
 	cy = y
@@ -20794,7 +20794,7 @@ func M_WriteText(x int32, y int32, string1 string) {
 		if cx+w > SCREENWIDTH {
 			break
 		}
-		V_DrawPatchDirect(cx, cy, hu_font[c])
+		v_DrawPatchDirect(cx, cy, hu_font[c])
 		cx += w
 	}
 }
@@ -20815,13 +20815,13 @@ func IsNullKey(key int32) (r boolean) {
 //	//
 //	// M_Responder
 //	//
-func M_Responder(ev *event_t) (r boolean) {
+func m_Responder(ev *event_t) (r boolean) {
 	var ch, i, key int32
 	// In testcontrols mode, none of the function keys should do anything
 	// - the only key is escape to quit.
 	if testcontrols != 0 {
 		if ev.Ftype1 == Ev_quit || ev.Ftype1 == Ev_keydown && (ev.Fdata1 == key_menu_activate || ev.Fdata1 == key_menu_quit) {
-			I_Quit()
+			i_Quit()
 			return 1
 		}
 		return 0
@@ -20834,57 +20834,57 @@ func M_Responder(ev *event_t) (r boolean) {
 		if menuactive != 0 && messageToPrint != 0 && messageRoutine == &M_QuitResponse {
 			M_QuitResponse(key_menu_confirm)
 		} else {
-			S_StartSound(nil, int32(sfx_swtchn))
-			M_QuitDOOM(0)
+			s_StartSound(nil, int32(sfx_swtchn))
+			m_QuitDOOM(0)
 		}
 		return 1
 	}
 	// key is the key pressed, ch is the actual character typed
 	ch = 0
 	key = -1
-	if ev.Ftype1 == Ev_joystick && joywait < I_GetTime() {
+	if ev.Ftype1 == Ev_joystick && joywait < i_GetTime() {
 		if ev.Fdata3 < 0 {
 			key = key_menu_up
-			joywait = I_GetTime() + 5
+			joywait = i_GetTime() + 5
 		} else {
 			if ev.Fdata3 > 0 {
 				key = key_menu_down
-				joywait = I_GetTime() + 5
+				joywait = i_GetTime() + 5
 			}
 		}
 		if ev.Fdata2 < 0 {
 			key = key_menu_left
-			joywait = I_GetTime() + 2
+			joywait = i_GetTime() + 2
 		} else {
 			if ev.Fdata2 > 0 {
 				key = key_menu_right
-				joywait = I_GetTime() + 2
+				joywait = i_GetTime() + 2
 			}
 		}
 		if ev.Fdata1&int32(1) != 0 {
 			key = key_menu_forward
-			joywait = I_GetTime() + 5
+			joywait = i_GetTime() + 5
 		}
 		if ev.Fdata1&int32(2) != 0 {
 			key = key_menu_back
-			joywait = I_GetTime() + 5
+			joywait = i_GetTime() + 5
 		}
 		if joybmenu >= 0 && ev.Fdata1&(int32(1)<<joybmenu) != 0 {
 			key = key_menu_activate
-			joywait = I_GetTime() + 5
+			joywait = i_GetTime() + 5
 		}
 	} else {
-		if ev.Ftype1 == Ev_mouse && mousewait < I_GetTime() {
+		if ev.Ftype1 == Ev_mouse && mousewait < i_GetTime() {
 			mousey1 += ev.Fdata3
 			if mousey1 < lasty-int32(30) {
 				key = key_menu_down
-				mousewait = I_GetTime() + 5
+				mousewait = i_GetTime() + 5
 				lasty -= 30
 				mousey1 = lasty
 			} else {
 				if mousey1 > lasty+int32(30) {
 					key = key_menu_up
-					mousewait = I_GetTime() + 5
+					mousewait = i_GetTime() + 5
 					lasty += 30
 					mousey1 = lasty
 				}
@@ -20892,24 +20892,24 @@ func M_Responder(ev *event_t) (r boolean) {
 			mousex1 += ev.Fdata2
 			if mousex1 < lastx-int32(30) {
 				key = key_menu_left
-				mousewait = I_GetTime() + 5
+				mousewait = i_GetTime() + 5
 				lastx -= 30
 				mousex1 = lastx
 			} else {
 				if mousex1 > lastx+int32(30) {
 					key = key_menu_right
-					mousewait = I_GetTime() + 5
+					mousewait = i_GetTime() + 5
 					lastx += 30
 					mousex1 = lastx
 				}
 			}
 			if ev.Fdata1&int32(1) != 0 {
 				key = key_menu_forward
-				mousewait = I_GetTime() + 15
+				mousewait = i_GetTime() + 15
 			}
 			if ev.Fdata1&int32(2) != 0 {
 				key = key_menu_back
-				mousewait = I_GetTime() + 15
+				mousewait = i_GetTime() + 15
 			}
 		} else {
 			if ev.Ftype1 == Ev_keydown {
@@ -20935,7 +20935,7 @@ func M_Responder(ev *event_t) (r boolean) {
 		case KEY_ENTER:
 			saveStringEnter = 0
 			if len(savegamestrings[saveSlot]) > 0 {
-				M_DoSave(saveSlot)
+				m_DoSave(saveSlot)
 			}
 		default:
 			// This is complicated.
@@ -20951,7 +20951,7 @@ func M_Responder(ev *event_t) (r boolean) {
 			if ch != ' ' && (ch-'!' < 0 || ch-'!' >= '_'-'!'+1) {
 				break
 			}
-			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && M_StringWidth(savegamestrings[saveSlot]) < (SAVESTRINGSIZE-2)*8 {
+			if ch >= 32 && ch <= 127 && saveCharIndex < SAVESTRINGSIZE-1 && m_StringWidth(savegamestrings[saveSlot]) < (SAVESTRINGSIZE-2)*8 {
 				savegamestrings[saveSlot] += string(ch)
 				saveCharIndex++
 			}
@@ -20972,7 +20972,7 @@ func M_Responder(ev *event_t) (r boolean) {
 			(*messageRoutine)(key)
 		}
 		menuactive = 0
-		S_StartSound(nil, int32(sfx_swtchx))
+		s_StartSound(nil, int32(sfx_swtchx))
 		return 1
 	}
 	// F-Keys
@@ -20981,76 +20981,76 @@ func M_Responder(ev *event_t) (r boolean) {
 			if automapactive != 0 || chat_on != 0 {
 				return 0
 			}
-			M_SizeDisplay(0)
-			S_StartSound(nil, int32(sfx_stnmov))
+			m_SizeDisplay(0)
+			s_StartSound(nil, int32(sfx_stnmov))
 			return 1
 		} else {
 			if key == key_menu_incscreen { // Screen size up
 				if automapactive != 0 || chat_on != 0 {
 					return 0
 				}
-				M_SizeDisplay(int32(1))
-				S_StartSound(nil, int32(sfx_stnmov))
+				m_SizeDisplay(int32(1))
+				s_StartSound(nil, int32(sfx_stnmov))
 				return 1
 			} else {
 				if key == key_menu_help { // Help key
-					M_StartControlPanel()
+					m_StartControlPanel()
 					if gamemode == retail {
 						currentMenu = &ReadDef2
 					} else {
 						currentMenu = &ReadDef1
 					}
 					itemOn = 0
-					S_StartSound(nil, int32(sfx_swtchn))
+					s_StartSound(nil, int32(sfx_swtchn))
 					return 1
 				} else {
 					if key == key_menu_save { // Save
-						M_StartControlPanel()
-						S_StartSound(nil, int32(sfx_swtchn))
-						M_SaveGame(0)
+						m_StartControlPanel()
+						s_StartSound(nil, int32(sfx_swtchn))
+						m_SaveGame(0)
 						return 1
 					} else {
 						if key == key_menu_load { // Load
-							M_StartControlPanel()
-							S_StartSound(nil, int32(sfx_swtchn))
-							M_LoadGame(0)
+							m_StartControlPanel()
+							s_StartSound(nil, int32(sfx_swtchn))
+							m_LoadGame(0)
 							return 1
 						} else {
 							if key == key_menu_volume { // Sound Volume
-								M_StartControlPanel()
+								m_StartControlPanel()
 								currentMenu = &SoundDef
 								itemOn = int16(sfx_vol)
-								S_StartSound(nil, int32(sfx_swtchn))
+								s_StartSound(nil, int32(sfx_swtchn))
 								return 1
 							} else {
 								if key == key_menu_detail { // Detail toggle
-									M_ChangeDetail(0)
-									S_StartSound(nil, int32(sfx_swtchn))
+									m_ChangeDetail(0)
+									s_StartSound(nil, int32(sfx_swtchn))
 									return 1
 								} else {
 									if key == key_menu_qsave { // Quicksave
-										S_StartSound(nil, int32(sfx_swtchn))
-										M_QuickSave()
+										s_StartSound(nil, int32(sfx_swtchn))
+										m_QuickSave()
 										return 1
 									} else {
 										if key == key_menu_endgame { // End game
-											S_StartSound(nil, int32(sfx_swtchn))
-											M_EndGame(0)
+											s_StartSound(nil, int32(sfx_swtchn))
+											m_EndGame(0)
 											return 1
 										} else {
 											if key == key_menu_messages { // Toggle messages
-												M_ChangeMessages(0)
-												S_StartSound(nil, int32(sfx_swtchn))
+												m_ChangeMessages(0)
+												s_StartSound(nil, int32(sfx_swtchn))
 												return 1
 											} else {
 												if key == key_menu_qload { // Quickload
-													S_StartSound(nil, int32(sfx_swtchn))
-													M_QuickLoad()
+													s_StartSound(nil, int32(sfx_swtchn))
+													m_QuickLoad()
 													return 1
 												} else {
 													if key == key_menu_quit { // Quit DOOM
-														S_StartSound(nil, int32(sfx_swtchn))
-														M_QuitDOOM(0)
+														s_StartSound(nil, int32(sfx_swtchn))
+														m_QuitDOOM(0)
 														return 1
 													} else {
 														if key == key_menu_gamma { // gamma toggle
@@ -21059,7 +21059,7 @@ func M_Responder(ev *event_t) (r boolean) {
 																usegamma = 0
 															}
 															players[consoleplayer].Fmessage = gammamsg[usegamma]
-															I_SetPalette(W_CacheLumpName("PLAYPAL"))
+															i_SetPalette(w_CacheLumpName("PLAYPAL"))
 															return 1
 														}
 													}
@@ -21078,8 +21078,8 @@ func M_Responder(ev *event_t) (r boolean) {
 	// Pop-up menu?
 	if menuactive == 0 {
 		if key == key_menu_activate {
-			M_StartControlPanel()
-			S_StartSound(nil, int32(sfx_swtchn))
+			m_StartControlPanel()
+			s_StartSound(nil, int32(sfx_swtchn))
 			return 1
 		}
 		return 0
@@ -21093,7 +21093,7 @@ func M_Responder(ev *event_t) (r boolean) {
 			} else {
 				itemOn++
 			}
-			S_StartSound(nil, int32(sfx_pstop))
+			s_StartSound(nil, int32(sfx_pstop))
 		}
 		return 1
 	} else {
@@ -21105,14 +21105,14 @@ func M_Responder(ev *event_t) (r boolean) {
 				} else {
 					itemOn--
 				}
-				S_StartSound(nil, int32(sfx_pstop))
+				s_StartSound(nil, int32(sfx_pstop))
 			}
 			return 1
 		} else {
 			if key == key_menu_left {
 				// Slide slider left
 				if currentMenu.Fmenuitems[itemOn].Froutine != nil && int32(currentMenu.Fmenuitems[itemOn].Fstatus) == 2 {
-					S_StartSound(nil, int32(sfx_stnmov))
+					s_StartSound(nil, int32(sfx_stnmov))
 					currentMenu.Fmenuitems[itemOn].Froutine(0)
 				}
 				return 1
@@ -21120,7 +21120,7 @@ func M_Responder(ev *event_t) (r boolean) {
 				if key == key_menu_right {
 					// Slide slider right
 					if currentMenu.Fmenuitems[itemOn].Froutine != nil && int32(currentMenu.Fmenuitems[itemOn].Fstatus) == 2 {
-						S_StartSound(nil, int32(sfx_stnmov))
+						s_StartSound(nil, int32(sfx_stnmov))
 						currentMenu.Fmenuitems[itemOn].Froutine(1)
 					}
 					return 1
@@ -21131,10 +21131,10 @@ func M_Responder(ev *event_t) (r boolean) {
 							currentMenu.FlastOn = itemOn
 							if int32(currentMenu.Fmenuitems[itemOn].Fstatus) == 2 {
 								currentMenu.Fmenuitems[itemOn].Froutine(1) // right arrow
-								S_StartSound(nil, int32(sfx_stnmov))
+								s_StartSound(nil, int32(sfx_stnmov))
 							} else {
 								currentMenu.Fmenuitems[itemOn].Froutine(int32(itemOn))
-								S_StartSound(nil, int32(sfx_pistol))
+								s_StartSound(nil, int32(sfx_pistol))
 							}
 						}
 						return 1
@@ -21142,8 +21142,8 @@ func M_Responder(ev *event_t) (r boolean) {
 						if key == key_menu_activate {
 							// Deactivate menu
 							currentMenu.FlastOn = itemOn
-							M_ClearMenus()
-							S_StartSound(nil, int32(sfx_swtchx))
+							m_ClearMenus()
+							s_StartSound(nil, int32(sfx_swtchx))
 							return 1
 						} else {
 							if key == key_menu_back {
@@ -21152,7 +21152,7 @@ func M_Responder(ev *event_t) (r boolean) {
 								if currentMenu.FprevMenu != nil {
 									currentMenu = currentMenu.FprevMenu
 									itemOn = currentMenu.FlastOn
-									S_StartSound(nil, int32(sfx_swtchn))
+									s_StartSound(nil, int32(sfx_swtchn))
 								}
 								return 1
 							} else {
@@ -21164,7 +21164,7 @@ func M_Responder(ev *event_t) (r boolean) {
 										}
 										if int32(currentMenu.Fmenuitems[i].FalphaKey) == ch {
 											itemOn = int16(i)
-											S_StartSound(nil, int32(sfx_pstop))
+											s_StartSound(nil, int32(sfx_pstop))
 											return 1
 										}
 										goto _2
@@ -21179,7 +21179,7 @@ func M_Responder(ev *event_t) (r boolean) {
 										}
 										if int32(currentMenu.Fmenuitems[i].FalphaKey) == ch {
 											itemOn = int16(i)
-											S_StartSound(nil, int32(sfx_pstop))
+											s_StartSound(nil, int32(sfx_pstop))
 											return 1
 										}
 										goto _3
@@ -21215,7 +21215,7 @@ var lastx int32
 //	//
 //	// M_StartControlPanel
 //	//
-func M_StartControlPanel() {
+func m_StartControlPanel() {
 	// intro might call this repeatedly
 	if menuactive != 0 {
 		return
@@ -21234,7 +21234,7 @@ func M_StartControlPanel() {
 //	// Called after the view has been rendered,
 //	// but before it has been blitted.
 //	//
-func M_Drawer() {
+func m_Drawer() {
 	var bp string
 	var foundnewline, start int32
 	var i, max uint32
@@ -21242,7 +21242,7 @@ func M_Drawer() {
 	// Horiz. & Vertically center string and print it.
 	if messageToPrint != 0 {
 		start = 0
-		y2 = int16(SCREENHEIGHT/2 - M_StringHeight(messageString)/int32(2))
+		y2 = int16(SCREENHEIGHT/2 - m_StringHeight(messageString)/int32(2))
 		for start < int32(len(messageString)) {
 			foundnewline = 0
 			i = 0
@@ -21265,8 +21265,8 @@ func M_Drawer() {
 				bp = messageString[start:]
 				start = int32(uint64(start) + uint64(len(bp)))
 			}
-			x = int16(SCREENWIDTH/2 - M_StringWidth(bp)/int32(2))
-			M_WriteText(int32(x), int32(y2), bp)
+			x = int16(SCREENWIDTH/2 - m_StringWidth(bp)/int32(2))
+			m_WriteText(int32(x), int32(y2), bp)
 			y2 = int16(int32(y2) + int32(hu_font[0].Fheight))
 		}
 		return
@@ -21292,7 +21292,7 @@ func M_Drawer() {
 		}
 		name := currentMenu.Fmenuitems[i].Fname[:]
 		if name != "" {
-			V_DrawPatchDirect(int32(x), int32(y2), W_CacheLumpNameT(name))
+			v_DrawPatchDirect(int32(x), int32(y2), W_CacheLumpNameT(name))
 		}
 		y2 = int16(int32(y2) + LINEHEIGHT)
 		goto _2
@@ -21301,7 +21301,7 @@ func M_Drawer() {
 		i++
 	}
 	// DRAW SKULL
-	V_DrawPatchDirect(int32(x)+-int32(32), int32(currentMenu.Fy)-int32(5)+int32(itemOn)*LINEHEIGHT, W_CacheLumpNameT(skullName[whichSkull]))
+	v_DrawPatchDirect(int32(x)+-int32(32), int32(currentMenu.Fy)-int32(5)+int32(itemOn)*LINEHEIGHT, W_CacheLumpNameT(skullName[whichSkull]))
 }
 
 var x int16
@@ -21313,7 +21313,7 @@ var y2 int16
 //	//
 //	// M_ClearMenus
 //	//
-func M_ClearMenus() {
+func m_ClearMenus() {
 	menuactive = 0
 	// if (!netgame && usergame && paused)
 	//       sendpause = true;
@@ -21324,7 +21324,7 @@ func M_ClearMenus() {
 //	//
 //	// M_SetupNextMenu
 //	//
-func M_SetupNextMenu(menudef *menu_t) {
+func m_SetupNextMenu(menudef *menu_t) {
 	currentMenu = menudef
 	itemOn = currentMenu.FlastOn
 }
@@ -21334,7 +21334,7 @@ func M_SetupNextMenu(menudef *menu_t) {
 //	//
 //	// M_Ticker
 //	//
-func M_Ticker() {
+func m_Ticker() {
 	var v1 int16
 	skullAnimCounter--
 	v1 = skullAnimCounter
@@ -21349,7 +21349,7 @@ func M_Ticker() {
 //	//
 //	// M_Init
 //	//
-func M_Init() {
+func m_Init() {
 	currentMenu = &MainDef
 	menuactive = 0
 	itemOn = currentMenu.FlastOn
@@ -21388,7 +21388,7 @@ func M_Init() {
 	if gameversion < exe_ultimate {
 		EpiDef.Fnumitems--
 	}
-	//opldev = M_CheckParm("-opldev") > 0;
+	//opldev = m_CheckParm("-opldev") > 0;
 }
 
 //
@@ -21400,13 +21400,13 @@ func M_Init() {
 // Create a directory
 //
 
-func M_MakeDirectory(path string) {
+func m_MakeDirectory(path string) {
 	os.MkdirAll(path, 0755)
 }
 
 // Check if a file exists
 
-func M_FileExists(filename string) (r boolean) {
+func m_FileExists(filename string) (r boolean) {
 	if _, err := os.Stat(filename); err == nil {
 		return 1
 	}
@@ -21417,7 +21417,7 @@ func M_FileExists(filename string) (r boolean) {
 // M_WriteFile
 //
 
-func M_WriteFile(name string, source []byte) (r boolean) {
+func m_WriteFile(name string, source []byte) (r boolean) {
 	if err := os.WriteFile(name, source, 0644); err != nil {
 		return 0
 	}
@@ -21427,13 +21427,13 @@ func M_WriteFile(name string, source []byte) (r boolean) {
 // Returns the path to a temporary file of the given name, stored
 // inside the system temporary directory.
 //
-// The returned value must be freed with Z_Free after use.
+// The returned value must be freed with z_Free after use.
 
-func M_TempFile(s string) string {
+func m_TempFile(s string) string {
 	return "/tmp" + "/" + s
 }
 
-func M_ExtractFileBase(path string, dest []byte) {
+func m_ExtractFileBase(path string, dest []byte) {
 	src := filepath.Base(path)
 	// Copy up to eight characters
 	// Note: Vanilla Doom exits with an error if a filename is specified
@@ -21725,17 +21725,17 @@ var rndtable = [256]uint8{
 // C documentation
 //
 //	// Which one is deterministic?
-func P_Random() (r int32) {
+func p_Random() (r int32) {
 	prndindex = (prndindex + 1) & 0xff
 	return int32(rndtable[prndindex])
 }
 
-func M_Random() (r int32) {
+func m_Random() (r int32) {
 	rndindex = (rndindex + 1) & 0xff
 	return int32(rndtable[rndindex])
 }
 
-func M_ClearRandom() {
+func m_ClearRandom() {
 	var v1 int32
 	v1 = 0
 	prndindex = v1
@@ -21747,22 +21747,22 @@ func M_ClearRandom() {
 //
 
 func (c *ceiling_t) ThinkerFunc() {
-	T_MoveCeiling(c)
+	t_MoveCeiling(c)
 }
 
-func T_MoveCeiling(ceiling *ceiling_t) {
+func t_MoveCeiling(ceiling *ceiling_t) {
 	var res result_e
 	switch ceiling.Fdirection {
 	case 0:
 		// IN STASIS
 	case 1:
 		// UP
-		res = T_MovePlane(ceiling.Fsector, ceiling.Fspeed, ceiling.Ftopheight, 0, 1, ceiling.Fdirection)
+		res = t_MovePlane(ceiling.Fsector, ceiling.Fspeed, ceiling.Ftopheight, 0, 1, ceiling.Fdirection)
 		if leveltime&7 == 0 {
 			switch ceiling.Ftype1 {
 			case int32(silentCrushAndRaise):
 			default:
-				S_StartSound(&ceiling.Fsector.Fsoundorg, int32(sfx_stnmov))
+				s_StartSound(&ceiling.Fsector.Fsoundorg, int32(sfx_stnmov))
 				// ?
 				break
 			}
@@ -21770,9 +21770,9 @@ func T_MoveCeiling(ceiling *ceiling_t) {
 		if res == int32(pastdest) {
 			switch ceiling.Ftype1 {
 			case int32(raiseToHighest):
-				P_RemoveActiveCeiling(ceiling)
+				p_RemoveActiveCeiling(ceiling)
 			case int32(silentCrushAndRaise):
-				S_StartSound(&ceiling.Fsector.Fsoundorg, int32(sfx_pstop))
+				s_StartSound(&ceiling.Fsector.Fsoundorg, int32(sfx_pstop))
 				fallthrough
 			case int32(fastCrushAndRaise):
 				fallthrough
@@ -21784,18 +21784,18 @@ func T_MoveCeiling(ceiling *ceiling_t) {
 		}
 	case -1:
 		// DOWN
-		res = T_MovePlane(ceiling.Fsector, ceiling.Fspeed, ceiling.Fbottomheight, ceiling.Fcrush, 1, ceiling.Fdirection)
+		res = t_MovePlane(ceiling.Fsector, ceiling.Fspeed, ceiling.Fbottomheight, ceiling.Fcrush, 1, ceiling.Fdirection)
 		if leveltime&7 == 0 {
 			switch ceiling.Ftype1 {
 			case int32(silentCrushAndRaise):
 			default:
-				S_StartSound(&ceiling.Fsector.Fsoundorg, int32(sfx_stnmov))
+				s_StartSound(&ceiling.Fsector.Fsoundorg, int32(sfx_stnmov))
 			}
 		}
 		if res == int32(pastdest) {
 			switch ceiling.Ftype1 {
 			case int32(silentCrushAndRaise):
-				S_StartSound(&ceiling.Fsector.Fsoundorg, int32(sfx_pstop))
+				s_StartSound(&ceiling.Fsector.Fsoundorg, int32(sfx_pstop))
 				fallthrough
 			case int32(crushAndRaise):
 				ceiling.Fspeed = 1 << FRACBITS
@@ -21805,7 +21805,7 @@ func T_MoveCeiling(ceiling *ceiling_t) {
 			case int32(lowerAndCrush):
 				fallthrough
 			case int32(lowerToFloor):
-				P_RemoveActiveCeiling(ceiling)
+				p_RemoveActiveCeiling(ceiling)
 			default:
 				break
 			}
@@ -21833,7 +21833,7 @@ func T_MoveCeiling(ceiling *ceiling_t) {
 //	// EV_DoCeiling
 //	// Move a ceiling up/down and all around!
 //	//
-func EV_DoCeiling(line *line_t, type1 ceiling_e) (r int32) {
+func ev_DoCeiling(line *line_t, type1 ceiling_e) (r int32) {
 	var rtn, secnum, v1 int32
 	secnum = -1
 	rtn = 0
@@ -21844,13 +21844,13 @@ func EV_DoCeiling(line *line_t, type1 ceiling_e) (r int32) {
 	case int32(silentCrushAndRaise):
 		fallthrough
 	case int32(crushAndRaise):
-		P_ActivateInStasisCeiling(line)
+		p_ActivateInStasisCeiling(line)
 		fallthrough
 	default:
 		break
 	}
 	for {
-		v1 = P_FindSectorFromLineTag(line, secnum)
+		v1 = p_FindSectorFromLineTag(line, secnum)
 		secnum = v1
 		if !(v1 >= 0) {
 			break
@@ -21862,7 +21862,7 @@ func EV_DoCeiling(line *line_t, type1 ceiling_e) (r int32) {
 		// new door thinker
 		rtn = 1
 		ceiling := &ceiling_t{}
-		P_AddThinker(&ceiling.Fthinker)
+		p_AddThinker(&ceiling.Fthinker)
 		sec.Fspecialdata = ceiling
 		ceiling.Fthinker.Ffunction = ceiling
 		ceiling.Fsector = sec
@@ -21890,14 +21890,14 @@ func EV_DoCeiling(line *line_t, type1 ceiling_e) (r int32) {
 			ceiling.Fdirection = -1
 			ceiling.Fspeed = 1 << FRACBITS
 		case int32(raiseToHighest):
-			ceiling.Ftopheight = P_FindHighestCeilingSurrounding(sec)
+			ceiling.Ftopheight = p_FindHighestCeilingSurrounding(sec)
 			ceiling.Fdirection = 1
 			ceiling.Fspeed = 1 << FRACBITS
 			break
 		}
 		ceiling.Ftag = int32(sec.Ftag)
 		ceiling.Ftype1 = type1
-		P_AddActiveCeiling(ceiling)
+		p_AddActiveCeiling(ceiling)
 	}
 	return rtn
 }
@@ -21907,7 +21907,7 @@ func EV_DoCeiling(line *line_t, type1 ceiling_e) (r int32) {
 //	//
 //	// Add an active ceiling
 //	//
-func P_AddActiveCeiling(c *ceiling_t) {
+func p_AddActiveCeiling(c *ceiling_t) {
 	var i int32
 	i = 0
 	for {
@@ -21930,11 +21930,11 @@ func P_AddActiveCeiling(c *ceiling_t) {
 //	//
 //	// Remove a ceiling's thinker
 //	//
-func P_RemoveActiveCeiling(c *ceiling_t) {
+func p_RemoveActiveCeiling(c *ceiling_t) {
 	for i := 0; i < MAXCEILINGS; i++ {
 		if activeceilings[i] == c {
 			activeceilings[i].Fsector.Fspecialdata = nil
-			P_RemoveThinker(&activeceilings[i].Fthinker)
+			p_RemoveThinker(&activeceilings[i].Fthinker)
 			activeceilings[i] = nil
 			break
 		}
@@ -21946,7 +21946,7 @@ func P_RemoveActiveCeiling(c *ceiling_t) {
 //	//
 //	// Restart a ceiling that's in-stasis
 //	//
-func P_ActivateInStasisCeiling(line *line_t) {
+func p_ActivateInStasisCeiling(line *line_t) {
 	var i int32
 	i = 0
 	for {
@@ -21970,7 +21970,7 @@ func P_ActivateInStasisCeiling(line *line_t) {
 //	// EV_CeilingCrushStop
 //	// Stop a ceiling from crushing!
 //	//
-func EV_CeilingCrushStop(line *line_t) (r int32) {
+func ev_CeilingCrushStop(line *line_t) (r int32) {
 	var i, rtn int32
 	rtn = 0
 	i = 0
@@ -22021,9 +22021,9 @@ func EV_CeilingCrushStop(line *line_t) (r int32) {
 //	// T_VerticalDoor
 //	//
 func (door *vldoor_t) ThinkerFunc() {
-	T_VerticalDoor(door)
+	t_VerticalDoor(door)
 }
-func T_VerticalDoor(door *vldoor_t) {
+func t_VerticalDoor(door *vldoor_t) {
 	var res result_e
 	switch door.Fdirection {
 	case 0:
@@ -22033,13 +22033,13 @@ func T_VerticalDoor(door *vldoor_t) {
 			switch door.Ftype1 {
 			case int32(vld_blazeRaise):
 				door.Fdirection = -1 // time to go back down
-				S_StartSound(&door.Fsector.Fsoundorg, int32(sfx_bdcls))
+				s_StartSound(&door.Fsector.Fsoundorg, int32(sfx_bdcls))
 			case int32(vld_normal):
 				door.Fdirection = -1 // time to go back down
-				S_StartSound(&door.Fsector.Fsoundorg, int32(sfx_dorcls))
+				s_StartSound(&door.Fsector.Fsoundorg, int32(sfx_dorcls))
 			case int32(vld_close30ThenOpen):
 				door.Fdirection = 1
-				S_StartSound(&door.Fsector.Fsoundorg, int32(sfx_doropn))
+				s_StartSound(&door.Fsector.Fsoundorg, int32(sfx_doropn))
 			default:
 				break
 			}
@@ -22052,27 +22052,27 @@ func T_VerticalDoor(door *vldoor_t) {
 			case int32(vld_raiseIn5Mins):
 				door.Fdirection = 1
 				door.Ftype1 = int32(vld_normal)
-				S_StartSound(&door.Fsector.Fsoundorg, int32(sfx_doropn))
+				s_StartSound(&door.Fsector.Fsoundorg, int32(sfx_doropn))
 			default:
 				break
 			}
 		}
 	case -1:
 		// DOWN
-		res = T_MovePlane(door.Fsector, door.Fspeed, door.Fsector.Ffloorheight, 0, 1, door.Fdirection)
+		res = t_MovePlane(door.Fsector, door.Fspeed, door.Fsector.Ffloorheight, 0, 1, door.Fdirection)
 		if res == int32(pastdest) {
 			switch door.Ftype1 {
 			case int32(vld_blazeRaise):
 				fallthrough
 			case int32(vld_blazeClose):
 				door.Fsector.Fspecialdata = nil
-				P_RemoveThinker(&door.Fthinker) // unlink and free
-				S_StartSound(&door.Fsector.Fsoundorg, int32(sfx_bdcls))
+				p_RemoveThinker(&door.Fthinker) // unlink and free
+				s_StartSound(&door.Fsector.Fsoundorg, int32(sfx_bdcls))
 			case int32(vld_normal):
 				fallthrough
 			case int32(vld_close):
 				door.Fsector.Fspecialdata = nil
-				P_RemoveThinker(&door.Fthinker) // unlink and free
+				p_RemoveThinker(&door.Fthinker) // unlink and free
 			case int32(vld_close30ThenOpen):
 				door.Fdirection = 0
 				door.Ftopcountdown = TICRATE * 30
@@ -22087,14 +22087,14 @@ func T_VerticalDoor(door *vldoor_t) {
 				case int32(vld_close): // DO NOT GO BACK UP!
 				default:
 					door.Fdirection = 1
-					S_StartSound(&door.Fsector.Fsoundorg, int32(sfx_doropn))
+					s_StartSound(&door.Fsector.Fsoundorg, int32(sfx_doropn))
 					break
 				}
 			}
 		}
 	case 1:
 		// UP
-		res = T_MovePlane(door.Fsector, door.Fspeed, door.Ftopheight, 0, 1, door.Fdirection)
+		res = t_MovePlane(door.Fsector, door.Fspeed, door.Ftopheight, 0, 1, door.Fdirection)
 		if res == int32(pastdest) {
 			switch door.Ftype1 {
 			case int32(vld_blazeRaise):
@@ -22108,7 +22108,7 @@ func T_VerticalDoor(door *vldoor_t) {
 				fallthrough
 			case int32(vld_open):
 				door.Fsector.Fspecialdata = nil
-				P_RemoveThinker(&door.Fthinker) // unlink and free
+				p_RemoveThinker(&door.Fthinker) // unlink and free
 			default:
 				break
 			}
@@ -22122,7 +22122,7 @@ func T_VerticalDoor(door *vldoor_t) {
 // Move a locked door up/down
 //
 
-func EV_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) (r int32) {
+func ev_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) (r int32) {
 	var p *player_t
 	p = thing.Fplayer
 	if p == nil {
@@ -22137,7 +22137,7 @@ func EV_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) (r int32) {
 		}
 		if p.Fcards[it_bluecard] == 0 && p.Fcards[it_blueskull] == 0 {
 			p.Fmessage = "You need a blue key to activate this object"
-			S_StartSound(nil, int32(sfx_oof))
+			s_StartSound(nil, int32(sfx_oof))
 			return 0
 		}
 	case 134: // Red Lock
@@ -22148,7 +22148,7 @@ func EV_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) (r int32) {
 		}
 		if p.Fcards[it_redcard] == 0 && p.Fcards[it_redskull] == 0 {
 			p.Fmessage = "You need a red key to activate this object"
-			S_StartSound(nil, int32(sfx_oof))
+			s_StartSound(nil, int32(sfx_oof))
 			return 0
 		}
 	case 136: // Yellow Lock
@@ -22159,20 +22159,20 @@ func EV_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) (r int32) {
 		}
 		if p.Fcards[it_yellowcard] == 0 && p.Fcards[it_yellowskull] == 0 {
 			p.Fmessage = "You need a yellow key to activate this object"
-			S_StartSound(nil, int32(sfx_oof))
+			s_StartSound(nil, int32(sfx_oof))
 			return 0
 		}
 		break
 	}
-	return EV_DoDoor(line, type1)
+	return ev_DoDoor(line, type1)
 }
 
-func EV_DoDoor(line *line_t, type1 vldoor_e) (r int32) {
+func ev_DoDoor(line *line_t, type1 vldoor_e) (r int32) {
 	var rtn, secnum, v1 int32
 	secnum = -1
 	rtn = 0
 	for {
-		v1 = P_FindSectorFromLineTag(line, secnum)
+		v1 = p_FindSectorFromLineTag(line, secnum)
 		secnum = v1
 		if !(v1 >= 0) {
 			break
@@ -22184,7 +22184,7 @@ func EV_DoDoor(line *line_t, type1 vldoor_e) (r int32) {
 		// new door thinker
 		rtn = 1
 		doorP := &vldoor_t{}
-		P_AddThinker(&doorP.Fthinker)
+		p_AddThinker(&doorP.Fthinker)
 		sec.Fspecialdata = doorP
 		doorP.Fthinker.Ffunction = doorP
 		doorP.Fsector = sec
@@ -22193,38 +22193,38 @@ func EV_DoDoor(line *line_t, type1 vldoor_e) (r int32) {
 		doorP.Fspeed = 1 << FRACBITS * 2
 		switch type1 {
 		case int32(vld_blazeClose):
-			doorP.Ftopheight = P_FindLowestCeilingSurrounding(sec)
+			doorP.Ftopheight = p_FindLowestCeilingSurrounding(sec)
 			doorP.Ftopheight -= 4 * (1 << FRACBITS)
 			doorP.Fdirection = -1
 			doorP.Fspeed = 1 << FRACBITS * 2 * 4
-			S_StartSound(&doorP.Fsector.Fsoundorg, int32(sfx_bdcls))
+			s_StartSound(&doorP.Fsector.Fsoundorg, int32(sfx_bdcls))
 		case int32(vld_close):
-			doorP.Ftopheight = P_FindLowestCeilingSurrounding(sec)
+			doorP.Ftopheight = p_FindLowestCeilingSurrounding(sec)
 			doorP.Ftopheight -= 4 * (1 << FRACBITS)
 			doorP.Fdirection = -1
-			S_StartSound(&doorP.Fsector.Fsoundorg, int32(sfx_dorcls))
+			s_StartSound(&doorP.Fsector.Fsoundorg, int32(sfx_dorcls))
 		case int32(vld_close30ThenOpen):
 			doorP.Ftopheight = sec.Fceilingheight
 			doorP.Fdirection = -1
-			S_StartSound(&doorP.Fsector.Fsoundorg, int32(sfx_dorcls))
+			s_StartSound(&doorP.Fsector.Fsoundorg, int32(sfx_dorcls))
 		case int32(vld_blazeRaise):
 			fallthrough
 		case int32(vld_blazeOpen):
 			doorP.Fdirection = 1
-			doorP.Ftopheight = P_FindLowestCeilingSurrounding(sec)
+			doorP.Ftopheight = p_FindLowestCeilingSurrounding(sec)
 			doorP.Ftopheight -= 4 * (1 << FRACBITS)
 			doorP.Fspeed = 1 << FRACBITS * 2 * 4
 			if doorP.Ftopheight != sec.Fceilingheight {
-				S_StartSound(&doorP.Fsector.Fsoundorg, int32(sfx_bdopn))
+				s_StartSound(&doorP.Fsector.Fsoundorg, int32(sfx_bdopn))
 			}
 		case int32(vld_normal):
 			fallthrough
 		case int32(vld_open):
 			doorP.Fdirection = 1
-			doorP.Ftopheight = P_FindLowestCeilingSurrounding(sec)
+			doorP.Ftopheight = p_FindLowestCeilingSurrounding(sec)
 			doorP.Ftopheight -= 4 * (1 << FRACBITS)
 			if doorP.Ftopheight != sec.Fceilingheight {
-				S_StartSound(&doorP.Fsector.Fsoundorg, int32(sfx_doropn))
+				s_StartSound(&doorP.Fsector.Fsoundorg, int32(sfx_doropn))
 			}
 		default:
 			break
@@ -22236,9 +22236,9 @@ func EV_DoDoor(line *line_t, type1 vldoor_e) (r int32) {
 // C documentation
 //
 //	//
-//	// EV_VerticalDoor : open a door manually, no tag value
+//	// ev_VerticalDoor : open a door manually, no tag value
 //	//
-func EV_VerticalDoor(line *line_t, thing *mobj_t) {
+func ev_VerticalDoor(line *line_t, thing *mobj_t) {
 	var player *player_t
 	var sec *sector_t
 	var side int32
@@ -22254,7 +22254,7 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 		}
 		if player.Fcards[it_bluecard] == 0 && player.Fcards[it_blueskull] == 0 {
 			player.Fmessage = "You need a blue key to open this door"
-			S_StartSound(nil, int32(sfx_oof))
+			s_StartSound(nil, int32(sfx_oof))
 			return
 		}
 	case 27: // Yellow Lock
@@ -22265,7 +22265,7 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 		}
 		if player.Fcards[it_yellowcard] == 0 && player.Fcards[it_yellowskull] == 0 {
 			player.Fmessage = "You need a yellow key to open this door"
-			S_StartSound(nil, int32(sfx_oof))
+			s_StartSound(nil, int32(sfx_oof))
 			return
 		}
 	case 28: // Red Lock
@@ -22276,7 +22276,7 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 		}
 		if player.Fcards[it_redcard] == 0 && player.Fcards[it_redskull] == 0 {
 			player.Fmessage = "You need a red key to open this door"
-			S_StartSound(nil, int32(sfx_oof))
+			s_StartSound(nil, int32(sfx_oof))
 			return
 		}
 		break
@@ -22311,7 +22311,7 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 				platP.Fwait = -1
 			} else {
 				// This isn't a door OR a plat.  Now we're in trouble.
-				fprintf_ccgo(os.Stderr, "EV_VerticalDoor: Tried to close something that wasn't a door.\n")
+				fprintf_ccgo(os.Stderr, "ev_VerticalDoor: Tried to close something that wasn't a door.\n")
 			}
 			return
 		}
@@ -22321,18 +22321,18 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 	case 117: // BLAZING DOOR RAISE
 		fallthrough
 	case 118: // BLAZING DOOR OPN
-		S_StartSound(&sec.Fsoundorg, int32(sfx_bdopn))
+		s_StartSound(&sec.Fsoundorg, int32(sfx_bdopn))
 	case 1: // NORMAL DOOR SOUND
 		fallthrough
 	case 31:
-		S_StartSound(&sec.Fsoundorg, int32(sfx_doropn))
+		s_StartSound(&sec.Fsoundorg, int32(sfx_doropn))
 	default: // LOCKED DOOR SOUND
-		S_StartSound(&sec.Fsoundorg, int32(sfx_doropn))
+		s_StartSound(&sec.Fsoundorg, int32(sfx_doropn))
 		break
 	}
 	// new door thinker
 	doorP := &vldoor_t{}
-	P_AddThinker(&doorP.Fthinker)
+	p_AddThinker(&doorP.Fthinker)
 	sec.Fspecialdata = doorP
 	doorP.Fthinker.Ffunction = doorP
 	doorP.Fsector = sec
@@ -22367,7 +22367,7 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 		break
 	}
 	// find the top and bottom of the movement range
-	doorP.Ftopheight = P_FindLowestCeilingSurrounding(sec)
+	doorP.Ftopheight = p_FindLowestCeilingSurrounding(sec)
 	doorP.Ftopheight -= 4 * (1 << FRACBITS)
 }
 
@@ -22376,9 +22376,9 @@ func EV_VerticalDoor(line *line_t, thing *mobj_t) {
 //	//
 //	// Spawn a door that closes after 30 seconds
 //	//
-func P_SpawnDoorCloseIn30(sec *sector_t) {
+func p_SpawnDoorCloseIn30(sec *sector_t) {
 	doorP := &vldoor_t{}
-	P_AddThinker(&doorP.Fthinker)
+	p_AddThinker(&doorP.Fthinker)
 	sec.Fspecialdata = doorP
 	sec.Fspecial = 0
 	doorP.Fthinker.Ffunction = doorP
@@ -22394,9 +22394,9 @@ func P_SpawnDoorCloseIn30(sec *sector_t) {
 //	//
 //	// Spawn a door that opens after 5 minutes
 //	//
-func P_SpawnDoorRaiseIn5Mins(sec *sector_t, secnum int32) {
+func p_SpawnDoorRaiseIn5Mins(sec *sector_t, secnum int32) {
 	doorP := &vldoor_t{}
-	P_AddThinker(&doorP.Fthinker)
+	p_AddThinker(&doorP.Fthinker)
 	sec.Fspecialdata = doorP
 	sec.Fspecial = 0
 	doorP.Fthinker.Ffunction = doorP
@@ -22404,7 +22404,7 @@ func P_SpawnDoorRaiseIn5Mins(sec *sector_t, secnum int32) {
 	doorP.Fdirection = 2
 	doorP.Ftype1 = int32(vld_raiseIn5Mins)
 	doorP.Fspeed = 1 << FRACBITS * 2
-	doorP.Ftopheight = P_FindLowestCeilingSurrounding(sec)
+	doorP.Ftopheight = p_FindLowestCeilingSurrounding(sec)
 	doorP.Ftopheight -= 4 * (1 << FRACBITS)
 	doorP.Ftopwait = VDOORWAIT
 	doorP.Ftopcountdown = 5 * 60 * TICRATE
@@ -22486,7 +22486,7 @@ func init() {
 	}
 }
 
-func P_RecursiveSound(sec *sector_t, soundblocks int32) {
+func p_RecursiveSound(sec *sector_t, soundblocks int32) {
 	var check *line_t
 	var other *sector_t
 	var i int32
@@ -22506,7 +22506,7 @@ func P_RecursiveSound(sec *sector_t, soundblocks int32) {
 		if int32(check.Fflags)&ML_TWOSIDED == 0 {
 			goto _1
 		}
-		P_LineOpening(check)
+		p_LineOpening(check)
 		if openrange <= 0 {
 			goto _1
 		} // closed door
@@ -22517,10 +22517,10 @@ func P_RecursiveSound(sec *sector_t, soundblocks int32) {
 		}
 		if int32(check.Fflags)&ML_SOUNDBLOCK != 0 {
 			if soundblocks == 0 {
-				P_RecursiveSound(other, 1)
+				p_RecursiveSound(other, 1)
 			}
 		} else {
-			P_RecursiveSound(other, soundblocks)
+			p_RecursiveSound(other, soundblocks)
 		}
 		goto _1
 	_1:
@@ -22536,10 +22536,10 @@ func P_RecursiveSound(sec *sector_t, soundblocks int32) {
 //	// If a monster yells at a player,
 //	// it will alert other monsters to the player.
 //	//
-func P_NoiseAlert(target *mobj_t, emmiter *mobj_t) {
+func p_NoiseAlert(target *mobj_t, emmiter *mobj_t) {
 	soundtarget = target
 	validcount++
-	P_RecursiveSound(emmiter.Fsubsector.Fsector, 0)
+	p_RecursiveSound(emmiter.Fsubsector.Fsector, 0)
 }
 
 // C documentation
@@ -22547,18 +22547,18 @@ func P_NoiseAlert(target *mobj_t, emmiter *mobj_t) {
 //	//
 //	// P_CheckMeleeRange
 //	//
-func P_CheckMeleeRange(actor *mobj_t) (r boolean) {
+func p_CheckMeleeRange(actor *mobj_t) (r boolean) {
 	var dist fixed_t
 	var pl *mobj_t
 	if actor.Ftarget == nil {
 		return 0
 	}
 	pl = actor.Ftarget
-	dist = P_AproxDistance(pl.Fx-actor.Fx, pl.Fy-actor.Fy)
+	dist = p_AproxDistance(pl.Fx-actor.Fx, pl.Fy-actor.Fy)
 	if dist >= 64*(1<<FRACBITS)-20*(1<<FRACBITS)+pl.Finfo.Fradius {
 		return 0
 	}
-	if P_CheckSight(actor, actor.Ftarget) == 0 {
+	if p_CheckSight(actor, actor.Ftarget) == 0 {
 		return 0
 	}
 	return 1
@@ -22569,9 +22569,9 @@ func P_CheckMeleeRange(actor *mobj_t) (r boolean) {
 //	//
 //	// P_CheckMissileRange
 //	//
-func P_CheckMissileRange(actor *mobj_t) (r boolean) {
+func p_CheckMissileRange(actor *mobj_t) (r boolean) {
 	var dist fixed_t
-	if P_CheckSight(actor, actor.Ftarget) == 0 {
+	if p_CheckSight(actor, actor.Ftarget) == 0 {
 		return 0
 	}
 	if actor.Fflags&MF_JUSTHIT != 0 {
@@ -22584,7 +22584,7 @@ func P_CheckMissileRange(actor *mobj_t) (r boolean) {
 		return 0
 	} // do not attack yet
 	// OPTIMIZE: get this from a global checksight
-	dist = P_AproxDistance(actor.Fx-actor.Ftarget.Fx, actor.Fy-actor.Ftarget.Fy) - 64*(1<<FRACBITS)
+	dist = p_AproxDistance(actor.Fx-actor.Ftarget.Fx, actor.Fy-actor.Ftarget.Fy) - 64*(1<<FRACBITS)
 	if actor.Finfo.Fmeleestate == 0 {
 		dist -= 128 * (1 << FRACBITS)
 	} // no melee attack, so fire more
@@ -22609,7 +22609,7 @@ func P_CheckMissileRange(actor *mobj_t) (r boolean) {
 	if actor.Ftype1 == MT_CYBORG && dist > 160 {
 		dist = 160
 	}
-	if P_Random() < dist {
+	if p_Random() < dist {
 		return 0
 	}
 	return 1
@@ -22637,7 +22637,7 @@ func init() {
 	}
 }
 
-func P_Move(actor *mobj_t) (r boolean) {
+func p_Move(actor *mobj_t) (r boolean) {
 	var good, try_ok boolean
 	var tryx, tryy fixed_t
 	var v1 int32
@@ -22645,11 +22645,11 @@ func P_Move(actor *mobj_t) (r boolean) {
 		return 0
 	}
 	if uint32(actor.Fmovedir) >= 8 {
-		I_Error("Weird actor->movedir!")
+		i_Error("Weird actor->movedir!")
 	}
 	tryx = actor.Fx + actor.Finfo.Fspeed*xspeed[actor.Fmovedir]
 	tryy = actor.Fy + actor.Finfo.Fspeed*yspeed[actor.Fmovedir]
-	try_ok = P_TryMove(actor, tryx, tryy)
+	try_ok = p_TryMove(actor, tryx, tryy)
 	if try_ok == 0 {
 		// open any specials
 		if actor.Fflags&MF_FLOAT != 0 && floatok != 0 {
@@ -22677,7 +22677,7 @@ func P_Move(actor *mobj_t) (r boolean) {
 			// if the special is not a door
 			// that can be opened,
 			// return false
-			if P_UseSpecialLine(actor, ld, 0) != 0 {
+			if p_UseSpecialLine(actor, ld, 0) != 0 {
 				good = 1
 			}
 		}
@@ -22704,21 +22704,21 @@ func P_Move(actor *mobj_t) (r boolean) {
 //	// If a door is in the way,
 //	// an OpenDoor call is made to start it opening.
 //	//
-func P_TryWalk(actor *mobj_t) (r boolean) {
-	if P_Move(actor) == 0 {
+func p_TryWalk(actor *mobj_t) (r boolean) {
+	if p_Move(actor) == 0 {
 		return 0
 	}
-	actor.Fmovecount = P_Random() & 15
+	actor.Fmovecount = p_Random() & 15
 	return 1
 }
 
-func P_NewChaseDir(actor *mobj_t) {
+func p_NewChaseDir(actor *mobj_t) {
 	var d [3]dirtype_t
 	var deltax, deltay fixed_t
 	var olddir, turnaround dirtype_t
 	var tdir int32
 	if actor.Ftarget == nil {
-		I_Error("P_NewChaseDir: called with no target")
+		i_Error("p_NewChaseDir: called with no target")
 	}
 	olddir = actor.Fmovedir
 	turnaround = opposite[olddir]
@@ -22745,12 +22745,12 @@ func P_NewChaseDir(actor *mobj_t) {
 	// try direct route
 	if d[int32(1)] != DI_NODIR && d[int32(2)] != DI_NODIR {
 		actor.Fmovedir = diags[boolint32(deltay < 0)<<int32(1)+boolint32(deltax > 0)]
-		if actor.Fmovedir != turnaround && P_TryWalk(actor) != 0 {
+		if actor.Fmovedir != turnaround && p_TryWalk(actor) != 0 {
 			return
 		}
 	}
 	// try other directions
-	if P_Random() > 200 || xabs(deltay) > xabs(deltax) {
+	if p_Random() > 200 || xabs(deltay) > xabs(deltax) {
 		tdir = d[int32(1)]
 		d[int32(1)] = d[int32(2)]
 		d[int32(2)] = tdir
@@ -22763,14 +22763,14 @@ func P_NewChaseDir(actor *mobj_t) {
 	}
 	if d[int32(1)] != DI_NODIR {
 		actor.Fmovedir = d[int32(1)]
-		if P_TryWalk(actor) != 0 {
+		if p_TryWalk(actor) != 0 {
 			// either moved forward or attacked
 			return
 		}
 	}
 	if d[int32(2)] != DI_NODIR {
 		actor.Fmovedir = d[int32(2)]
-		if P_TryWalk(actor) != 0 {
+		if p_TryWalk(actor) != 0 {
 			return
 		}
 	}
@@ -22778,12 +22778,12 @@ func P_NewChaseDir(actor *mobj_t) {
 	// so pick another direction.
 	if olddir != DI_NODIR {
 		actor.Fmovedir = olddir
-		if P_TryWalk(actor) != 0 {
+		if p_TryWalk(actor) != 0 {
 			return
 		}
 	}
 	// randomly determine direction of search
-	if P_Random()&int32(1) != 0 {
+	if p_Random()&int32(1) != 0 {
 		tdir = DI_EAST
 		for {
 			if !(tdir <= DI_SOUTHEAST) {
@@ -22791,7 +22791,7 @@ func P_NewChaseDir(actor *mobj_t) {
 			}
 			if tdir != turnaround {
 				actor.Fmovedir = tdir
-				if P_TryWalk(actor) != 0 {
+				if p_TryWalk(actor) != 0 {
 					return
 				}
 			}
@@ -22808,7 +22808,7 @@ func P_NewChaseDir(actor *mobj_t) {
 			}
 			if tdir != turnaround {
 				actor.Fmovedir = tdir
-				if P_TryWalk(actor) != 0 {
+				if p_TryWalk(actor) != 0 {
 					return
 				}
 			}
@@ -22820,7 +22820,7 @@ func P_NewChaseDir(actor *mobj_t) {
 	}
 	if turnaround != DI_NODIR {
 		actor.Fmovedir = turnaround
-		if P_TryWalk(actor) != 0 {
+		if p_TryWalk(actor) != 0 {
 			return
 		}
 	}
@@ -22834,7 +22834,7 @@ func P_NewChaseDir(actor *mobj_t) {
 //	// If allaround is false, only look 180 degrees in front.
 //	// Returns true if a player is targeted.
 //	//
-func P_LookForPlayers(actor *mobj_t, allaround boolean) (r boolean) {
+func p_LookForPlayers(actor *mobj_t, allaround boolean) (r boolean) {
 	var an angle_t
 	var c, stop, v2 int32
 	var dist fixed_t
@@ -22855,13 +22855,13 @@ func P_LookForPlayers(actor *mobj_t, allaround boolean) (r boolean) {
 		if player.Fhealth <= 0 {
 			goto _1
 		} // dead
-		if P_CheckSight(actor, player.Fmo) == 0 {
+		if p_CheckSight(actor, player.Fmo) == 0 {
 			goto _1
 		} // out of sight
 		if allaround == 0 {
-			an = R_PointToAngle2(actor.Fx, actor.Fy, player.Fmo.Fx, player.Fmo.Fy) - actor.Fangle
+			an = r_PointToAngle2(actor.Fx, actor.Fy, player.Fmo.Fx, player.Fmo.Fy) - actor.Fangle
 			if an > ANG903 && an < ANG2703 {
-				dist = P_AproxDistance(player.Fmo.Fx-actor.Fx, player.Fmo.Fy-actor.Fy)
+				dist = p_AproxDistance(player.Fmo.Fx-actor.Fx, player.Fmo.Fy-actor.Fy)
 				// if real close, react anyway
 				if dist > 64*(1<<FRACBITS) {
 					goto _1
@@ -22885,9 +22885,9 @@ func P_LookForPlayers(actor *mobj_t, allaround boolean) (r boolean) {
 //	// DOOM II special, map 32.
 //	// Uses special tag 666.
 //	//
-func A_KeenDie(mo *mobj_t) {
+func a_KeenDie(mo *mobj_t) {
 	var th *thinker_t
-	A_Fall(mo)
+	a_Fall(mo)
 	// scan the remaining thinkers
 	// to see if all Keens are dead
 	th = thinkercap.Fnext
@@ -22909,7 +22909,7 @@ func A_KeenDie(mo *mobj_t) {
 		th = th.Fnext
 	}
 	line := &line_t{Ftag: 666}
-	EV_DoDoor(line, int32(vld_open))
+	ev_DoDoor(line, int32(vld_open))
 }
 
 //
@@ -22922,7 +22922,7 @@ func A_KeenDie(mo *mobj_t) {
 //	// A_Look
 //	// Stay in state until a player is sighted.
 //	//
-func A_Look(actor *mobj_t) {
+func a_Look(actor *mobj_t) {
 	var sound int32
 	var targ *mobj_t
 	actor.Fthreshold = 0 // any shot will wake up
@@ -22930,14 +22930,14 @@ func A_Look(actor *mobj_t) {
 	if targ != nil && targ.Fflags&MF_SHOOTABLE != 0 {
 		actor.Ftarget = targ
 		if actor.Fflags&MF_AMBUSH != 0 {
-			if P_CheckSight(actor, actor.Ftarget) != 0 {
+			if p_CheckSight(actor, actor.Ftarget) != 0 {
 				goto seeyou
 			}
 		} else {
 			goto seeyou
 		}
 	}
-	if P_LookForPlayers(actor, 0) == 0 {
+	if p_LookForPlayers(actor, 0) == 0 {
 		return
 	}
 	// go into chase state
@@ -22951,23 +22951,23 @@ seeyou:
 		case int32(sfx_posit2):
 			fallthrough
 		case int32(sfx_posit3):
-			sound = int32(sfx_posit1) + P_Random()%int32(3)
+			sound = int32(sfx_posit1) + p_Random()%int32(3)
 		case int32(sfx_bgsit1):
 			fallthrough
 		case int32(sfx_bgsit2):
-			sound = int32(sfx_bgsit1) + P_Random()%int32(2)
+			sound = int32(sfx_bgsit1) + p_Random()%int32(2)
 		default:
 			sound = actor.Finfo.Fseesound
 			break
 		}
 		if actor.Ftype1 == MT_SPIDER || actor.Ftype1 == MT_CYBORG {
 			// full volume
-			S_StartSound(nil, sound)
+			s_StartSound(nil, sound)
 		} else {
-			S_StartSound(&actor.degenmobj_t, sound)
+			s_StartSound(&actor.degenmobj_t, sound)
 		}
 	}
-	P_SetMobjState(actor, actor.Finfo.Fseestate)
+	p_SetMobjState(actor, actor.Finfo.Fseestate)
 }
 
 // C documentation
@@ -22977,7 +22977,7 @@ seeyou:
 //	// Actor has a melee attack,
 //	// so it tries to close as fast as possible
 //	//
-func A_Chase(actor *mobj_t) {
+func a_Chase(actor *mobj_t) {
 	var delta int32
 	if actor.Freactiontime != 0 {
 		actor.Freactiontime--
@@ -23004,26 +23004,26 @@ func A_Chase(actor *mobj_t) {
 	}
 	if actor.Ftarget == nil || actor.Ftarget.Fflags&MF_SHOOTABLE == 0 {
 		// look for a new target
-		if P_LookForPlayers(actor, 1) != 0 {
+		if p_LookForPlayers(actor, 1) != 0 {
 			return
 		} // got a new target
-		P_SetMobjState(actor, actor.Finfo.Fspawnstate)
+		p_SetMobjState(actor, actor.Finfo.Fspawnstate)
 		return
 	}
 	// do not attack twice in a row
 	if actor.Fflags&MF_JUSTATTACKED != 0 {
 		actor.Fflags &= ^MF_JUSTATTACKED
 		if gameskill != sk_nightmare && fastparm == 0 {
-			P_NewChaseDir(actor)
+			p_NewChaseDir(actor)
 		}
 		return
 	}
 	// check for melee attack
-	if actor.Finfo.Fmeleestate != 0 && P_CheckMeleeRange(actor) != 0 {
+	if actor.Finfo.Fmeleestate != 0 && p_CheckMeleeRange(actor) != 0 {
 		if actor.Finfo.Fattacksound != 0 {
-			S_StartSound(&actor.degenmobj_t, actor.Finfo.Fattacksound)
+			s_StartSound(&actor.degenmobj_t, actor.Finfo.Fattacksound)
 		}
-		P_SetMobjState(actor, actor.Finfo.Fmeleestate)
+		p_SetMobjState(actor, actor.Finfo.Fmeleestate)
 		return
 	}
 	// check for missile attack
@@ -23031,10 +23031,10 @@ func A_Chase(actor *mobj_t) {
 		if gameskill < sk_nightmare && fastparm == 0 && actor.Fmovecount != 0 {
 			goto nomissile
 		}
-		if P_CheckMissileRange(actor) == 0 {
+		if p_CheckMissileRange(actor) == 0 {
 			goto nomissile
 		}
-		P_SetMobjState(actor, actor.Finfo.Fmissilestate)
+		p_SetMobjState(actor, actor.Finfo.Fmissilestate)
 		actor.Fflags |= MF_JUSTATTACKED
 		return
 	}
@@ -23043,19 +23043,19 @@ func A_Chase(actor *mobj_t) {
 nomissile:
 	;
 	// possibly choose another target
-	if netgame != 0 && actor.Fthreshold == 0 && P_CheckSight(actor, actor.Ftarget) == 0 {
-		if P_LookForPlayers(actor, 1) != 0 {
+	if netgame != 0 && actor.Fthreshold == 0 && p_CheckSight(actor, actor.Ftarget) == 0 {
+		if p_LookForPlayers(actor, 1) != 0 {
 			return
 		} // got a new target
 	}
 	// chase towards player
 	actor.Fmovecount--
-	if actor.Fmovecount < 0 || P_Move(actor) == 0 {
-		P_NewChaseDir(actor)
+	if actor.Fmovecount < 0 || p_Move(actor) == 0 {
+		p_NewChaseDir(actor)
 	}
 	// make active sound
-	if actor.Finfo.Factivesound != 0 && P_Random() < 3 {
-		S_StartSound(&actor.degenmobj_t, actor.Finfo.Factivesound)
+	if actor.Finfo.Factivesound != 0 && p_Random() < 3 {
+		s_StartSound(&actor.degenmobj_t, actor.Finfo.Factivesound)
 	}
 }
 
@@ -23064,14 +23064,14 @@ nomissile:
 //	//
 //	// A_FaceTarget
 //	//
-func A_FaceTarget(actor *mobj_t) {
+func a_FaceTarget(actor *mobj_t) {
 	if actor.Ftarget == nil {
 		return
 	}
 	actor.Fflags |= MF_AMBUSH
-	actor.Fangle = R_PointToAngle2(actor.Fx, actor.Fy, actor.Ftarget.Fx, actor.Ftarget.Fy)
+	actor.Fangle = r_PointToAngle2(actor.Fx, actor.Fy, actor.Ftarget.Fx, actor.Ftarget.Fy)
 	if actor.Ftarget.Fflags&MF_SHADOW != 0 {
-		actor.Fangle += uint32((P_Random() - P_Random()) << 21)
+		actor.Fangle += uint32((p_Random() - p_Random()) << 21)
 	}
 }
 
@@ -23080,37 +23080,37 @@ func A_FaceTarget(actor *mobj_t) {
 //	//
 //	// A_PosAttack
 //	//
-func A_PosAttack(actor *mobj_t) {
+func a_PosAttack(actor *mobj_t) {
 	var angle, damage, slope int32
 	if actor.Ftarget == nil {
 		return
 	}
-	A_FaceTarget(actor)
+	a_FaceTarget(actor)
 	angle = int32(actor.Fangle)
-	slope = P_AimLineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS))
-	S_StartSound(&actor.degenmobj_t, int32(sfx_pistol))
-	angle += (P_Random() - P_Random()) << 20
-	damage = (P_Random()%int32(5) + 1) * 3
-	P_LineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS), slope, damage)
+	slope = p_AimLineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS))
+	s_StartSound(&actor.degenmobj_t, int32(sfx_pistol))
+	angle += (p_Random() - p_Random()) << 20
+	damage = (p_Random()%int32(5) + 1) * 3
+	p_LineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS), slope, damage)
 }
 
-func A_SPosAttack(actor *mobj_t) {
+func a_SPosAttack(actor *mobj_t) {
 	var angle, bangle, damage, i, slope int32
 	if actor.Ftarget == nil {
 		return
 	}
-	S_StartSound(&actor.degenmobj_t, int32(sfx_shotgn))
-	A_FaceTarget(actor)
+	s_StartSound(&actor.degenmobj_t, int32(sfx_shotgn))
+	a_FaceTarget(actor)
 	bangle = int32(actor.Fangle)
-	slope = P_AimLineAttack(actor, uint32(bangle), 32*64*(1<<FRACBITS))
+	slope = p_AimLineAttack(actor, uint32(bangle), 32*64*(1<<FRACBITS))
 	i = 0
 	for {
 		if i >= 3 {
 			break
 		}
-		angle = bangle + (P_Random()-P_Random())<<int32(20)
-		damage = (P_Random()%int32(5) + 1) * 3
-		P_LineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS), slope, damage)
+		angle = bangle + (p_Random()-p_Random())<<int32(20)
+		damage = (p_Random()%int32(5) + 1) * 3
+		p_LineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS), slope, damage)
 		goto _1
 	_1:
 		;
@@ -23118,49 +23118,49 @@ func A_SPosAttack(actor *mobj_t) {
 	}
 }
 
-func A_CPosAttack(actor *mobj_t) {
+func a_CPosAttack(actor *mobj_t) {
 	var angle, bangle, damage, slope int32
 	if actor.Ftarget == nil {
 		return
 	}
-	S_StartSound(&actor.degenmobj_t, int32(sfx_shotgn))
-	A_FaceTarget(actor)
+	s_StartSound(&actor.degenmobj_t, int32(sfx_shotgn))
+	a_FaceTarget(actor)
 	bangle = int32(actor.Fangle)
-	slope = P_AimLineAttack(actor, uint32(bangle), 32*64*(1<<FRACBITS))
-	angle = bangle + (P_Random()-P_Random())<<int32(20)
-	damage = (P_Random()%int32(5) + 1) * 3
-	P_LineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS), slope, damage)
+	slope = p_AimLineAttack(actor, uint32(bangle), 32*64*(1<<FRACBITS))
+	angle = bangle + (p_Random()-p_Random())<<int32(20)
+	damage = (p_Random()%int32(5) + 1) * 3
+	p_LineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS), slope, damage)
 }
 
-func A_CPosRefire(actor *mobj_t) {
+func a_CPosRefire(actor *mobj_t) {
 	// keep firing unless target got out of sight
-	A_FaceTarget(actor)
-	if P_Random() < 40 {
+	a_FaceTarget(actor)
+	if p_Random() < 40 {
 		return
 	}
-	if actor.Ftarget == nil || actor.Ftarget.Fhealth <= 0 || P_CheckSight(actor, actor.Ftarget) == 0 {
-		P_SetMobjState(actor, actor.Finfo.Fseestate)
+	if actor.Ftarget == nil || actor.Ftarget.Fhealth <= 0 || p_CheckSight(actor, actor.Ftarget) == 0 {
+		p_SetMobjState(actor, actor.Finfo.Fseestate)
 	}
 }
 
-func A_SpidRefire(actor *mobj_t) {
+func a_SpidRefire(actor *mobj_t) {
 	// keep firing unless target got out of sight
-	A_FaceTarget(actor)
-	if P_Random() < 10 {
+	a_FaceTarget(actor)
+	if p_Random() < 10 {
 		return
 	}
-	if actor.Ftarget == nil || actor.Ftarget.Fhealth <= 0 || P_CheckSight(actor, actor.Ftarget) == 0 {
-		P_SetMobjState(actor, actor.Finfo.Fseestate)
+	if actor.Ftarget == nil || actor.Ftarget.Fhealth <= 0 || p_CheckSight(actor, actor.Ftarget) == 0 {
+		p_SetMobjState(actor, actor.Finfo.Fseestate)
 	}
 }
 
-func A_BspiAttack(actor *mobj_t) {
+func a_BspiAttack(actor *mobj_t) {
 	if actor.Ftarget == nil {
 		return
 	}
-	A_FaceTarget(actor)
+	a_FaceTarget(actor)
 	// launch a missile
-	P_SpawnMissile(actor, actor.Ftarget, MT_ARACHPLAZ)
+	p_SpawnMissile(actor, actor.Ftarget, MT_ARACHPLAZ)
 }
 
 // C documentation
@@ -23168,70 +23168,70 @@ func A_BspiAttack(actor *mobj_t) {
 //	//
 //	// A_TroopAttack
 //	//
-func A_TroopAttack(actor *mobj_t) {
+func a_TroopAttack(actor *mobj_t) {
 	var damage int32
 	if actor.Ftarget == nil {
 		return
 	}
-	A_FaceTarget(actor)
-	if P_CheckMeleeRange(actor) != 0 {
-		S_StartSound(&actor.degenmobj_t, int32(sfx_claw))
-		damage = (P_Random()%int32(8) + 1) * 3
-		P_DamageMobj(actor.Ftarget, actor, actor, damage)
+	a_FaceTarget(actor)
+	if p_CheckMeleeRange(actor) != 0 {
+		s_StartSound(&actor.degenmobj_t, int32(sfx_claw))
+		damage = (p_Random()%int32(8) + 1) * 3
+		p_DamageMobj(actor.Ftarget, actor, actor, damage)
 		return
 	}
 	// launch a missile
-	P_SpawnMissile(actor, actor.Ftarget, MT_TROOPSHOT)
+	p_SpawnMissile(actor, actor.Ftarget, MT_TROOPSHOT)
 }
 
-func A_SargAttack(actor *mobj_t) {
+func a_SargAttack(actor *mobj_t) {
 	var damage int32
 	if actor.Ftarget == nil {
 		return
 	}
-	A_FaceTarget(actor)
-	if P_CheckMeleeRange(actor) != 0 {
-		damage = (P_Random()%int32(10) + 1) * 4
-		P_DamageMobj(actor.Ftarget, actor, actor, damage)
+	a_FaceTarget(actor)
+	if p_CheckMeleeRange(actor) != 0 {
+		damage = (p_Random()%int32(10) + 1) * 4
+		p_DamageMobj(actor.Ftarget, actor, actor, damage)
 	}
 }
 
-func A_HeadAttack(actor *mobj_t) {
+func a_HeadAttack(actor *mobj_t) {
 	var damage int32
 	if actor.Ftarget == nil {
 		return
 	}
-	A_FaceTarget(actor)
-	if P_CheckMeleeRange(actor) != 0 {
-		damage = (P_Random()%int32(6) + 1) * 10
-		P_DamageMobj(actor.Ftarget, actor, actor, damage)
+	a_FaceTarget(actor)
+	if p_CheckMeleeRange(actor) != 0 {
+		damage = (p_Random()%int32(6) + 1) * 10
+		p_DamageMobj(actor.Ftarget, actor, actor, damage)
 		return
 	}
 	// launch a missile
-	P_SpawnMissile(actor, actor.Ftarget, MT_HEADSHOT)
+	p_SpawnMissile(actor, actor.Ftarget, MT_HEADSHOT)
 }
 
-func A_CyberAttack(actor *mobj_t) {
+func a_CyberAttack(actor *mobj_t) {
 	if actor.Ftarget == nil {
 		return
 	}
-	A_FaceTarget(actor)
-	P_SpawnMissile(actor, actor.Ftarget, MT_ROCKET)
+	a_FaceTarget(actor)
+	p_SpawnMissile(actor, actor.Ftarget, MT_ROCKET)
 }
 
-func A_BruisAttack(actor *mobj_t) {
+func a_BruisAttack(actor *mobj_t) {
 	var damage int32
 	if actor.Ftarget == nil {
 		return
 	}
-	if P_CheckMeleeRange(actor) != 0 {
-		S_StartSound(&actor.degenmobj_t, int32(sfx_claw))
-		damage = (P_Random()%int32(8) + 1) * 10
-		P_DamageMobj(actor.Ftarget, actor, actor, damage)
+	if p_CheckMeleeRange(actor) != 0 {
+		s_StartSound(&actor.degenmobj_t, int32(sfx_claw))
+		damage = (p_Random()%int32(8) + 1) * 10
+		p_DamageMobj(actor.Ftarget, actor, actor, damage)
 		return
 	}
 	// launch a missile
-	P_SpawnMissile(actor, actor.Ftarget, MT_BRUISERSHOT)
+	p_SpawnMissile(actor, actor.Ftarget, MT_BRUISERSHOT)
 }
 
 // C documentation
@@ -23239,14 +23239,14 @@ func A_BruisAttack(actor *mobj_t) {
 //	//
 //	// A_SkelMissile
 //	//
-func A_SkelMissile(actor *mobj_t) {
+func a_SkelMissile(actor *mobj_t) {
 	var mo *mobj_t
 	if actor.Ftarget == nil {
 		return
 	}
-	A_FaceTarget(actor)
+	a_FaceTarget(actor)
 	actor.Fz += 16 * (1 << FRACBITS) // so missile spawns higher
-	mo = P_SpawnMissile(actor, actor.Ftarget, MT_TRACER)
+	mo = p_SpawnMissile(actor, actor.Ftarget, MT_TRACER)
 	actor.Fz -= 16 * (1 << FRACBITS) // back to normal
 	actor.Fx += mo.Fmomx
 	actor.Fy += mo.Fmomy
@@ -23257,7 +23257,7 @@ func init() {
 	TRACEANGLE = 0xc000000
 }
 
-func A_Tracer(actor *mobj_t) {
+func a_Tracer(actor *mobj_t) {
 	var dest *mobj_t
 	var th *mobj_t
 	var dist, slope fixed_t
@@ -23266,10 +23266,10 @@ func A_Tracer(actor *mobj_t) {
 		return
 	}
 	// spawn a puff of smoke behind the rocket
-	P_SpawnPuff(actor.Fx, actor.Fy, actor.Fz)
-	th = P_SpawnMobj(actor.Fx-actor.Fmomx, actor.Fy-actor.Fmomy, actor.Fz, MT_SMOKE)
+	p_SpawnPuff(actor.Fx, actor.Fy, actor.Fz)
+	th = p_SpawnMobj(actor.Fx-actor.Fmomx, actor.Fy-actor.Fmomy, actor.Fz, MT_SMOKE)
 	th.Fmomz = 1 << FRACBITS
-	th.Ftics -= P_Random() & 3
+	th.Ftics -= p_Random() & 3
 	if th.Ftics < 1 {
 		th.Ftics = 1
 	}
@@ -23279,7 +23279,7 @@ func A_Tracer(actor *mobj_t) {
 		return
 	}
 	// change angle
-	exact = R_PointToAngle2(actor.Fx, actor.Fy, dest.Fx, dest.Fy)
+	exact = r_PointToAngle2(actor.Fx, actor.Fy, dest.Fx, dest.Fy)
 	if exact != actor.Fangle {
 		if exact-actor.Fangle > 0x80000000 {
 			actor.Fangle -= TRACEANGLE
@@ -23297,7 +23297,7 @@ func A_Tracer(actor *mobj_t) {
 	actor.Fmomx = FixedMul(actor.Finfo.Fspeed, finecosine[exact])
 	actor.Fmomy = FixedMul(actor.Finfo.Fspeed, finesine[exact])
 	// change slope
-	dist = P_AproxDistance(dest.Fx-actor.Fx, dest.Fy-actor.Fy)
+	dist = p_AproxDistance(dest.Fx-actor.Fx, dest.Fy-actor.Fy)
 	dist = dist / actor.Finfo.Fspeed
 	if dist < 1 {
 		dist = 1
@@ -23310,28 +23310,28 @@ func A_Tracer(actor *mobj_t) {
 	}
 }
 
-func A_SkelWhoosh(actor *mobj_t) {
+func a_SkelWhoosh(actor *mobj_t) {
 	if actor.Ftarget == nil {
 		return
 	}
-	A_FaceTarget(actor)
-	S_StartSound(&actor.degenmobj_t, int32(sfx_skeswg))
+	a_FaceTarget(actor)
+	s_StartSound(&actor.degenmobj_t, int32(sfx_skeswg))
 }
 
-func A_SkelFist(actor *mobj_t) {
+func a_SkelFist(actor *mobj_t) {
 	var damage int32
 	if actor.Ftarget == nil {
 		return
 	}
-	A_FaceTarget(actor)
-	if P_CheckMeleeRange(actor) != 0 {
-		damage = (P_Random()%int32(10) + 1) * 6
-		S_StartSound(&actor.degenmobj_t, int32(sfx_skepch))
-		P_DamageMobj(actor.Ftarget, actor, actor, damage)
+	a_FaceTarget(actor)
+	if p_CheckMeleeRange(actor) != 0 {
+		damage = (p_Random()%int32(10) + 1) * 6
+		s_StartSound(&actor.degenmobj_t, int32(sfx_skepch))
+		p_DamageMobj(actor.Ftarget, actor, actor, damage)
 	}
 }
 
-func PIT_VileCheck(thing *mobj_t) (r boolean) {
+func pit_VileCheck(thing *mobj_t) (r boolean) {
 	var check boolean
 	var maxdist int32
 	var v1 fixed_t
@@ -23353,7 +23353,7 @@ func PIT_VileCheck(thing *mobj_t) (r boolean) {
 	corpsehit.Fmomy = v1
 	corpsehit.Fmomx = v1
 	corpsehit.Fheight <<= 2
-	check = P_CheckPosition(corpsehit, corpsehit.Fx, corpsehit.Fy)
+	check = p_CheckPosition(corpsehit, corpsehit.Fx, corpsehit.Fy)
 	corpsehit.Fheight >>= 2
 	if check == 0 {
 		return 1
@@ -23367,7 +23367,7 @@ func PIT_VileCheck(thing *mobj_t) (r boolean) {
 //	// A_VileChase
 //	// Check for ressurecting a body
 //	//
-func A_VileChase(actor *mobj_t) {
+func a_VileChase(actor *mobj_t) {
 	var bx, by, xh, xl, yh, yl int32
 	var temp *mobj_t
 	var info *mobjinfo_t
@@ -23389,19 +23389,19 @@ func A_VileChase(actor *mobj_t) {
 				if !(by <= yh) {
 					break
 				}
-				// Call PIT_VileCheck to check
+				// Call pit_VileCheck to check
 				// whether object is a corpse
 				// that canbe raised.
-				if P_BlockThingsIterator(bx, by, PIT_VileCheck) == 0 {
+				if p_BlockThingsIterator(bx, by, pit_VileCheck) == 0 {
 					// got one!
 					temp = actor.Ftarget
 					actor.Ftarget = corpsehit
-					A_FaceTarget(actor)
+					a_FaceTarget(actor)
 					actor.Ftarget = temp
-					P_SetMobjState(actor, S_VILE_HEAL1)
-					S_StartSound(&corpsehit.degenmobj_t, int32(sfx_slop))
+					p_SetMobjState(actor, S_VILE_HEAL1)
+					s_StartSound(&corpsehit.degenmobj_t, int32(sfx_slop))
 					info = corpsehit.Finfo
-					P_SetMobjState(corpsehit, info.Fraisestate)
+					p_SetMobjState(corpsehit, info.Fraisestate)
 					corpsehit.Fheight <<= 2
 					corpsehit.Fflags = info.Fflags
 					corpsehit.Fhealth = info.Fspawnhealth
@@ -23420,7 +23420,7 @@ func A_VileChase(actor *mobj_t) {
 		}
 	}
 	// Return to normal attack.
-	A_Chase(actor)
+	a_Chase(actor)
 }
 
 // C documentation
@@ -23428,38 +23428,38 @@ func A_VileChase(actor *mobj_t) {
 //	//
 //	// A_VileStart
 //	//
-func A_VileStart(actor *mobj_t) {
-	S_StartSound(&actor.degenmobj_t, int32(sfx_vilatk))
+func a_VileStart(actor *mobj_t) {
+	s_StartSound(&actor.degenmobj_t, int32(sfx_vilatk))
 }
 
-func A_StartFire(actor *mobj_t) {
-	S_StartSound(&actor.degenmobj_t, int32(sfx_flamst))
-	A_Fire(actor)
+func a_StartFire(actor *mobj_t) {
+	s_StartSound(&actor.degenmobj_t, int32(sfx_flamst))
+	a_Fire(actor)
 }
 
-func A_FireCrackle(actor *mobj_t) {
-	S_StartSound(&actor.degenmobj_t, int32(sfx_flame))
-	A_Fire(actor)
+func a_FireCrackle(actor *mobj_t) {
+	s_StartSound(&actor.degenmobj_t, int32(sfx_flame))
+	a_Fire(actor)
 }
 
-func A_Fire(actor *mobj_t) {
+func a_Fire(actor *mobj_t) {
 	var an uint32
 	var dest, target *mobj_t
 	dest = actor.Ftracer
 	if dest == nil {
 		return
 	}
-	target = P_SubstNullMobj(actor.Ftarget)
+	target = p_SubstNullMobj(actor.Ftarget)
 	// don't move it if the vile lost sight
-	if P_CheckSight(target, dest) == 0 {
+	if p_CheckSight(target, dest) == 0 {
 		return
 	}
 	an = dest.Fangle >> ANGLETOFINESHIFT
-	P_UnsetThingPosition(actor)
+	p_UnsetThingPosition(actor)
 	actor.Fx = dest.Fx + FixedMul(24*(1<<FRACBITS), finecosine[an])
 	actor.Fy = dest.Fy + FixedMul(24*(1<<FRACBITS), finesine[an])
 	actor.Fz = dest.Fz
-	P_SetThingPosition(actor)
+	p_SetThingPosition(actor)
 }
 
 // C documentation
@@ -23468,17 +23468,17 @@ func A_Fire(actor *mobj_t) {
 //	// A_VileTarget
 //	// Spawn the hellfire
 //	//
-func A_VileTarget(actor *mobj_t) {
+func a_VileTarget(actor *mobj_t) {
 	var fog *mobj_t
 	if actor.Ftarget == nil {
 		return
 	}
-	A_FaceTarget(actor)
-	fog = P_SpawnMobj(actor.Ftarget.Fx, actor.Ftarget.Fx, actor.Ftarget.Fz, MT_FIRE)
+	a_FaceTarget(actor)
+	fog = p_SpawnMobj(actor.Ftarget.Fx, actor.Ftarget.Fx, actor.Ftarget.Fz, MT_FIRE)
 	actor.Ftracer = fog
 	fog.Ftarget = actor
 	fog.Ftracer = actor.Ftarget
-	A_Fire(fog)
+	a_Fire(fog)
 }
 
 // C documentation
@@ -23486,18 +23486,18 @@ func A_VileTarget(actor *mobj_t) {
 //	//
 //	// A_VileAttack
 //	//
-func A_VileAttack(actor *mobj_t) {
+func a_VileAttack(actor *mobj_t) {
 	var an int32
 	var fire *mobj_t
 	if actor.Ftarget == nil {
 		return
 	}
-	A_FaceTarget(actor)
-	if P_CheckSight(actor, actor.Ftarget) == 0 {
+	a_FaceTarget(actor)
+	if p_CheckSight(actor, actor.Ftarget) == 0 {
 		return
 	}
-	S_StartSound(&actor.degenmobj_t, int32(sfx_barexp))
-	P_DamageMobj(actor.Ftarget, actor, actor, 20)
+	s_StartSound(&actor.degenmobj_t, int32(sfx_barexp))
+	p_DamageMobj(actor.Ftarget, actor, actor, 20)
 	actor.Ftarget.Fmomz = 1000 * (1 << FRACBITS) / actor.Ftarget.Finfo.Fmass
 	an = int32(actor.Fangle >> ANGLETOFINESHIFT)
 	fire = actor.Ftracer
@@ -23507,7 +23507,7 @@ func A_VileAttack(actor *mobj_t) {
 	// move the fire between the vile and the player
 	fire.Fx = actor.Ftarget.Fx - FixedMul(24*(1<<FRACBITS), finecosine[an])
 	fire.Fy = actor.Ftarget.Fy - FixedMul(24*(1<<FRACBITS), finesine[an])
-	P_RadiusAttack(fire, actor, 70)
+	p_RadiusAttack(fire, actor, 70)
 }
 
 //
@@ -23517,52 +23517,52 @@ func A_VileAttack(actor *mobj_t) {
 // Doesn't look like it.
 //
 
-func A_FatRaise(actor *mobj_t) {
-	A_FaceTarget(actor)
-	S_StartSound(&actor.degenmobj_t, int32(sfx_manatk))
+func a_FatRaise(actor *mobj_t) {
+	a_FaceTarget(actor)
+	s_StartSound(&actor.degenmobj_t, int32(sfx_manatk))
 }
 
-func A_FatAttack1(actor *mobj_t) {
+func a_FatAttack1(actor *mobj_t) {
 	var an int32
 	var mo, target *mobj_t
-	A_FaceTarget(actor)
+	a_FaceTarget(actor)
 	// Change direction  to ...
 	actor.Fangle += uint32(ANG903 / 8)
-	target = P_SubstNullMobj(actor.Ftarget)
-	P_SpawnMissile(actor, target, MT_FATSHOT)
-	mo = P_SpawnMissile(actor, target, MT_FATSHOT)
+	target = p_SubstNullMobj(actor.Ftarget)
+	p_SpawnMissile(actor, target, MT_FATSHOT)
+	mo = p_SpawnMissile(actor, target, MT_FATSHOT)
 	mo.Fangle += uint32(ANG903 / 8 * 2)
 	an = int32(mo.Fangle >> ANGLETOFINESHIFT)
 	mo.Fmomx = FixedMul(mo.Finfo.Fspeed, finecosine[an])
 	mo.Fmomy = FixedMul(mo.Finfo.Fspeed, finesine[an])
 }
 
-func A_FatAttack2(actor *mobj_t) {
+func a_FatAttack2(actor *mobj_t) {
 	var an int32
 	var mo, target *mobj_t
-	A_FaceTarget(actor)
+	a_FaceTarget(actor)
 	// Now here choose opposite deviation.
 	actor.Fangle -= uint32(ANG903 / 8)
-	target = P_SubstNullMobj(actor.Ftarget)
-	P_SpawnMissile(actor, target, MT_FATSHOT)
-	mo = P_SpawnMissile(actor, target, MT_FATSHOT)
+	target = p_SubstNullMobj(actor.Ftarget)
+	p_SpawnMissile(actor, target, MT_FATSHOT)
+	mo = p_SpawnMissile(actor, target, MT_FATSHOT)
 	mo.Fangle -= uint32(ANG903 / 8 * 2)
 	an = int32(mo.Fangle >> ANGLETOFINESHIFT)
 	mo.Fmomx = FixedMul(mo.Finfo.Fspeed, finecosine[an])
 	mo.Fmomy = FixedMul(mo.Finfo.Fspeed, finesine[an])
 }
 
-func A_FatAttack3(actor *mobj_t) {
+func a_FatAttack3(actor *mobj_t) {
 	var an int32
 	var mo, target *mobj_t
-	A_FaceTarget(actor)
-	target = P_SubstNullMobj(actor.Ftarget)
-	mo = P_SpawnMissile(actor, target, MT_FATSHOT)
+	a_FaceTarget(actor)
+	target = p_SubstNullMobj(actor.Ftarget)
+	mo = p_SpawnMissile(actor, target, MT_FATSHOT)
 	mo.Fangle -= uint32(ANG903 / 8 / 2)
 	an = int32(mo.Fangle >> ANGLETOFINESHIFT)
 	mo.Fmomx = FixedMul(mo.Finfo.Fspeed, finecosine[an])
 	mo.Fmomy = FixedMul(mo.Finfo.Fspeed, finesine[an])
-	mo = P_SpawnMissile(actor, target, MT_FATSHOT)
+	mo = p_SpawnMissile(actor, target, MT_FATSHOT)
 	mo.Fangle += uint32(ANG903 / 8 / 2)
 	an = int32(mo.Fangle >> ANGLETOFINESHIFT)
 	mo.Fmomx = FixedMul(mo.Finfo.Fspeed, finecosine[an])
@@ -23574,7 +23574,7 @@ func A_FatAttack3(actor *mobj_t) {
 // Fly at the player like a missile.
 //
 
-func A_SkullAttack(actor *mobj_t) {
+func a_SkullAttack(actor *mobj_t) {
 	var an angle_t
 	var dest *mobj_t
 	var dist int32
@@ -23583,12 +23583,12 @@ func A_SkullAttack(actor *mobj_t) {
 	}
 	dest = actor.Ftarget
 	actor.Fflags |= MF_SKULLFLY
-	S_StartSound(&actor.degenmobj_t, actor.Finfo.Fattacksound)
-	A_FaceTarget(actor)
+	s_StartSound(&actor.degenmobj_t, actor.Finfo.Fattacksound)
+	a_FaceTarget(actor)
 	an = actor.Fangle >> ANGLETOFINESHIFT
 	actor.Fmomx = FixedMul(20*(1<<FRACBITS), finecosine[an])
 	actor.Fmomy = FixedMul(20*(1<<FRACBITS), finesine[an])
-	dist = P_AproxDistance(dest.Fx-actor.Fx, dest.Fy-actor.Fy)
+	dist = p_AproxDistance(dest.Fx-actor.Fx, dest.Fy-actor.Fy)
 	dist = dist / (20 * (1 << FRACBITS))
 	if dist < 1 {
 		dist = 1
@@ -23602,7 +23602,7 @@ func A_SkullAttack(actor *mobj_t) {
 //	// A_PainShootSkull
 //	// Spawn a lost soul and launch it at the target
 //	//
-func A_PainShootSkull(actor *mobj_t, angle angle_t) {
+func a_PainShootSkull(actor *mobj_t, angle angle_t) {
 	var an angle_t
 	var count, prestep int32
 	var currentthinker *thinker_t
@@ -23630,15 +23630,15 @@ func A_PainShootSkull(actor *mobj_t, angle angle_t) {
 	x = actor.Fx + FixedMul(prestep, finecosine[an])
 	y = actor.Fy + FixedMul(prestep, finesine[an])
 	z = actor.Fz + 8*(1<<FRACBITS)
-	newmobj = P_SpawnMobj(x, y, z, MT_SKULL)
+	newmobj = p_SpawnMobj(x, y, z, MT_SKULL)
 	// Check for movements.
-	if P_TryMove(newmobj, newmobj.Fx, newmobj.Fy) == 0 {
+	if p_TryMove(newmobj, newmobj.Fx, newmobj.Fy) == 0 {
 		// kill it immediately
-		P_DamageMobj(newmobj, actor, actor, 10000)
+		p_DamageMobj(newmobj, actor, actor, 10000)
 		return
 	}
 	newmobj.Ftarget = actor.Ftarget
-	A_SkullAttack(newmobj)
+	a_SkullAttack(newmobj)
 }
 
 // C documentation
@@ -23647,22 +23647,22 @@ func A_PainShootSkull(actor *mobj_t, angle angle_t) {
 //	// A_PainAttack
 //	// Spawn a lost soul and launch it at the target
 //	//
-func A_PainAttack(actor *mobj_t) {
+func a_PainAttack(actor *mobj_t) {
 	if actor.Ftarget == nil {
 		return
 	}
-	A_FaceTarget(actor)
-	A_PainShootSkull(actor, actor.Fangle)
+	a_FaceTarget(actor)
+	a_PainShootSkull(actor, actor.Fangle)
 }
 
-func A_PainDie(actor *mobj_t) {
-	A_Fall(actor)
-	A_PainShootSkull(actor, actor.Fangle+uint32(ANG903))
-	A_PainShootSkull(actor, actor.Fangle+uint32(ANG1801))
-	A_PainShootSkull(actor, actor.Fangle+uint32(ANG2703))
+func a_PainDie(actor *mobj_t) {
+	a_Fall(actor)
+	a_PainShootSkull(actor, actor.Fangle+uint32(ANG903))
+	a_PainShootSkull(actor, actor.Fangle+uint32(ANG1801))
+	a_PainShootSkull(actor, actor.Fangle+uint32(ANG2703))
 }
 
-func A_Scream(actor *mobj_t) {
+func a_Scream(actor *mobj_t) {
 	var sound int32
 	switch actor.Finfo.Fdeathsound {
 	case 0:
@@ -23672,11 +23672,11 @@ func A_Scream(actor *mobj_t) {
 	case int32(sfx_podth2):
 		fallthrough
 	case int32(sfx_podth3):
-		sound = int32(sfx_podth1) + P_Random()%int32(3)
+		sound = int32(sfx_podth1) + p_Random()%int32(3)
 	case int32(sfx_bgdth1):
 		fallthrough
 	case int32(sfx_bgdth2):
-		sound = int32(sfx_bgdth1) + P_Random()%int32(2)
+		sound = int32(sfx_bgdth1) + p_Random()%int32(2)
 	default:
 		sound = actor.Finfo.Fdeathsound
 		break
@@ -23684,23 +23684,23 @@ func A_Scream(actor *mobj_t) {
 	// Check for bosses.
 	if actor.Ftype1 == MT_SPIDER || actor.Ftype1 == MT_CYBORG {
 		// full volume
-		S_StartSound(nil, sound)
+		s_StartSound(nil, sound)
 	} else {
-		S_StartSound(&actor.degenmobj_t, sound)
+		s_StartSound(&actor.degenmobj_t, sound)
 	}
 }
 
-func A_XScream(actor *mobj_t) {
-	S_StartSound(&actor.degenmobj_t, int32(sfx_slop))
+func a_XScream(actor *mobj_t) {
+	s_StartSound(&actor.degenmobj_t, int32(sfx_slop))
 }
 
-func A_Pain(actor *mobj_t) {
+func a_Pain(actor *mobj_t) {
 	if actor.Finfo.Fpainsound != 0 {
-		S_StartSound(&actor.degenmobj_t, actor.Finfo.Fpainsound)
+		s_StartSound(&actor.degenmobj_t, actor.Finfo.Fpainsound)
 	}
 }
 
-func A_Fall(actor *mobj_t) {
+func a_Fall(actor *mobj_t) {
 	// actor is on ground, it can be walked over
 	actor.Fflags &^= MF_SOLID
 	// So change this if corpse objects
@@ -23712,8 +23712,8 @@ func A_Fall(actor *mobj_t) {
 //	//
 //	// A_Explode
 //	//
-func A_Explode(thingy *mobj_t) {
-	P_RadiusAttack(thingy, thingy.Ftarget, 128)
+func a_Explode(thingy *mobj_t) {
+	p_RadiusAttack(thingy, thingy.Ftarget, 128)
 }
 
 // Check whether the death of the specified monster type is allowed
@@ -23760,7 +23760,7 @@ func CheckBossEnd(motype mobjtype_t) (r boolean) {
 //	// Possibly trigger special effects
 //	// if on first boss level
 //	//
-func A_BossDeath(mo *mobj_t) {
+func a_BossDeath(mo *mobj_t) {
 	var i int32
 	var th *thinker_t
 	if gamemode == commercial {
@@ -23816,63 +23816,63 @@ func A_BossDeath(mo *mobj_t) {
 	if gamemode == commercial {
 		if gamemap == 7 {
 			if mo.Ftype1 == MT_FATSO {
-				EV_DoFloor(&line_t{Ftag: 666}, int32(lowerFloorToLowest))
+				ev_DoFloor(&line_t{Ftag: 666}, int32(lowerFloorToLowest))
 				return
 			}
 			if mo.Ftype1 == MT_BABY {
-				EV_DoFloor(&line_t{Ftag: 667}, int32(raiseToTexture))
+				ev_DoFloor(&line_t{Ftag: 667}, int32(raiseToTexture))
 				return
 			}
 		}
 	} else {
 		switch gameepisode {
 		case 1:
-			EV_DoFloor(&line_t{Ftag: 666}, int32(lowerFloorToLowest))
+			ev_DoFloor(&line_t{Ftag: 666}, int32(lowerFloorToLowest))
 			return
 		case 4:
 			switch gamemap {
 			case 6:
-				EV_DoDoor(&line_t{Ftag: 666}, int32(vld_blazeOpen))
+				ev_DoDoor(&line_t{Ftag: 666}, int32(vld_blazeOpen))
 				return
 			case 8:
-				EV_DoFloor(&line_t{Ftag: 666}, int32(lowerFloorToLowest))
+				ev_DoFloor(&line_t{Ftag: 666}, int32(lowerFloorToLowest))
 				return
 				break
 			}
 		}
 	}
-	G_ExitLevel()
+	g_ExitLevel()
 }
 
-func A_Hoof(mo *mobj_t) {
-	S_StartSound(&mo.degenmobj_t, int32(sfx_hoof))
-	A_Chase(mo)
+func a_Hoof(mo *mobj_t) {
+	s_StartSound(&mo.degenmobj_t, int32(sfx_hoof))
+	a_Chase(mo)
 }
 
-func A_Metal(mo *mobj_t) {
-	S_StartSound(&mo.degenmobj_t, int32(sfx_metal))
-	A_Chase(mo)
+func a_Metal(mo *mobj_t) {
+	s_StartSound(&mo.degenmobj_t, int32(sfx_metal))
+	a_Chase(mo)
 }
 
-func A_BabyMetal(mo *mobj_t) {
-	S_StartSound(&mo.degenmobj_t, int32(sfx_bspwlk))
-	A_Chase(mo)
+func a_BabyMetal(mo *mobj_t) {
+	s_StartSound(&mo.degenmobj_t, int32(sfx_bspwlk))
+	a_Chase(mo)
 }
 
-func A_OpenShotgun2(player *player_t, psp *pspdef_t) {
-	S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_dbopn))
+func a_OpenShotgun2(player *player_t, psp *pspdef_t) {
+	s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_dbopn))
 }
 
-func A_LoadShotgun2(player *player_t, psp *pspdef_t) {
-	S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_dbload))
+func a_LoadShotgun2(player *player_t, psp *pspdef_t) {
+	s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_dbload))
 }
 
-func A_CloseShotgun2(player *player_t, psp *pspdef_t) {
-	S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_dbcls))
-	A_ReFire(player, psp)
+func a_CloseShotgun2(player *player_t, psp *pspdef_t) {
+	s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_dbcls))
+	a_ReFire(player, psp)
 }
 
-func A_BrainAwake(mo *mobj_t) {
+func a_BrainAwake(mo *mobj_t) {
 	var thinker *thinker_t
 	// find all the target spots
 	numbraintargets = 0
@@ -23896,14 +23896,14 @@ func A_BrainAwake(mo *mobj_t) {
 		;
 		thinker = thinker.Fnext
 	}
-	S_StartSound(nil, int32(sfx_bossit))
+	s_StartSound(nil, int32(sfx_bossit))
 }
 
-func A_BrainPain(mo *mobj_t) {
-	S_StartSound(nil, int32(sfx_bospn))
+func a_BrainPain(mo *mobj_t) {
+	s_StartSound(nil, int32(sfx_bospn))
 }
 
-func A_BrainScream(mo *mobj_t) {
+func a_BrainScream(mo *mobj_t) {
 	var th *mobj_t
 	var x, y, z int32
 	x = mo.Fx - 196*(1<<FRACBITS)
@@ -23912,11 +23912,11 @@ func A_BrainScream(mo *mobj_t) {
 			break
 		}
 		y = mo.Fy - 320*(1<<FRACBITS)
-		z = 128 + P_Random()*int32(2)*(1<<FRACBITS)
-		th = P_SpawnMobj(x, y, z, MT_ROCKET)
-		th.Fmomz = P_Random() * 512
-		P_SetMobjState(th, S_BRAINEXPLODE1)
-		th.Ftics -= P_Random() & 7
+		z = 128 + p_Random()*int32(2)*(1<<FRACBITS)
+		th = p_SpawnMobj(x, y, z, MT_ROCKET)
+		th.Fmomz = p_Random() * 512
+		p_SetMobjState(th, S_BRAINEXPLODE1)
+		th.Ftics -= p_Random() & 7
 		if th.Ftics < 1 {
 			th.Ftics = 1
 		}
@@ -23925,29 +23925,29 @@ func A_BrainScream(mo *mobj_t) {
 		;
 		x += 1 << FRACBITS * 8
 	}
-	S_StartSound(nil, int32(sfx_bosdth))
+	s_StartSound(nil, int32(sfx_bosdth))
 }
 
-func A_BrainExplode(mo *mobj_t) {
+func a_BrainExplode(mo *mobj_t) {
 	var th *mobj_t
 	var x, y, z int32
-	x = mo.Fx + (P_Random()-P_Random())*int32(2048)
+	x = mo.Fx + (p_Random()-p_Random())*int32(2048)
 	y = mo.Fy
-	z = 128 + P_Random()*int32(2)*(1<<FRACBITS)
-	th = P_SpawnMobj(x, y, z, MT_ROCKET)
-	th.Fmomz = P_Random() * 512
-	P_SetMobjState(th, S_BRAINEXPLODE1)
-	th.Ftics -= P_Random() & 7
+	z = 128 + p_Random()*int32(2)*(1<<FRACBITS)
+	th = p_SpawnMobj(x, y, z, MT_ROCKET)
+	th.Fmomz = p_Random() * 512
+	p_SetMobjState(th, S_BRAINEXPLODE1)
+	th.Ftics -= p_Random() & 7
 	if th.Ftics < 1 {
 		th.Ftics = 1
 	}
 }
 
-func A_BrainDie(mo *mobj_t) {
-	G_ExitLevel()
+func a_BrainDie(mo *mobj_t) {
+	g_ExitLevel()
 }
 
-func A_BrainSpit(mo *mobj_t) {
+func a_BrainSpit(mo *mobj_t) {
 	var newmobj, targ *mobj_t
 	easy ^= 1
 	if gameskill <= sk_easy && easy == 0 {
@@ -23957,10 +23957,10 @@ func A_BrainSpit(mo *mobj_t) {
 	targ = braintargets[braintargeton]
 	braintargeton = (braintargeton + 1) % numbraintargets
 	// spawn brain missile
-	newmobj = P_SpawnMissile(mo, targ, MT_SPAWNSHOT)
+	newmobj = p_SpawnMissile(mo, targ, MT_SPAWNSHOT)
 	newmobj.Ftarget = targ
 	newmobj.Freactiontime = (targ.Fy - mo.Fy) / newmobj.Fmomy / newmobj.Fstate.Ftics
-	S_StartSound(nil, int32(sfx_bospit))
+	s_StartSound(nil, int32(sfx_bospit))
 }
 
 var easy int32
@@ -23968,12 +23968,12 @@ var easy int32
 // C documentation
 //
 //	// travelling cube sound
-func A_SpawnSound(mo *mobj_t) {
-	S_StartSound(&mo.degenmobj_t, int32(sfx_boscub))
-	A_SpawnFly(mo)
+func a_SpawnSound(mo *mobj_t) {
+	s_StartSound(&mo.degenmobj_t, int32(sfx_boscub))
+	a_SpawnFly(mo)
 }
 
-func A_SpawnFly(mo *mobj_t) {
+func a_SpawnFly(mo *mobj_t) {
 	var fog, newmobj, targ *mobj_t
 	var r int32
 	var type1 mobjtype_t
@@ -23981,12 +23981,12 @@ func A_SpawnFly(mo *mobj_t) {
 	if mo.Freactiontime != 0 {
 		return
 	} // still flying
-	targ = P_SubstNullMobj(mo.Ftarget)
+	targ = p_SubstNullMobj(mo.Ftarget)
 	// First spawn teleport fog.
-	fog = P_SpawnMobj(targ.Fx, targ.Fy, targ.Fz, MT_SPAWNFIRE)
-	S_StartSound(&fog.degenmobj_t, int32(sfx_telept))
+	fog = p_SpawnMobj(targ.Fx, targ.Fy, targ.Fz, MT_SPAWNFIRE)
+	s_StartSound(&fog.degenmobj_t, int32(sfx_telept))
 	// Randomly select monster to spawn.
-	r = P_Random()
+	r = p_Random()
 	// Probability distribution (kind of :),
 	// decreasing likelihood.
 	if r < 50 {
@@ -24030,17 +24030,17 @@ func A_SpawnFly(mo *mobj_t) {
 			}
 		}
 	}
-	newmobj = P_SpawnMobj(targ.Fx, targ.Fy, targ.Fz, type1)
-	if P_LookForPlayers(newmobj, 1) != 0 {
-		P_SetMobjState(newmobj, newmobj.Finfo.Fseestate)
+	newmobj = p_SpawnMobj(targ.Fx, targ.Fy, targ.Fz, type1)
+	if p_LookForPlayers(newmobj, 1) != 0 {
+		p_SetMobjState(newmobj, newmobj.Finfo.Fseestate)
 	}
 	// telefrag anything in this spot
-	P_TeleportMove(newmobj, newmobj.Fx, newmobj.Fy)
+	p_TeleportMove(newmobj, newmobj.Fx, newmobj.Fy)
 	// remove self (i.e., cube).
-	P_RemoveMobj(mo)
+	p_RemoveMobj(mo)
 }
 
-func A_PlayerScream(mo *mobj_t) {
+func a_PlayerScream(mo *mobj_t) {
 	var sound int32
 	// Default death sound.
 	sound = int32(sfx_pldeth)
@@ -24049,7 +24049,7 @@ func A_PlayerScream(mo *mobj_t) {
 		// LESS THAN -50% WITHOUT GIBBING
 		sound = int32(sfx_pdiehi)
 	}
-	S_StartSound(&mo.degenmobj_t, sound)
+	s_StartSound(&mo.degenmobj_t, sound)
 }
 
 const INT_MAX9 = 2147483647
@@ -24101,7 +24101,7 @@ const INT_MAX9 = 2147483647
 //	//
 //	// Move a plane (floor or ceiling) and check for crushing
 //	//
-func T_MovePlane(sector *sector_t, speed fixed_t, dest fixed_t, crush boolean, floorOrCeiling int32, direction int32) (r result_e) {
+func t_MovePlane(sector *sector_t, speed fixed_t, dest fixed_t, crush boolean, floorOrCeiling int32, direction int32) (r result_e) {
 	var flag boolean
 	var lastpos fixed_t
 	switch floorOrCeiling {
@@ -24113,20 +24113,20 @@ func T_MovePlane(sector *sector_t, speed fixed_t, dest fixed_t, crush boolean, f
 			if sector.Ffloorheight-speed < dest {
 				lastpos = sector.Ffloorheight
 				sector.Ffloorheight = dest
-				flag = P_ChangeSector(sector, crush)
+				flag = p_ChangeSector(sector, crush)
 				if flag == 1 {
 					sector.Ffloorheight = lastpos
-					P_ChangeSector(sector, crush)
+					p_ChangeSector(sector, crush)
 					//return crushed;
 				}
 				return int32(pastdest)
 			} else {
 				lastpos = sector.Ffloorheight
 				sector.Ffloorheight -= speed
-				flag = P_ChangeSector(sector, crush)
+				flag = p_ChangeSector(sector, crush)
 				if flag == 1 {
 					sector.Ffloorheight = lastpos
-					P_ChangeSector(sector, crush)
+					p_ChangeSector(sector, crush)
 					return int32(crushed)
 				}
 			}
@@ -24135,10 +24135,10 @@ func T_MovePlane(sector *sector_t, speed fixed_t, dest fixed_t, crush boolean, f
 			if sector.Ffloorheight+speed > dest {
 				lastpos = sector.Ffloorheight
 				sector.Ffloorheight = dest
-				flag = P_ChangeSector(sector, crush)
+				flag = p_ChangeSector(sector, crush)
 				if flag == 1 {
 					sector.Ffloorheight = lastpos
-					P_ChangeSector(sector, crush)
+					p_ChangeSector(sector, crush)
 					//return crushed;
 				}
 				return int32(pastdest)
@@ -24146,13 +24146,13 @@ func T_MovePlane(sector *sector_t, speed fixed_t, dest fixed_t, crush boolean, f
 				// COULD GET CRUSHED
 				lastpos = sector.Ffloorheight
 				sector.Ffloorheight += speed
-				flag = P_ChangeSector(sector, crush)
+				flag = p_ChangeSector(sector, crush)
 				if flag == 1 {
 					if crush == 1 {
 						return int32(crushed)
 					}
 					sector.Ffloorheight = lastpos
-					P_ChangeSector(sector, crush)
+					p_ChangeSector(sector, crush)
 					return int32(crushed)
 				}
 			}
@@ -24166,10 +24166,10 @@ func T_MovePlane(sector *sector_t, speed fixed_t, dest fixed_t, crush boolean, f
 			if sector.Fceilingheight-speed < dest {
 				lastpos = sector.Fceilingheight
 				sector.Fceilingheight = dest
-				flag = P_ChangeSector(sector, crush)
+				flag = p_ChangeSector(sector, crush)
 				if flag == 1 {
 					sector.Fceilingheight = lastpos
-					P_ChangeSector(sector, crush)
+					p_ChangeSector(sector, crush)
 					//return crushed;
 				}
 				return int32(pastdest)
@@ -24177,13 +24177,13 @@ func T_MovePlane(sector *sector_t, speed fixed_t, dest fixed_t, crush boolean, f
 				// COULD GET CRUSHED
 				lastpos = sector.Fceilingheight
 				sector.Fceilingheight -= speed
-				flag = P_ChangeSector(sector, crush)
+				flag = p_ChangeSector(sector, crush)
 				if flag == 1 {
 					if crush == 1 {
 						return int32(crushed)
 					}
 					sector.Fceilingheight = lastpos
-					P_ChangeSector(sector, crush)
+					p_ChangeSector(sector, crush)
 					return int32(crushed)
 				}
 			}
@@ -24192,17 +24192,17 @@ func T_MovePlane(sector *sector_t, speed fixed_t, dest fixed_t, crush boolean, f
 			if sector.Fceilingheight+speed > dest {
 				lastpos = sector.Fceilingheight
 				sector.Fceilingheight = dest
-				flag = P_ChangeSector(sector, crush)
+				flag = p_ChangeSector(sector, crush)
 				if flag == 1 {
 					sector.Fceilingheight = lastpos
-					P_ChangeSector(sector, crush)
+					p_ChangeSector(sector, crush)
 					//return crushed;
 				}
 				return int32(pastdest)
 			} else {
 				lastpos = sector.Fceilingheight
 				sector.Fceilingheight += speed
-				flag = P_ChangeSector(sector, crush)
+				flag = p_ChangeSector(sector, crush)
 				// UNUSED
 			}
 			break
@@ -24218,13 +24218,13 @@ func T_MovePlane(sector *sector_t, speed fixed_t, dest fixed_t, crush boolean, f
 //	// MOVE A FLOOR TO IT'S DESTINATION (UP OR DOWN)
 //	//
 func (floor *floormove_t) ThinkerFunc() {
-	T_MoveFloor(floor)
+	t_MoveFloor(floor)
 }
-func T_MoveFloor(floor *floormove_t) {
+func t_MoveFloor(floor *floormove_t) {
 	var res result_e
-	res = T_MovePlane(floor.Fsector, floor.Fspeed, floor.Ffloordestheight, floor.Fcrush, 0, floor.Fdirection)
+	res = t_MovePlane(floor.Fsector, floor.Fspeed, floor.Ffloordestheight, floor.Fcrush, 0, floor.Fdirection)
 	if leveltime&7 == 0 {
-		S_StartSound(&floor.Fsector.Fsoundorg, int32(sfx_stnmov))
+		s_StartSound(&floor.Fsector.Fsoundorg, int32(sfx_stnmov))
 	}
 	if res == int32(pastdest) {
 		floor.Fsector.Fspecialdata = nil
@@ -24249,8 +24249,8 @@ func T_MoveFloor(floor *floormove_t) {
 				}
 			}
 		}
-		P_RemoveThinker(&floor.Fthinker)
-		S_StartSound(&floor.Fsector.Fsoundorg, int32(sfx_pstop))
+		p_RemoveThinker(&floor.Fthinker)
+		s_StartSound(&floor.Fsector.Fsoundorg, int32(sfx_pstop))
 	}
 }
 
@@ -24259,14 +24259,14 @@ func T_MoveFloor(floor *floormove_t) {
 //	//
 //	// HANDLE FLOOR TYPES
 //	//
-func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
+func ev_DoFloor(line *line_t, floortype floor_e) (r int32) {
 	var side *side_t
 	var sec *sector_t
 	var i, minsize, rtn, secnum, v1 int32
 	secnum = -1
 	rtn = 0
 	for {
-		v1 = P_FindSectorFromLineTag(line, secnum)
+		v1 = p_FindSectorFromLineTag(line, secnum)
 		secnum = v1
 		if !(v1 >= 0) {
 			break
@@ -24279,7 +24279,7 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 		// new floor thinker
 		rtn = 1
 		floorP := &floormove_t{}
-		P_AddThinker(&floorP.Fthinker)
+		p_AddThinker(&floorP.Fthinker)
 		sec.Fspecialdata = floorP
 		floorP.Fthinker.Ffunction = floorP
 		floorP.Ftype1 = floortype
@@ -24289,17 +24289,17 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 			floorP.Fdirection = -1
 			floorP.Fsector = sec
 			floorP.Fspeed = 1 << FRACBITS
-			floorP.Ffloordestheight = P_FindHighestFloorSurrounding(sec)
+			floorP.Ffloordestheight = p_FindHighestFloorSurrounding(sec)
 		case int32(lowerFloorToLowest):
 			floorP.Fdirection = -1
 			floorP.Fsector = sec
 			floorP.Fspeed = 1 << FRACBITS
-			floorP.Ffloordestheight = P_FindLowestFloorSurrounding(sec)
+			floorP.Ffloordestheight = p_FindLowestFloorSurrounding(sec)
 		case int32(turboLower):
 			floorP.Fdirection = -1
 			floorP.Fsector = sec
 			floorP.Fspeed = 1 << FRACBITS * 4
-			floorP.Ffloordestheight = P_FindHighestFloorSurrounding(sec)
+			floorP.Ffloordestheight = p_FindHighestFloorSurrounding(sec)
 			if floorP.Ffloordestheight != sec.Ffloorheight {
 				floorP.Ffloordestheight += 8 * (1 << FRACBITS)
 			}
@@ -24310,7 +24310,7 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 			floorP.Fdirection = 1
 			floorP.Fsector = sec
 			floorP.Fspeed = 1 << FRACBITS
-			floorP.Ffloordestheight = P_FindLowestCeilingSurrounding(sec)
+			floorP.Ffloordestheight = p_FindLowestCeilingSurrounding(sec)
 			if floorP.Ffloordestheight > sec.Fceilingheight {
 				floorP.Ffloordestheight = sec.Fceilingheight
 			}
@@ -24319,12 +24319,12 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 			floorP.Fdirection = 1
 			floorP.Fsector = sec
 			floorP.Fspeed = 1 << FRACBITS * 4
-			floorP.Ffloordestheight = P_FindNextHighestFloor(sec, sec.Ffloorheight)
+			floorP.Ffloordestheight = p_FindNextHighestFloor(sec, sec.Ffloorheight)
 		case int32(raiseFloorToNearest):
 			floorP.Fdirection = 1
 			floorP.Fsector = sec
 			floorP.Fspeed = 1 << FRACBITS
-			floorP.Ffloordestheight = P_FindNextHighestFloor(sec, sec.Ffloorheight)
+			floorP.Ffloordestheight = p_FindNextHighestFloor(sec, sec.Ffloorheight)
 		case int32(raiseFloor24):
 			floorP.Fdirection = 1
 			floorP.Fsector = sec
@@ -24376,7 +24376,7 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 			floorP.Fdirection = -1
 			floorP.Fsector = sec
 			floorP.Fspeed = 1 << FRACBITS
-			floorP.Ffloordestheight = P_FindLowestFloorSurrounding(sec)
+			floorP.Ffloordestheight = p_FindLowestFloorSurrounding(sec)
 			floorP.Ftexture = sec.Ffloorpic
 			i = 0
 			for {
@@ -24418,7 +24418,7 @@ func EV_DoFloor(line *line_t, floortype floor_e) (r int32) {
 //	//
 //	// BUILD A STAIRCASE!
 //	//
-func EV_BuildStairs(line *line_t, type1 stair_e) (r int32) {
+func ev_BuildStairs(line *line_t, type1 stair_e) (r int32) {
 	var sec, tsec *sector_t
 	var height, i, newsecnum, ok, rtn, secnum, texture, v1 int32
 	var speed, stairsize fixed_t
@@ -24427,7 +24427,7 @@ func EV_BuildStairs(line *line_t, type1 stair_e) (r int32) {
 	secnum = -1
 	rtn = 0
 	for {
-		v1 = P_FindSectorFromLineTag(line, secnum)
+		v1 = p_FindSectorFromLineTag(line, secnum)
 		secnum = v1
 		if !(v1 >= 0) {
 			break
@@ -24440,7 +24440,7 @@ func EV_BuildStairs(line *line_t, type1 stair_e) (r int32) {
 		// new floor thinker
 		rtn = 1
 		floorP := &floormove_t{}
-		P_AddThinker(&floorP.Fthinker)
+		p_AddThinker(&floorP.Fthinker)
 		sec.Fspecialdata = floorP
 		floorP.Fthinker.Ffunction = floorP
 		floorP.Fdirection = 1
@@ -24488,7 +24488,7 @@ func EV_BuildStairs(line *line_t, type1 stair_e) (r int32) {
 				sec = tsec
 				secnum = newsecnum
 				floorP = &floormove_t{}
-				P_AddThinker(&floorP.Fthinker)
+				p_AddThinker(&floorP.Fthinker)
 				sec.Fspecialdata = floorP
 				floorP.Fthinker.Ffunction = floorP
 				floorP.Fdirection = 1
@@ -24539,13 +24539,13 @@ func init() {
 // Returns false if the ammo can't be picked up at all
 //
 
-func P_GiveAmmo(player *player_t, ammo ammotype_t, num int32) (r boolean) {
+func p_GiveAmmo(player *player_t, ammo ammotype_t, num int32) (r boolean) {
 	var oldammo int32
 	if ammo == am_noammo {
 		return 0
 	}
 	if ammo > NUMAMMO {
-		I_Error("P_GiveAmmo: bad type %d", ammo)
+		i_Error("p_GiveAmmo: bad type %d", ammo)
 	}
 	if player.Fammo[ammo] == player.Fmaxammo[ammo] {
 		return 0
@@ -24614,7 +24614,7 @@ func P_GiveAmmo(player *player_t, ammo ammotype_t, num int32) (r boolean) {
 //	// P_GiveWeapon
 //	// The weapon name may have a MF_DROPPED flag ored in.
 //	//
-func P_GiveWeapon(player *player_t, weapon weapontype_t, dropped boolean) (r boolean) {
+func p_GiveWeapon(player *player_t, weapon weapontype_t, dropped boolean) (r boolean) {
 	var gaveammo, gaveweapon boolean
 	if netgame != 0 && deathmatch != 2 && dropped == 0 {
 		// leave placed weapons forever on net games
@@ -24624,13 +24624,13 @@ func P_GiveWeapon(player *player_t, weapon weapontype_t, dropped boolean) (r boo
 		player.Fbonuscount += BONUSADD
 		player.Fweaponowned[weapon] = 1
 		if deathmatch != 0 {
-			P_GiveAmmo(player, weaponinfo[weapon].Fammo, 5)
+			p_GiveAmmo(player, weaponinfo[weapon].Fammo, 5)
 		} else {
-			P_GiveAmmo(player, weaponinfo[weapon].Fammo, 2)
+			p_GiveAmmo(player, weaponinfo[weapon].Fammo, 2)
 		}
 		player.Fpendingweapon = weapon
 		if player == &players[consoleplayer] {
-			S_StartSound(nil, int32(sfx_wpnup))
+			s_StartSound(nil, int32(sfx_wpnup))
 		}
 		return 0
 	}
@@ -24638,9 +24638,9 @@ func P_GiveWeapon(player *player_t, weapon weapontype_t, dropped boolean) (r boo
 		// give one clip with a dropped weapon,
 		// two clips with a found weapon
 		if dropped != 0 {
-			gaveammo = P_GiveAmmo(player, weaponinfo[weapon].Fammo, 1)
+			gaveammo = p_GiveAmmo(player, weaponinfo[weapon].Fammo, 1)
 		} else {
-			gaveammo = P_GiveAmmo(player, weaponinfo[weapon].Fammo, 2)
+			gaveammo = p_GiveAmmo(player, weaponinfo[weapon].Fammo, 2)
 		}
 	} else {
 		gaveammo = 0
@@ -24661,7 +24661,7 @@ func P_GiveWeapon(player *player_t, weapon weapontype_t, dropped boolean) (r boo
 //	// P_GiveBody
 //	// Returns false if the body isn't needed at all
 //	//
-func P_GiveBody(player *player_t, num int32) (r boolean) {
+func p_GiveBody(player *player_t, num int32) (r boolean) {
 	if player.Fhealth >= MAXHEALTH {
 		return 0
 	}
@@ -24680,7 +24680,7 @@ func P_GiveBody(player *player_t, num int32) (r boolean) {
 //	// Returns false if the armor is worse
 //	// than the current armor.
 //	//
-func P_GiveArmor(player *player_t, armortype int32) (r boolean) {
+func p_GiveArmor(player *player_t, armortype int32) (r boolean) {
 	var hits int32
 	hits = armortype * 100
 	if player.Farmorpoints >= hits {
@@ -24696,7 +24696,7 @@ func P_GiveArmor(player *player_t, armortype int32) (r boolean) {
 //	//
 //	// P_GiveCard
 //	//
-func P_GiveCard(player *player_t, card card_t) {
+func p_GiveCard(player *player_t, card card_t) {
 	if player.Fcards[card] != 0 {
 		return
 	}
@@ -24709,7 +24709,7 @@ func P_GiveCard(player *player_t, card card_t) {
 //	//
 //	// P_GivePower
 //	//
-func P_GivePower(player *player_t, power int32) (r boolean) {
+func p_GivePower(player *player_t, power int32) (r boolean) {
 	if power == int32(pw_invulnerability) {
 		player.Fpowers[power] = INVULNTICS
 		return 1
@@ -24728,7 +24728,7 @@ func P_GivePower(player *player_t, power int32) (r boolean) {
 		return 1
 	}
 	if power == int32(pw_strength) {
-		P_GiveBody(player, 100)
+		p_GiveBody(player, 100)
 		player.Fpowers[power] = 1
 		return 1
 	}
@@ -24744,7 +24744,7 @@ func P_GivePower(player *player_t, power int32) (r boolean) {
 //	//
 //	// P_TouchSpecialThing
 //	//
-func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
+func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 	var delta fixed_t
 	var i, sound int32
 	var player *player_t
@@ -24764,12 +24764,12 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 	switch special.Fsprite {
 	// armor
 	case SPR_ARM1:
-		if P_GiveArmor(player, DEH_DEFAULT_GREEN_ARMOR_CLASS) == 0 {
+		if p_GiveArmor(player, DEH_DEFAULT_GREEN_ARMOR_CLASS) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up the armor."
 	case SPR_ARM2:
-		if P_GiveArmor(player, DEH_DEFAULT_BLUE_ARMOR_CLASS) == 0 {
+		if p_GiveArmor(player, DEH_DEFAULT_BLUE_ARMOR_CLASS) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up the MegaArmor!"
@@ -24810,7 +24810,7 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		player.Fmo.Fhealth = player.Fhealth
 		// We always give armor type 2 for the megasphere; dehacked only
 		// affects the MegaArmor.
-		P_GiveArmor(player, 2)
+		p_GiveArmor(player, 2)
 		player.Fmessage = "MegaSphere!"
 		sound = int32(sfx_getpow)
 		break
@@ -24821,7 +24821,7 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		if player.Fcards[it_bluecard] == 0 {
 			player.Fmessage = "Picked up a blue keycard."
 		}
-		P_GiveCard(player, it_bluecard)
+		p_GiveCard(player, it_bluecard)
 		if netgame == 0 {
 			break
 		}
@@ -24830,7 +24830,7 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		if player.Fcards[it_yellowcard] == 0 {
 			player.Fmessage = "Picked up a yellow keycard."
 		}
-		P_GiveCard(player, it_yellowcard)
+		p_GiveCard(player, it_yellowcard)
 		if netgame == 0 {
 			break
 		}
@@ -24839,7 +24839,7 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		if player.Fcards[it_redcard] == 0 {
 			player.Fmessage = "Picked up a red keycard."
 		}
-		P_GiveCard(player, it_redcard)
+		p_GiveCard(player, it_redcard)
 		if netgame == 0 {
 			break
 		}
@@ -24848,7 +24848,7 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		if player.Fcards[it_blueskull] == 0 {
 			player.Fmessage = "Picked up a blue skull key."
 		}
-		P_GiveCard(player, it_blueskull)
+		p_GiveCard(player, it_blueskull)
 		if netgame == 0 {
 			break
 		}
@@ -24857,7 +24857,7 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		if player.Fcards[it_yellowskull] == 0 {
 			player.Fmessage = "Picked up a yellow skull key."
 		}
-		P_GiveCard(player, it_yellowskull)
+		p_GiveCard(player, it_yellowskull)
 		if netgame == 0 {
 			break
 		}
@@ -24866,7 +24866,7 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		if player.Fcards[it_redskull] == 0 {
 			player.Fmessage = "Picked up a red skull key."
 		}
-		P_GiveCard(player, it_redskull)
+		p_GiveCard(player, it_redskull)
 		if netgame == 0 {
 			break
 		}
@@ -24874,12 +24874,12 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		// medikits, heals
 		fallthrough
 	case SPR_STIM:
-		if P_GiveBody(player, 10) == 0 {
+		if p_GiveBody(player, 10) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up a stimpack."
 	case SPR_MEDI:
-		if P_GiveBody(player, 25) == 0 {
+		if p_GiveBody(player, 25) == 0 {
 			return
 		}
 		if player.Fhealth < 25 {
@@ -24891,13 +24891,13 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		// power ups
 		fallthrough
 	case SPR_PINV:
-		if P_GivePower(player, int32(pw_invulnerability)) == 0 {
+		if p_GivePower(player, int32(pw_invulnerability)) == 0 {
 			return
 		}
 		player.Fmessage = "Invulnerability!"
 		sound = int32(sfx_getpow)
 	case SPR_PSTR:
-		if P_GivePower(player, int32(pw_strength)) == 0 {
+		if p_GivePower(player, int32(pw_strength)) == 0 {
 			return
 		}
 		player.Fmessage = "Berserk!"
@@ -24906,25 +24906,25 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		}
 		sound = int32(sfx_getpow)
 	case SPR_PINS:
-		if P_GivePower(player, int32(pw_invisibility)) == 0 {
+		if p_GivePower(player, int32(pw_invisibility)) == 0 {
 			return
 		}
 		player.Fmessage = "Partial Invisibility"
 		sound = int32(sfx_getpow)
 	case SPR_SUIT:
-		if P_GivePower(player, int32(pw_ironfeet)) == 0 {
+		if p_GivePower(player, int32(pw_ironfeet)) == 0 {
 			return
 		}
 		player.Fmessage = "Radiation Shielding Suit"
 		sound = int32(sfx_getpow)
 	case SPR_PMAP:
-		if P_GivePower(player, int32(pw_allmap)) == 0 {
+		if p_GivePower(player, int32(pw_allmap)) == 0 {
 			return
 		}
 		player.Fmessage = "Computer Area Map"
 		sound = int32(sfx_getpow)
 	case SPR_PVIS:
-		if P_GivePower(player, int32(pw_infrared)) == 0 {
+		if p_GivePower(player, int32(pw_infrared)) == 0 {
 			return
 		}
 		player.Fmessage = "Light Amplification Visor"
@@ -24934,47 +24934,47 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		fallthrough
 	case SPR_CLIP:
 		if special.Fflags&MF_DROPPED != 0 {
-			if P_GiveAmmo(player, am_clip, 0) == 0 {
+			if p_GiveAmmo(player, am_clip, 0) == 0 {
 				return
 			}
 		} else {
-			if P_GiveAmmo(player, am_clip, 1) == 0 {
+			if p_GiveAmmo(player, am_clip, 1) == 0 {
 				return
 			}
 		}
 		player.Fmessage = "Picked up a clip."
 	case SPR_AMMO:
-		if P_GiveAmmo(player, am_clip, 5) == 0 {
+		if p_GiveAmmo(player, am_clip, 5) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up a box of bullets."
 	case SPR_ROCK:
-		if P_GiveAmmo(player, am_misl, 1) == 0 {
+		if p_GiveAmmo(player, am_misl, 1) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up a rocket."
 	case SPR_BROK:
-		if P_GiveAmmo(player, am_misl, 5) == 0 {
+		if p_GiveAmmo(player, am_misl, 5) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up a box of rockets."
 	case SPR_CELL:
-		if P_GiveAmmo(player, am_cell, 1) == 0 {
+		if p_GiveAmmo(player, am_cell, 1) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up an energy cell."
 	case SPR_CELP:
-		if P_GiveAmmo(player, am_cell, 5) == 0 {
+		if p_GiveAmmo(player, am_cell, 5) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up an energy cell pack."
 	case SPR_SHEL:
-		if P_GiveAmmo(player, am_shell, 1) == 0 {
+		if p_GiveAmmo(player, am_shell, 1) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up 4 shotgun shells."
 	case SPR_SBOX:
-		if P_GiveAmmo(player, am_shell, 5) == 0 {
+		if p_GiveAmmo(player, am_shell, 5) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up a box of shotgun shells."
@@ -24998,7 +24998,7 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 			if i >= NUMAMMO {
 				break
 			}
-			P_GiveAmmo(player, ammotype_t(i), 1)
+			p_GiveAmmo(player, ammotype_t(i), 1)
 			goto _2
 		_2:
 			;
@@ -25009,57 +25009,57 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		// weapons
 		fallthrough
 	case SPR_BFUG:
-		if P_GiveWeapon(player, wp_bfg, 0) == 0 {
+		if p_GiveWeapon(player, wp_bfg, 0) == 0 {
 			return
 		}
 		player.Fmessage = "You got the BFG9000!  Oh, yes."
 		sound = int32(sfx_wpnup)
 	case SPR_MGUN:
-		if P_GiveWeapon(player, wp_chaingun, booluint32(special.Fflags&MF_DROPPED != 0)) == 0 {
+		if p_GiveWeapon(player, wp_chaingun, booluint32(special.Fflags&MF_DROPPED != 0)) == 0 {
 			return
 		}
 		player.Fmessage = "You got the chaingun!"
 		sound = int32(sfx_wpnup)
 	case SPR_CSAW:
-		if P_GiveWeapon(player, wp_chainsaw, 0) == 0 {
+		if p_GiveWeapon(player, wp_chainsaw, 0) == 0 {
 			return
 		}
 		player.Fmessage = "A chainsaw!  Find some meat!"
 		sound = int32(sfx_wpnup)
 	case SPR_LAUN:
-		if P_GiveWeapon(player, wp_missile, 0) == 0 {
+		if p_GiveWeapon(player, wp_missile, 0) == 0 {
 			return
 		}
 		player.Fmessage = "You got the rocket launcher!"
 		sound = int32(sfx_wpnup)
 	case SPR_PLAS:
-		if P_GiveWeapon(player, wp_plasma, 0) == 0 {
+		if p_GiveWeapon(player, wp_plasma, 0) == 0 {
 			return
 		}
 		player.Fmessage = "You got the plasma gun!"
 		sound = int32(sfx_wpnup)
 	case SPR_SHOT:
-		if P_GiveWeapon(player, wp_shotgun, booluint32(special.Fflags&MF_DROPPED != 0)) == 0 {
+		if p_GiveWeapon(player, wp_shotgun, booluint32(special.Fflags&MF_DROPPED != 0)) == 0 {
 			return
 		}
 		player.Fmessage = "You got the shotgun!"
 		sound = int32(sfx_wpnup)
 	case SPR_SGN2:
-		if P_GiveWeapon(player, wp_supershotgun, booluint32(special.Fflags&MF_DROPPED != 0)) == 0 {
+		if p_GiveWeapon(player, wp_supershotgun, booluint32(special.Fflags&MF_DROPPED != 0)) == 0 {
 			return
 		}
 		player.Fmessage = "You got the super shotgun!"
 		sound = int32(sfx_wpnup)
 	default:
-		I_Error("P_SpecialThing: Unknown gettable thing")
+		i_Error("P_SpecialThing: Unknown gettable thing")
 	}
 	if special.Fflags&MF_COUNTITEM != 0 {
 		player.Fitemcount++
 	}
-	P_RemoveMobj(special)
+	p_RemoveMobj(special)
 	player.Fbonuscount += BONUSADD
 	if player == &players[consoleplayer] {
-		S_StartSound(nil, sound)
+		s_StartSound(nil, sound)
 	}
 }
 
@@ -25068,7 +25068,7 @@ func P_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 //	//
 //	// KillMobj
 //	//
-func P_KillMobj(source *mobj_t, target *mobj_t) {
+func p_KillMobj(source *mobj_t, target *mobj_t) {
 	var item mobjtype_t
 	var mo *mobj_t
 	target.Fflags &= ^(MF_SHOOTABLE | MF_FLOAT | MF_SKULLFLY)
@@ -25101,23 +25101,23 @@ func P_KillMobj(source *mobj_t, target *mobj_t) {
 		}
 		target.Fflags &= ^MF_SOLID
 		target.Fplayer.Fplayerstate = PST_DEAD
-		P_DropWeapon(target.Fplayer)
+		p_DropWeapon(target.Fplayer)
 		if target.Fplayer == &players[consoleplayer] && automapactive != 0 {
 			// don't die in auto map,
 			// switch view prior to dying
-			AM_Stop()
+			am_Stop()
 		}
 	}
 	if target.Fhealth < -target.Finfo.Fspawnhealth && target.Finfo.Fxdeathstate != 0 {
-		P_SetMobjState(target, target.Finfo.Fxdeathstate)
+		p_SetMobjState(target, target.Finfo.Fxdeathstate)
 	} else {
-		P_SetMobjState(target, target.Finfo.Fdeathstate)
+		p_SetMobjState(target, target.Finfo.Fdeathstate)
 	}
-	target.Ftics -= P_Random() & 3
+	target.Ftics -= p_Random() & 3
 	if target.Ftics < 1 {
 		target.Ftics = 1
 	}
-	//	I_StartSound (&actor->r, actor->info->deathsound);
+	//	i_StartSound (&actor->r, actor->info->deathsound);
 	// In Chex Quest, monsters don't drop items.
 	if gameversion == exe_chex {
 		return
@@ -25137,7 +25137,7 @@ func P_KillMobj(source *mobj_t, target *mobj_t) {
 	default:
 		return
 	}
-	mo = P_SpawnMobj(target.Fx, target.Fy, -1-0x7fffffff, item)
+	mo = p_SpawnMobj(target.Fx, target.Fy, -1-0x7fffffff, item)
 	mo.Fflags |= MF_DROPPED // special versions of items
 }
 
@@ -25154,7 +25154,7 @@ func P_KillMobj(source *mobj_t, target *mobj_t) {
 //	// Source can be NULL for slime, barrel explosions
 //	// and other environmental stuff.
 //	//
-func P_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int32) {
+func p_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int32) {
 	var ang uint32
 	var player *player_t
 	var saved, temp, v3 int32
@@ -25180,10 +25180,10 @@ func P_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int3
 	// inflict thrust and push the victim out of reach,
 	// thus kick away unless using the chainsaw.
 	if inflictor != nil && target.Fflags&MF_NOCLIP == 0 && (source == nil || source.Fplayer == nil || source.Fplayer.Freadyweapon != wp_chainsaw) {
-		ang = R_PointToAngle2(inflictor.Fx, inflictor.Fy, target.Fx, target.Fy)
+		ang = r_PointToAngle2(inflictor.Fx, inflictor.Fy, target.Fx, target.Fy)
 		thrust = damage * (1 << FRACBITS >> 3) * 100 / target.Finfo.Fmass
 		// make fall forwards sometimes
-		if damage < 40 && damage > target.Fhealth && target.Fz-inflictor.Fz > 64*(1<<FRACBITS) && P_Random()&int32(1) != 0 {
+		if damage < 40 && damage > target.Fhealth && target.Fz-inflictor.Fz > 64*(1<<FRACBITS) && p_Random()&int32(1) != 0 {
 			ang += uint32(ANG1803)
 			thrust *= 4
 		}
@@ -25232,18 +25232,18 @@ func P_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int3
 		}
 		temp = v3
 		if player == &players[consoleplayer] {
-			I_Tactile(40, 10, 40+temp*int32(2))
+			i_Tactile(40, 10, 40+temp*int32(2))
 		}
 	}
 	// do the damage
 	target.Fhealth -= damage
 	if target.Fhealth <= 0 {
-		P_KillMobj(source, target)
+		p_KillMobj(source, target)
 		return
 	}
-	if P_Random() < target.Finfo.Fpainchance && target.Fflags&MF_SKULLFLY == 0 {
+	if p_Random() < target.Finfo.Fpainchance && target.Fflags&MF_SKULLFLY == 0 {
 		target.Fflags |= MF_JUSTHIT // fight back!
-		P_SetMobjState(target, target.Finfo.Fpainstate)
+		p_SetMobjState(target, target.Finfo.Fpainstate)
 	}
 	target.Freactiontime = 0 // we're awake now...
 	if (target.Fthreshold == 0 || target.Ftype1 == MT_VILE) && source != nil && source != target && source.Ftype1 != MT_VILE {
@@ -25252,7 +25252,7 @@ func P_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int3
 		target.Ftarget = source
 		target.Fthreshold = BASETHRESHOLD
 		if target.Fstate == &states[target.Finfo.Fspawnstate] && target.Finfo.Fseestate != S_NULL {
-			P_SetMobjState(target, target.Finfo.Fseestate)
+			p_SetMobjState(target, target.Finfo.Fseestate)
 		}
 	}
 }
@@ -25286,15 +25286,15 @@ func P_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int3
 //	// T_FireFlicker
 //	//
 func (flick *fireflicker_t) ThinkerFunc() {
-	T_FireFlicker(flick)
+	t_FireFlicker(flick)
 }
-func T_FireFlicker(flick *fireflicker_t) {
+func t_FireFlicker(flick *fireflicker_t) {
 	var amount int32
 	flick.Fcount--
 	if flick.Fcount != 0 {
 		return
 	}
-	amount = P_Random() & 3 * 16
+	amount = p_Random() & 3 * 16
 	if int32(flick.Fsector.Flightlevel)-amount < flick.Fminlight {
 		flick.Fsector.Flightlevel = int16(flick.Fminlight)
 	} else {
@@ -25308,16 +25308,16 @@ func T_FireFlicker(flick *fireflicker_t) {
 //	//
 //	// P_SpawnFireFlicker
 //	//
-func P_SpawnFireFlicker(sector *sector_t) {
+func p_SpawnFireFlicker(sector *sector_t) {
 	// Note that we are resetting sector attributes.
 	// Nothing special about it during gameplay.
 	sector.Fspecial = 0
 	flick := &fireflicker_t{}
-	P_AddThinker(&flick.Fthinker)
+	p_AddThinker(&flick.Fthinker)
 	flick.Fthinker.Ffunction = flick
 	flick.Fsector = sector
 	flick.Fmaxlight = int32(sector.Flightlevel)
-	flick.Fminlight = P_FindMinSurroundingLight(sector, int32(sector.Flightlevel)) + 16
+	flick.Fminlight = p_FindMinSurroundingLight(sector, int32(sector.Flightlevel)) + 16
 	flick.Fcount = 4
 }
 
@@ -25332,19 +25332,19 @@ func P_SpawnFireFlicker(sector *sector_t) {
 //	// Do flashing lights.
 //	//
 func (flash *lightflash_t) ThinkerFunc() {
-	T_LightFlash(flash)
+	t_LightFlash(flash)
 }
-func T_LightFlash(flash *lightflash_t) {
+func t_LightFlash(flash *lightflash_t) {
 	flash.Fcount--
 	if flash.Fcount != 0 {
 		return
 	}
 	if int32(flash.Fsector.Flightlevel) == flash.Fmaxlight {
 		flash.Fsector.Flightlevel = int16(flash.Fminlight)
-		flash.Fcount = P_Random()&flash.Fmintime + 1
+		flash.Fcount = p_Random()&flash.Fmintime + 1
 	} else {
 		flash.Fsector.Flightlevel = int16(flash.Fmaxlight)
-		flash.Fcount = P_Random()&flash.Fmaxtime + 1
+		flash.Fcount = p_Random()&flash.Fmaxtime + 1
 	}
 }
 
@@ -25355,18 +25355,18 @@ func T_LightFlash(flash *lightflash_t) {
 //	// After the map has been loaded, scan each sector
 //	// for specials that spawn thinkers
 //	//
-func P_SpawnLightFlash(sector *sector_t) {
+func p_SpawnLightFlash(sector *sector_t) {
 	// nothing special about it during gameplay
 	sector.Fspecial = 0
 	flashP := &lightflash_t{}
-	P_AddThinker(&flashP.Fthinker)
+	p_AddThinker(&flashP.Fthinker)
 	flashP.Fthinker.Ffunction = flashP
 	flashP.Fsector = sector
 	flashP.Fmaxlight = int32(sector.Flightlevel)
-	flashP.Fminlight = P_FindMinSurroundingLight(sector, int32(sector.Flightlevel))
+	flashP.Fminlight = p_FindMinSurroundingLight(sector, int32(sector.Flightlevel))
 	flashP.Fmaxtime = 64
 	flashP.Fmintime = 7
-	flashP.Fcount = P_Random()&flashP.Fmaxtime + 1
+	flashP.Fcount = p_Random()&flashP.Fmaxtime + 1
 }
 
 //
@@ -25379,9 +25379,9 @@ func P_SpawnLightFlash(sector *sector_t) {
 //	// T_StrobeFlash
 //	//
 func (flash *strobe_t) ThinkerFunc() {
-	T_StrobeFlash(flash)
+	t_StrobeFlash(flash)
 }
-func T_StrobeFlash(flash *strobe_t) {
+func t_StrobeFlash(flash *strobe_t) {
 	flash.Fcount--
 	if flash.Fcount != 0 {
 		return
@@ -25402,22 +25402,22 @@ func T_StrobeFlash(flash *strobe_t) {
 //	// After the map has been loaded, scan each sector
 //	// for specials that spawn thinkers
 //	//
-func P_SpawnStrobeFlash(sector *sector_t, fastOrSlow int32, inSync int32) {
+func p_SpawnStrobeFlash(sector *sector_t, fastOrSlow int32, inSync int32) {
 	flashP := &strobe_t{}
-	P_AddThinker(&flashP.Fthinker)
+	p_AddThinker(&flashP.Fthinker)
 	flashP.Fsector = sector
 	flashP.Fdarktime = fastOrSlow
 	flashP.Fbrighttime = STROBEBRIGHT
 	flashP.Fthinker.Ffunction = flashP
 	flashP.Fmaxlight = int32(sector.Flightlevel)
-	flashP.Fminlight = P_FindMinSurroundingLight(sector, int32(sector.Flightlevel))
+	flashP.Fminlight = p_FindMinSurroundingLight(sector, int32(sector.Flightlevel))
 	if flashP.Fminlight == flashP.Fmaxlight {
 		flashP.Fminlight = 0
 	}
 	// nothing special about it during gameplay
 	sector.Fspecial = 0
 	if inSync == 0 {
-		flashP.Fcount = P_Random()&int32(7) + 1
+		flashP.Fcount = p_Random()&int32(7) + 1
 	} else {
 		flashP.Fcount = 1
 	}
@@ -25428,12 +25428,12 @@ func P_SpawnStrobeFlash(sector *sector_t, fastOrSlow int32, inSync int32) {
 //	//
 //	// Start strobing lights (usually from a trigger)
 //	//
-func EV_StartLightStrobing(line *line_t) {
+func ev_StartLightStrobing(line *line_t) {
 	var sec *sector_t
 	var secnum, v1 int32
 	secnum = -1
 	for {
-		v1 = P_FindSectorFromLineTag(line, secnum)
+		v1 = p_FindSectorFromLineTag(line, secnum)
 		secnum = v1
 		if !(v1 >= 0) {
 			break
@@ -25442,7 +25442,7 @@ func EV_StartLightStrobing(line *line_t) {
 		if sec.Fspecialdata != nil {
 			continue
 		}
-		P_SpawnStrobeFlash(sec, SLOWDARK, 0)
+		p_SpawnStrobeFlash(sec, SLOWDARK, 0)
 	}
 }
 
@@ -25451,7 +25451,7 @@ func EV_StartLightStrobing(line *line_t) {
 //	//
 //	// TURN LINE'S TAG LIGHTS OFF
 //	//
-func EV_TurnTagLightsOff(line *line_t) {
+func ev_TurnTagLightsOff(line *line_t) {
 	var i, j, min int32
 	var templine *line_t
 	var tsec *sector_t
@@ -25495,7 +25495,7 @@ func EV_TurnTagLightsOff(line *line_t) {
 //	//
 //	// TURN LINE'S TAG LIGHTS ON
 //	//
-func EV_LightTurnOn(line *line_t, bright int32) {
+func ev_LightTurnOn(line *line_t, bright int32) {
 	var i, j int32
 	var temp *sector_t
 	var templine *line_t
@@ -25543,9 +25543,9 @@ func EV_LightTurnOn(line *line_t, bright int32) {
 //
 
 func (g *glow_t) ThinkerFunc() {
-	T_Glow(g)
+	t_Glow(g)
 }
-func T_Glow(g *glow_t) {
+func t_Glow(g *glow_t) {
 	switch g.Fdirection {
 	case -1:
 		// DOWN
@@ -25565,11 +25565,11 @@ func T_Glow(g *glow_t) {
 	}
 }
 
-func P_SpawnGlowingLight(sector *sector_t) {
+func p_SpawnGlowingLight(sector *sector_t) {
 	gP := &glow_t{}
-	P_AddThinker(&gP.Fthinker)
+	p_AddThinker(&gP.Fthinker)
 	gP.Fsector = sector
-	gP.Fminlight = P_FindMinSurroundingLight(sector, int32(sector.Flightlevel))
+	gP.Fminlight = p_FindMinSurroundingLight(sector, int32(sector.Flightlevel))
 	gP.Fmaxlight = int32(sector.Flightlevel)
 	gP.Fthinker.Ffunction = gP
 	gP.Fdirection = -1
@@ -25588,7 +25588,7 @@ const DEFAULT_SPECHIT_MAGIC = 29400216
 //	//
 //	// PIT_StompThing
 //	//
-func PIT_StompThing(thing *mobj_t) (r boolean) {
+func pit_StompThing(thing *mobj_t) (r boolean) {
 	var blockdist fixed_t
 	if thing.Fflags&MF_SHOOTABLE == 0 {
 		return 1
@@ -25606,7 +25606,7 @@ func PIT_StompThing(thing *mobj_t) (r boolean) {
 	if tmthing.Fplayer == nil && gamemap != 30 {
 		return 0
 	}
-	P_DamageMobj(thing, tmthing, tmthing, 10000)
+	p_DamageMobj(thing, tmthing, tmthing, 10000)
 	return 1
 }
 
@@ -25615,7 +25615,7 @@ func PIT_StompThing(thing *mobj_t) (r boolean) {
 //	//
 //	// P_TeleportMove
 //	//
-func P_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
+func p_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	var bx, by, xh, xl, yh, yl int32
 	var newsubsec *subsector_t
 	var v1 fixed_t
@@ -25628,7 +25628,7 @@ func P_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	tmbbox[BOXBOTTOM] = y - tmthing.Fradius
 	tmbbox[BOXRIGHT] = x + tmthing.Fradius
 	tmbbox[BOXLEFT] = x - tmthing.Fradius
-	newsubsec = R_PointInSubsector(x, y)
+	newsubsec = r_PointInSubsector(x, y)
 	ceilingline = nil
 	// The base floor/ceiling is from the subsector
 	// that contains the point.
@@ -25655,7 +25655,7 @@ func P_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 			if !(by <= yh) {
 				break
 			}
-			if P_BlockThingsIterator(bx, by, PIT_StompThing) == 0 {
+			if p_BlockThingsIterator(bx, by, pit_StompThing) == 0 {
 				return 0
 			}
 			goto _3
@@ -25670,12 +25670,12 @@ func P_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	}
 	// the move is ok,
 	// so link the thing into its new position
-	P_UnsetThingPosition(thing)
+	p_UnsetThingPosition(thing)
 	thing.Ffloorz = tmfloorz
 	thing.Fceilingz = tmceilingz
 	thing.Fx = x
 	thing.Fy = y
-	P_SetThingPosition(thing)
+	p_SetThingPosition(thing)
 	return 1
 }
 
@@ -25685,11 +25685,11 @@ func P_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 //	// PIT_CheckLine
 //	// Adjusts tmfloorz and tmceilingz as lines are contacted
 //	//
-func PIT_CheckLine(ld *line_t) (r boolean) {
+func pit_CheckLine(ld *line_t) (r boolean) {
 	if tmbbox[BOXRIGHT] <= ld.Fbbox[BOXLEFT] || tmbbox[BOXLEFT] >= ld.Fbbox[BOXRIGHT] || tmbbox[BOXTOP] <= ld.Fbbox[BOXBOTTOM] || tmbbox[BOXBOTTOM] >= ld.Fbbox[BOXTOP] {
 		return 1
 	}
-	if P_BoxOnLineSide(&tmbbox, ld) != -1 {
+	if p_BoxOnLineSide(&tmbbox, ld) != -1 {
 		return 1
 	}
 	// A line has been hit
@@ -25713,7 +25713,7 @@ func PIT_CheckLine(ld *line_t) (r boolean) {
 		} // block monsters only
 	}
 	// set openrange, opentop, openbottom
-	P_LineOpening(ld)
+	p_LineOpening(ld)
 	// adjust floor / ceiling heights
 	if opentop < tmceilingz {
 		tmceilingz = opentop
@@ -25742,7 +25742,7 @@ func PIT_CheckLine(ld *line_t) (r boolean) {
 //	//
 //	// PIT_CheckThing
 //	//
-func PIT_CheckThing(thing *mobj_t) (r boolean) {
+func pit_CheckThing(thing *mobj_t) (r boolean) {
 	var blockdist, v1, v2 fixed_t
 	var damage int32
 	var solid boolean
@@ -25760,15 +25760,15 @@ func PIT_CheckThing(thing *mobj_t) (r boolean) {
 	}
 	// check for skulls slamming into things
 	if tmthing.Fflags&MF_SKULLFLY != 0 {
-		damage = (P_Random()%int32(8) + 1) * tmthing.Finfo.Fdamage
-		P_DamageMobj(thing, tmthing, tmthing, damage)
+		damage = (p_Random()%int32(8) + 1) * tmthing.Finfo.Fdamage
+		p_DamageMobj(thing, tmthing, tmthing, damage)
 		tmthing.Fflags &^= MF_SKULLFLY
 		v2 = 0
 		tmthing.Fmomz = v2
 		v1 = v2
 		tmthing.Fmomy = v1
 		tmthing.Fmomx = v1
-		P_SetMobjState(tmthing, tmthing.Finfo.Fspawnstate)
+		p_SetMobjState(tmthing, tmthing.Finfo.Fspawnstate)
 		return 0 // stop moving
 	}
 	// missiles can hit other things
@@ -25799,8 +25799,8 @@ func PIT_CheckThing(thing *mobj_t) (r boolean) {
 			return booluint32(thing.Fflags&MF_SOLID == 0)
 		}
 		// damage / explode
-		damage = (P_Random()%int32(8) + 1) * tmthing.Finfo.Fdamage
-		P_DamageMobj(thing, tmthing, tmthing.Ftarget, damage)
+		damage = (p_Random()%int32(8) + 1) * tmthing.Finfo.Fdamage
+		p_DamageMobj(thing, tmthing, tmthing.Ftarget, damage)
 		// don't traverse any more
 		return 0
 	}
@@ -25809,7 +25809,7 @@ func PIT_CheckThing(thing *mobj_t) (r boolean) {
 		solid = uint32(thing.Fflags & MF_SOLID)
 		if tmflags&MF_PICKUP != 0 {
 			// can remove thing
-			P_TouchSpecialThing(thing, tmthing)
+			p_TouchSpecialThing(thing, tmthing)
 		}
 		return booluint32(solid == 0)
 	}
@@ -25846,7 +25846,7 @@ func PIT_CheckThing(thing *mobj_t) (r boolean) {
 //	//  speciallines[]
 //	//  numspeciallines
 //	//
-func P_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
+func p_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	var bx, by, xh, xl, yh, yl int32
 	var newsubsec *subsector_t
 	var v1 fixed_t
@@ -25858,7 +25858,7 @@ func P_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	tmbbox[BOXBOTTOM] = y - tmthing.Fradius
 	tmbbox[BOXRIGHT] = x + tmthing.Fradius
 	tmbbox[BOXLEFT] = x - tmthing.Fradius
-	newsubsec = R_PointInSubsector(x, y)
+	newsubsec = r_PointInSubsector(x, y)
 	ceilingline = nil
 	// The base floor / ceiling is from the subsector
 	// that contains the point.
@@ -25892,7 +25892,7 @@ func P_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 			if !(by <= yh) {
 				break
 			}
-			if P_BlockThingsIterator(bx, by, PIT_CheckThing) == 0 {
+			if p_BlockThingsIterator(bx, by, pit_CheckThing) == 0 {
 				return 0
 			}
 			goto _3
@@ -25920,7 +25920,7 @@ func P_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 			if !(by <= yh) {
 				break
 			}
-			if P_BlockLinesIterator(bx, by, PIT_CheckLine) == 0 {
+			if p_BlockLinesIterator(bx, by, pit_CheckLine) == 0 {
 				return 0
 			}
 			goto _5
@@ -25943,12 +25943,12 @@ func P_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 //	// Attempt to move to a new position,
 //	// crossing special lines unless MF_TELEPORT is set.
 //	//
-func P_TryMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
+func p_TryMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	var oldside, side, v1 int32
 	var oldx, oldy fixed_t
 	mthing := thing
 	floatok = 0
-	if P_CheckPosition(thing, x, y) == 0 {
+	if p_CheckPosition(thing, x, y) == 0 {
 		return 0
 	} // solid wall or thing
 	if mthing.Fflags&MF_NOCLIP == 0 {
@@ -25968,14 +25968,14 @@ func P_TryMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 	}
 	// the move is ok,
 	// so link the thing into its new position
-	P_UnsetThingPosition(thing)
+	p_UnsetThingPosition(thing)
 	oldx = mthing.Fx
 	oldy = mthing.Fy
 	mthing.Ffloorz = tmfloorz
 	mthing.Fceilingz = tmceilingz
 	mthing.Fx = x
 	mthing.Fy = y
-	P_SetThingPosition(thing)
+	p_SetThingPosition(thing)
 	// if any special lines were hit, do the effect
 	if mthing.Fflags&(MF_TELEPORT|MF_NOCLIP) == 0 {
 		for {
@@ -25986,11 +25986,11 @@ func P_TryMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 			}
 			// see if the line was crossed
 			ld := spechit[numspechit]
-			side = P_PointOnLineSide(mthing.Fx, mthing.Fy, ld)
-			oldside = P_PointOnLineSide(oldx, oldy, ld)
+			side = p_PointOnLineSide(mthing.Fx, mthing.Fy, ld)
+			oldside = p_PointOnLineSide(oldx, oldy, ld)
 			if side != oldside {
 				if ld.Fspecial != 0 {
-					P_CrossSpecialLine(lineIndex(ld), oldside, thing)
+					p_CrossSpecialLine(lineIndex(ld), oldside, thing)
 				}
 			}
 		}
@@ -26010,10 +26010,10 @@ func P_TryMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 //	// the z will be set to the lowest value
 //	// and false will be returned.
 //	//
-func P_ThingHeightClip(thing *mobj_t) (r boolean) {
+func p_ThingHeightClip(thing *mobj_t) (r boolean) {
 	var onfloor boolean
 	onfloor = booluint32(thing.Fz == thing.Ffloorz)
-	P_CheckPosition(thing, thing.Fx, thing.Fy)
+	p_CheckPosition(thing, thing.Fx, thing.Fy)
 	// what about stranding a monster partially off an edge?
 	thing.Ffloorz = tmfloorz
 	thing.Fceilingz = tmceilingz
@@ -26039,7 +26039,7 @@ func P_ThingHeightClip(thing *mobj_t) (r boolean) {
 //	// Adjusts the xmove / ymove
 //	// so that the next move will slide along the wall.
 //	//
-func P_HitSlideLine(ld *line_t) {
+func p_HitSlideLine(ld *line_t) {
 	var deltaangle, lineangle, moveangle angle_t
 	var movelen, newlen fixed_t
 	var side int32
@@ -26051,20 +26051,20 @@ func P_HitSlideLine(ld *line_t) {
 		tmxmove = 0
 		return
 	}
-	side = P_PointOnLineSide(slidemo.Fx, slidemo.Fy, ld)
-	lineangle = R_PointToAngle2(0, 0, ld.Fdx, ld.Fdy)
+	side = p_PointOnLineSide(slidemo.Fx, slidemo.Fy, ld)
+	lineangle = r_PointToAngle2(0, 0, ld.Fdx, ld.Fdy)
 	if side == 1 {
 		lineangle += uint32(ANG1805)
 	}
-	moveangle = R_PointToAngle2(0, 0, tmxmove, tmymove)
+	moveangle = r_PointToAngle2(0, 0, tmxmove, tmymove)
 	deltaangle = moveangle - lineangle
 	if deltaangle > uint32(ANG1805) {
 		deltaangle += uint32(ANG1805)
 	}
-	//	I_Error ("SlideLine: ang>ANG180");
+	//	i_Error ("SlideLine: ang>ANG180");
 	lineangle >>= ANGLETOFINESHIFT
 	deltaangle >>= ANGLETOFINESHIFT
-	movelen = P_AproxDistance(tmxmove, tmymove)
+	movelen = p_AproxDistance(tmxmove, tmymove)
 	newlen = FixedMul(movelen, finecosine[deltaangle])
 	tmxmove = FixedMul(newlen, finecosine[lineangle])
 	tmymove = FixedMul(newlen, finesine[lineangle])
@@ -26075,21 +26075,21 @@ func P_HitSlideLine(ld *line_t) {
 //	//
 //	// PTR_SlideTraverse
 //	//
-func PTR_SlideTraverse(in *intercept_t) (r boolean) {
+func ptr_SlideTraverse(in *intercept_t) (r boolean) {
 	var li *line_t
 	if in.Fisaline == 0 {
-		I_Error("PTR_SlideTraverse: not a line?")
+		i_Error("ptr_SlideTraverse: not a line?")
 	}
 	li = in.Fd.Fthing.(*line_t)
 	if int32(li.Fflags)&ML_TWOSIDED == 0 {
-		if P_PointOnLineSide(slidemo.Fx, slidemo.Fy, li) != 0 {
+		if p_PointOnLineSide(slidemo.Fx, slidemo.Fy, li) != 0 {
 			// don't hit the back side
 			return 1
 		}
 		goto isblocking
 	}
 	// set openrange, opentop, openbottom
-	P_LineOpening(li)
+	p_LineOpening(li)
 	if openrange < slidemo.Fheight {
 		goto isblocking
 	} // doesn't fit
@@ -26124,7 +26124,7 @@ isblocking:
 //	//
 //	// This is a kludgy mess.
 //	//
-func P_SlideMove(mo *mobj_t) {
+func p_SlideMove(mo *mobj_t) {
 	var hitcount, v1 int32
 	var leadx, leady, newx, newy, trailx, traily fixed_t
 	slidemo = mo
@@ -26153,9 +26153,9 @@ retry:
 		traily = mo.Fy + mo.Fradius
 	}
 	bestslidefrac = 1<<FRACBITS + 1
-	P_PathTraverse(leadx, leady, leadx+mo.Fmomx, leady+mo.Fmomy, PT_ADDLINES, PTR_SlideTraverse)
-	P_PathTraverse(trailx, leady, trailx+mo.Fmomx, leady+mo.Fmomy, PT_ADDLINES, PTR_SlideTraverse)
-	P_PathTraverse(leadx, traily, leadx+mo.Fmomx, traily+mo.Fmomy, PT_ADDLINES, PTR_SlideTraverse)
+	p_PathTraverse(leadx, leady, leadx+mo.Fmomx, leady+mo.Fmomy, PT_ADDLINES, ptr_SlideTraverse)
+	p_PathTraverse(trailx, leady, trailx+mo.Fmomx, leady+mo.Fmomy, PT_ADDLINES, ptr_SlideTraverse)
+	p_PathTraverse(leadx, traily, leadx+mo.Fmomx, traily+mo.Fmomy, PT_ADDLINES, ptr_SlideTraverse)
 	// move up to the wall
 	if bestslidefrac != 1<<FRACBITS+1 {
 		goto _2
@@ -26164,8 +26164,8 @@ retry:
 	goto stairstep
 stairstep:
 	;
-	if P_TryMove(mo, mo.Fx, mo.Fy+mo.Fmomy) == 0 {
-		P_TryMove(mo, mo.Fx+mo.Fmomx, mo.Fy)
+	if p_TryMove(mo, mo.Fx, mo.Fy+mo.Fmomy) == 0 {
+		p_TryMove(mo, mo.Fx+mo.Fmomx, mo.Fy)
 	}
 	return
 _2:
@@ -26175,7 +26175,7 @@ _2:
 	if bestslidefrac > 0 {
 		newx = FixedMul(mo.Fmomx, bestslidefrac)
 		newy = FixedMul(mo.Fmomy, bestslidefrac)
-		if P_TryMove(mo, mo.Fx+newx, mo.Fy+newy) == 0 {
+		if p_TryMove(mo, mo.Fx+newx, mo.Fy+newy) == 0 {
 			goto stairstep
 		}
 	}
@@ -26190,10 +26190,10 @@ _2:
 	}
 	tmxmove = FixedMul(mo.Fmomx, bestslidefrac)
 	tmymove = FixedMul(mo.Fmomy, bestslidefrac)
-	P_HitSlideLine(bestslideline) // clip the moves
+	p_HitSlideLine(bestslideline) // clip the moves
 	mo.Fmomx = tmxmove
 	mo.Fmomy = tmymove
-	if P_TryMove(mo, mo.Fx+tmxmove, mo.Fy+tmymove) == 0 {
+	if p_TryMove(mo, mo.Fx+tmxmove, mo.Fy+tmymove) == 0 {
 		goto retry
 	}
 }
@@ -26204,7 +26204,7 @@ _2:
 //	// PTR_AimTraverse
 //	// Sets linetaget and aimslope when a target is aimed at.
 //	//
-func PTR_AimTraverse(in *intercept_t) (r boolean) {
+func ptr_AimTraverse(in *intercept_t) (r boolean) {
 	var dist, slope, thingbottomslope, thingtopslope fixed_t
 	var th *mobj_t
 	var li *line_t
@@ -26216,7 +26216,7 @@ func PTR_AimTraverse(in *intercept_t) (r boolean) {
 		// Crosses a two sided line.
 		// A two sided line will restrict
 		// the possible target ranges.
-		P_LineOpening(li)
+		p_LineOpening(li)
 		if openbottom >= opentop {
 			return 0
 		} // stop
@@ -26273,20 +26273,20 @@ func PTR_AimTraverse(in *intercept_t) (r boolean) {
 //	//
 //	// PTR_ShootTraverse
 //	//
-func PTR_ShootTraverse(in *intercept_t) (r boolean) {
+func ptr_ShootTraverse(in *intercept_t) (r boolean) {
 	var dist, frac, slope, thingbottomslope, thingtopslope, x, y, z fixed_t
 	var th *mobj_t
 	var li *line_t
 	if in.Fisaline != 0 {
 		li = in.Fd.Fthing.(*line_t)
 		if li.Fspecial != 0 {
-			P_ShootSpecialLine(shootthing, li)
+			p_ShootSpecialLine(shootthing, li)
 		}
 		if int32(li.Fflags)&ML_TWOSIDED == 0 {
 			goto hitline
 		}
 		// crosses a two sided line
-		P_LineOpening(li)
+		p_LineOpening(li)
 		dist = FixedMul(attackrange, in.Ffrac)
 		// e6y: emulation of missed back side on two-sided lines.
 		// backsector can be NULL when emulating missing back side.
@@ -26335,7 +26335,7 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 			}
 		}
 		// Spawn bullet puffs.
-		P_SpawnPuff(x, y, z)
+		p_SpawnPuff(x, y, z)
 		// don't go any farther
 		return 0
 	}
@@ -26366,12 +26366,12 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 	// Spawn bullet puffs or blod spots,
 	// depending on target type.
 	if in.Fd.Fthing.(*mobj_t).Fflags&MF_NOBLOOD != 0 {
-		P_SpawnPuff(x, y, z)
+		p_SpawnPuff(x, y, z)
 	} else {
-		P_SpawnBlood(x, y, z, la_damage)
+		p_SpawnBlood(x, y, z, la_damage)
 	}
 	if la_damage != 0 {
-		P_DamageMobj(th, shootthing, shootthing, la_damage)
+		p_DamageMobj(th, shootthing, shootthing, la_damage)
 	}
 	// don't go any farther
 	return 0
@@ -26382,9 +26382,9 @@ func PTR_ShootTraverse(in *intercept_t) (r boolean) {
 //	//
 //	// P_AimLineAttack
 //	//
-func P_AimLineAttack(t1 *mobj_t, angle angle_t, distance fixed_t) (r fixed_t) {
+func p_AimLineAttack(t1 *mobj_t, angle angle_t, distance fixed_t) (r fixed_t) {
 	var x2, y2 fixed_t
-	t1 = P_SubstNullMobj(t1)
+	t1 = p_SubstNullMobj(t1)
 	angle >>= ANGLETOFINESHIFT
 	shootthing = t1
 	x2 = t1.Fx + distance>>FRACBITS*finecosine[angle]
@@ -26395,7 +26395,7 @@ func P_AimLineAttack(t1 *mobj_t, angle angle_t, distance fixed_t) (r fixed_t) {
 	bottomslope = -100 * (1 << FRACBITS) / 160
 	attackrange = distance
 	linetarget = nil
-	P_PathTraverse(t1.Fx, t1.Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, PTR_AimTraverse)
+	p_PathTraverse(t1.Fx, t1.Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, ptr_AimTraverse)
 	if linetarget != nil {
 		return aimslope
 	}
@@ -26409,7 +26409,7 @@ func P_AimLineAttack(t1 *mobj_t, angle angle_t, distance fixed_t) (r fixed_t) {
 //	// If damage == 0, it is just a test trace
 //	// that will leave linetarget set.
 //	//
-func P_LineAttack(t1 *mobj_t, angle angle_t, distance fixed_t, slope fixed_t, damage int32) {
+func p_LineAttack(t1 *mobj_t, angle angle_t, distance fixed_t, slope fixed_t, damage int32) {
 	var x2, y2 fixed_t
 	angle >>= ANGLETOFINESHIFT
 	shootthing = t1
@@ -26419,16 +26419,16 @@ func P_LineAttack(t1 *mobj_t, angle angle_t, distance fixed_t, slope fixed_t, da
 	shootz = t1.Fz + t1.Fheight>>1 + 8*(1<<FRACBITS)
 	attackrange = distance
 	aimslope = slope
-	P_PathTraverse(t1.Fx, t1.Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, PTR_ShootTraverse)
+	p_PathTraverse(t1.Fx, t1.Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, ptr_ShootTraverse)
 }
 
-func PTR_UseTraverse(in *intercept_t) (r boolean) {
+func ptr_UseTraverse(in *intercept_t) (r boolean) {
 	var side int32
 	line := in.Fd.Fthing.(*line_t)
 	if line.Fspecial == 0 {
-		P_LineOpening(line)
+		p_LineOpening(line)
 		if openrange <= 0 {
-			S_StartSound(&usething.degenmobj_t, int32(sfx_noway))
+			s_StartSound(&usething.degenmobj_t, int32(sfx_noway))
 			// can't use through a wall
 			return 0
 		}
@@ -26436,11 +26436,11 @@ func PTR_UseTraverse(in *intercept_t) (r boolean) {
 		return 1
 	}
 	side = 0
-	if P_PointOnLineSide(usething.Fx, usething.Fy, line) == 1 {
+	if p_PointOnLineSide(usething.Fx, usething.Fy, line) == 1 {
 		side = 1
 	}
 	//	return false;		// don't use back side
-	P_UseSpecialLine(usething, line, side)
+	p_UseSpecialLine(usething, line, side)
 	// can't use for than one special line in a row
 	return 0
 }
@@ -26451,7 +26451,7 @@ func PTR_UseTraverse(in *intercept_t) (r boolean) {
 //	// P_UseLines
 //	// Looks for special lines in front of the player to activate.
 //	//
-func P_UseLines(player *player_t) {
+func p_UseLines(player *player_t) {
 	var angle int32
 	var x1, x2, y1, y2 fixed_t
 	usething = player.Fmo
@@ -26460,7 +26460,7 @@ func P_UseLines(player *player_t) {
 	y1 = player.Fmo.Fy
 	x2 = x1 + 64*(1<<FRACBITS)>>FRACBITS*finecosine[angle]
 	y2 = y1 + 64*(1<<FRACBITS)>>FRACBITS*finesine[angle]
-	P_PathTraverse(x1, y1, x2, y2, PT_ADDLINES, PTR_UseTraverse)
+	p_PathTraverse(x1, y1, x2, y2, PT_ADDLINES, ptr_UseTraverse)
 }
 
 // C documentation
@@ -26470,7 +26470,7 @@ func P_UseLines(player *player_t) {
 //	// "bombsource" is the creature
 //	// that caused the explosion at "bombspot".
 //	//
-func PIT_RadiusAttack(thing *mobj_t) (r boolean) {
+func pit_RadiusAttack(thing *mobj_t) (r boolean) {
 	var dist, dx, dy fixed_t
 	var v1 int32
 	if thing.Fflags&MF_SHOOTABLE == 0 {
@@ -26496,9 +26496,9 @@ func PIT_RadiusAttack(thing *mobj_t) (r boolean) {
 	if dist >= bombdamage {
 		return 1
 	} // out of range
-	if P_CheckSight(thing, bombspot) != 0 {
+	if p_CheckSight(thing, bombspot) != 0 {
 		// must be in direct path
-		P_DamageMobj(thing, bombspot, bombsource, bombdamage-dist)
+		p_DamageMobj(thing, bombspot, bombsource, bombdamage-dist)
 	}
 	return 1
 }
@@ -26509,7 +26509,7 @@ func PIT_RadiusAttack(thing *mobj_t) (r boolean) {
 //	// P_RadiusAttack
 //	// Source is the creature that caused the explosion at spot.
 //	//
-func P_RadiusAttack(spot *mobj_t, source *mobj_t, damage int32) {
+func p_RadiusAttack(spot *mobj_t, source *mobj_t, damage int32) {
 	var dist fixed_t
 	var x, xh, xl, y, yh, yl int32
 	dist = (damage + 32*(1<<FRACBITS)) << FRACBITS
@@ -26530,7 +26530,7 @@ func P_RadiusAttack(spot *mobj_t, source *mobj_t, damage int32) {
 			if !(x <= xh) {
 				break
 			}
-			P_BlockThingsIterator(x, y, PIT_RadiusAttack)
+			p_BlockThingsIterator(x, y, pit_RadiusAttack)
 			goto _2
 		_2:
 			;
@@ -26548,15 +26548,15 @@ func P_RadiusAttack(spot *mobj_t, source *mobj_t, damage int32) {
 //	//
 //	// PIT_ChangeSector
 //	//
-func PIT_ChangeSector(thing *mobj_t) (r boolean) {
+func pit_ChangeSector(thing *mobj_t) (r boolean) {
 	var mo *mobj_t
-	if P_ThingHeightClip(thing) != 0 {
+	if p_ThingHeightClip(thing) != 0 {
 		// keep checking
 		return 1
 	}
 	// crunch bodies to giblets
 	if thing.Fhealth <= 0 {
-		P_SetMobjState(thing, S_GIBS)
+		p_SetMobjState(thing, S_GIBS)
 		thing.Fflags &= ^MF_SOLID
 		thing.Fheight = 0
 		thing.Fradius = 0
@@ -26565,7 +26565,7 @@ func PIT_ChangeSector(thing *mobj_t) (r boolean) {
 	}
 	// crunch dropped items
 	if thing.Fflags&MF_DROPPED != 0 {
-		P_RemoveMobj(thing)
+		p_RemoveMobj(thing)
 		// keep checking
 		return 1
 	}
@@ -26575,11 +26575,11 @@ func PIT_ChangeSector(thing *mobj_t) (r boolean) {
 	}
 	nofit = 1
 	if crushchange != 0 && leveltime&3 == 0 {
-		P_DamageMobj(thing, nil, nil, 10)
+		p_DamageMobj(thing, nil, nil, 10)
 		// spray blood in a random direction
-		mo = P_SpawnMobj(thing.Fx, thing.Fy, thing.Fz+thing.Fheight/int32(2), MT_BLOOD)
-		mo.Fmomx = (P_Random() - P_Random()) << 12
-		mo.Fmomy = (P_Random() - P_Random()) << 12
+		mo = p_SpawnMobj(thing.Fx, thing.Fy, thing.Fz+thing.Fheight/int32(2), MT_BLOOD)
+		mo.Fmomx = (p_Random() - p_Random()) << 12
+		mo.Fmomy = (p_Random() - p_Random()) << 12
 	}
 	// keep checking (crush other things)
 	return 1
@@ -26590,7 +26590,7 @@ func PIT_ChangeSector(thing *mobj_t) (r boolean) {
 //	//
 //	// P_ChangeSector
 //	//
-func P_ChangeSector(sector *sector_t, crunch boolean) (r boolean) {
+func p_ChangeSector(sector *sector_t, crunch boolean) (r boolean) {
 	var x, y int32
 	nofit = 0
 	crushchange = crunch
@@ -26605,7 +26605,7 @@ func P_ChangeSector(sector *sector_t, crunch boolean) (r boolean) {
 			if !(y <= sector.Fblockbox[BOXTOP]) {
 				break
 			}
-			P_BlockThingsIterator(x, y, PIT_ChangeSector)
+			p_BlockThingsIterator(x, y, pit_ChangeSector)
 			goto _2
 		_2:
 			;
@@ -26636,7 +26636,7 @@ func SpechitOverrun(ld *line_t) {
 		//
 		// Use the specified magic value when emulating spechit overruns.
 		//
-		p = M_CheckParmWithArgs("-spechit", 1)
+		p = m_CheckParmWithArgs("-spechit", 1)
 		if p > 0 {
 			v, _ := strconv.Atoi(myargs[p+1])
 			baseaddr = int32(v)
@@ -26693,7 +26693,7 @@ const INT_MAX11 = 2147483647
 // Gives an estimation of distance (not exact)
 //
 
-func P_AproxDistance(dx fixed_t, dy fixed_t) (r fixed_t) {
+func p_AproxDistance(dx fixed_t, dy fixed_t) (r fixed_t) {
 	dx = xabs(dx)
 	dy = xabs(dy)
 	if dx < dy {
@@ -26708,7 +26708,7 @@ func P_AproxDistance(dx fixed_t, dy fixed_t) (r fixed_t) {
 //	// P_PointOnLineSide
 //	// Returns 0 or 1
 //	//
-func P_PointOnLineSide(x fixed_t, y fixed_t, line *line_t) (r int32) {
+func p_PointOnLineSide(x fixed_t, y fixed_t, line *line_t) (r int32) {
 	var dx, dy, left, right fixed_t
 	if line.Fdx == 0 {
 		if x <= line.Fv1.Fx {
@@ -26739,7 +26739,7 @@ func P_PointOnLineSide(x fixed_t, y fixed_t, line *line_t) (r int32) {
 //	// Considers the line to be infinite
 //	// Returns side 0 or 1, -1 if box crosses the line.
 //	//
-func P_BoxOnLineSide(tmbox *box_t, ld *line_t) (r int32) {
+func p_BoxOnLineSide(tmbox *box_t, ld *line_t) (r int32) {
 	var p1, p2 int32
 	p1 = 0
 	p2 = 0
@@ -26759,11 +26759,11 @@ func P_BoxOnLineSide(tmbox *box_t, ld *line_t) (r int32) {
 			p2 ^= 1
 		}
 	case ST_POSITIVE:
-		p1 = P_PointOnLineSide(tmbox[BOXLEFT], tmbox[BOXTOP], ld)
-		p2 = P_PointOnLineSide(tmbox[BOXRIGHT], tmbox[BOXBOTTOM], ld)
+		p1 = p_PointOnLineSide(tmbox[BOXLEFT], tmbox[BOXTOP], ld)
+		p2 = p_PointOnLineSide(tmbox[BOXRIGHT], tmbox[BOXBOTTOM], ld)
 	case ST_NEGATIVE:
-		p1 = P_PointOnLineSide(tmbox[BOXRIGHT], tmbox[BOXTOP], ld)
-		p2 = P_PointOnLineSide(tmbox[BOXLEFT], tmbox[BOXBOTTOM], ld)
+		p1 = p_PointOnLineSide(tmbox[BOXRIGHT], tmbox[BOXTOP], ld)
+		p2 = p_PointOnLineSide(tmbox[BOXLEFT], tmbox[BOXBOTTOM], ld)
 		break
 	}
 	if p1 == p2 {
@@ -26778,7 +26778,7 @@ func P_BoxOnLineSide(tmbox *box_t, ld *line_t) (r int32) {
 //	// P_PointOnDivlineSide
 //	// Returns 0 or 1.
 //	//
-func P_PointOnDivlineSide(x fixed_t, y fixed_t, line *divline_t) (r int32) {
+func p_PointOnDivlineSide(x fixed_t, y fixed_t, line *divline_t) (r int32) {
 	var dx, dy, left, right fixed_t
 	if line.Fdx == 0 {
 		if x <= line.Fx {
@@ -26814,7 +26814,7 @@ func P_PointOnDivlineSide(x fixed_t, y fixed_t, line *divline_t) (r int32) {
 //	//
 //	// P_MakeDivline
 //	//
-func P_MakeDivline(li *line_t, dl *divline_t) {
+func p_MakeDivline(li *line_t, dl *divline_t) {
 	dl.Fx = li.Fv1.Fx
 	dl.Fy = li.Fv1.Fy
 	dl.Fdx = li.Fdx
@@ -26830,19 +26830,19 @@ func P_MakeDivline(li *line_t, dl *divline_t) {
 //	// This is only called by the addthings
 //	// and addlines traversers.
 //	//
-func P_InterceptVector(v2 *divline_t, v1 *divline_t) (r fixed_t) {
+func p_InterceptVector(v2 *divline_t, v1 *divline_t) (r fixed_t) {
 	var den, frac, num fixed_t
 	den = FixedMul(v1.Fdy>>int32(8), v2.Fdx) - FixedMul(v1.Fdx>>int32(8), v2.Fdy)
 	if den == 0 {
 		return 0
 	}
-	//	I_Error ("P_InterceptVector: parallel");
+	//	i_Error ("p_InterceptVector: parallel");
 	num = FixedMul((v1.Fx-v2.Fx)>>int32(8), v1.Fdy) + FixedMul((v2.Fy-v1.Fy)>>int32(8), v1.Fdx)
 	frac = FixedDiv(num, den)
 	return frac
 }
 
-func P_LineOpening(linedef *line_t) {
+func p_LineOpening(linedef *line_t) {
 	var back, front *sector_t
 	if linedef.Fsidenum[1] == -1 {
 		// single sided line
@@ -26879,7 +26879,7 @@ func P_LineOpening(linedef *line_t) {
 //	// lookups maintaining lists ot things inside
 //	// these structures need to be updated.
 //	//
-func P_UnsetThingPosition(thing *mobj_t) {
+func p_UnsetThingPosition(thing *mobj_t) {
 	var blockx, blocky int32
 	if thing.Fflags&MF_NOSECTOR == 0 {
 		// inert things don't need to be in blockmap?
@@ -26919,12 +26919,12 @@ func P_UnsetThingPosition(thing *mobj_t) {
 //	// based on it's x y.
 //	// Sets thing->subsector properly
 //	//
-func P_SetThingPosition(thing *mobj_t) {
+func p_SetThingPosition(thing *mobj_t) {
 	var blockx, blocky int32
 	var ss *subsector_t
 	var sec *sector_t
 	// link into subsector
-	ss = R_PointInSubsector(thing.Fx, thing.Fy)
+	ss = r_PointInSubsector(thing.Fx, thing.Fy)
 	thing.Fsubsector = ss
 	if thing.Fflags&MF_NOSECTOR == 0 {
 		// invisible things don't go into the sector links
@@ -26972,10 +26972,10 @@ func P_SetThingPosition(thing *mobj_t) {
 //	// The validcount flags are used to avoid checking lines
 //	// that are marked in multiple mapblocks,
 //	// so increment validcount before the first call
-//	// to P_BlockLinesIterator, then make one or more calls
+//	// to p_BlockLinesIterator, then make one or more calls
 //	// to it.
 //	//
-func P_BlockLinesIterator(x int32, y int32, func1 func(*line_t) boolean) (r boolean) {
+func p_BlockLinesIterator(x int32, y int32, func1 func(*line_t) boolean) (r boolean) {
 	var offset int32
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
 		return 1
@@ -27000,7 +27000,7 @@ func P_BlockLinesIterator(x int32, y int32, func1 func(*line_t) boolean) (r bool
 //	//
 //	// P_BlockThingsIterator
 //	//
-func P_BlockThingsIterator(x int32, y int32, func1 func(*mobj_t) boolean) (r boolean) {
+func p_BlockThingsIterator(x int32, y int32, func1 func(*mobj_t) boolean) (r boolean) {
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
 		return 1
 	}
@@ -27023,7 +27023,7 @@ func P_BlockThingsIterator(x int32, y int32, func1 func(*mobj_t) boolean) (r boo
 // C documentation
 //
 //	//
-//	// PIT_AddLineIntercepts.
+//	// pit_AddLineIntercepts.
 //	// Looks for lines in the given block
 //	// that intercept the given trace
 //	// to add to the intercepts list.
@@ -27032,24 +27032,24 @@ func P_BlockThingsIterator(x int32, y int32, func1 func(*mobj_t) boolean) (r boo
 //	// are on opposite sides of the trace.
 //	// Returns true if earlyout and a solid line hit.
 //	//
-func PIT_AddLineIntercepts(ld *line_t) (r boolean) {
+func pit_AddLineIntercepts(ld *line_t) (r boolean) {
 	var frac fixed_t
 	var s1, s2 int32
 	// avoid precision problems with two routines
 	if trace.Fdx > 1<<FRACBITS*16 || trace.Fdy > 1<<FRACBITS*16 || trace.Fdx < -(1<<FRACBITS)*16 || trace.Fdy < -(1<<FRACBITS)*16 {
-		s1 = P_PointOnDivlineSide(ld.Fv1.Fx, ld.Fv1.Fy, &trace)
-		s2 = P_PointOnDivlineSide(ld.Fv2.Fx, ld.Fv2.Fy, &trace)
+		s1 = p_PointOnDivlineSide(ld.Fv1.Fx, ld.Fv1.Fy, &trace)
+		s2 = p_PointOnDivlineSide(ld.Fv2.Fx, ld.Fv2.Fy, &trace)
 	} else {
-		s1 = P_PointOnLineSide(trace.Fx, trace.Fy, ld)
-		s2 = P_PointOnLineSide(trace.Fx+trace.Fdx, trace.Fy+trace.Fdy, ld)
+		s1 = p_PointOnLineSide(trace.Fx, trace.Fy, ld)
+		s2 = p_PointOnLineSide(trace.Fx+trace.Fdx, trace.Fy+trace.Fdy, ld)
 	}
 	if s1 == s2 {
 		return 1
 	} // line isn't crossed
 	// hit the line
 	var divline divline_t
-	P_MakeDivline(ld, &divline)
-	frac = P_InterceptVector(&trace, &divline)
+	p_MakeDivline(ld, &divline)
+	frac = p_InterceptVector(&trace, &divline)
 	if frac < 0 {
 		return 1
 	} // behind source
@@ -27070,7 +27070,7 @@ func PIT_AddLineIntercepts(ld *line_t) (r boolean) {
 //	//
 //	// PIT_AddThingIntercepts
 //	//
-func PIT_AddThingIntercepts(thing *mobj_t) (r boolean) {
+func pit_AddThingIntercepts(thing *mobj_t) (r boolean) {
 	var divline divline_t
 	var frac, x1, x2, y1, y2 fixed_t
 	var s1, s2 int32
@@ -27088,8 +27088,8 @@ func PIT_AddThingIntercepts(thing *mobj_t) (r boolean) {
 		x2 = thing.Fx + thing.Fradius
 		y2 = thing.Fy + thing.Fradius
 	}
-	s1 = P_PointOnDivlineSide(x1, y1, &trace)
-	s2 = P_PointOnDivlineSide(x2, y2, &trace)
+	s1 = p_PointOnDivlineSide(x1, y1, &trace)
+	s2 = p_PointOnDivlineSide(x2, y2, &trace)
 	if s1 == s2 {
 		return 1
 	} // line isn't crossed
@@ -27097,7 +27097,7 @@ func PIT_AddThingIntercepts(thing *mobj_t) (r boolean) {
 	divline.Fy = y1
 	divline.Fdx = x2 - x1
 	divline.Fdy = y2 - y1
-	frac = P_InterceptVector(&trace, &divline)
+	frac = p_InterceptVector(&trace, &divline)
 	if frac < 0 {
 		return 1
 	} // behind source
@@ -27116,7 +27116,7 @@ func PIT_AddThingIntercepts(thing *mobj_t) (r boolean) {
 //	// Returns true if the traverser function returns true
 //	// for all lines.
 //	//
-func P_TraverseIntercepts(func1 func(*intercept_t) boolean, maxfrac fixed_t) (r boolean) {
+func p_TraverseIntercepts(func1 func(*intercept_t) boolean, maxfrac fixed_t) (r boolean) {
 	var count, v1 int32
 	var dist fixed_t
 	var in *intercept_t
@@ -27304,7 +27304,7 @@ func InterceptsOverrun(num_intercepts int32, intercept *intercept_t) {
 //	// Returns true if the traverser function returns true
 //	// for all lines.
 //	//
-func P_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32, trav func(*intercept_t) boolean) (r boolean) {
+func p_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32, trav func(*intercept_t) boolean) (r boolean) {
 	var count, mapx, mapxstep, mapy, mapystep int32
 	var partial, xintercept, xstep, xt1, xt2, yintercept, ystep, yt1, yt2 fixed_t
 	earlyout = uint32(flags & PT_EARLYOUT)
@@ -27371,12 +27371,12 @@ func P_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32,
 			break
 		}
 		if flags&PT_ADDLINES != 0 {
-			if P_BlockLinesIterator(mapx, mapy, PIT_AddLineIntercepts) == 0 {
+			if p_BlockLinesIterator(mapx, mapy, pit_AddLineIntercepts) == 0 {
 				return 0
 			} // early out
 		}
 		if flags&PT_ADDTHINGS != 0 {
-			if P_BlockThingsIterator(mapx, mapy, PIT_AddThingIntercepts) == 0 {
+			if p_BlockThingsIterator(mapx, mapy, pit_AddThingIntercepts) == 0 {
 				return 0
 			} // early out
 		}
@@ -27398,18 +27398,18 @@ func P_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32,
 		count++
 	}
 	// go through the sorted list
-	return P_TraverseIntercepts(trav, 1<<FRACBITS)
+	return p_TraverseIntercepts(trav, 1<<FRACBITS)
 }
 
 const ANG453 = 536870912
 const FRICTION = 59392
 const STOPSPEED = 4096
 
-func P_SetMobjState(mobj *mobj_t, state statenum_t) (r boolean) {
+func p_SetMobjState(mobj *mobj_t, state statenum_t) (r boolean) {
 	for cond := true; cond; cond = mobj.Ftics == 0 {
 		if state == S_NULL {
 			mobj.Fstate = nil
-			P_RemoveMobj(mobj)
+			p_RemoveMobj(mobj)
 			return 0
 		}
 		st := &states[state]
@@ -27432,21 +27432,21 @@ func P_SetMobjState(mobj *mobj_t, state statenum_t) (r boolean) {
 //	//
 //	// P_ExplodeMissile
 //	//
-func P_ExplodeMissile(mo *mobj_t) {
+func p_ExplodeMissile(mo *mobj_t) {
 	var v1, v2 fixed_t
 	v2 = 0
 	mo.Fmomz = v2
 	v1 = v2
 	mo.Fmomy = v1
 	mo.Fmomx = v1
-	P_SetMobjState(mo, mobjinfo[mo.Ftype1].Fdeathstate)
-	mo.Ftics -= P_Random() & 3
+	p_SetMobjState(mo, mobjinfo[mo.Ftype1].Fdeathstate)
+	mo.Ftics -= p_Random() & 3
 	if mo.Ftics < 1 {
 		mo.Ftics = 1
 	}
 	mo.Fflags &= ^MF_MISSILE
 	if mo.Finfo.Fdeathsound != 0 {
-		S_StartSound(&mo.degenmobj_t, mo.Finfo.Fdeathsound)
+		s_StartSound(&mo.degenmobj_t, mo.Finfo.Fdeathsound)
 	}
 }
 
@@ -27454,7 +27454,7 @@ func P_ExplodeMissile(mo *mobj_t) {
 // P_XYMovement
 //
 
-func P_XYMovement(mo *mobj_t) {
+func p_XYMovement(mo *mobj_t) {
 	var player *player_t
 	var ptryx, ptryy, xmove, ymove, v1, v2, v3, v4, v5 fixed_t
 	if mo.Fmomx == 0 && mo.Fmomy == 0 {
@@ -27466,7 +27466,7 @@ func P_XYMovement(mo *mobj_t) {
 			v1 = v2
 			mo.Fmomy = v1
 			mo.Fmomx = v1
-			P_SetMobjState(mo, mo.Finfo.Fspawnstate)
+			p_SetMobjState(mo, mo.Finfo.Fspawnstate)
 		}
 		return
 	}
@@ -27500,11 +27500,11 @@ func P_XYMovement(mo *mobj_t) {
 			ymove = v3
 			xmove = v3
 		}
-		if P_TryMove(mo, ptryx, ptryy) == 0 {
+		if p_TryMove(mo, ptryx, ptryy) == 0 {
 			// blocked move
 			if mo.Fplayer != nil {
 				// try to slide along it
-				P_SlideMove(mo)
+				p_SlideMove(mo)
 			} else {
 				if mo.Fflags&MF_MISSILE != 0 {
 					// explode a missile
@@ -27512,10 +27512,10 @@ func P_XYMovement(mo *mobj_t) {
 						// Hack to prevent missiles exploding
 						// against the sky.
 						// Does not handle sky floors.
-						P_RemoveMobj(mo)
+						p_RemoveMobj(mo)
 						return
 					}
-					P_ExplodeMissile(mo)
+					p_ExplodeMissile(mo)
 				} else {
 					v4 = 0
 					mo.Fmomy = v4
@@ -27550,7 +27550,7 @@ func P_XYMovement(mo *mobj_t) {
 	if mo.Fmomx > -STOPSPEED && mo.Fmomx < STOPSPEED && mo.Fmomy > -STOPSPEED && mo.Fmomy < STOPSPEED && (player == nil || int32(player.Fcmd.Fforwardmove) == 0 && int32(player.Fcmd.Fsidemove) == 0) {
 		// if in a walking frame, stop moving
 		if player != nil && stateIndex(player.Fmo.Fstate)-S_PLAY_RUN1 < 4 {
-			P_SetMobjState(player.Fmo, S_PLAY)
+			p_SetMobjState(player.Fmo, S_PLAY)
 		}
 		mo.Fmomx = 0
 		mo.Fmomy = 0
@@ -27565,7 +27565,7 @@ func P_XYMovement(mo *mobj_t) {
 //	//
 //	// P_ZMovement
 //	//
-func P_ZMovement(mo *mobj_t) {
+func p_ZMovement(mo *mobj_t) {
 	var correct_lost_soul_bounce int32
 	var delta, dist fixed_t
 	// check for smooth step up
@@ -27578,7 +27578,7 @@ func P_ZMovement(mo *mobj_t) {
 	if mo.Fflags&MF_FLOAT != 0 && mo.Ftarget != nil {
 		// float down towards target if too close
 		if mo.Fflags&MF_SKULLFLY == 0 && mo.Fflags&MF_INFLOAT == 0 {
-			dist = P_AproxDistance(mo.Fx-mo.Ftarget.Fx, mo.Fy-mo.Ftarget.Fy)
+			dist = p_AproxDistance(mo.Fx-mo.Ftarget.Fx, mo.Fy-mo.Ftarget.Fy)
 			delta = mo.Ftarget.Fz + mo.Fheight>>1 - mo.Fz
 			if delta < 0 && dist < -(delta*int32(3)) {
 				mo.Fz -= 1 << FRACBITS * 4
@@ -27626,7 +27626,7 @@ func P_ZMovement(mo *mobj_t) {
 				// after hitting the ground (hard),
 				// and utter appropriate sound.
 				mo.Fplayer.Fdeltaviewheight = mo.Fmomz >> 3
-				S_StartSound(&mo.degenmobj_t, int32(sfx_oof))
+				s_StartSound(&mo.degenmobj_t, int32(sfx_oof))
 			}
 			mo.Fmomz = 0
 		}
@@ -27640,7 +27640,7 @@ func P_ZMovement(mo *mobj_t) {
 			mo.Fmomz = -mo.Fmomz
 		}
 		if mo.Fflags&MF_MISSILE != 0 && mo.Fflags&MF_NOCLIP == 0 {
-			P_ExplodeMissile(mo)
+			p_ExplodeMissile(mo)
 			return
 		}
 	} else {
@@ -27663,7 +27663,7 @@ func P_ZMovement(mo *mobj_t) {
 			mo.Fmomz = -mo.Fmomz
 		}
 		if mo.Fflags&MF_MISSILE != 0 && mo.Fflags&MF_NOCLIP == 0 {
-			P_ExplodeMissile(mo)
+			p_ExplodeMissile(mo)
 			return
 		}
 	}
@@ -27674,7 +27674,7 @@ func P_ZMovement(mo *mobj_t) {
 //	//
 //	// P_NightmareRespawn
 //	//
-func P_NightmareRespawn(mobj *mobj_t) {
+func p_NightmareRespawn(mobj *mobj_t) {
 	var mo *mobj_t
 	var mthing *mapthing_t
 	var ss *subsector_t
@@ -27682,18 +27682,18 @@ func P_NightmareRespawn(mobj *mobj_t) {
 	x = int32(mobj.Fspawnpoint.Fx) << FRACBITS
 	y = int32(mobj.Fspawnpoint.Fy) << FRACBITS
 	// somthing is occupying it's position?
-	if P_CheckPosition(mobj, x, y) == 0 {
+	if p_CheckPosition(mobj, x, y) == 0 {
 		return
 	} // no respwan
 	// spawn a teleport fog at old spot
 	// because of removal of the body?
-	mo = P_SpawnMobj(mobj.Fx, mobj.Fy, mobj.Fsubsector.Fsector.Ffloorheight, MT_TFOG)
+	mo = p_SpawnMobj(mobj.Fx, mobj.Fy, mobj.Fsubsector.Fsector.Ffloorheight, MT_TFOG)
 	// initiate teleport sound
-	S_StartSound(&mo.degenmobj_t, int32(sfx_telept))
+	s_StartSound(&mo.degenmobj_t, int32(sfx_telept))
 	// spawn a teleport fog at the new spot
-	ss = R_PointInSubsector(x, y)
-	mo = P_SpawnMobj(x, y, ss.Fsector.Ffloorheight, MT_TFOG)
-	S_StartSound(&mo.degenmobj_t, int32(sfx_telept))
+	ss = r_PointInSubsector(x, y)
+	mo = p_SpawnMobj(x, y, ss.Fsector.Ffloorheight, MT_TFOG)
+	s_StartSound(&mo.degenmobj_t, int32(sfx_telept))
 	// spawn the new monster
 	mthing = &mobj.Fspawnpoint
 	// spawn it
@@ -27703,7 +27703,7 @@ func P_NightmareRespawn(mobj *mobj_t) {
 		z = -1 - 0x7fffffff
 	}
 	// inherit attributes from deceased one
-	mo = P_SpawnMobj(x, y, z, mobj.Ftype1)
+	mo = p_SpawnMobj(x, y, z, mobj.Ftype1)
 	mo.Fspawnpoint = mobj.Fspawnpoint
 	mo.Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
 	if int32(mthing.Foptions)&MTF_AMBUSH != 0 {
@@ -27711,7 +27711,7 @@ func P_NightmareRespawn(mobj *mobj_t) {
 	}
 	mo.Freactiontime = 18
 	// remove the old monster,
-	P_RemoveMobj(mobj)
+	p_RemoveMobj(mobj)
 }
 
 // C documentation
@@ -27720,19 +27720,19 @@ func P_NightmareRespawn(mobj *mobj_t) {
 //	// P_MobjThinker
 //	//
 func (mobj *mobj_t) ThinkerFunc() {
-	P_MobjThinker(mobj)
+	p_MobjThinker(mobj)
 }
-func P_MobjThinker(mobj *mobj_t) {
+func p_MobjThinker(mobj *mobj_t) {
 	// momentum movement
 	if mobj.Fmomx != 0 || mobj.Fmomy != 0 || mobj.Fflags&MF_SKULLFLY != 0 {
-		P_XYMovement(mobj)
+		p_XYMovement(mobj)
 		// FIXME: decent NOP/NULL/Nil function pointer please.
 		if mobj.Fthinker.Ffunction == nil {
 			return
 		} // mobj was removed
 	}
 	if mobj.Fz != mobj.Ffloorz || mobj.Fmomz != 0 {
-		P_ZMovement(mobj)
+		p_ZMovement(mobj)
 		// FIXME: decent NOP/NULL/Nil function pointer please.
 		if mobj.Fthinker.Ffunction == nil {
 			return
@@ -27744,7 +27744,7 @@ func P_MobjThinker(mobj *mobj_t) {
 		mobj.Ftics--
 		// you can cycle through multiple states in a tic
 		if mobj.Ftics == 0 {
-			if P_SetMobjState(mobj, mobj.Fstate.Fnextstate) == 0 {
+			if p_SetMobjState(mobj, mobj.Fstate.Fnextstate) == 0 {
 				return
 			}
 		} // freed itself
@@ -27763,10 +27763,10 @@ func P_MobjThinker(mobj *mobj_t) {
 		if leveltime&int32(31) != 0 {
 			return
 		}
-		if P_Random() > 4 {
+		if p_Random() > 4 {
 			return
 		}
-		P_NightmareRespawn(mobj)
+		p_NightmareRespawn(mobj)
 	}
 }
 
@@ -27775,7 +27775,7 @@ func P_MobjThinker(mobj *mobj_t) {
 //	//
 //	// P_SpawnMobj
 //	//
-func P_SpawnMobj(x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r *mobj_t) {
+func p_SpawnMobj(x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r *mobj_t) {
 	var info *mobjinfo_t
 	mobj := &mobj_t{}
 	info = &mobjinfo[type1]
@@ -27790,8 +27790,8 @@ func P_SpawnMobj(x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r *mobj_t) 
 	if gameskill != sk_nightmare {
 		mobj.Freactiontime = info.Freactiontime
 	}
-	mobj.Flastlook = P_Random() % MAXPLAYERS
-	// do not set the state with P_SetMobjState,
+	mobj.Flastlook = p_Random() % MAXPLAYERS
+	// do not set the state with p_SetMobjState,
 	// because action routines can not be called yet
 	st := &states[info.Fspawnstate]
 	mobj.Fstate = st
@@ -27799,7 +27799,7 @@ func P_SpawnMobj(x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r *mobj_t) 
 	mobj.Fsprite = st.Fsprite
 	mobj.Fframe = st.Fframe
 	// set subsector and/or block links
-	P_SetThingPosition(mobj)
+	p_SetThingPosition(mobj)
 	mobj.Ffloorz = mobj.Fsubsector.Fsector.Ffloorheight
 	mobj.Fceilingz = mobj.Fsubsector.Fsector.Fceilingheight
 	if z == -1-0x7fffffff {
@@ -27812,11 +27812,11 @@ func P_SpawnMobj(x fixed_t, y fixed_t, z fixed_t, type1 mobjtype_t) (r *mobj_t) 
 		}
 	}
 	mobj.Fthinker.Ffunction = mobj
-	P_AddThinker(&mobj.Fthinker)
+	p_AddThinker(&mobj.Fthinker)
 	return mobj
 }
 
-func P_RemoveMobj(mobj *mobj_t) {
+func p_RemoveMobj(mobj *mobj_t) {
 	if mobj.Fflags&MF_SPECIAL != 0 && mobj.Fflags&MF_DROPPED == 0 && mobj.Ftype1 != MT_INV && mobj.Ftype1 != MT_INS {
 		itemrespawnque[iquehead] = mobj.Fspawnpoint
 		itemrespawntime[iquehead] = leveltime
@@ -27827,11 +27827,11 @@ func P_RemoveMobj(mobj *mobj_t) {
 		}
 	}
 	// unlink from sector and block lists
-	P_UnsetThingPosition(mobj)
+	p_UnsetThingPosition(mobj)
 	// stop any playing sound
-	S_StopSound(&mobj.degenmobj_t)
+	s_StopSound(&mobj.degenmobj_t)
 	// free block
-	P_RemoveThinker(&mobj.Fthinker)
+	p_RemoveThinker(&mobj.Fthinker)
 }
 
 // C documentation
@@ -27839,7 +27839,7 @@ func P_RemoveMobj(mobj *mobj_t) {
 //	//
 //	// P_RespawnSpecials
 //	//
-func P_RespawnSpecials() {
+func p_RespawnSpecials() {
 	var i int32
 	var mo *mobj_t
 	var mthing *mapthing_t
@@ -27861,9 +27861,9 @@ func P_RespawnSpecials() {
 	x = int32(mthing.Fx) << FRACBITS
 	y = int32(mthing.Fy) << FRACBITS
 	// spawn a teleport fog at the new spot
-	ss = R_PointInSubsector(x, y)
-	mo = P_SpawnMobj(x, y, ss.Fsector.Ffloorheight, MT_IFOG)
-	S_StartSound(&mo.degenmobj_t, int32(sfx_itmbk))
+	ss = r_PointInSubsector(x, y)
+	mo = p_SpawnMobj(x, y, ss.Fsector.Ffloorheight, MT_IFOG)
+	s_StartSound(&mo.degenmobj_t, int32(sfx_itmbk))
 	// find which type to spawn
 	i = 0
 	for {
@@ -27884,7 +27884,7 @@ func P_RespawnSpecials() {
 	} else {
 		z = -1 - 0x7fffffff
 	}
-	mo = P_SpawnMobj(x, y, z, i)
+	mo = p_SpawnMobj(x, y, z, i)
 	mo.Fspawnpoint = *mthing
 	mo.Fangle = uint32(int32(ANG453) * (int32(mthing.Fangle) / 45))
 	// pull it from the que
@@ -27899,7 +27899,7 @@ func P_RespawnSpecials() {
 //	// Most of the player structure stays unchanged
 //	//  between levels.
 //	//
-func P_SpawnPlayer(mthing *mapthing_t) {
+func p_SpawnPlayer(mthing *mapthing_t) {
 	var i int32
 	var mobj *mobj_t
 	var p *player_t
@@ -27913,12 +27913,12 @@ func P_SpawnPlayer(mthing *mapthing_t) {
 	}
 	p = &players[mthing.Ftype1-1]
 	if p.Fplayerstate == PST_REBORN {
-		G_PlayerReborn(int32(mthing.Ftype1) - 1)
+		g_PlayerReborn(int32(mthing.Ftype1) - 1)
 	}
 	x = int32(mthing.Fx) << FRACBITS
 	y = int32(mthing.Fy) << FRACBITS
 	z = -1 - 0x7fffffff
-	mobj = P_SpawnMobj(x, y, z, MT_PLAYER)
+	mobj = p_SpawnMobj(x, y, z, MT_PLAYER)
 	// set color translations for player sprites
 	if int32(mthing.Ftype1) > 1 {
 		mobj.Fflags |= (int32(mthing.Ftype1) - 1) << MF_TRANSSHIFT
@@ -27936,7 +27936,7 @@ func P_SpawnPlayer(mthing *mapthing_t) {
 	p.Ffixedcolormap = 0
 	p.Fviewheight = 41 * (1 << FRACBITS)
 	// setup gun psprite
-	P_SetupPsprites(p)
+	p_SetupPsprites(p)
 	// give all cards in death match mode
 	if deathmatch != 0 {
 		i = 0
@@ -27953,9 +27953,9 @@ func P_SpawnPlayer(mthing *mapthing_t) {
 	}
 	if int32(mthing.Ftype1)-1 == consoleplayer {
 		// wake up the status bar
-		ST_Start()
+		st_Start()
 		// wake up the heads up text
-		HU_Start()
+		hu_Start()
 	}
 }
 
@@ -27966,7 +27966,7 @@ func P_SpawnPlayer(mthing *mapthing_t) {
 //	// The fields of the mapthing should
 //	// already be in host byte order.
 //	//
-func P_SpawnMapThing(mthing *mapthing_t) {
+func p_SpawnMapThing(mthing *mapthing_t) {
 	var bit, i int32
 	var mobj *mobj_t
 	var x, y, z fixed_t
@@ -27988,7 +27988,7 @@ func P_SpawnMapThing(mthing *mapthing_t) {
 		// save spots for respawning in network games
 		playerstarts[int32(mthing.Ftype1)-1] = *mthing
 		if deathmatch == 0 {
-			P_SpawnPlayer(mthing)
+			p_SpawnPlayer(mthing)
 		}
 		return
 	}
@@ -28023,7 +28023,7 @@ func P_SpawnMapThing(mthing *mapthing_t) {
 		i++
 	}
 	if i == NUMMOBJTYPES {
-		I_Error("P_SpawnMapThing: Unknown type %d at (%d, %d)", int32(mthing.Ftype1), int32(mthing.Fx), int32(mthing.Fy))
+		i_Error("p_SpawnMapThing: Unknown type %d at (%d, %d)", int32(mthing.Ftype1), int32(mthing.Fx), int32(mthing.Fy))
 	}
 	// don't spawn keycards and players in deathmatch
 	if deathmatch != 0 && mobjinfo[i].Fflags&MF_NOTDMATCH != 0 {
@@ -28041,10 +28041,10 @@ func P_SpawnMapThing(mthing *mapthing_t) {
 	} else {
 		z = -1 - 0x7fffffff
 	}
-	mobj = P_SpawnMobj(x, y, z, i)
+	mobj = p_SpawnMobj(x, y, z, i)
 	mobj.Fspawnpoint = *mthing
 	if mobj.Ftics > 0 {
-		mobj.Ftics = 1 + P_Random()%mobj.Ftics
+		mobj.Ftics = 1 + p_Random()%mobj.Ftics
 	}
 	if mobj.Fflags&MF_COUNTKILL != 0 {
 		totalkills++
@@ -28058,18 +28058,18 @@ func P_SpawnMapThing(mthing *mapthing_t) {
 	}
 }
 
-func P_SpawnPuff(x fixed_t, y fixed_t, z fixed_t) {
+func p_SpawnPuff(x fixed_t, y fixed_t, z fixed_t) {
 	var th *mobj_t
-	z += (P_Random() - P_Random()) << 10
-	th = P_SpawnMobj(x, y, z, MT_PUFF)
+	z += (p_Random() - p_Random()) << 10
+	th = p_SpawnMobj(x, y, z, MT_PUFF)
 	th.Fmomz = 1 << FRACBITS
-	th.Ftics -= P_Random() & 3
+	th.Ftics -= p_Random() & 3
 	if th.Ftics < 1 {
 		th.Ftics = 1
 	}
 	// don't make punches spark on the wall
 	if attackrange == 64*(1<<FRACBITS) {
-		P_SetMobjState(th, S_PUFF3)
+		p_SetMobjState(th, S_PUFF3)
 	}
 }
 
@@ -28078,20 +28078,20 @@ func P_SpawnPuff(x fixed_t, y fixed_t, z fixed_t) {
 //	//
 //	// P_SpawnBlood
 //	//
-func P_SpawnBlood(x fixed_t, y fixed_t, z fixed_t, damage int32) {
+func p_SpawnBlood(x fixed_t, y fixed_t, z fixed_t, damage int32) {
 	var th *mobj_t
-	z += (P_Random() - P_Random()) << 10
-	th = P_SpawnMobj(x, y, z, MT_BLOOD)
+	z += (p_Random() - p_Random()) << 10
+	th = p_SpawnMobj(x, y, z, MT_BLOOD)
 	th.Fmomz = 1 << FRACBITS * 2
-	th.Ftics -= P_Random() & 3
+	th.Ftics -= p_Random() & 3
 	if th.Ftics < 1 {
 		th.Ftics = 1
 	}
 	if damage <= 12 && damage >= 9 {
-		P_SetMobjState(th, S_BLOOD2)
+		p_SetMobjState(th, S_BLOOD2)
 	} else {
 		if damage < 9 {
-			P_SetMobjState(th, S_BLOOD3)
+			p_SetMobjState(th, S_BLOOD3)
 		}
 	}
 }
@@ -28103,8 +28103,8 @@ func P_SpawnBlood(x fixed_t, y fixed_t, z fixed_t, damage int32) {
 //	// Moves the missile forward a bit
 //	//  and possibly explodes it right there.
 //	//
-func P_CheckMissileSpawn(th *mobj_t) {
-	th.Ftics -= P_Random() & 3
+func p_CheckMissileSpawn(th *mobj_t) {
+	th.Ftics -= p_Random() & 3
 	if th.Ftics < 1 {
 		th.Ftics = 1
 	}
@@ -28113,8 +28113,8 @@ func P_CheckMissileSpawn(th *mobj_t) {
 	th.Fx += th.Fmomx >> 1
 	th.Fy += th.Fmomy >> 1
 	th.Fz += th.Fmomz >> 1
-	if P_TryMove(th, th.Fx, th.Fy) == 0 {
-		P_ExplodeMissile(th)
+	if p_TryMove(th, th.Fx, th.Fy) == 0 {
+		p_ExplodeMissile(th)
 	}
 }
 
@@ -28124,7 +28124,7 @@ func P_CheckMissileSpawn(th *mobj_t) {
 // protection. This function substitutes NULL pointers for
 // pointers to a dummy mobj, to avoid a crash.
 
-func P_SubstNullMobj(mobj *mobj_t) *mobj_t {
+func p_SubstNullMobj(mobj *mobj_t) *mobj_t {
 	if mobj == nil {
 		dummy_mobj.Fx = 0
 		dummy_mobj.Fy = 0
@@ -28142,31 +28142,31 @@ var dummy_mobj mobj_t
 //	//
 //	// P_SpawnMissile
 //	//
-func P_SpawnMissile(source *mobj_t, dest *mobj_t, type1 mobjtype_t) (r *mobj_t) {
+func p_SpawnMissile(source *mobj_t, dest *mobj_t, type1 mobjtype_t) (r *mobj_t) {
 	var an angle_t
 	var dist int32
 	var th *mobj_t
-	th = P_SpawnMobj(source.Fx, source.Fy, source.Fz+4*8*(1<<FRACBITS), type1)
+	th = p_SpawnMobj(source.Fx, source.Fy, source.Fz+4*8*(1<<FRACBITS), type1)
 	if th.Finfo.Fseesound != 0 {
-		S_StartSound(&th.degenmobj_t, th.Finfo.Fseesound)
+		s_StartSound(&th.degenmobj_t, th.Finfo.Fseesound)
 	}
 	th.Ftarget = source // where it came from
-	an = R_PointToAngle2(source.Fx, source.Fy, dest.Fx, dest.Fy)
+	an = r_PointToAngle2(source.Fx, source.Fy, dest.Fx, dest.Fy)
 	// fuzzy player
 	if dest.Fflags&MF_SHADOW != 0 {
-		an += uint32((P_Random() - P_Random()) << 20)
+		an += uint32((p_Random() - p_Random()) << 20)
 	}
 	th.Fangle = an
 	an >>= ANGLETOFINESHIFT
 	th.Fmomx = FixedMul(th.Finfo.Fspeed, finecosine[an])
 	th.Fmomy = FixedMul(th.Finfo.Fspeed, finesine[an])
-	dist = P_AproxDistance(dest.Fx-source.Fx, dest.Fy-source.Fy)
+	dist = p_AproxDistance(dest.Fx-source.Fx, dest.Fy-source.Fy)
 	dist = dist / th.Finfo.Fspeed
 	if dist < 1 {
 		dist = 1
 	}
 	th.Fmomz = (dest.Fz - source.Fz) / dist
-	P_CheckMissileSpawn(th)
+	p_CheckMissileSpawn(th)
 	return th
 }
 
@@ -28176,19 +28176,19 @@ func P_SpawnMissile(source *mobj_t, dest *mobj_t, type1 mobjtype_t) (r *mobj_t) 
 //	// P_SpawnPlayerMissile
 //	// Tries to aim at a nearby monster
 //	//
-func P_SpawnPlayerMissile(source *mobj_t, type1 mobjtype_t) {
+func p_SpawnPlayerMissile(source *mobj_t, type1 mobjtype_t) {
 	var an angle_t
 	var slope, x, y, z fixed_t
 	var th *mobj_t
 	// see which target is to be aimed at
 	an = source.Fangle
-	slope = P_AimLineAttack(source, an, 16*64*(1<<FRACBITS))
+	slope = p_AimLineAttack(source, an, 16*64*(1<<FRACBITS))
 	if linetarget == nil {
 		an += uint32(1 << 26)
-		slope = P_AimLineAttack(source, an, 16*64*(1<<FRACBITS))
+		slope = p_AimLineAttack(source, an, 16*64*(1<<FRACBITS))
 		if linetarget == nil {
 			an -= uint32(2 << 26)
-			slope = P_AimLineAttack(source, an, 16*64*(1<<FRACBITS))
+			slope = p_AimLineAttack(source, an, 16*64*(1<<FRACBITS))
 		}
 		if linetarget == nil {
 			an = source.Fangle
@@ -28198,16 +28198,16 @@ func P_SpawnPlayerMissile(source *mobj_t, type1 mobjtype_t) {
 	x = source.Fx
 	y = source.Fy
 	z = source.Fz + 4*8*(1<<FRACBITS)
-	th = P_SpawnMobj(x, y, z, type1)
+	th = p_SpawnMobj(x, y, z, type1)
 	if th.Finfo.Fseesound != 0 {
-		S_StartSound(&th.degenmobj_t, th.Finfo.Fseesound)
+		s_StartSound(&th.degenmobj_t, th.Finfo.Fseesound)
 	}
 	th.Ftarget = source
 	th.Fangle = an
 	th.Fmomx = FixedMul(th.Finfo.Fspeed, finecosine[an>>ANGLETOFINESHIFT])
 	th.Fmomy = FixedMul(th.Finfo.Fspeed, finesine[an>>ANGLETOFINESHIFT])
 	th.Fmomz = FixedMul(th.Finfo.Fspeed, slope)
-	P_CheckMissileSpawn(th)
+	p_CheckMissileSpawn(th)
 }
 
 // C documentation
@@ -28216,47 +28216,47 @@ func P_SpawnPlayerMissile(source *mobj_t, type1 mobjtype_t) {
 //	// Move a plat up and down
 //	//
 func (plat *plat_t) ThinkerFunc() {
-	T_PlatRaise(plat)
+	t_PlatRaise(plat)
 }
-func T_PlatRaise(plat *plat_t) {
+func t_PlatRaise(plat *plat_t) {
 	var res result_e
 	switch plat.Fstatus {
 	case int32(up):
-		res = T_MovePlane(plat.Fsector, plat.Fspeed, plat.Fhigh, plat.Fcrush, 0, 1)
+		res = t_MovePlane(plat.Fsector, plat.Fspeed, plat.Fhigh, plat.Fcrush, 0, 1)
 		if plat.Ftype1 == int32(raiseAndChange) || plat.Ftype1 == int32(raiseToNearestAndChange) {
 			if leveltime&7 == 0 {
-				S_StartSound(&plat.Fsector.Fsoundorg, int32(sfx_stnmov))
+				s_StartSound(&plat.Fsector.Fsoundorg, int32(sfx_stnmov))
 			}
 		}
 		if res == int32(crushed) && plat.Fcrush == 0 {
 			plat.Fcount = plat.Fwait
 			plat.Fstatus = int32(down)
-			S_StartSound(&plat.Fsector.Fsoundorg, int32(sfx_pstart))
+			s_StartSound(&plat.Fsector.Fsoundorg, int32(sfx_pstart))
 		} else {
 			if res == int32(pastdest) {
 				plat.Fcount = plat.Fwait
 				plat.Fstatus = int32(waiting)
-				S_StartSound(&plat.Fsector.Fsoundorg, int32(sfx_pstop))
+				s_StartSound(&plat.Fsector.Fsoundorg, int32(sfx_pstop))
 				switch plat.Ftype1 {
 				case int32(blazeDWUS):
 					fallthrough
 				case int32(downWaitUpStay):
-					P_RemoveActivePlat(plat)
+					p_RemoveActivePlat(plat)
 				case int32(raiseAndChange):
 					fallthrough
 				case int32(raiseToNearestAndChange):
-					P_RemoveActivePlat(plat)
+					p_RemoveActivePlat(plat)
 				default:
 					break
 				}
 			}
 		}
 	case int32(down):
-		res = T_MovePlane(plat.Fsector, plat.Fspeed, plat.Flow, 0, 0, -1)
+		res = t_MovePlane(plat.Fsector, plat.Fspeed, plat.Flow, 0, 0, -1)
 		if res == int32(pastdest) {
 			plat.Fcount = plat.Fwait
 			plat.Fstatus = int32(waiting)
-			S_StartSound(&plat.Fsector.Fsoundorg, int32(sfx_pstop))
+			s_StartSound(&plat.Fsector.Fsoundorg, int32(sfx_pstop))
 		}
 	case int32(waiting):
 		plat.Fcount--
@@ -28266,7 +28266,7 @@ func T_PlatRaise(plat *plat_t) {
 			} else {
 				plat.Fstatus = int32(down)
 			}
-			S_StartSound(&plat.Fsector.Fsoundorg, int32(sfx_pstart))
+			s_StartSound(&plat.Fsector.Fsoundorg, int32(sfx_pstart))
 		}
 		fallthrough
 	case int32(in_stasis):
@@ -28280,7 +28280,7 @@ func T_PlatRaise(plat *plat_t) {
 //	// Do Platforms
 //	//  "amount" is only used for SOME platforms.
 //	//
-func EV_DoPlat(line *line_t, type1 plattype_e, amount int32) (r int32) {
+func ev_DoPlat(line *line_t, type1 plattype_e, amount int32) (r int32) {
 	var sec *sector_t
 	var rtn, secnum, v1 int32
 	secnum = -1
@@ -28288,12 +28288,12 @@ func EV_DoPlat(line *line_t, type1 plattype_e, amount int32) (r int32) {
 	//	Activate all <type> plats that are in_stasis
 	switch type1 {
 	case int32(perpetualRaise):
-		P_ActivateInStasis(int32(line.Ftag))
+		p_ActivateInStasis(int32(line.Ftag))
 	default:
 		break
 	}
 	for {
-		v1 = P_FindSectorFromLineTag(line, secnum)
+		v1 = p_FindSectorFromLineTag(line, secnum)
 		secnum = v1
 		if !(v1 >= 0) {
 			break
@@ -28305,7 +28305,7 @@ func EV_DoPlat(line *line_t, type1 plattype_e, amount int32) (r int32) {
 		// Find lowest & highest floors around sector
 		rtn = 1
 		platP := &plat_t{}
-		P_AddThinker(&platP.Fthinker)
+		p_AddThinker(&platP.Fthinker)
 		platP.Ftype1 = type1
 		platP.Fsector = sec
 		platP.Fsector.Fspecialdata = platP
@@ -28316,60 +28316,60 @@ func EV_DoPlat(line *line_t, type1 plattype_e, amount int32) (r int32) {
 		case int32(raiseToNearestAndChange):
 			platP.Fspeed = 1 << FRACBITS / 2
 			sec.Ffloorpic = sides[line.Fsidenum[0]].Fsector.Ffloorpic
-			platP.Fhigh = P_FindNextHighestFloor(sec, sec.Ffloorheight)
+			platP.Fhigh = p_FindNextHighestFloor(sec, sec.Ffloorheight)
 			platP.Fwait = 0
 			platP.Fstatus = int32(up)
 			// NO MORE DAMAGE, IF APPLICABLE
 			sec.Fspecial = 0
-			S_StartSound(&sec.Fsoundorg, int32(sfx_stnmov))
+			s_StartSound(&sec.Fsoundorg, int32(sfx_stnmov))
 		case int32(raiseAndChange):
 			platP.Fspeed = 1 << FRACBITS / 2
 			sec.Ffloorpic = sides[line.Fsidenum[0]].Fsector.Ffloorpic
 			platP.Fhigh = sec.Ffloorheight + amount*(1<<FRACBITS)
 			platP.Fwait = 0
 			platP.Fstatus = int32(up)
-			S_StartSound(&sec.Fsoundorg, int32(sfx_stnmov))
+			s_StartSound(&sec.Fsoundorg, int32(sfx_stnmov))
 		case int32(downWaitUpStay):
 			platP.Fspeed = 1 << FRACBITS * 4
-			platP.Flow = P_FindLowestFloorSurrounding(sec)
+			platP.Flow = p_FindLowestFloorSurrounding(sec)
 			if platP.Flow > sec.Ffloorheight {
 				platP.Flow = sec.Ffloorheight
 			}
 			platP.Fhigh = sec.Ffloorheight
 			platP.Fwait = TICRATE * PLATWAIT
 			platP.Fstatus = int32(down)
-			S_StartSound(&sec.Fsoundorg, int32(sfx_pstart))
+			s_StartSound(&sec.Fsoundorg, int32(sfx_pstart))
 		case int32(blazeDWUS):
 			platP.Fspeed = 1 << FRACBITS * 8
-			platP.Flow = P_FindLowestFloorSurrounding(sec)
+			platP.Flow = p_FindLowestFloorSurrounding(sec)
 			if platP.Flow > sec.Ffloorheight {
 				platP.Flow = sec.Ffloorheight
 			}
 			platP.Fhigh = sec.Ffloorheight
 			platP.Fwait = TICRATE * PLATWAIT
 			platP.Fstatus = int32(down)
-			S_StartSound(&sec.Fsoundorg, int32(sfx_pstart))
+			s_StartSound(&sec.Fsoundorg, int32(sfx_pstart))
 		case int32(perpetualRaise):
 			platP.Fspeed = 1 << FRACBITS
-			platP.Flow = P_FindLowestFloorSurrounding(sec)
+			platP.Flow = p_FindLowestFloorSurrounding(sec)
 			if platP.Flow > sec.Ffloorheight {
 				platP.Flow = sec.Ffloorheight
 			}
-			platP.Fhigh = P_FindHighestFloorSurrounding(sec)
+			platP.Fhigh = p_FindHighestFloorSurrounding(sec)
 			if platP.Fhigh < sec.Ffloorheight {
 				platP.Fhigh = sec.Ffloorheight
 			}
 			platP.Fwait = TICRATE * PLATWAIT
-			platP.Fstatus = P_Random() & 1
-			S_StartSound(&sec.Fsoundorg, int32(sfx_pstart))
+			platP.Fstatus = p_Random() & 1
+			s_StartSound(&sec.Fsoundorg, int32(sfx_pstart))
 			break
 		}
-		P_AddActivePlat(platP)
+		p_AddActivePlat(platP)
 	}
 	return rtn
 }
 
-func P_ActivateInStasis(tag int32) {
+func p_ActivateInStasis(tag int32) {
 	var i int32
 	i = 0
 	for {
@@ -28387,7 +28387,7 @@ func P_ActivateInStasis(tag int32) {
 	}
 }
 
-func EV_StopPlat(line *line_t) {
+func ev_StopPlat(line *line_t) {
 	var j int32
 	j = 0
 	for {
@@ -28406,7 +28406,7 @@ func EV_StopPlat(line *line_t) {
 	}
 }
 
-func P_AddActivePlat(plat *plat_t) {
+func p_AddActivePlat(plat *plat_t) {
 	var i int32
 	i = 0
 	for {
@@ -28422,10 +28422,10 @@ func P_AddActivePlat(plat *plat_t) {
 		;
 		i++
 	}
-	I_Error("P_AddActivePlat: no more plats!")
+	i_Error("p_AddActivePlat: no more plats!")
 }
 
-func P_RemoveActivePlat(plat *plat_t) {
+func p_RemoveActivePlat(plat *plat_t) {
 	var i int32
 	i = 0
 	for {
@@ -28434,7 +28434,7 @@ func P_RemoveActivePlat(plat *plat_t) {
 		}
 		if plat == activeplats[i] {
 			activeplats[i].Fsector.Fspecialdata = nil
-			P_RemoveThinker(&activeplats[i].Fthinker)
+			p_RemoveThinker(&activeplats[i].Fthinker)
 			activeplats[i] = nil
 			return
 		}
@@ -28443,7 +28443,7 @@ func P_RemoveActivePlat(plat *plat_t) {
 		;
 		i++
 	}
-	I_Error("P_RemoveActivePlat: can't find plat!")
+	i_Error("p_RemoveActivePlat: can't find plat!")
 }
 
 const ANG1807 = 2147483648
@@ -28492,7 +28492,7 @@ const ANG905 = 1073741824
 //	//
 //	// P_SetPsprite
 //	//
-func P_SetPsprite(player *player_t, position int32, stnum statenum_t) {
+func p_SetPsprite(player *player_t, position int32, stnum statenum_t) {
 	psp := &player.Fpsprites[position]
 	for cond := true; cond; cond = psp.Ftics == 0 {
 		if stnum == 0 {
@@ -28529,18 +28529,18 @@ func P_SetPsprite(player *player_t, position int32, stnum statenum_t) {
 //	// from the bottom of the screen.
 //	// Uses player
 //	//
-func P_BringUpWeapon(player *player_t) {
+func p_BringUpWeapon(player *player_t) {
 	var newstate statenum_t
 	if player.Fpendingweapon == wp_nochange {
 		player.Fpendingweapon = player.Freadyweapon
 	}
 	if player.Fpendingweapon == wp_chainsaw {
-		S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_sawup))
+		s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_sawup))
 	}
 	newstate = weaponinfo[player.Fpendingweapon].Fupstate
 	player.Fpendingweapon = wp_nochange
 	player.Fpsprites[ps_weapon].Fsy = 128 * (1 << FRACBITS)
-	P_SetPsprite(player, int32(ps_weapon), newstate)
+	p_SetPsprite(player, int32(ps_weapon), newstate)
 }
 
 // C documentation
@@ -28550,7 +28550,7 @@ func P_BringUpWeapon(player *player_t) {
 //	// Returns true if there is enough ammo to shoot.
 //	// If not, selects the next weapon to use.
 //	//
-func P_CheckAmmo(player *player_t) (r boolean) {
+func p_CheckAmmo(player *player_t) (r boolean) {
 	var ammo ammotype_t
 	var count int32
 	ammo = weaponinfo[player.Freadyweapon].Fammo
@@ -28608,24 +28608,24 @@ func P_CheckAmmo(player *player_t) (r boolean) {
 		}
 	}
 	// Now set appropriate weapon overlay.
-	P_SetPsprite(player, int32(ps_weapon), weaponinfo[player.Freadyweapon].Fdownstate)
+	p_SetPsprite(player, int32(ps_weapon), weaponinfo[player.Freadyweapon].Fdownstate)
 	return 0
 }
 
 // C documentation
 //
 //	//
-//	// P_FireWeapon.
+//	// p_FireWeapon.
 //	//
-func P_FireWeapon(player *player_t) {
+func p_FireWeapon(player *player_t) {
 	var newstate statenum_t
-	if P_CheckAmmo(player) == 0 {
+	if p_CheckAmmo(player) == 0 {
 		return
 	}
-	P_SetMobjState(player.Fmo, S_PLAY_ATK1)
+	p_SetMobjState(player.Fmo, S_PLAY_ATK1)
 	newstate = weaponinfo[player.Freadyweapon].Fatkstate
-	P_SetPsprite(player, int32(ps_weapon), newstate)
-	P_NoiseAlert(player.Fmo, player.Fmo)
+	p_SetPsprite(player, int32(ps_weapon), newstate)
+	p_NoiseAlert(player.Fmo, player.Fmo)
 }
 
 // C documentation
@@ -28634,8 +28634,8 @@ func P_FireWeapon(player *player_t) {
 //	// P_DropWeapon
 //	// Player died, so put the weapon away.
 //	//
-func P_DropWeapon(player *player_t) {
-	P_SetPsprite(player, int32(ps_weapon), weaponinfo[player.Freadyweapon].Fdownstate)
+func p_DropWeapon(player *player_t) {
+	p_SetPsprite(player, int32(ps_weapon), weaponinfo[player.Freadyweapon].Fdownstate)
 }
 
 // C documentation
@@ -28647,15 +28647,15 @@ func P_DropWeapon(player *player_t) {
 //	// Follows after getting weapon up,
 //	// or after previous attack/fire sequence.
 //	//
-func A_WeaponReady(player *player_t, psp *pspdef_t) {
+func a_WeaponReady(player *player_t, psp *pspdef_t) {
 	var angle int32
 	var newstate statenum_t
 	// get out of attack state
 	if player.Fmo.Fstate == &states[S_PLAY_ATK1] || player.Fmo.Fstate == &states[S_PLAY_ATK2] {
-		P_SetMobjState(player.Fmo, S_PLAY)
+		p_SetMobjState(player.Fmo, S_PLAY)
 	}
 	if player.Freadyweapon == wp_chainsaw && psp.Fstate == &states[S_SAW] {
-		S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_sawidl))
+		s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_sawidl))
 	}
 	// check for change
 	//  if player is dead, put the weapon away
@@ -28663,7 +28663,7 @@ func A_WeaponReady(player *player_t, psp *pspdef_t) {
 		// change weapon
 		//  (pending weapon should allready be validated)
 		newstate = weaponinfo[player.Freadyweapon].Fdownstate
-		P_SetPsprite(player, int32(ps_weapon), newstate)
+		p_SetPsprite(player, int32(ps_weapon), newstate)
 		return
 	}
 	// check for fire
@@ -28671,7 +28671,7 @@ func A_WeaponReady(player *player_t, psp *pspdef_t) {
 	if int32(player.Fcmd.Fbuttons)&BT_ATTACK != 0 {
 		if player.Fattackdown == 0 || player.Freadyweapon != wp_missile && player.Freadyweapon != wp_bfg {
 			player.Fattackdown = 1
-			P_FireWeapon(player)
+			p_FireWeapon(player)
 			return
 		}
 	} else {
@@ -28691,20 +28691,20 @@ func A_WeaponReady(player *player_t, psp *pspdef_t) {
 //	// The player can re-fire the weapon
 //	// without lowering it entirely.
 //	//
-func A_ReFire(player *player_t, psp *pspdef_t) {
+func a_ReFire(player *player_t, psp *pspdef_t) {
 	// check for fire
 	//  (if a weaponchange is pending, let it go through instead)
 	if int32(player.Fcmd.Fbuttons)&BT_ATTACK != 0 && player.Fpendingweapon == wp_nochange && player.Fhealth != 0 {
 		player.Frefire++
-		P_FireWeapon(player)
+		p_FireWeapon(player)
 	} else {
 		player.Frefire = 0
-		P_CheckAmmo(player)
+		p_CheckAmmo(player)
 	}
 }
 
-func A_CheckReload(player *player_t, psp *pspdef_t) {
-	P_CheckAmmo(player)
+func a_CheckReload(player *player_t, psp *pspdef_t) {
+	p_CheckAmmo(player)
 }
 
 // C documentation
@@ -28714,7 +28714,7 @@ func A_CheckReload(player *player_t, psp *pspdef_t) {
 //	// Lowers current weapon,
 //	//  and changes weapon at bottom.
 //	//
-func A_Lower(player *player_t, psp *pspdef_t) {
+func a_Lower(player *player_t, psp *pspdef_t) {
 	psp.Fsy += 1 << FRACBITS * 6
 	// Is already down.
 	if psp.Fsy < 128*(1<<FRACBITS) {
@@ -28730,11 +28730,11 @@ func A_Lower(player *player_t, psp *pspdef_t) {
 	// so change the weapon and start raising it
 	if player.Fhealth == 0 {
 		// Player is dead, so keep the weapon off screen.
-		P_SetPsprite(player, int32(ps_weapon), S_NULL)
+		p_SetPsprite(player, int32(ps_weapon), S_NULL)
 		return
 	}
 	player.Freadyweapon = player.Fpendingweapon
-	P_BringUpWeapon(player)
+	p_BringUpWeapon(player)
 }
 
 // C documentation
@@ -28742,7 +28742,7 @@ func A_Lower(player *player_t, psp *pspdef_t) {
 //	//
 //	// A_Raise
 //	//
-func A_Raise(player *player_t, psp *pspdef_t) {
+func a_Raise(player *player_t, psp *pspdef_t) {
 	var newstate statenum_t
 	psp.Fsy -= 1 << FRACBITS * 6
 	if psp.Fsy > 32*(1<<FRACBITS) {
@@ -28752,7 +28752,7 @@ func A_Raise(player *player_t, psp *pspdef_t) {
 	// The weapon has been raised all the way,
 	//  so change to the ready state.
 	newstate = weaponinfo[player.Freadyweapon].Freadystate
-	P_SetPsprite(player, int32(ps_weapon), newstate)
+	p_SetPsprite(player, int32(ps_weapon), newstate)
 }
 
 // C documentation
@@ -28760,9 +28760,9 @@ func A_Raise(player *player_t, psp *pspdef_t) {
 //	//
 //	// A_GunFlash
 //	//
-func A_GunFlash(player *player_t, psp *pspdef_t) {
-	P_SetMobjState(player.Fmo, S_PLAY_ATK2)
-	P_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
+func a_GunFlash(player *player_t, psp *pspdef_t) {
+	p_SetMobjState(player.Fmo, S_PLAY_ATK2)
+	p_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
 }
 
 //
@@ -28774,21 +28774,21 @@ func A_GunFlash(player *player_t, psp *pspdef_t) {
 //	//
 //	// A_Punch
 //	//
-func A_Punch(player *player_t, psp *pspdef_t) {
+func a_Punch(player *player_t, psp *pspdef_t) {
 	var angle angle_t
 	var damage, slope int32
-	damage = (P_Random()%int32(10) + 1) << 1
+	damage = (p_Random()%int32(10) + 1) << 1
 	if player.Fpowers[pw_strength] != 0 {
 		damage *= 10
 	}
 	angle = player.Fmo.Fangle
-	angle += uint32((P_Random() - P_Random()) << 18)
-	slope = P_AimLineAttack(player.Fmo, angle, 64*(1<<FRACBITS))
-	P_LineAttack(player.Fmo, angle, 64*(1<<FRACBITS), slope, damage)
+	angle += uint32((p_Random() - p_Random()) << 18)
+	slope = p_AimLineAttack(player.Fmo, angle, 64*(1<<FRACBITS))
+	p_LineAttack(player.Fmo, angle, 64*(1<<FRACBITS), slope, damage)
 	// turn to face target
 	if linetarget != nil {
-		S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_punch))
-		player.Fmo.Fangle = R_PointToAngle2(player.Fmo.Fx, player.Fmo.Fy, linetarget.Fx, linetarget.Fy)
+		s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_punch))
+		player.Fmo.Fangle = r_PointToAngle2(player.Fmo.Fx, player.Fmo.Fy, linetarget.Fx, linetarget.Fy)
 	}
 }
 
@@ -28797,22 +28797,22 @@ func A_Punch(player *player_t, psp *pspdef_t) {
 //	//
 //	// A_Saw
 //	//
-func A_Saw(player *player_t, psp *pspdef_t) {
+func a_Saw(player *player_t, psp *pspdef_t) {
 	var angle angle_t
 	var damage, slope int32
-	damage = 2 * (P_Random()%int32(10) + 1)
+	damage = 2 * (p_Random()%int32(10) + 1)
 	angle = player.Fmo.Fangle
-	angle += uint32((P_Random() - P_Random()) << 18)
+	angle += uint32((p_Random() - p_Random()) << 18)
 	// use meleerange + 1 se the puff doesn't skip the flash
-	slope = P_AimLineAttack(player.Fmo, angle, 64*(1<<FRACBITS)+1)
-	P_LineAttack(player.Fmo, angle, 64*(1<<FRACBITS)+1, slope, damage)
+	slope = p_AimLineAttack(player.Fmo, angle, 64*(1<<FRACBITS)+1)
+	p_LineAttack(player.Fmo, angle, 64*(1<<FRACBITS)+1, slope, damage)
 	if linetarget == nil {
-		S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_sawful))
+		s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_sawful))
 		return
 	}
-	S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_sawhit))
+	s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_sawhit))
 	// turn to face target
-	angle = R_PointToAngle2(player.Fmo.Fx, player.Fmo.Fy, linetarget.Fx, linetarget.Fy)
+	angle = r_PointToAngle2(player.Fmo.Fx, player.Fmo.Fy, linetarget.Fx, linetarget.Fy)
 	if angle-player.Fmo.Fangle > uint32(ANG1807) {
 		if int32(angle-player.Fmo.Fangle) < -ANG905/20 {
 			player.Fmo.Fangle = angle + uint32(ANG905/21)
@@ -28848,9 +28848,9 @@ func DecreaseAmmo(player *player_t, ammonum ammotype_t, amount int32) {
 //	//
 //	// A_FireMissile
 //	//
-func A_FireMissile(player *player_t, psp *pspdef_t) {
+func a_FireMissile(player *player_t, psp *pspdef_t) {
 	DecreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 1)
-	P_SpawnPlayerMissile(player.Fmo, MT_ROCKET)
+	p_SpawnPlayerMissile(player.Fmo, MT_ROCKET)
 }
 
 // C documentation
@@ -28858,9 +28858,9 @@ func A_FireMissile(player *player_t, psp *pspdef_t) {
 //	//
 //	// A_FireBFG
 //	//
-func A_FireBFG(player *player_t, psp *pspdef_t) {
+func a_FireBFG(player *player_t, psp *pspdef_t) {
 	DecreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, DEH_DEFAULT_BFG_CELLS_PER_SHOT)
-	P_SpawnPlayerMissile(player.Fmo, MT_BFG)
+	p_SpawnPlayerMissile(player.Fmo, MT_BFG)
 }
 
 // C documentation
@@ -28868,23 +28868,23 @@ func A_FireBFG(player *player_t, psp *pspdef_t) {
 //	//
 //	// A_FirePlasma
 //	//
-func A_FirePlasma(player *player_t, psp *pspdef_t) {
+func a_FirePlasma(player *player_t, psp *pspdef_t) {
 	DecreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 1)
-	P_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate+P_Random()&int32(1))
-	P_SpawnPlayerMissile(player.Fmo, MT_PLASMA)
+	p_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate+p_Random()&int32(1))
+	p_SpawnPlayerMissile(player.Fmo, MT_PLASMA)
 }
 
-func P_BulletSlope(mo *mobj_t) {
+func p_BulletSlope(mo *mobj_t) {
 	var an angle_t
 	// see which target is to be aimed at
 	an = mo.Fangle
-	bulletslope = P_AimLineAttack(mo, an, 16*64*(1<<FRACBITS))
+	bulletslope = p_AimLineAttack(mo, an, 16*64*(1<<FRACBITS))
 	if linetarget == nil {
 		an += uint32(1 << 26)
-		bulletslope = P_AimLineAttack(mo, an, 16*64*(1<<FRACBITS))
+		bulletslope = p_AimLineAttack(mo, an, 16*64*(1<<FRACBITS))
 		if linetarget == nil {
 			an -= uint32(2 << 26)
-			bulletslope = P_AimLineAttack(mo, an, 16*64*(1<<FRACBITS))
+			bulletslope = p_AimLineAttack(mo, an, 16*64*(1<<FRACBITS))
 		}
 	}
 }
@@ -28894,15 +28894,15 @@ func P_BulletSlope(mo *mobj_t) {
 //	//
 //	// P_GunShot
 //	//
-func P_GunShot(mo *mobj_t, accurate boolean) {
+func p_GunShot(mo *mobj_t, accurate boolean) {
 	var angle angle_t
 	var damage int32
-	damage = 5 * (P_Random()%int32(3) + 1)
+	damage = 5 * (p_Random()%int32(3) + 1)
 	angle = mo.Fangle
 	if accurate == 0 {
-		angle += uint32((P_Random() - P_Random()) << 18)
+		angle += uint32((p_Random() - p_Random()) << 18)
 	}
-	P_LineAttack(mo, angle, 32*64*(1<<FRACBITS), bulletslope, damage)
+	p_LineAttack(mo, angle, 32*64*(1<<FRACBITS), bulletslope, damage)
 }
 
 // C documentation
@@ -28910,13 +28910,13 @@ func P_GunShot(mo *mobj_t, accurate boolean) {
 //	//
 //	// A_FirePistol
 //	//
-func A_FirePistol(player *player_t, psp *pspdef_t) {
-	S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_pistol))
-	P_SetMobjState(player.Fmo, S_PLAY_ATK2)
+func a_FirePistol(player *player_t, psp *pspdef_t) {
+	s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_pistol))
+	p_SetMobjState(player.Fmo, S_PLAY_ATK2)
 	DecreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 1)
-	P_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
-	P_BulletSlope(player.Fmo)
-	P_GunShot(player.Fmo, booluint32(player.Frefire == 0))
+	p_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
+	p_BulletSlope(player.Fmo)
+	p_GunShot(player.Fmo, booluint32(player.Frefire == 0))
 }
 
 // C documentation
@@ -28924,19 +28924,19 @@ func A_FirePistol(player *player_t, psp *pspdef_t) {
 //	//
 //	// A_FireShotgun
 //	//
-func A_FireShotgun(player *player_t, psp *pspdef_t) {
+func a_FireShotgun(player *player_t, psp *pspdef_t) {
 	var i int32
-	S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_shotgn))
-	P_SetMobjState(player.Fmo, S_PLAY_ATK2)
+	s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_shotgn))
+	p_SetMobjState(player.Fmo, S_PLAY_ATK2)
 	DecreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 1)
-	P_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
-	P_BulletSlope(player.Fmo)
+	p_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
+	p_BulletSlope(player.Fmo)
 	i = 0
 	for {
 		if i >= 7 {
 			break
 		}
-		P_GunShot(player.Fmo, 0)
+		p_GunShot(player.Fmo, 0)
 		goto _1
 	_1:
 		;
@@ -28949,23 +28949,23 @@ func A_FireShotgun(player *player_t, psp *pspdef_t) {
 //	//
 //	// A_FireShotgun2
 //	//
-func A_FireShotgun2(player *player_t, psp *pspdef_t) {
+func a_FireShotgun2(player *player_t, psp *pspdef_t) {
 	var angle angle_t
 	var damage, i int32
-	S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_dshtgn))
-	P_SetMobjState(player.Fmo, S_PLAY_ATK2)
+	s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_dshtgn))
+	p_SetMobjState(player.Fmo, S_PLAY_ATK2)
 	DecreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 2)
-	P_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
-	P_BulletSlope(player.Fmo)
+	p_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
+	p_BulletSlope(player.Fmo)
 	i = 0
 	for {
 		if i >= 20 {
 			break
 		}
-		damage = 5 * (P_Random()%int32(3) + 1)
+		damage = 5 * (p_Random()%int32(3) + 1)
 		angle = player.Fmo.Fangle
-		angle += uint32((P_Random() - P_Random()) << 19)
-		P_LineAttack(player.Fmo, angle, 32*64*(1<<FRACBITS), bulletslope+(P_Random()-P_Random())<<int32(5), damage)
+		angle += uint32((p_Random() - p_Random()) << 19)
+		p_LineAttack(player.Fmo, angle, 32*64*(1<<FRACBITS), bulletslope+(p_Random()-p_Random())<<int32(5), damage)
 		goto _1
 	_1:
 		;
@@ -28978,17 +28978,17 @@ func A_FireShotgun2(player *player_t, psp *pspdef_t) {
 //	//
 //	// A_FireCGun
 //	//
-func A_FireCGun(player *player_t, psp *pspdef_t) {
-	S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_pistol))
+func a_FireCGun(player *player_t, psp *pspdef_t) {
+	s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_pistol))
 	if player.Fammo[weaponinfo[player.Freadyweapon].Fammo] == 0 {
 		return
 	}
-	P_SetMobjState(player.Fmo, S_PLAY_ATK2)
+	p_SetMobjState(player.Fmo, S_PLAY_ATK2)
 	DecreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 1)
 	newState := weaponinfo[player.Freadyweapon].Fflashstate + stateIndex(psp.Fstate) - S_CHAIN1
-	P_SetPsprite(player, int32(ps_flash), newState)
-	P_BulletSlope(player.Fmo)
-	P_GunShot(player.Fmo, booluint32(player.Frefire == 0))
+	p_SetPsprite(player, int32(ps_flash), newState)
+	p_BulletSlope(player.Fmo)
+	p_GunShot(player.Fmo, booluint32(player.Frefire == 0))
 }
 
 // C documentation
@@ -28996,15 +28996,15 @@ func A_FireCGun(player *player_t, psp *pspdef_t) {
 //	//
 //	// ?
 //	//
-func A_Light0(player *player_t, psp *pspdef_t) {
+func a_Light0(player *player_t, psp *pspdef_t) {
 	player.Fextralight = 0
 }
 
-func A_Light1(player *player_t, psp *pspdef_t) {
+func a_Light1(player *player_t, psp *pspdef_t) {
 	player.Fextralight = 1
 }
 
-func A_Light2(player *player_t, psp *pspdef_t) {
+func a_Light2(player *player_t, psp *pspdef_t) {
 	player.Fextralight = 2
 }
 
@@ -29014,7 +29014,7 @@ func A_Light2(player *player_t, psp *pspdef_t) {
 //	// A_BFGSpray
 //	// Spawn a BFG explosion on every monster in view
 //	//
-func A_BFGSpray(mo *mobj_t) {
+func a_BFGSpray(mo *mobj_t) {
 	var an angle_t
 	var damage, i, j int32
 	// offset angles from its attack angle
@@ -29026,24 +29026,24 @@ func A_BFGSpray(mo *mobj_t) {
 		an = mo.Fangle - uint32(ANG905/2) + uint32(ANG905/40*i)
 		// mo->target is the originator (player)
 		//  of the missile
-		P_AimLineAttack(mo.Ftarget, an, 16*64*(1<<FRACBITS))
+		p_AimLineAttack(mo.Ftarget, an, 16*64*(1<<FRACBITS))
 		if linetarget == nil {
 			goto _1
 		}
-		P_SpawnMobj(linetarget.Fx, linetarget.Fy, linetarget.Fz+linetarget.Fheight>>2, MT_EXTRABFG)
+		p_SpawnMobj(linetarget.Fx, linetarget.Fy, linetarget.Fz+linetarget.Fheight>>2, MT_EXTRABFG)
 		damage = 0
 		j = 0
 		for {
 			if j >= 15 {
 				break
 			}
-			damage += P_Random()&int32(7) + 1
+			damage += p_Random()&int32(7) + 1
 			goto _2
 		_2:
 			;
 			j++
 		}
-		P_DamageMobj(linetarget, mo.Ftarget, mo.Ftarget, damage)
+		p_DamageMobj(linetarget, mo.Ftarget, mo.Ftarget, damage)
 		goto _1
 	_1:
 		;
@@ -29056,8 +29056,8 @@ func A_BFGSpray(mo *mobj_t) {
 //	//
 //	// A_BFGsound
 //	//
-func A_BFGsound(player *player_t, psp *pspdef_t) {
-	S_StartSound(&player.Fmo.degenmobj_t, int32(sfx_bfg))
+func a_BFGsound(player *player_t, psp *pspdef_t) {
+	s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_bfg))
 }
 
 // C documentation
@@ -29066,7 +29066,7 @@ func A_BFGsound(player *player_t, psp *pspdef_t) {
 //	// P_SetupPsprites
 //	// Called at start of level for each player.
 //	//
-func P_SetupPsprites(player *player_t) {
+func p_SetupPsprites(player *player_t) {
 	var i int32
 	// remove all psprites
 	i = 0
@@ -29082,7 +29082,7 @@ func P_SetupPsprites(player *player_t) {
 	}
 	// spawn the gun
 	player.Fpendingweapon = player.Freadyweapon
-	P_BringUpWeapon(player)
+	p_BringUpWeapon(player)
 }
 
 // C documentation
@@ -29091,7 +29091,7 @@ func P_SetupPsprites(player *player_t) {
 //	// P_MovePsprites
 //	// Called every tic by player thinking routine.
 //	//
-func P_MovePsprites(player *player_t) {
+func p_MovePsprites(player *player_t) {
 	var i int32
 	var v2 *state_t
 	i = 0
@@ -29108,7 +29108,7 @@ func P_MovePsprites(player *player_t) {
 			if psp.Ftics != -1 {
 				psp.Ftics--
 				if psp.Ftics == 0 {
-					P_SetPsprite(player, i, psp.Fstate.Fnextstate)
+					p_SetPsprite(player, i, psp.Fstate.Fnextstate)
 				}
 			}
 		}
@@ -29127,7 +29127,7 @@ const SAVEGAME_EOF = 29
 // the file has been successfully saved, it will be renamed to the
 // real file.
 
-func P_TempSaveGameFile() string {
+func p_TempSaveGameFile() string {
 	if filename == "" {
 		filename = savegamedir + "temp.dsg"
 	}
@@ -29138,7 +29138,7 @@ var filename string
 
 // Get the filename of the save game file to use for the specified slot.
 
-func P_SaveGameFile(slot int32) string {
+func p_SaveGameFile(slot int32) string {
 	return fmt.Sprintf("%sdgsave%d.dsg", savegamedir, slot)
 }
 
@@ -30109,7 +30109,7 @@ func saveg_write_glow_t(str *glow_t) {
 // Write the header for a savegame
 //
 
-func P_WriteSaveGameHeader(description string) {
+func p_WriteSaveGameHeader(description string) {
 	var i int
 	for i = 0; i < SAVESTRINGSIZE; i++ {
 		if i < len(description) {
@@ -30118,7 +30118,7 @@ func P_WriteSaveGameHeader(description string) {
 			saveg_write8(0)
 		}
 	}
-	bp := fmt.Sprintf("version %d", G_VanillaVersionCode())
+	bp := fmt.Sprintf("version %d", g_VanillaVersionCode())
 	i = 0
 	for {
 		if i >= VERSIONSIZE {
@@ -30154,7 +30154,7 @@ func P_WriteSaveGameHeader(description string) {
 // Read the header for a savegame
 //
 
-func P_ReadSaveGameHeader() (r boolean) {
+func p_ReadSaveGameHeader() (r boolean) {
 	var a, b, c uint8
 	var i int32
 	// skip the description field
@@ -30178,7 +30178,7 @@ func P_ReadSaveGameHeader() (r boolean) {
 		bp[i] = saveg_read8()
 		i++
 	}
-	vanilla := fmt.Sprintf("version %d", G_VanillaVersionCode())
+	vanilla := fmt.Sprintf("version %d", g_VanillaVersionCode())
 	if vanilla != gostring_bytes(bp[:]) {
 		return 0
 	} // bad version
@@ -30208,7 +30208,7 @@ func P_ReadSaveGameHeader() (r boolean) {
 // Read the end of file marker.  Returns true if read successfully.
 //
 
-func P_ReadSaveGameEOF() (r boolean) {
+func p_ReadSaveGameEOF() (r boolean) {
 	var value int32
 	value = int32(saveg_read8())
 	return booluint32(value == SAVEGAME_EOF)
@@ -30218,7 +30218,7 @@ func P_ReadSaveGameEOF() (r boolean) {
 // Write the end of file marker
 //
 
-func P_WriteSaveGameEOF() {
+func p_WriteSaveGameEOF() {
 	saveg_write8(uint8(SAVEGAME_EOF))
 }
 
@@ -30227,7 +30227,7 @@ func P_WriteSaveGameEOF() {
 //	//
 //	// P_ArchivePlayers
 //	//
-func P_ArchivePlayers() {
+func p_ArchivePlayers() {
 	var i int32
 	i = 0
 	for {
@@ -30251,7 +30251,7 @@ func P_ArchivePlayers() {
 //	//
 //	// P_UnArchivePlayers
 //	//
-func P_UnArchivePlayers() {
+func p_UnArchivePlayers() {
 	for i := 0; i < MAXPLAYERS; i++ {
 		if playeringame[i] == 0 {
 			continue
@@ -30270,7 +30270,7 @@ func P_UnArchivePlayers() {
 //	//
 //	// P_ArchiveWorld
 //	//
-func P_ArchiveWorld() {
+func p_ArchiveWorld() {
 	var si *side_t
 	// do sectors
 	for i := int32(0); i < numsectors; i++ {
@@ -30308,7 +30308,7 @@ func P_ArchiveWorld() {
 //	//
 //	// P_UnArchiveWorld
 //	//
-func P_UnArchiveWorld() {
+func p_UnArchiveWorld() {
 	var si *side_t
 	// do sectors
 	for i := int32(0); i < numsectors; i++ {
@@ -30351,7 +30351,7 @@ const tc_mobj = 1
 //	//
 //	// P_ArchiveThinkers
 //	//
-func P_ArchiveThinkers() {
+func p_ArchiveThinkers() {
 	var th *thinker_t
 	// save off the current thinkers
 	th = thinkercap.Fnext
@@ -30365,7 +30365,7 @@ func P_ArchiveThinkers() {
 			saveg_write_mobj_t(mo)
 			goto _1
 		}
-		// I_Error ("P_ArchiveThinkers: Unknown thinker function");
+		// i_Error ("p_ArchiveThinkers: Unknown thinker function");
 		goto _1
 	_1:
 		;
@@ -30380,7 +30380,7 @@ func P_ArchiveThinkers() {
 //	//
 //	// P_UnArchiveThinkers
 //	//
-func P_UnArchiveThinkers() {
+func p_UnArchiveThinkers() {
 	var currentthinker, next *thinker_t
 	var mobj *mobj_t
 	var tclass uint8
@@ -30389,13 +30389,13 @@ func P_UnArchiveThinkers() {
 	for currentthinker != &thinkercap {
 		next = currentthinker.Fnext
 		if mo, ok := currentthinker.Ffunction.(*mobj_t); ok {
-			P_RemoveMobj(mo)
+			p_RemoveMobj(mo)
 		} else {
-			//Z_Free(uintptr(unsafe.Pointer(currentthinker)))
+			//z_Free(uintptr(unsafe.Pointer(currentthinker)))
 		}
 		currentthinker = next
 	}
-	P_InitThinkers()
+	p_InitThinkers()
 	// read in saved thinkers
 	for 1 != 0 {
 		tclass = saveg_read8()
@@ -30408,14 +30408,14 @@ func P_UnArchiveThinkers() {
 			saveg_read_mobj_t(mobj)
 			mobj.Ftarget = nil
 			mobj.Ftracer = nil
-			P_SetThingPosition(mobj)
+			p_SetThingPosition(mobj)
 			mobj.Finfo = &mobjinfo[mobj.Ftype1]
 			mobj.Ffloorz = mobj.Fsubsector.Fsector.Ffloorheight
 			mobj.Fceilingz = mobj.Fsubsector.Fsector.Fceilingheight
 			mobj.Fthinker.Ffunction = mobj
-			P_AddThinker(&mobj.Fthinker)
+			p_AddThinker(&mobj.Fthinker)
 		default:
-			I_Error("Unknown tclass %d in savegame", tclass)
+			i_Error("Unknown tclass %d in savegame", tclass)
 		}
 	}
 }
@@ -30434,15 +30434,15 @@ const tc_endspecials = 7
 //	//
 //	// Things to handle:
 //	//
-//	// T_MoveCeiling, (ceiling_t: sector_t * swizzle), - active list
-//	// T_VerticalDoor, (vldoor_t: sector_t * swizzle),
-//	// T_MoveFloor, (floormove_t: sector_t * swizzle),
-//	// T_LightFlash, (lightflash_t: sector_t * swizzle),
-//	// T_StrobeFlash, (strobe_t: sector_t *),
-//	// T_Glow, (glow_t: sector_t *),
-//	// T_PlatRaise, (plat_t: sector_t *), - active list
+//	// t_MoveCeiling, (ceiling_t: sector_t * swizzle), - active list
+//	// t_VerticalDoor, (vldoor_t: sector_t * swizzle),
+//	// t_MoveFloor, (floormove_t: sector_t * swizzle),
+//	// t_LightFlash, (lightflash_t: sector_t * swizzle),
+//	// t_StrobeFlash, (strobe_t: sector_t *),
+//	// t_Glow, (glow_t: sector_t *),
+//	// t_PlatRaise, (plat_t: sector_t *), - active list
 //	//
-func P_ArchiveSpecials() {
+func p_ArchiveSpecials() {
 	var i int32
 	var th *thinker_t
 	// save off the current thinkers
@@ -30528,7 +30528,7 @@ func P_ArchiveSpecials() {
 //	//
 //	// P_UnArchiveSpecials
 //	//
-func P_UnArchiveSpecials() {
+func p_UnArchiveSpecials() {
 	var tclass uint8
 	// read in saved thinkers
 	for 1 != 0 {
@@ -30544,22 +30544,22 @@ func P_UnArchiveSpecials() {
 			if ceilingP.Fthinker.Ffunction != nil {
 				ceilingP.Fthinker.Ffunction = ceilingP
 			}
-			P_AddThinker(&ceilingP.Fthinker)
-			P_AddActiveCeiling(ceilingP)
+			p_AddThinker(&ceilingP.Fthinker)
+			p_AddActiveCeiling(ceilingP)
 		case tc_door:
 			saveg_read_pad()
 			doorP := &vldoor_t{}
 			saveg_read_vldoor_t(doorP)
 			doorP.Fsector.Fspecialdata = doorP
 			doorP.Fthinker.Ffunction = doorP
-			P_AddThinker(&doorP.Fthinker)
+			p_AddThinker(&doorP.Fthinker)
 		case tc_floor:
 			saveg_read_pad()
 			floorP := &floormove_t{}
 			saveg_read_floormove_t(floorP)
 			floorP.Fsector.Fspecialdata = floorP
 			floorP.Fthinker.Ffunction = floorP
-			P_AddThinker(&floorP.Fthinker)
+			p_AddThinker(&floorP.Fthinker)
 		case tc_plat:
 			saveg_read_pad()
 			platP := &plat_t{}
@@ -30568,28 +30568,28 @@ func P_UnArchiveSpecials() {
 			if platP.Fthinker.Ffunction != nil {
 				platP.Fthinker.Ffunction = platP
 			}
-			P_AddThinker(&platP.Fthinker)
-			P_AddActivePlat(platP)
+			p_AddThinker(&platP.Fthinker)
+			p_AddActivePlat(platP)
 		case tc_flash:
 			saveg_read_pad()
 			flashP := &lightflash_t{}
 			saveg_read_lightflash_t(flashP)
 			flashP.Fthinker.Ffunction = flashP
-			P_AddThinker(&flashP.Fthinker)
+			p_AddThinker(&flashP.Fthinker)
 		case tc_strobe:
 			saveg_read_pad()
 			strobeP := &strobe_t{}
 			saveg_read_strobe_t(strobeP)
 			strobeP.Fthinker.Ffunction = strobeP
-			P_AddThinker(&strobeP.Fthinker)
+			p_AddThinker(&strobeP.Fthinker)
 		case tc_glow:
 			saveg_read_pad()
 			glowP := &glow_t{}
 			saveg_read_glow_t(glowP)
 			glowP.Fthinker.Ffunction = glowP
-			P_AddThinker(&glowP.Fthinker)
+			p_AddThinker(&glowP.Fthinker)
 		default:
-			I_Error("P_UnarchiveSpecials:Unknown tclass %d in savegame", tclass)
+			i_Error("P_UnarchiveSpecials:Unknown tclass %d in savegame", tclass)
 		}
 	}
 }
@@ -30601,15 +30601,15 @@ var totallines int32
 //	//
 //	// P_LoadVertexes
 //	//
-func P_LoadVertexes(lump int32) {
+func p_LoadVertexes(lump int32) {
 	var data uintptr
 	// Determine number of lumps:
 	//  total lump length / vertex record length.
-	numvertexes = int32(uint64(W_LumpLength(uint32(lump))) / 4)
+	numvertexes = int32(uint64(w_LumpLength(uint32(lump))) / 4)
 	// Allocate zone memory for buffer.
 	vertexes = make([]vertex_t, numvertexes)
 	// Load data into cache.
-	data = W_CacheLumpNum(lump)
+	data = w_CacheLumpNum(lump)
 	ml := unsafe.Slice((*mapvertex_t)(unsafe.Pointer(data)), numvertexes)
 	// Copy and convert vertex coordinates,
 	// internal representation as fixed.
@@ -30619,7 +30619,7 @@ func P_LoadVertexes(lump int32) {
 		li.Fy = int32(ml[i].Fy) << FRACBITS
 	}
 	// Free buffer memory.
-	W_ReleaseLumpNum(lump)
+	w_ReleaseLumpNum(lump)
 }
 
 // C documentation
@@ -30630,8 +30630,8 @@ func P_LoadVertexes(lump int32) {
 func GetSectorAtNullAddress() (r *sector_t) {
 	if null_sector_is_initialized == 0 {
 		null_sector = sector_t{}
-		I_GetMemoryValue(0, uintptr(unsafe.Pointer(&null_sector)), 4)
-		I_GetMemoryValue(4, uintptr(unsafe.Pointer(&null_sector))+4, 4)
+		i_GetMemoryValue(0, uintptr(unsafe.Pointer(&null_sector)), 4)
+		i_GetMemoryValue(4, uintptr(unsafe.Pointer(&null_sector))+4, 4)
 		null_sector_is_initialized = 1
 	}
 	return &null_sector
@@ -30646,13 +30646,13 @@ var null_sector sector_t
 //	//
 //	// P_LoadSegs
 //	//
-func P_LoadSegs(lump int32) {
+func p_LoadSegs(lump int32) {
 	var data uintptr
 	var ldef *line_t
 	var linedef, side, sidenum int32
-	numsegs = int32(uint64(W_LumpLength(uint32(lump))) / 12)
+	numsegs = int32(uint64(w_LumpLength(uint32(lump))) / 12)
 	segs = make([]seg_t, numsegs)
-	data = W_CacheLumpNum(lump)
+	data = w_CacheLumpNum(lump)
 	ml := unsafe.Slice((*mapseg_t)(unsafe.Pointer(data)), numsegs)
 	for i := int32(0); i < numsegs; i++ {
 		li := &segs[i]
@@ -30682,7 +30682,7 @@ func P_LoadSegs(lump int32) {
 			li.Fbacksector = nil
 		}
 	}
-	W_ReleaseLumpNum(lump)
+	w_ReleaseLumpNum(lump)
 }
 
 // C documentation
@@ -30690,17 +30690,17 @@ func P_LoadSegs(lump int32) {
 //	//
 //	// P_LoadSubsectors
 //	//
-func P_LoadSubsectors(lump int32) {
+func p_LoadSubsectors(lump int32) {
 	var data uintptr
-	numsubsectors = int32(uint64(W_LumpLength(uint32(lump))) / 4)
+	numsubsectors = int32(uint64(w_LumpLength(uint32(lump))) / 4)
 	subsectors = make([]subsector_t, numsubsectors)
-	data = W_CacheLumpNum(lump)
+	data = w_CacheLumpNum(lump)
 	ms := unsafe.Slice((*mapsubsector_t)(unsafe.Pointer(data)), numsubsectors)
 	for i := int32(0); i < numsubsectors; i++ {
 		subsectors[i].Fnumlines = ms[i].Fnumsegs
 		subsectors[i].Ffirstline = ms[i].Ffirstseg
 	}
-	W_ReleaseLumpNum(lump)
+	w_ReleaseLumpNum(lump)
 }
 
 // C documentation
@@ -30708,25 +30708,25 @@ func P_LoadSubsectors(lump int32) {
 //	//
 //	// P_LoadSectors
 //	//
-func P_LoadSectors(lump int32) {
+func p_LoadSectors(lump int32) {
 	var data uintptr
-	numsectors = int32(uint64(W_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapsector_t{})))
+	numsectors = int32(uint64(w_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapsector_t{})))
 	sectors = make([]sector_t, numsectors)
-	data = W_CacheLumpNum(lump)
+	data = w_CacheLumpNum(lump)
 	mapsectors := unsafe.Slice((*mapsector_t)(unsafe.Pointer(data)), numsectors)
 	for i := int32(0); i < numsectors; i++ {
 		ms := &mapsectors[i]
 		ss := &sectors[i]
 		ss.Ffloorheight = int32(ms.Ffloorheight) << FRACBITS
 		ss.Fceilingheight = int32(ms.Fceilingheight) << FRACBITS
-		ss.Ffloorpic = int16(R_FlatNumForName(gostring_bytes(ms.Ffloorpic[:])))
-		ss.Fceilingpic = int16(R_FlatNumForName(gostring_bytes(ms.Fceilingpic[:])))
+		ss.Ffloorpic = int16(r_FlatNumForName(gostring_bytes(ms.Ffloorpic[:])))
+		ss.Fceilingpic = int16(r_FlatNumForName(gostring_bytes(ms.Fceilingpic[:])))
 		ss.Flightlevel = ms.Flightlevel
 		ss.Fspecial = ms.Fspecial
 		ss.Ftag = ms.Ftag
 		ss.Fthinglist = nil
 	}
-	W_ReleaseLumpNum(lump)
+	w_ReleaseLumpNum(lump)
 }
 
 // C documentation
@@ -30734,11 +30734,11 @@ func P_LoadSectors(lump int32) {
 //	//
 //	// P_LoadNodes
 //	//
-func P_LoadNodes(lump int32) {
+func p_LoadNodes(lump int32) {
 	var data uintptr
-	numnodes = int32(uint64(W_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapnode_t{})))
+	numnodes = int32(uint64(w_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapnode_t{})))
 	nodes = make([]node_t, numnodes)
-	data = W_CacheLumpNum(lump)
+	data = w_CacheLumpNum(lump)
 	mapnodes := unsafe.Slice((*mapnode_t)(unsafe.Pointer(data)), numnodes)
 	for i := 0; i < int(numnodes); i++ {
 		no := &nodes[i]
@@ -30754,7 +30754,7 @@ func P_LoadNodes(lump int32) {
 			}
 		}
 	}
-	W_ReleaseLumpNum(lump)
+	w_ReleaseLumpNum(lump)
 }
 
 // C documentation
@@ -30762,12 +30762,12 @@ func P_LoadNodes(lump int32) {
 //	//
 //	// P_LoadThings
 //	//
-func P_LoadThings(lump int32) {
+func p_LoadThings(lump int32) {
 	var data uintptr
 	var numthings int32
 	var spawn boolean
-	data = W_CacheLumpNum(lump)
-	numthings = int32(uint64(W_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapthing_t{})))
+	data = w_CacheLumpNum(lump)
+	numthings = int32(uint64(w_LumpLength(uint32(lump))) / uint64(unsafe.Sizeof(mapthing_t{})))
 	mthings := unsafe.Slice((*mapthing_t)(unsafe.Pointer(data)), numthings)
 	for i := int32(0); i < numthings; i++ {
 		mt := &mthings[i]
@@ -30809,9 +30809,9 @@ func P_LoadThings(lump int32) {
 			Ftype1:   mt.Ftype1,
 			Foptions: mt.Foptions,
 		}
-		P_SpawnMapThing(bp)
+		p_SpawnMapThing(bp)
 	}
-	W_ReleaseLumpNum(lump)
+	w_ReleaseLumpNum(lump)
 }
 
 // C documentation
@@ -30820,13 +30820,13 @@ func P_LoadThings(lump int32) {
 //	// P_LoadLineDefs
 //	// Also counts secret lines for intermissions.
 //	//
-func P_LoadLineDefs(lump int32) {
+func p_LoadLineDefs(lump int32) {
 	var data uintptr
 	var v1, v2, v21, v3 *vertex_t
 	var i int32
-	numlines = int32(uint64(W_LumpLength(uint32(lump))) / 14)
+	numlines = int32(uint64(w_LumpLength(uint32(lump))) / 14)
 	lines = make([]line_t, numlines)
-	data = W_CacheLumpNum(lump)
+	data = w_CacheLumpNum(lump)
 	ml := unsafe.Slice((*maplinedef_t)(unsafe.Pointer(data)), numlines)
 	for i = 0; i < numlines; i++ {
 		ld := &lines[i]
@@ -30882,7 +30882,7 @@ func P_LoadLineDefs(lump int32) {
 			ld.Fbacksector = nil
 		}
 	}
-	W_ReleaseLumpNum(lump)
+	w_ReleaseLumpNum(lump)
 }
 
 // C documentation
@@ -30890,22 +30890,22 @@ func P_LoadLineDefs(lump int32) {
 //	//
 //	// P_LoadSideDefs
 //	//
-func P_LoadSideDefs(lump int32) {
+func p_LoadSideDefs(lump int32) {
 	var data uintptr
-	numsides = int32(uint64(W_LumpLength(uint32(lump))) / 30)
+	numsides = int32(uint64(w_LumpLength(uint32(lump))) / 30)
 	sides = make([]side_t, numsides)
-	data = W_CacheLumpNum(lump)
+	data = w_CacheLumpNum(lump)
 	msd := unsafe.Slice((*mapsidedef_t)(unsafe.Pointer(data)), numsides)
 	for i := int32(0); i < numsides; i++ {
 		sd := &sides[i]
 		sd.Ftextureoffset = int32(msd[i].Ftextureoffset) << FRACBITS
 		sd.Frowoffset = int32(msd[i].Frowoffset) << FRACBITS
-		sd.Ftoptexture = int16(R_TextureNumForName(gostring_bytes(msd[i].Ftoptexture[:])))
-		sd.Fbottomtexture = int16(R_TextureNumForName(gostring_bytes(msd[i].Fbottomtexture[:])))
-		sd.Fmidtexture = int16(R_TextureNumForName(gostring_bytes(msd[i].Fmidtexture[:])))
+		sd.Ftoptexture = int16(r_TextureNumForName(gostring_bytes(msd[i].Ftoptexture[:])))
+		sd.Fbottomtexture = int16(r_TextureNumForName(gostring_bytes(msd[i].Fbottomtexture[:])))
+		sd.Fmidtexture = int16(r_TextureNumForName(gostring_bytes(msd[i].Fmidtexture[:])))
 		sd.Fsector = &sectors[msd[i].Fsector]
 	}
-	W_ReleaseLumpNum(lump)
+	w_ReleaseLumpNum(lump)
 }
 
 // C documentation
@@ -30913,12 +30913,12 @@ func P_LoadSideDefs(lump int32) {
 //	//
 //	// P_LoadBlockMap
 //	//
-func P_LoadBlockMap(lump int32) {
+func p_LoadBlockMap(lump int32) {
 	var count, i, lumplen int32
-	lumplen = W_LumpLength(uint32(lump))
+	lumplen = w_LumpLength(uint32(lump))
 	count = lumplen / 2
-	rawLump := Z_Malloc(lumplen)
-	W_ReadLump(uint32(lump), rawLump)
+	rawLump := z_Malloc(lumplen)
+	w_ReadLump(uint32(lump), rawLump)
 	blockmaplump = unsafe.Slice((*int16)(unsafe.Pointer(rawLump)), count)
 	blockmap = blockmaplump[4:]
 	// Swap all short integers to native byte ordering.
@@ -30951,7 +30951,7 @@ func P_LoadBlockMap(lump int32) {
 //	// Builds sector line lists and subsector sector numbers.
 //	// Finds block bounding boxes for sectors.
 //	//
-func P_GroupLines() {
+func p_GroupLines() {
 	var block, i, j, v10, v7, v8, v9 int32
 	// look up sector number for each subsector
 	for i := int32(0); i < numsubsectors; i++ {
@@ -31007,15 +31007,15 @@ func P_GroupLines() {
 		}
 		var box box_t
 		sector := &sectors[i]
-		M_ClearBox(&box)
+		m_ClearBox(&box)
 		j = 0
 		for {
 			if j >= sector.Flinecount {
 				break
 			}
 			li := sector.Flines[j]
-			M_AddToBox(&box, li.Fv1.Fx, li.Fv1.Fy)
-			M_AddToBox(&box, li.Fv2.Fx, li.Fv2.Fy)
+			m_AddToBox(&box, li.Fv1.Fx, li.Fv1.Fy)
+			m_AddToBox(&box, li.Fv2.Fx, li.Fv2.Fy)
 			goto _6
 		_6:
 			;
@@ -31089,7 +31089,7 @@ func PadRejectArray(array []uint8, len1 uint32) {
 	if uint64(len1) > 16 {
 		fprintf_ccgo(os.Stderr, "PadRejectArray: REJECT lump too short to pad! (%d > %d)\n", len1, 16)
 		// Pad remaining space with 0 (or 0xff, if specified on command line).
-		if M_CheckParm("-reject_pad_with_ff") != 0 {
+		if m_CheckParm("-reject_pad_with_ff") != 0 {
 			padvalue = 0xff
 		} else {
 			padvalue = 0x00
@@ -31100,19 +31100,19 @@ func PadRejectArray(array []uint8, len1 uint32) {
 	}
 }
 
-func P_LoadReject(lumpnum int32) {
+func p_LoadReject(lumpnum int32) {
 	var lumplen, minlength int32
 	// Calculate the size that the REJECT lump *should* be.
 	minlength = (numsectors*numsectors + 7) / 8
 	// If the lump meets the minimum length, it can be loaded directly.
 	// Otherwise, we need to allocate a buffer of the correct size
 	// and pad it with appropriate data.
-	lumplen = W_LumpLength(uint32(lumpnum))
+	lumplen = w_LumpLength(uint32(lumpnum))
 	if lumplen >= minlength {
-		data := W_CacheLumpNum(lumpnum)
+		data := w_CacheLumpNum(lumpnum)
 		rejectmatrix = unsafe.Slice((*uint8)(unsafe.Pointer(data)), lumplen)
 	} else {
-		rejectmatrix = W_ReadLumpBytes(uint32(lumpnum))
+		rejectmatrix = w_ReadLumpBytes(uint32(lumpnum))
 		rejectmatrix = append(rejectmatrix, make([]uint8, minlength-lumplen)...)
 		PadRejectArray(rejectmatrix[lumplen:], uint32(minlength-lumplen))
 	}
@@ -31123,7 +31123,7 @@ func P_LoadReject(lumpnum int32) {
 //	//
 //	// P_SetupLevel
 //	//
-func P_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
+func p_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
 	var i, lumpnum, v1, v2, v3, v5, v6, v8 int32
 	v3 = 0
 	wminfo.Fmaxfrags = v3
@@ -31151,10 +31151,10 @@ func P_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
 	// Initial height of PointOfView
 	// will be set by player think.
 	players[consoleplayer].Fviewz = 1
-	// Make sure all sounds are stopped before Z_FreeTags.
-	S_Start()
+	// Make sure all sounds are stopped before z_FreeTags.
+	s_Start()
 	// UNUSED W_Profile ();
-	P_InitThinkers()
+	p_InitThinkers()
 	// find map name
 	var bp string
 	if gamemode == commercial {
@@ -31166,22 +31166,22 @@ func P_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
 	} else {
 		bp = string([]byte{'E', '0' + byte(episode), 'M', '0' + byte(map1)})
 	}
-	lumpnum = W_GetNumForName(bp)
+	lumpnum = w_GetNumForName(bp)
 	leveltime = 0
 	// note: most of this ordering is important
-	P_LoadBlockMap(lumpnum + ML_BLOCKMAP)
-	P_LoadVertexes(lumpnum + ML_VERTEXES)
-	P_LoadSectors(lumpnum + ML_SECTORS)
-	P_LoadSideDefs(lumpnum + ML_SIDEDEFS)
-	P_LoadLineDefs(lumpnum + ML_LINEDEFS)
-	P_LoadSubsectors(lumpnum + ML_SSECTORS)
-	P_LoadNodes(lumpnum + ML_NODES)
-	P_LoadSegs(lumpnum + ML_SEGS)
-	P_GroupLines()
-	P_LoadReject(lumpnum + ML_REJECT)
+	p_LoadBlockMap(lumpnum + ML_BLOCKMAP)
+	p_LoadVertexes(lumpnum + ML_VERTEXES)
+	p_LoadSectors(lumpnum + ML_SECTORS)
+	p_LoadSideDefs(lumpnum + ML_SIDEDEFS)
+	p_LoadLineDefs(lumpnum + ML_LINEDEFS)
+	p_LoadSubsectors(lumpnum + ML_SSECTORS)
+	p_LoadNodes(lumpnum + ML_NODES)
+	p_LoadSegs(lumpnum + ML_SEGS)
+	p_GroupLines()
+	p_LoadReject(lumpnum + ML_REJECT)
 	bodyqueslot = 0
 	deathmatch_pos = 0
-	P_LoadThings(lumpnum + ML_THINGS)
+	p_LoadThings(lumpnum + ML_THINGS)
 	// if deathmatch, randomly spawn the active players
 	if deathmatch != 0 {
 		i = 0
@@ -31191,7 +31191,7 @@ func P_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
 			}
 			if playeringame[i] != 0 {
 				players[i].Fmo = nil
-				G_DeathMatchSpawnPlayer(i)
+				g_DeathMatchSpawnPlayer(i)
 			}
 			goto _7
 		_7:
@@ -31204,12 +31204,12 @@ func P_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
 	iquetail = v8
 	iquehead = v8
 	// set up world state
-	P_SpawnSpecials()
+	p_SpawnSpecials()
 	// build subsector connect matrix
 	//	UNUSED P_ConnectSubsectors ();
 	// preload graphics
 	if precache != 0 {
-		R_PrecacheLevel()
+		r_PrecacheLevel()
 	}
 	//printf ("free memory: 0x%x\n", Z_FreeMemory());
 }
@@ -31219,10 +31219,10 @@ func P_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
 //	//
 //	// P_Init
 //	//
-func P_Init() {
-	P_InitSwitchList()
-	P_InitPicAnims()
-	R_InitSprites(sprnames)
+func p_Init() {
+	p_InitSwitchList()
+	p_InitPicAnims()
+	r_InitSprites(sprnames)
 }
 
 const NF_SUBSECTOR1 = 32768
@@ -31233,7 +31233,7 @@ const NF_SUBSECTOR1 = 32768
 //	// P_DivlineSide
 //	// Returns side 0 (front), 1 (back), or 2 (on).
 //	//
-func P_DivlineSide(x fixed_t, y fixed_t, node *divline_t) (r int32) {
+func p_DivlineSide(x fixed_t, y fixed_t, node *divline_t) (r int32) {
 	var dx, dy, left, right fixed_t
 	if node.Fdx == 0 {
 		if x == node.Fx {
@@ -31274,13 +31274,13 @@ func P_DivlineSide(x fixed_t, y fixed_t, node *divline_t) (r int32) {
 //	// along the first divline.
 //	// This is only called by the addthings and addlines traversers.
 //	//
-func P_InterceptVector2(v2 *divline_t, v1 *divline_t) (r fixed_t) {
+func p_InterceptVector2(v2 *divline_t, v1 *divline_t) (r fixed_t) {
 	var den, frac, num fixed_t
 	den = FixedMul(v1.Fdy>>int32(8), v2.Fdx) - FixedMul(v1.Fdx>>int32(8), v2.Fdy)
 	if den == 0 {
 		return 0
 	}
-	//	I_Error ("P_InterceptVector: parallel");
+	//	i_Error ("p_InterceptVector: parallel");
 	num = FixedMul((v1.Fx-v2.Fx)>>int32(8), v1.Fdy) + FixedMul((v2.Fy-v1.Fy)>>int32(8), v1.Fdx)
 	frac = FixedDiv(num, den)
 	return frac
@@ -31293,7 +31293,7 @@ func P_InterceptVector2(v2 *divline_t, v1 *divline_t) (r fixed_t) {
 //	// Returns true
 //	//  if strace crosses the given subsector successfully.
 //	//
-func P_CrossSubsector(num int32) (r boolean) {
+func p_CrossSubsector(num int32) (r boolean) {
 	var divline divline_t
 	var v1, v2 *vertex_t
 	var line *line_t
@@ -31301,7 +31301,7 @@ func P_CrossSubsector(num int32) (r boolean) {
 	var count, s1, s2 int32
 	var frac, openbottom, opentop, slope fixed_t
 	if num >= numsubsectors {
-		I_Error("P_CrossSubsector: ss %d with numss = %d", num, numsubsectors)
+		i_Error("p_CrossSubsector: ss %d with numss = %d", num, numsubsectors)
 	}
 	sub := &subsectors[num]
 	// check lines
@@ -31319,8 +31319,8 @@ func P_CrossSubsector(num int32) (r boolean) {
 		line.Fvalidcount = validcount
 		v1 = line.Fv1
 		v2 = line.Fv2
-		s1 = P_DivlineSide(v1.Fx, v1.Fy, &strace)
-		s2 = P_DivlineSide(v2.Fx, v2.Fy, &strace)
+		s1 = p_DivlineSide(v1.Fx, v1.Fy, &strace)
+		s2 = p_DivlineSide(v2.Fx, v2.Fy, &strace)
 		// line isn't crossed?
 		if s1 == s2 {
 			goto _1
@@ -31329,8 +31329,8 @@ func P_CrossSubsector(num int32) (r boolean) {
 		divline.Fy = v1.Fy
 		divline.Fdx = v2.Fx - v1.Fx
 		divline.Fdy = v2.Fy - v1.Fy
-		s1 = P_DivlineSide(strace.Fx, strace.Fy, &divline)
-		s2 = P_DivlineSide(t2x, t2y, &divline)
+		s1 = p_DivlineSide(strace.Fx, strace.Fy, &divline)
+		s2 = p_DivlineSide(t2x, t2y, &divline)
 		// line isn't crossed?
 		if s1 == s2 {
 			goto _1
@@ -31369,7 +31369,7 @@ func P_CrossSubsector(num int32) (r boolean) {
 		if openbottom >= opentop {
 			return 0
 		} // stop
-		frac = P_InterceptVector2(&strace, &divline)
+		frac = p_InterceptVector2(&strace, &divline)
 		if front.Ffloorheight != back.Ffloorheight {
 			slope = FixedDiv(openbottom-sightzstart, frac)
 			if slope > bottomslope {
@@ -31401,32 +31401,32 @@ func P_CrossSubsector(num int32) (r boolean) {
 //	// Returns true
 //	//  if strace crosses the given node successfully.
 //	//
-func P_CrossBSPNode(bspnum int32) (r boolean) {
+func p_CrossBSPNode(bspnum int32) (r boolean) {
 	var side int32
 	if bspnum&int32(NF_SUBSECTOR1) != 0 {
 		if bspnum == -1 {
-			return P_CrossSubsector(0)
+			return p_CrossSubsector(0)
 		} else {
-			return P_CrossSubsector(bspnum & ^NF_SUBSECTOR1)
+			return p_CrossSubsector(bspnum & ^NF_SUBSECTOR1)
 		}
 	}
 	bsp := &nodes[bspnum]
 	// decide which side the start point is on
-	side = P_DivlineSide(strace.Fx, strace.Fy, &bsp.divline_t)
+	side = p_DivlineSide(strace.Fx, strace.Fy, &bsp.divline_t)
 	if side == 2 {
 		side = 0
 	} // an "on" should cross both sides
 	// cross the starting side
-	if P_CrossBSPNode(int32(bsp.Fchildren[side])) == 0 {
+	if p_CrossBSPNode(int32(bsp.Fchildren[side])) == 0 {
 		return 0
 	}
 	// the partition plane is crossed here
-	if side == P_DivlineSide(t2x, t2y, &bsp.divline_t) {
+	if side == p_DivlineSide(t2x, t2y, &bsp.divline_t) {
 		// the line doesn't touch the other side
 		return 1
 	}
 	// cross the ending side
-	return P_CrossBSPNode(int32(bsp.Fchildren[side^1]))
+	return p_CrossBSPNode(int32(bsp.Fchildren[side^1]))
 }
 
 // C documentation
@@ -31437,7 +31437,7 @@ func P_CrossBSPNode(bspnum int32) (r boolean) {
 //	//  if a straight line between t1 and t2 is unobstructed.
 //	// Uses REJECT.
 //	//
-func P_CheckSight(t1 *mobj_t, t2 *mobj_t) (r boolean) {
+func p_CheckSight(t1 *mobj_t, t2 *mobj_t) (r boolean) {
 	var bitnum, bytenum, pnum, s1, s2 int32
 	// First check for trivial rejection.
 	// Determine subsector entries in REJECT table.
@@ -31466,7 +31466,7 @@ func P_CheckSight(t1 *mobj_t, t2 *mobj_t) (r boolean) {
 	strace.Fdx = t2.Fx - t1.Fx
 	strace.Fdy = t2.Fy - t1.Fy
 	// the head node is the last node output
-	return P_CrossBSPNode(numnodes - 1)
+	return p_CrossBSPNode(numnodes - 1)
 }
 
 const DONUT_FLOORHEIGHT_DEFAULT = 0
@@ -31671,7 +31671,7 @@ func init() {
 	}
 }
 
-func P_InitPicAnims() {
+func p_InitPicAnims() {
 	var endname, startname string
 	//	Init animation
 	lastanim = &anims[0]
@@ -31684,22 +31684,22 @@ func P_InitPicAnims() {
 		endname = animdefs[i].Fendname
 		if animdefs[i].Fistexture != 0 {
 			// different episode ?
-			if R_CheckTextureNumForName(startname) == -1 {
+			if r_CheckTextureNumForName(startname) == -1 {
 				continue
 			}
-			lastanim.Fpicnum = R_TextureNumForName(endname)
-			lastanim.Fbasepic = R_TextureNumForName(startname)
+			lastanim.Fpicnum = r_TextureNumForName(endname)
+			lastanim.Fbasepic = r_TextureNumForName(startname)
 		} else {
-			if W_CheckNumForName(startname) == -1 {
+			if w_CheckNumForName(startname) == -1 {
 				continue
 			}
-			lastanim.Fpicnum = R_FlatNumForName(endname)
-			lastanim.Fbasepic = R_FlatNumForName(startname)
+			lastanim.Fpicnum = r_FlatNumForName(endname)
+			lastanim.Fbasepic = r_FlatNumForName(startname)
 		}
 		lastanim.Fistexture = uint32(animdefs[i].Fistexture)
 		lastanim.Fnumpics = lastanim.Fpicnum - lastanim.Fbasepic + 1
 		if lastanim.Fnumpics < 2 {
-			I_Error("P_InitPicAnims: bad cycle from %s to %s", startname, endname)
+			i_Error("p_InitPicAnims: bad cycle from %s to %s", startname, endname)
 		}
 		lastanim.Fspeed = animdefs[i].Fspeed
 		animPos++
@@ -31770,10 +31770,10 @@ func getNextSector(line *line_t, sec *sector_t) (r *sector_t) {
 // C documentation
 //
 //	//
-//	// P_FindLowestFloorSurrounding()
+//	// p_FindLowestFloorSurrounding()
 //	// FIND LOWEST FLOOR HEIGHT IN SURROUNDING SECTORS
 //	//
-func P_FindLowestFloorSurrounding(sec *sector_t) (r fixed_t) {
+func p_FindLowestFloorSurrounding(sec *sector_t) (r fixed_t) {
 	var check *line_t
 	var other *sector_t
 	var floor fixed_t
@@ -31803,10 +31803,10 @@ func P_FindLowestFloorSurrounding(sec *sector_t) (r fixed_t) {
 // C documentation
 //
 //	//
-//	// P_FindHighestFloorSurrounding()
+//	// p_FindHighestFloorSurrounding()
 //	// FIND HIGHEST FLOOR HEIGHT IN SURROUNDING SECTORS
 //	//
-func P_FindHighestFloorSurrounding(sec *sector_t) (r fixed_t) {
+func p_FindHighestFloorSurrounding(sec *sector_t) (r fixed_t) {
 	var check *line_t
 	var other *sector_t
 	var floor fixed_t
@@ -31842,7 +31842,7 @@ func P_FindHighestFloorSurrounding(sec *sector_t) (r fixed_t) {
 
 // 20 adjoining sectors max!
 
-func P_FindNextHighestFloor(sec *sector_t, currentheight int32) (r fixed_t) {
+func p_FindNextHighestFloor(sec *sector_t, currentheight int32) (r fixed_t) {
 	var check *line_t
 	var other *sector_t
 	var h, i, min, v2 int32
@@ -31867,7 +31867,7 @@ func P_FindNextHighestFloor(sec *sector_t, currentheight int32) (r fixed_t) {
 			} else {
 				if h == MAX_ADJOINING_SECTORS+2 {
 					// Fatal overflow: game crashes at 22 textures
-					I_Error("Sector with more than 22 adjoining sectors. Vanilla will crash here")
+					i_Error("Sector with more than 22 adjoining sectors. Vanilla will crash here")
 				}
 			}
 			v2 = h
@@ -31906,7 +31906,7 @@ func P_FindNextHighestFloor(sec *sector_t, currentheight int32) (r fixed_t) {
 //	//
 //	// FIND LOWEST CEILING IN THE SURROUNDING SECTORS
 //	//
-func P_FindLowestCeilingSurrounding(sec *sector_t) (r fixed_t) {
+func p_FindLowestCeilingSurrounding(sec *sector_t) (r fixed_t) {
 	var check *line_t
 	var other *sector_t
 	var height fixed_t
@@ -31938,7 +31938,7 @@ func P_FindLowestCeilingSurrounding(sec *sector_t) (r fixed_t) {
 //	//
 //	// FIND HIGHEST CEILING IN THE SURROUNDING SECTORS
 //	//
-func P_FindHighestCeilingSurrounding(sec *sector_t) (r fixed_t) {
+func p_FindHighestCeilingSurrounding(sec *sector_t) (r fixed_t) {
 	var check *line_t
 	var other *sector_t
 	var height fixed_t
@@ -31970,7 +31970,7 @@ func P_FindHighestCeilingSurrounding(sec *sector_t) (r fixed_t) {
 //	//
 //	// RETURN NEXT SECTOR # THAT LINE TAG REFERS TO
 //	//
-func P_FindSectorFromLineTag(line *line_t, start int32) (r int32) {
+func p_FindSectorFromLineTag(line *line_t, start int32) (r int32) {
 	var i int32
 	i = start + 1
 	for {
@@ -31993,7 +31993,7 @@ func P_FindSectorFromLineTag(line *line_t, start int32) (r int32) {
 //	//
 //	// Find minimum light from an adjacent sector
 //	//
-func P_FindMinSurroundingLight(sector *sector_t, max int32) (r int32) {
+func p_FindMinSurroundingLight(sector *sector_t, max int32) (r int32) {
 	var line *line_t
 	var check *sector_t
 	var i, min int32
@@ -32028,11 +32028,11 @@ func P_FindMinSurroundingLight(sector *sector_t, max int32) (r int32) {
 // C documentation
 //
 //	//
-//	// P_CrossSpecialLine - TRIGGER
+//	// p_CrossSpecialLine - TRIGGER
 //	// Called every time a thing origin is about
 //	//  to cross a line with a non 0 special.
 //	//
-func P_CrossSpecialLine(linenum int32, side int32, thing *mobj_t) {
+func p_CrossSpecialLine(linenum int32, side int32, thing *mobj_t) {
 	var ok int32
 	line := &lines[linenum]
 	//	Triggers that other things can activate
@@ -32082,269 +32082,269 @@ func P_CrossSpecialLine(linenum int32, side int32, thing *mobj_t) {
 	// All from here to RETRIGGERS.
 	case 2:
 		// Open Door
-		EV_DoDoor(line, int32(vld_open))
+		ev_DoDoor(line, int32(vld_open))
 		line.Fspecial = 0
 	case 3:
 		// Close Door
-		EV_DoDoor(line, int32(vld_close))
+		ev_DoDoor(line, int32(vld_close))
 		line.Fspecial = 0
 	case 4:
 		// Raise Door
-		EV_DoDoor(line, int32(vld_normal))
+		ev_DoDoor(line, int32(vld_normal))
 		line.Fspecial = 0
 	case 5:
 		// Raise Floor
-		EV_DoFloor(line, int32(raiseFloor))
+		ev_DoFloor(line, int32(raiseFloor))
 		line.Fspecial = 0
 	case 6:
 		// Fast Ceiling Crush & Raise
-		EV_DoCeiling(line, int32(fastCrushAndRaise))
+		ev_DoCeiling(line, int32(fastCrushAndRaise))
 		line.Fspecial = 0
 	case 8:
 		// Build Stairs
-		EV_BuildStairs(line, int32(build8))
+		ev_BuildStairs(line, int32(build8))
 		line.Fspecial = 0
 	case 10:
 		// PlatDownWaitUp
-		EV_DoPlat(line, int32(downWaitUpStay), 0)
+		ev_DoPlat(line, int32(downWaitUpStay), 0)
 		line.Fspecial = 0
 	case 12:
 		// Light Turn On - brightest near
-		EV_LightTurnOn(line, 0)
+		ev_LightTurnOn(line, 0)
 		line.Fspecial = 0
 	case 13:
 		// Light Turn On 255
-		EV_LightTurnOn(line, 255)
+		ev_LightTurnOn(line, 255)
 		line.Fspecial = 0
 	case 16:
 		// Close Door 30
-		EV_DoDoor(line, int32(vld_close30ThenOpen))
+		ev_DoDoor(line, int32(vld_close30ThenOpen))
 		line.Fspecial = 0
 	case 17:
 		// Start Light Strobing
-		EV_StartLightStrobing(line)
+		ev_StartLightStrobing(line)
 		line.Fspecial = 0
 	case 19:
 		// Lower Floor
-		EV_DoFloor(line, int32(lowerFloor))
+		ev_DoFloor(line, int32(lowerFloor))
 		line.Fspecial = 0
 	case 22:
 		// Raise floor to nearest height and change texture
-		EV_DoPlat(line, int32(raiseToNearestAndChange), 0)
+		ev_DoPlat(line, int32(raiseToNearestAndChange), 0)
 		line.Fspecial = 0
 	case 25:
 		// Ceiling Crush and Raise
-		EV_DoCeiling(line, int32(crushAndRaise))
+		ev_DoCeiling(line, int32(crushAndRaise))
 		line.Fspecial = 0
 	case 30:
 		// Raise floor to shortest texture height
 		//  on either side of lines.
-		EV_DoFloor(line, int32(raiseToTexture))
+		ev_DoFloor(line, int32(raiseToTexture))
 		line.Fspecial = 0
 	case 35:
 		// Lights Very Dark
-		EV_LightTurnOn(line, 35)
+		ev_LightTurnOn(line, 35)
 		line.Fspecial = 0
 	case 36:
 		// Lower Floor (TURBO)
-		EV_DoFloor(line, int32(turboLower))
+		ev_DoFloor(line, int32(turboLower))
 		line.Fspecial = 0
 	case 37:
 		// LowerAndChange
-		EV_DoFloor(line, int32(lowerAndChange))
+		ev_DoFloor(line, int32(lowerAndChange))
 		line.Fspecial = 0
 	case 38:
 		// Lower Floor To Lowest
-		EV_DoFloor(line, int32(lowerFloorToLowest))
+		ev_DoFloor(line, int32(lowerFloorToLowest))
 		line.Fspecial = 0
 	case 39:
 		// TELEPORT!
-		EV_Teleport(line, side, thing)
+		ev_Teleport(line, side, thing)
 		line.Fspecial = 0
 	case 40:
 		// RaiseCeilingLowerFloor
-		EV_DoCeiling(line, int32(raiseToHighest))
-		EV_DoFloor(line, int32(lowerFloorToLowest))
+		ev_DoCeiling(line, int32(raiseToHighest))
+		ev_DoFloor(line, int32(lowerFloorToLowest))
 		line.Fspecial = 0
 	case 44:
 		// Ceiling Crush
-		EV_DoCeiling(line, int32(lowerAndCrush))
+		ev_DoCeiling(line, int32(lowerAndCrush))
 		line.Fspecial = 0
 	case 52:
 		// EXIT!
-		G_ExitLevel()
+		g_ExitLevel()
 	case 53:
 		// Perpetual Platform Raise
-		EV_DoPlat(line, int32(perpetualRaise), 0)
+		ev_DoPlat(line, int32(perpetualRaise), 0)
 		line.Fspecial = 0
 	case 54:
 		// Platform Stop
-		EV_StopPlat(line)
+		ev_StopPlat(line)
 		line.Fspecial = 0
 	case 56:
 		// Raise Floor Crush
-		EV_DoFloor(line, int32(raiseFloorCrush))
+		ev_DoFloor(line, int32(raiseFloorCrush))
 		line.Fspecial = 0
 	case 57:
 		// Ceiling Crush Stop
-		EV_CeilingCrushStop(line)
+		ev_CeilingCrushStop(line)
 		line.Fspecial = 0
 	case 58:
 		// Raise Floor 24
-		EV_DoFloor(line, int32(raiseFloor24))
+		ev_DoFloor(line, int32(raiseFloor24))
 		line.Fspecial = 0
 	case 59:
 		// Raise Floor 24 And Change
-		EV_DoFloor(line, int32(raiseFloor24AndChange))
+		ev_DoFloor(line, int32(raiseFloor24AndChange))
 		line.Fspecial = 0
 	case 104:
 		// Turn lights off in sector(tag)
-		EV_TurnTagLightsOff(line)
+		ev_TurnTagLightsOff(line)
 		line.Fspecial = 0
 	case 108:
 		// Blazing Door Raise (faster than TURBO!)
-		EV_DoDoor(line, int32(vld_blazeRaise))
+		ev_DoDoor(line, int32(vld_blazeRaise))
 		line.Fspecial = 0
 	case 109:
 		// Blazing Door Open (faster than TURBO!)
-		EV_DoDoor(line, int32(vld_blazeOpen))
+		ev_DoDoor(line, int32(vld_blazeOpen))
 		line.Fspecial = 0
 	case 100:
 		// Build Stairs Turbo 16
-		EV_BuildStairs(line, int32(turbo16))
+		ev_BuildStairs(line, int32(turbo16))
 		line.Fspecial = 0
 	case 110:
 		// Blazing Door Close (faster than TURBO!)
-		EV_DoDoor(line, int32(vld_blazeClose))
+		ev_DoDoor(line, int32(vld_blazeClose))
 		line.Fspecial = 0
 	case 119:
 		// Raise floor to nearest surr. floor
-		EV_DoFloor(line, int32(raiseFloorToNearest))
+		ev_DoFloor(line, int32(raiseFloorToNearest))
 		line.Fspecial = 0
 	case 121:
 		// Blazing PlatDownWaitUpStay
-		EV_DoPlat(line, int32(blazeDWUS), 0)
+		ev_DoPlat(line, int32(blazeDWUS), 0)
 		line.Fspecial = 0
 	case 124:
 		// Secret EXIT
-		G_SecretExitLevel()
+		g_SecretExitLevel()
 	case 125:
 		// TELEPORT MonsterONLY
 		if thing.Fplayer == nil {
-			EV_Teleport(line, side, thing)
+			ev_Teleport(line, side, thing)
 			line.Fspecial = 0
 		}
 	case 130:
 		// Raise Floor Turbo
-		EV_DoFloor(line, int32(raiseFloorTurbo))
+		ev_DoFloor(line, int32(raiseFloorTurbo))
 		line.Fspecial = 0
 	case 141:
 		// Silent Ceiling Crush & Raise
-		EV_DoCeiling(line, int32(silentCrushAndRaise))
+		ev_DoCeiling(line, int32(silentCrushAndRaise))
 		line.Fspecial = 0
 		break
 		// RETRIGGERS.  All from here till end.
 		fallthrough
 	case 72:
 		// Ceiling Crush
-		EV_DoCeiling(line, int32(lowerAndCrush))
+		ev_DoCeiling(line, int32(lowerAndCrush))
 	case 73:
 		// Ceiling Crush and Raise
-		EV_DoCeiling(line, int32(crushAndRaise))
+		ev_DoCeiling(line, int32(crushAndRaise))
 	case 74:
 		// Ceiling Crush Stop
-		EV_CeilingCrushStop(line)
+		ev_CeilingCrushStop(line)
 	case 75:
 		// Close Door
-		EV_DoDoor(line, int32(vld_close))
+		ev_DoDoor(line, int32(vld_close))
 	case 76:
 		// Close Door 30
-		EV_DoDoor(line, int32(vld_close30ThenOpen))
+		ev_DoDoor(line, int32(vld_close30ThenOpen))
 	case 77:
 		// Fast Ceiling Crush & Raise
-		EV_DoCeiling(line, int32(fastCrushAndRaise))
+		ev_DoCeiling(line, int32(fastCrushAndRaise))
 	case 79:
 		// Lights Very Dark
-		EV_LightTurnOn(line, 35)
+		ev_LightTurnOn(line, 35)
 	case 80:
 		// Light Turn On - brightest near
-		EV_LightTurnOn(line, 0)
+		ev_LightTurnOn(line, 0)
 	case 81:
 		// Light Turn On 255
-		EV_LightTurnOn(line, 255)
+		ev_LightTurnOn(line, 255)
 	case 82:
 		// Lower Floor To Lowest
-		EV_DoFloor(line, int32(lowerFloorToLowest))
+		ev_DoFloor(line, int32(lowerFloorToLowest))
 	case 83:
 		// Lower Floor
-		EV_DoFloor(line, int32(lowerFloor))
+		ev_DoFloor(line, int32(lowerFloor))
 	case 84:
 		// LowerAndChange
-		EV_DoFloor(line, int32(lowerAndChange))
+		ev_DoFloor(line, int32(lowerAndChange))
 	case 86:
 		// Open Door
-		EV_DoDoor(line, int32(vld_open))
+		ev_DoDoor(line, int32(vld_open))
 	case 87:
 		// Perpetual Platform Raise
-		EV_DoPlat(line, int32(perpetualRaise), 0)
+		ev_DoPlat(line, int32(perpetualRaise), 0)
 	case 88:
 		// PlatDownWaitUp
-		EV_DoPlat(line, int32(downWaitUpStay), 0)
+		ev_DoPlat(line, int32(downWaitUpStay), 0)
 	case 89:
 		// Platform Stop
-		EV_StopPlat(line)
+		ev_StopPlat(line)
 	case 90:
 		// Raise Door
-		EV_DoDoor(line, int32(vld_normal))
+		ev_DoDoor(line, int32(vld_normal))
 	case 91:
 		// Raise Floor
-		EV_DoFloor(line, int32(raiseFloor))
+		ev_DoFloor(line, int32(raiseFloor))
 	case 92:
 		// Raise Floor 24
-		EV_DoFloor(line, int32(raiseFloor24))
+		ev_DoFloor(line, int32(raiseFloor24))
 	case 93:
 		// Raise Floor 24 And Change
-		EV_DoFloor(line, int32(raiseFloor24AndChange))
+		ev_DoFloor(line, int32(raiseFloor24AndChange))
 	case 94:
 		// Raise Floor Crush
-		EV_DoFloor(line, int32(raiseFloorCrush))
+		ev_DoFloor(line, int32(raiseFloorCrush))
 	case 95:
 		// Raise floor to nearest height
 		// and change texture.
-		EV_DoPlat(line, int32(raiseToNearestAndChange), 0)
+		ev_DoPlat(line, int32(raiseToNearestAndChange), 0)
 	case 96:
 		// Raise floor to shortest texture height
 		// on either side of lines.
-		EV_DoFloor(line, int32(raiseToTexture))
+		ev_DoFloor(line, int32(raiseToTexture))
 	case 97:
 		// TELEPORT!
-		EV_Teleport(line, side, thing)
+		ev_Teleport(line, side, thing)
 	case 98:
 		// Lower Floor (TURBO)
-		EV_DoFloor(line, int32(turboLower))
+		ev_DoFloor(line, int32(turboLower))
 	case 105:
 		// Blazing Door Raise (faster than TURBO!)
-		EV_DoDoor(line, int32(vld_blazeRaise))
+		ev_DoDoor(line, int32(vld_blazeRaise))
 	case 106:
 		// Blazing Door Open (faster than TURBO!)
-		EV_DoDoor(line, int32(vld_blazeOpen))
+		ev_DoDoor(line, int32(vld_blazeOpen))
 	case 107:
 		// Blazing Door Close (faster than TURBO!)
-		EV_DoDoor(line, int32(vld_blazeClose))
+		ev_DoDoor(line, int32(vld_blazeClose))
 	case 120:
 		// Blazing PlatDownWaitUpStay.
-		EV_DoPlat(line, int32(blazeDWUS), 0)
+		ev_DoPlat(line, int32(blazeDWUS), 0)
 	case 126:
 		// TELEPORT MonsterONLY.
 		if thing.Fplayer == nil {
-			EV_Teleport(line, side, thing)
+			ev_Teleport(line, side, thing)
 		}
 	case 128:
 		// Raise To Nearest Floor
-		EV_DoFloor(line, int32(raiseFloorToNearest))
+		ev_DoFloor(line, int32(raiseFloorToNearest))
 	case 129:
 		// Raise Floor Turbo
-		EV_DoFloor(line, int32(raiseFloorTurbo))
+		ev_DoFloor(line, int32(raiseFloorTurbo))
 		break
 	}
 }
@@ -32352,10 +32352,10 @@ func P_CrossSpecialLine(linenum int32, side int32, thing *mobj_t) {
 // C documentation
 //
 //	//
-//	// P_ShootSpecialLine - IMPACT SPECIALS
+//	// p_ShootSpecialLine - IMPACT SPECIALS
 //	// Called when a thing shoots a special line.
 //	//
-func P_ShootSpecialLine(thing *mobj_t, line *line_t) {
+func p_ShootSpecialLine(thing *mobj_t, line *line_t) {
 	var ok int32
 	//	Impacts that other things can activate.
 	if thing.Fplayer == nil {
@@ -32373,16 +32373,16 @@ func P_ShootSpecialLine(thing *mobj_t, line *line_t) {
 	switch int32(line.Fspecial) {
 	case 24:
 		// RAISE FLOOR
-		EV_DoFloor(line, int32(raiseFloor))
-		P_ChangeSwitchTexture(line, 0)
+		ev_DoFloor(line, int32(raiseFloor))
+		p_ChangeSwitchTexture(line, 0)
 	case 46:
 		// OPEN DOOR
-		EV_DoDoor(line, int32(vld_open))
-		P_ChangeSwitchTexture(line, 1)
+		ev_DoDoor(line, int32(vld_open))
+		p_ChangeSwitchTexture(line, 1)
 	case 47:
 		// RAISE FLOOR NEAR AND CHANGE
-		EV_DoPlat(line, int32(raiseToNearestAndChange), 0)
-		P_ChangeSwitchTexture(line, 0)
+		ev_DoPlat(line, int32(raiseToNearestAndChange), 0)
+		p_ChangeSwitchTexture(line, 0)
 		break
 	}
 }
@@ -32394,7 +32394,7 @@ func P_ShootSpecialLine(thing *mobj_t, line *line_t) {
 //	// Called every tic frame
 //	//  that the player origin is in a special sector
 //	//
-func P_PlayerInSpecialSector(player *player_t) {
+func p_PlayerInSpecialSector(player *player_t) {
 	var sector *sector_t
 	sector = player.Fmo.Fsubsector.Fsector
 	// Falling, not all the way down yet?
@@ -32407,14 +32407,14 @@ func P_PlayerInSpecialSector(player *player_t) {
 		// HELLSLIME DAMAGE
 		if player.Fpowers[pw_ironfeet] == 0 {
 			if leveltime&0x1f == 0 {
-				P_DamageMobj(player.Fmo, nil, nil, 10)
+				p_DamageMobj(player.Fmo, nil, nil, 10)
 			}
 		}
 	case 7:
 		// NUKAGE DAMAGE
 		if player.Fpowers[pw_ironfeet] == 0 {
 			if leveltime&0x1f == 0 {
-				P_DamageMobj(player.Fmo, nil, nil, 5)
+				p_DamageMobj(player.Fmo, nil, nil, 5)
 			}
 		}
 	case 16:
@@ -32422,9 +32422,9 @@ func P_PlayerInSpecialSector(player *player_t) {
 		fallthrough
 	case 4:
 		// STROBE HURT
-		if player.Fpowers[pw_ironfeet] == 0 || P_Random() < 5 {
+		if player.Fpowers[pw_ironfeet] == 0 || p_Random() < 5 {
 			if leveltime&0x1f == 0 {
-				P_DamageMobj(player.Fmo, nil, nil, 20)
+				p_DamageMobj(player.Fmo, nil, nil, 20)
 			}
 		}
 	case 9:
@@ -32435,24 +32435,24 @@ func P_PlayerInSpecialSector(player *player_t) {
 		// EXIT SUPER DAMAGE! (for E1M8 finale)
 		player.Fcheats &= ^CF_GODMODE
 		if leveltime&0x1f == 0 {
-			P_DamageMobj(player.Fmo, nil, nil, 20)
+			p_DamageMobj(player.Fmo, nil, nil, 20)
 		}
 		if player.Fhealth <= 10 {
-			G_ExitLevel()
+			g_ExitLevel()
 		}
 	default:
-		I_Error("P_PlayerInSpecialSector: unknown special %d", int32(sector.Fspecial))
+		i_Error("p_PlayerInSpecialSector: unknown special %d", int32(sector.Fspecial))
 		break
 	}
 }
 
-func P_UpdateSpecials() {
+func p_UpdateSpecials() {
 	var i, pic int32
 	//	LEVEL TIMER
 	if levelTimer == 1 {
 		levelTimeCount--
 		if levelTimeCount == 0 {
-			G_ExitLevel()
+			g_ExitLevel()
 		}
 	}
 	//	ANIMATE FLATS AND TEXTURES GLOBALLY
@@ -32512,7 +32512,7 @@ func P_UpdateSpecials() {
 					sides[buttonlist[i].Fline.Fsidenum[0]].Fbottomtexture = int16(buttonlist[i].Fbtexture)
 					break
 				}
-				S_StartSound(buttonlist[i].Fsoundorg, int32(sfx_swtchn))
+				s_StartSound(buttonlist[i].Fsoundorg, int32(sfx_swtchn))
 				buttonlist[i] = button_t{}
 			}
 		}
@@ -32547,7 +32547,7 @@ func DonutOverrun(s3_floorheight *fixed_t, s3_floorpic *int16, line *line_t, pil
 		// In Vanilla Doom this can differ depending on the operating
 		// system.  The default (if this option is not specified) is to
 		// emulate the behavior when running under Windows 98.
-		p = M_CheckParmWithArgs("-donut", 2)
+		p = m_CheckParmWithArgs("-donut", 2)
 		if p > 0 {
 			// Dump of needed memory: (fixed_t)0000:0000 and (short)0000:0008
 			//
@@ -32594,13 +32594,13 @@ var tmp_s3_floorpic int32
 //	//
 //	// Special Stuff that can not be categorized
 //	//
-func EV_DoDonut(line *line_t) (r int32) {
+func ev_DoDonut(line *line_t) (r int32) {
 	var s1, s2, s3 *sector_t
 	var rtn, secnum, v1 int32
 	secnum = -1
 	rtn = 0
 	for {
-		v1 = P_FindSectorFromLineTag(line, secnum)
+		v1 = p_FindSectorFromLineTag(line, secnum)
 		secnum = v1
 		if !(v1 >= 0) {
 			break
@@ -32621,7 +32621,7 @@ func EV_DoDonut(line *line_t) (r int32) {
 		// isn't something that should be done, anyway.
 		// Just print a warning and return.
 		if s2 == nil {
-			fprintf_ccgo(os.Stderr, "EV_DoDonut: linedef had no second sidedef! Unexpected behavior may occur in Vanilla Doom. \n")
+			fprintf_ccgo(os.Stderr, "ev_DoDonut: linedef had no second sidedef! Unexpected behavior may occur in Vanilla Doom. \n")
 			break
 		}
 		for i := int32(0); i < s2.Flinecount; i++ {
@@ -32637,7 +32637,7 @@ func EV_DoDonut(line *line_t) (r int32) {
 				// s3->floorheight is an int at 0000:0000
 				// s3->floorpic is a short at 0000:0008
 				// Trying to emulate
-				fprintf_ccgo(os.Stderr, "EV_DoDonut: WARNING: emulating buffer overrun due to NULL back sector. Unexpected behavior may occur in Vanilla Doom.\n")
+				fprintf_ccgo(os.Stderr, "ev_DoDonut: WARNING: emulating buffer overrun due to NULL back sector. Unexpected behavior may occur in Vanilla Doom.\n")
 				DonutOverrun(&floorheight, &floorpic, line, s1)
 			} else {
 				floorheight = s3.Ffloorheight
@@ -32645,7 +32645,7 @@ func EV_DoDonut(line *line_t) (r int32) {
 			}
 			//	Spawn rising slime
 			floorP := &floormove_t{}
-			P_AddThinker(&floorP.Fthinker)
+			p_AddThinker(&floorP.Fthinker)
 			s2.Fspecialdata = floorP
 			floorP.Fthinker.Ffunction = floorP
 			floorP.Ftype1 = int32(donutRaise)
@@ -32658,7 +32658,7 @@ func EV_DoDonut(line *line_t) (r int32) {
 			floorP.Ffloordestheight = floorheight
 			//	Spawn lowering donut-hole
 			floorP = &floormove_t{}
-			P_AddThinker(&floorP.Fthinker)
+			p_AddThinker(&floorP.Fthinker)
 			s1.Fspecialdata = floorP
 			floorP.Fthinker.Ffunction = floorP
 			floorP.Ftype1 = int32(lowerFloor)
@@ -32676,7 +32676,7 @@ func EV_DoDonut(line *line_t) (r int32) {
 // C documentation
 //
 //	// Parses command line parameters.
-func P_SpawnSpecials() {
+func p_SpawnSpecials() {
 	var i int32
 	// See if -TIMER was specified.
 	if timelimit > 0 && deathmatch != 0 {
@@ -32698,37 +32698,37 @@ func P_SpawnSpecials() {
 		switch int32(sector.Fspecial) {
 		case 1:
 			// FLICKERING LIGHTS
-			P_SpawnLightFlash(sector)
+			p_SpawnLightFlash(sector)
 		case 2:
 			// STROBE FAST
-			P_SpawnStrobeFlash(sector, FASTDARK, 0)
+			p_SpawnStrobeFlash(sector, FASTDARK, 0)
 		case 3:
 			// STROBE SLOW
-			P_SpawnStrobeFlash(sector, SLOWDARK, 0)
+			p_SpawnStrobeFlash(sector, SLOWDARK, 0)
 		case 4:
 			// STROBE FAST/DEATH SLIME
-			P_SpawnStrobeFlash(sector, FASTDARK, 0)
+			p_SpawnStrobeFlash(sector, FASTDARK, 0)
 			sector.Fspecial = 4
 		case 8:
 			// GLOWING LIGHT
-			P_SpawnGlowingLight(sector)
+			p_SpawnGlowingLight(sector)
 		case 9:
 			// SECRET SECTOR
 			totalsecret++
 		case 10:
 			// DOOR CLOSE IN 30 SECONDS
-			P_SpawnDoorCloseIn30(sector)
+			p_SpawnDoorCloseIn30(sector)
 		case 12:
 			// SYNC STROBE SLOW
-			P_SpawnStrobeFlash(sector, SLOWDARK, 1)
+			p_SpawnStrobeFlash(sector, SLOWDARK, 1)
 		case 13:
 			// SYNC STROBE FAST
-			P_SpawnStrobeFlash(sector, FASTDARK, 1)
+			p_SpawnStrobeFlash(sector, FASTDARK, 1)
 		case 14:
 			// DOOR RAISE IN 5 MINUTES
-			P_SpawnDoorRaiseIn5Mins(sector, i)
+			p_SpawnDoorRaiseIn5Mins(sector, i)
 		case 17:
-			P_SpawnFireFlicker(sector)
+			p_SpawnFireFlicker(sector)
 			break
 		}
 		goto _1
@@ -32746,7 +32746,7 @@ func P_SpawnSpecials() {
 		switch int32(lines[i].Fspecial) {
 		case 48:
 			if int32(numlinespecials) >= MAXLINEANIMS {
-				I_Error("Too many scrolling wall linedefs! (Vanilla limit is 64)")
+				i_Error("Too many scrolling wall linedefs! (Vanilla limit is 64)")
 			}
 			// EFFECT FIRSTCOL SCROLL+
 			linespeciallist[numlinespecials] = &lines[i]
@@ -32980,7 +32980,7 @@ func init() {
 //	// P_InitSwitchList
 //	// Only called at game initialization.
 //	//
-func P_InitSwitchList() {
+func p_InitSwitchList() {
 	var episode, i, index, v2, v3 int32
 	episode = 1
 	if gamemode == registered || gamemode == retail {
@@ -33004,10 +33004,10 @@ func P_InitSwitchList() {
 		if int32(alphSwitchList[i].Fepisode) <= episode {
 			v2 = index
 			index++
-			switchlist[v2] = R_TextureNumForName(alphSwitchList[i].Fname2)
+			switchlist[v2] = r_TextureNumForName(alphSwitchList[i].Fname2)
 			v3 = index
 			index++
-			switchlist[v3] = R_TextureNumForName(alphSwitchList[i].Fname1)
+			switchlist[v3] = r_TextureNumForName(alphSwitchList[i].Fname1)
 		}
 		goto _1
 	_1:
@@ -33021,7 +33021,7 @@ func P_InitSwitchList() {
 //	//
 //	// Start a button counting down till it turns off.
 //	//
-func P_StartButton(line *line_t, w bwhere_e, texture int32, time int32) {
+func p_StartButton(line *line_t, w bwhere_e, texture int32, time int32) {
 	var i int32
 	// See if button is already pressed
 	i = 0
@@ -33055,7 +33055,7 @@ func P_StartButton(line *line_t, w bwhere_e, texture int32, time int32) {
 		;
 		i++
 	}
-	I_Error("P_StartButton: no button slots left!")
+	i_Error("p_StartButton: no button slots left!")
 }
 
 // C documentation
@@ -33064,7 +33064,7 @@ func P_StartButton(line *line_t, w bwhere_e, texture int32, time int32) {
 //	// Function that changes wall texture.
 //	// Tell it if switch is ok to use again (1=yes, it's a button).
 //	//
-func P_ChangeSwitchTexture(line *line_t, useAgain int32) {
+func p_ChangeSwitchTexture(line *line_t, useAgain int32) {
 	var i, sound, texBot, texMid, texTop int32
 	if useAgain == 0 {
 		line.Fspecial = 0
@@ -33083,26 +33083,26 @@ func P_ChangeSwitchTexture(line *line_t, useAgain int32) {
 			break
 		}
 		if switchlist[i] == texTop {
-			S_StartSound(buttonlist[0].Fsoundorg, sound)
+			s_StartSound(buttonlist[0].Fsoundorg, sound)
 			sides[line.Fsidenum[0]].Ftoptexture = int16(switchlist[i^int32(1)])
 			if useAgain != 0 {
-				P_StartButton(line, int32(top), switchlist[i], BUTTONTIME)
+				p_StartButton(line, int32(top), switchlist[i], BUTTONTIME)
 			}
 			return
 		} else {
 			if switchlist[i] == texMid {
-				S_StartSound(buttonlist[0].Fsoundorg, sound)
+				s_StartSound(buttonlist[0].Fsoundorg, sound)
 				sides[line.Fsidenum[0]].Fmidtexture = int16(switchlist[i^int32(1)])
 				if useAgain != 0 {
-					P_StartButton(line, int32(middle), switchlist[i], BUTTONTIME)
+					p_StartButton(line, int32(middle), switchlist[i], BUTTONTIME)
 				}
 				return
 			} else {
 				if switchlist[i] == texBot {
-					S_StartSound(buttonlist[0].Fsoundorg, sound)
+					s_StartSound(buttonlist[0].Fsoundorg, sound)
 					sides[line.Fsidenum[0]].Fbottomtexture = int16(switchlist[i^int32(1)])
 					if useAgain != 0 {
-						P_StartButton(line, int32(bottom), switchlist[i], BUTTONTIME)
+						p_StartButton(line, int32(bottom), switchlist[i], BUTTONTIME)
 					}
 					return
 				}
@@ -33122,7 +33122,7 @@ func P_ChangeSwitchTexture(line *line_t, useAgain int32) {
 //	// Called when a thing uses a special line.
 //	// Only the front sides of lines are usable.
 //	//
-func P_UseSpecialLine(thing *mobj_t, line *line_t, side int32) (r boolean) {
+func p_UseSpecialLine(thing *mobj_t, line *line_t, side int32) (r boolean) {
 	// Err...
 	// Use the back sides of VERY SPECIAL lines...
 	if side != 0 {
@@ -33176,7 +33176,7 @@ func P_UseSpecialLine(thing *mobj_t, line *line_t, side int32) (r boolean) {
 	case 117: // Blazing door raise
 		fallthrough
 	case 118: // Blazing door open
-		EV_VerticalDoor(line, thing)
+		ev_VerticalDoor(line, thing)
 		break
 		//UNUSED - Door Slide Open&Close
 		// case 124:
@@ -33186,126 +33186,126 @@ func P_UseSpecialLine(thing *mobj_t, line *line_t, side int32) (r boolean) {
 		fallthrough
 	case 7:
 		// Build Stairs
-		if EV_BuildStairs(line, int32(build8)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_BuildStairs(line, int32(build8)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 9:
 		// Change Donut
-		if EV_DoDonut(line) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoDonut(line) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 11:
 		// Exit level
-		P_ChangeSwitchTexture(line, 0)
-		G_ExitLevel()
+		p_ChangeSwitchTexture(line, 0)
+		g_ExitLevel()
 	case 14:
 		// Raise Floor 32 and change texture
-		if EV_DoPlat(line, int32(raiseAndChange), 32) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoPlat(line, int32(raiseAndChange), 32) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 15:
 		// Raise Floor 24 and change texture
-		if EV_DoPlat(line, int32(raiseAndChange), 24) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoPlat(line, int32(raiseAndChange), 24) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 18:
 		// Raise Floor to next highest floor
-		if EV_DoFloor(line, int32(raiseFloorToNearest)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoFloor(line, int32(raiseFloorToNearest)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 20:
 		// Raise Plat next highest floor and change texture
-		if EV_DoPlat(line, int32(raiseToNearestAndChange), 0) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoPlat(line, int32(raiseToNearestAndChange), 0) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 21:
 		// PlatDownWaitUpStay
-		if EV_DoPlat(line, int32(downWaitUpStay), 0) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoPlat(line, int32(downWaitUpStay), 0) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 23:
 		// Lower Floor to Lowest
-		if EV_DoFloor(line, int32(lowerFloorToLowest)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoFloor(line, int32(lowerFloorToLowest)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 29:
 		// Raise Door
-		if EV_DoDoor(line, int32(vld_normal)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoDoor(line, int32(vld_normal)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 41:
 		// Lower Ceiling to Floor
-		if EV_DoCeiling(line, int32(lowerToFloor)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoCeiling(line, int32(lowerToFloor)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 71:
 		// Turbo Lower Floor
-		if EV_DoFloor(line, int32(turboLower)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoFloor(line, int32(turboLower)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 49:
 		// Ceiling Crush And Raise
-		if EV_DoCeiling(line, int32(crushAndRaise)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoCeiling(line, int32(crushAndRaise)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 50:
 		// Close Door
-		if EV_DoDoor(line, int32(vld_close)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoDoor(line, int32(vld_close)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 51:
 		// Secret EXIT
-		P_ChangeSwitchTexture(line, 0)
-		G_SecretExitLevel()
+		p_ChangeSwitchTexture(line, 0)
+		g_SecretExitLevel()
 	case 55:
 		// Raise Floor Crush
-		if EV_DoFloor(line, int32(raiseFloorCrush)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoFloor(line, int32(raiseFloorCrush)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 101:
 		// Raise Floor
-		if EV_DoFloor(line, int32(raiseFloor)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoFloor(line, int32(raiseFloor)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 102:
 		// Lower Floor to Surrounding floor height
-		if EV_DoFloor(line, int32(lowerFloor)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoFloor(line, int32(lowerFloor)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 103:
 		// Open Door
-		if EV_DoDoor(line, int32(vld_open)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoDoor(line, int32(vld_open)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 111:
 		// Blazing Door Raise (faster than TURBO!)
-		if EV_DoDoor(line, int32(vld_blazeRaise)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoDoor(line, int32(vld_blazeRaise)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 112:
 		// Blazing Door Open (faster than TURBO!)
-		if EV_DoDoor(line, int32(vld_blazeOpen)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoDoor(line, int32(vld_blazeOpen)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 113:
 		// Blazing Door Close (faster than TURBO!)
-		if EV_DoDoor(line, int32(vld_blazeClose)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoDoor(line, int32(vld_blazeClose)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 122:
 		// Blazing PlatDownWaitUpStay
-		if EV_DoPlat(line, int32(blazeDWUS), 0) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoPlat(line, int32(blazeDWUS), 0) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 127:
 		// Build Stairs Turbo 16
-		if EV_BuildStairs(line, int32(turbo16)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_BuildStairs(line, int32(turbo16)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 131:
 		// Raise Floor Turbo
-		if EV_DoFloor(line, int32(raiseFloorTurbo)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoFloor(line, int32(raiseFloorTurbo)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 133:
 		// BlzOpenDoor BLUE
@@ -33315,111 +33315,111 @@ func P_UseSpecialLine(thing *mobj_t, line *line_t, side int32) (r boolean) {
 		fallthrough
 	case 137:
 		// BlzOpenDoor YELLOW
-		if EV_DoLockedDoor(line, int32(vld_blazeOpen), thing) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoLockedDoor(line, int32(vld_blazeOpen), thing) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 	case 140:
 		// Raise Floor 512
-		if EV_DoFloor(line, int32(raiseFloor512)) != 0 {
-			P_ChangeSwitchTexture(line, 0)
+		if ev_DoFloor(line, int32(raiseFloor512)) != 0 {
+			p_ChangeSwitchTexture(line, 0)
 		}
 		break
 		// BUTTONS
 		fallthrough
 	case 42:
 		// Close Door
-		if EV_DoDoor(line, int32(vld_close)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoDoor(line, int32(vld_close)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 43:
 		// Lower Ceiling to Floor
-		if EV_DoCeiling(line, int32(lowerToFloor)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoCeiling(line, int32(lowerToFloor)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 45:
 		// Lower Floor to Surrounding floor height
-		if EV_DoFloor(line, int32(lowerFloor)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoFloor(line, int32(lowerFloor)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 60:
 		// Lower Floor to Lowest
-		if EV_DoFloor(line, int32(lowerFloorToLowest)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoFloor(line, int32(lowerFloorToLowest)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 61:
 		// Open Door
-		if EV_DoDoor(line, int32(vld_open)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoDoor(line, int32(vld_open)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 62:
 		// PlatDownWaitUpStay
-		if EV_DoPlat(line, int32(downWaitUpStay), 1) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoPlat(line, int32(downWaitUpStay), 1) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 63:
 		// Raise Door
-		if EV_DoDoor(line, int32(vld_normal)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoDoor(line, int32(vld_normal)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 64:
 		// Raise Floor to ceiling
-		if EV_DoFloor(line, int32(raiseFloor)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoFloor(line, int32(raiseFloor)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 66:
 		// Raise Floor 24 and change texture
-		if EV_DoPlat(line, int32(raiseAndChange), 24) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoPlat(line, int32(raiseAndChange), 24) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 67:
 		// Raise Floor 32 and change texture
-		if EV_DoPlat(line, int32(raiseAndChange), 32) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoPlat(line, int32(raiseAndChange), 32) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 65:
 		// Raise Floor Crush
-		if EV_DoFloor(line, int32(raiseFloorCrush)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoFloor(line, int32(raiseFloorCrush)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 68:
 		// Raise Plat to next highest floor and change texture
-		if EV_DoPlat(line, int32(raiseToNearestAndChange), 0) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoPlat(line, int32(raiseToNearestAndChange), 0) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 69:
 		// Raise Floor to next highest floor
-		if EV_DoFloor(line, int32(raiseFloorToNearest)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoFloor(line, int32(raiseFloorToNearest)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 70:
 		// Turbo Lower Floor
-		if EV_DoFloor(line, int32(turboLower)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoFloor(line, int32(turboLower)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 114:
 		// Blazing Door Raise (faster than TURBO!)
-		if EV_DoDoor(line, int32(vld_blazeRaise)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoDoor(line, int32(vld_blazeRaise)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 115:
 		// Blazing Door Open (faster than TURBO!)
-		if EV_DoDoor(line, int32(vld_blazeOpen)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoDoor(line, int32(vld_blazeOpen)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 116:
 		// Blazing Door Close (faster than TURBO!)
-		if EV_DoDoor(line, int32(vld_blazeClose)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoDoor(line, int32(vld_blazeClose)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 123:
 		// Blazing PlatDownWaitUpStay
-		if EV_DoPlat(line, int32(blazeDWUS), 0) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoPlat(line, int32(blazeDWUS), 0) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 132:
 		// Raise Floor Turbo
-		if EV_DoFloor(line, int32(raiseFloorTurbo)) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoFloor(line, int32(raiseFloorTurbo)) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 99:
 		// BlzOpenDoor BLUE
@@ -33429,17 +33429,17 @@ func P_UseSpecialLine(thing *mobj_t, line *line_t, side int32) (r boolean) {
 		fallthrough
 	case 136:
 		// BlzOpenDoor YELLOW
-		if EV_DoLockedDoor(line, int32(vld_blazeOpen), thing) != 0 {
-			P_ChangeSwitchTexture(line, 1)
+		if ev_DoLockedDoor(line, int32(vld_blazeOpen), thing) != 0 {
+			p_ChangeSwitchTexture(line, 1)
 		}
 	case 138:
 		// Light Turn On
-		EV_LightTurnOn(line, 255)
-		P_ChangeSwitchTexture(line, 1)
+		ev_LightTurnOn(line, 255)
+		p_ChangeSwitchTexture(line, 1)
 	case 139:
 		// Light Turn Off
-		EV_LightTurnOn(line, 35)
-		P_ChangeSwitchTexture(line, 1)
+		ev_LightTurnOn(line, 35)
+		p_ChangeSwitchTexture(line, 1)
 		break
 	}
 	return 1
@@ -33489,7 +33489,7 @@ func P_UseSpecialLine(thing *mobj_t, line *line_t, side int32) (r boolean) {
 //	//
 //	// TELEPORTATION
 //	//
-func EV_Teleport(line *line_t, side int32, thing *mobj_t) (r int32) {
+func ev_Teleport(line *line_t, side int32, thing *mobj_t) (r int32) {
 	var an uint32
 	var fog *mobj_t
 	var thinker *thinker_t
@@ -33536,7 +33536,7 @@ func EV_Teleport(line *line_t, side int32, thing *mobj_t) (r int32) {
 				oldx = thing.Fx
 				oldy = thing.Fy
 				oldz = thing.Fz
-				if P_TeleportMove(thing, m.Fx, m.Fy) == 0 {
+				if p_TeleportMove(thing, m.Fx, m.Fy) == 0 {
 					return 0
 				}
 				// The first Final Doom executable does not set thing->z
@@ -33550,12 +33550,12 @@ func EV_Teleport(line *line_t, side int32, thing *mobj_t) (r int32) {
 					thing.Fplayer.Fviewz = thing.Fz + thing.Fplayer.Fviewheight
 				}
 				// spawn teleport fog at source and destination
-				fog = P_SpawnMobj(oldx, oldy, oldz, MT_TFOG)
-				S_StartSound(&fog.degenmobj_t, int32(sfx_telept))
+				fog = p_SpawnMobj(oldx, oldy, oldz, MT_TFOG)
+				s_StartSound(&fog.degenmobj_t, int32(sfx_telept))
 				an = m.Fangle >> ANGLETOFINESHIFT
-				fog = P_SpawnMobj(m.Fx+int32(20)*finecosine[an], m.Fy+int32(20)*finesine[an], thing.Fz, MT_TFOG)
+				fog = p_SpawnMobj(m.Fx+int32(20)*finecosine[an], m.Fy+int32(20)*finesine[an], thing.Fz, MT_TFOG)
 				// emit sound, where?
-				S_StartSound(&fog.degenmobj_t, int32(sfx_telept))
+				s_StartSound(&fog.degenmobj_t, int32(sfx_telept))
 				// don't move for a bit
 				if thing.Fplayer != nil {
 					thing.Freactiontime = 18
@@ -33586,7 +33586,7 @@ func EV_Teleport(line *line_t, side int32, thing *mobj_t) (r int32) {
 //	//
 //	// P_InitThinkers
 //	//
-func P_InitThinkers() {
+func p_InitThinkers() {
 	thinkercap.Fnext = &thinkercap
 	thinkercap.Fprev = &thinkercap
 }
@@ -33597,7 +33597,7 @@ func P_InitThinkers() {
 //	// P_AddThinker
 //	// Adds a new thinker at the end of the list.
 //	//
-func P_AddThinker(thinker *thinker_t) {
+func p_AddThinker(thinker *thinker_t) {
 	thinkercap.Fprev.Fnext = thinker
 	thinker.Fnext = &thinkercap
 	thinker.Fprev = thinkercap.Fprev
@@ -33611,7 +33611,7 @@ func P_AddThinker(thinker *thinker_t) {
 //	// Deallocation is lazy -- it will not actually be freed
 //	// until its thinking turn comes up.
 //	//
-func P_RemoveThinker(thinker *thinker_t) {
+func p_RemoveThinker(thinker *thinker_t) {
 	// FIXME: NOP.
 	thinker.Ffunction = nil
 }
@@ -33621,7 +33621,7 @@ func P_RemoveThinker(thinker *thinker_t) {
 //	//
 //	// P_RunThinkers
 //	//
-func P_RunThinkers() {
+func p_RunThinkers() {
 	var currentthinker *thinker_t
 	currentthinker = thinkercap.Fnext
 	for currentthinker != &thinkercap {
@@ -33629,7 +33629,7 @@ func P_RunThinkers() {
 			// time to remove it
 			currentthinker.Fnext.Fprev = currentthinker.Fprev
 			currentthinker.Fprev.Fnext = currentthinker.Fnext
-			//Z_Free(uintptr(unsafe.Pointer(currentthinker)))
+			//z_Free(uintptr(unsafe.Pointer(currentthinker)))
 		} else {
 			if currentthinker.Ffunction != nil {
 				currentthinker.Ffunction.ThinkerFunc()
@@ -33643,7 +33643,7 @@ func P_RunThinkers() {
 // P_Ticker
 //
 
-func P_Ticker() {
+func p_Ticker() {
 	var i int32
 	// run the tic
 	if paused != 0 {
@@ -33659,16 +33659,16 @@ func P_Ticker() {
 			break
 		}
 		if playeringame[i] != 0 {
-			P_PlayerThink(&players[i])
+			p_PlayerThink(&players[i])
 		}
 		goto _1
 	_1:
 		;
 		i++
 	}
-	P_RunThinkers()
-	P_UpdateSpecials()
-	P_RespawnSpecials()
+	p_RunThinkers()
+	p_UpdateSpecials()
+	p_RespawnSpecials()
 	// for par times
 	leveltime++
 }
@@ -33684,7 +33684,7 @@ const MAXBOB = 1048576
 //	// P_Thrust
 //	// Moves the given origin along a given angle.
 //	//
-func P_Thrust(player *player_t, angle angle_t, move fixed_t) {
+func p_Thrust(player *player_t, angle angle_t, move fixed_t) {
 	angle >>= ANGLETOFINESHIFT
 	player.Fmo.Fmomx += FixedMul(move, finecosine[angle])
 	player.Fmo.Fmomy += FixedMul(move, finesine[angle])
@@ -33696,7 +33696,7 @@ func P_Thrust(player *player_t, angle angle_t, move fixed_t) {
 //	// P_CalcHeight
 //	// Calculate the walking / running height adjustment
 //	//
-func P_CalcHeight(player *player_t) {
+func p_CalcHeight(player *player_t) {
 	var angle int32
 	var bob fixed_t
 	// Regular movement bobbing
@@ -33751,20 +33751,20 @@ func P_CalcHeight(player *player_t) {
 //	//
 //	// P_MovePlayer
 //	//
-func P_MovePlayer(player *player_t) {
+func p_MovePlayer(player *player_t) {
 	cmd := &player.Fcmd
 	player.Fmo.Fangle += uint32(int32(cmd.Fangleturn) << 16)
 	// Do not let the player control movement
 	//  if not onground.
 	onground = booluint32(player.Fmo.Fz <= player.Fmo.Ffloorz)
 	if cmd.Fforwardmove != 0 && onground != 0 {
-		P_Thrust(player, player.Fmo.Fangle, int32(cmd.Fforwardmove)*int32(2048))
+		p_Thrust(player, player.Fmo.Fangle, int32(cmd.Fforwardmove)*int32(2048))
 	}
 	if cmd.Fsidemove != 0 && onground != 0 {
-		P_Thrust(player, player.Fmo.Fangle-uint32(ANG907), int32(cmd.Fsidemove)*int32(2048))
+		p_Thrust(player, player.Fmo.Fangle-uint32(ANG907), int32(cmd.Fsidemove)*int32(2048))
 	}
 	if (cmd.Fforwardmove != 0 || cmd.Fsidemove != 0) && player.Fmo.Fstate == &states[S_PLAY] {
-		P_SetMobjState(player.Fmo, S_PLAY_RUN1)
+		p_SetMobjState(player.Fmo, S_PLAY_RUN1)
 	}
 }
 
@@ -33774,9 +33774,9 @@ func P_MovePlayer(player *player_t) {
 // Decrease POV height to floor height.
 //
 
-func P_DeathThink(player *player_t) {
+func p_DeathThink(player *player_t) {
 	var angle, delta angle_t
-	P_MovePsprites(player)
+	p_MovePsprites(player)
 	// fall to the ground
 	if player.Fviewheight > 6*(1<<FRACBITS) {
 		player.Fviewheight -= 1 << FRACBITS
@@ -33786,9 +33786,9 @@ func P_DeathThink(player *player_t) {
 	}
 	player.Fdeltaviewheight = 0
 	onground = booluint32(player.Fmo.Fz <= player.Fmo.Ffloorz)
-	P_CalcHeight(player)
+	p_CalcHeight(player)
 	if player.Fattacker != nil && player.Fattacker != player.Fmo {
-		angle = R_PointToAngle2(player.Fmo.Fx, player.Fmo.Fy, player.Fattacker.Fx, player.Fattacker.Fy)
+		angle = r_PointToAngle2(player.Fmo.Fx, player.Fmo.Fy, player.Fattacker.Fx, player.Fattacker.Fy)
 		delta = angle - player.Fmo.Fangle
 		if delta < uint32(ANG907/18) || delta > uint32(-(ANG907/18)&0xffff_ffff) {
 			// Looking at killer,
@@ -33819,7 +33819,7 @@ func P_DeathThink(player *player_t) {
 //	//
 //	// P_PlayerThink
 //	//
-func P_PlayerThink(player *player_t) {
+func p_PlayerThink(player *player_t) {
 	var newweapon weapontype_t
 	// fixme: do this in the cheat code
 	if player.Fcheats&CF_NOCLIP != 0 {
@@ -33836,7 +33836,7 @@ func P_PlayerThink(player *player_t) {
 		player.Fmo.Fflags &^= MF_JUSTATTACKED
 	}
 	if player.Fplayerstate == PST_DEAD {
-		P_DeathThink(player)
+		p_DeathThink(player)
 		return
 	}
 	// Move around.
@@ -33845,11 +33845,11 @@ func P_PlayerThink(player *player_t) {
 	if player.Fmo.Freactiontime != 0 {
 		player.Fmo.Freactiontime--
 	} else {
-		P_MovePlayer(player)
+		p_MovePlayer(player)
 	}
-	P_CalcHeight(player)
+	p_CalcHeight(player)
 	if player.Fmo.Fsubsector.Fsector.Fspecial != 0 {
-		P_PlayerInSpecialSector(player)
+		p_PlayerInSpecialSector(player)
 	}
 	// Check for weapon change.
 	// A special event has no other buttons.
@@ -33878,14 +33878,14 @@ func P_PlayerThink(player *player_t) {
 	// check for use
 	if int32(cmd.Fbuttons)&BT_USE != 0 {
 		if player.Fusedown == 0 {
-			P_UseLines(player)
+			p_UseLines(player)
 			player.Fusedown = 1
 		}
 	} else {
 		player.Fusedown = 0
 	}
 	// cycle psprites
-	P_MovePsprites(player)
+	p_MovePsprites(player)
 	// Counters, time dependend power ups.
 	// Strength counts up to diminish fade.
 	if player.Fpowers[pw_strength] != 0 {
@@ -33940,7 +33940,7 @@ const NF_SUBSECTOR3 = 32768
 //	//
 //	// R_ClearDrawSegs
 //	//
-func R_ClearDrawSegs() {
+func r_ClearDrawSegs() {
 	ds_index = 0
 }
 
@@ -33964,7 +33964,7 @@ type cliprange_t struct {
 //	//  e.g. single sided LineDefs (middle texture)
 //	//  that entirely block the view.
 //	//
-func R_ClipSolidWallSegment(first int32, last int32) {
+func r_ClipSolidWallSegment(first int32, last int32) {
 	var v1 int
 	var next, start int
 	// Find the first range that touches the range
@@ -33975,7 +33975,7 @@ func R_ClipSolidWallSegment(first int32, last int32) {
 		if last < solidsegs[start].Ffirst-1 {
 			// Post is entirely visible (above start),
 			//  so insert a new clippost.
-			R_StoreWallRange(first, last)
+			r_StoreWallRange(first, last)
 			next = newend
 			newend++
 			for next != start {
@@ -33987,7 +33987,7 @@ func R_ClipSolidWallSegment(first int32, last int32) {
 			return
 		}
 		// There is a fragment above *start.
-		R_StoreWallRange(first, solidsegs[start].Ffirst-1)
+		r_StoreWallRange(first, solidsegs[start].Ffirst-1)
 		// Now adjust the clip size.
 		solidsegs[start].Ffirst = first
 	}
@@ -33998,7 +33998,7 @@ func R_ClipSolidWallSegment(first int32, last int32) {
 	next = start
 	for last >= solidsegs[next+1].Ffirst-1 {
 		// There is a fragment between two posts.
-		R_StoreWallRange(solidsegs[next].Flast+1, solidsegs[next+1].Ffirst-1)
+		r_StoreWallRange(solidsegs[next].Flast+1, solidsegs[next+1].Ffirst-1)
 		next++
 		if last <= solidsegs[next].Flast {
 			// Bottom is contained in next.
@@ -34008,7 +34008,7 @@ func R_ClipSolidWallSegment(first int32, last int32) {
 		}
 	}
 	// There is a fragment after *next.
-	R_StoreWallRange(solidsegs[next].Flast+int32(1), last)
+	r_StoreWallRange(solidsegs[next].Flast+int32(1), last)
 	// Adjust the clip size.
 	solidsegs[start].Flast = last
 	// Remove start+1 to next from the clip list,
@@ -34042,7 +34042,7 @@ crunch:
 //	// Does handle windows,
 //	//  e.g. LineDefs with upper and lower texture.
 //	//
-func R_ClipPassWallSegment(first int32, last int32) {
+func r_ClipPassWallSegment(first int32, last int32) {
 	var start int
 	// Find the first range that touches the range
 	//  (adjacent pixels are touching).
@@ -34051,11 +34051,11 @@ func R_ClipPassWallSegment(first int32, last int32) {
 	if first < solidsegs[start].Ffirst {
 		if last < solidsegs[start].Ffirst-1 {
 			// Post is entirely visible (above start).
-			R_StoreWallRange(first, last)
+			r_StoreWallRange(first, last)
 			return
 		}
 		// There is a fragment above *start.
-		R_StoreWallRange(first, solidsegs[start].Ffirst-1)
+		r_StoreWallRange(first, solidsegs[start].Ffirst-1)
 	}
 	// Bottom contained in start?
 	if last <= solidsegs[start].Flast {
@@ -34063,14 +34063,14 @@ func R_ClipPassWallSegment(first int32, last int32) {
 	}
 	for last >= solidsegs[start+1].Ffirst-1 {
 		// There is a fragment between two posts.
-		R_StoreWallRange(solidsegs[start].Flast+int32(1), solidsegs[start+1].Ffirst-1)
+		r_StoreWallRange(solidsegs[start].Flast+int32(1), solidsegs[start+1].Ffirst-1)
 		start++
 		if last <= solidsegs[start].Flast {
 			return
 		}
 	}
 	// There is a fragment after *next.
-	R_StoreWallRange(solidsegs[start].Flast+int32(1), last)
+	r_StoreWallRange(solidsegs[start].Flast+int32(1), last)
 }
 
 // C documentation
@@ -34078,7 +34078,7 @@ func R_ClipPassWallSegment(first int32, last int32) {
 //	//
 //	// R_ClearClipSegs
 //	//
-func R_ClearClipSegs() {
+func r_ClearClipSegs() {
 	solidsegs[0].Ffirst = -int32(0x7fffffff)
 	solidsegs[0].Flast = -1
 	solidsegs[int32(1)].Ffirst = viewwidth
@@ -34093,13 +34093,13 @@ func R_ClearClipSegs() {
 //	// Clips the given segment
 //	// and adds any visible pieces to the line list.
 //	//
-func R_AddLine(line *seg_t) {
+func r_AddLine(line *seg_t) {
 	var angle1, angle2, span, tspan angle_t
 	var x1, x2 int32
 	curline = line
 	// OPTIMIZE: quickly reject orthogonal back sides.
-	angle1 = R_PointToAngle(line.Fv1.Fx, line.Fv1.Fy)
-	angle2 = R_PointToAngle(line.Fv2.Fx, line.Fv2.Fy)
+	angle1 = r_PointToAngle(line.Fv1.Fx, line.Fv1.Fy)
+	angle2 = r_PointToAngle(line.Fv2.Fx, line.Fv2.Fy)
 	// Clip to view edges.
 	// OPTIMIZE: make constant out of 2*clipangle (FIELDOFVIEW).
 	span = angle1 - angle2
@@ -34163,12 +34163,12 @@ func R_AddLine(line *seg_t) {
 	goto clippass
 clippass:
 	;
-	R_ClipPassWallSegment(x1, x2-1)
+	r_ClipPassWallSegment(x1, x2-1)
 	return
 	goto clipsolid
 clipsolid:
 	;
-	R_ClipSolidWallSegment(x1, x2-1)
+	r_ClipSolidWallSegment(x1, x2-1)
 }
 
 func init() {
@@ -34219,7 +34219,7 @@ func init() {
 	}
 }
 
-func R_CheckBBox(bspcoord *box_t) (r boolean) {
+func r_CheckBBox(bspcoord *box_t) (r boolean) {
 	var angle1, angle2, span, tspan angle_t
 	var boxpos, boxx, boxy, sx1, sx2 int32
 	var start int
@@ -34255,8 +34255,8 @@ func R_CheckBBox(bspcoord *box_t) (r boolean) {
 	y2 = bspcoord[checkcoord[boxpos][3]]
 
 	// check clip list for an open space
-	angle1 = R_PointToAngle(x1, y1) - viewangle
-	angle2 = R_PointToAngle(x2, y2) - viewangle
+	angle1 = r_PointToAngle(x1, y1) - viewangle
+	angle2 = r_PointToAngle(x2, y2) - viewangle
 	span = angle1 - angle2
 	// Sitting on a line?
 	if span >= uint32(ANG1809) {
@@ -34309,25 +34309,25 @@ func R_CheckBBox(bspcoord *box_t) (r boolean) {
 //	// Add sprites of things in sector.
 //	// Draw one or more line segments.
 //	//
-func R_Subsector(num int32) {
+func r_Subsector(num int32) {
 	var count, v1 int32
 	if num >= numsubsectors {
-		I_Error("R_Subsector: ss %d with numss = %d", num, numsubsectors)
+		i_Error("r_Subsector: ss %d with numss = %d", num, numsubsectors)
 	}
 	sub := &subsectors[num]
 	frontsector = sub.Fsector
 	count = int32(sub.Fnumlines)
 	if frontsector.Ffloorheight < viewz {
-		floorplane = R_FindPlane(frontsector.Ffloorheight, int32(frontsector.Ffloorpic), int32(frontsector.Flightlevel))
+		floorplane = r_FindPlane(frontsector.Ffloorheight, int32(frontsector.Ffloorpic), int32(frontsector.Flightlevel))
 	} else {
 		floorplane = nil
 	}
 	if frontsector.Fceilingheight > viewz || int32(frontsector.Fceilingpic) == skyflatnum {
-		ceilingplane = R_FindPlane(frontsector.Fceilingheight, int32(frontsector.Fceilingpic), int32(frontsector.Flightlevel))
+		ceilingplane = r_FindPlane(frontsector.Fceilingheight, int32(frontsector.Fceilingpic), int32(frontsector.Flightlevel))
 	} else {
 		ceilingplane = nil
 	}
-	R_AddSprites(frontsector)
+	r_AddSprites(frontsector)
 	for i := sub.Ffirstline; ; i++ {
 		v1 = count
 		count--
@@ -34335,7 +34335,7 @@ func R_Subsector(num int32) {
 			break
 		}
 		line := &segs[i]
-		R_AddLine(line)
+		r_AddLine(line)
 	}
 }
 
@@ -34346,26 +34346,26 @@ func R_Subsector(num int32) {
 //	// Renders all subsectors below a given node,
 //	//  traversing subtree recursively.
 //	// Just call with BSP root.
-func R_RenderBSPNode(bspnum int32) {
+func r_RenderBSPNode(bspnum int32) {
 	var bsp *node_t
 	var side int32
 	// Found a subsector?
 	if bspnum&int32(NF_SUBSECTOR3) != 0 {
 		if bspnum == -1 {
-			R_Subsector(0)
+			r_Subsector(0)
 		} else {
-			R_Subsector(bspnum & ^NF_SUBSECTOR3)
+			r_Subsector(bspnum & ^NF_SUBSECTOR3)
 		}
 		return
 	}
 	bsp = &nodes[bspnum]
 	// Decide which side the view point is on.
-	side = R_PointOnSide(viewx, viewy, &nodes[bspnum])
+	side = r_PointOnSide(viewx, viewy, &nodes[bspnum])
 	// Recursively divide front space.
-	R_RenderBSPNode(int32(bsp.Fchildren[side]))
+	r_RenderBSPNode(int32(bsp.Fchildren[side]))
 	// Possibly divide back space.
-	if R_CheckBBox(&bsp.Fbbox[side^1]) != 0 {
-		R_RenderBSPNode(int32(bsp.Fchildren[side^int32(1)]))
+	if r_CheckBBox(&bsp.Fbbox[side^1]) != 0 {
+		r_RenderBSPNode(int32(bsp.Fchildren[side^int32(1)]))
 	}
 }
 
@@ -34475,7 +34475,7 @@ type texture_t struct {
 //	// Clip and draw a column
 //	//  from a patch into a cached post.
 //	//
-func R_DrawColumnInCache(patch *column_t, cache []byte, originy int32, cacheheight int32) {
+func r_DrawColumnInCache(patch *column_t, cache []byte, originy int32, cacheheight int32) {
 	var count, position int32
 	var source uintptr
 	for int32(patch.Ftopdelta) != 0xff {
@@ -34504,7 +34504,7 @@ func R_DrawColumnInCache(patch *column_t, cache []byte, originy int32, cacheheig
 //	//  the composite texture is created from the patches,
 //	//  and each column is cached.
 //	//
-func R_GenerateComposite(texnum int32) {
+func r_GenerateComposite(texnum int32) {
 	var collump []int16
 	var colofs []uint16
 	var i, x, x1, x2 int32
@@ -34537,7 +34537,7 @@ func R_GenerateComposite(texnum int32) {
 				continue
 			}
 			patchcol := realpatch.GetColumn(x - x1)
-			R_DrawColumnInCache(patchcol, texturecomposite[texnum][colofs[x]:], int32(patch.Foriginy), int32(texture.Fheight))
+			r_DrawColumnInCache(patchcol, texturecomposite[texnum][colofs[x]:], int32(patch.Foriginy), int32(texture.Fheight))
 		}
 		goto _1
 	_1:
@@ -34553,7 +34553,7 @@ func R_GenerateComposite(texnum int32) {
 //	//
 //	// R_GenerateLookup
 //	//
-func R_GenerateLookup(texnum int32) {
+func r_GenerateLookup(texnum int32) {
 	var realpatch *patch_t
 	var colofs []uint16
 	var collump []int16
@@ -34610,16 +34610,16 @@ func R_GenerateLookup(texnum int32) {
 			break
 		}
 		if widths[x] == 0 {
-			fprintf_ccgo(os.Stdout, "R_GenerateLookup: column without a patch (%s)\n", gostring_bytes(texture.Fname[:]))
+			fprintf_ccgo(os.Stdout, "r_GenerateLookup: column without a patch (%s)\n", gostring_bytes(texture.Fname[:]))
 			return
 		}
-		// I_Error ("R_GenerateLookup: column without a patch");
+		// i_Error ("r_GenerateLookup: column without a patch");
 		if int32(widths[x]) > 1 {
 			// Use the cached block.
 			collump[x] = -1
 			colofs[x] = uint16(texturecompositesize[texnum])
 			if texturecompositesize[texnum] > 0x10000-int32(texture.Fheight) {
-				I_Error("R_GenerateLookup: texture %d is >64k", texnum)
+				i_Error("r_GenerateLookup: texture %d is >64k", texnum)
 			}
 			texturecompositesize[texnum] += int32(texture.Fheight)
 		}
@@ -34635,16 +34635,16 @@ func R_GenerateLookup(texnum int32) {
 //	//
 //	// R_GetColumn
 //	//
-func R_GetColumn(tex int32, col int32) (r uintptr) {
+func r_GetColumn(tex int32, col int32) (r uintptr) {
 	var lump, ofs int32
 	col &= texturewidthmask[tex]
 	lump = int32(texturecolumnlump[tex][col])
 	ofs = int32(texturecolumnofs[tex][col])
 	if lump > 0 {
-		return W_CacheLumpNum(lump) + uintptr(ofs)
+		return w_CacheLumpNum(lump) + uintptr(ofs)
 	}
 	if texturecomposite[tex] == nil {
-		R_GenerateComposite(tex)
+		r_GenerateComposite(tex)
 	}
 	return *(*uintptr)(unsafe.Pointer(&texturecomposite[tex])) + uintptr(ofs)
 }
@@ -34666,7 +34666,7 @@ func GenerateTextureHashTable() {
 		// entries with the same name, the first one in the array
 		// wins. The new entry must therefore be added at the end
 		// of the hash chain, so that earlier entries win.
-		key = int32(W_LumpNameHash(gostring_bytes(textures[i].Fname[:])) % uint32(numtextures))
+		key = int32(w_LumpNameHash(gostring_bytes(textures[i].Fname[:])) % uint32(numtextures))
 		rover = &textures_hashtable[key]
 		for *rover != nil {
 			rover = &(*rover).Fnext
@@ -34688,11 +34688,11 @@ func GenerateTextureHashTable() {
 //	// Initializes the texture list
 //	//  with the textures from the world map.
 //	//
-func R_InitTextures() {
+func r_InitTextures() {
 	var directory, maptex, maptex2, mpatch, name_p, names, v2 uintptr
 	var i, j, maxoff, maxoff2, nummappatches, numtextures1, numtextures2, offset, temp1, temp2, temp3, totalwidth int32
 	// Load the patch names from pnames.lmp.
-	names = W_CacheLumpName("PNAMES")
+	names = w_CacheLumpName("PNAMES")
 	nummappatches = *(*int32)(unsafe.Pointer(names))
 	name_p = names + uintptr(4)
 	patchlookup := make([]int32, nummappatches)
@@ -34701,25 +34701,25 @@ func R_InitTextures() {
 		if i >= nummappatches {
 			break
 		}
-		patchlookup[i] = W_CheckNumForName(gostring_n(name_p+uintptr(i*8), 8))
+		patchlookup[i] = w_CheckNumForName(gostring_n(name_p+uintptr(i*8), 8))
 		goto _1
 	_1:
 		;
 		i++
 	}
-	W_ReleaseLumpName("PNAMES")
+	w_ReleaseLumpName("PNAMES")
 	// Load the map texture definitions from textures.lmp.
 	// The data is contained in one or two lumps,
 	//  TEXTURE1 for shareware, plus TEXTURE2 for commercial.
-	v2 = W_CacheLumpName("TEXTURE1")
+	v2 = w_CacheLumpName("TEXTURE1")
 	maptex = v2
 	numtextures1 = *(*int32)(unsafe.Pointer(maptex))
-	maxoff = W_LumpLength(uint32(W_GetNumForName("TEXTURE1")))
+	maxoff = w_LumpLength(uint32(w_GetNumForName("TEXTURE1")))
 	directory = maptex + uintptr(1)*4
-	if W_CheckNumForName("TEXTURE2") != -1 {
-		maptex2 = W_CacheLumpName("TEXTURE2")
+	if w_CheckNumForName("TEXTURE2") != -1 {
+		maptex2 = w_CacheLumpName("TEXTURE2")
 		numtextures2 = *(*int32)(unsafe.Pointer(maptex2))
-		maxoff2 = W_LumpLength(uint32(W_GetNumForName("TEXTURE2")))
+		maxoff2 = w_LumpLength(uint32(w_GetNumForName("TEXTURE2")))
 	} else {
 		maptex2 = 0
 		numtextures2 = 0
@@ -34735,13 +34735,13 @@ func R_InitTextures() {
 	textureheight = make([]fixed_t, numtextures)
 	totalwidth = 0
 	//	Really complex printing shit...
-	temp1 = W_GetNumForName("S_START") // P_???????
-	temp2 = W_GetNumForName("S_END") - 1
+	temp1 = w_GetNumForName("S_START") // P_???????
+	temp2 = w_GetNumForName("S_END") - 1
 	temp3 = (temp2-temp1+int32(63))/int32(64) + (numtextures+int32(63))/int32(64)
 	// If stdout is a real console, use the classic vanilla "filling
 	// up the box" effect, which uses backspace to "step back" inside
 	// the box.  If stdout is a file, don't draw the box.
-	if I_ConsoleStdout() != 0 {
+	if i_ConsoleStdout() != 0 {
 		fprintf_ccgo(os.Stdout, "[")
 		i = 0
 		for {
@@ -34783,7 +34783,7 @@ func R_InitTextures() {
 		}
 		offset = *(*int32)(unsafe.Pointer(directory))
 		if offset > maxoff {
-			I_Error("R_InitTextures: bad texture directory")
+			i_Error("r_InitTextures: bad texture directory")
 		}
 		mtexture := (*maptexture_t)(unsafe.Pointer(maptex + uintptr(offset)))
 		texture := &texture_t{
@@ -34805,7 +34805,7 @@ func R_InitTextures() {
 			patch.Foriginy = (*mappatch_t)(unsafe.Pointer(mpatch)).Foriginy
 			patch.Fpatch = patchlookup[(*mappatch_t)(unsafe.Pointer(mpatch)).Fpatch]
 			if patch.Fpatch == -1 {
-				I_Error("R_InitTextures: Missing patch in texture %s", gostring_bytes(texture.Fname[:]))
+				i_Error("r_InitTextures: Missing patch in texture %s", gostring_bytes(texture.Fname[:]))
 			}
 			goto _7
 		_7:
@@ -34828,9 +34828,9 @@ func R_InitTextures() {
 		i++
 		directory += 4
 	}
-	W_ReleaseLumpName("TEXTURE1")
+	w_ReleaseLumpName("TEXTURE1")
 	if maptex2 != 0 {
-		W_ReleaseLumpName("TEXTURE2")
+		w_ReleaseLumpName("TEXTURE2")
 	}
 	// Precalculate whatever possible.
 	i = 0
@@ -34838,7 +34838,7 @@ func R_InitTextures() {
 		if i >= numtextures {
 			break
 		}
-		R_GenerateLookup(i)
+		r_GenerateLookup(i)
 		goto _8
 	_8:
 		;
@@ -34865,10 +34865,10 @@ func R_InitTextures() {
 //	//
 //	// R_InitFlats
 //	//
-func R_InitFlats() {
+func r_InitFlats() {
 	var i int32
-	firstflat = W_GetNumForName("F_START") + 1
-	lastflat = W_GetNumForName("F_END") - 1
+	firstflat = w_GetNumForName("F_START") + 1
+	lastflat = w_GetNumForName("F_END") - 1
 	numflats = lastflat - firstflat + 1
 	// Create translation table for global animation.
 	flattranslation = make([]int32, numflats+1)
@@ -34893,10 +34893,10 @@ func R_InitFlats() {
 //	//  so the sprite does not need to be cached completely
 //	//  just for having the header info ready during rendering.
 //	//
-func R_InitSpriteLumps() {
+func r_InitSpriteLumps() {
 	var i int32
-	firstspritelump = W_GetNumForName("S_START") + 1
-	lastspritelump = W_GetNumForName("S_END") - 1
+	firstspritelump = w_GetNumForName("S_START") + 1
+	lastspritelump = w_GetNumForName("S_END") - 1
 	numspritelumps = lastspritelump - firstspritelump + 1
 	spritewidth = make([]fixed_t, numspritelumps)
 	spriteoffset = make([]fixed_t, numspritelumps)
@@ -34925,15 +34925,15 @@ func R_InitSpriteLumps() {
 //	//
 //	// R_InitColormaps
 //	//
-func R_InitColormaps() {
+func r_InitColormaps() {
 	var lump int32
 	var size int32
 	var data uintptr
 	// Load in the light tables,
 	//  256 byte align tables.
-	lump = W_GetNumForName("COLORMAP")
-	size = W_LumpLength(uint32(lump))
-	data = W_CacheLumpNum(lump)
+	lump = w_GetNumForName("COLORMAP")
+	size = w_LumpLength(uint32(lump))
+	data = w_CacheLumpNum(lump)
 	colormaps = unsafe.Slice((*lighttable_t)(unsafe.Pointer(data)), size)
 }
 
@@ -34945,14 +34945,14 @@ func R_InitColormaps() {
 //	//  that will be used by all views
 //	// Must be called after W_Init.
 //	//
-func R_InitData() {
-	R_InitTextures()
+func r_InitData() {
+	r_InitTextures()
 	fprintf_ccgo(os.Stdout, ".")
-	R_InitFlats()
+	r_InitFlats()
 	fprintf_ccgo(os.Stdout, ".")
-	R_InitSpriteLumps()
+	r_InitSpriteLumps()
 	fprintf_ccgo(os.Stdout, ".")
-	R_InitColormaps()
+	r_InitColormaps()
 }
 
 // C documentation
@@ -34961,11 +34961,11 @@ func R_InitData() {
 //	// R_FlatNumForName
 //	// Retrieval, get a flat number for a flat name.
 //	//
-func R_FlatNumForName(name string) (r int32) {
+func r_FlatNumForName(name string) (r int32) {
 	var i int32
-	i = W_CheckNumForName(name)
+	i = w_CheckNumForName(name)
 	if i == -1 {
-		I_Error("R_FlatNumForName: %s not found", name)
+		i_Error("r_FlatNumForName: %s not found", name)
 	}
 	return i - firstflat
 }
@@ -34977,14 +34977,14 @@ func R_FlatNumForName(name string) (r int32) {
 //	// Check whether texture is available.
 //	// Filter out NoTexture indicator.
 //	//
-func R_CheckTextureNumForName(name string) (r int32) {
+func r_CheckTextureNumForName(name string) (r int32) {
 	var key int32
 	var texture *texture_t
 	// "NoTexture" marker.
 	if name[0] == '-' {
 		return 0
 	}
-	key = int32(W_LumpNameHash(name) % uint32(numtextures))
+	key = int32(w_LumpNameHash(name) % uint32(numtextures))
 	texture = textures_hashtable[key]
 	for texture != nil {
 		if strings.EqualFold(gostring_bytes(texture.Fname[:]), name) {
@@ -34999,19 +34999,19 @@ func R_CheckTextureNumForName(name string) (r int32) {
 //
 //	//
 //	// R_TextureNumForName
-//	// Calls R_CheckTextureNumForName,
+//	// Calls r_CheckTextureNumForName,
 //	//  aborts with error message.
 //	//
-func R_TextureNumForName(name string) (r int32) {
+func r_TextureNumForName(name string) (r int32) {
 	var i int32
-	i = R_CheckTextureNumForName(name)
+	i = r_CheckTextureNumForName(name)
 	if i == -1 {
-		I_Error("R_TextureNumForName: %s not found", name)
+		i_Error("r_TextureNumForName: %s not found", name)
 	}
 	return i
 }
 
-func R_PrecacheLevel() {
+func r_PrecacheLevel() {
 	var texture *texture_t
 	var sf *spriteframe_t
 	var th *thinker_t
@@ -35041,7 +35041,7 @@ func R_PrecacheLevel() {
 		}
 		if flatpresent[i] != 0 {
 			lump = firstflat + i
-			W_CacheLumpNum(lump)
+			w_CacheLumpNum(lump)
 		}
 		goto _2
 	_2:
@@ -35085,7 +35085,7 @@ func R_PrecacheLevel() {
 				break
 			}
 			lump = texture.Fpatches[j].Fpatch
-			W_CacheLumpNum(lump)
+			w_CacheLumpNum(lump)
 			goto _5
 		_5:
 			;
@@ -35131,7 +35131,7 @@ func R_PrecacheLevel() {
 					break
 				}
 				lump = firstspritelump + int32(sf.Flump[k])
-				W_CacheLumpNum(lump)
+				w_CacheLumpNum(lump)
 				goto _9
 			_9:
 				;
@@ -35166,7 +35166,7 @@ var background_buffer uintptr
 //	// Thus a special case loop for very fast rendering can
 //	//  be used. It has also been used with Wolfenstein 3D.
 //	//
-func R_DrawColumn() {
+func r_DrawColumn() {
 	var count, v1 int32
 	var dest uintptr
 	var frac, fracstep fixed_t
@@ -35176,7 +35176,7 @@ func R_DrawColumn() {
 		return
 	}
 	if uint32(dc_x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
-		I_Error("R_DrawColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
+		i_Error("r_DrawColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
 	}
 	// Framebuffer destination address.
 	// Use ylookup LUT to avoid multiply with ScreenWidth.
@@ -35209,7 +35209,7 @@ func R_DrawColumn() {
 // UNUSED.
 // Loop unrolled.
 
-func R_DrawColumnLow() {
+func r_DrawColumnLow() {
 	var count, x, v1 int32
 	var dest, dest2 uintptr
 	var frac, fracstep fixed_t
@@ -35220,7 +35220,7 @@ func R_DrawColumnLow() {
 		return
 	}
 	if uint32(dc_x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
-		I_Error("R_DrawColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
+		i_Error("r_DrawColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
 	}
 	//	dccount++;
 	// Blocky mode, need to multiply by 2.
@@ -35313,7 +35313,7 @@ func init() {
 //	//  could create the SHADOW effect,
 //	//  i.e. spectres and invisible players.
 //	//
-func R_DrawFuzzColumn() {
+func r_DrawFuzzColumn() {
 	var count, v1, v3 int32
 	var dest uintptr
 	var frac, fracstep fixed_t
@@ -35331,7 +35331,7 @@ func R_DrawFuzzColumn() {
 		return
 	}
 	if uint32(dc_x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
-		I_Error("R_DrawFuzzColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
+		i_Error("r_DrawFuzzColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[dc_x])
 	// Looks familiar.
@@ -35366,7 +35366,7 @@ func R_DrawFuzzColumn() {
 }
 
 // low detail mode version
-func R_DrawFuzzColumnLow() {
+func r_DrawFuzzColumnLow() {
 	var count, x, v1, v3 int32
 	var dest, dest2 uintptr
 	var frac, fracstep fixed_t
@@ -35386,7 +35386,7 @@ func R_DrawFuzzColumnLow() {
 	// low detail mode, need to multiply by 2
 	x = dc_x << 1
 	if uint32(x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
-		I_Error("R_DrawFuzzColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
+		i_Error("r_DrawFuzzColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[x])
 	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+int32(1)])
@@ -35423,7 +35423,7 @@ func R_DrawFuzzColumnLow() {
 	}
 }
 
-func R_DrawTranslatedColumn() {
+func r_DrawTranslatedColumn() {
 	var count, v1 int32
 	var dest uintptr
 	var frac, fracstep fixed_t
@@ -35432,7 +35432,7 @@ func R_DrawTranslatedColumn() {
 		return
 	}
 	if uint32(dc_x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
-		I_Error("R_DrawColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
+		i_Error("r_DrawColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[dc_x])
 	// Looks familiar.
@@ -35459,7 +35459,7 @@ func R_DrawTranslatedColumn() {
 	}
 }
 
-func R_DrawTranslatedColumnLow() {
+func r_DrawTranslatedColumnLow() {
 	var count, x, v1 int32
 	var dest, dest2 uintptr
 	var frac, fracstep fixed_t
@@ -35470,7 +35470,7 @@ func R_DrawTranslatedColumnLow() {
 	// low detail, need to scale by 2
 	x = dc_x << 1
 	if uint32(x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
-		I_Error("R_DrawColumn: %d to %d at %d", dc_yl, dc_yh, x)
+		i_Error("r_DrawColumn: %d to %d at %d", dc_yl, dc_yh, x)
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[x])
 	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+int32(1)])
@@ -35509,7 +35509,7 @@ func R_DrawTranslatedColumnLow() {
 //	// Assumes a given structure of the PLAYPAL.
 //	// Could be read from a lump instead.
 //	//
-func R_InitTranslationTables() {
+func r_InitTranslationTables() {
 	var i int32
 	translationtables = make([]byte, 256*3)
 	// translate just the 16 green colors
@@ -35540,12 +35540,12 @@ func R_InitTranslationTables() {
 //
 //	//
 //	// Draws the actual span.
-func R_DrawSpan() {
+func r_DrawSpan() {
 	var count, spot, v1 int32
 	var dest, v3 uintptr
 	var position, step, xtemp, ytemp uint32
 	if ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= SCREENWIDTH || uint32(ds_y) > SCREENHEIGHT {
-		I_Error("R_DrawSpan: %d to %d at %d", ds_x1, ds_x2, ds_y)
+		i_Error("r_DrawSpan: %d to %d at %d", ds_x1, ds_x2, ds_y)
 	}
 	//	dscount++;
 	// Pack position and step variables into a single 32-bit integer,
@@ -35587,12 +35587,12 @@ func R_DrawSpan() {
 //	//
 //	// Again..
 //	//
-func R_DrawSpanLow() {
+func r_DrawSpanLow() {
 	var count, spot, v1 int32
 	var dest, v3, v4 uintptr
 	var position, step, xtemp, ytemp uint32
 	if ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= SCREENWIDTH || uint32(ds_y) > SCREENHEIGHT {
-		I_Error("R_DrawSpan: %d to %d at %d", ds_x1, ds_x2, ds_y)
+		i_Error("r_DrawSpan: %d to %d at %d", ds_x1, ds_x2, ds_y)
 	}
 	//	dscount++;
 	position = uint32(ds_xfrac<<10)&0xffff0000 | uint32(ds_yfrac>>6&0x0000ffff)
@@ -35636,7 +35636,7 @@ func R_DrawSpanLow() {
 //	//  for getting the framebuffer address
 //	//  of a pixel to draw.
 //	//
-func R_InitBuffer(width int32, height int32) {
+func r_InitBuffer(width int32, height int32) {
 	var i int32
 	// Handle resize,
 	//  e.g. smaller view windows
@@ -35682,7 +35682,7 @@ func R_InitBuffer(width int32, height int32) {
 //	//  for variable screen sizes
 //	// Also draws a beveled edge.
 //	//
-func R_FillBackScreen() {
+func r_FillBackScreen() {
 	var dest, src uintptr
 	var name, name1, name2 string
 	var patch *patch_t
@@ -35695,21 +35695,21 @@ func R_FillBackScreen() {
 	// and the background buffer can be freed if it was previously in use.
 	if scaledviewwidth == SCREENWIDTH {
 		if background_buffer != 0 {
-			Z_Free(background_buffer)
+			z_Free(background_buffer)
 			background_buffer = 0
 		}
 		return
 	}
 	// Allocate the background buffer if necessary
 	if background_buffer == 0 {
-		background_buffer = Z_Malloc(SCREENWIDTH * (SCREENHEIGHT - SBARHEIGHT))
+		background_buffer = z_Malloc(SCREENWIDTH * (SCREENHEIGHT - SBARHEIGHT))
 	}
 	if gamemode == commercial {
 		name = name2
 	} else {
 		name = name1
 	}
-	src = W_CacheLumpName(name)
+	src = w_CacheLumpName(name)
 	dest = background_buffer
 	y = 0
 	for {
@@ -35738,14 +35738,14 @@ func R_FillBackScreen() {
 		y++
 	}
 	// Draw screen and bezel; this is done to a separate screen buffer.
-	V_UseBuffer(background_buffer)
+	v_UseBuffer(background_buffer)
 	patch = W_CacheLumpNameT("brdr_t")
 	x = 0
 	for {
 		if x >= scaledviewwidth {
 			break
 		}
-		V_DrawPatch(viewwindowx+x, viewwindowy-int32(8), patch)
+		v_DrawPatch(viewwindowx+x, viewwindowy-int32(8), patch)
 		goto _3
 	_3:
 		;
@@ -35757,7 +35757,7 @@ func R_FillBackScreen() {
 		if x >= scaledviewwidth {
 			break
 		}
-		V_DrawPatch(viewwindowx+x, viewwindowy+viewheight, patch)
+		v_DrawPatch(viewwindowx+x, viewwindowy+viewheight, patch)
 		goto _4
 	_4:
 		;
@@ -35769,7 +35769,7 @@ func R_FillBackScreen() {
 		if y >= viewheight {
 			break
 		}
-		V_DrawPatch(viewwindowx-int32(8), viewwindowy+y, patch)
+		v_DrawPatch(viewwindowx-int32(8), viewwindowy+y, patch)
 		goto _5
 	_5:
 		;
@@ -35781,18 +35781,18 @@ func R_FillBackScreen() {
 		if y >= viewheight {
 			break
 		}
-		V_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy+y, patch)
+		v_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy+y, patch)
 		goto _6
 	_6:
 		;
 		y += 8
 	}
 	// Draw beveled edge.
-	V_DrawPatch(viewwindowx-int32(8), viewwindowy-int32(8), W_CacheLumpNameT("brdr_tl"))
-	V_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy-int32(8), W_CacheLumpNameT("brdr_tr"))
-	V_DrawPatch(viewwindowx-int32(8), viewwindowy+viewheight, W_CacheLumpNameT("brdr_bl"))
-	V_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy+viewheight, W_CacheLumpNameT("brdr_br"))
-	V_RestoreBuffer()
+	v_DrawPatch(viewwindowx-int32(8), viewwindowy-int32(8), W_CacheLumpNameT("brdr_tl"))
+	v_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy-int32(8), W_CacheLumpNameT("brdr_tr"))
+	v_DrawPatch(viewwindowx-int32(8), viewwindowy+viewheight, W_CacheLumpNameT("brdr_bl"))
+	v_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy+viewheight, W_CacheLumpNameT("brdr_br"))
+	v_RestoreBuffer()
 }
 
 // C documentation
@@ -35800,7 +35800,7 @@ func R_FillBackScreen() {
 //	//
 //	// Copy a screen buffer.
 //	//
-func R_VideoErase(ofs uint32, count int32) {
+func r_VideoErase(ofs uint32, count int32) {
 	// LFB copy.
 	// This might not be a good idea if memcpy
 	//  is not optiomal, e.g. byte by byte on
@@ -35818,7 +35818,7 @@ func R_VideoErase(ofs uint32, count int32) {
 //	// Draws the border around the view
 //	//  for different size windows?
 //	//
-func R_DrawViewBorder() {
+func r_DrawViewBorder() {
 	var i, ofs, side, top int32
 	if scaledviewwidth == SCREENWIDTH {
 		return
@@ -35826,10 +35826,10 @@ func R_DrawViewBorder() {
 	top = (SCREENHEIGHT - SBARHEIGHT - viewheight) / 2
 	side = (SCREENWIDTH - scaledviewwidth) / 2
 	// copy top and one line of left side
-	R_VideoErase(0, top*SCREENWIDTH+side)
+	r_VideoErase(0, top*SCREENWIDTH+side)
 	// copy one line of right side and bottom
 	ofs = (viewheight+top)*SCREENWIDTH - side
-	R_VideoErase(uint32(ofs), top*SCREENWIDTH+side)
+	r_VideoErase(uint32(ofs), top*SCREENWIDTH+side)
 	// copy sides using wraparound
 	ofs = top*SCREENWIDTH + SCREENWIDTH - side
 	side <<= 1
@@ -35838,7 +35838,7 @@ func R_DrawViewBorder() {
 		if i >= viewheight {
 			break
 		}
-		R_VideoErase(uint32(ofs), side)
+		r_VideoErase(uint32(ofs), side)
 		ofs += SCREENWIDTH
 		goto _1
 	_1:
@@ -35846,7 +35846,7 @@ func R_DrawViewBorder() {
 		i++
 	}
 	// ?
-	V_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT-SBARHEIGHT)
+	v_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT-SBARHEIGHT)
 }
 
 const ANG18011 = 2147483648
@@ -35868,7 +35868,7 @@ func init() {
 //	//  check point against partition plane.
 //	// Returns side 0 (front) or 1 (back).
 //	//
-func R_PointOnSide(x fixed_t, y fixed_t, node *node_t) (r int32) {
+func r_PointOnSide(x fixed_t, y fixed_t, node *node_t) (r int32) {
 	var dx, dy, left, right fixed_t
 	if node.Fdx == 0 {
 		if x <= node.Fx {
@@ -35902,7 +35902,7 @@ func R_PointOnSide(x fixed_t, y fixed_t, node *node_t) (r int32) {
 	return 1
 }
 
-func R_PointOnSegSide(x fixed_t, y fixed_t, line *seg_t) (r int32) {
+func r_PointOnSegSide(x fixed_t, y fixed_t, line *seg_t) (r int32) {
 	var dx, dy, ldx, ldy, left, lx, ly, right fixed_t
 	lx = line.Fv1.Fx
 	ly = line.Fv1.Fy
@@ -35951,7 +35951,7 @@ func R_PointOnSegSide(x fixed_t, y fixed_t, line *seg_t) (r int32) {
 
 //
 
-func R_PointToAngle(x fixed_t, y fixed_t) (r angle_t) {
+func r_PointToAngle(x fixed_t, y fixed_t) (r angle_t) {
 	x -= viewx
 	y -= viewy
 	if x == 0 && y == 0 {
@@ -36006,13 +36006,13 @@ func R_PointToAngle(x fixed_t, y fixed_t) (r angle_t) {
 	return 0
 }
 
-func R_PointToAngle2(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t) (r angle_t) {
+func r_PointToAngle2(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t) (r angle_t) {
 	viewx = x1
 	viewy = y1
-	return R_PointToAngle(x2, y2)
+	return r_PointToAngle(x2, y2)
 }
 
-func R_PointToDist(x fixed_t, y fixed_t) (r fixed_t) {
+func r_PointToDist(x fixed_t, y fixed_t) (r fixed_t) {
 	var angle int32
 	var dist, dx, dy, frac, temp fixed_t
 	dx = xabs(x - viewx)
@@ -36039,7 +36039,7 @@ func R_PointToDist(x fixed_t, y fixed_t) (r fixed_t) {
 //	//
 //	// R_InitPointToAngle
 //	//
-func R_InitPointToAngle() {
+func r_InitPointToAngle() {
 	// UNUSED - now getting from tables.c
 }
 
@@ -36052,7 +36052,7 @@ func R_InitPointToAngle() {
 //	//  at the given angle.
 //	// rw_distance must be calculated first.
 //	//
-func R_ScaleFromGlobalAngle(visangle angle_t) (r fixed_t) {
+func r_ScaleFromGlobalAngle(visangle angle_t) (r fixed_t) {
 	var anglea, angleb angle_t
 	var den, sinea, sineb int32
 	var num, scale fixed_t
@@ -36084,7 +36084,7 @@ func R_ScaleFromGlobalAngle(visangle angle_t) (r fixed_t) {
 //	//
 //	// R_InitTables
 //	//
-func R_InitTables() {
+func r_InitTables() {
 	// UNUSED: now getting from tables.c
 }
 
@@ -36093,7 +36093,7 @@ func R_InitTables() {
 //	//
 //	// R_InitTextureMapping
 //	//
-func R_InitTextureMapping() {
+func r_InitTextureMapping() {
 	var focallength fixed_t
 	var i, t, x int32
 	// Use tangent table to generate viewangletox:
@@ -36178,7 +36178,7 @@ func R_InitTextureMapping() {
 //  because the scalelight table changes with view size.
 //
 
-func R_InitLightTables() {
+func r_InitLightTables() {
 	var i, j, level, scale, startmap int32
 	// Calculate the light levels to use
 	//  for each level / distance combination.
@@ -36215,7 +36215,7 @@ func R_InitLightTables() {
 	}
 }
 
-func R_SetViewSize(blocks int32, detail int32) {
+func r_SetViewSize(blocks int32, detail int32) {
 	setsizeneeded = 1
 	setblocks = blocks
 	setdetail = detail
@@ -36226,7 +36226,7 @@ func R_SetViewSize(blocks int32, detail int32) {
 //	//
 //	// R_ExecuteSetViewSize
 //	//
-func R_ExecuteSetViewSize() {
+func r_ExecuteSetViewSize() {
 	var cosadj, dy fixed_t
 	var i, j, level, startmap int32
 	setsizeneeded = 0
@@ -36245,20 +36245,20 @@ func R_ExecuteSetViewSize() {
 	centeryfrac = centery << FRACBITS
 	projection = centerxfrac
 	if detailshift == 0 {
-		basecolfunc = R_DrawColumn
-		colfunc = R_DrawColumn
-		fuzzcolfunc = R_DrawFuzzColumn
-		transcolfunc = R_DrawTranslatedColumn
-		spanfunc = R_DrawSpan
+		basecolfunc = r_DrawColumn
+		colfunc = r_DrawColumn
+		fuzzcolfunc = r_DrawFuzzColumn
+		transcolfunc = r_DrawTranslatedColumn
+		spanfunc = r_DrawSpan
 	} else {
-		basecolfunc = R_DrawColumnLow
-		colfunc = R_DrawColumnLow
-		fuzzcolfunc = R_DrawFuzzColumnLow
-		transcolfunc = R_DrawTranslatedColumnLow
-		spanfunc = R_DrawSpanLow
+		basecolfunc = r_DrawColumnLow
+		colfunc = r_DrawColumnLow
+		fuzzcolfunc = r_DrawFuzzColumnLow
+		transcolfunc = r_DrawTranslatedColumnLow
+		spanfunc = r_DrawSpanLow
 	}
-	R_InitBuffer(scaledviewwidth, viewheight)
-	R_InitTextureMapping()
+	r_InitBuffer(scaledviewwidth, viewheight)
+	r_InitTextureMapping()
 	// psprite scales
 	pspritescale = 1 << FRACBITS * viewwidth / SCREENWIDTH
 	pspriteiscale = 1 << FRACBITS * SCREENWIDTH / viewwidth
@@ -36337,21 +36337,21 @@ func R_ExecuteSetViewSize() {
 // R_Init
 //
 
-func R_Init() {
-	R_InitData()
+func r_Init() {
+	r_InitData()
 	fprintf_ccgo(os.Stdout, ".")
-	R_InitPointToAngle()
+	r_InitPointToAngle()
 	fprintf_ccgo(os.Stdout, ".")
-	R_InitTables()
+	r_InitTables()
 	// viewwidth / viewheight / detailLevel are set by the defaults
 	fprintf_ccgo(os.Stdout, ".")
-	R_SetViewSize(screenblocks, detailLevel)
-	R_InitPlanes()
+	r_SetViewSize(screenblocks, detailLevel)
+	r_InitPlanes()
 	fprintf_ccgo(os.Stdout, ".")
-	R_InitLightTables()
+	r_InitLightTables()
 	fprintf_ccgo(os.Stdout, ".")
-	R_InitSkyMap()
-	R_InitTranslationTables()
+	r_InitSkyMap()
+	r_InitTranslationTables()
 	fprintf_ccgo(os.Stdout, ".")
 }
 
@@ -36360,7 +36360,7 @@ func R_Init() {
 //	//
 //	// R_PointInSubsector
 //	//
-func R_PointInSubsector(x fixed_t, y fixed_t) *subsector_t {
+func r_PointInSubsector(x fixed_t, y fixed_t) *subsector_t {
 	var nodenum, side int32
 	// single subsector is a special case
 	if numnodes == 0 {
@@ -36369,7 +36369,7 @@ func R_PointInSubsector(x fixed_t, y fixed_t) *subsector_t {
 	nodenum = numnodes - 1
 	for nodenum&NF_SUBSECTOR5 == 0 {
 		node := &nodes[nodenum]
-		side = R_PointOnSide(x, y, node)
+		side = r_PointOnSide(x, y, node)
 		nodenum = int32(node.Fchildren[side])
 	}
 	return &subsectors[nodenum & ^NF_SUBSECTOR5]
@@ -36380,7 +36380,7 @@ func R_PointInSubsector(x fixed_t, y fixed_t) *subsector_t {
 //	//
 //	// R_SetupFrame
 //	//
-func R_SetupFrame(player *player_t) {
+func r_SetupFrame(player *player_t) {
 	var i int32
 	viewplayer = player
 	viewx = player.Fmo.Fx
@@ -36415,23 +36415,23 @@ func R_SetupFrame(player *player_t) {
 //	//
 //	// R_RenderView
 //	//
-func R_RenderPlayerView(player *player_t) {
-	R_SetupFrame(player)
+func r_RenderPlayerView(player *player_t) {
+	r_SetupFrame(player)
 	// Clear buffers.
-	R_ClearClipSegs()
-	R_ClearDrawSegs()
-	R_ClearPlanes()
-	R_ClearSprites()
+	r_ClearClipSegs()
+	r_ClearDrawSegs()
+	r_ClearPlanes()
+	r_ClearSprites()
 	// check for new console commands.
 	NetUpdate()
 	// The head node is the last node output.
-	R_RenderBSPNode(numnodes - 1)
+	r_RenderBSPNode(numnodes - 1)
 	// Check for new console commands.
 	NetUpdate()
-	R_DrawPlanes()
+	r_DrawPlanes()
 	// Check for new console commands.
 	NetUpdate()
-	R_DrawMasked()
+	r_DrawMasked()
 	// Check for new console commands.
 	NetUpdate()
 }
@@ -36442,7 +36442,7 @@ func R_RenderPlayerView(player *player_t) {
 //	// R_InitPlanes
 //	// Only at game startup.
 //	//
-func R_InitPlanes() {
+func r_InitPlanes() {
 	// Doh!
 }
 
@@ -36461,12 +36461,12 @@ func R_InitPlanes() {
 //	//
 //	// BASIC PRIMITIVE
 //	//
-func R_MapPlane(y int32, x1 int32, x2 int32) {
+func r_MapPlane(y int32, x1 int32, x2 int32) {
 	var angle angle_t
 	var distance, length, v1, v2, v3 fixed_t
 	var index uint32
 	if x2 < x1 || x1 < 0 || x2 >= viewwidth || y > viewheight {
-		I_Error("R_MapPlane: %d, %d at %d", x1, x2, y)
+		i_Error("r_MapPlane: %d, %d at %d", x1, x2, y)
 	}
 	if planeheight != cachedheight[y] {
 		cachedheight[y] = planeheight
@@ -36510,7 +36510,7 @@ func R_MapPlane(y int32, x1 int32, x2 int32) {
 //	// R_ClearPlanes
 //	// At begining of frame.
 //	//
-func R_ClearPlanes() {
+func r_ClearPlanes() {
 	var angle angle_t
 	var i int32
 	// opening / clipping determination
@@ -36542,7 +36542,7 @@ func R_ClearPlanes() {
 //	//
 //	// R_FindPlane
 //	//
-func R_FindPlane(height fixed_t, picnum int32, lightlevel int32) *visplane_t {
+func r_FindPlane(height fixed_t, picnum int32, lightlevel int32) *visplane_t {
 	if picnum == skyflatnum {
 		height = 0 // all skys map together
 		lightlevel = 0
@@ -36554,7 +36554,7 @@ func R_FindPlane(height fixed_t, picnum int32, lightlevel int32) *visplane_t {
 		}
 	}
 	if lastvisplane_index >= len(visplanes)-1 {
-		I_Error("R_FindPlane: no more visplanes")
+		i_Error("r_FindPlane: no more visplanes")
 	}
 	check := &visplanes[lastvisplane_index]
 	check.Fheight = height
@@ -36574,7 +36574,7 @@ func R_FindPlane(height fixed_t, picnum int32, lightlevel int32) *visplane_t {
 //	//
 //	// R_CheckPlane
 //	//
-func R_CheckPlane(pl *visplane_t, start int32, stop int32) *visplane_t {
+func r_CheckPlane(pl *visplane_t, start int32, stop int32) *visplane_t {
 	var intrh, intrl, unionh, unionl, x int32
 	if start < pl.Fminx {
 		intrl = pl.Fminx
@@ -36629,16 +36629,16 @@ func R_CheckPlane(pl *visplane_t, start int32, stop int32) *visplane_t {
 //	// R_DrawPlanes
 //	// At the end of each frame.
 //	//
-func R_DrawPlanes() {
+func r_DrawPlanes() {
 	var angle, b1, b2, light, lumpnum, stop, t1, t2, x int32
 	if ds_index >= len(drawsegs) {
-		I_Error("R_DrawPlanes: drawsegs overflow (%d)", ds_index)
+		i_Error("r_DrawPlanes: drawsegs overflow (%d)", ds_index)
 	}
 	if lastvisplane_index >= len(visplanes)-1 {
-		I_Error("R_DrawPlanes: visplane overflow (%d)", lastvisplane_index)
+		i_Error("r_DrawPlanes: visplane overflow (%d)", lastvisplane_index)
 	}
 	if (int64(lastopening)-int64(uintptr(unsafe.Pointer(&openings))))/2 > int64(SCREENWIDTH*64) {
-		I_Error("R_DrawPlanes: opening overflow (%d)", (int64(lastopening)-int64(uintptr(unsafe.Pointer(&openings))))/2)
+		i_Error("r_DrawPlanes: opening overflow (%d)", (int64(lastopening)-int64(uintptr(unsafe.Pointer(&openings))))/2)
 	}
 	for i := 0; i < lastvisplane_index; i++ {
 		pl := &visplanes[i]
@@ -36664,7 +36664,7 @@ func R_DrawPlanes() {
 				if dc_yl <= dc_yh {
 					angle = int32((viewangle + xtoviewangle[x]) >> ANGLETOSKYSHIFT)
 					dc_x = x
-					dc_source = R_GetColumn(skytexture, angle)
+					dc_source = r_GetColumn(skytexture, angle)
 					colfunc()
 				}
 				goto _2
@@ -36676,7 +36676,7 @@ func R_DrawPlanes() {
 		}
 		// regular flat
 		lumpnum = firstflat + flattranslation[pl.Fpicnum]
-		ds_source = W_CacheLumpNum(lumpnum)
+		ds_source = w_CacheLumpNum(lumpnum)
 		planeheight = xabs(pl.Fheight - viewz)
 		light = pl.Flightlevel>>LIGHTSEGSHIFT + extralight
 		if light >= LIGHTLEVELS {
@@ -36713,11 +36713,11 @@ func R_DrawPlanes() {
 				b2 = -1
 			}
 			for t1 < t2 && t1 <= b1 {
-				R_MapPlane(t1, spanstart[t1], x-1)
+				r_MapPlane(t1, spanstart[t1], x-1)
 				t1++
 			}
 			for b1 > b2 && b1 >= t1 {
-				R_MapPlane(b1, spanstart[b1], x-1)
+				r_MapPlane(b1, spanstart[b1], x-1)
 				b1--
 			}
 			for t2 < t1 && t2 <= b2 {
@@ -36733,7 +36733,7 @@ func R_DrawPlanes() {
 			;
 			x++
 		}
-		W_ReleaseLumpNum(lumpnum)
+		w_ReleaseLumpNum(lumpnum)
 	}
 }
 
@@ -36747,7 +36747,7 @@ const SHRT_MAX1 = 32767
 //	//
 //	// R_RenderMaskedSegRange
 //	//
-func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
+func r_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 	var col *column_t
 	var index uint32
 	var lightnum, texnum, v1, v2 int32
@@ -36821,8 +36821,8 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 			sprtopscreen = centeryfrac - FixedMul(dc_texturemid, spryscale)
 			dc_iscale = int32(0xffffffff / uint32(spryscale))
 			// draw the texture
-			col = (*column_t)(unsafe.Pointer(R_GetColumn(texnum, int32(*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2)))) - uintptr(3)))
-			R_DrawMaskedColumn(col)
+			col = (*column_t)(unsafe.Pointer(r_GetColumn(texnum, int32(*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2)))) - uintptr(3)))
+			r_DrawMaskedColumn(col)
 			*(*int16)(unsafe.Pointer(maskedtexturecol + uintptr(dc_x)*2)) = int16(SHRT_MAX1)
 		}
 		spryscale += rw_scalestep
@@ -36842,7 +36842,7 @@ func R_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 // CALLED: CORE LOOPING ROUTINE.
 //
 
-func R_RenderSegLoop() {
+func r_RenderSegLoop() {
 	var angle angle_t
 	var bottom, mid, top, yh, yl int32
 	var ceilingclip_temp, floorclip_temp uintptr
@@ -36913,7 +36913,7 @@ func R_RenderSegLoop() {
 			dc_yl = yl
 			dc_yh = yh
 			dc_texturemid = rw_midtexturemid
-			dc_source = R_GetColumn(midtexture, texturecolumn)
+			dc_source = r_GetColumn(midtexture, texturecolumn)
 			colfunc()
 			*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(viewheight)
 			*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(-1)
@@ -36930,7 +36930,7 @@ func R_RenderSegLoop() {
 					dc_yl = yl
 					dc_yh = mid
 					dc_texturemid = rw_toptexturemid
-					dc_source = R_GetColumn(toptexture, texturecolumn)
+					dc_source = r_GetColumn(toptexture, texturecolumn)
 					colfunc()
 					*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(mid)
 				} else {
@@ -36954,7 +36954,7 @@ func R_RenderSegLoop() {
 					dc_yl = mid
 					dc_yh = yh
 					dc_texturemid = rw_bottomtexturemid
-					dc_source = R_GetColumn(bottomtexture, texturecolumn)
+					dc_source = r_GetColumn(bottomtexture, texturecolumn)
 					colfunc()
 					*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(mid)
 				} else {
@@ -36991,7 +36991,7 @@ func R_RenderSegLoop() {
 //	// A wall segment will be drawn
 //	//  between start and stop pixels (inclusive).
 //	//
-func R_StoreWallRange(start int32, stop int32) {
+func r_StoreWallRange(start int32, stop int32) {
 	var distangle, offsetangle angle_t
 	var hyp, sineval, vtop, v3, v4 fixed_t
 	var lightnum, v2, v5, v6 int32
@@ -37002,7 +37002,7 @@ func R_StoreWallRange(start int32, stop int32) {
 		return
 	}
 	if start >= viewwidth || start > stop {
-		I_Error("Bad R_RenderWallRange: %d to %d", start, stop)
+		i_Error("Bad R_RenderWallRange: %d to %d", start, stop)
 	}
 	sidedef = curline.Fsidedef
 	linedef = curline.Flinedef
@@ -37015,7 +37015,7 @@ func R_StoreWallRange(start int32, stop int32) {
 		offsetangle = uint32(ANG909)
 	}
 	distangle = uint32(ANG909) - offsetangle
-	hyp = R_PointToDist(curline.Fv1.Fx, curline.Fv1.Fy)
+	hyp = r_PointToDist(curline.Fv1.Fx, curline.Fv1.Fy)
 	sineval = finesine[distangle>>ANGLETOFINESHIFT]
 	rw_distance = FixedMul(hyp, sineval)
 	v2 = start
@@ -37025,11 +37025,11 @@ func R_StoreWallRange(start int32, stop int32) {
 	drawsegs[ds_index].Fcurline = curline
 	rw_stopx = stop + 1
 	// calculate scale at both ends and step
-	v3 = R_ScaleFromGlobalAngle(viewangle + xtoviewangle[start])
+	v3 = r_ScaleFromGlobalAngle(viewangle + xtoviewangle[start])
 	rw_scale = v3
 	drawsegs[ds_index].Fscale1 = v3
 	if stop > start {
-		drawsegs[ds_index].Fscale2 = R_ScaleFromGlobalAngle(viewangle + xtoviewangle[stop])
+		drawsegs[ds_index].Fscale2 = r_ScaleFromGlobalAngle(viewangle + xtoviewangle[stop])
 		v4 = (drawsegs[ds_index].Fscale2 - rw_scale) / (stop - start)
 		rw_scalestep = v4
 		drawsegs[ds_index].Fscalestep = v4
@@ -37238,12 +37238,12 @@ func R_StoreWallRange(start int32, stop int32) {
 	}
 	// render it
 	if markceiling != 0 {
-		ceilingplane = R_CheckPlane(ceilingplane, rw_x, rw_stopx-1)
+		ceilingplane = r_CheckPlane(ceilingplane, rw_x, rw_stopx-1)
 	}
 	if markfloor != 0 {
-		floorplane = R_CheckPlane(floorplane, rw_x, rw_stopx-1)
+		floorplane = r_CheckPlane(floorplane, rw_x, rw_stopx-1)
 	}
-	R_RenderSegLoop()
+	r_RenderSegLoop()
 	// save sprite clipping info
 	if (drawsegs[ds_index].Fsilhouette&SIL_TOP != 0 || maskedtexture != 0) && drawsegs[ds_index].Fsprtopclip == 0 {
 		xmemcpy(lastopening, uintptr(unsafe.Pointer(&ceilingclip))+uintptr(start)*2, uint64(int32(2)*(rw_stopx-start)))
@@ -37272,8 +37272,8 @@ func R_StoreWallRange(start int32, stop int32) {
 //	// R_InitSkyMap
 //	// Called whenever the view size changes.
 //	//
-func R_InitSkyMap() {
-	// skyflatnum = R_FlatNumForName ( SKYFLATNAME );
+func r_InitSkyMap() {
+	// skyflatnum = r_FlatNumForName ( SKYFLATNAME );
 	skytexturemid = 100 * (1 << FRACBITS)
 }
 
@@ -37287,12 +37287,12 @@ const INT_MAX17 = 2147483647
 //
 //	//
 //	// R_InstallSpriteLump
-//	// Local function for R_InitSprites.
+//	// Local function for r_InitSprites.
 //	//
-func R_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation uint32, flipped boolean) {
+func r_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation uint32, flipped boolean) {
 	var r int32
 	if frame >= 29 || rotation > 8 {
-		I_Error("R_InstallSpriteLump: Bad frame characters in lump %d", lump)
+		i_Error("r_InstallSpriteLump: Bad frame characters in lump %d", lump)
 	}
 	if int32(frame) > maxframe {
 		maxframe = int32(frame)
@@ -37300,10 +37300,10 @@ func R_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation u
 	if rotation == 0 {
 		// the lump should be used for all rotations
 		if sprtemp[frame].Frotate == 0 {
-			I_Error("R_InitSprites: Sprite %s frame %c has multip rot=0 lump", spritename, 'A'+frame)
+			i_Error("r_InitSprites: Sprite %s frame %c has multip rot=0 lump", spritename, 'A'+frame)
 		}
 		if sprtemp[frame].Frotate == 1 {
-			I_Error("R_InitSprites: Sprite %s frame %c has rotations and a rot=0 lump", spritename, 'A'+frame)
+			i_Error("r_InitSprites: Sprite %s frame %c has rotations and a rot=0 lump", spritename, 'A'+frame)
 		}
 		sprtemp[frame].Frotate = 0
 		r = 0
@@ -37323,13 +37323,13 @@ func R_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation u
 	}
 	// the lump is only used for one rotation
 	if sprtemp[frame].Frotate == 0 {
-		I_Error("R_InitSprites: Sprite %s frame %c has rotations and a rot=0 lump", spritename, 'A'+frame)
+		i_Error("r_InitSprites: Sprite %s frame %c has rotations and a rot=0 lump", spritename, 'A'+frame)
 	}
 	sprtemp[frame].Frotate = 1
 	// make 0 based
 	rotation--
 	if int32(sprtemp[frame].Flump[rotation]) != -1 {
-		I_Error("R_InitSprites: Sprite %s : %c : %c has two lumps mapped to it", spritename, 'A'+frame, '1'+rotation)
+		i_Error("r_InitSprites: Sprite %s : %c : %c has two lumps mapped to it", spritename, 'A'+frame, '1'+rotation)
 	}
 	sprtemp[frame].Flump[rotation] = int16(lump - firstspritelump)
 	sprtemp[frame].Fflip[rotation] = uint8(flipped)
@@ -37352,7 +37352,7 @@ func R_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation u
 //	//  letter/number appended.
 //	// The rotation character can be 0 to signify no rotations.
 //	//
-func R_InitSpriteDefs(namelist []string) {
+func r_InitSpriteDefs(namelist []string) {
 	var end, frame, i, l, patched, rotation, start int32
 	// count the number of sprite names
 	numsprites = int32(len(namelist))
@@ -37386,15 +37386,15 @@ func R_InitSpriteDefs(namelist []string) {
 				frame = int32(lumpinfo[l].Fname[4] - 'A')
 				rotation = int32(lumpinfo[l].Fname[5] - '0')
 				if modifiedgame != 0 {
-					patched = W_GetNumForName(lumpinfo[l].Name())
+					patched = w_GetNumForName(lumpinfo[l].Name())
 				} else {
 					patched = l
 				}
-				R_InstallSpriteLump(spritename, patched, uint32(frame), uint32(rotation), 0)
+				r_InstallSpriteLump(spritename, patched, uint32(frame), uint32(rotation), 0)
 				if lumpinfo[l].Fname[6] != 0 {
 					frame = int32(lumpinfo[l].Fname[6] - 'A')
 					rotation = int32(lumpinfo[l].Fname[7] - '0')
-					R_InstallSpriteLump(spritename, l, uint32(frame), uint32(rotation), 1)
+					r_InstallSpriteLump(spritename, l, uint32(frame), uint32(rotation), 1)
 				}
 			}
 			l++
@@ -37422,7 +37422,7 @@ func R_InitSpriteDefs(namelist []string) {
 		_4:
 			;
 			// no rotations were found for that frame at all
-			I_Error("R_InitSprites: No patches found for %s frame %c", spritename, frame+'A')
+			i_Error("r_InitSprites: No patches found for %s frame %c", spritename, frame+'A')
 			goto _7
 		_5:
 			;
@@ -37438,7 +37438,7 @@ func R_InitSpriteDefs(namelist []string) {
 				goto _8
 			}
 			if int32(sprtemp[frame].Flump[rotation]) == -1 {
-				I_Error("R_InitSprites: Sprite %s frame %c is missing rotations", spritename, frame+'A')
+				i_Error("r_InitSprites: Sprite %s frame %c is missing rotations", spritename, frame+'A')
 			}
 			goto _9
 		_9:
@@ -37473,7 +37473,7 @@ func R_InitSpriteDefs(namelist []string) {
 //	// R_InitSprites
 //	// Called at program start.
 //	//
-func R_InitSprites(namelist []string) {
+func r_InitSprites(namelist []string) {
 	var i int32
 	i = 0
 	for {
@@ -37486,7 +37486,7 @@ func R_InitSprites(namelist []string) {
 		;
 		i++
 	}
-	R_InitSpriteDefs(namelist)
+	r_InitSpriteDefs(namelist)
 }
 
 // C documentation
@@ -37495,11 +37495,11 @@ func R_InitSprites(namelist []string) {
 //	// R_ClearSprites
 //	// Called at frame start.
 //	//
-func R_ClearSprites() {
+func r_ClearSprites() {
 	vissprite_n = 0
 }
 
-func R_NewVisSprite() *vissprite_t {
+func r_NewVisSprite() *vissprite_t {
 	if vissprite_n == len(vissprites) {
 		return &overflowsprite
 	}
@@ -37507,7 +37507,7 @@ func R_NewVisSprite() *vissprite_t {
 	return &vissprites[vissprite_n-1]
 }
 
-func R_DrawMaskedColumn(column *column_t) {
+func r_DrawMaskedColumn(column *column_t) {
 	var basetexturemid fixed_t
 	var bottomscreen, topscreen int32
 	basetexturemid = dc_texturemid
@@ -37532,7 +37532,7 @@ func R_DrawMaskedColumn(column *column_t) {
 			dc_texturemid = basetexturemid - int32(column.Ftopdelta)<<FRACBITS
 			// dc_source = (byte *)column + 3 - column->topdelta;
 			// Drawn by either R_DrawColumn
-			//  or (SHADOW) R_DrawFuzzColumn.
+			//  or (SHADOW) r_DrawFuzzColumn.
 			colfunc()
 		}
 		column = column.Next()
@@ -37548,7 +37548,7 @@ func R_DrawMaskedColumn(column *column_t) {
 //	// R_DrawVisSprite
 //	//  mfloorclip and mceilingclip should also be set.
 //	//
-func R_DrawVisSprite(vis *vissprite_t, x1 int32, x2 int32) {
+func r_DrawVisSprite(vis *vissprite_t, x1 int32, x2 int32) {
 	var patch *patch_t
 	var frac fixed_t
 	var texturecolumn int32
@@ -37575,9 +37575,9 @@ func R_DrawVisSprite(vis *vissprite_t, x1 int32, x2 int32) {
 		}
 		texturecolumn = frac >> FRACBITS
 		if texturecolumn < 0 || texturecolumn >= int32(patch.Fwidth) {
-			I_Error("R_DrawSpriteRange: bad texturecolumn")
+			i_Error("R_DrawSpriteRange: bad texturecolumn")
 		}
-		R_DrawMaskedColumn(patch.GetColumn(texturecolumn))
+		r_DrawMaskedColumn(patch.GetColumn(texturecolumn))
 		goto _1
 	_1:
 		;
@@ -37594,7 +37594,7 @@ func R_DrawVisSprite(vis *vissprite_t, x1 int32, x2 int32) {
 //	// Generates a vissprite for a thing
 //	//  if it might be visible.
 //	//
-func R_ProjectSprite(thing *mobj_t) {
+func r_ProjectSprite(thing *mobj_t) {
 	var ang angle_t
 	var flip boolean
 	var gxt, gyt, iscale, tr_x, tr_y, tx, tz, xscale fixed_t
@@ -37623,16 +37623,16 @@ func R_ProjectSprite(thing *mobj_t) {
 	}
 	// decide which patch to use for sprite relative to player
 	if uint32(thing.Fsprite) >= uint32(numsprites) {
-		I_Error("R_ProjectSprite: invalid sprite number %d ", thing.Fsprite)
+		i_Error("r_ProjectSprite: invalid sprite number %d ", thing.Fsprite)
 	}
 	sprdef = &sprites[thing.Fsprite]
 	if thing.Fframe&int32(FF_FRAMEMASK3) >= sprdef.Fnumframes {
-		I_Error("R_ProjectSprite: invalid sprite frame %d : %d ", thing.Fsprite, thing.Fframe)
+		i_Error("r_ProjectSprite: invalid sprite frame %d : %d ", thing.Fsprite, thing.Fframe)
 	}
 	sprframe = &sprdef.Fspriteframes[thing.Fframe&int32(FF_FRAMEMASK3)]
 	if sprframe.Frotate != 0 {
 		// choose a different rotation based on player view
-		ang = R_PointToAngle(thing.Fx, thing.Fy)
+		ang = r_PointToAngle(thing.Fx, thing.Fy)
 		rot = (ang - thing.Fangle + uint32(ANG455/2)*9) >> 29
 		lump = int32(sprframe.Flump[rot])
 		flip = uint32(sprframe.Fflip[rot])
@@ -37655,7 +37655,7 @@ func R_ProjectSprite(thing *mobj_t) {
 		return
 	}
 	// store information in a vissprite
-	vis = R_NewVisSprite()
+	vis = r_NewVisSprite()
 	vis.Fmobjflags = thing.Fflags
 	vis.Fscale = xscale << detailshift
 	vis.Fgx = thing.Fx
@@ -37718,7 +37718,7 @@ func R_ProjectSprite(thing *mobj_t) {
 //	// R_AddSprites
 //	// During BSP traversal, this adds sprites by sector.
 //	//
-func R_AddSprites(sec *sector_t) {
+func r_AddSprites(sec *sector_t) {
 	var lightnum int32
 	var thing *mobj_t
 	// BSP is traversed by subsector.
@@ -37746,7 +37746,7 @@ func R_AddSprites(sec *sector_t) {
 		if thing == nil {
 			break
 		}
-		R_ProjectSprite(thing)
+		r_ProjectSprite(thing)
 		goto _1
 	_1:
 		;
@@ -37759,7 +37759,7 @@ func R_AddSprites(sec *sector_t) {
 //	//
 //	// R_DrawPSprite
 //	//
-func R_DrawPSprite(psp *pspdef_t) {
+func r_DrawPSprite(psp *pspdef_t) {
 	var flip boolean
 	var lump, x1, x2, v1, v2 int32
 	var sprdef *spritedef_t
@@ -37768,11 +37768,11 @@ func R_DrawPSprite(psp *pspdef_t) {
 	var tx fixed_t
 	// decide which patch to use
 	if uint32(psp.Fstate.Fsprite) >= uint32(numsprites) {
-		I_Error("R_ProjectSprite: invalid sprite number %d ", psp.Fstate.Fsprite)
+		i_Error("r_ProjectSprite: invalid sprite number %d ", psp.Fstate.Fsprite)
 	}
 	sprdef = &sprites[psp.Fstate.Fsprite]
 	if psp.Fstate.Fframe&int32(FF_FRAMEMASK3) >= sprdef.Fnumframes {
-		I_Error("R_ProjectSprite: invalid sprite frame %d : %d ", psp.Fstate.Fsprite, psp.Fstate.Fframe)
+		i_Error("r_ProjectSprite: invalid sprite frame %d : %d ", psp.Fstate.Fsprite, psp.Fstate.Fframe)
 	}
 	sprframe = &sprdef.Fspriteframes[psp.Fstate.Fframe&int32(FF_FRAMEMASK3)]
 	lump = int32(sprframe.Flump[0])
@@ -37836,7 +37836,7 @@ func R_DrawPSprite(psp *pspdef_t) {
 			}
 		}
 	}
-	R_DrawVisSprite(vis, vis.Fx1, vis.Fx2)
+	r_DrawVisSprite(vis, vis.Fx1, vis.Fx2)
 }
 
 // C documentation
@@ -37844,7 +37844,7 @@ func R_DrawPSprite(psp *pspdef_t) {
 //	//
 //	// R_DrawPlayerSprites
 //	//
-func R_DrawPlayerSprites() {
+func r_DrawPlayerSprites() {
 	var i, lightnum int32
 	// get light level
 	lightnum = int32(viewplayer.Fmo.Fsubsector.Fsector.Flightlevel)>>LIGHTSEGSHIFT + extralight
@@ -37868,7 +37868,7 @@ func R_DrawPlayerSprites() {
 		}
 		psp := &viewplayer.Fpsprites[i]
 		if psp.Fstate != nil {
-			R_DrawPSprite(psp)
+			r_DrawPSprite(psp)
 		}
 		goto _1
 	_1:
@@ -37877,7 +37877,7 @@ func R_DrawPlayerSprites() {
 	}
 }
 
-func R_SortVisSprites() {
+func r_SortVisSprites() {
 	bp := &vissprite_t{}
 	var best, ds *vissprite_t
 	var bestscale fixed_t
@@ -37950,7 +37950,7 @@ func R_SortVisSprites() {
 var clipbot [320]int16
 var cliptop [320]int16
 
-func R_DrawSprite(spr *vissprite_t) {
+func r_DrawSprite(spr *vissprite_t) {
 	var ds int
 	var lowscale, scale fixed_t
 	var r1, r2, silhouette, x, v4, v5 int32
@@ -38000,10 +38000,10 @@ func R_DrawSprite(spr *vissprite_t) {
 			lowscale = drawsegs[ds].Fscale1
 			scale = drawsegs[ds].Fscale2
 		}
-		if scale < spr.Fscale || lowscale < spr.Fscale && R_PointOnSegSide(spr.Fgx, spr.Fgy, drawsegs[ds].Fcurline) == 0 {
+		if scale < spr.Fscale || lowscale < spr.Fscale && r_PointOnSegSide(spr.Fgx, spr.Fgy, drawsegs[ds].Fcurline) == 0 {
 			// masked mid texture?
 			if drawsegs[ds].Fmaskedtexturecol != 0 {
-				R_RenderMaskedSegRange(&drawsegs[ds], r1, r2)
+				r_RenderMaskedSegRange(&drawsegs[ds], r1, r2)
 			}
 			// seg is behind sprite
 			goto _3
@@ -38094,7 +38094,7 @@ func R_DrawSprite(spr *vissprite_t) {
 	}
 	mfloorclip = uintptr(unsafe.Pointer(&clipbot))
 	mceilingclip = uintptr(unsafe.Pointer(&cliptop))
-	R_DrawVisSprite(spr, spr.Fx1, spr.Fx2)
+	r_DrawVisSprite(spr, spr.Fx1, spr.Fx2)
 }
 
 // C documentation
@@ -38102,9 +38102,9 @@ func R_DrawSprite(spr *vissprite_t) {
 //	//
 //	// R_DrawMasked
 //	//
-func R_DrawMasked() {
+func r_DrawMasked() {
 	var spr *vissprite_t
-	R_SortVisSprites()
+	r_SortVisSprites()
 	if vissprite_n > 0 {
 		// draw all vissprites back to front
 		spr = vsprsortedhead.Fnext
@@ -38112,7 +38112,7 @@ func R_DrawMasked() {
 			if spr == &vsprsortedhead {
 				break
 			}
-			R_DrawSprite(spr)
+			r_DrawSprite(spr)
 			goto _1
 		_1:
 			;
@@ -38126,7 +38126,7 @@ func R_DrawMasked() {
 			break
 		}
 		if drawsegs[ds].Fmaskedtexturecol != 0 {
-			R_RenderMaskedSegRange(&drawsegs[ds], drawsegs[ds].Fx1, drawsegs[ds].Fx2)
+			r_RenderMaskedSegRange(&drawsegs[ds], drawsegs[ds].Fx1, drawsegs[ds].Fx2)
 		}
 		goto _2
 	_2:
@@ -38136,7 +38136,7 @@ func R_DrawMasked() {
 	// draw the psprites on top of everything
 	//  but does not draw on side views
 	if viewangleoffset == 0 {
-		R_DrawPlayerSprites()
+		r_DrawPlayerSprites()
 	}
 }
 
@@ -39145,7 +39145,7 @@ var captured_stats [32]wbstartstruct_t
 var num_captured_stats int32 = 0
 
 func StatCopy(stats *wbstartstruct_t) {
-	if M_ParmExists("-statdump") != 0 && num_captured_stats < MAX_CAPTURES {
+	if m_ParmExists("-statdump") != 0 && num_captured_stats < MAX_CAPTURES {
 		captured_stats[num_captured_stats] = *stats
 		num_captured_stats++
 	}
@@ -39240,9 +39240,9 @@ func STlib_drawNum(n *st_number_t, refresh boolean) {
 	// clear the area
 	x = n.Fx - numdigits*w
 	if n.Fy-(SCREENHEIGHT-ST_HEIGHT) < 0 {
-		I_Error("drawNum: n->y - ST_Y < 0")
+		i_Error("drawNum: n->y - ST_Y < 0")
 	}
-	V_CopyRect(x, n.Fy-(SCREENHEIGHT-ST_HEIGHT), st_backing_screen, w*numdigits, h, x, n.Fy)
+	v_CopyRect(x, n.Fy-(SCREENHEIGHT-ST_HEIGHT), st_backing_screen, w*numdigits, h, x, n.Fy)
 	// if non-number, do not draw it
 	if num == 1994 {
 		return
@@ -39250,7 +39250,7 @@ func STlib_drawNum(n *st_number_t, refresh boolean) {
 	x = n.Fx
 	// in the special case of 0, you draw 0
 	if num == 0 {
-		V_DrawPatch(x-w, n.Fy, n.Fp[0])
+		v_DrawPatch(x-w, n.Fy, n.Fp[0])
 	}
 	// draw the new number
 	for {
@@ -39262,12 +39262,12 @@ func STlib_drawNum(n *st_number_t, refresh boolean) {
 			break
 		}
 		x -= w
-		V_DrawPatch(x, n.Fy, n.Fp[num%10])
+		v_DrawPatch(x, n.Fy, n.Fp[num%10])
 		num /= 10
 	}
 	// draw a minus sign if necessary
 	if neg != 0 {
-		V_DrawPatch(x-int32(8), n.Fy, sttminus)
+		v_DrawPatch(x-int32(8), n.Fy, sttminus)
 	}
 }
 
@@ -39290,7 +39290,7 @@ func STlib_initPercent(st *st_percent_t, x int32, y int32, pl []*patch_t, num *i
 
 func STlib_updatePercent(per *st_percent_t, refresh int32) {
 	if refresh != 0 && *per.Fn.Fon != 0 {
-		V_DrawPatch(per.Fn.Fx, per.Fn.Fy, per.Fp)
+		v_DrawPatch(per.Fn.Fx, per.Fn.Fy, per.Fp)
 	}
 	STlib_updateNum(&per.Fn, uint32(refresh))
 }
@@ -39313,11 +39313,11 @@ func STlib_updateMultIcon(mi *st_multicon_t, refresh boolean) {
 			w = int32(mi.Fp[mi.Foldinum].Fwidth)
 			h = int32(mi.Fp[mi.Foldinum].Fheight)
 			if y-(SCREENHEIGHT-ST_HEIGHT) < 0 {
-				I_Error("updateMultIcon: y - ST_Y < 0")
+				i_Error("updateMultIcon: y - ST_Y < 0")
 			}
-			V_CopyRect(x, y-(SCREENHEIGHT-ST_HEIGHT), st_backing_screen, w, h, x, y)
+			v_CopyRect(x, y-(SCREENHEIGHT-ST_HEIGHT), st_backing_screen, w, h, x, y)
 		}
-		V_DrawPatch(mi.Fx, mi.Fy, mi.Fp[*mi.Finum])
+		v_DrawPatch(mi.Fx, mi.Fy, mi.Fp[*mi.Finum])
 		mi.Foldinum = *mi.Finum
 	}
 }
@@ -39339,12 +39339,12 @@ func STlib_updateBinIcon(bi *st_binicon_t, refresh boolean) {
 		w = int32(bi.Fp.Fwidth)
 		h = int32(bi.Fp.Fheight)
 		if y-(SCREENHEIGHT-ST_HEIGHT) < 0 {
-			I_Error("updateBinIcon: y - ST_Y < 0")
+			i_Error("updateBinIcon: y - ST_Y < 0")
 		}
 		if *bi.Fval != 0 {
-			V_DrawPatch(bi.Fx, bi.Fy, bi.Fp)
+			v_DrawPatch(bi.Fx, bi.Fy, bi.Fp)
 		} else {
-			V_CopyRect(x, y-(SCREENHEIGHT-ST_HEIGHT), st_backing_screen, w, h, x, y)
+			v_CopyRect(x, y-(SCREENHEIGHT-ST_HEIGHT), st_backing_screen, w, h, x, y)
 		}
 		bi.Foldval = *bi.Fval
 	}
@@ -39414,7 +39414,7 @@ var plyr *player_t
 
 // C documentation
 //
-//	// ST_Start() has just been called
+//	// st_Start() has just been called
 var st_firsttime boolean
 
 // C documentation
@@ -39686,15 +39686,15 @@ func init() {
 	}
 }
 
-func ST_refreshBackground() {
+func st_refreshBackground() {
 	if st_statusbaron != 0 {
-		V_UseBuffer(st_backing_screen)
-		V_DrawPatch(ST_X, 0, sbar)
+		v_UseBuffer(st_backing_screen)
+		v_DrawPatch(ST_X, 0, sbar)
 		if netgame != 0 {
-			V_DrawPatch(ST_FX, 0, faceback)
+			v_DrawPatch(ST_FX, 0, faceback)
 		}
-		V_RestoreBuffer()
-		V_CopyRect(ST_X, 0, st_backing_screen, SCREENWIDTH, ST_HEIGHT, ST_X, SCREENHEIGHT-ST_HEIGHT)
+		v_RestoreBuffer()
+		v_CopyRect(ST_X, 0, st_backing_screen, SCREENWIDTH, ST_HEIGHT, ST_X, SCREENHEIGHT-ST_HEIGHT)
 	}
 }
 
@@ -39702,7 +39702,7 @@ func ST_refreshBackground() {
 //
 //	// Respond to keyboard input events,
 //	//  intercept cheats.
-func ST_Responder(ev *event_t) (r boolean) {
+func st_Responder(ev *event_t) (r boolean) {
 	var epsd, i, map1, musnum int32
 	var v6, v8 GameMission_t
 	var v10 bool
@@ -39809,14 +39809,14 @@ func ST_Responder(ev *event_t) (r boolean) {
 									if (int32(param[0])-'0')*int32(10)+int32(param[int32(1)])-'0' > 35 {
 										plyr.Fmessage = "IMPOSSIBLE SELECTION"
 									} else {
-										S_ChangeMusic(musnum, 1)
+										s_ChangeMusic(musnum, 1)
 									}
 								} else {
 									musnum = int32(mus_e1m1) + (int32(param[0])-'1')*9 + (int32(param[int32(1)]) - '1')
 									if (int32(param[0])-'1')*9+int32(param[int32(1)])-'1' > 31 {
 										plyr.Fmessage = "IMPOSSIBLE SELECTION"
 									} else {
-										S_ChangeMusic(musnum, 1)
+										s_ChangeMusic(musnum, 1)
 									}
 								}
 							} else {
@@ -39863,7 +39863,7 @@ func ST_Responder(ev *event_t) (r boolean) {
 					}
 					if cht_CheckCheat(&cheat_powerup[i], int8(ev.Fdata2)) != 0 {
 						if plyr.Fpowers[i] == 0 {
-							P_GivePower(plyr, i)
+							p_GivePower(plyr, i)
 						} else {
 							if i != int32(pw_strength) {
 								plyr.Fpowers[i] = 1
@@ -39932,14 +39932,14 @@ func ST_Responder(ev *event_t) (r boolean) {
 				}
 				// So be it.
 				plyr.Fmessage = "Changing Level..."
-				G_DeferedInitNew(gameskill, epsd, map1)
+				g_DeferedInitNew(gameskill, epsd, map1)
 			}
 		}
 	}
 	return 0
 }
 
-func ST_calcPainOffset() (r int32) {
+func st_calcPainOffset() (r int32) {
 	var health, v1 int32
 	if plyr.Fhealth > 100 {
 		v1 = 100
@@ -39966,7 +39966,7 @@ var oldhealth int32 = -1
 //	// the precedence of expressions is:
 //	//  dead > evil grin > turned head > straight ahead
 //	//
-func ST_updateFaceWidget() {
+func st_updateFaceWidget() {
 	var badguyangle, diffang angle_t
 	var doevilgrin boolean
 	var i, v2 int32
@@ -40000,7 +40000,7 @@ func ST_updateFaceWidget() {
 				// evil grin if just picked up weapon
 				priority = 8
 				st_facecount = 2 * TICRATE
-				st_faceindex = ST_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1)
+				st_faceindex = st_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1)
 			}
 		}
 	}
@@ -40010,9 +40010,9 @@ func ST_updateFaceWidget() {
 			priority = 7
 			if plyr.Fhealth-st_oldhealth > ST_MUCHPAIN {
 				st_facecount = 1 * TICRATE
-				st_faceindex = ST_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
+				st_faceindex = st_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
 			} else {
-				badguyangle = R_PointToAngle2(plyr.Fmo.Fx, plyr.Fmo.Fy, plyr.Fattacker.Fx, plyr.Fattacker.Fy)
+				badguyangle = r_PointToAngle2(plyr.Fmo.Fx, plyr.Fmo.Fy, plyr.Fattacker.Fx, plyr.Fattacker.Fy)
 				if badguyangle > plyr.Fmo.Fangle {
 					// whether right or left
 					diffang = badguyangle - plyr.Fmo.Fangle
@@ -40023,7 +40023,7 @@ func ST_updateFaceWidget() {
 					i = boolint32(diffang <= uint32(ANG18015))
 				} // confusing, aint it?
 				st_facecount = 1 * TICRATE
-				st_faceindex = ST_calcPainOffset()
+				st_faceindex = st_calcPainOffset()
 				if diffang < uint32(ANG457) {
 					// head-on
 					st_faceindex += ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1 + 1
@@ -40045,11 +40045,11 @@ func ST_updateFaceWidget() {
 			if plyr.Fhealth-st_oldhealth > ST_MUCHPAIN {
 				priority = 7
 				st_facecount = 1 * TICRATE
-				st_faceindex = ST_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
+				st_faceindex = st_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES)
 			} else {
 				priority = 6
 				st_facecount = 1 * TICRATE
-				st_faceindex = ST_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1 + 1)
+				st_faceindex = st_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1 + 1)
 			}
 		}
 	}
@@ -40063,7 +40063,7 @@ func ST_updateFaceWidget() {
 				v2 = lastattackdown
 				if v2 == 0 {
 					priority = 5
-					st_faceindex = ST_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1 + 1)
+					st_faceindex = st_calcPainOffset() + (ST_NUMSTRAIGHTFACES + ST_NUMTURNFACES + 1 + 1)
 					st_facecount = 1
 					lastattackdown = 1
 				}
@@ -40082,7 +40082,7 @@ func ST_updateFaceWidget() {
 	}
 	// look left or look right if the facecount has timed out
 	if st_facecount == 0 {
-		st_faceindex = ST_calcPainOffset() + st_randomnumber%int32(3)
+		st_faceindex = st_calcPainOffset() + st_randomnumber%int32(3)
 		st_facecount = TICRATE / 2
 		priority = 0
 	}
@@ -40093,7 +40093,7 @@ var lastattackdown int32 = -1
 
 var priority int32
 
-func ST_updateWidgets() {
+func st_updateWidgets() {
 	var i, v2 int32
 	// must redirect the pointer if the ready weapon has changed.
 	//  if (w_ready.data != plyr->readyweapon)
@@ -40138,7 +40138,7 @@ func ST_updateWidgets() {
 		i++
 	}
 	// refresh everything if this is him coming back to life
-	ST_updateFaceWidget()
+	st_updateFaceWidget()
 	// used by the w_armsbg widget
 	st_notdeathmatch = booluint32(deathmatch == 0)
 	// used by w_arms[] widgets
@@ -40165,15 +40165,15 @@ func ST_updateWidgets() {
 
 var largeammo int32 = 1994
 
-func ST_Ticker() {
-	st_randomnumber = M_Random()
-	ST_updateWidgets()
+func st_Ticker() {
+	st_randomnumber = m_Random()
+	st_updateWidgets()
 	st_oldhealth = plyr.Fhealth
 }
 
 var st_palette int32 = 0
 
-func ST_doPaletteStuff() {
+func st_doPaletteStuff() {
 	var bzc, cnt, palette int32
 	var pal uintptr
 	cnt = plyr.Fdamagecount
@@ -40222,12 +40222,12 @@ func ST_doPaletteStuff() {
 	}
 	if palette != st_palette {
 		st_palette = palette
-		pal = W_CacheLumpNum(lu_palette) + uintptr(palette*int32(768))
-		I_SetPalette(pal)
+		pal = w_CacheLumpNum(lu_palette) + uintptr(palette*int32(768))
+		i_SetPalette(pal)
 	}
 }
 
-func ST_drawWidgets(refresh boolean) {
+func st_drawWidgets(refresh boolean) {
 	// used by w_arms[] widgets
 	st_armson = booluint32(st_statusbaron != 0 && deathmatch == 0)
 	// used by w_frags widget
@@ -40250,36 +40250,36 @@ func ST_drawWidgets(refresh boolean) {
 	STlib_updateNum(&w_frags, refresh)
 }
 
-func ST_doRefresh() {
+func st_doRefresh() {
 	st_firsttime = 0
 	// draw status bar background to off-screen buff
-	ST_refreshBackground()
+	st_refreshBackground()
 	// and refresh all widgets
-	ST_drawWidgets(1)
+	st_drawWidgets(1)
 }
 
-func ST_diffDraw() {
+func st_diffDraw() {
 	// update all widgets
-	ST_drawWidgets(0)
+	st_drawWidgets(0)
 }
 
-func ST_Drawer(fullscreen boolean, refresh boolean) {
+func st_Drawer(fullscreen boolean, refresh boolean) {
 	st_statusbaron = booluint32(fullscreen == 0 || automapactive != 0)
 	st_firsttime = booluint32(st_firsttime != 0 || refresh != 0)
 	// Do red-/gold-shifts from damage/items
-	ST_doPaletteStuff()
-	// If just after ST_Start(), refresh all
+	st_doPaletteStuff()
+	// If just after st_Start(), refresh all
 	if st_firsttime != 0 {
-		ST_doRefresh()
+		st_doRefresh()
 	} else {
-		ST_diffDraw()
+		st_diffDraw()
 	}
 }
 
 // Iterates through all graphics to be loaded or unloaded, along with
 // the variable they use, invoking the specified callback function.
 
-func ST_loadUnloadGraphics(callback func(string, **patch_t)) {
+func st_loadUnloadGraphics(callback func(string, **patch_t)) {
 	var facenum, i, j int32
 	// Load the numbers, tall and short
 	i = 0
@@ -40381,20 +40381,20 @@ func ST_loadUnloadGraphics(callback func(string, **patch_t)) {
 	facenum++
 }
 
-func ST_loadCallback(lumpname string, variable **patch_t) {
+func st_loadCallback(lumpname string, variable **patch_t) {
 	*variable = W_CacheLumpNameT(lumpname)
 }
 
-func ST_loadGraphics() {
-	ST_loadUnloadGraphics(ST_loadCallback)
+func st_loadGraphics() {
+	st_loadUnloadGraphics(st_loadCallback)
 }
 
-func ST_loadData() {
-	lu_palette = W_GetNumForName("PLAYPAL")
-	ST_loadGraphics()
+func st_loadData() {
+	lu_palette = w_GetNumForName("PLAYPAL")
+	st_loadGraphics()
 }
 
-func ST_initData() {
+func st_initData() {
 	var i int32
 	st_firsttime = 1
 	plyr = &players[consoleplayer]
@@ -40427,7 +40427,7 @@ func ST_initData() {
 	STlib_init()
 }
 
-func ST_createWidgets() {
+func st_createWidgets() {
 	// ready weapon ammo
 	STlib_initNum(&w_ready, ST_AMMOX, ST_AMMOY, tallnum[:], &plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo], &st_statusbaron, ST_AMMOWIDTH)
 	// the last weapon type
@@ -40464,26 +40464,26 @@ func ST_createWidgets() {
 
 var st_stopped int32 = 1
 
-func ST_Start() {
+func st_Start() {
 	if st_stopped == 0 {
-		ST_Stop()
+		st_Stop()
 	}
-	ST_initData()
-	ST_createWidgets()
+	st_initData()
+	st_createWidgets()
 	st_stopped = 0
 }
 
-func ST_Stop() {
+func st_Stop() {
 	if st_stopped != 0 {
 		return
 	}
-	I_SetPalette(W_CacheLumpNum(lu_palette))
+	i_SetPalette(w_CacheLumpNum(lu_palette))
 	st_stopped = 1
 }
 
-func ST_Init() {
-	ST_loadData()
-	st_backing_screen = Z_Malloc(SCREENWIDTH * ST_HEIGHT)
+func st_Init() {
+	st_loadData()
+	st_backing_screen = z_Malloc(SCREENWIDTH * ST_HEIGHT)
 }
 
 const NORM_SEP = 128
@@ -40540,11 +40540,11 @@ var mus_playing *musicinfo_t
 //  allocates channel buffer, sets S_sfx lookup.
 //
 
-func S_Init(sfxVolume int32, musicVolume int32) {
+func s_Init(sfxVolume int32, musicVolume int32) {
 	var i, v3 int32
-	I_PrecacheSounds(S_sfx[:])
-	S_SetSfxVolume(sfxVolume)
-	S_SetMusicVolume(musicVolume)
+	i_PrecacheSounds(S_sfx[:])
+	s_SetSfxVolume(sfxVolume)
+	s_SetMusicVolume(musicVolume)
 	// Allocating the internal channels for mixing
 	// (the maximum numer of sounds rendered
 	// simultaneously) within zone memory.
@@ -40565,21 +40565,21 @@ func S_Init(sfxVolume int32, musicVolume int32) {
 		;
 		i++
 	}
-	I_AtExit(S_Shutdown, 1)
+	i_AtExit(s_Shutdown, 1)
 }
 
-func S_Shutdown() {
-	I_ShutdownSound()
-	I_ShutdownMusic()
+func s_Shutdown() {
+	i_ShutdownSound()
+	i_ShutdownMusic()
 }
 
-func S_StopChannel(cnum int32) {
+func s_StopChannel(cnum int32) {
 	var i int32
 	c := &channels[cnum]
 	if c.Fsfxinfo != nil {
 		// stop the sound playing
-		if I_SoundIsPlaying(c.Fhandle) != 0 {
-			I_StopSound(c.Fhandle)
+		if i_SoundIsPlaying(c.Fhandle) != 0 {
+			i_StopSound(c.Fhandle)
 		}
 		// check to see if other channels are playing the sound
 		i = 0
@@ -40607,7 +40607,7 @@ func S_StopChannel(cnum int32) {
 //  determines music if any, changes music.
 //
 
-func S_Start() {
+func s_Start() {
 	var cnum, mnum int32
 	var spmus [9]int32
 	// kill all playing sounds at start of level
@@ -40618,7 +40618,7 @@ func S_Start() {
 			break
 		}
 		if channels[cnum].Fsfxinfo != nil {
-			S_StopChannel(cnum)
+			s_StopChannel(cnum)
 		}
 		goto _1
 	_1:
@@ -40647,10 +40647,10 @@ func S_Start() {
 			mnum = spmus[gamemap-1]
 		}
 	}
-	S_ChangeMusic(mnum, 1)
+	s_ChangeMusic(mnum, 1)
 }
 
-func S_StopSound(origin *degenmobj_t) {
+func s_StopSound(origin *degenmobj_t) {
 	var cnum int32
 	cnum = 0
 	for {
@@ -40658,7 +40658,7 @@ func S_StopSound(origin *degenmobj_t) {
 			break
 		}
 		if channels[cnum].Fsfxinfo != nil && channels[cnum].Forigin == origin {
-			S_StopChannel(cnum)
+			s_StopChannel(cnum)
 			break
 		}
 		goto _1
@@ -40669,11 +40669,11 @@ func S_StopSound(origin *degenmobj_t) {
 }
 
 //
-// S_GetChannel :
+// s_GetChannel :
 //   If none available, return -1.  Otherwise channel #.
 //
 
-func S_GetChannel(origin *degenmobj_t, sfxinfo *sfxinfo_t) (r int32) {
+func s_GetChannel(origin *degenmobj_t, sfxinfo *sfxinfo_t) (r int32) {
 	var cnum int32
 	// Find an open channel
 	cnum = 0
@@ -40685,7 +40685,7 @@ func S_GetChannel(origin *degenmobj_t, sfxinfo *sfxinfo_t) (r int32) {
 			break
 		} else {
 			if origin != nil && channels[cnum].Forigin == origin {
-				S_StopChannel(cnum)
+				s_StopChannel(cnum)
 				break
 			}
 		}
@@ -40715,7 +40715,7 @@ func S_GetChannel(origin *degenmobj_t, sfxinfo *sfxinfo_t) (r int32) {
 			return -1
 		} else {
 			// Otherwise, kick out lower priority.
-			S_StopChannel(cnum)
+			s_StopChannel(cnum)
 		}
 	}
 	c := &channels[cnum]
@@ -40732,7 +40732,7 @@ func S_GetChannel(origin *degenmobj_t, sfxinfo *sfxinfo_t) (r int32) {
 // Otherwise, modifies parameters and returns 1.
 //
 
-func S_AdjustSoundParams(listener *degenmobj_t, source *degenmobj_t, vol *int32, sep *int32) (r int32) {
+func s_AdjustSoundParams(listener *degenmobj_t, source *degenmobj_t, vol *int32, sep *int32) (r int32) {
 	var adx, ady, approx_dist fixed_t
 	var angle angle_t
 	var v1 int32
@@ -40751,7 +40751,7 @@ func S_AdjustSoundParams(listener *degenmobj_t, source *degenmobj_t, vol *int32,
 		return 0
 	}
 	// angle of source to listener
-	angle = R_PointToAngle2(listener.Fx, listener.Fy, source.Fx, source.Fy)
+	angle = r_PointToAngle2(listener.Fx, listener.Fy, source.Fx, source.Fy)
 	// TODO: Andre/GORE: Is this a safe cast? Can we guarantee this isn't just a degenmobj_t?
 	mo := (*mobj_t)(unsafe.Pointer(listener))
 	if angle > mo.Fangle {
@@ -40779,14 +40779,14 @@ func S_AdjustSoundParams(listener *degenmobj_t, source *degenmobj_t, vol *int32,
 	return boolint32(*vol > 0)
 }
 
-func S_StartSound(origin *degenmobj_t, sfx_id int32) {
+func s_StartSound(origin *degenmobj_t, sfx_id int32) {
 	var channel, volume int32
 	var cnum, rc int32
 	var sfx *sfxinfo_t
 	volume = snd_SfxVolume
 	// check for bogus sound #
 	if sfx_id < 1 || sfx_id > NUMSFX {
-		I_Error("Bad sfx #: %d", sfx_id)
+		i_Error("Bad sfx #: %d", sfx_id)
 	}
 	sfx = &S_sfx[sfx_id]
 	// Initialize sound parameters
@@ -40802,7 +40802,7 @@ func S_StartSound(origin *degenmobj_t, sfx_id int32) {
 	// Check to see if it is audible,
 	//  and if not, modify the params
 	if origin != nil && origin != &players[consoleplayer].Fmo.degenmobj_t {
-		rc = S_AdjustSoundParams(&players[consoleplayer].Fmo.degenmobj_t, origin, &volume, &channel)
+		rc = s_AdjustSoundParams(&players[consoleplayer].Fmo.degenmobj_t, origin, &volume, &channel)
 		if origin.Fx == players[consoleplayer].Fmo.Fx && origin.Fy == players[consoleplayer].Fmo.Fy {
 			channel = NORM_SEP
 		}
@@ -40813,34 +40813,34 @@ func S_StartSound(origin *degenmobj_t, sfx_id int32) {
 		channel = NORM_SEP
 	}
 	// kill old sound
-	S_StopSound(origin)
+	s_StopSound(origin)
 	// try to find a channel
-	cnum = S_GetChannel(origin, sfx)
+	cnum = s_GetChannel(origin, sfx)
 	if cnum < 0 {
 		return
 	}
 	// increase the usefulness
 	sfx.Fusefulness = max(1, sfx.Fusefulness+1)
 	if sfx.Flumpnum < 0 {
-		sfx.Flumpnum = I_GetSfxLumpNum(sfx)
+		sfx.Flumpnum = i_GetSfxLumpNum(sfx)
 	}
-	channels[cnum].Fhandle = I_StartSound(sfx, cnum, volume, channel)
+	channels[cnum].Fhandle = i_StartSound(sfx, cnum, volume, channel)
 }
 
 //
 // Stop and resume music, during game PAUSE.
 //
 
-func S_PauseSound() {
+func s_PauseSound() {
 	if mus_playing != nil && mus_paused == 0 {
-		I_PauseSong()
+		i_PauseSong()
 		mus_paused = 1
 	}
 }
 
-func S_ResumeSound() {
+func s_ResumeSound() {
 	if mus_playing != nil && mus_paused != 0 {
-		I_ResumeSong()
+		i_ResumeSong()
 		mus_paused = 0
 	}
 }
@@ -40849,11 +40849,11 @@ func S_ResumeSound() {
 // Updates music & sounds
 //
 
-func S_UpdateSounds(listener *degenmobj_t) {
+func s_UpdateSounds(listener *degenmobj_t) {
 	var volume, channel int32
 	var audible, cnum int32
 	var sfx *sfxinfo_t
-	I_UpdateSound()
+	i_UpdateSound()
 	cnum = 0
 	for {
 		if cnum >= snd_channels {
@@ -40862,14 +40862,14 @@ func S_UpdateSounds(listener *degenmobj_t) {
 		c := &channels[cnum]
 		sfx = c.Fsfxinfo
 		if sfx != nil {
-			if I_SoundIsPlaying(c.Fhandle) != 0 {
+			if i_SoundIsPlaying(c.Fhandle) != 0 {
 				// initialize parameters
 				volume = snd_SfxVolume
 				channel = NORM_SEP
 				if sfx.Flink != nil {
 					volume += sfx.Fvolume
 					if volume < 1 {
-						S_StopChannel(cnum)
+						s_StopChannel(cnum)
 						goto _1
 					} else {
 						if volume > snd_SfxVolume {
@@ -40881,17 +40881,17 @@ func S_UpdateSounds(listener *degenmobj_t) {
 				// check non-local sounds for distance clipping
 				//  or modify their params
 				if c.Forigin != nil && listener != c.Forigin {
-					audible = S_AdjustSoundParams(listener, c.Forigin, &volume, &channel)
+					audible = s_AdjustSoundParams(listener, c.Forigin, &volume, &channel)
 					if audible == 0 {
-						S_StopChannel(cnum)
+						s_StopChannel(cnum)
 					} else {
-						I_UpdateSoundParams(c.Fhandle, volume, channel)
+						i_UpdateSoundParams(c.Fhandle, volume, channel)
 					}
 				}
 			} else {
 				// if channel is allocated but sound has stopped,
 				//  free it
-				S_StopChannel(cnum)
+				s_StopChannel(cnum)
 			}
 		}
 		goto _1
@@ -40901,16 +40901,16 @@ func S_UpdateSounds(listener *degenmobj_t) {
 	}
 }
 
-func S_SetMusicVolume(volume int32) {
+func s_SetMusicVolume(volume int32) {
 	if volume < 0 || volume > 127 {
-		I_Error("Attempt to set music volume at %d", volume)
+		i_Error("Attempt to set music volume at %d", volume)
 	}
-	I_SetMusicVolume(volume)
+	i_SetMusicVolume(volume)
 }
 
-func S_SetSfxVolume(volume int32) {
+func s_SetSfxVolume(volume int32) {
 	if volume < 0 || volume > 127 {
-		I_Error("Attempt to set sfx volume at %d", volume)
+		i_Error("Attempt to set sfx volume at %d", volume)
 	}
 	snd_SfxVolume = volume
 }
@@ -40919,11 +40919,11 @@ func S_SetSfxVolume(volume int32) {
 // Starts some music with the music id found in sounds.h.
 //
 
-func S_StartMusic(m_id int32) {
-	S_ChangeMusic(m_id, 0)
+func s_StartMusic(m_id int32) {
+	s_ChangeMusic(m_id, 0)
 }
 
-func S_ChangeMusic(musicnum int32, looping int32) {
+func s_ChangeMusic(musicnum int32, looping int32) {
 	var handle uintptr
 	var music *musicinfo_t
 	// The Doom IWAD file has two versions of the intro music: d_intro
@@ -40932,7 +40932,7 @@ func S_ChangeMusic(musicnum int32, looping int32) {
 		musicnum = int32(mus_introa)
 	}
 	if musicnum <= int32(mus_None) || musicnum >= NUMMUSIC {
-		I_Error("Bad music number %d", musicnum)
+		i_Error("Bad music number %d", musicnum)
 	} else {
 		music = &S_music[musicnum]
 	}
@@ -40940,27 +40940,27 @@ func S_ChangeMusic(musicnum int32, looping int32) {
 		return
 	}
 	// shutdown old music
-	S_StopMusic()
+	s_StopMusic()
 	// get lumpnum if neccessary
 	if music.Flumpnum == 0 {
 		bp := fmt.Sprintf("d_%s", music.Fname)
-		music.Flumpnum = W_GetNumForName(bp)
+		music.Flumpnum = w_GetNumForName(bp)
 	}
-	music.Fdata = W_CacheLumpNum(music.Flumpnum)
-	handle = I_RegisterSong(music.Fdata, W_LumpLength(uint32(music.Flumpnum)))
+	music.Fdata = w_CacheLumpNum(music.Flumpnum)
+	handle = i_RegisterSong(music.Fdata, w_LumpLength(uint32(music.Flumpnum)))
 	music.Fhandle = handle
-	I_PlaySong(handle, uint32(looping))
+	i_PlaySong(handle, uint32(looping))
 	mus_playing = music
 }
 
-func S_StopMusic() {
+func s_StopMusic() {
 	if mus_playing != nil {
 		if mus_paused != 0 {
-			I_ResumeSong()
+			i_ResumeSong()
 		}
-		I_StopSong()
-		I_UnRegisterSong(mus_playing.Fhandle)
-		W_ReleaseLumpNum(mus_playing.Flumpnum)
+		i_StopSong()
+		i_UnRegisterSong(mus_playing.Fhandle)
+		w_ReleaseLumpNum(mus_playing.Flumpnum)
 		mus_playing.Fdata = 0
 		mus_playing = nil
 	}
@@ -41028,12 +41028,12 @@ var dest_screen uintptr
 //	//
 //	// V_MarkRect
 //	//
-func V_MarkRect(x int32, y int32, width int32, height int32) {
+func v_MarkRect(x int32, y int32, width int32, height int32) {
 	// If we are temporarily using an alternate screen, do not
 	// affect the update box.
 	if dest_screen == I_VideoBuffer {
-		M_AddToBox(&dirtybox, x, y)
-		M_AddToBox(&dirtybox, x+width-1, y+height-1)
+		m_AddToBox(&dirtybox, x, y)
+		m_AddToBox(&dirtybox, x+width-1, y+height-1)
 	}
 }
 
@@ -41042,12 +41042,12 @@ func V_MarkRect(x int32, y int32, width int32, height int32) {
 //	//
 //	// V_CopyRect
 //	//
-func V_CopyRect(srcx int32, srcy int32, source uintptr, width int32, height int32, destx int32, desty int32) {
+func v_CopyRect(srcx int32, srcy int32, source uintptr, width int32, height int32, destx int32, desty int32) {
 	var dest, src uintptr
 	if srcx < 0 || srcx+width > SCREENWIDTH || srcy < 0 || srcy+height > SCREENHEIGHT || destx < 0 || destx+width > SCREENWIDTH || desty < 0 || desty+height > SCREENHEIGHT {
-		I_Error("Bad V_CopyRect")
+		i_Error("Bad v_CopyRect")
 	}
-	V_MarkRect(destx, desty, width, height)
+	v_MarkRect(destx, desty, width, height)
 	src = source + uintptr(SCREENWIDTH*srcy) + uintptr(srcx)
 	dest = dest_screen + uintptr(SCREENWIDTH*desty) + uintptr(destx)
 	for {
@@ -41069,15 +41069,15 @@ func V_CopyRect(srcx int32, srcy int32, source uintptr, width int32, height int3
 // Masks a column based masked pic to the screen.
 //
 
-func V_DrawPatch(x int32, y int32, patch *patch_t) {
+func v_DrawPatch(x int32, y int32, patch *patch_t) {
 	var col, w int32
 	var dest, desttop uintptr
 	y -= int32(patch.Ftopoffset)
 	x -= int32(patch.Fleftoffset)
 	if x < 0 || x+int32(patch.Fwidth) > SCREENWIDTH || y < 0 || y+int32(patch.Fheight) > SCREENHEIGHT {
-		I_Error("Bad V_DrawPatch x=%d y=%d patch.width=%d patch.height=%d topoffset=%d leftoffset=%d", x, y, int32(patch.Fwidth), int32(patch.Fheight), int32(patch.Ftopoffset), int32(patch.Fleftoffset))
+		i_Error("Bad v_DrawPatch x=%d y=%d patch.width=%d patch.height=%d topoffset=%d leftoffset=%d", x, y, int32(patch.Fwidth), int32(patch.Fheight), int32(patch.Ftopoffset), int32(patch.Fleftoffset))
 	}
-	V_MarkRect(x, y, int32(patch.Fwidth), int32(patch.Fheight))
+	v_MarkRect(x, y, int32(patch.Fwidth), int32(patch.Fheight))
 	col = 0
 	desttop = dest_screen + uintptr(y*SCREENWIDTH) + uintptr(x)
 	w = int32(patch.Fwidth)
@@ -41110,15 +41110,15 @@ func V_DrawPatch(x int32, y int32, patch *patch_t) {
 // Flips horizontally, e.g. to mirror face.
 //
 
-func V_DrawPatchFlipped(x int32, y int32, patch *patch_t) {
+func v_DrawPatchFlipped(x int32, y int32, patch *patch_t) {
 	var col, w int32
 	var dest, desttop uintptr
 	y -= int32(patch.Ftopoffset)
 	x -= int32(patch.Fleftoffset)
 	if x < 0 || x+int32(patch.Fwidth) > SCREENWIDTH || y < 0 || y+int32(patch.Fheight) > SCREENHEIGHT {
-		I_Error("Bad V_DrawPatchFlipped")
+		i_Error("Bad v_DrawPatchFlipped")
 	}
-	V_MarkRect(x, y, int32(patch.Fwidth), int32(patch.Fheight))
+	v_MarkRect(x, y, int32(patch.Fwidth), int32(patch.Fheight))
 	col = 0
 	desttop = dest_screen + uintptr(y*SCREENWIDTH) + uintptr(x)
 	w = int32(patch.Fwidth)
@@ -41150,8 +41150,8 @@ func V_DrawPatchFlipped(x int32, y int32, patch *patch_t) {
 // Draws directly to the screen on the pc.
 //
 
-func V_DrawPatchDirect(x int32, y int32, patch *patch_t) {
-	V_DrawPatch(x, y, patch)
+func v_DrawPatchDirect(x int32, y int32, patch *patch_t) {
+	v_DrawPatch(x, y, patch)
 }
 
 //
@@ -41159,13 +41159,13 @@ func V_DrawPatchDirect(x int32, y int32, patch *patch_t) {
 // Draw a linear block of pixels into the view buffer.
 //
 
-func V_DrawBlock(x int32, y int32, width int32, height int32, src uintptr) {
+func v_DrawBlock(x int32, y int32, width int32, height int32, src uintptr) {
 	var dest uintptr
 	var v1 int32
 	if x < 0 || x+width > SCREENWIDTH || y < 0 || y+height > SCREENHEIGHT {
-		I_Error("Bad V_DrawBlock")
+		i_Error("Bad v_DrawBlock")
 	}
-	V_MarkRect(x, y, width, height)
+	v_MarkRect(x, y, width, height)
 	dest = dest_screen + uintptr(y*SCREENWIDTH) + uintptr(x)
 	for {
 		v1 = height
@@ -41179,7 +41179,7 @@ func V_DrawBlock(x int32, y int32, width int32, height int32, src uintptr) {
 	}
 }
 
-func V_DrawFilledBox(x int32, y int32, w int32, h int32, c int32) {
+func v_DrawFilledBox(x int32, y int32, w int32, h int32, c int32) {
 	var buf, buf1, v3 uintptr
 	var x1, y1 int32
 	buf = I_VideoBuffer + uintptr(SCREENWIDTH*y) + uintptr(x)
@@ -41210,7 +41210,7 @@ func V_DrawFilledBox(x int32, y int32, w int32, h int32, c int32) {
 	}
 }
 
-func V_DrawHorizLine(x int32, y int32, w int32, c int32) {
+func v_DrawHorizLine(x int32, y int32, w int32, c int32) {
 	var buf, v2 uintptr
 	var x1 int32
 	buf = I_VideoBuffer + uintptr(SCREENWIDTH*y) + uintptr(x)
@@ -41229,7 +41229,7 @@ func V_DrawHorizLine(x int32, y int32, w int32, c int32) {
 	}
 }
 
-func V_DrawVertLine(x int32, y int32, h int32, c int32) {
+func v_DrawVertLine(x int32, y int32, h int32, c int32) {
 	var buf uintptr
 	var y1 int32
 	buf = I_VideoBuffer + uintptr(SCREENWIDTH*y) + uintptr(x)
@@ -41247,11 +41247,11 @@ func V_DrawVertLine(x int32, y int32, h int32, c int32) {
 	}
 }
 
-func V_DrawBox(x int32, y int32, w int32, h int32, c int32) {
-	V_DrawHorizLine(x, y, w, c)
-	V_DrawHorizLine(x, y+h-1, w, c)
-	V_DrawVertLine(x, y, h, c)
-	V_DrawVertLine(x+w-1, y, h, c)
+func v_DrawBox(x int32, y int32, w int32, h int32, c int32) {
+	v_DrawHorizLine(x, y, w, c)
+	v_DrawHorizLine(x, y+h-1, w, c)
+	v_DrawVertLine(x, y, h, c)
+	v_DrawVertLine(x+w-1, y, h, c)
 }
 
 // C documentation
@@ -41259,7 +41259,7 @@ func V_DrawBox(x int32, y int32, w int32, h int32, c int32) {
 //	//
 //	// V_Init
 //	//
-func V_Init() {
+func v_Init() {
 	// no-op!
 	// There used to be separate screens that could be drawn to; these are
 	// now handled in the upper layers.
@@ -41267,26 +41267,26 @@ func V_Init() {
 
 // Set the buffer that the code draws to.
 
-func V_UseBuffer(buffer uintptr) {
+func v_UseBuffer(buffer uintptr) {
 	dest_screen = buffer
 }
 
 // Restore screen buffer to the i_video screen buffer.
 
-func V_RestoreBuffer() {
+func v_RestoreBuffer() {
 	dest_screen = I_VideoBuffer
 }
 
-func V_DrawMouseSpeedBox(speed int32) {
+func v_DrawMouseSpeedBox(speed int32) {
 	var bgcolor, black, bordercolor, box_x, box_y, linelen, original_speed, red, redline_x, white, yellow int32
 	// Get palette indices for colors for widget. These depend on the
 	// palette of the game being played.
-	bgcolor = I_GetPaletteIndex(0x77, 0x77, 0x77)
-	bordercolor = I_GetPaletteIndex(0x55, 0x55, 0x55)
-	red = I_GetPaletteIndex(0xff, 0x00, 0x00)
-	black = I_GetPaletteIndex(0x00, 0x00, 0x00)
-	yellow = I_GetPaletteIndex(0xff, 0xff, 0x00)
-	white = I_GetPaletteIndex(0xff, 0xff, 0xff)
+	bgcolor = i_GetPaletteIndex(0x77, 0x77, 0x77)
+	bordercolor = i_GetPaletteIndex(0x55, 0x55, 0x55)
+	red = i_GetPaletteIndex(0xff, 0x00, 0x00)
+	black = i_GetPaletteIndex(0x00, 0x00, 0x00)
+	yellow = i_GetPaletteIndex(0xff, 0xff, 0x00)
+	white = i_GetPaletteIndex(0xff, 0xff, 0xff)
 	// If the mouse is turned off or acceleration is turned off, don't
 	// draw the box at all.
 	if usemouse == 0 || math.Abs(float64(mouse_acceleration-1)) < float64(0.01) {
@@ -41295,8 +41295,8 @@ func V_DrawMouseSpeedBox(speed int32) {
 	// Calculate box position
 	box_x = SCREENWIDTH - MOUSE_SPEED_BOX_WIDTH - 10
 	box_y = 15
-	V_DrawFilledBox(box_x, box_y, MOUSE_SPEED_BOX_WIDTH, MOUSE_SPEED_BOX_HEIGHT, bgcolor)
-	V_DrawBox(box_x, box_y, MOUSE_SPEED_BOX_WIDTH, MOUSE_SPEED_BOX_HEIGHT, bordercolor)
+	v_DrawFilledBox(box_x, box_y, MOUSE_SPEED_BOX_WIDTH, MOUSE_SPEED_BOX_HEIGHT, bgcolor)
+	v_DrawBox(box_x, box_y, MOUSE_SPEED_BOX_WIDTH, MOUSE_SPEED_BOX_HEIGHT, bordercolor)
 	// Calculate the position of the red line.  This is 1/3 of the way
 	// along the box.
 	redline_x = MOUSE_SPEED_BOX_WIDTH / 3
@@ -41314,15 +41314,15 @@ func V_DrawMouseSpeedBox(speed int32) {
 	if linelen > MOUSE_SPEED_BOX_WIDTH-1 {
 		linelen = MOUSE_SPEED_BOX_WIDTH - 1
 	}
-	V_DrawHorizLine(box_x+int32(1), box_y+int32(4), MOUSE_SPEED_BOX_WIDTH-2, black)
+	v_DrawHorizLine(box_x+int32(1), box_y+int32(4), MOUSE_SPEED_BOX_WIDTH-2, black)
 	if linelen < redline_x {
-		V_DrawHorizLine(box_x+int32(1), box_y+MOUSE_SPEED_BOX_HEIGHT/2, linelen, white)
+		v_DrawHorizLine(box_x+int32(1), box_y+MOUSE_SPEED_BOX_HEIGHT/2, linelen, white)
 	} else {
-		V_DrawHorizLine(box_x+int32(1), box_y+MOUSE_SPEED_BOX_HEIGHT/2, redline_x, white)
-		V_DrawHorizLine(box_x+redline_x, box_y+MOUSE_SPEED_BOX_HEIGHT/2, linelen-redline_x, yellow)
+		v_DrawHorizLine(box_x+int32(1), box_y+MOUSE_SPEED_BOX_HEIGHT/2, redline_x, white)
+		v_DrawHorizLine(box_x+redline_x, box_y+MOUSE_SPEED_BOX_HEIGHT/2, linelen-redline_x, yellow)
 	}
 	// Draw red line
-	V_DrawVertLine(box_x+redline_x, box_y+int32(1), MOUSE_SPEED_BOX_HEIGHT-2, red)
+	v_DrawVertLine(box_x+redline_x, box_y+int32(1), MOUSE_SPEED_BOX_HEIGHT-2, red)
 }
 
 const DM_KILLERSX = 10
@@ -41921,38 +41921,38 @@ var background *patch_t
 // C documentation
 //
 //	// slam background
-func WI_slamBackground() {
-	V_DrawPatch(0, 0, background)
+func wi_slamBackground() {
+	v_DrawPatch(0, 0, background)
 }
 
 // C documentation
 //
 //	// Draws "<Levelname> Finished!"
-func WI_drawLF() {
+func wi_drawLF() {
 	var y int32
 	y = WI_TITLEY
 	if gamemode != commercial || wbs.Flast < NUMCMAPS {
 		// draw <LevelName>
-		V_DrawPatch((SCREENWIDTH-int32(lnames[wbs.Flast].Fwidth))/int32(2), y, lnames[wbs.Flast])
+		v_DrawPatch((SCREENWIDTH-int32(lnames[wbs.Flast].Fwidth))/int32(2), y, lnames[wbs.Flast])
 		// draw "Finished!"
 		y += 5 * int32(lnames[wbs.Flast].Fheight) / 4
-		V_DrawPatch((SCREENWIDTH-int32(finished.Fwidth))/int32(2), y, finished)
+		v_DrawPatch((SCREENWIDTH-int32(finished.Fwidth))/int32(2), y, finished)
 	} else {
 		if wbs.Flast == NUMCMAPS {
 			// MAP33 - nothing is displayed!
 		} else {
 			if wbs.Flast > NUMCMAPS {
-				// > MAP33.  Doom bombs out here with a Bad V_DrawPatch error.
+				// > MAP33.  Doom bombs out here with a Bad v_DrawPatch error.
 				// I'm pretty sure that doom2.exe is just reading into random
 				// bits of memory at this point, but let's try to be accurate
-				// anyway.  This deliberately triggers a V_DrawPatch error.
+				// anyway.  This deliberately triggers a v_DrawPatch error.
 				bp := patch_t{
 					Fwidth:      int16(SCREENWIDTH),
 					Fheight:     int16(SCREENHEIGHT),
 					Fleftoffset: 1,
 					Ftopoffset:  1,
 				}
-				V_DrawPatch(0, y, &bp)
+				v_DrawPatch(0, y, &bp)
 			}
 		}
 	}
@@ -41961,17 +41961,17 @@ func WI_drawLF() {
 // C documentation
 //
 //	// Draws "Entering <LevelName>"
-func WI_drawEL() {
+func wi_drawEL() {
 	var y int32
 	y = WI_TITLEY
 	// draw "Entering"
-	V_DrawPatch((SCREENWIDTH-int32(entering.Fwidth))/int32(2), y, entering)
+	v_DrawPatch((SCREENWIDTH-int32(entering.Fwidth))/int32(2), y, entering)
 	// draw level
 	y += 5 * int32(lnames[wbs.Fnext].Fheight) / 4
-	V_DrawPatch((SCREENWIDTH-int32(lnames[wbs.Fnext].Fwidth))/int32(2), y, lnames[wbs.Fnext])
+	v_DrawPatch((SCREENWIDTH-int32(lnames[wbs.Fnext].Fwidth))/int32(2), y, lnames[wbs.Fnext])
 }
 
-func WI_drawOnLnode(n int32, c []*patch_t) {
+func wi_drawOnLnode(n int32, c []*patch_t) {
 	var bottom, i, left, right, top int32
 	var fits boolean
 	fits = 0
@@ -41988,14 +41988,14 @@ func WI_drawOnLnode(n int32, c []*patch_t) {
 		}
 	}
 	if fits != 0 && i < 2 {
-		V_DrawPatch(lnodes[wbs.Fepsd][n].Fx, lnodes[wbs.Fepsd][n].Fy, c[i])
+		v_DrawPatch(lnodes[wbs.Fepsd][n].Fx, lnodes[wbs.Fepsd][n].Fy, c[i])
 	} else {
 		// DEBUG
 		fprintf_ccgo(os.Stdout, "Could not place patch on level %d", n+1)
 	}
 }
 
-func WI_initAnimatedBack() {
+func wi_initAnimatedBack() {
 	var a *anim_t1
 	var i int32
 	if gamemode == commercial {
@@ -42014,10 +42014,10 @@ func WI_initAnimatedBack() {
 		a.Fctr = -1
 		// specify the next time to draw it
 		if a.Ftype1 == ANIM_ALWAYS {
-			a.Fnexttic = bcnt + 1 + M_Random()%a.Fperiod
+			a.Fnexttic = bcnt + 1 + m_Random()%a.Fperiod
 		} else {
 			if a.Ftype1 == ANIM_RANDOM {
-				a.Fnexttic = bcnt + 1 + a.Fdata2 + M_Random()%a.Fdata1
+				a.Fnexttic = bcnt + 1 + a.Fdata2 + m_Random()%a.Fdata1
 			} else {
 				if a.Ftype1 == ANIM_LEVEL {
 					a.Fnexttic = bcnt + 1
@@ -42031,7 +42031,7 @@ func WI_initAnimatedBack() {
 	}
 }
 
-func WI_updateAnimatedBack() {
+func wi_updateAnimatedBack() {
 	var a *anim_t1
 	var i int32
 	if gamemode == commercial {
@@ -42058,7 +42058,7 @@ func WI_updateAnimatedBack() {
 				a.Fctr++
 				if a.Fctr == a.Fnanims {
 					a.Fctr = -1
-					a.Fnexttic = bcnt + a.Fdata2 + M_Random()%a.Fdata1
+					a.Fnexttic = bcnt + a.Fdata2 + m_Random()%a.Fdata1
 				} else {
 					a.Fnexttic = bcnt + a.Fperiod
 				}
@@ -42081,7 +42081,7 @@ func WI_updateAnimatedBack() {
 	}
 }
 
-func WI_drawAnimatedBack() {
+func wi_drawAnimatedBack() {
 	var a *anim_t1
 	var i int32
 	if gamemode == commercial {
@@ -42097,7 +42097,7 @@ func WI_drawAnimatedBack() {
 		}
 		a = &anims1[wbs.Fepsd][i]
 		if a.Fctr >= 0 {
-			V_DrawPatch(a.Floc.Fx, a.Floc.Fy, a.Fp[a.Fctr])
+			v_DrawPatch(a.Floc.Fx, a.Floc.Fy, a.Fp[a.Fctr])
 		}
 		goto _1
 	_1:
@@ -42113,7 +42113,7 @@ func WI_drawAnimatedBack() {
 // Returns new x position.
 //
 
-func WI_drawNum(x int32, y int32, n int32, digits int32) (r int32) {
+func wi_drawNum(x int32, y int32, n int32, digits int32) (r int32) {
 	var fontwidth, neg, temp, v1 int32
 	fontwidth = int32(num[0].Fwidth)
 	if digits < 0 {
@@ -42146,23 +42146,23 @@ func WI_drawNum(x int32, y int32, n int32, digits int32) (r int32) {
 			break
 		}
 		x -= fontwidth
-		V_DrawPatch(x, y, num[n%int32(10)])
+		v_DrawPatch(x, y, num[n%int32(10)])
 		n /= 10
 	}
 	// draw a minus sign if necessary
 	if neg != 0 {
 		x -= 8
-		V_DrawPatch(x, y, wiminus)
+		v_DrawPatch(x, y, wiminus)
 	}
 	return x
 }
 
-func WI_drawPercent(x int32, y int32, p int32) {
+func wi_drawPercent(x int32, y int32, p int32) {
 	if p < 0 {
 		return
 	}
-	V_DrawPatch(x, y, percent)
-	WI_drawNum(x, y, p, -1)
+	v_DrawPatch(x, y, percent)
+	wi_drawNum(x, y, p, -1)
 }
 
 // C documentation
@@ -42171,7 +42171,7 @@ func WI_drawPercent(x int32, y int32, p int32) {
 //	// Display level completion time and par,
 //	//  or "sucks" message if overflow.
 //	//
-func WI_drawTime(x int32, y int32, t int32) {
+func wi_drawTime(x int32, y int32, t int32) {
 	var div, n int32
 	if t < 0 {
 		return
@@ -42180,73 +42180,73 @@ func WI_drawTime(x int32, y int32, t int32) {
 		div = 1
 		for cond := true; cond; cond = t/div != 0 {
 			n = t / div % 60
-			x = WI_drawNum(x, y, n, 2) - int32(colon.Fwidth)
+			x = wi_drawNum(x, y, n, 2) - int32(colon.Fwidth)
 			div *= 60
 			// draw
 			if div == 60 || t/div != 0 {
-				V_DrawPatch(x, y, colon)
+				v_DrawPatch(x, y, colon)
 			}
 		}
 	} else {
 		// "sucks"
-		V_DrawPatch(x-int32(sucks.Fwidth), y, sucks)
+		v_DrawPatch(x-int32(sucks.Fwidth), y, sucks)
 	}
 }
 
-func WI_End() {
-	WI_unloadData()
+func wi_End() {
+	wi_unloadData()
 }
 
-func WI_initNoState() {
+func wi_initNoState() {
 	state = NoState
 	acceleratestage = 0
 	cnt = 10
 }
 
-func WI_updateNoState() {
+func wi_updateNoState() {
 	var v1 int32
-	WI_updateAnimatedBack()
+	wi_updateAnimatedBack()
 	cnt--
 	v1 = cnt
 	if v1 == 0 {
-		// Don't call WI_End yet.  G_WorldDone doesnt immediately
-		// change gamestate, so WI_Drawer is still going to get
+		// Don't call wi_End yet.  g_WorldDone doesnt immediately
+		// change gamestate, so wi_Drawer is still going to get
 		// run until that happens.  If we do that after WI_End
 		// (which unloads all the graphics), we're in trouble.
-		//WI_End();
-		G_WorldDone()
+		//wi_End();
+		g_WorldDone()
 	}
 }
 
 var snl_pointeron uint32 = 0
 
-func WI_initShowNextLoc() {
+func wi_initShowNextLoc() {
 	state = ShowNextLoc
 	acceleratestage = 0
 	cnt = SHOWNEXTLOCDELAY * TICRATE
-	WI_initAnimatedBack()
+	wi_initAnimatedBack()
 }
 
-func WI_updateShowNextLoc() {
+func wi_updateShowNextLoc() {
 	var v1 int32
-	WI_updateAnimatedBack()
+	wi_updateAnimatedBack()
 	cnt--
 	v1 = cnt
 	if v1 == 0 || acceleratestage != 0 {
-		WI_initNoState()
+		wi_initNoState()
 	} else {
 		snl_pointeron = booluint32(cnt&31 < 20)
 	}
 }
 
-func WI_drawShowNextLoc() {
+func wi_drawShowNextLoc() {
 	var i, last, v1 int32
-	WI_slamBackground()
+	wi_slamBackground()
 	// draw animated background
-	WI_drawAnimatedBack()
+	wi_drawAnimatedBack()
 	if gamemode != commercial {
 		if wbs.Fepsd > 2 {
-			WI_drawEL()
+			wi_drawEL()
 			return
 		}
 		if wbs.Flast == 8 {
@@ -42261,7 +42261,7 @@ func WI_drawShowNextLoc() {
 			if !(i <= last) {
 				break
 			}
-			WI_drawOnLnode(i, splat[:])
+			wi_drawOnLnode(i, splat[:])
 			goto _2
 		_2:
 			;
@@ -42269,25 +42269,25 @@ func WI_drawShowNextLoc() {
 		}
 		// splat the secret level?
 		if wbs.Fdidsecret != 0 {
-			WI_drawOnLnode(8, splat[:])
+			wi_drawOnLnode(8, splat[:])
 		}
 		// draw flashing ptr
 		if snl_pointeron != 0 {
-			WI_drawOnLnode(wbs.Fnext, yah[:])
+			wi_drawOnLnode(wbs.Fnext, yah[:])
 		}
 	}
 	// draws which level you are entering..
 	if gamemode != commercial || wbs.Fnext != 30 {
-		WI_drawEL()
+		wi_drawEL()
 	}
 }
 
-func WI_drawNoState() {
+func wi_drawNoState() {
 	snl_pointeron = 1
-	WI_drawShowNextLoc()
+	wi_drawShowNextLoc()
 }
 
-func WI_fragSum(playernum int32) (r int32) {
+func wi_fragSum(playernum int32) (r int32) {
 	var frags, i int32
 	frags = 0
 	i = 0
@@ -42314,7 +42314,7 @@ var dm_state int32
 var dm_frags [4][4]int32
 var dm_totals [4]int32
 
-func WI_initDeathmatchStats() {
+func wi_initDeathmatchStats() {
 	var i, j int32
 	state = StatCount
 	acceleratestage = 0
@@ -42346,13 +42346,13 @@ func WI_initDeathmatchStats() {
 		;
 		i++
 	}
-	WI_initAnimatedBack()
+	wi_initAnimatedBack()
 }
 
-func WI_updateDeathmatchStats() {
+func wi_updateDeathmatchStats() {
 	var i, j, v5 int32
 	var stillticking boolean
-	WI_updateAnimatedBack()
+	wi_updateAnimatedBack()
 	if acceleratestage != 0 && dm_state != 4 {
 		acceleratestage = 0
 		i = 0
@@ -42374,19 +42374,19 @@ func WI_updateDeathmatchStats() {
 					;
 					j++
 				}
-				dm_totals[i] = WI_fragSum(i)
+				dm_totals[i] = wi_fragSum(i)
 			}
 			goto _1
 		_1:
 			;
 			i++
 		}
-		S_StartSound(nil, int32(sfx_barexp))
+		s_StartSound(nil, int32(sfx_barexp))
 		dm_state = 4
 	}
 	if dm_state == 2 {
 		if bcnt&3 == 0 {
-			S_StartSound(nil, int32(sfx_pistol))
+			s_StartSound(nil, int32(sfx_pistol))
 		}
 		stillticking = 0
 		i = 0
@@ -42419,7 +42419,7 @@ func WI_updateDeathmatchStats() {
 					;
 					j++
 				}
-				dm_totals[i] = WI_fragSum(i)
+				dm_totals[i] = wi_fragSum(i)
 				if dm_totals[i] > 99 {
 					dm_totals[i] = 99
 				}
@@ -42433,17 +42433,17 @@ func WI_updateDeathmatchStats() {
 			i++
 		}
 		if stillticking == 0 {
-			S_StartSound(nil, int32(sfx_barexp))
+			s_StartSound(nil, int32(sfx_barexp))
 			dm_state++
 		}
 	} else {
 		if dm_state == 4 {
 			if acceleratestage != 0 {
-				S_StartSound(nil, int32(sfx_slop))
+				s_StartSound(nil, int32(sfx_slop))
 				if gamemode == commercial {
-					WI_initNoState()
+					wi_initNoState()
 				} else {
-					WI_initShowNextLoc()
+					wi_initShowNextLoc()
 				}
 			}
 		} else {
@@ -42459,16 +42459,16 @@ func WI_updateDeathmatchStats() {
 	}
 }
 
-func WI_drawDeathmatchStats() {
+func wi_drawDeathmatchStats() {
 	var i, j, w, x, y int32
-	WI_slamBackground()
+	wi_slamBackground()
 	// draw animated background
-	WI_drawAnimatedBack()
-	WI_drawLF()
+	wi_drawAnimatedBack()
+	wi_drawLF()
 	// draw stat titles (top line)
-	V_DrawPatch(DM_TOTALSX-int32(total.Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY+10, total)
-	V_DrawPatch(DM_KILLERSX, DM_KILLERSY, killers)
-	V_DrawPatch(DM_VICTIMSX, DM_VICTIMSY, victims)
+	v_DrawPatch(DM_TOTALSX-int32(total.Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY+10, total)
+	v_DrawPatch(DM_KILLERSX, DM_KILLERSY, killers)
+	v_DrawPatch(DM_VICTIMSX, DM_VICTIMSY, victims)
 	// draw P?
 	x = DM_MATRIXX + DM_SPACINGX
 	y = DM_MATRIXY
@@ -42478,16 +42478,16 @@ func WI_drawDeathmatchStats() {
 			break
 		}
 		if playeringame[i] != 0 {
-			V_DrawPatch(x-int32(p[i].Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY, p[i])
-			V_DrawPatch(DM_MATRIXX-int32(p[i].Fwidth)/int32(2), y, p[i])
+			v_DrawPatch(x-int32(p[i].Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY, p[i])
+			v_DrawPatch(DM_MATRIXX-int32(p[i].Fwidth)/int32(2), y, p[i])
 			if i == me {
-				V_DrawPatch(x-int32(p[i].Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY, bstar)
-				V_DrawPatch(DM_MATRIXX-int32(p[i].Fwidth)/int32(2), y, star)
+				v_DrawPatch(x-int32(p[i].Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY, bstar)
+				v_DrawPatch(DM_MATRIXX-int32(p[i].Fwidth)/int32(2), y, star)
 			}
 		} else {
-			// V_DrawPatch(x-SHORT(bp[i]->width)/2,
+			// v_DrawPatch(x-SHORT(bp[i]->width)/2,
 			//   DM_MATRIXY - WI_SPACINGY, bp[i]);
-			// V_DrawPatch(DM_MATRIXX-SHORT(bp[i]->width)/2,
+			// v_DrawPatch(DM_MATRIXX-SHORT(bp[i]->width)/2,
 			//   y, bp[i]);
 		}
 		x += DM_SPACINGX
@@ -42513,7 +42513,7 @@ func WI_drawDeathmatchStats() {
 					break
 				}
 				if playeringame[j] != 0 {
-					WI_drawNum(x+w, y, dm_frags[i][j], 2)
+					wi_drawNum(x+w, y, dm_frags[i][j], 2)
 				}
 				x += DM_SPACINGX
 				goto _3
@@ -42521,7 +42521,7 @@ func WI_drawDeathmatchStats() {
 				;
 				j++
 			}
-			WI_drawNum(DM_TOTALSX+w, y, dm_totals[i], 2)
+			wi_drawNum(DM_TOTALSX+w, y, dm_totals[i], 2)
 		}
 		y += WI_SPACINGY
 		goto _2
@@ -42535,7 +42535,7 @@ var cnt_frags [4]int32
 var dofrags int32
 var ng_state int32
 
-func WI_initNetgameStats() {
+func wi_initNetgameStats() {
 	var i, v2, v3, v4 int32
 	state = StatCount
 	acceleratestage = 0
@@ -42556,20 +42556,20 @@ func WI_initNetgameStats() {
 		v2 = v3
 		cnt_items[i] = v2
 		cnt_kills[i] = v2
-		dofrags += WI_fragSum(i)
+		dofrags += wi_fragSum(i)
 		goto _1
 	_1:
 		;
 		i++
 	}
 	dofrags = boolint32(dofrags != 0)
-	WI_initAnimatedBack()
+	wi_initAnimatedBack()
 }
 
-func WI_updateNetgameStats() {
+func wi_updateNetgameStats() {
 	var fsum, i, v6, v7 int32
 	var stillticking boolean
-	WI_updateAnimatedBack()
+	wi_updateAnimatedBack()
 	if acceleratestage != 0 && ng_state != 10 {
 		acceleratestage = 0
 		i = 0
@@ -42584,19 +42584,19 @@ func WI_updateNetgameStats() {
 			cnt_items[i] = plrs[i].Fsitems * 100 / wbs.Fmaxitems
 			cnt_secret[i] = plrs[i].Fssecret * 100 / wbs.Fmaxsecret
 			if dofrags != 0 {
-				cnt_frags[i] = WI_fragSum(i)
+				cnt_frags[i] = wi_fragSum(i)
 			}
 			goto _1
 		_1:
 			;
 			i++
 		}
-		S_StartSound(nil, int32(sfx_barexp))
+		s_StartSound(nil, int32(sfx_barexp))
 		ng_state = 10
 	}
 	if ng_state == 2 {
 		if bcnt&3 == 0 {
-			S_StartSound(nil, int32(sfx_pistol))
+			s_StartSound(nil, int32(sfx_pistol))
 		}
 		stillticking = 0
 		i = 0
@@ -42619,13 +42619,13 @@ func WI_updateNetgameStats() {
 			i++
 		}
 		if stillticking == 0 {
-			S_StartSound(nil, int32(sfx_barexp))
+			s_StartSound(nil, int32(sfx_barexp))
 			ng_state++
 		}
 	} else {
 		if ng_state == 4 {
 			if bcnt&3 == 0 {
-				S_StartSound(nil, int32(sfx_pistol))
+				s_StartSound(nil, int32(sfx_pistol))
 			}
 			stillticking = 0
 			i = 0
@@ -42648,13 +42648,13 @@ func WI_updateNetgameStats() {
 				i++
 			}
 			if stillticking == 0 {
-				S_StartSound(nil, int32(sfx_barexp))
+				s_StartSound(nil, int32(sfx_barexp))
 				ng_state++
 			}
 		} else {
 			if ng_state == 6 {
 				if bcnt&3 == 0 {
-					S_StartSound(nil, int32(sfx_pistol))
+					s_StartSound(nil, int32(sfx_pistol))
 				}
 				stillticking = 0
 				i = 0
@@ -42677,13 +42677,13 @@ func WI_updateNetgameStats() {
 					i++
 				}
 				if stillticking == 0 {
-					S_StartSound(nil, int32(sfx_barexp))
+					s_StartSound(nil, int32(sfx_barexp))
 					ng_state += 1 + 2*boolint32(dofrags == 0)
 				}
 			} else {
 				if ng_state == 8 {
 					if bcnt&3 == 0 {
-						S_StartSound(nil, int32(sfx_pistol))
+						s_StartSound(nil, int32(sfx_pistol))
 					}
 					stillticking = 0
 					i = 0
@@ -42695,7 +42695,7 @@ func WI_updateNetgameStats() {
 							goto _5
 						}
 						cnt_frags[i] += 1
-						v6 = WI_fragSum(i)
+						v6 = wi_fragSum(i)
 						fsum = v6
 						if cnt_frags[i] >= v6 {
 							cnt_frags[i] = fsum
@@ -42708,17 +42708,17 @@ func WI_updateNetgameStats() {
 						i++
 					}
 					if stillticking == 0 {
-						S_StartSound(nil, int32(sfx_pldeth))
+						s_StartSound(nil, int32(sfx_pldeth))
 						ng_state++
 					}
 				} else {
 					if ng_state == 10 {
 						if acceleratestage != 0 {
-							S_StartSound(nil, int32(sfx_sgcock))
+							s_StartSound(nil, int32(sfx_sgcock))
 							if gamemode == commercial {
-								WI_initNoState()
+								wi_initNoState()
 							} else {
-								WI_initShowNextLoc()
+								wi_initShowNextLoc()
 							}
 						}
 					} else {
@@ -42737,19 +42737,19 @@ func WI_updateNetgameStats() {
 	}
 }
 
-func WI_drawNetgameStats() {
+func wi_drawNetgameStats() {
 	var i, pwidth, x, y int32
 	pwidth = int32(percent.Fwidth)
-	WI_slamBackground()
+	wi_slamBackground()
 	// draw animated background
-	WI_drawAnimatedBack()
-	WI_drawLF()
+	wi_drawAnimatedBack()
+	wi_drawLF()
 	// draw stat titles (top line)
-	V_DrawPatch(32+int32(star.Fwidth)/int32(2)+int32(32)*boolint32(dofrags == 0)+NG_SPACINGX-int32(kills.Fwidth), NG_STATSY, kills)
-	V_DrawPatch(32+int32(star.Fwidth)/int32(2)+int32(32)*boolint32(dofrags == 0)+2*NG_SPACINGX-int32(items.Fwidth), NG_STATSY, items)
-	V_DrawPatch(32+int32(star.Fwidth)/int32(2)+int32(32)*boolint32(dofrags == 0)+3*NG_SPACINGX-int32(secret.Fwidth), NG_STATSY, secret)
+	v_DrawPatch(32+int32(star.Fwidth)/int32(2)+int32(32)*boolint32(dofrags == 0)+NG_SPACINGX-int32(kills.Fwidth), NG_STATSY, kills)
+	v_DrawPatch(32+int32(star.Fwidth)/int32(2)+int32(32)*boolint32(dofrags == 0)+2*NG_SPACINGX-int32(items.Fwidth), NG_STATSY, items)
+	v_DrawPatch(32+int32(star.Fwidth)/int32(2)+int32(32)*boolint32(dofrags == 0)+3*NG_SPACINGX-int32(secret.Fwidth), NG_STATSY, secret)
 	if dofrags != 0 {
-		V_DrawPatch(32+int32(star.Fwidth)/int32(2)+int32(32)*boolint32(dofrags == 0)+4*NG_SPACINGX-int32(frags.Fwidth), NG_STATSY, frags)
+		v_DrawPatch(32+int32(star.Fwidth)/int32(2)+int32(32)*boolint32(dofrags == 0)+4*NG_SPACINGX-int32(frags.Fwidth), NG_STATSY, frags)
 	}
 	// draw stats
 	y = NG_STATSY + int32(kills.Fheight)
@@ -42762,19 +42762,19 @@ func WI_drawNetgameStats() {
 			goto _1
 		}
 		x = 32 + int32(star.Fwidth)/int32(2) + 32*boolint32(dofrags == 0)
-		V_DrawPatch(x-int32(p[i].Fwidth), y, p[i])
+		v_DrawPatch(x-int32(p[i].Fwidth), y, p[i])
 		if i == me {
-			V_DrawPatch(x-int32(p[i].Fwidth), y, star)
+			v_DrawPatch(x-int32(p[i].Fwidth), y, star)
 		}
 		x += NG_SPACINGX
-		WI_drawPercent(x-pwidth, y+int32(10), cnt_kills[i])
+		wi_drawPercent(x-pwidth, y+int32(10), cnt_kills[i])
 		x += NG_SPACINGX
-		WI_drawPercent(x-pwidth, y+int32(10), cnt_items[i])
+		wi_drawPercent(x-pwidth, y+int32(10), cnt_items[i])
 		x += NG_SPACINGX
-		WI_drawPercent(x-pwidth, y+int32(10), cnt_secret[i])
+		wi_drawPercent(x-pwidth, y+int32(10), cnt_secret[i])
 		x += NG_SPACINGX
 		if dofrags != 0 {
-			WI_drawNum(x, y+int32(10), cnt_frags[i], -1)
+			wi_drawNum(x, y+int32(10), cnt_frags[i], -1)
 		}
 		y += WI_SPACINGY
 		goto _1
@@ -42786,7 +42786,7 @@ func WI_drawNetgameStats() {
 
 var sp_state int32
 
-func WI_initStats() {
+func wi_initStats() {
 	var v1, v2, v3 int32
 	state = StatCount
 	acceleratestage = 0
@@ -42800,12 +42800,12 @@ func WI_initStats() {
 	cnt_par = v3
 	cnt_time = v3
 	cnt_pause = TICRATE
-	WI_initAnimatedBack()
+	wi_initAnimatedBack()
 }
 
-func WI_updateStats() {
+func wi_updateStats() {
 	var v1 int32
-	WI_updateAnimatedBack()
+	wi_updateAnimatedBack()
 	if acceleratestage != 0 && sp_state != 10 {
 		acceleratestage = 0
 		cnt_kills[0] = plrs[me].Fskills * 100 / wbs.Fmaxkills
@@ -42813,45 +42813,45 @@ func WI_updateStats() {
 		cnt_secret[0] = plrs[me].Fssecret * 100 / wbs.Fmaxsecret
 		cnt_time = plrs[me].Fstime / TICRATE
 		cnt_par = wbs.Fpartime / TICRATE
-		S_StartSound(nil, int32(sfx_barexp))
+		s_StartSound(nil, int32(sfx_barexp))
 		sp_state = 10
 	}
 	if sp_state == 2 {
 		cnt_kills[0] += 2
 		if bcnt&3 == 0 {
-			S_StartSound(nil, int32(sfx_pistol))
+			s_StartSound(nil, int32(sfx_pistol))
 		}
 		if cnt_kills[0] >= plrs[me].Fskills*int32(100)/wbs.Fmaxkills {
 			cnt_kills[0] = plrs[me].Fskills * 100 / wbs.Fmaxkills
-			S_StartSound(nil, int32(sfx_barexp))
+			s_StartSound(nil, int32(sfx_barexp))
 			sp_state++
 		}
 	} else {
 		if sp_state == 4 {
 			cnt_items[0] += 2
 			if bcnt&3 == 0 {
-				S_StartSound(nil, int32(sfx_pistol))
+				s_StartSound(nil, int32(sfx_pistol))
 			}
 			if cnt_items[0] >= plrs[me].Fsitems*int32(100)/wbs.Fmaxitems {
 				cnt_items[0] = plrs[me].Fsitems * 100 / wbs.Fmaxitems
-				S_StartSound(nil, int32(sfx_barexp))
+				s_StartSound(nil, int32(sfx_barexp))
 				sp_state++
 			}
 		} else {
 			if sp_state == 6 {
 				cnt_secret[0] += 2
 				if bcnt&3 == 0 {
-					S_StartSound(nil, int32(sfx_pistol))
+					s_StartSound(nil, int32(sfx_pistol))
 				}
 				if cnt_secret[0] >= plrs[me].Fssecret*int32(100)/wbs.Fmaxsecret {
 					cnt_secret[0] = plrs[me].Fssecret * 100 / wbs.Fmaxsecret
-					S_StartSound(nil, int32(sfx_barexp))
+					s_StartSound(nil, int32(sfx_barexp))
 					sp_state++
 				}
 			} else {
 				if sp_state == 8 {
 					if bcnt&3 == 0 {
-						S_StartSound(nil, int32(sfx_pistol))
+						s_StartSound(nil, int32(sfx_pistol))
 					}
 					cnt_time += 3
 					if cnt_time >= plrs[me].Fstime/TICRATE {
@@ -42861,18 +42861,18 @@ func WI_updateStats() {
 					if cnt_par >= wbs.Fpartime/TICRATE {
 						cnt_par = wbs.Fpartime / TICRATE
 						if cnt_time >= plrs[me].Fstime/TICRATE {
-							S_StartSound(nil, int32(sfx_barexp))
+							s_StartSound(nil, int32(sfx_barexp))
 							sp_state++
 						}
 					}
 				} else {
 					if sp_state == 10 {
 						if acceleratestage != 0 {
-							S_StartSound(nil, int32(sfx_sgcock))
+							s_StartSound(nil, int32(sfx_sgcock))
 							if gamemode == commercial {
-								WI_initNoState()
+								wi_initNoState()
 							} else {
-								WI_initShowNextLoc()
+								wi_initShowNextLoc()
 							}
 						}
 					} else {
@@ -42891,28 +42891,28 @@ func WI_updateStats() {
 	}
 }
 
-func WI_drawStats() {
+func wi_drawStats() {
 	var lh int32
 	lh = 3 * int32(num[0].Fheight) / 2
-	WI_slamBackground()
+	wi_slamBackground()
 	// draw animated background
-	WI_drawAnimatedBack()
-	WI_drawLF()
-	V_DrawPatch(SP_STATSX, SP_STATSY, kills)
-	WI_drawPercent(SCREENWIDTH-SP_STATSX, SP_STATSY, cnt_kills[0])
-	V_DrawPatch(SP_STATSX, SP_STATSY+lh, items)
-	WI_drawPercent(SCREENWIDTH-SP_STATSX, SP_STATSY+lh, cnt_items[0])
-	V_DrawPatch(SP_STATSX, SP_STATSY+int32(2)*lh, sp_secret)
-	WI_drawPercent(SCREENWIDTH-SP_STATSX, SP_STATSY+int32(2)*lh, cnt_secret[0])
-	V_DrawPatch(SP_TIMEX, SCREENHEIGHT-32, timepatch)
-	WI_drawTime(SCREENWIDTH/2-SP_TIMEX, SCREENHEIGHT-32, cnt_time)
+	wi_drawAnimatedBack()
+	wi_drawLF()
+	v_DrawPatch(SP_STATSX, SP_STATSY, kills)
+	wi_drawPercent(SCREENWIDTH-SP_STATSX, SP_STATSY, cnt_kills[0])
+	v_DrawPatch(SP_STATSX, SP_STATSY+lh, items)
+	wi_drawPercent(SCREENWIDTH-SP_STATSX, SP_STATSY+lh, cnt_items[0])
+	v_DrawPatch(SP_STATSX, SP_STATSY+int32(2)*lh, sp_secret)
+	wi_drawPercent(SCREENWIDTH-SP_STATSX, SP_STATSY+int32(2)*lh, cnt_secret[0])
+	v_DrawPatch(SP_TIMEX, SCREENHEIGHT-32, timepatch)
+	wi_drawTime(SCREENWIDTH/2-SP_TIMEX, SCREENHEIGHT-32, cnt_time)
 	if wbs.Fepsd < 3 {
-		V_DrawPatch(SCREENWIDTH/2+SP_TIMEX, SCREENHEIGHT-32, par)
-		WI_drawTime(SCREENWIDTH-SP_TIMEX, SCREENHEIGHT-32, cnt_par)
+		v_DrawPatch(SCREENWIDTH/2+SP_TIMEX, SCREENHEIGHT-32, par)
+		wi_drawTime(SCREENWIDTH-SP_TIMEX, SCREENHEIGHT-32, cnt_par)
 	}
 }
 
-func WI_checkForAccelerate() {
+func wi_checkForAccelerate() {
 	// check for button presses to skip delays
 	for i := 0; i < MAXPLAYERS; i++ {
 		if playeringame[i] != 0 {
@@ -42940,33 +42940,33 @@ func WI_checkForAccelerate() {
 // C documentation
 //
 //	// Updates stuff each tick
-func WI_Ticker() {
+func wi_Ticker() {
 	// counter for general background animation
 	bcnt++
 	if bcnt == 1 {
 		// intermission music
 		if gamemode == commercial {
-			S_ChangeMusic(int32(mus_dm2int), 1)
+			s_ChangeMusic(int32(mus_dm2int), 1)
 		} else {
-			S_ChangeMusic(int32(mus_inter), 1)
+			s_ChangeMusic(int32(mus_inter), 1)
 		}
 	}
-	WI_checkForAccelerate()
+	wi_checkForAccelerate()
 	switch state {
 	case StatCount:
 		if deathmatch != 0 {
-			WI_updateDeathmatchStats()
+			wi_updateDeathmatchStats()
 		} else {
 			if netgame != 0 {
-				WI_updateNetgameStats()
+				wi_updateNetgameStats()
 			} else {
-				WI_updateStats()
+				wi_updateStats()
 			}
 		}
 	case ShowNextLoc:
-		WI_updateShowNextLoc()
+		wi_updateShowNextLoc()
 	case NoState:
-		WI_updateNoState()
+		wi_updateNoState()
 		break
 	}
 }
@@ -42974,7 +42974,7 @@ func WI_Ticker() {
 // Common load/unload function.  Iterates over all the graphics
 // lumps to be loaded/unloaded into memory.
 
-func WI_loadUnloadData(callback func(string, **patch_t)) {
+func wi_loadUnloadData(callback func(string, **patch_t)) {
 	var a *anim_t1
 	var i, j int32
 	if gamemode == commercial {
@@ -43070,7 +43070,7 @@ func WI_loadUnloadData(callback func(string, **patch_t)) {
 	// "secret"
 	callback("WISCRT2", &sp_secret)
 	// french wad uses WIOBJ (?)
-	if W_CheckNumForName("WIOBJ") >= 0 {
+	if w_CheckNumForName("WIOBJ") >= 0 {
 		// "items"
 		if netgame != 0 && deathmatch == 0 {
 			callback("WIOBJ", &items)
@@ -43127,18 +43127,18 @@ func WI_loadUnloadData(callback func(string, **patch_t)) {
 	callback(bp1, &background)
 }
 
-func WI_loadCallback(name string, variable **patch_t) {
+func wi_loadCallback(name string, variable **patch_t) {
 	*variable = W_CacheLumpNameT(name)
 }
 
-func WI_loadData() {
+func wi_loadData() {
 	if gamemode == commercial {
 		NUMCMAPS = 32
 		lnames = make([]*patch_t, NUMCMAPS)
 	} else {
 		lnames = make([]*patch_t, NUMMAPS)
 	}
-	WI_loadUnloadData(WI_loadCallback)
+	wi_loadUnloadData(wi_loadCallback)
 	// These two graphics are special cased because we're sharing
 	// them with the status bar code
 	// your face
@@ -43147,40 +43147,40 @@ func WI_loadData() {
 	bstar = W_CacheLumpNameT("STFDEAD0")
 }
 
-func WI_unloadCallback(name string, variable **patch_t) {
-	W_ReleaseLumpName(name)
+func wi_unloadCallback(name string, variable **patch_t) {
+	w_ReleaseLumpName(name)
 	*variable = nil
 }
 
-func WI_unloadData() {
-	WI_loadUnloadData(WI_unloadCallback)
+func wi_unloadData() {
+	wi_loadUnloadData(wi_unloadCallback)
 	// We do not free these lumps as they are shared with the status
 	// bar code.
-	// W_ReleaseLumpName("STFST01");
-	// W_ReleaseLumpName("STFDEAD0");
+	// w_ReleaseLumpName("STFST01");
+	// w_ReleaseLumpName("STFDEAD0");
 }
 
-func WI_Drawer() {
+func wi_Drawer() {
 	switch state {
 	case StatCount:
 		if deathmatch != 0 {
-			WI_drawDeathmatchStats()
+			wi_drawDeathmatchStats()
 		} else {
 			if netgame != 0 {
-				WI_drawNetgameStats()
+				wi_drawNetgameStats()
 			} else {
-				WI_drawStats()
+				wi_drawStats()
 			}
 		}
 	case ShowNextLoc:
-		WI_drawShowNextLoc()
+		wi_drawShowNextLoc()
 	case NoState:
-		WI_drawNoState()
+		wi_drawNoState()
 		break
 	}
 }
 
-func WI_initVariables(wbstartstruct *wbstartstruct_t) {
+func wi_initVariables(wbstartstruct *wbstartstruct_t) {
 	var v1 int32
 	wbs = wbstartstruct
 	acceleratestage = 0
@@ -43205,16 +43205,16 @@ func WI_initVariables(wbstartstruct *wbstartstruct_t) {
 	}
 }
 
-func WI_Start(wbstartstruct *wbstartstruct_t) {
-	WI_initVariables(wbstartstruct)
-	WI_loadData()
+func wi_Start(wbstartstruct *wbstartstruct_t) {
+	wi_initVariables(wbstartstruct)
+	wi_loadData()
 	if deathmatch != 0 {
-		WI_initDeathmatchStats()
+		wi_initDeathmatchStats()
 	} else {
 		if netgame != 0 {
-			WI_initNetgameStats()
+			wi_initNetgameStats()
 		} else {
-			WI_initStats()
+			wi_initStats()
 		}
 	}
 }
@@ -43239,7 +43239,7 @@ func ChecksumAddLump(sha hash.Hash, lump *lumpinfo_t) {
 	SHA1_UpdateInt32(sha, uint32(lump.Fsize))
 }
 
-func W_Checksum(digest *sha1_digest_t) {
+func w_Checksum(digest *sha1_digest_t) {
 	var i uint32
 	//SHA1_Init(bp)
 	sha := sha1.New()
@@ -43260,7 +43260,7 @@ func W_Checksum(digest *sha1_digest_t) {
 	copy(digest[:], sha.Sum(nil))
 }
 
-func W_OpenFile(path string) *os.File {
+func w_OpenFile(path string) *os.File {
 	f, err := os.Open(path)
 	if err != nil {
 		log.Printf("Error opening file %q: %v", path, err)
@@ -43269,7 +43269,7 @@ func W_OpenFile(path string) *os.File {
 	return f
 }
 
-func W_Read(wad *os.File, offset uint32, buffer uintptr, buffer_len uint64) (r uint64) {
+func w_Read(wad *os.File, offset uint32, buffer uintptr, buffer_len uint64) (r uint64) {
 	buf := unsafe.Slice((*byte)(unsafe.Pointer(buffer)), buffer_len)
 	n, err := wad.ReadAt(buf, int64(offset))
 	if err != nil {
@@ -43286,7 +43286,7 @@ func W_Read(wad *os.File, offset uint32, buffer uintptr, buffer_len uint64) (r u
 // Parse the command line, merging WAD files that are sppecified.
 // Returns true if at least one file was added.
 
-func W_ParseCommandLine() (r boolean) {
+func w_ParseCommandLine() (r boolean) {
 	var filename string
 	var modifiedgame boolean
 	var p, v1 int32
@@ -43297,7 +43297,7 @@ func W_ParseCommandLine() (r boolean) {
 	//
 	// Load the specified PWAD files.
 	//
-	p = M_CheckParmWithArgs("-file", 1)
+	p = m_CheckParmWithArgs("-file", 1)
 	if p != 0 {
 		// the parms after p are wadfile/lump names,
 		// until end of parms or another - preceded parm
@@ -43308,9 +43308,9 @@ func W_ParseCommandLine() (r boolean) {
 			if !(v1 != int32(len(myargs)) && myargs[p][0] != '-') {
 				break
 			}
-			filename = D_TryFindWADByName(myargs[p])
+			filename = d_TryFindWADByName(myargs[p])
 			fprintf_ccgo(os.Stdout, " adding %s\n", filename)
-			W_AddFile(filename)
+			w_AddFile(filename)
 		}
 	}
 	//    W_PrintDirectory();
@@ -43335,7 +43335,7 @@ var lumphash []*lumpinfo_t
 
 // Hash function used for lump names.
 
-func W_LumpNameHash(s string) (r uint32) {
+func w_LumpNameHash(s string) (r uint32) {
 	// This is the djb2 string hash function, modded to work on strings
 	// that have a maximum length of 8.
 	result := uint32(5381)
@@ -43371,7 +43371,7 @@ var wad_files = map[uintptr]*os.File{}
 // Other files are single lumps with the base filename
 //  for the lump name.
 
-func W_AddFile(filename string) *os.File {
+func w_AddFile(filename string) *os.File {
 	var fileinfo []filelump_t
 	var wad_file *os.File
 	var length, newnumlumps int32
@@ -43382,7 +43382,7 @@ func W_AddFile(filename string) *os.File {
 		log.Printf("Error stating file %q: %v", filename, err)
 		return nil
 	}
-	wad_file = W_OpenFile(filename)
+	wad_file = w_OpenFile(filename)
 	if wad_file == nil {
 		fprintf_ccgo(os.Stdout, " couldn't open %s\n", filename)
 		return nil
@@ -43399,16 +43399,16 @@ func W_AddFile(filename string) *os.File {
 		fileinfo[0].Fsize = int32(stat.Size())
 		// Name the lump after the base of the filename (without the
 		// extension).
-		M_ExtractFileBase(filename, fileinfo[0].Fname[:])
+		m_ExtractFileBase(filename, fileinfo[0].Fname[:])
 		newnumlumps++
 	} else {
 		var wadinfo wadinfo_t
 		// WAD file
-		W_Read(wad_file, 0, (uintptr)(unsafe.Pointer(&wadinfo)), 12)
+		w_Read(wad_file, 0, (uintptr)(unsafe.Pointer(&wadinfo)), 12)
 		if gostring_bytes(wadinfo.Fidentification[:]) != "IWAD" {
 			// Homebrew levels?
 			if gostring_bytes(wadinfo.Fidentification[:]) != "PWAD" {
-				I_Error("Wad file %s doesn't have IWAD or PWAD id\n", filename)
+				i_Error("Wad file %s doesn't have IWAD or PWAD id\n", filename)
 			}
 			// ???modifiedgame = true;
 		}
@@ -43416,7 +43416,7 @@ func W_AddFile(filename string) *os.File {
 		wadinfo.Finfotableofs = wadinfo.Finfotableofs
 		length = int32(uint64(wadinfo.Fnumlumps) * 16)
 		fileinfo = make([]filelump_t, wadinfo.Fnumlumps)
-		W_Read(wad_file, uint32(wadinfo.Finfotableofs), (uintptr)(unsafe.Pointer(&fileinfo[0])), uint64(length))
+		w_Read(wad_file, uint32(wadinfo.Finfotableofs), (uintptr)(unsafe.Pointer(&fileinfo[0])), uint64(length))
 		newnumlumps += wadinfo.Fnumlumps
 	}
 	// Increase size of numlumps array to accomodate the new file.
@@ -43440,11 +43440,11 @@ func W_AddFile(filename string) *os.File {
 // Returns -1 if name not found.
 //
 
-func W_CheckNumForName(name string) (r int32) {
+func w_CheckNumForName(name string) (r int32) {
 	// Do we have a hash table yet?
 	if lumphash != nil {
 		// We do! Excellent.
-		hash := int32(W_LumpNameHash(name) % numlumps)
+		hash := int32(w_LumpNameHash(name) % numlumps)
 		for lump_p := lumphash[hash]; lump_p != nil; lump_p = lump_p.Fnext {
 			if strings.EqualFold(lump_p.Name(), name) {
 				return lumpIndex(lump_p)
@@ -43468,13 +43468,13 @@ func W_CheckNumForName(name string) (r int32) {
 //
 //	//
 //	// W_GetNumForName
-//	// Calls W_CheckNumForName, but bombs out if not found.
+//	// Calls w_CheckNumForName, but bombs out if not found.
 //	//
-func W_GetNumForName(name string) (r int32) {
+func w_GetNumForName(name string) (r int32) {
 	var i int32
-	i = W_CheckNumForName(name)
+	i = w_CheckNumForName(name)
 	if i < 0 {
-		I_Error("W_GetNumForName: %s not found!", name)
+		i_Error("w_GetNumForName: %s not found!", name)
 	}
 	return i
 }
@@ -43485,9 +43485,9 @@ func W_GetNumForName(name string) (r int32) {
 //	// W_LumpLength
 //	// Returns the buffer size needed to load the given lump.
 //	//
-func W_LumpLength(lump uint32) (r int32) {
+func w_LumpLength(lump uint32) (r int32) {
 	if lump >= numlumps {
-		I_Error("W_LumpLength: %d >= numlumps", lump)
+		i_Error("w_LumpLength: %d >= numlumps", lump)
 	}
 	return lumpinfo[lump].Fsize
 }
@@ -43497,32 +43497,32 @@ func W_LumpLength(lump uint32) (r int32) {
 //	//
 //	// W_ReadLump
 //	// Loads the lump into the given buffer,
-//	//  which must be >= W_LumpLength().
+//	//  which must be >= w_LumpLength().
 //	//
-func W_ReadLump(lump uint32, dest uintptr) {
+func w_ReadLump(lump uint32, dest uintptr) {
 	var c int32
 	if lump >= numlumps {
-		I_Error("W_ReadLump: %d >= numlumps", lump)
+		i_Error("w_ReadLump: %d >= numlumps", lump)
 	}
 	l := &lumpinfo[lump]
-	I_BeginRead()
-	c = int32(W_Read(l.Fwad_file, uint32(l.Fposition), dest, uint64(l.Fsize)))
+	i_BeginRead()
+	c = int32(w_Read(l.Fwad_file, uint32(l.Fposition), dest, uint64(l.Fsize)))
 	if c < l.Fsize {
-		I_Error("W_ReadLump: only read %d of %d on lump %d", c, l.Fsize, lump)
+		i_Error("w_ReadLump: only read %d of %d on lump %d", c, l.Fsize, lump)
 	}
-	I_EndRead()
+	i_EndRead()
 }
 
-func W_ReadLumpBytes(lump uint32) []byte {
+func w_ReadLumpBytes(lump uint32) []byte {
 	if lump >= numlumps {
-		I_Error("W_ReadLumpBytes: %d >= numlumps", lump)
+		i_Error("w_ReadLumpBytes: %d >= numlumps", lump)
 	}
 	l := &lumpinfo[lump]
 	res := make([]byte, l.Fsize)
 	if n, err := l.Fwad_file.ReadAt(res, int64(l.Fposition)); err != nil {
-		log.Fatalf("W_ReadLumpBytes: error reading lump %d (%dB at %d): %v", lump, l.Fsize, l.Fposition, err)
+		log.Fatalf("w_ReadLumpBytes: error reading lump %d (%dB at %d): %v", lump, l.Fsize, l.Fposition, err)
 	} else if n < int(l.Fsize) {
-		log.Fatalf("W_ReadLumpBytes: only read %d of %d on lump %d", n, l.Fsize, lump)
+		log.Fatalf("w_ReadLumpBytes: only read %d of %d on lump %d", n, l.Fsize, lump)
 	}
 	return res
 }
@@ -43534,20 +43534,20 @@ func W_ReadLumpBytes(lump uint32) []byte {
 // the lump data.
 //
 
-func W_CacheLumpNum(lumpnum int32) (r uintptr) {
+func w_CacheLumpNum(lumpnum int32) (r uintptr) {
 	if uint32(lumpnum) >= numlumps {
-		I_Error("W_CacheLumpNum: %d >= numlumps", lumpnum)
+		i_Error("w_CacheLumpNum: %d >= numlumps", lumpnum)
 	}
 	lump := &lumpinfo[lumpnum]
 	if lump.Fcache == nil {
-		lump.Fcache = W_ReadLumpBytes(uint32(lumpnum))
+		lump.Fcache = w_ReadLumpBytes(uint32(lumpnum))
 	}
 	return (uintptr)(unsafe.Pointer(&lump.Fcache[0]))
 }
 
 func W_CacheLumpNumT[T lumpType](lumpnum int32) T {
 	var result uintptr
-	result = W_CacheLumpNum(lumpnum)
+	result = w_CacheLumpNum(lumpnum)
 	if result == 0 {
 		panic("lump failure")
 	}
@@ -43559,13 +43559,13 @@ func W_CacheLumpNumT[T lumpType](lumpnum int32) T {
 //	//
 //	// W_CacheLumpName
 //	//
-func W_CacheLumpName(name string) (r uintptr) {
-	return W_CacheLumpNum(W_GetNumForName(name))
+func w_CacheLumpName(name string) (r uintptr) {
+	return w_CacheLumpNum(w_GetNumForName(name))
 }
 
 func W_CacheLumpNameT[T lumpType](name string) T {
 	var result uintptr
-	result = W_CacheLumpName(name)
+	result = w_CacheLumpName(name)
 	if result == 0 {
 		panic("lump failure")
 	}
@@ -43582,20 +43582,20 @@ func W_CacheLumpNameT[T lumpType](name string) T {
 // complicated ...
 //
 
-func W_ReleaseLumpNum(lumpnum int32) {
+func w_ReleaseLumpNum(lumpnum int32) {
 	if uint32(lumpnum) >= numlumps {
-		I_Error("W_ReleaseLumpNum: %d >= numlumps", lumpnum)
+		i_Error("w_ReleaseLumpNum: %d >= numlumps", lumpnum)
 	}
 	// TODO/GORE: We don't do anything here. Lumps are just progressively cached & never released. It's a finite number
 }
 
-func W_ReleaseLumpName(name string) {
-	W_ReleaseLumpNum(W_GetNumForName(name))
+func w_ReleaseLumpName(name string) {
+	w_ReleaseLumpNum(w_GetNumForName(name))
 }
 
 // Generate a hash table for fast lookups
 
-func W_GenerateHashTable() {
+func w_GenerateHashTable() {
 	var hash, i uint32
 	// Free the old hash table, if there is one
 	lumphash = nil
@@ -43607,7 +43607,7 @@ func W_GenerateHashTable() {
 			if i >= numlumps {
 				break
 			}
-			hash = W_LumpNameHash(lumpinfo[i].Name()) % numlumps
+			hash = w_LumpNameHash(lumpinfo[i].Name()) % numlumps
 			// Hook into the hash table
 			lumpinfo[i].Fnext = lumphash[hash]
 			lumphash[hash] = &lumpinfo[i]
@@ -43646,7 +43646,7 @@ var unique_lumps = [4]struct {
 	},
 }
 
-func W_CheckCorrectIWAD(mission GameMission_t) {
+func w_CheckCorrectIWAD(mission GameMission_t) {
 	var i, lumpnum int32
 	i = 0
 	for {
@@ -43654,9 +43654,9 @@ func W_CheckCorrectIWAD(mission GameMission_t) {
 			break
 		}
 		if mission != unique_lumps[i].Fmission {
-			lumpnum = W_CheckNumForName(unique_lumps[i].Flumpname)
+			lumpnum = w_CheckNumForName(unique_lumps[i].Flumpname)
 			if lumpnum >= 0 {
-				I_Error("\nYou are trying to use a %s IWAD file with the %s%s binary.\nThis isn't going to work.\nYou probably want to use the %s%s binary.", D_SuggestGameName(unique_lumps[i].Fmission, indetermined), "doomgeneric", D_GameMissionString(mission), "doomgeneric", D_GameMissionString(unique_lumps[i].Fmission))
+				i_Error("\nYou are trying to use a %s IWAD file with the %s%s binary.\nThis isn't going to work.\nYou probably want to use the %s%s binary.", d_SuggestGameName(unique_lumps[i].Fmission, indetermined), "doomgeneric", d_GameMissionString(mission), "doomgeneric", d_GameMissionString(unique_lumps[i].Fmission))
 			}
 		}
 		goto _1
@@ -43723,7 +43723,7 @@ const ZONEID = 1919505
 //	//
 //	// Z_Init
 //	//
-func Z_Init() {
+func z_Init() {
 	return
 }
 
@@ -43732,7 +43732,7 @@ func Z_Init() {
 //	//
 //	// Z_Free
 //	//
-func Z_Free(ptr uintptr) {
+func z_Free(ptr uintptr) {
 	xfree(ptr)
 }
 
@@ -43740,7 +43740,7 @@ func Z_Free(ptr uintptr) {
 // Z_Malloc
 //
 
-func Z_Malloc(size int32) (r uintptr) {
+func z_Malloc(size int32) (r uintptr) {
 	return xmalloc(uint64(size))
 }
 
@@ -43928,7 +43928,7 @@ type DoomEvent struct {
 
 var lastMouse DoomEvent
 
-func I_GetEvent() {
+func i_GetEvent() {
 	var newEvent event_t
 	var event DoomEvent
 	for dg_frontend.GetEvent(&event) {
@@ -43946,7 +43946,7 @@ func I_GetEvent() {
 				newEvent.Fdata1 = int32(event.Key)
 				newEvent.Fdata2 = int32(GetTypedChar(event.Key))
 				if newEvent.Fdata1 != 0 {
-					D_PostEvent(&newEvent)
+					d_PostEvent(&newEvent)
 				}
 			} else {
 				newEvent.Ftype1 = Ev_keyup
@@ -43958,7 +43958,7 @@ func I_GetEvent() {
 				// (key ID), not the printable char.
 				newEvent.Fdata2 = 0
 				if newEvent.Fdata1 != 0 {
-					D_PostEvent(&newEvent)
+					d_PostEvent(&newEvent)
 				}
 			}
 		}
@@ -43981,12 +43981,12 @@ func I_GetEvent() {
 				continue
 			}
 			lastMouse = event
-			D_PostEvent(&newEvent)
+			d_PostEvent(&newEvent)
 		}
 	}
 }
 
-func I_InitInput() {
+func i_InitInput() {
 }
 
 const INT_MAX19 = 2147483647
@@ -43998,27 +43998,27 @@ func init() {
 	mouse_threshold = 10
 }
 
-func I_InitGraphics() {
+func i_InitGraphics() {
 	/* Allocate screen to draw to */
-	I_VideoBuffer = Z_Malloc(SCREENWIDTH * SCREENHEIGHT) // For DOOM to draw on
-	I_InitInput()
+	I_VideoBuffer = z_Malloc(SCREENWIDTH * SCREENHEIGHT) // For DOOM to draw on
+	i_InitInput()
 }
 
-func I_StartFrame() {
+func i_StartFrame() {
 }
 
-func I_StartTic() {
-	I_GetEvent()
+func i_StartTic() {
+	i_GetEvent()
 }
 
-func I_UpdateNoBlit() {
+func i_UpdateNoBlit() {
 }
 
 //
 // I_FinishUpdate
 //
 
-func I_FinishUpdate() {
+func i_FinishUpdate() {
 	var line_in = I_VideoBuffer
 	for y := SCREENHEIGHT - 1; y >= 0; y-- {
 		for i := 0; i < SCREENWIDTH; i++ {
@@ -44040,7 +44040,7 @@ func I_FinishUpdate() {
 //	//
 //	// I_ReadScreen
 //	//
-func I_ReadScreen(scr uintptr) {
+func i_ReadScreen(scr uintptr) {
 	xmemcpy(scr, I_VideoBuffer, SCREENWIDTH*SCREENHEIGHT)
 }
 
@@ -44048,7 +44048,7 @@ func I_ReadScreen(scr uintptr) {
 // I_SetPalette
 //
 
-func I_SetPalette(palette uintptr) {
+func i_SetPalette(palette uintptr) {
 	for i := range 256 {
 		colors[i].R = *(*uint8)(unsafe.Pointer(palette))
 		colors[i].G = *(*uint8)(unsafe.Pointer(palette + 1))
@@ -44059,9 +44059,9 @@ func I_SetPalette(palette uintptr) {
 
 // Given an RGB value, find the closest matching palette index.
 
-func I_GetPaletteIndex(r int32, g int32, b int32) (r1 int32) {
+func i_GetPaletteIndex(r int32, g int32, b int32) (r1 int32) {
 	var best, best_diff, diff int32
-	fprintf_ccgo(os.Stdout, "I_GetPaletteIndex\n")
+	fprintf_ccgo(os.Stdout, "i_GetPaletteIndex\n")
 	best = 0
 	best_diff = int32(INT_MAX19)
 	for i := int32(0); i < 256; i++ {
@@ -44080,41 +44080,41 @@ func I_GetPaletteIndex(r int32, g int32, b int32) (r1 int32) {
 	return best
 }
 
-func I_BeginRead() {
+func i_BeginRead() {
 }
 
-func I_EndRead() {
+func i_EndRead() {
 }
 
-func I_SetWindowTitle(title string) {
+func i_SetWindowTitle(title string) {
 	dg_frontend.SetTitle(title)
 }
 
-func I_GraphicsCheckCommandLine() {
+func i_GraphicsCheckCommandLine() {
 }
 
-func I_SetGrabMouseCallback(func1 func() boolean) {
+func i_SetGrabMouseCallback(func1 func() boolean) {
 }
 
-func I_EnableLoadingDisk() {
+func i_EnableLoadingDisk() {
 }
 
-func I_BindVideoVariables() {
+func i_BindVideoVariables() {
 }
 
-func I_DisplayFPSDots(dots_on boolean) {
+func i_DisplayFPSDots(dots_on boolean) {
 }
 
-func I_CheckIsScreensaver() {
+func i_CheckIsScreensaver() {
 }
 
 func doomgeneric_Create(args []string) {
 	// save arguments
 	myargs = args
-	M_FindResponseFile()
+	m_FindResponseFile()
 
 	DG_ScreenBuffer = image.NewRGBA(image.Rect(0, 0, SCREENWIDTH, SCREENHEIGHT))
-	D_DoomMain()
+	d_DoomMain()
 }
 
 func Run(fg DoomFrontend, args []string) {
@@ -44132,6 +44132,10 @@ func Run(fg DoomFrontend, args []string) {
 		doomgeneric_Tick()
 	}
 	dg_frontend = nil
+}
+
+func Stop() {
+	dg_exiting = true
 }
 
 var DG_ScreenBuffer *image.RGBA
@@ -44591,7 +44595,7 @@ var cpars [32]int32
 //	// If crunch is true, they will take damage
 //	//  as they are being crushed.
 //	// If Crunch is false, you should set the sector height back
-//	//  the way it was and call P_ChangeSector again
+//	//  the way it was and call p_ChangeSector again
 //	//  to undo the changes.
 //	//
 var crushchange boolean
@@ -45482,7 +45486,7 @@ var numvertexes int32
 
 var offsetms fixed_t
 
-// Gamestate the last time G_Ticker was called.
+// Gamestate the last time g_Ticker was called.
 
 var oldgamestate gamestate_t
 
@@ -45518,7 +45522,7 @@ var opentop fixed_t
 // C documentation
 //
 //	//
-//	// P_NewChaseDir related LUT.
+//	// p_NewChaseDir related LUT.
 //	//
 var opposite [9]dirtype_t
 
@@ -45889,7 +45893,7 @@ var solidsegs [32]cliprange_t
 //
 
 //
-// Called by P_NoiseAlert.
+// Called by p_NoiseAlert.
 // Recursively traverse adjacent sectors,
 // sound blocking lines cut off traversal.
 //
