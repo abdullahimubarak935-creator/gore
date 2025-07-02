@@ -7386,13 +7386,20 @@ var weapon_order_table = [9]struct {
 	},
 }
 
-var gamekeydown [256]boolean
+var gamekeydown [256]bool
 var turnheld int32 // for accelerative turning
-var mousearray [9]boolean
-var mousebuttons = uintptr(unsafe.Pointer(&mousearray)) + 1*4 // allow [-1]
+var mousearray [9]bool
+
+func mouseButton(button int32) bool {
+	return mousearray[button+1] // allow for [-1]
+}
+
+func setMouseButton(button int32, state bool) {
+	mousearray[button+1] = state // allow for [-1]
+}
 
 var dclicktime int32
-var dclickstate boolean
+var dclickstate bool
 var dclicks int32
 var dclicktime2 int32
 var dclickstate2 boolean
@@ -7404,8 +7411,15 @@ var dclicks2 int32
 var joyxmove int32
 var joyymove int32
 var joystrafemove int32
-var joyarray [21]boolean
-var joybuttons = uintptr(unsafe.Pointer(&joyarray)) + 1*4 // allow [-1]
+var joyarray [21]bool
+
+func joyButton(button int32) bool {
+	return joyarray[button+1] // allow for [-1]
+}
+func setJoyButton(button int32, state bool) {
+	joyarray[button+1] = state // allow for [-1]
+}
+
 var savegameslot int32
 var savedescription string
 
@@ -7496,16 +7510,16 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	var forward, side, speed, tspeed, v1, v16 int32
 	*cmd = ticcmd_t{}
 	cmd.Fconsistancy = consistancy[consoleplayer][maketic%BACKUPTICS]
-	strafe = booluint32(gamekeydown[key_strafe] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
+	strafe = booluint32(gamekeydown[key_strafe] || mouseButton(mousebstrafe) || joyButton(joybstrafe))
 	// fraggle: support the old "joyb_speed = 31" hack which
 	// allowed an autorun effect
-	speed = boolint32(key_speed >= NUMKEYS || joybspeed >= MAX_JOY_BUTTONS || gamekeydown[key_speed] != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybspeed)*4)) != 0)
+	speed = boolint32(key_speed >= NUMKEYS || joybspeed >= MAX_JOY_BUTTONS || gamekeydown[key_speed] || joyButton(joybspeed))
 	v1 = 0
 	side = v1
 	forward = v1
 	// use two stage accelerative turning
 	// on the keyboard and joystick
-	if joyxmove < 0 || joyxmove > 0 || gamekeydown[key_right] != 0 || gamekeydown[key_left] != 0 {
+	if joyxmove < 0 || joyxmove > 0 || gamekeydown[key_right] || gamekeydown[key_left] {
 		turnheld += ticdup
 	} else {
 		turnheld = 0
@@ -7517,11 +7531,11 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	}
 	// let movement keys cancel each other out
 	if strafe != 0 {
-		if gamekeydown[key_right] != 0 {
+		if gamekeydown[key_right] {
 			// fprintf(stderr, "strafe right\n");
 			side += sidemove[speed]
 		}
-		if gamekeydown[key_left] != 0 {
+		if gamekeydown[key_left] {
 			//	fprintf(stderr, "strafe left\n");
 			side -= sidemove[speed]
 		}
@@ -7532,10 +7546,10 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 			side -= sidemove[speed]
 		}
 	} else {
-		if gamekeydown[key_right] != 0 {
+		if gamekeydown[key_right] {
 			cmd.Fangleturn -= int16(angleturn[tspeed])
 		}
-		if gamekeydown[key_left] != 0 {
+		if gamekeydown[key_left] {
 			cmd.Fangleturn += int16(angleturn[tspeed])
 		}
 		if joyxmove > 0 {
@@ -7545,11 +7559,11 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 			cmd.Fangleturn += int16(angleturn[tspeed])
 		}
 	}
-	if gamekeydown[key_up] != 0 {
+	if gamekeydown[key_up] {
 		// fprintf(stderr, "up\n");
 		forward += forwardmove[speed]
 	}
-	if gamekeydown[key_down] != 0 {
+	if gamekeydown[key_down] {
 		// fprintf(stderr, "down\n");
 		forward -= forwardmove[speed]
 	}
@@ -7559,18 +7573,18 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	if joyymove > 0 {
 		forward -= forwardmove[speed]
 	}
-	if gamekeydown[key_strafeleft] != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafeleft)*4)) != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafeleft)*4)) != 0 || joystrafemove < 0 {
+	if gamekeydown[key_strafeleft] || joyButton(joybstrafeleft) || mouseButton(mousebstrafeleft) || joystrafemove < 0 {
 		side -= sidemove[speed]
 	}
-	if gamekeydown[key_straferight] != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstraferight)*4)) != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstraferight)*4)) != 0 || joystrafemove > 0 {
+	if gamekeydown[key_straferight] || joyButton(joybstraferight) || mouseButton(mousebstraferight) || joystrafemove > 0 {
 		side += sidemove[speed]
 	}
 	// buttons
 	cmd.Fchatchar = uint8(HU_dequeueChatChar())
-	if gamekeydown[key_fire] != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebfire)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybfire)*4)) != 0 {
+	if gamekeydown[key_fire] || mouseButton(mousebfire) || joyButton(joybfire) {
 		cmd.Fbuttons |= BT_ATTACK
 	}
-	if gamekeydown[key_use] != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybuse)*4)) != 0 || *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebuse)*4)) != 0 {
+	if gamekeydown[key_use] || joyButton(joybuse) || mouseButton(mousebuse) {
 		cmd.Fbuttons |= BT_USE
 		// clear double clicks if hit use button
 		dclicks = 0
@@ -7585,7 +7599,7 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	} else {
 		// Check weapon keys.
 		for i := 0; i < len(weapon_keys); i++ {
-			if gamekeydown[weapon_keys[i]] != 0 {
+			if gamekeydown[weapon_keys[i]] {
 				cmd.Fbuttons |= BT_CHANGE
 				cmd.Fbuttons |= uint8(i << BT_WEAPONSHIFT)
 				break
@@ -7594,17 +7608,17 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	}
 	next_weapon = 0
 	// mouse
-	if *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebforward)*4)) != 0 {
+	if mouseButton(mousebforward) {
 		forward += forwardmove[speed]
 	}
-	if *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebbackward)*4)) != 0 {
+	if mouseButton(mousebbackward) {
 		forward -= forwardmove[speed]
 	}
 	if dclick_use != 0 {
 		// forward double click
-		if *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebforward)*4)) != dclickstate && dclicktime > 1 {
-			dclickstate = *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebforward)*4))
-			if dclickstate != 0 {
+		if mouseButton(mousebforward) != dclickstate && dclicktime > 1 {
+			dclickstate = mouseButton(mousebforward)
+			if dclickstate {
 				dclicks++
 			}
 			if dclicks == 2 {
@@ -7617,11 +7631,11 @@ func G_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 			dclicktime += ticdup
 			if dclicktime > 20 {
 				dclicks = 0
-				dclickstate = 0
+				dclickstate = false
 			}
 		}
 		// strafe double click
-		bstrafe = booluint32(*(*boolean)(unsafe.Pointer(mousebuttons + uintptr(mousebstrafe)*4)) != 0 || *(*boolean)(unsafe.Pointer(joybuttons + uintptr(joybstrafe)*4)) != 0)
+		bstrafe = booluint32(mouseButton(mousebstrafe) || joyButton(joybstrafe))
 		if bstrafe != dclickstate2 && dclicktime2 > 1 {
 			dclickstate2 = bstrafe
 			if dclickstate2 != 0 {
@@ -7776,7 +7790,7 @@ func SetJoyButtons(buttons_mask uint32) {
 		}
 		button_on = boolint32(buttons_mask&uint32(1<<i) != 0)
 		// Detect button press:
-		if *(*boolean)(unsafe.Pointer(joybuttons + uintptr(i)*4)) == 0 && button_on != 0 {
+		if joyButton(i) && button_on != 0 {
 			// Weapon cycling:
 			if i == joybprevweapon {
 				next_weapon = -1
@@ -7786,7 +7800,7 @@ func SetJoyButtons(buttons_mask uint32) {
 				}
 			}
 		}
-		*(*boolean)(unsafe.Pointer(joybuttons + uintptr(i)*4)) = uint32(button_on)
+		setJoyButton(i, button_on != 0)
 		goto _1
 	_1:
 		;
@@ -7804,7 +7818,7 @@ func SetMouseButtons(buttons_mask uint32) {
 		}
 		button_on = booluint32(buttons_mask&uint32(1<<i) != 0)
 		// Detect button press:
-		if *(*boolean)(unsafe.Pointer(mousebuttons + uintptr(i)*4)) == 0 && button_on != 0 {
+		if !mouseButton(i) && button_on != 0 {
 			if i == mousebprevweapon {
 				next_weapon = -1
 			} else {
@@ -7813,7 +7827,7 @@ func SetMouseButtons(buttons_mask uint32) {
 				}
 			}
 		}
-		*(*boolean)(unsafe.Pointer(mousebuttons + uintptr(i)*4)) = button_on
+		setMouseButton(i, button_on != 0)
 		goto _1
 	_1:
 		;
@@ -7885,13 +7899,13 @@ func G_Responder(ev *event_t) (r boolean) {
 			sendpause = 1
 		} else {
 			if ev.Fdata1 < NUMKEYS {
-				gamekeydown[ev.Fdata1] = 1
+				gamekeydown[ev.Fdata1] = true
 			}
 		}
 		return 1 // eat key down events
 	case Ev_keyup:
 		if ev.Fdata1 < NUMKEYS {
-			gamekeydown[ev.Fdata1] = 0
+			gamekeydown[ev.Fdata1] = false
 		}
 		return 0 // always let key up events filter down
 	case Ev_mouse:
@@ -8890,7 +8904,7 @@ func G_ReadDemoTiccmd(cmd *ticcmd_t) {
 }
 
 func G_WriteDemoTiccmd(cmd *ticcmd_t) {
-	if gamekeydown[key_demo_quit] != 0 { // press q to end demo recording
+	if gamekeydown[key_demo_quit] { // press q to end demo recording
 		G_CheckDemoStatus()
 	}
 	demo_start := demo_pos
