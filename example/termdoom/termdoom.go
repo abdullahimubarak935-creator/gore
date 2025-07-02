@@ -25,12 +25,17 @@ func ascii(img image.Image, writer io.Writer) {
 	asciiChar := []byte("$@B%#*+=,.....")
 	bound := img.Bounds()
 	height, width := bound.Max.Y, bound.Max.X
+	var lastcolor string
 
 	for y := bound.Min.Y; y < height; y++ {
 		for x := bound.Min.X; x < width; x++ {
 			pixelValue := img.At(x, y)
 			r, g, b, _ := pixelValue.RGBA()
-			writer.Write([]byte(fmt.Sprintf("\x1b[38;2;%d;%d;%dm", r>>8, g>>8, b>>8)))
+			colStr := fmt.Sprintf("\x1b[38;2;%d;%d;%dm", r>>8, g>>8, b>>8)
+			if colStr != lastcolor {
+				writer.Write([]byte(colStr))
+				lastcolor = colStr
+			}
 
 			pixel := color.GrayModel.Convert(pixelValue).(color.Gray).Y
 			asciiIndex := int(pixel) * (len(asciiChar) - 1) / 255
