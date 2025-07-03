@@ -80,7 +80,6 @@ func (t *termDoom) GetEvent(event *gore.DoomEvent) bool {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading from stdin: %v\n", err)
 	}
-	log.Printf("Read %d bytes: %v\n", n, buf[:n])
 	switch string(buf[:n]) {
 	case "\x1b[A": // Up arrow
 		event.Type = gore.Ev_keydown
