@@ -19,24 +19,28 @@ type termDoom struct {
 	width           uint
 }
 
-func ascii(img image.Image, writer io.Writer) {
-	asciiChar := []byte("$@B%#*+=,.....")
+// Characters with progressively fewer filled pixels, to simulate brightness
+const brightChars = "$@B%#*+=\"~^;:..."
+
+func ascii(img *image.RGBA, writer io.Writer) {
 	bound := img.Bounds()
 	height, width := bound.Max.Y, bound.Max.X
 	var lastcolor string
 
 	for y := bound.Min.Y; y < height; y++ {
 		for x := bound.Min.X; x < width; x++ {
-			pixelValue := img.At(x, y)
-			r, g, b, _ := pixelValue.RGBA()
-			colStr := fmt.Sprintf("\x1b[38;2;%d;%d;%dm", r>>8, g>>8, b>>8)
+			offset := y*img.Stride + x*4
+			r := img.Pix[offset] & 0xf0
+			g := img.Pix[offset+1] & 0xf0
+			b := img.Pix[offset+2] & 0xf0
+			colStr := fmt.Sprintf("\x1b[38;2;%d;%d;%dm", r, g, b)
 			if colStr != lastcolor {
 				writer.Write([]byte(colStr))
 				lastcolor = colStr
 			}
 
-			brightness := int(r+g+b) * (len(asciiChar) - 1) / (3 * 65535) // Normalize to 0-1 range
-			writer.Write([]byte{asciiChar[brightness]})
+			brightness := int(r+g+b) * (len(brightChars) - 1) / (3 * 255) // Normalize to 0-1 range
+			writer.Write([]byte{brightChars[brightness]})
 		}
 		writer.Write([]byte("\r\n"))
 	}
@@ -47,13 +51,18 @@ func (t *termDoom) DrawFrame(frame *image.RGBA) {
 	smaller := resize.Resize(t.width, height, frame, resize.Lanczos3)
 	// Go back to 0,0
 	fmt.Print("\033[0;0H")
-	ascii(smaller, os.Stdout)
+	rgba, ok := smaller.(*image.RGBA)
+	if !ok {
+		log.Printf("Error: resized image is not of type *image.RGBA")
+		return
+	}
+	ascii(rgba, os.Stdout)
 	os.Stdout.Sync()
 }
 
 func (t *termDoom) GetEvent(event *gore.DoomEvent) bool {
 	for key, lastTime := range t.outstandingKeys {
-		if time.Since(lastTime) > time.Second {
+		if time.Since(lastTime) > 500*time.Millisecond {
 			delete(t.outstandingKeys, key)
 			event.Type = gore.Ev_keyup
 			event.Key = key
@@ -94,7 +103,7 @@ func (t *termDoom) GetEvent(event *gore.DoomEvent) bool {
 	case "\x1b": // Escape
 		event.Type = gore.Ev_keydown
 		event.Key = gore.KEY_ESCAPE
-	case ",":
+	case ",": // We can't use Ctrl, since terminals don't see it. So we use comma instead
 		event.Type = gore.Ev_keydown
 		event.Key = gore.KEY_FIRE1
 	case "y", "n", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0":
