@@ -40429,7 +40429,13 @@ func st_initData() {
 
 func st_createWidgets() {
 	// ready weapon ammo
-	STlib_initNum(&w_ready, ST_AMMOX, ST_AMMOY, tallnum[:], &plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo], &st_statusbaron, ST_AMMOWIDTH)
+	var fnum *int32
+	if weaponinfo[plyr.Freadyweapon].Fammo < 0 || weaponinfo[plyr.Freadyweapon].Fammo >= NUMAMMO {
+		fnum = &largeammo
+	} else {
+		fnum = &plyr.Fammo[weaponinfo[plyr.Freadyweapon].Fammo]
+	}
+	STlib_initNum(&w_ready, ST_AMMOX, ST_AMMOY, tallnum[:], fnum, &st_statusbaron, ST_AMMOWIDTH)
 	// the last weapon type
 	w_ready.Fdata = plyr.Freadyweapon
 	// health percentage
