@@ -15,7 +15,6 @@ import (
 )
 
 type termDoom struct {
-	title           string
 	outstandingKeys map[uint8]time.Time
 	width           uint
 }
@@ -46,7 +45,8 @@ func ascii(img image.Image, writer io.Writer) {
 func (t *termDoom) DrawFrame(frame *image.RGBA) {
 	height := (t.width * 200 / 320) / 2 // fixed width fonts are typically twice as high as wide
 	smaller := resize.Resize(t.width, height, frame, resize.Lanczos3)
-	fmt.Print("\033[H\033[2J")
+	// Go back to 0,0
+	fmt.Print("\033[0;0H")
 	ascii(smaller, os.Stdout)
 	os.Stdout.Sync()
 }
@@ -109,7 +109,7 @@ func (t *termDoom) GetEvent(event *gore.DoomEvent) bool {
 }
 
 func (t *termDoom) SetTitle(title string) {
-	t.title = title
+	fmt.Printf("\033]0;%s\007", title)
 }
 
 func main() {
@@ -119,10 +119,12 @@ func main() {
 	}
 	defer term.Restore(int(os.Stdin.Fd()), oldState)
 
-	width, _, err := term.GetSize(int(os.Stdout.Fd()))
+	width, height, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil {
 		width = 120
 	}
+	// Make sure we're not going to scroll off the bottom of the visible terminal
+	width = min(height*320/200*2, width)
 	// Initialize termDoom and start the game loop
 	termGame := &termDoom{
 		width:           uint(width),
