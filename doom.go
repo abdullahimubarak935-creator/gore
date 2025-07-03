@@ -199,26 +199,26 @@ const VDOORWAIT = 150
 
 type sha1_digest_t = [20]uint8
 
-type GameMission_t int32
+type gamemission_t int32
 
-const doom GameMission_t = 0
-const doom2 GameMission_t = 1
-const pack_tnt GameMission_t = 2
-const pack_plut GameMission_t = 3
-const pack_chex GameMission_t = 4
-const pack_hacx GameMission_t = 5
-const heretic GameMission_t = 6
-const hexen GameMission_t = 7
-const strife GameMission_t = 8
-const none GameMission_t = 9
+const doom gamemission_t = 0
+const doom2 gamemission_t = 1
+const pack_tnt gamemission_t = 2
+const pack_plut gamemission_t = 3
+const pack_chex gamemission_t = 4
+const pack_hacx gamemission_t = 5
+const heretic gamemission_t = 6
+const hexen gamemission_t = 7
+const strife gamemission_t = 8
+const none gamemission_t = 9
 
-type GameMode_t int32
+type gamemode_t int32
 
-const shareware GameMode_t = 0
-const registered GameMode_t = 1
-const commercial GameMode_t = 2
-const retail GameMode_t = 3
-const indetermined GameMode_t = 4
+const shareware gamemode_t = 0
+const registered gamemode_t = 1
+const commercial gamemode_t = 2
+const retail gamemode_t = 3
+const indetermined gamemode_t = 4
 
 type GameVersion_t int32
 
@@ -1912,8 +1912,8 @@ type ticcmd_t struct {
 }
 
 type net_connect_data_t struct {
-	Fgamemode     GameMode_t
-	Fgamemission  GameMission_t
+	Fgamemode     gamemode_t
+	Fgamemission  gamemission_t
 	Flowres_turn  int32
 	Fdrone        int32
 	Fmax_players  int32
@@ -3785,8 +3785,8 @@ const MAX_IWAD_DIRS = 128
 
 type iwad_t struct {
 	Fname        string
-	Fmission     GameMission_t
-	Fmode        GameMode_t
+	Fmission     gamemission_t
+	Fmode        gamemode_t
 	Fdescription string
 }
 
@@ -3933,7 +3933,7 @@ func CheckDirectoryHasIWAD(dir string, iwadname string) string {
 // Search a directory to try to find an IWAD
 // Returns the location of the IWAD if found, otherwise NULL.
 
-func SearchDirectoryForIWAD(dir string, mask int32, mission *GameMission_t) string {
+func SearchDirectoryForIWAD(dir string, mask int32, mission *gamemission_t) string {
 	var filename string
 	var i uint64
 	i = 0
@@ -3960,9 +3960,9 @@ func SearchDirectoryForIWAD(dir string, mask int32, mission *GameMission_t) stri
 // When given an IWAD with the '-iwad' parameter,
 // attempt to identify it by its name.
 
-func IdentifyIWADByName(name string, mask int32) (r GameMission_t) {
+func IdentifyIWADByName(name string, mask int32) (r gamemission_t) {
 	var i uint64
-	var mission GameMission_t
+	var mission gamemission_t
 	mission = none
 	i = 0
 	for {
@@ -4055,7 +4055,7 @@ func d_TryFindWADByName(filename string) string {
 // should be executed (notably loading PWADs).
 //
 
-func d_FindIWAD(mask int32, mission *GameMission_t) string {
+func d_FindIWAD(mask int32, mission *gamemission_t) string {
 	var i, iwadparm int32
 	var result string
 	var iwadfile string
@@ -4098,7 +4098,7 @@ func d_FindIWAD(mask int32, mission *GameMission_t) string {
 // Get the IWAD name used for savegames.
 //
 
-func d_SaveGameIWADName(gamemission GameMission_t) string {
+func d_SaveGameIWADName(gamemission gamemission_t) string {
 	var i uint64
 	// Determine the IWAD name to use for savegames.
 	// This determines the directory the savegame files get put into.
@@ -4123,7 +4123,7 @@ func d_SaveGameIWADName(gamemission GameMission_t) string {
 	return "unknown.wad"
 }
 
-func d_SuggestGameName(mission GameMission_t, mode GameMode_t) string {
+func d_SuggestGameName(mission gamemission_t, mode gamemode_t) string {
 	for i := 0; i < len(iwads); i++ {
 		if iwads[i].Fmission == mission && (mode == indetermined || iwads[i].Fmode == mode) {
 			return iwads[i].Fdescription
@@ -5207,7 +5207,7 @@ func SetMissionForPackName(pack_name string) {
 
 var packs = [3]struct {
 	Fname    string
-	Fmission GameMission_t
+	Fmission gamemission_t
 }{
 	0: {
 		Fname:    "doom2",
@@ -5230,7 +5230,7 @@ var packs = [3]struct {
 func d_IdentifyVersion() {
 	var i uint32
 	var p int32
-	var v2, v3 GameMission_t
+	var v2, v3 gamemission_t
 	// gamemission is set up by the d_FindIWAD function.  But if
 	// we specify '-iwad', we have to identify using
 	// IdentifyIWADByName.  However, if the iwad does not match
@@ -5308,7 +5308,7 @@ func d_IdentifyVersion() {
 
 func d_SetGameDescription() {
 	var is_freedm, is_freedoom boolean
-	var v7, v5, v3, v1 GameMission_t
+	var v7, v5, v3, v1 gamemission_t
 	is_freedoom = booluint32(w_CheckNumForName("FREEDOOM") >= 0)
 	is_freedm = booluint32(w_CheckNumForName("FREEDM") >= 0)
 	gamedescription = "Unknown"
@@ -6020,7 +6020,7 @@ func d_DoomMain() {
 	d_DoomLoop()
 }
 
-func d_GameMissionString(mission GameMission_t) string {
+func d_GameMissionString(mission gamemission_t) string {
 	switch mission {
 	case none:
 		fallthrough
@@ -6236,7 +6236,7 @@ const F_STAGE_ARTSCREEN = 1
 const F_STAGE_CAST = 2
 
 type textscreen_t struct {
-	Fmission    GameMission_t
+	Fmission    gamemission_t
 	Fepisode    int32
 	Flevel      int32
 	Fbackground string
@@ -6404,7 +6404,7 @@ var textscreens = [22]textscreen_t{
 func f_StartFinale() {
 	var i uint64
 	var screen *textscreen_t
-	var v1, v4, v6 GameMission_t
+	var v1, v4, v6 gamemission_t
 	var v8 bool
 	gameaction = ga_nothing
 	gamestate = gs_FINALE
@@ -7432,7 +7432,7 @@ func init() {
 }
 
 func WeaponSelectable(weapon weapontype_t) (r boolean) {
-	var v1 GameMission_t
+	var v1 gamemission_t
 	var v3 bool
 	// Can't select the super shotgun in Doom 1.
 	if v3 = weapon == wp_supershotgun; v3 {
@@ -9678,7 +9678,7 @@ func hu_Stop() {
 
 func hu_Start() {
 	var i int32
-	var v1 GameMission_t
+	var v1 gamemission_t
 	var s string
 	if headsupactive != 0 {
 		hu_Stop()
@@ -20624,7 +20624,7 @@ var M_QuitResponse = func(key int32) {
 
 func m_SelectEndMessage() string {
 	var endmsg []string
-	var v1 GameMission_t
+	var v1 gamemission_t
 	if gamemission == pack_chex {
 		v1 = doom
 	} else {
@@ -39704,7 +39704,7 @@ func st_refreshBackground() {
 //	//  intercept cheats.
 func st_Responder(ev *event_t) (r boolean) {
 	var epsd, i, map1, musnum int32
-	var v6, v8 GameMission_t
+	var v6, v8 gamemission_t
 	var v10 bool
 	// Filter automap on/off.
 	if ev.Ftype1 == Ev_keyup && uint32(ev.Fdata1)&0xffff0000 == 'a'<<24+'m'<<16 {
@@ -43632,7 +43632,7 @@ func w_GenerateHashTable() {
 //	// the user is not trying to play with the wrong executable, eg.
 //	// chocolate-doom -iwad hexen.wad.
 var unique_lumps = [4]struct {
-	Fmission  GameMission_t
+	Fmission  gamemission_t
 	Flumpname string
 }{
 	0: {
@@ -43652,7 +43652,7 @@ var unique_lumps = [4]struct {
 	},
 }
 
-func w_CheckCorrectIWAD(mission GameMission_t) {
+func w_CheckCorrectIWAD(mission gamemission_t) {
 	var i, lumpnum int32
 	i = 0
 	for {
@@ -44875,12 +44875,12 @@ var gameepisode int32
 
 var gamemap int32
 
-var gamemission GameMission_t
+var gamemission gamemission_t
 
 // C documentation
 //
 //	// Game Mode - identify IWAD as shareware, retail etc.
-var gamemode GameMode_t
+var gamemode gamemode_t
 
 var gameskill skill_t
 
