@@ -322,17 +322,17 @@ type event_t struct {
 	Fdata4 int32
 }
 
-const BT_ATTACK = 1
-const BT_USE = 2
-const BT_SPECIAL = 128
-const BT_SPECIALMASK = 3
-const BT_CHANGE = 4
-const BT_WEAPONMASK = 56
-const BT_WEAPONSHIFT = 3
-const BTS_PAUSE = 1
-const BTS_SAVEGAME = 2
-const BTS_SAVEMASK = 28
-const BTS_SAVESHIFT = 2
+const bt_ATTACK = 1
+const bt_USE = 2
+const bt_SPECIAL = 128
+const bt_SPECIALMASK = 3
+const bt_CHANGE = 4
+const bt_WEAPONMASK = 56
+const bt_WEAPONSHIFT = 3
+const bts_PAUSE = 1
+const bts_SAVEGAME = 2
+const bts_SAVEMASK = 28
+const bts_SAVESHIFT = 2
 
 type lumpType interface {
 	*patch_t
@@ -4400,7 +4400,7 @@ func TicdupSquash(set *ticcmd_set_t) {
 		}
 		cmd := &set.Fcmds[i]
 		cmd.Fchatchar = 0
-		if int32(cmd.Fbuttons)&BT_SPECIAL != 0 {
+		if int32(cmd.Fbuttons)&bt_SPECIAL != 0 {
 			cmd.Fbuttons = 0
 		}
 		goto _1
@@ -7582,10 +7582,10 @@ func g_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	// buttons
 	cmd.Fchatchar = uint8(hu_dequeueChatChar())
 	if gamekeydown[key_fire] || mouseButton(mousebfire) || joyButton(joybfire) {
-		cmd.Fbuttons |= BT_ATTACK
+		cmd.Fbuttons |= bt_ATTACK
 	}
 	if gamekeydown[key_use] || joyButton(joybuse) || mouseButton(mousebuse) {
-		cmd.Fbuttons |= BT_USE
+		cmd.Fbuttons |= bt_USE
 		// clear double clicks if hit use button
 		dclicks = 0
 	}
@@ -7594,14 +7594,14 @@ func g_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	// we generate a ticcmd.  Choose a new weapon.
 	if gamestate == GS_LEVEL && next_weapon != 0 {
 		i := g_NextWeapon(int32(next_weapon))
-		cmd.Fbuttons |= BT_CHANGE
-		cmd.Fbuttons |= uint8(i << BT_WEAPONSHIFT)
+		cmd.Fbuttons |= bt_CHANGE
+		cmd.Fbuttons |= uint8(i << bt_WEAPONSHIFT)
 	} else {
 		// Check weapon keys.
 		for i := 0; i < len(weapon_keys); i++ {
 			if gamekeydown[weapon_keys[i]] {
-				cmd.Fbuttons |= BT_CHANGE
-				cmd.Fbuttons |= uint8(i << BT_WEAPONSHIFT)
+				cmd.Fbuttons |= bt_CHANGE
+				cmd.Fbuttons |= uint8(i << bt_WEAPONSHIFT)
 				break
 			}
 		}
@@ -7622,7 +7622,7 @@ func g_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 				dclicks++
 			}
 			if dclicks == 2 {
-				cmd.Fbuttons |= BT_USE
+				cmd.Fbuttons |= bt_USE
 				dclicks = 0
 			} else {
 				dclicktime = 0
@@ -7642,7 +7642,7 @@ func g_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 				dclicks2++
 			}
 			if dclicks2 == 2 {
-				cmd.Fbuttons |= BT_USE
+				cmd.Fbuttons |= bt_USE
 				dclicks2 = 0
 			} else {
 				dclicktime2 = 0
@@ -7687,11 +7687,11 @@ func g_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	// special buttons
 	if sendpause != 0 {
 		sendpause = 0
-		cmd.Fbuttons = uint8(BT_SPECIAL | BTS_PAUSE)
+		cmd.Fbuttons = uint8(bt_SPECIAL | bts_PAUSE)
 	}
 	if sendsave != 0 {
 		sendsave = 0
-		cmd.Fbuttons = uint8(BT_SPECIAL | BTS_SAVEGAME | savegameslot<<BTS_SAVESHIFT)
+		cmd.Fbuttons = uint8(bt_SPECIAL | bts_SAVEGAME | savegameslot<<bts_SAVESHIFT)
 	}
 	// low-res turning
 	if lowres_turn != 0 {
@@ -8024,20 +8024,20 @@ func g_Ticker() {
 			break
 		}
 		if playeringame[i] != 0 {
-			if int32(players[i].Fcmd.Fbuttons)&BT_SPECIAL != 0 {
-				switch int32(players[i].Fcmd.Fbuttons) & BT_SPECIALMASK {
-				case BTS_PAUSE:
+			if int32(players[i].Fcmd.Fbuttons)&bt_SPECIAL != 0 {
+				switch int32(players[i].Fcmd.Fbuttons) & bt_SPECIALMASK {
+				case bts_PAUSE:
 					paused = boolean(paused ^ 1)
 					if paused != 0 {
 						s_PauseSound()
 					} else {
 						s_ResumeSound()
 					}
-				case BTS_SAVEGAME:
+				case bts_SAVEGAME:
 					if len(savedescription) == 0 {
 						savedescription = "NET GAME"
 					}
-					savegameslot = int32(players[i].Fcmd.Fbuttons) & BTS_SAVEMASK >> BTS_SAVESHIFT
+					savegameslot = int32(players[i].Fcmd.Fbuttons) & bts_SAVEMASK >> bts_SAVESHIFT
 					gameaction = ga_savegame
 					break
 				}
@@ -28668,7 +28668,7 @@ func a_WeaponReady(player *player_t, psp *pspdef_t) {
 	}
 	// check for fire
 	//  the missile launcher and bfg do not auto fire
-	if int32(player.Fcmd.Fbuttons)&BT_ATTACK != 0 {
+	if int32(player.Fcmd.Fbuttons)&bt_ATTACK != 0 {
 		if player.Fattackdown == 0 || player.Freadyweapon != wp_missile && player.Freadyweapon != wp_bfg {
 			player.Fattackdown = 1
 			p_FireWeapon(player)
@@ -28694,7 +28694,7 @@ func a_WeaponReady(player *player_t, psp *pspdef_t) {
 func a_ReFire(player *player_t, psp *pspdef_t) {
 	// check for fire
 	//  (if a weaponchange is pending, let it go through instead)
-	if int32(player.Fcmd.Fbuttons)&BT_ATTACK != 0 && player.Fpendingweapon == wp_nochange && player.Fhealth != 0 {
+	if int32(player.Fcmd.Fbuttons)&bt_ATTACK != 0 && player.Fpendingweapon == wp_nochange && player.Fhealth != 0 {
 		player.Frefire++
 		p_FireWeapon(player)
 	} else {
@@ -33809,7 +33809,7 @@ func p_DeathThink(player *player_t) {
 			player.Fdamagecount--
 		}
 	}
-	if int32(player.Fcmd.Fbuttons)&BT_USE != 0 {
+	if int32(player.Fcmd.Fbuttons)&bt_USE != 0 {
 		player.Fplayerstate = PST_REBORN
 	}
 }
@@ -33853,14 +33853,14 @@ func p_PlayerThink(player *player_t) {
 	}
 	// Check for weapon change.
 	// A special event has no other buttons.
-	if int32(cmd.Fbuttons)&BT_SPECIAL != 0 {
+	if int32(cmd.Fbuttons)&bt_SPECIAL != 0 {
 		cmd.Fbuttons = 0
 	}
-	if int32(cmd.Fbuttons)&BT_CHANGE != 0 {
+	if int32(cmd.Fbuttons)&bt_CHANGE != 0 {
 		// The actual changing of the weapon is done
 		//  when the weapon psprite can do it
 		//  (read: not in the middle of an attack).
-		newweapon = weapontype_t(int32(cmd.Fbuttons) & BT_WEAPONMASK >> BT_WEAPONSHIFT)
+		newweapon = weapontype_t(int32(cmd.Fbuttons) & bt_WEAPONMASK >> bt_WEAPONSHIFT)
 		if newweapon == wp_fist && player.Fweaponowned[wp_chainsaw] != 0 && !(player.Freadyweapon == wp_chainsaw && player.Fpowers[pw_strength] != 0) {
 			newweapon = wp_chainsaw
 		}
@@ -33876,7 +33876,7 @@ func p_PlayerThink(player *player_t) {
 		}
 	}
 	// check for use
-	if int32(cmd.Fbuttons)&BT_USE != 0 {
+	if int32(cmd.Fbuttons)&bt_USE != 0 {
 		if player.Fusedown == 0 {
 			p_UseLines(player)
 			player.Fusedown = 1
@@ -42923,7 +42923,7 @@ func wi_checkForAccelerate() {
 	for i := 0; i < MAXPLAYERS; i++ {
 		if playeringame[i] != 0 {
 			player := &players[i]
-			if int32(player.Fcmd.Fbuttons)&BT_ATTACK != 0 {
+			if int32(player.Fcmd.Fbuttons)&bt_ATTACK != 0 {
 				if player.Fattackdown == 0 {
 					acceleratestage = 1
 				}
@@ -42931,7 +42931,7 @@ func wi_checkForAccelerate() {
 			} else {
 				player.Fattackdown = 0
 			}
-			if int32(player.Fcmd.Fbuttons)&BT_USE != 0 {
+			if int32(player.Fcmd.Fbuttons)&bt_USE != 0 {
 				if player.Fusedown == 0 {
 					acceleratestage = 1
 				}
