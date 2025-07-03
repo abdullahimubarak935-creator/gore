@@ -7115,7 +7115,7 @@ func wipe_exitColorXForm(width int32, height int32, ticks int32) (r int32) {
 	return 0
 }
 
-var y_screen uintptr
+var y_screen []int32
 
 func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 	var i, r int32
@@ -7127,20 +7127,20 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 	wipe_shittyColMajorXform(wipe_scr_end, width/int32(2), height)
 	// setup initial column positions
 	// (y<0 => not ready to scroll yet)
-	y_screen = z_Malloc(int32(uint64(width) * 4))
-	*(*int32)(unsafe.Pointer(y_screen)) = -(m_Random() % 16)
+	y_screen = make([]int32, width)
+	y_screen[0] = -(m_Random() % 16)
 	i = 1
 	for {
 		if i >= width {
 			break
 		}
 		r = m_Random()%int32(3) - 1
-		*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) = *(*int32)(unsafe.Pointer(y_screen + uintptr(i-1)*4)) + r
-		if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) > 0 {
-			*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) = 0
+		y_screen[i] = y_screen[i-1] + r
+		if y_screen[i] > 0 {
+			y_screen[i] = 0
 		} else {
-			if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) == -int32(16) {
-				*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) = -int32(15)
+			if y_screen[i] == -16 {
+				y_screen[i] = -15
 			}
 		}
 		goto _1
@@ -7168,22 +7168,22 @@ func wipe_doMelt(width int32, height int32, ticks int32) (r int32) {
 			if i >= width {
 				break
 			}
-			if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) < 0 {
-				*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4))++
+			if y_screen[i] < 0 {
+				y_screen[i]++
 				done = 0
 			} else {
-				if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) < height {
-					if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) < 16 {
-						v3 = *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) + 1
+				if y_screen[i] < height {
+					if y_screen[i] < 16 {
+						v3 = y_screen[i] + 1
 					} else {
 						v3 = 8
 					}
 					dy = v3
-					if *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4))+dy >= height {
-						dy = height - *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4))
+					if y_screen[i]+dy >= height {
+						dy = height - y_screen[i]
 					}
-					s = wipe_scr_end + uintptr(i*height+*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)))*2
-					d = wipe_scr + uintptr(*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4))*width+i)*2
+					s = wipe_scr_end + uintptr(i*height+y_screen[i])*2
+					d = wipe_scr + uintptr(y_screen[i]*width+i)*2
 					idx = 0
 					j = dy
 					for {
@@ -7199,11 +7199,11 @@ func wipe_doMelt(width int32, height int32, ticks int32) (r int32) {
 						;
 						j--
 					}
-					*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4)) += dy
+					y_screen[i] += dy
 					s = wipe_scr_start + uintptr(i*height)*2
-					d = wipe_scr + uintptr(*(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4))*width+i)*2
+					d = wipe_scr + uintptr(y_screen[i]*width+i)*2
 					idx = 0
-					j = height - *(*int32)(unsafe.Pointer(y_screen + uintptr(i)*4))
+					j = height - y_screen[i]
 					for {
 						if j == 0 {
 							break
@@ -7230,7 +7230,7 @@ func wipe_doMelt(width int32, height int32, ticks int32) (r int32) {
 }
 
 func wipe_exitMelt(width int32, height int32, ticks int32) (r int32) {
-	z_Free(y_screen)
+	y_screen = nil
 	z_Free(wipe_scr_start)
 	z_Free(wipe_scr_end)
 	return 0
