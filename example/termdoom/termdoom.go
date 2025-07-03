@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"image"
-	"image/color"
 	"io"
 	"log"
 	"os"
@@ -37,16 +36,15 @@ func ascii(img image.Image, writer io.Writer) {
 				lastcolor = colStr
 			}
 
-			pixel := color.GrayModel.Convert(pixelValue).(color.Gray).Y
-			asciiIndex := int(pixel) * (len(asciiChar) - 1) / 255
-			writer.Write([]byte{asciiChar[asciiIndex]})
+			brightness := int(r+g+b) * (len(asciiChar) - 1) / (3 * 65535) // Normalize to 0-1 range
+			writer.Write([]byte{asciiChar[brightness]})
 		}
 		writer.Write([]byte("\r\n"))
 	}
 }
 
 func (t *termDoom) DrawFrame(frame *image.RGBA) {
-	height := t.width * 200 / 320
+	height := (t.width * 200 / 320) / 2 // fixed width fonts are typically twice as high as wide
 	smaller := resize.Resize(t.width, height, frame, resize.Lanczos3)
 	fmt.Print("\033[H\033[2J")
 	ascii(smaller, os.Stdout)
@@ -115,17 +113,21 @@ func (t *termDoom) SetTitle(title string) {
 }
 
 func main() {
-	// Initialize termDoom and start the game loop
-	termGame := &termDoom{
-		width:           80,
-		outstandingKeys: make(map[uint8]time.Time),
-	}
-
 	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
 		panic(err)
 	}
 	defer term.Restore(int(os.Stdin.Fd()), oldState)
+
+	width, _, err := term.GetSize(int(os.Stdout.Fd()))
+	if err != nil {
+		width = 120
+	}
+	// Initialize termDoom and start the game loop
+	termGame := &termDoom{
+		width:           uint(width),
+		outstandingKeys: make(map[uint8]time.Time),
+	}
 
 	gore.Run(termGame, os.Args[1:])
 }
