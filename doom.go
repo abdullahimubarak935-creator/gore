@@ -2533,7 +2533,7 @@ var f_w int32
 var f_h int32
 
 var lightlev int32 // used for funky strobing effect
-var fb uintptr     // pseudo-frame buffer
+var fb []byte      // pseudo-frame buffer
 
 var m_paninc mpoint_t    // how far the window pans each tic (map coords)
 var mtof_zoommul fixed_t // how far the window zooms in each tic (map coords)
@@ -3155,7 +3155,9 @@ func am_Ticker() {
 //	// Clear automap frame buffer.
 //	//
 func am_clearFB(color uint8) {
-	xmemset(fb, color, uint64(f_w*f_h))
+	for i := int32(0); i < f_w*f_h; i++ {
+		fb[i] = color
+	}
 }
 
 // C documentation
@@ -3372,7 +3374,7 @@ func am_drawFline(fl *fline_t, color int32) {
 	if ax > ay {
 		d = ay - ax/int32(2)
 		for 1 != 0 {
-			*(*uint8)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = uint8(color)
+			fb[y*f_w+x] = uint8(color)
 			if x == fl.Fb.Fx {
 				return
 			}
@@ -3386,7 +3388,7 @@ func am_drawFline(fl *fline_t, color int32) {
 	} else {
 		d = ax - ay/int32(2)
 		for 1 != 0 {
-			*(*uint8)(unsafe.Pointer(fb + uintptr(y*f_w+x))) = uint8(color)
+			fb[y*f_w+x] = uint8(color)
 			if y == fl.Fb.Fy {
 				return
 			}
@@ -3632,7 +3634,7 @@ func am_drawMarks() {
 }
 
 func am_drawCrosshair(color int32) {
-	*(*uint8)(unsafe.Pointer(fb + uintptr(f_w*(f_h+int32(1))/int32(2)))) = uint8(color) // single point for now
+	fb[f_w*(f_h+1)/2+f_w/2] = uint8(color) // single point for now
 }
 
 func am_Drawer() {
@@ -6532,7 +6534,7 @@ func f_TextWrite() {
 	var pos int
 	// erase the entire screen to a tiled background
 	src = w_CacheLumpName(finaleflat)
-	dest = I_VideoBuffer
+	dest = (uintptr)(unsafe.Pointer(&I_VideoBuffer[0]))
 	y = 0
 	for {
 		if y >= SCREENHEIGHT {
@@ -6921,7 +6923,7 @@ func f_DrawPatchCol(x int32, patch *patch_t, col int32) {
 	var dest, desttop uintptr
 	var count int32
 	column := patch.GetColumn(col)
-	desttop = I_VideoBuffer + uintptr(x)
+	desttop = (uintptr)(unsafe.Pointer(&I_VideoBuffer[x]))
 	// step through the posts in a column
 	for int32(column.Ftopdelta) != 0xff {
 		source := column.Data()
@@ -7252,7 +7254,7 @@ func wipe_ScreenWipe(wipeno int32, x int32, y int32, width int32, height int32, 
 	// initial stuff
 	if wipe_running == 0 {
 		wipe_running = 1
-		wipe_scr = I_VideoBuffer
+		wipe_scr = (uintptr)(unsafe.Pointer(&I_VideoBuffer[0]))
 		wipes[wipeno*3](width, height, ticks)
 	}
 	// do a piece of wipe-in
@@ -33631,9 +33633,7 @@ func p_RunThinkers() {
 			currentthinker.Fprev.Fnext = currentthinker.Fnext
 			//z_Free(uintptr(unsafe.Pointer(currentthinker)))
 		} else {
-			if currentthinker.Ffunction != nil {
-				currentthinker.Ffunction.ThinkerFunc()
-			}
+			currentthinker.Ffunction.ThinkerFunc()
 		}
 		currentthinker = currentthinker.Fnext
 	}
@@ -34476,12 +34476,10 @@ type texture_t struct {
 //	//  from a patch into a cached post.
 //	//
 func r_DrawColumnInCache(patch *column_t, cache []byte, originy int32, cacheheight int32) {
-	var count, position int32
-	var source uintptr
 	for int32(patch.Ftopdelta) != 0xff {
-		source = (uintptr)(unsafe.Pointer(patch)) + uintptr(3)
-		count = int32(patch.Flength)
-		position = originy + int32(patch.Ftopdelta)
+		source := patch.Data()
+		count := int32(len(source))
+		position := originy + int32(patch.Ftopdelta)
 		if position < 0 {
 			count += position
 			position = 0
@@ -34490,7 +34488,7 @@ func r_DrawColumnInCache(patch *column_t, cache []byte, originy int32, cacheheig
 			count = cacheheight - position
 		}
 		if count > 0 {
-			copy(cache[position:], unsafe.Slice((*byte)(unsafe.Pointer(source)), count))
+			copy(cache[position:], source[:count])
 		}
 		patch = patch.Next()
 	}
@@ -34635,7 +34633,7 @@ func r_GenerateLookup(texnum int32) {
 //	//
 //	// R_GetColumn
 //	//
-func r_GetColumn(tex int32, col int32) (r uintptr) {
+func r_GetColumn(tex int32, col int32) uintptr {
 	var lump, ofs int32
 	col &= texturewidthmask[tex]
 	lump = int32(texturecolumnlump[tex][col])
@@ -35666,7 +35664,7 @@ func r_InitBuffer(width int32, height int32) {
 		if i >= height {
 			break
 		}
-		ylookup[i] = I_VideoBuffer + uintptr((i+viewwindowy)*SCREENWIDTH)
+		ylookup[i] = (uintptr)(unsafe.Pointer(&I_VideoBuffer[(i+viewwindowy)*SCREENWIDTH]))
 		goto _2
 	_2:
 		;
@@ -35807,7 +35805,7 @@ func r_VideoErase(ofs uint32, count int32) {
 	//  a 32bit CPU, as GNU GCC/Linux libc did
 	//  at one point.
 	if background_buffer != 0 {
-		xmemcpy(I_VideoBuffer+uintptr(ofs), background_buffer+uintptr(ofs), uint64(count))
+		xmemcpy((uintptr)(unsafe.Pointer(&I_VideoBuffer[ofs])), background_buffer+uintptr(ofs), uint64(count))
 	}
 }
 
@@ -41037,7 +41035,7 @@ var dest_screen uintptr
 func v_MarkRect(x int32, y int32, width int32, height int32) {
 	// If we are temporarily using an alternate screen, do not
 	// affect the update box.
-	if dest_screen == I_VideoBuffer {
+	if dest_screen == (uintptr)(unsafe.Pointer(&I_VideoBuffer[0])) {
 		m_AddToBox(&dirtybox, x, y)
 		m_AddToBox(&dirtybox, x+width-1, y+height-1)
 	}
@@ -41186,70 +41184,28 @@ func v_DrawBlock(x int32, y int32, width int32, height int32, src uintptr) {
 }
 
 func v_DrawFilledBox(x int32, y int32, w int32, h int32, c int32) {
-	var buf, buf1, v3 uintptr
-	var x1, y1 int32
-	buf = I_VideoBuffer + uintptr(SCREENWIDTH*y) + uintptr(x)
-	y1 = 0
-	for {
-		if y1 >= h {
-			break
+	var x1 int32
+	pos := SCREENWIDTH*y + x
+	for y1 := int32(0); y1 < h; y1++ {
+		for x := int32(0); x < w; x++ {
+			I_VideoBuffer[pos+x1] = uint8(c)
 		}
-		buf1 = buf
-		x1 = 0
-		for {
-			if x1 >= w {
-				break
-			}
-			v3 = buf1
-			buf1++
-			*(*uint8)(unsafe.Pointer(v3)) = uint8(c)
-			goto _2
-		_2:
-			;
-			x1++
-		}
-		buf += SCREENWIDTH
-		goto _1
-	_1:
-		;
-		y1++
+		pos += SCREENWIDTH
 	}
 }
 
 func v_DrawHorizLine(x int32, y int32, w int32, c int32) {
-	var buf, v2 uintptr
-	var x1 int32
-	buf = I_VideoBuffer + uintptr(SCREENWIDTH*y) + uintptr(x)
-	x1 = 0
-	for {
-		if x1 >= w {
-			break
-		}
-		v2 = buf
-		buf++
-		*(*uint8)(unsafe.Pointer(v2)) = uint8(c)
-		goto _1
-	_1:
-		;
-		x1++
+	pos := SCREENWIDTH*y + x
+	for x1 := int32(0); x1 < w; x1++ {
+		I_VideoBuffer[pos+x1] = uint8(c)
 	}
 }
 
 func v_DrawVertLine(x int32, y int32, h int32, c int32) {
-	var buf uintptr
-	var y1 int32
-	buf = I_VideoBuffer + uintptr(SCREENWIDTH*y) + uintptr(x)
-	y1 = 0
-	for {
-		if y1 >= h {
-			break
-		}
-		*(*uint8)(unsafe.Pointer(buf)) = uint8(c)
-		buf += SCREENWIDTH
-		goto _1
-	_1:
-		;
-		y1++
+	pos := SCREENWIDTH*y + x
+	for y1 := int32(0); y1 < h; y1++ {
+		I_VideoBuffer[pos] = uint8(c)
+		pos += SCREENWIDTH
 	}
 }
 
@@ -41280,7 +41236,7 @@ func v_UseBuffer(buffer uintptr) {
 // Restore screen buffer to the i_video screen buffer.
 
 func v_RestoreBuffer() {
-	dest_screen = I_VideoBuffer
+	dest_screen = (uintptr)(unsafe.Pointer(&I_VideoBuffer[0]))
 }
 
 func v_DrawMouseSpeedBox(speed int32) {
@@ -44006,7 +43962,7 @@ func init() {
 
 func i_InitGraphics() {
 	/* Allocate screen to draw to */
-	I_VideoBuffer = z_Malloc(SCREENWIDTH * SCREENHEIGHT) // For DOOM to draw on
+	I_VideoBuffer = make([]byte, SCREENWIDTH*SCREENHEIGHT) // For DOOM to draw on
 	i_InitInput()
 }
 
@@ -44025,10 +43981,10 @@ func i_UpdateNoBlit() {
 //
 
 func i_FinishUpdate() {
-	var line_in = I_VideoBuffer
+	var line_in_pos = 0
 	for y := SCREENHEIGHT - 1; y >= 0; y-- {
 		for i := 0; i < SCREENWIDTH; i++ {
-			inRaw := *(*uint8)(unsafe.Pointer(line_in + uintptr(i)))
+			inRaw := I_VideoBuffer[line_in_pos+i]
 			col := colors[inRaw]
 			pos := SCREENWIDTH*4*int(SCREENHEIGHT-y-1) + i*4
 			DG_ScreenBuffer.Pix[pos] = col.R
@@ -44036,7 +43992,7 @@ func i_FinishUpdate() {
 			DG_ScreenBuffer.Pix[pos+2] = col.B
 			DG_ScreenBuffer.Pix[pos+3] = 0xff
 		}
-		line_in += SCREENWIDTH
+		line_in_pos += SCREENWIDTH
 	}
 	dg_frontend.DrawFrame(DG_ScreenBuffer)
 }
@@ -44047,7 +44003,7 @@ func i_FinishUpdate() {
 //	// I_ReadScreen
 //	//
 func i_ReadScreen(scr uintptr) {
-	xmemcpy(scr, I_VideoBuffer, SCREENWIDTH*SCREENHEIGHT)
+	xmemcpy(scr, (uintptr)(unsafe.Pointer(&I_VideoBuffer[0])), SCREENWIDTH*SCREENHEIGHT)
 }
 
 //
@@ -44152,7 +44108,7 @@ var EpisodeMenu [4]menuitem_t
 
 // The screen buffer; this is modified to draw things to the screen
 
-var I_VideoBuffer uintptr
+var I_VideoBuffer []byte
 
 var LoadDef menu_t
 
