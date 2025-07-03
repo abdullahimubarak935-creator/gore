@@ -242,10 +242,10 @@ const sk_nightmare skill_t = 4
 
 type gamestate_t int32
 
-const GS_LEVEL gamestate_t = 0
-const GS_INTERMISSION gamestate_t = 1
-const GS_FINALE gamestate_t = 2
-const GS_DEMOSCREEN gamestate_t = 3
+const gs_LEVEL gamestate_t = 0
+const gs_INTERMISSION gamestate_t = 1
+const gs_FINALE gamestate_t = 2
+const gs_DEMOSCREEN gamestate_t = 3
 
 type gameaction_t int32
 
@@ -4759,7 +4759,7 @@ func d_ProcessEvents() {
 }
 
 func init() {
-	wipegamestate = GS_DEMOSCREEN
+	wipegamestate = gs_DEMOSCREEN
 }
 
 func d_Display() {
@@ -4783,12 +4783,12 @@ func d_Display() {
 	} else {
 		wipe = 0
 	}
-	if gamestate == GS_LEVEL && gametic != 0 {
+	if gamestate == gs_LEVEL && gametic != 0 {
 		hu_Erase()
 	}
 	// do buffered drawing
 	switch gamestate {
-	case GS_LEVEL:
+	case gs_LEVEL:
 		if gametic == 0 {
 			break
 		}
@@ -4803,34 +4803,34 @@ func d_Display() {
 		} // just put away the help screen
 		st_Drawer(booluint32(viewheight == 200), redrawsbar)
 		fullscreen = booluint32(viewheight == 200)
-	case GS_INTERMISSION:
+	case gs_INTERMISSION:
 		wi_Drawer()
-	case GS_FINALE:
+	case gs_FINALE:
 		f_Drawer()
-	case GS_DEMOSCREEN:
+	case gs_DEMOSCREEN:
 		d_PageDrawer()
 		break
 	}
 	// draw buffered stuff to screen
 	i_UpdateNoBlit()
 	// draw the view directly
-	if gamestate == GS_LEVEL && automapactive == 0 && gametic != 0 {
+	if gamestate == gs_LEVEL && automapactive == 0 && gametic != 0 {
 		r_RenderPlayerView(&players[displayplayer])
 	}
-	if gamestate == GS_LEVEL && gametic != 0 {
+	if gamestate == gs_LEVEL && gametic != 0 {
 		hu_Drawer()
 	}
 	// clean up border stuff
-	if gamestate != oldgamestate1 && gamestate != GS_LEVEL {
+	if gamestate != oldgamestate1 && gamestate != gs_LEVEL {
 		i_SetPalette(w_CacheLumpName("PLAYPAL"))
 	}
 	// see if the border needs to be initially drawn
-	if gamestate == GS_LEVEL && oldgamestate1 != GS_LEVEL {
+	if gamestate == gs_LEVEL && oldgamestate1 != gs_LEVEL {
 		viewactivestate = 0 // view was not active
 		r_FillBackScreen()  // draw the pattern into the back screen
 	}
 	// see if the border needs to be updated to the screen
-	if gamestate == GS_LEVEL && automapactive == 0 && scaledviewwidth != 320 {
+	if gamestate == gs_LEVEL && automapactive == 0 && scaledviewwidth != 320 {
 		if menuactive != 0 || menuactivestate != 0 || viewactivestate == 0 {
 			borderdrawcount = 3
 		}
@@ -4955,7 +4955,7 @@ func d_GrabMouseCallback() (r boolean) {
 		return 0
 	}
 	// only grab mouse when playing levels (but not demos)
-	return booluint32(gamestate == GS_LEVEL && demoplayback == 0 && advancedemo == 0)
+	return booluint32(gamestate == gs_LEVEL && demoplayback == 0 && advancedemo == 0)
 }
 
 func doomgeneric_Tick() {
@@ -5064,7 +5064,7 @@ func d_DoAdvanceDemo() {
 		} else {
 			pagetic = 170
 		}
-		gamestate = GS_DEMOSCREEN
+		gamestate = gs_DEMOSCREEN
 		pagename = "TITLEPIC"
 		if gamemode == commercial {
 			s_StartMusic(int32(mus_dm2ttl))
@@ -5075,12 +5075,12 @@ func d_DoAdvanceDemo() {
 		g_DeferedPlayDemo("demo1")
 	case 2:
 		pagetic = 200
-		gamestate = GS_DEMOSCREEN
+		gamestate = gs_DEMOSCREEN
 		pagename = "CREDIT"
 	case 3:
 		g_DeferedPlayDemo("demo2")
 	case 4:
-		gamestate = GS_DEMOSCREEN
+		gamestate = gs_DEMOSCREEN
 		if gamemode == commercial {
 			pagetic = TICRATE * 11
 			pagename = "TITLEPIC"
@@ -6407,7 +6407,7 @@ func f_StartFinale() {
 	var v1, v4, v6 GameMission_t
 	var v8 bool
 	gameaction = ga_nothing
-	gamestate = GS_FINALE
+	gamestate = gs_FINALE
 	viewactive = 0
 	automapactive = 0
 	if gamemission == pack_chex {
@@ -7592,7 +7592,7 @@ func g_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	// If the previous or next weapon button is pressed, the
 	// next_weapon variable is set to change weapons when
 	// we generate a ticcmd.  Choose a new weapon.
-	if gamestate == GS_LEVEL && next_weapon != 0 {
+	if gamestate == gs_LEVEL && next_weapon != 0 {
 		i := g_NextWeapon(int32(next_weapon))
 		cmd.Fbuttons |= bt_CHANGE
 		cmd.Fbuttons |= uint8(i << bt_WEAPONSHIFT)
@@ -7737,10 +7737,10 @@ func g_DoLoadLevel() {
 		skytexturename = skytexturename
 		skytexture = r_TextureNumForName(skytexturename)
 	}
-	if wipegamestate == GS_LEVEL {
+	if wipegamestate == gs_LEVEL {
 		wipegamestate = -1
 	} // force a wipe
-	gamestate = GS_LEVEL
+	gamestate = gs_LEVEL
 	i = 0
 	for {
 		if i >= MAXPLAYERS {
@@ -7843,7 +7843,7 @@ func SetMouseButtons(buttons_mask uint32) {
 //	//
 func g_Responder(ev *event_t) (r boolean) {
 	// allow spy mode changes even during the demo
-	if gamestate == GS_LEVEL && ev.Ftype1 == Ev_keydown && ev.Fdata1 == key_spy && (singledemo != 0 || deathmatch == 0) {
+	if gamestate == gs_LEVEL && ev.Ftype1 == Ev_keydown && ev.Fdata1 == key_spy && (singledemo != 0 || deathmatch == 0) {
 		// spy mode
 		for cond := true; cond; cond = playeringame[displayplayer] == 0 && displayplayer != consoleplayer {
 			displayplayer++
@@ -7854,14 +7854,14 @@ func g_Responder(ev *event_t) (r boolean) {
 		return 1
 	}
 	// any other key pops up menu if in demos
-	if gameaction == ga_nothing && singledemo == 0 && (demoplayback != 0 || gamestate == GS_DEMOSCREEN) {
+	if gameaction == ga_nothing && singledemo == 0 && (demoplayback != 0 || gamestate == gs_DEMOSCREEN) {
 		if ev.Ftype1 == Ev_keydown || ev.Ftype1 == Ev_mouse && ev.Fdata1 != 0 || ev.Ftype1 == Ev_joystick && ev.Fdata1 != 0 {
 			m_StartControlPanel()
 			return 1
 		}
 		return 0
 	}
-	if gamestate == GS_LEVEL {
+	if gamestate == gs_LEVEL {
 		if hu_Responder(ev) != 0 {
 			return 1
 		} // chat ate the event
@@ -7872,7 +7872,7 @@ func g_Responder(ev *event_t) (r boolean) {
 			return 1
 		} // automap ate it
 	}
-	if gamestate == GS_FINALE {
+	if gamestate == gs_FINALE {
 		if f_Responder(ev) != 0 {
 			return 1
 		} // finale ate the event
@@ -8049,22 +8049,22 @@ func g_Ticker() {
 		i++
 	}
 	// Have we just finished displaying an intermission screen?
-	if oldgamestate == GS_INTERMISSION && gamestate != GS_INTERMISSION {
+	if oldgamestate == gs_INTERMISSION && gamestate != gs_INTERMISSION {
 		wi_End()
 	}
 	oldgamestate = gamestate
 	// do main actions
 	switch gamestate {
-	case GS_LEVEL:
+	case gs_LEVEL:
 		p_Ticker()
 		st_Ticker()
 		am_Ticker()
 		hu_Ticker()
-	case GS_INTERMISSION:
+	case gs_INTERMISSION:
 		wi_Ticker()
-	case GS_FINALE:
+	case gs_FINALE:
 		f_Ticker()
-	case GS_DEMOSCREEN:
+	case gs_DEMOSCREEN:
 		d_PageTicker()
 		break
 	}
@@ -8542,7 +8542,7 @@ func g_DoCompleted() {
 		;
 		i++
 	}
-	gamestate = GS_INTERMISSION
+	gamestate = gs_INTERMISSION
 	viewactive = 0
 	automapactive = 0
 	StatCopy(&wminfo)
@@ -8582,7 +8582,7 @@ func g_WorldDone() {
 }
 
 func g_DoWorldDone() {
-	gamestate = GS_LEVEL
+	gamestate = gs_LEVEL
 	gamemap = wminfo.Fnext + 1
 	g_DoLoadLevel()
 	gameaction = ga_nothing
@@ -20251,7 +20251,7 @@ func m_SaveGame(choice int32) {
 		m_StartMessage("you can't save if you aren't playing!\n\npress a key.", nil, 0)
 		return
 	}
-	if gamestate != GS_LEVEL {
+	if gamestate != gs_LEVEL {
 		return
 	}
 	m_SetupNextMenu(&SaveDef)
@@ -20270,7 +20270,7 @@ func m_QuickSave() {
 		s_StartSound(nil, int32(sfx_oof))
 		return
 	}
-	if gamestate != GS_LEVEL {
+	if gamestate != gs_LEVEL {
 		return
 	}
 	if quickSaveSlot < 0 {
