@@ -446,143 +446,143 @@ type mapthing_t struct {
 
 type spritenum_t = int32
 
-const SPR_SHTG = 1
-const SPR_PUNG = 2
-const SPR_PISG = 3
-const SPR_PISF = 4
-const SPR_SHTF = 5
-const SPR_SHT2 = 6
-const SPR_CHGG = 7
-const SPR_CHGF = 8
-const SPR_MISG = 9
-const SPR_MISF = 10
-const SPR_SAWG = 11
-const SPR_PLSG = 12
-const SPR_PLSF = 13
-const SPR_BFGG = 14
-const SPR_BFGF = 15
-const SPR_BLUD = 16
-const SPR_PUFF = 17
-const SPR_BAL1 = 18
-const SPR_BAL2 = 19
-const SPR_PLSS = 20
-const SPR_PLSE = 21
-const SPR_MISL = 22
-const SPR_BFS1 = 23
-const SPR_BFE1 = 24
-const SPR_BFE2 = 25
-const SPR_TFOG = 26
-const SPR_IFOG = 27
-const SPR_PLAY = 28
-const SPR_POSS = 29
-const SPR_SPOS = 30
-const SPR_VILE = 31
-const SPR_FIRE = 32
-const SPR_FATB = 33
-const SPR_FBXP = 34
-const SPR_SKEL = 35
-const SPR_MANF = 36
-const SPR_FATT = 37
-const SPR_CPOS = 38
-const SPR_SARG = 39
-const SPR_HEAD = 40
-const SPR_BAL7 = 41
-const SPR_BOSS = 42
-const SPR_BOS2 = 43
-const SPR_SKUL = 44
-const SPR_SPID = 45
-const SPR_BSPI = 46
-const SPR_APLS = 47
-const SPR_APBX = 48
-const SPR_CYBR = 49
-const SPR_PAIN = 50
-const SPR_SSWV = 51
-const SPR_KEEN = 52
-const SPR_BBRN = 53
-const SPR_BOSF = 54
-const SPR_ARM1 = 55
-const SPR_ARM2 = 56
-const SPR_BAR1 = 57
-const SPR_BEXP = 58
-const SPR_FCAN = 59
-const SPR_BON1 = 60
-const SPR_BON2 = 61
-const SPR_BKEY = 62
-const SPR_RKEY = 63
-const SPR_YKEY = 64
-const SPR_BSKU = 65
-const SPR_RSKU = 66
-const SPR_YSKU = 67
-const SPR_STIM = 68
-const SPR_MEDI = 69
-const SPR_SOUL = 70
-const SPR_PINV = 71
-const SPR_PSTR = 72
-const SPR_PINS = 73
-const SPR_MEGA = 74
-const SPR_SUIT = 75
-const SPR_PMAP = 76
-const SPR_PVIS = 77
-const SPR_CLIP = 78
-const SPR_AMMO = 79
-const SPR_ROCK = 80
-const SPR_BROK = 81
-const SPR_CELL = 82
-const SPR_CELP = 83
-const SPR_SHEL = 84
-const SPR_SBOX = 85
-const SPR_BPAK = 86
-const SPR_BFUG = 87
-const SPR_MGUN = 88
-const SPR_CSAW = 89
-const SPR_LAUN = 90
-const SPR_PLAS = 91
-const SPR_SHOT = 92
-const SPR_SGN2 = 93
-const SPR_COLU = 94
-const SPR_SMT2 = 95
-const SPR_GOR1 = 96
-const SPR_POL2 = 97
-const SPR_POL5 = 98
-const SPR_POL4 = 99
-const SPR_POL3 = 100
-const SPR_POL1 = 101
-const SPR_POL6 = 102
-const SPR_GOR2 = 103
-const SPR_GOR3 = 104
-const SPR_GOR4 = 105
-const SPR_GOR5 = 106
-const SPR_SMIT = 107
-const SPR_COL1 = 108
-const SPR_COL2 = 109
-const SPR_COL3 = 110
-const SPR_COL4 = 111
-const SPR_CAND = 112
-const SPR_CBRA = 113
-const SPR_COL6 = 114
-const SPR_TRE1 = 115
-const SPR_TRE2 = 116
-const SPR_ELEC = 117
-const SPR_CEYE = 118
-const SPR_FSKU = 119
-const SPR_COL5 = 120
-const SPR_TBLU = 121
-const SPR_TGRN = 122
-const SPR_TRED = 123
-const SPR_SMBT = 124
-const SPR_SMGT = 125
-const SPR_SMRT = 126
-const SPR_HDB1 = 127
-const SPR_HDB2 = 128
-const SPR_HDB3 = 129
-const SPR_HDB4 = 130
-const SPR_HDB5 = 131
-const SPR_HDB6 = 132
-const SPR_POB1 = 133
-const SPR_POB2 = 134
-const SPR_BRS1 = 135
-const SPR_TLMP = 136
-const SPR_TLP2 = 137
+const spr_SHTG = 1
+const spr_PUNG = 2
+const spr_PISG = 3
+const spr_PISF = 4
+const spr_SHTF = 5
+const spr_SHT2 = 6
+const spr_CHGG = 7
+const spr_CHGF = 8
+const spr_MISG = 9
+const spr_MISF = 10
+const spr_SAWG = 11
+const spr_PLSG = 12
+const spr_PLSF = 13
+const spr_BFGG = 14
+const spr_BFGF = 15
+const spr_BLUD = 16
+const spr_PUFF = 17
+const spr_BAL1 = 18
+const spr_BAL2 = 19
+const spr_PLSS = 20
+const spr_PLSE = 21
+const spr_MISL = 22
+const spr_BFS1 = 23
+const spr_BFE1 = 24
+const spr_BFE2 = 25
+const spr_TFOG = 26
+const spr_IFOG = 27
+const spr_PLAY = 28
+const spr_POSS = 29
+const spr_SPOS = 30
+const spr_VILE = 31
+const spr_FIRE = 32
+const spr_FATB = 33
+const spr_FBXP = 34
+const spr_SKEL = 35
+const spr_MANF = 36
+const spr_FATT = 37
+const spr_CPOS = 38
+const spr_SARG = 39
+const spr_HEAD = 40
+const spr_BAL7 = 41
+const spr_BOSS = 42
+const spr_BOS2 = 43
+const spr_SKUL = 44
+const spr_SPID = 45
+const spr_BSPI = 46
+const spr_APLS = 47
+const spr_APBX = 48
+const spr_CYBR = 49
+const spr_PAIN = 50
+const spr_SSWV = 51
+const spr_KEEN = 52
+const spr_BBRN = 53
+const spr_BOSF = 54
+const spr_ARM1 = 55
+const spr_ARM2 = 56
+const spr_BAR1 = 57
+const spr_BEXP = 58
+const spr_FCAN = 59
+const spr_BON1 = 60
+const spr_BON2 = 61
+const spr_BKEY = 62
+const spr_RKEY = 63
+const spr_YKEY = 64
+const spr_BSKU = 65
+const spr_RSKU = 66
+const spr_YSKU = 67
+const spr_STIM = 68
+const spr_MEDI = 69
+const spr_SOUL = 70
+const spr_PINV = 71
+const spr_PSTR = 72
+const spr_PINS = 73
+const spr_MEGA = 74
+const spr_SUIT = 75
+const spr_PMAP = 76
+const spr_PVIS = 77
+const spr_CLIP = 78
+const spr_AMMO = 79
+const spr_ROCK = 80
+const spr_BROK = 81
+const spr_CELL = 82
+const spr_CELP = 83
+const spr_SHEL = 84
+const spr_SBOX = 85
+const spr_BPAK = 86
+const spr_BFUG = 87
+const spr_MGUN = 88
+const spr_CSAW = 89
+const spr_LAUN = 90
+const spr_PLAS = 91
+const spr_SHOT = 92
+const spr_SGN2 = 93
+const spr_COLU = 94
+const spr_SMT2 = 95
+const spr_GOR1 = 96
+const spr_POL2 = 97
+const spr_POL5 = 98
+const spr_POL4 = 99
+const spr_POL3 = 100
+const spr_POL1 = 101
+const spr_POL6 = 102
+const spr_GOR2 = 103
+const spr_GOR3 = 104
+const spr_GOR4 = 105
+const spr_GOR5 = 106
+const spr_SMIT = 107
+const spr_COL1 = 108
+const spr_COL2 = 109
+const spr_COL3 = 110
+const spr_COL4 = 111
+const spr_CAND = 112
+const spr_CBRA = 113
+const spr_COL6 = 114
+const spr_TRE1 = 115
+const spr_TRE2 = 116
+const spr_ELEC = 117
+const spr_CEYE = 118
+const spr_FSKU = 119
+const spr_COL5 = 120
+const spr_TBLU = 121
+const spr_TGRN = 122
+const spr_TRED = 123
+const spr_SMBT = 124
+const spr_SMGT = 125
+const spr_SMRT = 126
+const spr_HDB1 = 127
+const spr_HDB2 = 128
+const spr_HDB3 = 129
+const spr_HDB4 = 130
+const spr_HDB5 = 131
+const spr_HDB6 = 132
+const spr_POB1 = 133
+const spr_POB2 = 134
+const spr_BRS1 = 135
+const spr_TLMP = 136
+const spr_TLP2 = 137
 
 type statenum_t = int32
 
@@ -10150,2797 +10150,2797 @@ func init() {
 			Ftics: -1,
 		},
 		1: {
-			Fsprite: SPR_SHTG,
+			Fsprite: spr_SHTG,
 			Fframe:  4,
 			Faction: playerFuncToAction(a_Light0),
 		},
 		2: {
-			Fsprite:    SPR_PUNG,
+			Fsprite:    spr_PUNG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: s_PUNCH,
 		},
 		3: {
-			Fsprite:    SPR_PUNG,
+			Fsprite:    spr_PUNG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: s_PUNCHDOWN,
 		},
 		4: {
-			Fsprite:    SPR_PUNG,
+			Fsprite:    spr_PUNG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: s_PUNCHUP,
 		},
 		5: {
-			Fsprite:    SPR_PUNG,
+			Fsprite:    spr_PUNG,
 			Fframe:     1,
 			Ftics:      4,
 			Fnextstate: s_PUNCH2,
 		},
 		6: {
-			Fsprite:    SPR_PUNG,
+			Fsprite:    spr_PUNG,
 			Fframe:     2,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_Punch),
 			Fnextstate: s_PUNCH3,
 		},
 		7: {
-			Fsprite:    SPR_PUNG,
+			Fsprite:    spr_PUNG,
 			Fframe:     3,
 			Ftics:      5,
 			Fnextstate: s_PUNCH4,
 		},
 		8: {
-			Fsprite:    SPR_PUNG,
+			Fsprite:    spr_PUNG,
 			Fframe:     2,
 			Ftics:      4,
 			Fnextstate: s_PUNCH5,
 		},
 		9: {
-			Fsprite:    SPR_PUNG,
+			Fsprite:    spr_PUNG,
 			Fframe:     1,
 			Ftics:      5,
 			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: s_PUNCH,
 		},
 		10: {
-			Fsprite:    SPR_PISG,
+			Fsprite:    spr_PISG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: s_PISTOL,
 		},
 		11: {
-			Fsprite:    SPR_PISG,
+			Fsprite:    spr_PISG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: s_PISTOLDOWN,
 		},
 		12: {
-			Fsprite:    SPR_PISG,
+			Fsprite:    spr_PISG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: s_PISTOLUP,
 		},
 		13: {
-			Fsprite:    SPR_PISG,
+			Fsprite:    spr_PISG,
 			Ftics:      4,
 			Fnextstate: s_PISTOL2,
 		},
 		14: {
-			Fsprite:    SPR_PISG,
+			Fsprite:    spr_PISG,
 			Fframe:     1,
 			Ftics:      6,
 			Faction:    playerFuncToAction(a_FirePistol),
 			Fnextstate: s_PISTOL3,
 		},
 		15: {
-			Fsprite:    SPR_PISG,
+			Fsprite:    spr_PISG,
 			Fframe:     2,
 			Ftics:      4,
 			Fnextstate: s_PISTOL4,
 		},
 		16: {
-			Fsprite:    SPR_PISG,
+			Fsprite:    spr_PISG,
 			Fframe:     1,
 			Ftics:      5,
 			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: s_PISTOL,
 		},
 		17: {
-			Fsprite:    SPR_PISF,
+			Fsprite:    spr_PISF,
 			Fframe:     32768,
 			Ftics:      7,
 			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: s_LIGHTDONE,
 		},
 		18: {
-			Fsprite:    SPR_SHTG,
+			Fsprite:    spr_SHTG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: s_SGUN,
 		},
 		19: {
-			Fsprite:    SPR_SHTG,
+			Fsprite:    spr_SHTG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: s_SGUNDOWN,
 		},
 		20: {
-			Fsprite:    SPR_SHTG,
+			Fsprite:    spr_SHTG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: s_SGUNUP,
 		},
 		21: {
-			Fsprite:    SPR_SHTG,
+			Fsprite:    spr_SHTG,
 			Ftics:      3,
 			Fnextstate: s_SGUN2,
 		},
 		22: {
-			Fsprite:    SPR_SHTG,
+			Fsprite:    spr_SHTG,
 			Ftics:      7,
 			Faction:    playerFuncToAction(a_FireShotgun),
 			Fnextstate: s_SGUN3,
 		},
 		23: {
-			Fsprite:    SPR_SHTG,
+			Fsprite:    spr_SHTG,
 			Fframe:     1,
 			Ftics:      5,
 			Fnextstate: s_SGUN4,
 		},
 		24: {
-			Fsprite:    SPR_SHTG,
+			Fsprite:    spr_SHTG,
 			Fframe:     2,
 			Ftics:      5,
 			Fnextstate: s_SGUN5,
 		},
 		25: {
-			Fsprite:    SPR_SHTG,
+			Fsprite:    spr_SHTG,
 			Fframe:     3,
 			Ftics:      4,
 			Fnextstate: s_SGUN6,
 		},
 		26: {
-			Fsprite:    SPR_SHTG,
+			Fsprite:    spr_SHTG,
 			Fframe:     2,
 			Ftics:      5,
 			Fnextstate: s_SGUN7,
 		},
 		27: {
-			Fsprite:    SPR_SHTG,
+			Fsprite:    spr_SHTG,
 			Fframe:     1,
 			Ftics:      5,
 			Fnextstate: s_SGUN8,
 		},
 		28: {
-			Fsprite:    SPR_SHTG,
+			Fsprite:    spr_SHTG,
 			Ftics:      3,
 			Fnextstate: s_SGUN9,
 		},
 		29: {
-			Fsprite:    SPR_SHTG,
+			Fsprite:    spr_SHTG,
 			Ftics:      7,
 			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: s_SGUN,
 		},
 		30: {
-			Fsprite:    SPR_SHTF,
+			Fsprite:    spr_SHTF,
 			Fframe:     32768,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: s_SGUNFLASH2,
 		},
 		31: {
-			Fsprite:    SPR_SHTF,
+			Fsprite:    spr_SHTF,
 			Fframe:     32769,
 			Ftics:      3,
 			Faction:    playerFuncToAction(a_Light2),
 			Fnextstate: s_LIGHTDONE,
 		},
 		32: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: s_DSGUN,
 		},
 		33: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: s_DSGUNDOWN,
 		},
 		34: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: s_DSGUNUP,
 		},
 		35: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Ftics:      3,
 			Fnextstate: s_DSGUN2,
 		},
 		36: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Ftics:      7,
 			Faction:    playerFuncToAction(a_FireShotgun2),
 			Fnextstate: s_DSGUN3,
 		},
 		37: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Fframe:     1,
 			Ftics:      7,
 			Fnextstate: s_DSGUN4,
 		},
 		38: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Fframe:     2,
 			Ftics:      7,
 			Faction:    playerFuncToAction(a_CheckReload),
 			Fnextstate: s_DSGUN5,
 		},
 		39: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Fframe:     3,
 			Ftics:      7,
 			Faction:    playerFuncToAction(a_OpenShotgun2),
 			Fnextstate: s_DSGUN6,
 		},
 		40: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Fframe:     4,
 			Ftics:      7,
 			Fnextstate: s_DSGUN7,
 		},
 		41: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Fframe:     5,
 			Ftics:      7,
 			Faction:    playerFuncToAction(a_LoadShotgun2),
 			Fnextstate: s_DSGUN8,
 		},
 		42: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Fframe:     6,
 			Ftics:      6,
 			Fnextstate: s_DSGUN9,
 		},
 		43: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Fframe:     7,
 			Ftics:      6,
 			Faction:    playerFuncToAction(a_CloseShotgun2),
 			Fnextstate: s_DSGUN10,
 		},
 		44: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Ftics:      5,
 			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: s_DSGUN,
 		},
 		45: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Fframe:     1,
 			Ftics:      7,
 			Fnextstate: s_DSNR2,
 		},
 		46: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Ftics:      3,
 			Fnextstate: s_DSGUNDOWN,
 		},
 		47: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Fframe:     32776,
 			Ftics:      5,
 			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: s_DSGUNFLASH2,
 		},
 		48: {
-			Fsprite:    SPR_SHT2,
+			Fsprite:    spr_SHT2,
 			Fframe:     32777,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_Light2),
 			Fnextstate: s_LIGHTDONE,
 		},
 		49: {
-			Fsprite:    SPR_CHGG,
+			Fsprite:    spr_CHGG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: s_CHAIN,
 		},
 		50: {
-			Fsprite:    SPR_CHGG,
+			Fsprite:    spr_CHGG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: s_CHAINDOWN,
 		},
 		51: {
-			Fsprite:    SPR_CHGG,
+			Fsprite:    spr_CHGG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: s_CHAINUP,
 		},
 		52: {
-			Fsprite:    SPR_CHGG,
+			Fsprite:    spr_CHGG,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_FireCGun),
 			Fnextstate: s_CHAIN2,
 		},
 		53: {
-			Fsprite:    SPR_CHGG,
+			Fsprite:    spr_CHGG,
 			Fframe:     1,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_FireCGun),
 			Fnextstate: s_CHAIN3,
 		},
 		54: {
-			Fsprite:    SPR_CHGG,
+			Fsprite:    spr_CHGG,
 			Fframe:     1,
 			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: s_CHAIN,
 		},
 		55: {
-			Fsprite:    SPR_CHGF,
+			Fsprite:    spr_CHGF,
 			Fframe:     32768,
 			Ftics:      5,
 			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: s_LIGHTDONE,
 		},
 		56: {
-			Fsprite:    SPR_CHGF,
+			Fsprite:    spr_CHGF,
 			Fframe:     32769,
 			Ftics:      5,
 			Faction:    playerFuncToAction(a_Light2),
 			Fnextstate: s_LIGHTDONE,
 		},
 		57: {
-			Fsprite:    SPR_MISG,
+			Fsprite:    spr_MISG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: s_MISSILE,
 		},
 		58: {
-			Fsprite:    SPR_MISG,
+			Fsprite:    spr_MISG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: s_MISSILEDOWN,
 		},
 		59: {
-			Fsprite:    SPR_MISG,
+			Fsprite:    spr_MISG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: s_MISSILEUP,
 		},
 		60: {
-			Fsprite:    SPR_MISG,
+			Fsprite:    spr_MISG,
 			Fframe:     1,
 			Ftics:      8,
 			Faction:    playerFuncToAction(a_GunFlash),
 			Fnextstate: s_MISSILE2,
 		},
 		61: {
-			Fsprite:    SPR_MISG,
+			Fsprite:    spr_MISG,
 			Fframe:     1,
 			Ftics:      12,
 			Faction:    playerFuncToAction(a_FireMissile),
 			Fnextstate: s_MISSILE3,
 		},
 		62: {
-			Fsprite:    SPR_MISG,
+			Fsprite:    spr_MISG,
 			Fframe:     1,
 			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: s_MISSILE,
 		},
 		63: {
-			Fsprite:    SPR_MISF,
+			Fsprite:    spr_MISF,
 			Fframe:     32768,
 			Ftics:      3,
 			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: s_MISSILEFLASH2,
 		},
 		64: {
-			Fsprite:    SPR_MISF,
+			Fsprite:    spr_MISF,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_MISSILEFLASH3,
 		},
 		65: {
-			Fsprite:    SPR_MISF,
+			Fsprite:    spr_MISF,
 			Fframe:     32770,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_Light2),
 			Fnextstate: s_MISSILEFLASH4,
 		},
 		66: {
-			Fsprite:    SPR_MISF,
+			Fsprite:    spr_MISF,
 			Fframe:     32771,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_Light2),
 			Fnextstate: s_LIGHTDONE,
 		},
 		67: {
-			Fsprite:    SPR_SAWG,
+			Fsprite:    spr_SAWG,
 			Fframe:     2,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: s_SAWB,
 		},
 		68: {
-			Fsprite:    SPR_SAWG,
+			Fsprite:    spr_SAWG,
 			Fframe:     3,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: s_SAW,
 		},
 		69: {
-			Fsprite:    SPR_SAWG,
+			Fsprite:    spr_SAWG,
 			Fframe:     2,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: s_SAWDOWN,
 		},
 		70: {
-			Fsprite:    SPR_SAWG,
+			Fsprite:    spr_SAWG,
 			Fframe:     2,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: s_SAWUP,
 		},
 		71: {
-			Fsprite:    SPR_SAWG,
+			Fsprite:    spr_SAWG,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_Saw),
 			Fnextstate: s_SAW2,
 		},
 		72: {
-			Fsprite:    SPR_SAWG,
+			Fsprite:    spr_SAWG,
 			Fframe:     1,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_Saw),
 			Fnextstate: s_SAW3,
 		},
 		73: {
-			Fsprite:    SPR_SAWG,
+			Fsprite:    spr_SAWG,
 			Fframe:     1,
 			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: s_SAW,
 		},
 		74: {
-			Fsprite:    SPR_PLSG,
+			Fsprite:    spr_PLSG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: s_PLASMA,
 		},
 		75: {
-			Fsprite:    SPR_PLSG,
+			Fsprite:    spr_PLSG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: s_PLASMADOWN,
 		},
 		76: {
-			Fsprite:    SPR_PLSG,
+			Fsprite:    spr_PLSG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: s_PLASMAUP,
 		},
 		77: {
-			Fsprite:    SPR_PLSG,
+			Fsprite:    spr_PLSG,
 			Ftics:      3,
 			Faction:    playerFuncToAction(a_FirePlasma),
 			Fnextstate: s_PLASMA2,
 		},
 		78: {
-			Fsprite:    SPR_PLSG,
+			Fsprite:    spr_PLSG,
 			Fframe:     1,
 			Ftics:      20,
 			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: s_PLASMA,
 		},
 		79: {
-			Fsprite:    SPR_PLSF,
+			Fsprite:    spr_PLSF,
 			Fframe:     32768,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: s_LIGHTDONE,
 		},
 		80: {
-			Fsprite:    SPR_PLSF,
+			Fsprite:    spr_PLSF,
 			Fframe:     32769,
 			Ftics:      4,
 			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: s_LIGHTDONE,
 		},
 		81: {
-			Fsprite:    SPR_BFGG,
+			Fsprite:    spr_BFGG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_WeaponReady),
 			Fnextstate: s_BFG,
 		},
 		82: {
-			Fsprite:    SPR_BFGG,
+			Fsprite:    spr_BFGG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Lower),
 			Fnextstate: s_BFGDOWN,
 		},
 		83: {
-			Fsprite:    SPR_BFGG,
+			Fsprite:    spr_BFGG,
 			Ftics:      1,
 			Faction:    playerFuncToAction(a_Raise),
 			Fnextstate: s_BFGUP,
 		},
 		84: {
-			Fsprite:    SPR_BFGG,
+			Fsprite:    spr_BFGG,
 			Ftics:      20,
 			Faction:    playerFuncToAction(a_BFGsound),
 			Fnextstate: s_BFG2,
 		},
 		85: {
-			Fsprite:    SPR_BFGG,
+			Fsprite:    spr_BFGG,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    playerFuncToAction(a_GunFlash),
 			Fnextstate: s_BFG3,
 		},
 		86: {
-			Fsprite:    SPR_BFGG,
+			Fsprite:    spr_BFGG,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    playerFuncToAction(a_FireBFG),
 			Fnextstate: s_BFG4,
 		},
 		87: {
-			Fsprite:    SPR_BFGG,
+			Fsprite:    spr_BFGG,
 			Fframe:     1,
 			Ftics:      20,
 			Faction:    playerFuncToAction(a_ReFire),
 			Fnextstate: s_BFG,
 		},
 		88: {
-			Fsprite:    SPR_BFGF,
+			Fsprite:    spr_BFGF,
 			Fframe:     32768,
 			Ftics:      11,
 			Faction:    playerFuncToAction(a_Light1),
 			Fnextstate: s_BFGFLASH2,
 		},
 		89: {
-			Fsprite:    SPR_BFGF,
+			Fsprite:    spr_BFGF,
 			Fframe:     32769,
 			Ftics:      6,
 			Faction:    playerFuncToAction(a_Light2),
 			Fnextstate: s_LIGHTDONE,
 		},
 		90: {
-			Fsprite:    SPR_BLUD,
+			Fsprite:    spr_BLUD,
 			Fframe:     2,
 			Ftics:      8,
 			Fnextstate: s_BLOOD2,
 		},
 		91: {
-			Fsprite:    SPR_BLUD,
+			Fsprite:    spr_BLUD,
 			Fframe:     1,
 			Ftics:      8,
 			Fnextstate: s_BLOOD3,
 		},
 		92: {
-			Fsprite: SPR_BLUD,
+			Fsprite: spr_BLUD,
 			Ftics:   8,
 		},
 		93: {
-			Fsprite:    SPR_PUFF,
+			Fsprite:    spr_PUFF,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_PUFF2,
 		},
 		94: {
-			Fsprite:    SPR_PUFF,
+			Fsprite:    spr_PUFF,
 			Fframe:     1,
 			Ftics:      4,
 			Fnextstate: s_PUFF3,
 		},
 		95: {
-			Fsprite:    SPR_PUFF,
+			Fsprite:    spr_PUFF,
 			Fframe:     2,
 			Ftics:      4,
 			Fnextstate: s_PUFF4,
 		},
 		96: {
-			Fsprite: SPR_PUFF,
+			Fsprite: spr_PUFF,
 			Fframe:  3,
 			Ftics:   4,
 		},
 		97: {
-			Fsprite:    SPR_BAL1,
+			Fsprite:    spr_BAL1,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_TBALL2,
 		},
 		98: {
-			Fsprite:    SPR_BAL1,
+			Fsprite:    spr_BAL1,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_TBALL1,
 		},
 		99: {
-			Fsprite:    SPR_BAL1,
+			Fsprite:    spr_BAL1,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_TBALLX2,
 		},
 		100: {
-			Fsprite:    SPR_BAL1,
+			Fsprite:    spr_BAL1,
 			Fframe:     32771,
 			Ftics:      6,
 			Fnextstate: s_TBALLX3,
 		},
 		101: {
-			Fsprite: SPR_BAL1,
+			Fsprite: spr_BAL1,
 			Fframe:  32772,
 			Ftics:   6,
 		},
 		102: {
-			Fsprite:    SPR_BAL2,
+			Fsprite:    spr_BAL2,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_RBALL2,
 		},
 		103: {
-			Fsprite:    SPR_BAL2,
+			Fsprite:    spr_BAL2,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_RBALL1,
 		},
 		104: {
-			Fsprite:    SPR_BAL2,
+			Fsprite:    spr_BAL2,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_RBALLX2,
 		},
 		105: {
-			Fsprite:    SPR_BAL2,
+			Fsprite:    spr_BAL2,
 			Fframe:     32771,
 			Ftics:      6,
 			Fnextstate: s_RBALLX3,
 		},
 		106: {
-			Fsprite: SPR_BAL2,
+			Fsprite: spr_BAL2,
 			Fframe:  32772,
 			Ftics:   6,
 		},
 		107: {
-			Fsprite:    SPR_PLSS,
+			Fsprite:    spr_PLSS,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_PLASBALL2,
 		},
 		108: {
-			Fsprite:    SPR_PLSS,
+			Fsprite:    spr_PLSS,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_PLASBALL,
 		},
 		109: {
-			Fsprite:    SPR_PLSE,
+			Fsprite:    spr_PLSE,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_PLASEXP2,
 		},
 		110: {
-			Fsprite:    SPR_PLSE,
+			Fsprite:    spr_PLSE,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_PLASEXP3,
 		},
 		111: {
-			Fsprite:    SPR_PLSE,
+			Fsprite:    spr_PLSE,
 			Fframe:     32770,
 			Ftics:      4,
 			Fnextstate: s_PLASEXP4,
 		},
 		112: {
-			Fsprite:    SPR_PLSE,
+			Fsprite:    spr_PLSE,
 			Fframe:     32771,
 			Ftics:      4,
 			Fnextstate: s_PLASEXP5,
 		},
 		113: {
-			Fsprite: SPR_PLSE,
+			Fsprite: spr_PLSE,
 			Fframe:  32772,
 			Ftics:   4,
 		},
 		114: {
-			Fsprite:    SPR_MISL,
+			Fsprite:    spr_MISL,
 			Fframe:     32768,
 			Ftics:      1,
 			Fnextstate: s_ROCKET,
 		},
 		115: {
-			Fsprite:    SPR_BFS1,
+			Fsprite:    spr_BFS1,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_BFGSHOT2,
 		},
 		116: {
-			Fsprite:    SPR_BFS1,
+			Fsprite:    spr_BFS1,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_BFGSHOT,
 		},
 		117: {
-			Fsprite:    SPR_BFE1,
+			Fsprite:    spr_BFE1,
 			Fframe:     32768,
 			Ftics:      8,
 			Fnextstate: s_BFGLAND2,
 		},
 		118: {
-			Fsprite:    SPR_BFE1,
+			Fsprite:    spr_BFE1,
 			Fframe:     32769,
 			Ftics:      8,
 			Fnextstate: s_BFGLAND3,
 		},
 		119: {
-			Fsprite:    SPR_BFE1,
+			Fsprite:    spr_BFE1,
 			Fframe:     32770,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_BFGSpray),
 			Fnextstate: s_BFGLAND4,
 		},
 		120: {
-			Fsprite:    SPR_BFE1,
+			Fsprite:    spr_BFE1,
 			Fframe:     32771,
 			Ftics:      8,
 			Fnextstate: s_BFGLAND5,
 		},
 		121: {
-			Fsprite:    SPR_BFE1,
+			Fsprite:    spr_BFE1,
 			Fframe:     32772,
 			Ftics:      8,
 			Fnextstate: s_BFGLAND6,
 		},
 		122: {
-			Fsprite: SPR_BFE1,
+			Fsprite: spr_BFE1,
 			Fframe:  32773,
 			Ftics:   8,
 		},
 		123: {
-			Fsprite:    SPR_BFE2,
+			Fsprite:    spr_BFE2,
 			Fframe:     32768,
 			Ftics:      8,
 			Fnextstate: s_BFGEXP2,
 		},
 		124: {
-			Fsprite:    SPR_BFE2,
+			Fsprite:    spr_BFE2,
 			Fframe:     32769,
 			Ftics:      8,
 			Fnextstate: s_BFGEXP3,
 		},
 		125: {
-			Fsprite:    SPR_BFE2,
+			Fsprite:    spr_BFE2,
 			Fframe:     32770,
 			Ftics:      8,
 			Fnextstate: s_BFGEXP4,
 		},
 		126: {
-			Fsprite: SPR_BFE2,
+			Fsprite: spr_BFE2,
 			Fframe:  32771,
 			Ftics:   8,
 		},
 		127: {
-			Fsprite:    SPR_MISL,
+			Fsprite:    spr_MISL,
 			Fframe:     32769,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_Explode),
 			Fnextstate: s_EXPLODE2,
 		},
 		128: {
-			Fsprite:    SPR_MISL,
+			Fsprite:    spr_MISL,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_EXPLODE3,
 		},
 		129: {
-			Fsprite: SPR_MISL,
+			Fsprite: spr_MISL,
 			Fframe:  32771,
 			Ftics:   4,
 		},
 		130: {
-			Fsprite:    SPR_TFOG,
+			Fsprite:    spr_TFOG,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_TFOG01,
 		},
 		131: {
-			Fsprite:    SPR_TFOG,
+			Fsprite:    spr_TFOG,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_TFOG02,
 		},
 		132: {
-			Fsprite:    SPR_TFOG,
+			Fsprite:    spr_TFOG,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_TFOG2,
 		},
 		133: {
-			Fsprite:    SPR_TFOG,
+			Fsprite:    spr_TFOG,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_TFOG3,
 		},
 		134: {
-			Fsprite:    SPR_TFOG,
+			Fsprite:    spr_TFOG,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_TFOG4,
 		},
 		135: {
-			Fsprite:    SPR_TFOG,
+			Fsprite:    spr_TFOG,
 			Fframe:     32771,
 			Ftics:      6,
 			Fnextstate: s_TFOG5,
 		},
 		136: {
-			Fsprite:    SPR_TFOG,
+			Fsprite:    spr_TFOG,
 			Fframe:     32772,
 			Ftics:      6,
 			Fnextstate: s_TFOG6,
 		},
 		137: {
-			Fsprite:    SPR_TFOG,
+			Fsprite:    spr_TFOG,
 			Fframe:     32773,
 			Ftics:      6,
 			Fnextstate: s_TFOG7,
 		},
 		138: {
-			Fsprite:    SPR_TFOG,
+			Fsprite:    spr_TFOG,
 			Fframe:     32774,
 			Ftics:      6,
 			Fnextstate: s_TFOG8,
 		},
 		139: {
-			Fsprite:    SPR_TFOG,
+			Fsprite:    spr_TFOG,
 			Fframe:     32775,
 			Ftics:      6,
 			Fnextstate: s_TFOG9,
 		},
 		140: {
-			Fsprite:    SPR_TFOG,
+			Fsprite:    spr_TFOG,
 			Fframe:     32776,
 			Ftics:      6,
 			Fnextstate: s_TFOG10,
 		},
 		141: {
-			Fsprite: SPR_TFOG,
+			Fsprite: spr_TFOG,
 			Fframe:  32777,
 			Ftics:   6,
 		},
 		142: {
-			Fsprite:    SPR_IFOG,
+			Fsprite:    spr_IFOG,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_IFOG01,
 		},
 		143: {
-			Fsprite:    SPR_IFOG,
+			Fsprite:    spr_IFOG,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_IFOG02,
 		},
 		144: {
-			Fsprite:    SPR_IFOG,
+			Fsprite:    spr_IFOG,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_IFOG2,
 		},
 		145: {
-			Fsprite:    SPR_IFOG,
+			Fsprite:    spr_IFOG,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_IFOG3,
 		},
 		146: {
-			Fsprite:    SPR_IFOG,
+			Fsprite:    spr_IFOG,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_IFOG4,
 		},
 		147: {
-			Fsprite:    SPR_IFOG,
+			Fsprite:    spr_IFOG,
 			Fframe:     32771,
 			Ftics:      6,
 			Fnextstate: s_IFOG5,
 		},
 		148: {
-			Fsprite: SPR_IFOG,
+			Fsprite: spr_IFOG,
 			Fframe:  32772,
 			Ftics:   6,
 		},
 		149: {
-			Fsprite: SPR_PLAY,
+			Fsprite: spr_PLAY,
 			Ftics:   -1,
 		},
 		150: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Ftics:      4,
 			Fnextstate: s_PLAY_RUN2,
 		},
 		151: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     1,
 			Ftics:      4,
 			Fnextstate: s_PLAY_RUN3,
 		},
 		152: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     2,
 			Ftics:      4,
 			Fnextstate: s_PLAY_RUN4,
 		},
 		153: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     3,
 			Ftics:      4,
 			Fnextstate: s_PLAY_RUN1,
 		},
 		154: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     4,
 			Ftics:      12,
 			Fnextstate: s_PLAY,
 		},
 		155: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     32773,
 			Ftics:      6,
 			Fnextstate: s_PLAY_ATK1,
 		},
 		156: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     6,
 			Ftics:      4,
 			Fnextstate: s_PLAY_PAIN2,
 		},
 		157: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     6,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_PLAY,
 		},
 		158: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     7,
 			Ftics:      10,
 			Fnextstate: s_PLAY_DIE2,
 		},
 		159: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     8,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_PlayerScream),
 			Fnextstate: s_PLAY_DIE3,
 		},
 		160: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     9,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_PLAY_DIE4,
 		},
 		161: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     10,
 			Ftics:      10,
 			Fnextstate: s_PLAY_DIE5,
 		},
 		162: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     11,
 			Ftics:      10,
 			Fnextstate: s_PLAY_DIE6,
 		},
 		163: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     12,
 			Ftics:      10,
 			Fnextstate: s_PLAY_DIE7,
 		},
 		164: {
-			Fsprite: SPR_PLAY,
+			Fsprite: spr_PLAY,
 			Fframe:  13,
 			Ftics:   -1,
 		},
 		165: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     14,
 			Ftics:      5,
 			Fnextstate: s_PLAY_XDIE2,
 		},
 		166: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     15,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_XScream),
 			Fnextstate: s_PLAY_XDIE3,
 		},
 		167: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     16,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_PLAY_XDIE4,
 		},
 		168: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     17,
 			Ftics:      5,
 			Fnextstate: s_PLAY_XDIE5,
 		},
 		169: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     18,
 			Ftics:      5,
 			Fnextstate: s_PLAY_XDIE6,
 		},
 		170: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     19,
 			Ftics:      5,
 			Fnextstate: s_PLAY_XDIE7,
 		},
 		171: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     20,
 			Ftics:      5,
 			Fnextstate: s_PLAY_XDIE8,
 		},
 		172: {
-			Fsprite:    SPR_PLAY,
+			Fsprite:    spr_PLAY,
 			Fframe:     21,
 			Ftics:      5,
 			Fnextstate: s_PLAY_XDIE9,
 		},
 		173: {
-			Fsprite: SPR_PLAY,
+			Fsprite: spr_PLAY,
 			Fframe:  22,
 			Ftics:   -1,
 		},
 		174: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_POSS_STND2,
 		},
 		175: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_POSS_STND,
 		},
 		176: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_POSS_RUN2,
 		},
 		177: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_POSS_RUN3,
 		},
 		178: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     1,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_POSS_RUN4,
 		},
 		179: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     1,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_POSS_RUN5,
 		},
 		180: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     2,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_POSS_RUN6,
 		},
 		181: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     2,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_POSS_RUN7,
 		},
 		182: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     3,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_POSS_RUN8,
 		},
 		183: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     3,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_POSS_RUN1,
 		},
 		184: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     4,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_POSS_ATK2,
 		},
 		185: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     5,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_PosAttack),
 			Fnextstate: s_POSS_ATK3,
 		},
 		186: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     4,
 			Ftics:      8,
 			Fnextstate: s_POSS_RUN1,
 		},
 		187: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     6,
 			Ftics:      3,
 			Fnextstate: s_POSS_PAIN2,
 		},
 		188: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     6,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_POSS_RUN1,
 		},
 		189: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     7,
 			Ftics:      5,
 			Fnextstate: s_POSS_DIE2,
 		},
 		190: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     8,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_POSS_DIE3,
 		},
 		191: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     9,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_POSS_DIE4,
 		},
 		192: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     10,
 			Ftics:      5,
 			Fnextstate: s_POSS_DIE5,
 		},
 		193: {
-			Fsprite: SPR_POSS,
+			Fsprite: spr_POSS,
 			Fframe:  11,
 			Ftics:   -1,
 		},
 		194: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     12,
 			Ftics:      5,
 			Fnextstate: s_POSS_XDIE2,
 		},
 		195: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     13,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_XScream),
 			Fnextstate: s_POSS_XDIE3,
 		},
 		196: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     14,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_POSS_XDIE4,
 		},
 		197: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     15,
 			Ftics:      5,
 			Fnextstate: s_POSS_XDIE5,
 		},
 		198: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     16,
 			Ftics:      5,
 			Fnextstate: s_POSS_XDIE6,
 		},
 		199: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     17,
 			Ftics:      5,
 			Fnextstate: s_POSS_XDIE7,
 		},
 		200: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     18,
 			Ftics:      5,
 			Fnextstate: s_POSS_XDIE8,
 		},
 		201: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     19,
 			Ftics:      5,
 			Fnextstate: s_POSS_XDIE9,
 		},
 		202: {
-			Fsprite: SPR_POSS,
+			Fsprite: spr_POSS,
 			Fframe:  20,
 			Ftics:   -1,
 		},
 		203: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     10,
 			Ftics:      5,
 			Fnextstate: s_POSS_RAISE2,
 		},
 		204: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     9,
 			Ftics:      5,
 			Fnextstate: s_POSS_RAISE3,
 		},
 		205: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     8,
 			Ftics:      5,
 			Fnextstate: s_POSS_RAISE4,
 		},
 		206: {
-			Fsprite:    SPR_POSS,
+			Fsprite:    spr_POSS,
 			Fframe:     7,
 			Ftics:      5,
 			Fnextstate: s_POSS_RUN1,
 		},
 		207: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_SPOS_STND2,
 		},
 		208: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_SPOS_STND,
 		},
 		209: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPOS_RUN2,
 		},
 		210: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPOS_RUN3,
 		},
 		211: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPOS_RUN4,
 		},
 		212: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPOS_RUN5,
 		},
 		213: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPOS_RUN6,
 		},
 		214: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPOS_RUN7,
 		},
 		215: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPOS_RUN8,
 		},
 		216: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPOS_RUN1,
 		},
 		217: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     4,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SPOS_ATK2,
 		},
 		218: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     32773,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_SPosAttack),
 			Fnextstate: s_SPOS_ATK3,
 		},
 		219: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     4,
 			Ftics:      10,
 			Fnextstate: s_SPOS_RUN1,
 		},
 		220: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     6,
 			Ftics:      3,
 			Fnextstate: s_SPOS_PAIN2,
 		},
 		221: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     6,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_SPOS_RUN1,
 		},
 		222: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     7,
 			Ftics:      5,
 			Fnextstate: s_SPOS_DIE2,
 		},
 		223: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     8,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_SPOS_DIE3,
 		},
 		224: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     9,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_SPOS_DIE4,
 		},
 		225: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     10,
 			Ftics:      5,
 			Fnextstate: s_SPOS_DIE5,
 		},
 		226: {
-			Fsprite: SPR_SPOS,
+			Fsprite: spr_SPOS,
 			Fframe:  11,
 			Ftics:   -1,
 		},
 		227: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     12,
 			Ftics:      5,
 			Fnextstate: s_SPOS_XDIE2,
 		},
 		228: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     13,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_XScream),
 			Fnextstate: s_SPOS_XDIE3,
 		},
 		229: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     14,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_SPOS_XDIE4,
 		},
 		230: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     15,
 			Ftics:      5,
 			Fnextstate: s_SPOS_XDIE5,
 		},
 		231: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     16,
 			Ftics:      5,
 			Fnextstate: s_SPOS_XDIE6,
 		},
 		232: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     17,
 			Ftics:      5,
 			Fnextstate: s_SPOS_XDIE7,
 		},
 		233: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     18,
 			Ftics:      5,
 			Fnextstate: s_SPOS_XDIE8,
 		},
 		234: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     19,
 			Ftics:      5,
 			Fnextstate: s_SPOS_XDIE9,
 		},
 		235: {
-			Fsprite: SPR_SPOS,
+			Fsprite: spr_SPOS,
 			Fframe:  20,
 			Ftics:   -1,
 		},
 		236: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     11,
 			Ftics:      5,
 			Fnextstate: s_SPOS_RAISE2,
 		},
 		237: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     10,
 			Ftics:      5,
 			Fnextstate: s_SPOS_RAISE3,
 		},
 		238: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     9,
 			Ftics:      5,
 			Fnextstate: s_SPOS_RAISE4,
 		},
 		239: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     8,
 			Ftics:      5,
 			Fnextstate: s_SPOS_RAISE5,
 		},
 		240: {
-			Fsprite:    SPR_SPOS,
+			Fsprite:    spr_SPOS,
 			Fframe:     7,
 			Ftics:      5,
 			Fnextstate: s_SPOS_RUN1,
 		},
 		241: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_VILE_STND2,
 		},
 		242: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_VILE_STND,
 		},
 		243: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: s_VILE_RUN2,
 		},
 		244: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: s_VILE_RUN3,
 		},
 		245: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     1,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: s_VILE_RUN4,
 		},
 		246: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     1,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: s_VILE_RUN5,
 		},
 		247: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     2,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: s_VILE_RUN6,
 		},
 		248: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     2,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: s_VILE_RUN7,
 		},
 		249: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     3,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: s_VILE_RUN8,
 		},
 		250: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     3,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: s_VILE_RUN9,
 		},
 		251: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     4,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: s_VILE_RUN10,
 		},
 		252: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     4,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: s_VILE_RUN11,
 		},
 		253: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     5,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: s_VILE_RUN12,
 		},
 		254: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     5,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_VileChase),
 			Fnextstate: s_VILE_RUN1,
 		},
 		255: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32774,
 			Faction:    mobjFuncToAction(a_VileStart),
 			Fnextstate: s_VILE_ATK2,
 		},
 		256: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32774,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_VILE_ATK3,
 		},
 		257: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32775,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_VileTarget),
 			Fnextstate: s_VILE_ATK4,
 		},
 		258: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32776,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_VILE_ATK5,
 		},
 		259: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32777,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_VILE_ATK6,
 		},
 		260: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32778,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_VILE_ATK7,
 		},
 		261: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32779,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_VILE_ATK8,
 		},
 		262: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32780,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_VILE_ATK9,
 		},
 		263: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32781,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_VILE_ATK10,
 		},
 		264: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32782,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_VileAttack),
 			Fnextstate: s_VILE_ATK11,
 		},
 		265: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32783,
 			Ftics:      20,
 			Fnextstate: s_VILE_RUN1,
 		},
 		266: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32794,
 			Ftics:      10,
 			Fnextstate: s_VILE_HEAL2,
 		},
 		267: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32795,
 			Ftics:      10,
 			Fnextstate: s_VILE_HEAL3,
 		},
 		268: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     32796,
 			Ftics:      10,
 			Fnextstate: s_VILE_RUN1,
 		},
 		269: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     16,
 			Ftics:      5,
 			Fnextstate: s_VILE_PAIN2,
 		},
 		270: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     16,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_VILE_RUN1,
 		},
 		271: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     16,
 			Ftics:      7,
 			Fnextstate: s_VILE_DIE2,
 		},
 		272: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     17,
 			Ftics:      7,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_VILE_DIE3,
 		},
 		273: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     18,
 			Ftics:      7,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_VILE_DIE4,
 		},
 		274: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     19,
 			Ftics:      7,
 			Fnextstate: s_VILE_DIE5,
 		},
 		275: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     20,
 			Ftics:      7,
 			Fnextstate: s_VILE_DIE6,
 		},
 		276: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     21,
 			Ftics:      7,
 			Fnextstate: s_VILE_DIE7,
 		},
 		277: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     22,
 			Ftics:      7,
 			Fnextstate: s_VILE_DIE8,
 		},
 		278: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     23,
 			Ftics:      5,
 			Fnextstate: s_VILE_DIE9,
 		},
 		279: {
-			Fsprite:    SPR_VILE,
+			Fsprite:    spr_VILE,
 			Fframe:     24,
 			Ftics:      5,
 			Fnextstate: s_VILE_DIE10,
 		},
 		280: {
-			Fsprite: SPR_VILE,
+			Fsprite: spr_VILE,
 			Fframe:  25,
 			Ftics:   -1,
 		},
 		281: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32768,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_StartFire),
 			Fnextstate: s_FIRE2,
 		},
 		282: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32769,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE3,
 		},
 		283: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32768,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE4,
 		},
 		284: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32769,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE5,
 		},
 		285: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32770,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_FireCrackle),
 			Fnextstate: s_FIRE6,
 		},
 		286: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32769,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE7,
 		},
 		287: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32770,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE8,
 		},
 		288: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32769,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE9,
 		},
 		289: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32770,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE10,
 		},
 		290: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32771,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE11,
 		},
 		291: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32770,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE12,
 		},
 		292: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32771,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE13,
 		},
 		293: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32770,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE14,
 		},
 		294: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32771,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE15,
 		},
 		295: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32772,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE16,
 		},
 		296: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32771,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE17,
 		},
 		297: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32772,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE18,
 		},
 		298: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32771,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE19,
 		},
 		299: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32772,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_FireCrackle),
 			Fnextstate: s_FIRE20,
 		},
 		300: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32773,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE21,
 		},
 		301: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32772,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE22,
 		},
 		302: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32773,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE23,
 		},
 		303: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32772,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE24,
 		},
 		304: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32773,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE25,
 		},
 		305: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32774,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE26,
 		},
 		306: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32775,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE27,
 		},
 		307: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32774,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE28,
 		},
 		308: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32775,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE29,
 		},
 		309: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32774,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_FIRE30,
 		},
 		310: {
-			Fsprite: SPR_FIRE,
+			Fsprite: spr_FIRE,
 			Fframe:  32775,
 			Ftics:   2,
 			Faction: mobjFuncToAction(a_Fire),
 		},
 		311: {
-			Fsprite:    SPR_PUFF,
+			Fsprite:    spr_PUFF,
 			Fframe:     1,
 			Ftics:      4,
 			Fnextstate: s_SMOKE2,
 		},
 		312: {
-			Fsprite:    SPR_PUFF,
+			Fsprite:    spr_PUFF,
 			Fframe:     2,
 			Ftics:      4,
 			Fnextstate: s_SMOKE3,
 		},
 		313: {
-			Fsprite:    SPR_PUFF,
+			Fsprite:    spr_PUFF,
 			Fframe:     1,
 			Ftics:      4,
 			Fnextstate: s_SMOKE4,
 		},
 		314: {
-			Fsprite:    SPR_PUFF,
+			Fsprite:    spr_PUFF,
 			Fframe:     2,
 			Ftics:      4,
 			Fnextstate: s_SMOKE5,
 		},
 		315: {
-			Fsprite: SPR_PUFF,
+			Fsprite: spr_PUFF,
 			Fframe:  3,
 			Ftics:   4,
 		},
 		316: {
-			Fsprite:    SPR_FATB,
+			Fsprite:    spr_FATB,
 			Fframe:     32768,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Tracer),
 			Fnextstate: s_TRACER2,
 		},
 		317: {
-			Fsprite:    SPR_FATB,
+			Fsprite:    spr_FATB,
 			Fframe:     32769,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Tracer),
 			Fnextstate: s_TRACER,
 		},
 		318: {
-			Fsprite:    SPR_FBXP,
+			Fsprite:    spr_FBXP,
 			Fframe:     32768,
 			Ftics:      8,
 			Fnextstate: s_TRACEEXP2,
 		},
 		319: {
-			Fsprite:    SPR_FBXP,
+			Fsprite:    spr_FBXP,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_TRACEEXP3,
 		},
 		320: {
-			Fsprite: SPR_FBXP,
+			Fsprite: spr_FBXP,
 			Fframe:  32770,
 			Ftics:   4,
 		},
 		321: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_SKEL_STND2,
 		},
 		322: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_SKEL_STND,
 		},
 		323: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKEL_RUN2,
 		},
 		324: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKEL_RUN3,
 		},
 		325: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     1,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKEL_RUN4,
 		},
 		326: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     1,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKEL_RUN5,
 		},
 		327: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     2,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKEL_RUN6,
 		},
 		328: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     2,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKEL_RUN7,
 		},
 		329: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     3,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKEL_RUN8,
 		},
 		330: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     3,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKEL_RUN9,
 		},
 		331: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     4,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKEL_RUN10,
 		},
 		332: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     4,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKEL_RUN11,
 		},
 		333: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     5,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKEL_RUN12,
 		},
 		334: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     5,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKEL_RUN1,
 		},
 		335: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     6,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SKEL_FIST2,
 		},
 		336: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     6,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_SkelWhoosh),
 			Fnextstate: s_SKEL_FIST3,
 		},
 		337: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     7,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SKEL_FIST4,
 		},
 		338: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     8,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_SkelFist),
 			Fnextstate: s_SKEL_RUN1,
 		},
 		339: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     32777,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SKEL_MISS2,
 		},
 		340: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     32777,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SKEL_MISS3,
 		},
 		341: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     10,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_SkelMissile),
 			Fnextstate: s_SKEL_MISS4,
 		},
 		342: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     10,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SKEL_RUN1,
 		},
 		343: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     11,
 			Ftics:      5,
 			Fnextstate: s_SKEL_PAIN2,
 		},
 		344: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     11,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_SKEL_RUN1,
 		},
 		345: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     11,
 			Ftics:      7,
 			Fnextstate: s_SKEL_DIE2,
 		},
 		346: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     12,
 			Ftics:      7,
 			Fnextstate: s_SKEL_DIE3,
 		},
 		347: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     13,
 			Ftics:      7,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_SKEL_DIE4,
 		},
 		348: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     14,
 			Ftics:      7,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_SKEL_DIE5,
 		},
 		349: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     15,
 			Ftics:      7,
 			Fnextstate: s_SKEL_DIE6,
 		},
 		350: {
-			Fsprite: SPR_SKEL,
+			Fsprite: spr_SKEL,
 			Fframe:  16,
 			Ftics:   -1,
 		},
 		351: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     16,
 			Ftics:      5,
 			Fnextstate: s_SKEL_RAISE2,
 		},
 		352: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     15,
 			Ftics:      5,
 			Fnextstate: s_SKEL_RAISE3,
 		},
 		353: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     14,
 			Ftics:      5,
 			Fnextstate: s_SKEL_RAISE4,
 		},
 		354: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     13,
 			Ftics:      5,
 			Fnextstate: s_SKEL_RAISE5,
 		},
 		355: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     12,
 			Ftics:      5,
 			Fnextstate: s_SKEL_RAISE6,
 		},
 		356: {
-			Fsprite:    SPR_SKEL,
+			Fsprite:    spr_SKEL,
 			Fframe:     11,
 			Ftics:      5,
 			Fnextstate: s_SKEL_RUN1,
 		},
 		357: {
-			Fsprite:    SPR_MANF,
+			Fsprite:    spr_MANF,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_FATSHOT2,
 		},
 		358: {
-			Fsprite:    SPR_MANF,
+			Fsprite:    spr_MANF,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_FATSHOT1,
 		},
 		359: {
-			Fsprite:    SPR_MISL,
+			Fsprite:    spr_MISL,
 			Fframe:     32769,
 			Ftics:      8,
 			Fnextstate: s_FATSHOTX2,
 		},
 		360: {
-			Fsprite:    SPR_MISL,
+			Fsprite:    spr_MISL,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_FATSHOTX3,
 		},
 		361: {
-			Fsprite: SPR_MISL,
+			Fsprite: spr_MISL,
 			Fframe:  32771,
 			Ftics:   4,
 		},
 		362: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Ftics:      15,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_FATT_STND2,
 		},
 		363: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     1,
 			Ftics:      15,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_FATT_STND,
 		},
 		364: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_FATT_RUN2,
 		},
 		365: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_FATT_RUN3,
 		},
 		366: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     1,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_FATT_RUN4,
 		},
 		367: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     1,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_FATT_RUN5,
 		},
 		368: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     2,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_FATT_RUN6,
 		},
 		369: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     2,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_FATT_RUN7,
 		},
 		370: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     3,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_FATT_RUN8,
 		},
 		371: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     3,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_FATT_RUN9,
 		},
 		372: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     4,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_FATT_RUN10,
 		},
 		373: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     4,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_FATT_RUN11,
 		},
 		374: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     5,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_FATT_RUN12,
 		},
 		375: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     5,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_FATT_RUN1,
 		},
 		376: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     6,
 			Ftics:      20,
 			Faction:    mobjFuncToAction(a_FatRaise),
 			Fnextstate: s_FATT_ATK2,
 		},
 		377: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     32775,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_FatAttack1),
 			Fnextstate: s_FATT_ATK3,
 		},
 		378: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     8,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_FATT_ATK4,
 		},
 		379: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     6,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_FATT_ATK5,
 		},
 		380: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     32775,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_FatAttack2),
 			Fnextstate: s_FATT_ATK6,
 		},
 		381: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     8,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_FATT_ATK7,
 		},
 		382: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     6,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_FATT_ATK8,
 		},
 		383: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     32775,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_FatAttack3),
 			Fnextstate: s_FATT_ATK9,
 		},
 		384: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     8,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_FATT_ATK10,
 		},
 		385: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     6,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_FATT_RUN1,
 		},
 		386: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     9,
 			Ftics:      3,
 			Fnextstate: s_FATT_PAIN2,
 		},
 		387: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     9,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_FATT_RUN1,
 		},
 		388: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     10,
 			Ftics:      6,
 			Fnextstate: s_FATT_DIE2,
 		},
 		389: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     11,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_FATT_DIE3,
 		},
 		390: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     12,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_FATT_DIE4,
 		},
 		391: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     13,
 			Ftics:      6,
 			Fnextstate: s_FATT_DIE5,
 		},
 		392: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     14,
 			Ftics:      6,
 			Fnextstate: s_FATT_DIE6,
 		},
 		393: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     15,
 			Ftics:      6,
 			Fnextstate: s_FATT_DIE7,
 		},
 		394: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     16,
 			Ftics:      6,
 			Fnextstate: s_FATT_DIE8,
 		},
 		395: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     17,
 			Ftics:      6,
 			Fnextstate: s_FATT_DIE9,
 		},
 		396: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     18,
 			Ftics:      6,
 			Fnextstate: s_FATT_DIE10,
 		},
 		397: {
-			Fsprite: SPR_FATT,
+			Fsprite: spr_FATT,
 			Fframe:  19,
 			Ftics:   -1,
 			Faction: mobjFuncToAction(a_BossDeath),
 		},
 		398: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     17,
 			Ftics:      5,
 			Fnextstate: s_FATT_RAISE2,
 		},
 		399: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     16,
 			Ftics:      5,
 			Fnextstate: s_FATT_RAISE3,
 		},
 		400: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     15,
 			Ftics:      5,
 			Fnextstate: s_FATT_RAISE4,
 		},
 		401: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     14,
 			Ftics:      5,
 			Fnextstate: s_FATT_RAISE5,
 		},
 		402: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     13,
 			Ftics:      5,
 			Fnextstate: s_FATT_RAISE6,
 		},
 		403: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     12,
 			Ftics:      5,
 			Fnextstate: s_FATT_RAISE7,
 		},
 		404: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     11,
 			Ftics:      5,
 			Fnextstate: s_FATT_RAISE8,
 		},
 		405: {
-			Fsprite:    SPR_FATT,
+			Fsprite:    spr_FATT,
 			Fframe:     10,
 			Ftics:      5,
 			Fnextstate: s_FATT_RUN1,
 		},
 		406: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_CPOS_STND2,
 		},
 		407: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_CPOS_STND,
 		},
 		408: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CPOS_RUN2,
 		},
 		409: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CPOS_RUN3,
 		},
 		410: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CPOS_RUN4,
 		},
 		411: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CPOS_RUN5,
 		},
 		412: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CPOS_RUN6,
 		},
 		413: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CPOS_RUN7,
 		},
 		414: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CPOS_RUN8,
 		},
 		415: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CPOS_RUN1,
 		},
 		416: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     4,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_CPOS_ATK2,
 		},
 		417: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     32773,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_CPosAttack),
 			Fnextstate: s_CPOS_ATK3,
 		},
 		418: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     32772,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_CPosAttack),
 			Fnextstate: s_CPOS_ATK4,
 		},
 		419: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     5,
 			Ftics:      1,
 			Faction:    mobjFuncToAction(a_CPosRefire),
 			Fnextstate: s_CPOS_ATK2,
 		},
 		420: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     6,
 			Ftics:      3,
 			Fnextstate: s_CPOS_PAIN2,
 		},
 		421: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     6,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_CPOS_RUN1,
 		},
 		422: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     7,
 			Ftics:      5,
 			Fnextstate: s_CPOS_DIE2,
 		},
 		423: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     8,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_CPOS_DIE3,
 		},
 		424: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     9,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_CPOS_DIE4,
 		},
 		425: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     10,
 			Ftics:      5,
 			Fnextstate: s_CPOS_DIE5,
 		},
 		426: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     11,
 			Ftics:      5,
 			Fnextstate: s_CPOS_DIE6,
 		},
 		427: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     12,
 			Ftics:      5,
 			Fnextstate: s_CPOS_DIE7,
 		},
 		428: {
-			Fsprite: SPR_CPOS,
+			Fsprite: spr_CPOS,
 			Fframe:  13,
 			Ftics:   -1,
 		},
 		429: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     14,
 			Ftics:      5,
 			Fnextstate: s_CPOS_XDIE2,
 		},
 		430: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     15,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_XScream),
 			Fnextstate: s_CPOS_XDIE3,
 		},
 		431: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     16,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_CPOS_XDIE4,
 		},
 		432: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     17,
 			Ftics:      5,
 			Fnextstate: s_CPOS_XDIE5,
 		},
 		433: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     18,
 			Ftics:      5,
 			Fnextstate: s_CPOS_XDIE6,
 		},
 		434: {
-			Fsprite: SPR_CPOS,
+			Fsprite: spr_CPOS,
 			Fframe:  19,
 			Ftics:   -1,
 		},
 		435: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     13,
 			Ftics:      5,
 			Fnextstate: s_CPOS_RAISE2,
 		},
 		436: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     12,
 			Ftics:      5,
 			Fnextstate: s_CPOS_RAISE3,
 		},
 		437: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     11,
 			Ftics:      5,
 			Fnextstate: s_CPOS_RAISE4,
 		},
 		438: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     10,
 			Ftics:      5,
 			Fnextstate: s_CPOS_RAISE5,
 		},
 		439: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     9,
 			Ftics:      5,
 			Fnextstate: s_CPOS_RAISE6,
 		},
 		440: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     8,
 			Ftics:      5,
 			Fnextstate: s_CPOS_RAISE7,
 		},
 		441: {
-			Fsprite:    SPR_CPOS,
+			Fsprite:    spr_CPOS,
 			Fframe:     7,
 			Ftics:      5,
 			Fnextstate: s_CPOS_RUN1,
@@ -13124,2973 +13124,2973 @@ func init() {
 			Fnextstate: s_TROO_RUN1,
 		},
 		475: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_SARG_STND2,
 		},
 		476: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_SARG_STND,
 		},
 		477: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SARG_RUN2,
 		},
 		478: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SARG_RUN3,
 		},
 		479: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     1,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SARG_RUN4,
 		},
 		480: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     1,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SARG_RUN5,
 		},
 		481: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     2,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SARG_RUN6,
 		},
 		482: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     2,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SARG_RUN7,
 		},
 		483: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     3,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SARG_RUN8,
 		},
 		484: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     3,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SARG_RUN1,
 		},
 		485: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     4,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SARG_ATK2,
 		},
 		486: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     5,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SARG_ATK3,
 		},
 		487: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     6,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_SargAttack),
 			Fnextstate: s_SARG_RUN1,
 		},
 		488: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     7,
 			Ftics:      2,
 			Fnextstate: s_SARG_PAIN2,
 		},
 		489: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     7,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_SARG_RUN1,
 		},
 		490: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     8,
 			Ftics:      8,
 			Fnextstate: s_SARG_DIE2,
 		},
 		491: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     9,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_SARG_DIE3,
 		},
 		492: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     10,
 			Ftics:      4,
 			Fnextstate: s_SARG_DIE4,
 		},
 		493: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     11,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_SARG_DIE5,
 		},
 		494: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     12,
 			Ftics:      4,
 			Fnextstate: s_SARG_DIE6,
 		},
 		495: {
-			Fsprite: SPR_SARG,
+			Fsprite: spr_SARG,
 			Fframe:  13,
 			Ftics:   -1,
 		},
 		496: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     13,
 			Ftics:      5,
 			Fnextstate: s_SARG_RAISE2,
 		},
 		497: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     12,
 			Ftics:      5,
 			Fnextstate: s_SARG_RAISE3,
 		},
 		498: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     11,
 			Ftics:      5,
 			Fnextstate: s_SARG_RAISE4,
 		},
 		499: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     10,
 			Ftics:      5,
 			Fnextstate: s_SARG_RAISE5,
 		},
 		500: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     9,
 			Ftics:      5,
 			Fnextstate: s_SARG_RAISE6,
 		},
 		501: {
-			Fsprite:    SPR_SARG,
+			Fsprite:    spr_SARG,
 			Fframe:     8,
 			Ftics:      5,
 			Fnextstate: s_SARG_RUN1,
 		},
 		502: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_HEAD_STND,
 		},
 		503: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_HEAD_RUN1,
 		},
 		504: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     1,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_HEAD_ATK2,
 		},
 		505: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     2,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_HEAD_ATK3,
 		},
 		506: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     32771,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_HeadAttack),
 			Fnextstate: s_HEAD_RUN1,
 		},
 		507: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     4,
 			Ftics:      3,
 			Fnextstate: s_HEAD_PAIN2,
 		},
 		508: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     4,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_HEAD_PAIN3,
 		},
 		509: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     5,
 			Ftics:      6,
 			Fnextstate: s_HEAD_RUN1,
 		},
 		510: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     6,
 			Ftics:      8,
 			Fnextstate: s_HEAD_DIE2,
 		},
 		511: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     7,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_HEAD_DIE3,
 		},
 		512: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     8,
 			Ftics:      8,
 			Fnextstate: s_HEAD_DIE4,
 		},
 		513: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     9,
 			Ftics:      8,
 			Fnextstate: s_HEAD_DIE5,
 		},
 		514: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     10,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_HEAD_DIE6,
 		},
 		515: {
-			Fsprite: SPR_HEAD,
+			Fsprite: spr_HEAD,
 			Fframe:  11,
 			Ftics:   -1,
 		},
 		516: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     11,
 			Ftics:      8,
 			Fnextstate: s_HEAD_RAISE2,
 		},
 		517: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     10,
 			Ftics:      8,
 			Fnextstate: s_HEAD_RAISE3,
 		},
 		518: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     9,
 			Ftics:      8,
 			Fnextstate: s_HEAD_RAISE4,
 		},
 		519: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     8,
 			Ftics:      8,
 			Fnextstate: s_HEAD_RAISE5,
 		},
 		520: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     7,
 			Ftics:      8,
 			Fnextstate: s_HEAD_RAISE6,
 		},
 		521: {
-			Fsprite:    SPR_HEAD,
+			Fsprite:    spr_HEAD,
 			Fframe:     6,
 			Ftics:      8,
 			Fnextstate: s_HEAD_RUN1,
 		},
 		522: {
-			Fsprite:    SPR_BAL7,
+			Fsprite:    spr_BAL7,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_BRBALL2,
 		},
 		523: {
-			Fsprite:    SPR_BAL7,
+			Fsprite:    spr_BAL7,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_BRBALL1,
 		},
 		524: {
-			Fsprite:    SPR_BAL7,
+			Fsprite:    spr_BAL7,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_BRBALLX2,
 		},
 		525: {
-			Fsprite:    SPR_BAL7,
+			Fsprite:    spr_BAL7,
 			Fframe:     32771,
 			Ftics:      6,
 			Fnextstate: s_BRBALLX3,
 		},
 		526: {
-			Fsprite: SPR_BAL7,
+			Fsprite: spr_BAL7,
 			Fframe:  32772,
 			Ftics:   6,
 		},
 		527: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_BOSS_STND2,
 		},
 		528: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_BOSS_STND,
 		},
 		529: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOSS_RUN2,
 		},
 		530: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOSS_RUN3,
 		},
 		531: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOSS_RUN4,
 		},
 		532: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOSS_RUN5,
 		},
 		533: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOSS_RUN6,
 		},
 		534: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOSS_RUN7,
 		},
 		535: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOSS_RUN8,
 		},
 		536: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOSS_RUN1,
 		},
 		537: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     4,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_BOSS_ATK2,
 		},
 		538: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     5,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_BOSS_ATK3,
 		},
 		539: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     6,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_BruisAttack),
 			Fnextstate: s_BOSS_RUN1,
 		},
 		540: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     7,
 			Ftics:      2,
 			Fnextstate: s_BOSS_PAIN2,
 		},
 		541: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     7,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_BOSS_RUN1,
 		},
 		542: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     8,
 			Ftics:      8,
 			Fnextstate: s_BOSS_DIE2,
 		},
 		543: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     9,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_BOSS_DIE3,
 		},
 		544: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     10,
 			Ftics:      8,
 			Fnextstate: s_BOSS_DIE4,
 		},
 		545: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     11,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_BOSS_DIE5,
 		},
 		546: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     12,
 			Ftics:      8,
 			Fnextstate: s_BOSS_DIE6,
 		},
 		547: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     13,
 			Ftics:      8,
 			Fnextstate: s_BOSS_DIE7,
 		},
 		548: {
-			Fsprite: SPR_BOSS,
+			Fsprite: spr_BOSS,
 			Fframe:  14,
 			Ftics:   -1,
 			Faction: mobjFuncToAction(a_BossDeath),
 		},
 		549: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     14,
 			Ftics:      8,
 			Fnextstate: s_BOSS_RAISE2,
 		},
 		550: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     13,
 			Ftics:      8,
 			Fnextstate: s_BOSS_RAISE3,
 		},
 		551: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     12,
 			Ftics:      8,
 			Fnextstate: s_BOSS_RAISE4,
 		},
 		552: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     11,
 			Ftics:      8,
 			Fnextstate: s_BOSS_RAISE5,
 		},
 		553: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     10,
 			Ftics:      8,
 			Fnextstate: s_BOSS_RAISE6,
 		},
 		554: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     9,
 			Ftics:      8,
 			Fnextstate: s_BOSS_RAISE7,
 		},
 		555: {
-			Fsprite:    SPR_BOSS,
+			Fsprite:    spr_BOSS,
 			Fframe:     8,
 			Ftics:      8,
 			Fnextstate: s_BOSS_RUN1,
 		},
 		556: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_BOS2_STND2,
 		},
 		557: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_BOS2_STND,
 		},
 		558: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOS2_RUN2,
 		},
 		559: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOS2_RUN3,
 		},
 		560: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOS2_RUN4,
 		},
 		561: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOS2_RUN5,
 		},
 		562: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOS2_RUN6,
 		},
 		563: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOS2_RUN7,
 		},
 		564: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOS2_RUN8,
 		},
 		565: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BOS2_RUN1,
 		},
 		566: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     4,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_BOS2_ATK2,
 		},
 		567: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     5,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_BOS2_ATK3,
 		},
 		568: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     6,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_BruisAttack),
 			Fnextstate: s_BOS2_RUN1,
 		},
 		569: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     7,
 			Ftics:      2,
 			Fnextstate: s_BOS2_PAIN2,
 		},
 		570: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     7,
 			Ftics:      2,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_BOS2_RUN1,
 		},
 		571: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     8,
 			Ftics:      8,
 			Fnextstate: s_BOS2_DIE2,
 		},
 		572: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     9,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_BOS2_DIE3,
 		},
 		573: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     10,
 			Ftics:      8,
 			Fnextstate: s_BOS2_DIE4,
 		},
 		574: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     11,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_BOS2_DIE5,
 		},
 		575: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     12,
 			Ftics:      8,
 			Fnextstate: s_BOS2_DIE6,
 		},
 		576: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     13,
 			Ftics:      8,
 			Fnextstate: s_BOS2_DIE7,
 		},
 		577: {
-			Fsprite: SPR_BOS2,
+			Fsprite: spr_BOS2,
 			Fframe:  14,
 			Ftics:   -1,
 		},
 		578: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     14,
 			Ftics:      8,
 			Fnextstate: s_BOS2_RAISE2,
 		},
 		579: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     13,
 			Ftics:      8,
 			Fnextstate: s_BOS2_RAISE3,
 		},
 		580: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     12,
 			Ftics:      8,
 			Fnextstate: s_BOS2_RAISE4,
 		},
 		581: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     11,
 			Ftics:      8,
 			Fnextstate: s_BOS2_RAISE5,
 		},
 		582: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     10,
 			Ftics:      8,
 			Fnextstate: s_BOS2_RAISE6,
 		},
 		583: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     9,
 			Ftics:      8,
 			Fnextstate: s_BOS2_RAISE7,
 		},
 		584: {
-			Fsprite:    SPR_BOS2,
+			Fsprite:    spr_BOS2,
 			Fframe:     8,
 			Ftics:      8,
 			Fnextstate: s_BOS2_RUN1,
 		},
 		585: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32768,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_SKULL_STND2,
 		},
 		586: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32769,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_SKULL_STND,
 		},
 		587: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32768,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKULL_RUN2,
 		},
 		588: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32769,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SKULL_RUN1,
 		},
 		589: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32770,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SKULL_ATK2,
 		},
 		590: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32771,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_SkullAttack),
 			Fnextstate: s_SKULL_ATK3,
 		},
 		591: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32770,
 			Ftics:      4,
 			Fnextstate: s_SKULL_ATK4,
 		},
 		592: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32771,
 			Ftics:      4,
 			Fnextstate: s_SKULL_ATK3,
 		},
 		593: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32772,
 			Ftics:      3,
 			Fnextstate: s_SKULL_PAIN2,
 		},
 		594: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32772,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_SKULL_RUN1,
 		},
 		595: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32773,
 			Ftics:      6,
 			Fnextstate: s_SKULL_DIE2,
 		},
 		596: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32774,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_SKULL_DIE3,
 		},
 		597: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32775,
 			Ftics:      6,
 			Fnextstate: s_SKULL_DIE4,
 		},
 		598: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     32776,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_SKULL_DIE5,
 		},
 		599: {
-			Fsprite:    SPR_SKUL,
+			Fsprite:    spr_SKUL,
 			Fframe:     9,
 			Ftics:      6,
 			Fnextstate: s_SKULL_DIE6,
 		},
 		600: {
-			Fsprite: SPR_SKUL,
+			Fsprite: spr_SKUL,
 			Fframe:  10,
 			Ftics:   6,
 		},
 		601: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_SPID_STND2,
 		},
 		602: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_SPID_STND,
 		},
 		603: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Metal),
 			Fnextstate: s_SPID_RUN2,
 		},
 		604: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPID_RUN3,
 		},
 		605: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPID_RUN4,
 		},
 		606: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPID_RUN5,
 		},
 		607: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Metal),
 			Fnextstate: s_SPID_RUN6,
 		},
 		608: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPID_RUN7,
 		},
 		609: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPID_RUN8,
 		},
 		610: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPID_RUN9,
 		},
 		611: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     4,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Metal),
 			Fnextstate: s_SPID_RUN10,
 		},
 		612: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     4,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPID_RUN11,
 		},
 		613: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     5,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPID_RUN12,
 		},
 		614: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     5,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SPID_RUN1,
 		},
 		615: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     32768,
 			Ftics:      20,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SPID_ATK2,
 		},
 		616: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     32774,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_SPosAttack),
 			Fnextstate: s_SPID_ATK3,
 		},
 		617: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     32775,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_SPosAttack),
 			Fnextstate: s_SPID_ATK4,
 		},
 		618: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     32775,
 			Ftics:      1,
 			Faction:    mobjFuncToAction(a_SpidRefire),
 			Fnextstate: s_SPID_ATK2,
 		},
 		619: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     8,
 			Ftics:      3,
 			Fnextstate: s_SPID_PAIN2,
 		},
 		620: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     8,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_SPID_RUN1,
 		},
 		621: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     9,
 			Ftics:      20,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_SPID_DIE2,
 		},
 		622: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     10,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_SPID_DIE3,
 		},
 		623: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     11,
 			Ftics:      10,
 			Fnextstate: s_SPID_DIE4,
 		},
 		624: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     12,
 			Ftics:      10,
 			Fnextstate: s_SPID_DIE5,
 		},
 		625: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     13,
 			Ftics:      10,
 			Fnextstate: s_SPID_DIE6,
 		},
 		626: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     14,
 			Ftics:      10,
 			Fnextstate: s_SPID_DIE7,
 		},
 		627: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     15,
 			Ftics:      10,
 			Fnextstate: s_SPID_DIE8,
 		},
 		628: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     16,
 			Ftics:      10,
 			Fnextstate: s_SPID_DIE9,
 		},
 		629: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     17,
 			Ftics:      10,
 			Fnextstate: s_SPID_DIE10,
 		},
 		630: {
-			Fsprite:    SPR_SPID,
+			Fsprite:    spr_SPID,
 			Fframe:     18,
 			Ftics:      30,
 			Fnextstate: s_SPID_DIE11,
 		},
 		631: {
-			Fsprite: SPR_SPID,
+			Fsprite: spr_SPID,
 			Fframe:  18,
 			Ftics:   -1,
 			Faction: mobjFuncToAction(a_BossDeath),
 		},
 		632: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_BSPI_STND2,
 		},
 		633: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_BSPI_STND,
 		},
 		634: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Ftics:      20,
 			Fnextstate: s_BSPI_RUN1,
 		},
 		635: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_BabyMetal),
 			Fnextstate: s_BSPI_RUN2,
 		},
 		636: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BSPI_RUN3,
 		},
 		637: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BSPI_RUN4,
 		},
 		638: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BSPI_RUN5,
 		},
 		639: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BSPI_RUN6,
 		},
 		640: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BSPI_RUN7,
 		},
 		641: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_BabyMetal),
 			Fnextstate: s_BSPI_RUN8,
 		},
 		642: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BSPI_RUN9,
 		},
 		643: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     4,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BSPI_RUN10,
 		},
 		644: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     4,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BSPI_RUN11,
 		},
 		645: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     5,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BSPI_RUN12,
 		},
 		646: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     5,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_BSPI_RUN1,
 		},
 		647: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     32768,
 			Ftics:      20,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_BSPI_ATK2,
 		},
 		648: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     32774,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_BspiAttack),
 			Fnextstate: s_BSPI_ATK3,
 		},
 		649: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     32775,
 			Ftics:      4,
 			Fnextstate: s_BSPI_ATK4,
 		},
 		650: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     32775,
 			Ftics:      1,
 			Faction:    mobjFuncToAction(a_SpidRefire),
 			Fnextstate: s_BSPI_ATK2,
 		},
 		651: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     8,
 			Ftics:      3,
 			Fnextstate: s_BSPI_PAIN2,
 		},
 		652: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     8,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_BSPI_RUN1,
 		},
 		653: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     9,
 			Ftics:      20,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_BSPI_DIE2,
 		},
 		654: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     10,
 			Ftics:      7,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_BSPI_DIE3,
 		},
 		655: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     11,
 			Ftics:      7,
 			Fnextstate: s_BSPI_DIE4,
 		},
 		656: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     12,
 			Ftics:      7,
 			Fnextstate: s_BSPI_DIE5,
 		},
 		657: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     13,
 			Ftics:      7,
 			Fnextstate: s_BSPI_DIE6,
 		},
 		658: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     14,
 			Ftics:      7,
 			Fnextstate: s_BSPI_DIE7,
 		},
 		659: {
-			Fsprite: SPR_BSPI,
+			Fsprite: spr_BSPI,
 			Fframe:  15,
 			Ftics:   -1,
 			Faction: mobjFuncToAction(a_BossDeath),
 		},
 		660: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     15,
 			Ftics:      5,
 			Fnextstate: s_BSPI_RAISE2,
 		},
 		661: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     14,
 			Ftics:      5,
 			Fnextstate: s_BSPI_RAISE3,
 		},
 		662: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     13,
 			Ftics:      5,
 			Fnextstate: s_BSPI_RAISE4,
 		},
 		663: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     12,
 			Ftics:      5,
 			Fnextstate: s_BSPI_RAISE5,
 		},
 		664: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     11,
 			Ftics:      5,
 			Fnextstate: s_BSPI_RAISE6,
 		},
 		665: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     10,
 			Ftics:      5,
 			Fnextstate: s_BSPI_RAISE7,
 		},
 		666: {
-			Fsprite:    SPR_BSPI,
+			Fsprite:    spr_BSPI,
 			Fframe:     9,
 			Ftics:      5,
 			Fnextstate: s_BSPI_RUN1,
 		},
 		667: {
-			Fsprite:    SPR_APLS,
+			Fsprite:    spr_APLS,
 			Fframe:     32768,
 			Ftics:      5,
 			Fnextstate: s_ARACH_PLAZ2,
 		},
 		668: {
-			Fsprite:    SPR_APLS,
+			Fsprite:    spr_APLS,
 			Fframe:     32769,
 			Ftics:      5,
 			Fnextstate: s_ARACH_PLAZ,
 		},
 		669: {
-			Fsprite:    SPR_APBX,
+			Fsprite:    spr_APBX,
 			Fframe:     32768,
 			Ftics:      5,
 			Fnextstate: s_ARACH_PLEX2,
 		},
 		670: {
-			Fsprite:    SPR_APBX,
+			Fsprite:    spr_APBX,
 			Fframe:     32769,
 			Ftics:      5,
 			Fnextstate: s_ARACH_PLEX3,
 		},
 		671: {
-			Fsprite:    SPR_APBX,
+			Fsprite:    spr_APBX,
 			Fframe:     32770,
 			Ftics:      5,
 			Fnextstate: s_ARACH_PLEX4,
 		},
 		672: {
-			Fsprite:    SPR_APBX,
+			Fsprite:    spr_APBX,
 			Fframe:     32771,
 			Ftics:      5,
 			Fnextstate: s_ARACH_PLEX5,
 		},
 		673: {
-			Fsprite: SPR_APBX,
+			Fsprite: spr_APBX,
 			Fframe:  32772,
 			Ftics:   5,
 		},
 		674: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_CYBER_STND2,
 		},
 		675: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_CYBER_STND,
 		},
 		676: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Hoof),
 			Fnextstate: s_CYBER_RUN2,
 		},
 		677: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CYBER_RUN3,
 		},
 		678: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CYBER_RUN4,
 		},
 		679: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CYBER_RUN5,
 		},
 		680: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CYBER_RUN6,
 		},
 		681: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CYBER_RUN7,
 		},
 		682: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Metal),
 			Fnextstate: s_CYBER_RUN8,
 		},
 		683: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_CYBER_RUN1,
 		},
 		684: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     4,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_CYBER_ATK2,
 		},
 		685: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     5,
 			Ftics:      12,
 			Faction:    mobjFuncToAction(a_CyberAttack),
 			Fnextstate: s_CYBER_ATK3,
 		},
 		686: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     4,
 			Ftics:      12,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_CYBER_ATK4,
 		},
 		687: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     5,
 			Ftics:      12,
 			Faction:    mobjFuncToAction(a_CyberAttack),
 			Fnextstate: s_CYBER_ATK5,
 		},
 		688: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     4,
 			Ftics:      12,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_CYBER_ATK6,
 		},
 		689: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     5,
 			Ftics:      12,
 			Faction:    mobjFuncToAction(a_CyberAttack),
 			Fnextstate: s_CYBER_RUN1,
 		},
 		690: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     6,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_CYBER_RUN1,
 		},
 		691: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     7,
 			Ftics:      10,
 			Fnextstate: s_CYBER_DIE2,
 		},
 		692: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     8,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_CYBER_DIE3,
 		},
 		693: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     9,
 			Ftics:      10,
 			Fnextstate: s_CYBER_DIE4,
 		},
 		694: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     10,
 			Ftics:      10,
 			Fnextstate: s_CYBER_DIE5,
 		},
 		695: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     11,
 			Ftics:      10,
 			Fnextstate: s_CYBER_DIE6,
 		},
 		696: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     12,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_CYBER_DIE7,
 		},
 		697: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     13,
 			Ftics:      10,
 			Fnextstate: s_CYBER_DIE8,
 		},
 		698: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     14,
 			Ftics:      10,
 			Fnextstate: s_CYBER_DIE9,
 		},
 		699: {
-			Fsprite:    SPR_CYBR,
+			Fsprite:    spr_CYBR,
 			Fframe:     15,
 			Ftics:      30,
 			Fnextstate: s_CYBER_DIE10,
 		},
 		700: {
-			Fsprite: SPR_CYBR,
+			Fsprite: spr_CYBR,
 			Fframe:  15,
 			Ftics:   -1,
 			Faction: mobjFuncToAction(a_BossDeath),
 		},
 		701: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_PAIN_STND,
 		},
 		702: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_PAIN_RUN2,
 		},
 		703: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_PAIN_RUN3,
 		},
 		704: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_PAIN_RUN4,
 		},
 		705: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_PAIN_RUN5,
 		},
 		706: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_PAIN_RUN6,
 		},
 		707: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_PAIN_RUN1,
 		},
 		708: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     3,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_PAIN_ATK2,
 		},
 		709: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     4,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_PAIN_ATK3,
 		},
 		710: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     32773,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_PAIN_ATK4,
 		},
 		711: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     32773,
 			Faction:    mobjFuncToAction(a_PainAttack),
 			Fnextstate: s_PAIN_RUN1,
 		},
 		712: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     6,
 			Ftics:      6,
 			Fnextstate: s_PAIN_PAIN2,
 		},
 		713: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     6,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_PAIN_RUN1,
 		},
 		714: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     32775,
 			Ftics:      8,
 			Fnextstate: s_PAIN_DIE2,
 		},
 		715: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     32776,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_PAIN_DIE3,
 		},
 		716: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     32777,
 			Ftics:      8,
 			Fnextstate: s_PAIN_DIE4,
 		},
 		717: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     32778,
 			Ftics:      8,
 			Fnextstate: s_PAIN_DIE5,
 		},
 		718: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     32779,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_PainDie),
 			Fnextstate: s_PAIN_DIE6,
 		},
 		719: {
-			Fsprite: SPR_PAIN,
+			Fsprite: spr_PAIN,
 			Fframe:  32780,
 			Ftics:   8,
 		},
 		720: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     12,
 			Ftics:      8,
 			Fnextstate: s_PAIN_RAISE2,
 		},
 		721: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     11,
 			Ftics:      8,
 			Fnextstate: s_PAIN_RAISE3,
 		},
 		722: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     10,
 			Ftics:      8,
 			Fnextstate: s_PAIN_RAISE4,
 		},
 		723: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     9,
 			Ftics:      8,
 			Fnextstate: s_PAIN_RAISE5,
 		},
 		724: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     8,
 			Ftics:      8,
 			Fnextstate: s_PAIN_RAISE6,
 		},
 		725: {
-			Fsprite:    SPR_PAIN,
+			Fsprite:    spr_PAIN,
 			Fframe:     7,
 			Ftics:      8,
 			Fnextstate: s_PAIN_RUN1,
 		},
 		726: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_SSWV_STND2,
 		},
 		727: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     1,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_SSWV_STND,
 		},
 		728: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SSWV_RUN2,
 		},
 		729: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SSWV_RUN3,
 		},
 		730: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SSWV_RUN4,
 		},
 		731: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     1,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SSWV_RUN5,
 		},
 		732: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SSWV_RUN6,
 		},
 		733: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     2,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SSWV_RUN7,
 		},
 		734: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SSWV_RUN8,
 		},
 		735: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     3,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Chase),
 			Fnextstate: s_SSWV_RUN1,
 		},
 		736: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     4,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SSWV_ATK2,
 		},
 		737: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     5,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SSWV_ATK3,
 		},
 		738: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     32774,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_CPosAttack),
 			Fnextstate: s_SSWV_ATK4,
 		},
 		739: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     5,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_FaceTarget),
 			Fnextstate: s_SSWV_ATK5,
 		},
 		740: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     32774,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_CPosAttack),
 			Fnextstate: s_SSWV_ATK6,
 		},
 		741: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     5,
 			Ftics:      1,
 			Faction:    mobjFuncToAction(a_CPosRefire),
 			Fnextstate: s_SSWV_ATK2,
 		},
 		742: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     7,
 			Ftics:      3,
 			Fnextstate: s_SSWV_PAIN2,
 		},
 		743: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     7,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_SSWV_RUN1,
 		},
 		744: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     8,
 			Ftics:      5,
 			Fnextstate: s_SSWV_DIE2,
 		},
 		745: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     9,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_SSWV_DIE3,
 		},
 		746: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     10,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_SSWV_DIE4,
 		},
 		747: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     11,
 			Ftics:      5,
 			Fnextstate: s_SSWV_DIE5,
 		},
 		748: {
-			Fsprite: SPR_SSWV,
+			Fsprite: spr_SSWV,
 			Fframe:  12,
 			Ftics:   -1,
 		},
 		749: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     13,
 			Ftics:      5,
 			Fnextstate: s_SSWV_XDIE2,
 		},
 		750: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     14,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_XScream),
 			Fnextstate: s_SSWV_XDIE3,
 		},
 		751: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     15,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Fall),
 			Fnextstate: s_SSWV_XDIE4,
 		},
 		752: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     16,
 			Ftics:      5,
 			Fnextstate: s_SSWV_XDIE5,
 		},
 		753: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     17,
 			Ftics:      5,
 			Fnextstate: s_SSWV_XDIE6,
 		},
 		754: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     18,
 			Ftics:      5,
 			Fnextstate: s_SSWV_XDIE7,
 		},
 		755: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     19,
 			Ftics:      5,
 			Fnextstate: s_SSWV_XDIE8,
 		},
 		756: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     20,
 			Ftics:      5,
 			Fnextstate: s_SSWV_XDIE9,
 		},
 		757: {
-			Fsprite: SPR_SSWV,
+			Fsprite: spr_SSWV,
 			Fframe:  21,
 			Ftics:   -1,
 		},
 		758: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     12,
 			Ftics:      5,
 			Fnextstate: s_SSWV_RAISE2,
 		},
 		759: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     11,
 			Ftics:      5,
 			Fnextstate: s_SSWV_RAISE3,
 		},
 		760: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     10,
 			Ftics:      5,
 			Fnextstate: s_SSWV_RAISE4,
 		},
 		761: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     9,
 			Ftics:      5,
 			Fnextstate: s_SSWV_RAISE5,
 		},
 		762: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Fframe:     8,
 			Ftics:      5,
 			Fnextstate: s_SSWV_RUN1,
 		},
 		763: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Ftics:      -1,
 			Fnextstate: s_KEENSTND,
 		},
 		764: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Ftics:      6,
 			Fnextstate: s_COMMKEEN2,
 		},
 		765: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Fframe:     1,
 			Ftics:      6,
 			Fnextstate: s_COMMKEEN3,
 		},
 		766: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Fframe:     2,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_COMMKEEN4,
 		},
 		767: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Fframe:     3,
 			Ftics:      6,
 			Fnextstate: s_COMMKEEN5,
 		},
 		768: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Fframe:     4,
 			Ftics:      6,
 			Fnextstate: s_COMMKEEN6,
 		},
 		769: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Fframe:     5,
 			Ftics:      6,
 			Fnextstate: s_COMMKEEN7,
 		},
 		770: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Fframe:     6,
 			Ftics:      6,
 			Fnextstate: s_COMMKEEN8,
 		},
 		771: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Fframe:     7,
 			Ftics:      6,
 			Fnextstate: s_COMMKEEN9,
 		},
 		772: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Fframe:     8,
 			Ftics:      6,
 			Fnextstate: s_COMMKEEN10,
 		},
 		773: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Fframe:     9,
 			Ftics:      6,
 			Fnextstate: s_COMMKEEN11,
 		},
 		774: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Fframe:     10,
 			Ftics:      6,
 			Faction:    mobjFuncToAction(a_KeenDie),
 			Fnextstate: s_COMMKEEN12,
 		},
 		775: {
-			Fsprite: SPR_KEEN,
+			Fsprite: spr_KEEN,
 			Fframe:  11,
 			Ftics:   -1,
 		},
 		776: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Fframe:     12,
 			Ftics:      4,
 			Fnextstate: s_KEENPAIN2,
 		},
 		777: {
-			Fsprite:    SPR_KEEN,
+			Fsprite:    spr_KEEN,
 			Fframe:     12,
 			Ftics:      8,
 			Faction:    mobjFuncToAction(a_Pain),
 			Fnextstate: s_KEENSTND,
 		},
 		778: {
-			Fsprite: SPR_BBRN,
+			Fsprite: spr_BBRN,
 			Ftics:   -1,
 		},
 		779: {
-			Fsprite:    SPR_BBRN,
+			Fsprite:    spr_BBRN,
 			Fframe:     1,
 			Ftics:      36,
 			Faction:    mobjFuncToAction(a_BrainPain),
 			Fnextstate: s_BRAIN,
 		},
 		780: {
-			Fsprite:    SPR_BBRN,
+			Fsprite:    spr_BBRN,
 			Ftics:      100,
 			Faction:    mobjFuncToAction(a_BrainScream),
 			Fnextstate: s_BRAIN_DIE2,
 		},
 		781: {
-			Fsprite:    SPR_BBRN,
+			Fsprite:    spr_BBRN,
 			Ftics:      10,
 			Fnextstate: s_BRAIN_DIE3,
 		},
 		782: {
-			Fsprite:    SPR_BBRN,
+			Fsprite:    spr_BBRN,
 			Ftics:      10,
 			Fnextstate: s_BRAIN_DIE4,
 		},
 		783: {
-			Fsprite: SPR_BBRN,
+			Fsprite: spr_BBRN,
 			Ftics:   -1,
 			Faction: mobjFuncToAction(a_BrainDie),
 		},
 		784: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Look),
 			Fnextstate: s_BRAINEYE,
 		},
 		785: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Ftics:      181,
 			Faction:    mobjFuncToAction(a_BrainAwake),
 			Fnextstate: s_BRAINEYE1,
 		},
 		786: {
-			Fsprite:    SPR_SSWV,
+			Fsprite:    spr_SSWV,
 			Ftics:      150,
 			Faction:    mobjFuncToAction(a_BrainSpit),
 			Fnextstate: s_BRAINEYE1,
 		},
 		787: {
-			Fsprite:    SPR_BOSF,
+			Fsprite:    spr_BOSF,
 			Fframe:     32768,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_SpawnSound),
 			Fnextstate: s_SPAWN2,
 		},
 		788: {
-			Fsprite:    SPR_BOSF,
+			Fsprite:    spr_BOSF,
 			Fframe:     32769,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_SpawnFly),
 			Fnextstate: s_SPAWN3,
 		},
 		789: {
-			Fsprite:    SPR_BOSF,
+			Fsprite:    spr_BOSF,
 			Fframe:     32770,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_SpawnFly),
 			Fnextstate: s_SPAWN4,
 		},
 		790: {
-			Fsprite:    SPR_BOSF,
+			Fsprite:    spr_BOSF,
 			Fframe:     32771,
 			Ftics:      3,
 			Faction:    mobjFuncToAction(a_SpawnFly),
 			Fnextstate: s_SPAWN1,
 		},
 		791: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32768,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_SPAWNFIRE2,
 		},
 		792: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32769,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_SPAWNFIRE3,
 		},
 		793: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32770,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_SPAWNFIRE4,
 		},
 		794: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32771,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_SPAWNFIRE5,
 		},
 		795: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32772,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_SPAWNFIRE6,
 		},
 		796: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32773,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_SPAWNFIRE7,
 		},
 		797: {
-			Fsprite:    SPR_FIRE,
+			Fsprite:    spr_FIRE,
 			Fframe:     32774,
 			Ftics:      4,
 			Faction:    mobjFuncToAction(a_Fire),
 			Fnextstate: s_SPAWNFIRE8,
 		},
 		798: {
-			Fsprite: SPR_FIRE,
+			Fsprite: spr_FIRE,
 			Fframe:  32775,
 			Ftics:   4,
 			Faction: mobjFuncToAction(a_Fire),
 		},
 		799: {
-			Fsprite:    SPR_MISL,
+			Fsprite:    spr_MISL,
 			Fframe:     32769,
 			Ftics:      10,
 			Fnextstate: s_BRAINEXPLODE2,
 		},
 		800: {
-			Fsprite:    SPR_MISL,
+			Fsprite:    spr_MISL,
 			Fframe:     32770,
 			Ftics:      10,
 			Fnextstate: s_BRAINEXPLODE3,
 		},
 		801: {
-			Fsprite: SPR_MISL,
+			Fsprite: spr_MISL,
 			Fframe:  32771,
 			Ftics:   10,
 			Faction: mobjFuncToAction(a_BrainExplode),
 		},
 		802: {
-			Fsprite:    SPR_ARM1,
+			Fsprite:    spr_ARM1,
 			Ftics:      6,
 			Fnextstate: s_ARM1A,
 		},
 		803: {
-			Fsprite:    SPR_ARM1,
+			Fsprite:    spr_ARM1,
 			Fframe:     32769,
 			Ftics:      7,
 			Fnextstate: s_ARM1,
 		},
 		804: {
-			Fsprite:    SPR_ARM2,
+			Fsprite:    spr_ARM2,
 			Ftics:      6,
 			Fnextstate: s_ARM2A,
 		},
 		805: {
-			Fsprite:    SPR_ARM2,
+			Fsprite:    spr_ARM2,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_ARM2,
 		},
 		806: {
-			Fsprite:    SPR_BAR1,
+			Fsprite:    spr_BAR1,
 			Ftics:      6,
 			Fnextstate: s_BAR2,
 		},
 		807: {
-			Fsprite:    SPR_BAR1,
+			Fsprite:    spr_BAR1,
 			Fframe:     1,
 			Ftics:      6,
 			Fnextstate: s_BAR1,
 		},
 		808: {
-			Fsprite:    SPR_BEXP,
+			Fsprite:    spr_BEXP,
 			Fframe:     32768,
 			Ftics:      5,
 			Fnextstate: s_BEXP2,
 		},
 		809: {
-			Fsprite:    SPR_BEXP,
+			Fsprite:    spr_BEXP,
 			Fframe:     32769,
 			Ftics:      5,
 			Faction:    mobjFuncToAction(a_Scream),
 			Fnextstate: s_BEXP3,
 		},
 		810: {
-			Fsprite:    SPR_BEXP,
+			Fsprite:    spr_BEXP,
 			Fframe:     32770,
 			Ftics:      5,
 			Fnextstate: s_BEXP4,
 		},
 		811: {
-			Fsprite:    SPR_BEXP,
+			Fsprite:    spr_BEXP,
 			Fframe:     32771,
 			Ftics:      10,
 			Faction:    mobjFuncToAction(a_Explode),
 			Fnextstate: s_BEXP5,
 		},
 		812: {
-			Fsprite: SPR_BEXP,
+			Fsprite: spr_BEXP,
 			Fframe:  32772,
 			Ftics:   10,
 		},
 		813: {
-			Fsprite:    SPR_FCAN,
+			Fsprite:    spr_FCAN,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_BBAR2,
 		},
 		814: {
-			Fsprite:    SPR_FCAN,
+			Fsprite:    spr_FCAN,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_BBAR3,
 		},
 		815: {
-			Fsprite:    SPR_FCAN,
+			Fsprite:    spr_FCAN,
 			Fframe:     32770,
 			Ftics:      4,
 			Fnextstate: s_BBAR1,
 		},
 		816: {
-			Fsprite:    SPR_BON1,
+			Fsprite:    spr_BON1,
 			Ftics:      6,
 			Fnextstate: s_BON1A,
 		},
 		817: {
-			Fsprite:    SPR_BON1,
+			Fsprite:    spr_BON1,
 			Fframe:     1,
 			Ftics:      6,
 			Fnextstate: s_BON1B,
 		},
 		818: {
-			Fsprite:    SPR_BON1,
+			Fsprite:    spr_BON1,
 			Fframe:     2,
 			Ftics:      6,
 			Fnextstate: s_BON1C,
 		},
 		819: {
-			Fsprite:    SPR_BON1,
+			Fsprite:    spr_BON1,
 			Fframe:     3,
 			Ftics:      6,
 			Fnextstate: s_BON1D,
 		},
 		820: {
-			Fsprite:    SPR_BON1,
+			Fsprite:    spr_BON1,
 			Fframe:     2,
 			Ftics:      6,
 			Fnextstate: s_BON1E,
 		},
 		821: {
-			Fsprite:    SPR_BON1,
+			Fsprite:    spr_BON1,
 			Fframe:     1,
 			Ftics:      6,
 			Fnextstate: s_BON1,
 		},
 		822: {
-			Fsprite:    SPR_BON2,
+			Fsprite:    spr_BON2,
 			Ftics:      6,
 			Fnextstate: s_BON2A,
 		},
 		823: {
-			Fsprite:    SPR_BON2,
+			Fsprite:    spr_BON2,
 			Fframe:     1,
 			Ftics:      6,
 			Fnextstate: s_BON2B,
 		},
 		824: {
-			Fsprite:    SPR_BON2,
+			Fsprite:    spr_BON2,
 			Fframe:     2,
 			Ftics:      6,
 			Fnextstate: s_BON2C,
 		},
 		825: {
-			Fsprite:    SPR_BON2,
+			Fsprite:    spr_BON2,
 			Fframe:     3,
 			Ftics:      6,
 			Fnextstate: s_BON2D,
 		},
 		826: {
-			Fsprite:    SPR_BON2,
+			Fsprite:    spr_BON2,
 			Fframe:     2,
 			Ftics:      6,
 			Fnextstate: s_BON2E,
 		},
 		827: {
-			Fsprite:    SPR_BON2,
+			Fsprite:    spr_BON2,
 			Fframe:     1,
 			Ftics:      6,
 			Fnextstate: s_BON2,
 		},
 		828: {
-			Fsprite:    SPR_BKEY,
+			Fsprite:    spr_BKEY,
 			Ftics:      10,
 			Fnextstate: s_BKEY2,
 		},
 		829: {
-			Fsprite:    SPR_BKEY,
+			Fsprite:    spr_BKEY,
 			Fframe:     32769,
 			Ftics:      10,
 			Fnextstate: s_BKEY,
 		},
 		830: {
-			Fsprite:    SPR_RKEY,
+			Fsprite:    spr_RKEY,
 			Ftics:      10,
 			Fnextstate: s_RKEY2,
 		},
 		831: {
-			Fsprite:    SPR_RKEY,
+			Fsprite:    spr_RKEY,
 			Fframe:     32769,
 			Ftics:      10,
 			Fnextstate: s_RKEY,
 		},
 		832: {
-			Fsprite:    SPR_YKEY,
+			Fsprite:    spr_YKEY,
 			Ftics:      10,
 			Fnextstate: s_YKEY2,
 		},
 		833: {
-			Fsprite:    SPR_YKEY,
+			Fsprite:    spr_YKEY,
 			Fframe:     32769,
 			Ftics:      10,
 			Fnextstate: s_YKEY,
 		},
 		834: {
-			Fsprite:    SPR_BSKU,
+			Fsprite:    spr_BSKU,
 			Ftics:      10,
 			Fnextstate: s_BSKULL2,
 		},
 		835: {
-			Fsprite:    SPR_BSKU,
+			Fsprite:    spr_BSKU,
 			Fframe:     32769,
 			Ftics:      10,
 			Fnextstate: s_BSKULL,
 		},
 		836: {
-			Fsprite:    SPR_RSKU,
+			Fsprite:    spr_RSKU,
 			Ftics:      10,
 			Fnextstate: s_RSKULL2,
 		},
 		837: {
-			Fsprite:    SPR_RSKU,
+			Fsprite:    spr_RSKU,
 			Fframe:     32769,
 			Ftics:      10,
 			Fnextstate: s_RSKULL,
 		},
 		838: {
-			Fsprite:    SPR_YSKU,
+			Fsprite:    spr_YSKU,
 			Ftics:      10,
 			Fnextstate: s_YSKULL2,
 		},
 		839: {
-			Fsprite:    SPR_YSKU,
+			Fsprite:    spr_YSKU,
 			Fframe:     32769,
 			Ftics:      10,
 			Fnextstate: s_YSKULL,
 		},
 		840: {
-			Fsprite: SPR_STIM,
+			Fsprite: spr_STIM,
 			Ftics:   -1,
 		},
 		841: {
-			Fsprite: SPR_MEDI,
+			Fsprite: spr_MEDI,
 			Ftics:   -1,
 		},
 		842: {
-			Fsprite:    SPR_SOUL,
+			Fsprite:    spr_SOUL,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_SOUL2,
 		},
 		843: {
-			Fsprite:    SPR_SOUL,
+			Fsprite:    spr_SOUL,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_SOUL3,
 		},
 		844: {
-			Fsprite:    SPR_SOUL,
+			Fsprite:    spr_SOUL,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_SOUL4,
 		},
 		845: {
-			Fsprite:    SPR_SOUL,
+			Fsprite:    spr_SOUL,
 			Fframe:     32771,
 			Ftics:      6,
 			Fnextstate: s_SOUL5,
 		},
 		846: {
-			Fsprite:    SPR_SOUL,
+			Fsprite:    spr_SOUL,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_SOUL6,
 		},
 		847: {
-			Fsprite:    SPR_SOUL,
+			Fsprite:    spr_SOUL,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_SOUL,
 		},
 		848: {
-			Fsprite:    SPR_PINV,
+			Fsprite:    spr_PINV,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_PINV2,
 		},
 		849: {
-			Fsprite:    SPR_PINV,
+			Fsprite:    spr_PINV,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_PINV3,
 		},
 		850: {
-			Fsprite:    SPR_PINV,
+			Fsprite:    spr_PINV,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_PINV4,
 		},
 		851: {
-			Fsprite:    SPR_PINV,
+			Fsprite:    spr_PINV,
 			Fframe:     32771,
 			Ftics:      6,
 			Fnextstate: s_PINV,
 		},
 		852: {
-			Fsprite: SPR_PSTR,
+			Fsprite: spr_PSTR,
 			Fframe:  32768,
 			Ftics:   -1,
 		},
 		853: {
-			Fsprite:    SPR_PINS,
+			Fsprite:    spr_PINS,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_PINS2,
 		},
 		854: {
-			Fsprite:    SPR_PINS,
+			Fsprite:    spr_PINS,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_PINS3,
 		},
 		855: {
-			Fsprite:    SPR_PINS,
+			Fsprite:    spr_PINS,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_PINS4,
 		},
 		856: {
-			Fsprite:    SPR_PINS,
+			Fsprite:    spr_PINS,
 			Fframe:     32771,
 			Ftics:      6,
 			Fnextstate: s_PINS,
 		},
 		857: {
-			Fsprite:    SPR_MEGA,
+			Fsprite:    spr_MEGA,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_MEGA2,
 		},
 		858: {
-			Fsprite:    SPR_MEGA,
+			Fsprite:    spr_MEGA,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_MEGA3,
 		},
 		859: {
-			Fsprite:    SPR_MEGA,
+			Fsprite:    spr_MEGA,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_MEGA4,
 		},
 		860: {
-			Fsprite:    SPR_MEGA,
+			Fsprite:    spr_MEGA,
 			Fframe:     32771,
 			Ftics:      6,
 			Fnextstate: s_MEGA,
 		},
 		861: {
-			Fsprite: SPR_SUIT,
+			Fsprite: spr_SUIT,
 			Fframe:  32768,
 			Ftics:   -1,
 		},
 		862: {
-			Fsprite:    SPR_PMAP,
+			Fsprite:    spr_PMAP,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_PMAP2,
 		},
 		863: {
-			Fsprite:    SPR_PMAP,
+			Fsprite:    spr_PMAP,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_PMAP3,
 		},
 		864: {
-			Fsprite:    SPR_PMAP,
+			Fsprite:    spr_PMAP,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_PMAP4,
 		},
 		865: {
-			Fsprite:    SPR_PMAP,
+			Fsprite:    spr_PMAP,
 			Fframe:     32771,
 			Ftics:      6,
 			Fnextstate: s_PMAP5,
 		},
 		866: {
-			Fsprite:    SPR_PMAP,
+			Fsprite:    spr_PMAP,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_PMAP6,
 		},
 		867: {
-			Fsprite:    SPR_PMAP,
+			Fsprite:    spr_PMAP,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_PMAP,
 		},
 		868: {
-			Fsprite:    SPR_PVIS,
+			Fsprite:    spr_PVIS,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_PVIS2,
 		},
 		869: {
-			Fsprite:    SPR_PVIS,
+			Fsprite:    spr_PVIS,
 			Fframe:     1,
 			Ftics:      6,
 			Fnextstate: s_PVIS,
 		},
 		870: {
-			Fsprite: SPR_CLIP,
+			Fsprite: spr_CLIP,
 			Ftics:   -1,
 		},
 		871: {
-			Fsprite: SPR_AMMO,
+			Fsprite: spr_AMMO,
 			Ftics:   -1,
 		},
 		872: {
-			Fsprite: SPR_ROCK,
+			Fsprite: spr_ROCK,
 			Ftics:   -1,
 		},
 		873: {
-			Fsprite: SPR_BROK,
+			Fsprite: spr_BROK,
 			Ftics:   -1,
 		},
 		874: {
-			Fsprite: SPR_CELL,
+			Fsprite: spr_CELL,
 			Ftics:   -1,
 		},
 		875: {
-			Fsprite: SPR_CELP,
+			Fsprite: spr_CELP,
 			Ftics:   -1,
 		},
 		876: {
-			Fsprite: SPR_SHEL,
+			Fsprite: spr_SHEL,
 			Ftics:   -1,
 		},
 		877: {
-			Fsprite: SPR_SBOX,
+			Fsprite: spr_SBOX,
 			Ftics:   -1,
 		},
 		878: {
-			Fsprite: SPR_BPAK,
+			Fsprite: spr_BPAK,
 			Ftics:   -1,
 		},
 		879: {
-			Fsprite: SPR_BFUG,
+			Fsprite: spr_BFUG,
 			Ftics:   -1,
 		},
 		880: {
-			Fsprite: SPR_MGUN,
+			Fsprite: spr_MGUN,
 			Ftics:   -1,
 		},
 		881: {
-			Fsprite: SPR_CSAW,
+			Fsprite: spr_CSAW,
 			Ftics:   -1,
 		},
 		882: {
-			Fsprite: SPR_LAUN,
+			Fsprite: spr_LAUN,
 			Ftics:   -1,
 		},
 		883: {
-			Fsprite: SPR_PLAS,
+			Fsprite: spr_PLAS,
 			Ftics:   -1,
 		},
 		884: {
-			Fsprite: SPR_SHOT,
+			Fsprite: spr_SHOT,
 			Ftics:   -1,
 		},
 		885: {
-			Fsprite: SPR_SGN2,
+			Fsprite: spr_SGN2,
 			Ftics:   -1,
 		},
 		886: {
-			Fsprite: SPR_COLU,
+			Fsprite: spr_COLU,
 			Fframe:  32768,
 			Ftics:   -1,
 		},
 		887: {
-			Fsprite: SPR_SMT2,
+			Fsprite: spr_SMT2,
 			Ftics:   -1,
 		},
 		888: {
-			Fsprite:    SPR_GOR1,
+			Fsprite:    spr_GOR1,
 			Ftics:      10,
 			Fnextstate: s_BLOODYTWITCH2,
 		},
 		889: {
-			Fsprite:    SPR_GOR1,
+			Fsprite:    spr_GOR1,
 			Fframe:     1,
 			Ftics:      15,
 			Fnextstate: s_BLOODYTWITCH3,
 		},
 		890: {
-			Fsprite:    SPR_GOR1,
+			Fsprite:    spr_GOR1,
 			Fframe:     2,
 			Ftics:      8,
 			Fnextstate: s_BLOODYTWITCH4,
 		},
 		891: {
-			Fsprite:    SPR_GOR1,
+			Fsprite:    spr_GOR1,
 			Fframe:     1,
 			Ftics:      6,
 			Fnextstate: s_BLOODYTWITCH,
 		},
 		892: {
-			Fsprite: SPR_PLAY,
+			Fsprite: spr_PLAY,
 			Fframe:  13,
 			Ftics:   -1,
 		},
 		893: {
-			Fsprite: SPR_PLAY,
+			Fsprite: spr_PLAY,
 			Fframe:  18,
 			Ftics:   -1,
 		},
 		894: {
-			Fsprite: SPR_POL2,
+			Fsprite: spr_POL2,
 			Ftics:   -1,
 		},
 		895: {
-			Fsprite: SPR_POL5,
+			Fsprite: spr_POL5,
 			Ftics:   -1,
 		},
 		896: {
-			Fsprite: SPR_POL4,
+			Fsprite: spr_POL4,
 			Ftics:   -1,
 		},
 		897: {
-			Fsprite:    SPR_POL3,
+			Fsprite:    spr_POL3,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_HEADCANDLES2,
 		},
 		898: {
-			Fsprite:    SPR_POL3,
+			Fsprite:    spr_POL3,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_HEADCANDLES,
 		},
 		899: {
-			Fsprite: SPR_POL1,
+			Fsprite: spr_POL1,
 			Ftics:   -1,
 		},
 		900: {
-			Fsprite:    SPR_POL6,
+			Fsprite:    spr_POL6,
 			Ftics:      6,
 			Fnextstate: s_LIVESTICK2,
 		},
 		901: {
-			Fsprite:    SPR_POL6,
+			Fsprite:    spr_POL6,
 			Fframe:     1,
 			Ftics:      8,
 			Fnextstate: s_LIVESTICK,
 		},
 		902: {
-			Fsprite: SPR_GOR2,
+			Fsprite: spr_GOR2,
 			Ftics:   -1,
 		},
 		903: {
-			Fsprite: SPR_GOR3,
+			Fsprite: spr_GOR3,
 			Ftics:   -1,
 		},
 		904: {
-			Fsprite: SPR_GOR4,
+			Fsprite: spr_GOR4,
 			Ftics:   -1,
 		},
 		905: {
-			Fsprite: SPR_GOR5,
+			Fsprite: spr_GOR5,
 			Ftics:   -1,
 		},
 		906: {
-			Fsprite: SPR_SMIT,
+			Fsprite: spr_SMIT,
 			Ftics:   -1,
 		},
 		907: {
-			Fsprite: SPR_COL1,
+			Fsprite: spr_COL1,
 			Ftics:   -1,
 		},
 		908: {
-			Fsprite: SPR_COL2,
+			Fsprite: spr_COL2,
 			Ftics:   -1,
 		},
 		909: {
-			Fsprite: SPR_COL3,
+			Fsprite: spr_COL3,
 			Ftics:   -1,
 		},
 		910: {
-			Fsprite: SPR_COL4,
+			Fsprite: spr_COL4,
 			Ftics:   -1,
 		},
 		911: {
-			Fsprite: SPR_CAND,
+			Fsprite: spr_CAND,
 			Fframe:  32768,
 			Ftics:   -1,
 		},
 		912: {
-			Fsprite: SPR_CBRA,
+			Fsprite: spr_CBRA,
 			Fframe:  32768,
 			Ftics:   -1,
 		},
 		913: {
-			Fsprite: SPR_COL6,
+			Fsprite: spr_COL6,
 			Ftics:   -1,
 		},
 		914: {
-			Fsprite: SPR_TRE1,
+			Fsprite: spr_TRE1,
 			Ftics:   -1,
 		},
 		915: {
-			Fsprite: SPR_TRE2,
+			Fsprite: spr_TRE2,
 			Ftics:   -1,
 		},
 		916: {
-			Fsprite: SPR_ELEC,
+			Fsprite: spr_ELEC,
 			Ftics:   -1,
 		},
 		917: {
-			Fsprite:    SPR_CEYE,
+			Fsprite:    spr_CEYE,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_EVILEYE2,
 		},
 		918: {
-			Fsprite:    SPR_CEYE,
+			Fsprite:    spr_CEYE,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_EVILEYE3,
 		},
 		919: {
-			Fsprite:    SPR_CEYE,
+			Fsprite:    spr_CEYE,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_EVILEYE4,
 		},
 		920: {
-			Fsprite:    SPR_CEYE,
+			Fsprite:    spr_CEYE,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_EVILEYE,
 		},
 		921: {
-			Fsprite:    SPR_FSKU,
+			Fsprite:    spr_FSKU,
 			Fframe:     32768,
 			Ftics:      6,
 			Fnextstate: s_FLOATSKULL2,
 		},
 		922: {
-			Fsprite:    SPR_FSKU,
+			Fsprite:    spr_FSKU,
 			Fframe:     32769,
 			Ftics:      6,
 			Fnextstate: s_FLOATSKULL3,
 		},
 		923: {
-			Fsprite:    SPR_FSKU,
+			Fsprite:    spr_FSKU,
 			Fframe:     32770,
 			Ftics:      6,
 			Fnextstate: s_FLOATSKULL,
 		},
 		924: {
-			Fsprite:    SPR_COL5,
+			Fsprite:    spr_COL5,
 			Ftics:      14,
 			Fnextstate: s_HEARTCOL2,
 		},
 		925: {
-			Fsprite:    SPR_COL5,
+			Fsprite:    spr_COL5,
 			Fframe:     1,
 			Ftics:      14,
 			Fnextstate: s_HEARTCOL,
 		},
 		926: {
-			Fsprite:    SPR_TBLU,
+			Fsprite:    spr_TBLU,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_BLUETORCH2,
 		},
 		927: {
-			Fsprite:    SPR_TBLU,
+			Fsprite:    spr_TBLU,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_BLUETORCH3,
 		},
 		928: {
-			Fsprite:    SPR_TBLU,
+			Fsprite:    spr_TBLU,
 			Fframe:     32770,
 			Ftics:      4,
 			Fnextstate: s_BLUETORCH4,
 		},
 		929: {
-			Fsprite:    SPR_TBLU,
+			Fsprite:    spr_TBLU,
 			Fframe:     32771,
 			Ftics:      4,
 			Fnextstate: s_BLUETORCH,
 		},
 		930: {
-			Fsprite:    SPR_TGRN,
+			Fsprite:    spr_TGRN,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_GREENTORCH2,
 		},
 		931: {
-			Fsprite:    SPR_TGRN,
+			Fsprite:    spr_TGRN,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_GREENTORCH3,
 		},
 		932: {
-			Fsprite:    SPR_TGRN,
+			Fsprite:    spr_TGRN,
 			Fframe:     32770,
 			Ftics:      4,
 			Fnextstate: s_GREENTORCH4,
 		},
 		933: {
-			Fsprite:    SPR_TGRN,
+			Fsprite:    spr_TGRN,
 			Fframe:     32771,
 			Ftics:      4,
 			Fnextstate: s_GREENTORCH,
 		},
 		934: {
-			Fsprite:    SPR_TRED,
+			Fsprite:    spr_TRED,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_REDTORCH2,
 		},
 		935: {
-			Fsprite:    SPR_TRED,
+			Fsprite:    spr_TRED,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_REDTORCH3,
 		},
 		936: {
-			Fsprite:    SPR_TRED,
+			Fsprite:    spr_TRED,
 			Fframe:     32770,
 			Ftics:      4,
 			Fnextstate: s_REDTORCH4,
 		},
 		937: {
-			Fsprite:    SPR_TRED,
+			Fsprite:    spr_TRED,
 			Fframe:     32771,
 			Ftics:      4,
 			Fnextstate: s_REDTORCH,
 		},
 		938: {
-			Fsprite:    SPR_SMBT,
+			Fsprite:    spr_SMBT,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_BTORCHSHRT2,
 		},
 		939: {
-			Fsprite:    SPR_SMBT,
+			Fsprite:    spr_SMBT,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_BTORCHSHRT3,
 		},
 		940: {
-			Fsprite:    SPR_SMBT,
+			Fsprite:    spr_SMBT,
 			Fframe:     32770,
 			Ftics:      4,
 			Fnextstate: s_BTORCHSHRT4,
 		},
 		941: {
-			Fsprite:    SPR_SMBT,
+			Fsprite:    spr_SMBT,
 			Fframe:     32771,
 			Ftics:      4,
 			Fnextstate: s_BTORCHSHRT,
 		},
 		942: {
-			Fsprite:    SPR_SMGT,
+			Fsprite:    spr_SMGT,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_GTORCHSHRT2,
 		},
 		943: {
-			Fsprite:    SPR_SMGT,
+			Fsprite:    spr_SMGT,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_GTORCHSHRT3,
 		},
 		944: {
-			Fsprite:    SPR_SMGT,
+			Fsprite:    spr_SMGT,
 			Fframe:     32770,
 			Ftics:      4,
 			Fnextstate: s_GTORCHSHRT4,
 		},
 		945: {
-			Fsprite:    SPR_SMGT,
+			Fsprite:    spr_SMGT,
 			Fframe:     32771,
 			Ftics:      4,
 			Fnextstate: s_GTORCHSHRT,
 		},
 		946: {
-			Fsprite:    SPR_SMRT,
+			Fsprite:    spr_SMRT,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_RTORCHSHRT2,
 		},
 		947: {
-			Fsprite:    SPR_SMRT,
+			Fsprite:    spr_SMRT,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_RTORCHSHRT3,
 		},
 		948: {
-			Fsprite:    SPR_SMRT,
+			Fsprite:    spr_SMRT,
 			Fframe:     32770,
 			Ftics:      4,
 			Fnextstate: s_RTORCHSHRT4,
 		},
 		949: {
-			Fsprite:    SPR_SMRT,
+			Fsprite:    spr_SMRT,
 			Fframe:     32771,
 			Ftics:      4,
 			Fnextstate: s_RTORCHSHRT,
 		},
 		950: {
-			Fsprite: SPR_HDB1,
+			Fsprite: spr_HDB1,
 			Ftics:   -1,
 		},
 		951: {
-			Fsprite: SPR_HDB2,
+			Fsprite: spr_HDB2,
 			Ftics:   -1,
 		},
 		952: {
-			Fsprite: SPR_HDB3,
+			Fsprite: spr_HDB3,
 			Ftics:   -1,
 		},
 		953: {
-			Fsprite: SPR_HDB4,
+			Fsprite: spr_HDB4,
 			Ftics:   -1,
 		},
 		954: {
-			Fsprite: SPR_HDB5,
+			Fsprite: spr_HDB5,
 			Ftics:   -1,
 		},
 		955: {
-			Fsprite: SPR_HDB6,
+			Fsprite: spr_HDB6,
 			Ftics:   -1,
 		},
 		956: {
-			Fsprite: SPR_POB1,
+			Fsprite: spr_POB1,
 			Ftics:   -1,
 		},
 		957: {
-			Fsprite: SPR_POB2,
+			Fsprite: spr_POB2,
 			Ftics:   -1,
 		},
 		958: {
-			Fsprite: SPR_BRS1,
+			Fsprite: spr_BRS1,
 			Ftics:   -1,
 		},
 		959: {
-			Fsprite:    SPR_TLMP,
+			Fsprite:    spr_TLMP,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_TECHLAMP2,
 		},
 		960: {
-			Fsprite:    SPR_TLMP,
+			Fsprite:    spr_TLMP,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_TECHLAMP3,
 		},
 		961: {
-			Fsprite:    SPR_TLMP,
+			Fsprite:    spr_TLMP,
 			Fframe:     32770,
 			Ftics:      4,
 			Fnextstate: s_TECHLAMP4,
 		},
 		962: {
-			Fsprite:    SPR_TLMP,
+			Fsprite:    spr_TLMP,
 			Fframe:     32771,
 			Ftics:      4,
 			Fnextstate: s_TECHLAMP,
 		},
 		963: {
-			Fsprite:    SPR_TLP2,
+			Fsprite:    spr_TLP2,
 			Fframe:     32768,
 			Ftics:      4,
 			Fnextstate: s_TECH2LAMP2,
 		},
 		964: {
-			Fsprite:    SPR_TLP2,
+			Fsprite:    spr_TLP2,
 			Fframe:     32769,
 			Ftics:      4,
 			Fnextstate: s_TECH2LAMP3,
 		},
 		965: {
-			Fsprite:    SPR_TLP2,
+			Fsprite:    spr_TLP2,
 			Fframe:     32770,
 			Ftics:      4,
 			Fnextstate: s_TECH2LAMP4,
 		},
 		966: {
-			Fsprite:    SPR_TLP2,
+			Fsprite:    spr_TLP2,
 			Fframe:     32771,
 			Ftics:      4,
 			Fnextstate: s_TECH2LAMP,
@@ -24763,12 +24763,12 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 	// Identify by sprite.
 	switch special.Fsprite {
 	// armor
-	case SPR_ARM1:
+	case spr_ARM1:
 		if p_GiveArmor(player, DEH_DEFAULT_GREEN_ARMOR_CLASS) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up the armor."
-	case SPR_ARM2:
+	case spr_ARM2:
 		if p_GiveArmor(player, DEH_DEFAULT_BLUE_ARMOR_CLASS) == 0 {
 			return
 		}
@@ -24776,14 +24776,14 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		break
 		// bonus items
 		fallthrough
-	case SPR_BON1:
+	case spr_BON1:
 		player.Fhealth++ // can go over 100%
 		if player.Fhealth > DEH_DEFAULT_MAX_HEALTH {
 			player.Fhealth = DEH_DEFAULT_MAX_HEALTH
 		}
 		player.Fmo.Fhealth = player.Fhealth
 		player.Fmessage = "Picked up a health bonus."
-	case SPR_BON2:
+	case spr_BON2:
 		player.Farmorpoints++ // can go over 100%
 		if player.Farmorpoints > DEH_DEFAULT_MAX_ARMOR {
 			player.Farmorpoints = DEH_DEFAULT_MAX_ARMOR
@@ -24794,7 +24794,7 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 			player.Farmortype = 1
 		}
 		player.Fmessage = "Picked up an armor bonus."
-	case SPR_SOUL:
+	case spr_SOUL:
 		player.Fhealth += DEH_DEFAULT_SOULSPHERE_HEALTH
 		if player.Fhealth > DEH_DEFAULT_MAX_SOULSPHERE {
 			player.Fhealth = DEH_DEFAULT_MAX_SOULSPHERE
@@ -24802,7 +24802,7 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		player.Fmo.Fhealth = player.Fhealth
 		player.Fmessage = "Supercharge!"
 		sound = int32(sfx_getpow)
-	case SPR_MEGA:
+	case spr_MEGA:
 		if gamemode != commercial {
 			return
 		}
@@ -24817,7 +24817,7 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		// cards
 		// leave cards for everyone
 		fallthrough
-	case SPR_BKEY:
+	case spr_BKEY:
 		if player.Fcards[it_bluecard] == 0 {
 			player.Fmessage = "Picked up a blue keycard."
 		}
@@ -24826,7 +24826,7 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 			break
 		}
 		return
-	case SPR_YKEY:
+	case spr_YKEY:
 		if player.Fcards[it_yellowcard] == 0 {
 			player.Fmessage = "Picked up a yellow keycard."
 		}
@@ -24835,7 +24835,7 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 			break
 		}
 		return
-	case SPR_RKEY:
+	case spr_RKEY:
 		if player.Fcards[it_redcard] == 0 {
 			player.Fmessage = "Picked up a red keycard."
 		}
@@ -24844,7 +24844,7 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 			break
 		}
 		return
-	case SPR_BSKU:
+	case spr_BSKU:
 		if player.Fcards[it_blueskull] == 0 {
 			player.Fmessage = "Picked up a blue skull key."
 		}
@@ -24853,7 +24853,7 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 			break
 		}
 		return
-	case SPR_YSKU:
+	case spr_YSKU:
 		if player.Fcards[it_yellowskull] == 0 {
 			player.Fmessage = "Picked up a yellow skull key."
 		}
@@ -24862,7 +24862,7 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 			break
 		}
 		return
-	case SPR_RSKU:
+	case spr_RSKU:
 		if player.Fcards[it_redskull] == 0 {
 			player.Fmessage = "Picked up a red skull key."
 		}
@@ -24873,12 +24873,12 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		return
 		// medikits, heals
 		fallthrough
-	case SPR_STIM:
+	case spr_STIM:
 		if p_GiveBody(player, 10) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up a stimpack."
-	case SPR_MEDI:
+	case spr_MEDI:
 		if p_GiveBody(player, 25) == 0 {
 			return
 		}
@@ -24890,13 +24890,13 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		break
 		// power ups
 		fallthrough
-	case SPR_PINV:
+	case spr_PINV:
 		if p_GivePower(player, int32(pw_invulnerability)) == 0 {
 			return
 		}
 		player.Fmessage = "Invulnerability!"
 		sound = int32(sfx_getpow)
-	case SPR_PSTR:
+	case spr_PSTR:
 		if p_GivePower(player, int32(pw_strength)) == 0 {
 			return
 		}
@@ -24905,25 +24905,25 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 			player.Fpendingweapon = wp_fist
 		}
 		sound = int32(sfx_getpow)
-	case SPR_PINS:
+	case spr_PINS:
 		if p_GivePower(player, int32(pw_invisibility)) == 0 {
 			return
 		}
 		player.Fmessage = "Partial Invisibility"
 		sound = int32(sfx_getpow)
-	case SPR_SUIT:
+	case spr_SUIT:
 		if p_GivePower(player, int32(pw_ironfeet)) == 0 {
 			return
 		}
 		player.Fmessage = "Radiation Shielding Suit"
 		sound = int32(sfx_getpow)
-	case SPR_PMAP:
+	case spr_PMAP:
 		if p_GivePower(player, int32(pw_allmap)) == 0 {
 			return
 		}
 		player.Fmessage = "Computer Area Map"
 		sound = int32(sfx_getpow)
-	case SPR_PVIS:
+	case spr_PVIS:
 		if p_GivePower(player, int32(pw_infrared)) == 0 {
 			return
 		}
@@ -24932,7 +24932,7 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		break
 		// ammo
 		fallthrough
-	case SPR_CLIP:
+	case spr_CLIP:
 		if special.Fflags&MF_DROPPED != 0 {
 			if p_GiveAmmo(player, am_clip, 0) == 0 {
 				return
@@ -24943,42 +24943,42 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 			}
 		}
 		player.Fmessage = "Picked up a clip."
-	case SPR_AMMO:
+	case spr_AMMO:
 		if p_GiveAmmo(player, am_clip, 5) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up a box of bullets."
-	case SPR_ROCK:
+	case spr_ROCK:
 		if p_GiveAmmo(player, am_misl, 1) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up a rocket."
-	case SPR_BROK:
+	case spr_BROK:
 		if p_GiveAmmo(player, am_misl, 5) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up a box of rockets."
-	case SPR_CELL:
+	case spr_CELL:
 		if p_GiveAmmo(player, am_cell, 1) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up an energy cell."
-	case SPR_CELP:
+	case spr_CELP:
 		if p_GiveAmmo(player, am_cell, 5) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up an energy cell pack."
-	case SPR_SHEL:
+	case spr_SHEL:
 		if p_GiveAmmo(player, am_shell, 1) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up 4 shotgun shells."
-	case SPR_SBOX:
+	case spr_SBOX:
 		if p_GiveAmmo(player, am_shell, 5) == 0 {
 			return
 		}
 		player.Fmessage = "Picked up a box of shotgun shells."
-	case SPR_BPAK:
+	case spr_BPAK:
 		if player.Fbackpack == 0 {
 			i = 0
 			for {
@@ -25008,43 +25008,43 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		break
 		// weapons
 		fallthrough
-	case SPR_BFUG:
+	case spr_BFUG:
 		if p_GiveWeapon(player, wp_bfg, 0) == 0 {
 			return
 		}
 		player.Fmessage = "You got the BFG9000!  Oh, yes."
 		sound = int32(sfx_wpnup)
-	case SPR_MGUN:
+	case spr_MGUN:
 		if p_GiveWeapon(player, wp_chaingun, booluint32(special.Fflags&MF_DROPPED != 0)) == 0 {
 			return
 		}
 		player.Fmessage = "You got the chaingun!"
 		sound = int32(sfx_wpnup)
-	case SPR_CSAW:
+	case spr_CSAW:
 		if p_GiveWeapon(player, wp_chainsaw, 0) == 0 {
 			return
 		}
 		player.Fmessage = "A chainsaw!  Find some meat!"
 		sound = int32(sfx_wpnup)
-	case SPR_LAUN:
+	case spr_LAUN:
 		if p_GiveWeapon(player, wp_missile, 0) == 0 {
 			return
 		}
 		player.Fmessage = "You got the rocket launcher!"
 		sound = int32(sfx_wpnup)
-	case SPR_PLAS:
+	case spr_PLAS:
 		if p_GiveWeapon(player, wp_plasma, 0) == 0 {
 			return
 		}
 		player.Fmessage = "You got the plasma gun!"
 		sound = int32(sfx_wpnup)
-	case SPR_SHOT:
+	case spr_SHOT:
 		if p_GiveWeapon(player, wp_shotgun, booluint32(special.Fflags&MF_DROPPED != 0)) == 0 {
 			return
 		}
 		player.Fmessage = "You got the shotgun!"
 		sound = int32(sfx_wpnup)
-	case SPR_SGN2:
+	case spr_SGN2:
 		if p_GiveWeapon(player, wp_supershotgun, booluint32(special.Fflags&MF_DROPPED != 0)) == 0 {
 			return
 		}
