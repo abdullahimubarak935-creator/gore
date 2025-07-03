@@ -62,15 +62,6 @@ func xtoupper(c int32) int32 {
 	return c
 }
 
-func xmemset(dest uintptr, c uint8, n uint64) {
-	if n != 0 {
-		destSlice := unsafe.Slice((*byte)(unsafe.Pointer(dest)), n)
-		for i := range n {
-			destSlice[i] = byte(c)
-		}
-	}
-}
-
 func xmemcpy(dest, src uintptr, n uint64) (r uintptr) {
 	if n != 0 {
 		srcSlice := unsafe.Slice((*byte)(unsafe.Pointer(src)), n)
@@ -7040,13 +7031,14 @@ func f_Drawer() {
 //	// when zero, stop the wipe
 var wipe_running = 0
 
-var wipe_scr_start uintptr
-var wipe_scr_end uintptr
-var wipe_scr uintptr
+var wipe_scr_start []byte
+var wipe_scr_end []byte
+var wipe_scr []byte
 
-func wipe_shittyColMajorXform(array uintptr, width int32, height int32) {
+// TODO: Stop doing width*2
+func wipe_shittyColMajorXform(array []byte, width int32, height int32) {
 	var x, y int32
-	dest := make([]int16, width*height)
+	dest := make([]byte, width*2*height)
 	y = 0
 	for {
 		if y >= height {
@@ -7057,7 +7049,8 @@ func wipe_shittyColMajorXform(array uintptr, width int32, height int32) {
 			if x >= width {
 				break
 			}
-			dest[x*height+y] = *(*int16)(unsafe.Pointer(array + uintptr(y*width+x)*2))
+			dest[(x*height+y)*2] = array[(y*width+x)*2]
+			dest[(x*height+y)*2+1] = array[(y*width+x)*2+1]
 			goto _2
 		_2:
 			;
@@ -7068,38 +7061,38 @@ func wipe_shittyColMajorXform(array uintptr, width int32, height int32) {
 		;
 		y++
 	}
-	xmemcpy(array, uintptr(unsafe.Pointer(&dest[0])), uint64(width*height*int32(2)))
+	copy(array, dest)
 }
 
 func wipe_initColorXForm(width int32, height int32, ticks int32) (r int32) {
-	xmemcpy(wipe_scr, wipe_scr_start, uint64(width*height))
+	copy(wipe_scr, wipe_scr_start)
 	return 0
 }
 
 func wipe_doColorXForm(width int32, height int32, ticks int32) (r int32) {
 	var changed boolean
-	var e, w uintptr
+	var e, w int32
 	var newval int32
 	changed = 0
-	w = wipe_scr
-	e = wipe_scr_end
-	for w != wipe_scr+uintptr(width*height) {
-		if int32(*(*uint8)(unsafe.Pointer(w))) != int32(*(*uint8)(unsafe.Pointer(e))) {
-			if int32(*(*uint8)(unsafe.Pointer(w))) > int32(*(*uint8)(unsafe.Pointer(e))) {
-				newval = int32(*(*uint8)(unsafe.Pointer(w))) - ticks
-				if newval < int32(*(*uint8)(unsafe.Pointer(e))) {
-					*(*uint8)(unsafe.Pointer(w)) = *(*uint8)(unsafe.Pointer(e))
+	w = 0
+	e = 0
+	for w != width*height {
+		if wipe_scr[w] != wipe_scr_end[e] {
+			if wipe_scr[w] > wipe_scr_end[e] {
+				newval = int32(wipe_scr[w]) - ticks
+				if newval < int32(wipe_scr_end[e]) {
+					wipe_scr[w] = wipe_scr_end[e]
 				} else {
-					*(*uint8)(unsafe.Pointer(w)) = uint8(newval)
+					wipe_scr[w] = uint8(newval)
 				}
 				changed = 1
 			} else {
-				if int32(*(*uint8)(unsafe.Pointer(w))) < int32(*(*uint8)(unsafe.Pointer(e))) {
-					newval = int32(*(*uint8)(unsafe.Pointer(w))) + ticks
-					if newval > int32(*(*uint8)(unsafe.Pointer(e))) {
-						*(*uint8)(unsafe.Pointer(w)) = *(*uint8)(unsafe.Pointer(e))
+				if int32(wipe_scr[w]) < int32(wipe_scr_end[e]) {
+					newval = int32(wipe_scr[w]) + ticks
+					if newval > int32(wipe_scr_end[e]) {
+						wipe_scr[w] = wipe_scr_end[e]
 					} else {
-						*(*uint8)(unsafe.Pointer(w)) = uint8(newval)
+						wipe_scr[w] = uint8(newval)
 					}
 					changed = 1
 				}
@@ -7120,7 +7113,7 @@ var y_screen []int32
 func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 	var i, r int32
 	// copy start screen to main screen
-	xmemcpy(wipe_scr, wipe_scr_start, uint64(width*height))
+	copy(wipe_scr, wipe_scr_start)
 	// makes this wipe faster (in theory)
 	// to have stuff in column-major format
 	wipe_shittyColMajorXform(wipe_scr_start, width/int32(2), height)
@@ -7152,7 +7145,7 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 }
 
 func wipe_doMelt(width int32, height int32, ticks int32) (r int32) {
-	var d, s, v5, v7 uintptr
+	var d, s int32
 	var done boolean
 	var dy, i, idx, j, v1, v3 int32
 	done = 1
@@ -7182,17 +7175,17 @@ func wipe_doMelt(width int32, height int32, ticks int32) (r int32) {
 					if y_screen[i]+dy >= height {
 						dy = height - y_screen[i]
 					}
-					s = wipe_scr_end + uintptr(i*height+y_screen[i])*2
-					d = wipe_scr + uintptr(y_screen[i]*width+i)*2
+					s = (i*height + y_screen[i]) * 2
+					d = (y_screen[i]*width + i) * 2
 					idx = 0
 					j = dy
 					for {
 						if j == 0 {
 							break
 						}
-						v5 = s
+						wipe_scr[d+idx*2] = wipe_scr_end[s]
+						wipe_scr[d+idx*2+1] = wipe_scr_end[s+1]
 						s += 2
-						*(*int16)(unsafe.Pointer(d + uintptr(idx)*2)) = *(*int16)(unsafe.Pointer(v5))
 						idx += width
 						goto _4
 					_4:
@@ -7200,17 +7193,17 @@ func wipe_doMelt(width int32, height int32, ticks int32) (r int32) {
 						j--
 					}
 					y_screen[i] += dy
-					s = wipe_scr_start + uintptr(i*height)*2
-					d = wipe_scr + uintptr(y_screen[i]*width+i)*2
+					s = (i * height) * 2
+					d = (y_screen[i]*width + i) * 2
 					idx = 0
 					j = height - y_screen[i]
 					for {
 						if j == 0 {
 							break
 						}
-						v7 = s
+						wipe_scr[d+idx*2] = wipe_scr_end[s]
+						wipe_scr[d+idx*2+1] = wipe_scr_end[s+1]
 						s += 2
-						*(*int16)(unsafe.Pointer(d + uintptr(idx)*2)) = *(*int16)(unsafe.Pointer(v7))
 						idx += width
 						goto _6
 					_6:
@@ -7231,21 +7224,21 @@ func wipe_doMelt(width int32, height int32, ticks int32) (r int32) {
 
 func wipe_exitMelt(width int32, height int32, ticks int32) (r int32) {
 	y_screen = nil
-	z_Free(wipe_scr_start)
-	z_Free(wipe_scr_end)
+	wipe_scr_start = nil
+	wipe_scr_end = nil
 	return 0
 }
 
 func wipe_StartScreen(x int32, y int32, width int32, height int32) (r int32) {
-	wipe_scr_start = z_Malloc(SCREENWIDTH * SCREENHEIGHT)
+	wipe_scr_start = make([]byte, SCREENWIDTH*SCREENHEIGHT)
 	i_ReadScreen(wipe_scr_start)
 	return 0
 }
 
 func wipe_EndScreen(x int32, y int32, width int32, height int32) (r int32) {
-	wipe_scr_end = z_Malloc(SCREENWIDTH * SCREENHEIGHT)
+	wipe_scr_end = make([]byte, SCREENWIDTH*SCREENHEIGHT)
 	i_ReadScreen(wipe_scr_end)
-	v_DrawBlock(x, y, width, height, wipe_scr_start) // restore start scr.
+	v_DrawBlock(x, y, width, height, (uintptr)(unsafe.Pointer(&wipe_scr_start[0]))) // restore start scr.
 	return 0
 }
 
@@ -7254,7 +7247,7 @@ func wipe_ScreenWipe(wipeno int32, x int32, y int32, width int32, height int32, 
 	// initial stuff
 	if wipe_running == 0 {
 		wipe_running = 1
-		wipe_scr = (uintptr)(unsafe.Pointer(&I_VideoBuffer[0]))
+		wipe_scr = I_VideoBuffer
 		wipes[wipeno*3](width, height, ticks)
 	}
 	// do a piece of wipe-in
@@ -37370,7 +37363,15 @@ func r_InitSpriteDefs(namelist []string) {
 		}
 
 		spritename := namelist[i][:4]
-		xmemset(uintptr(unsafe.Pointer(&sprtemp)), 0xff, 812)
+		for i := range sprtemp {
+			sprtemp[i].Frotate = 0xff
+			for j := range sprtemp[i].Flump {
+				sprtemp[i].Flump[j] = -1
+			}
+			for j := range sprtemp[i].Fflip {
+				sprtemp[i].Fflip[j] = 0xff
+			}
+		}
 		maxframe = -1
 		// scan the lumps,
 		//  filling in the frames for whatever is found
@@ -44002,8 +44003,8 @@ func i_FinishUpdate() {
 //	//
 //	// I_ReadScreen
 //	//
-func i_ReadScreen(scr uintptr) {
-	xmemcpy(scr, (uintptr)(unsafe.Pointer(&I_VideoBuffer[0])), SCREENWIDTH*SCREENHEIGHT)
+func i_ReadScreen(scr []byte) {
+	copy(scr, I_VideoBuffer)
 }
 
 //
