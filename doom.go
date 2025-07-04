@@ -11,6 +11,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"reflect"
 	"runtime/debug"
 	"strconv"
 	"strings"
@@ -33623,7 +33624,6 @@ func p_RunThinkers() {
 			// time to remove it
 			currentthinker.Fnext.Fprev = currentthinker.Fprev
 			currentthinker.Fprev.Fnext = currentthinker.Fnext
-			//z_Free(uintptr(unsafe.Pointer(currentthinker)))
 		} else {
 			currentthinker.Ffunction.ThinkerFunc()
 		}
@@ -35145,7 +35145,7 @@ const SBARHEIGHT = 32
 // Backing buffer containing the bezel drawn around the screen and
 // surrounding background.
 
-var background_buffer uintptr
+var background_buffer []byte
 
 // C documentation
 //
@@ -35684,15 +35684,14 @@ func r_FillBackScreen() {
 	// If we are running full screen, there is no need to do any of this,
 	// and the background buffer can be freed if it was previously in use.
 	if scaledviewwidth == SCREENWIDTH {
-		if background_buffer != 0 {
-			z_Free(background_buffer)
-			background_buffer = 0
+		if background_buffer != nil {
+			background_buffer = nil
 		}
 		return
 	}
 	// Allocate the background buffer if necessary
-	if background_buffer == 0 {
-		background_buffer = z_Malloc(SCREENWIDTH * (SCREENHEIGHT - SBARHEIGHT))
+	if background_buffer == nil {
+		background_buffer = make([]byte, SCREENWIDTH*(SCREENHEIGHT-SBARHEIGHT))
 	}
 	if gamemode == commercial {
 		name = name2
@@ -35700,7 +35699,7 @@ func r_FillBackScreen() {
 		name = name1
 	}
 	src = w_CacheLumpName(name)
-	dest = background_buffer
+	dest = (uintptr)(unsafe.Pointer(&background_buffer[0]))
 	y = 0
 	for {
 		if y >= SCREENHEIGHT-SBARHEIGHT {
@@ -35796,8 +35795,8 @@ func r_VideoErase(ofs uint32, count int32) {
 	//  is not optiomal, e.g. byte by byte on
 	//  a 32bit CPU, as GNU GCC/Linux libc did
 	//  at one point.
-	if background_buffer != 0 {
-		xmemcpy((uintptr)(unsafe.Pointer(&I_VideoBuffer[ofs])), background_buffer+uintptr(ofs), uint64(count))
+	if background_buffer != nil {
+		copy(I_VideoBuffer[ofs:], background_buffer[ofs:ofs+uint32(count)])
 	}
 }
 
@@ -40487,7 +40486,7 @@ func st_Stop() {
 
 func st_Init() {
 	st_loadData()
-	st_backing_screen = z_Malloc(SCREENWIDTH * st_HEIGHT)
+	st_backing_screen = make([]byte, SCREENWIDTH*st_HEIGHT)
 }
 
 const NORM_SEP = 128
@@ -41025,7 +41024,7 @@ const MOUSE_SPEED_BOX_WIDTH = 120
 
 // The screen buffer that the v_video.c code draws to.
 
-var dest_screen uintptr
+var dest_screen []byte
 
 // C documentation
 //
@@ -41035,7 +41034,7 @@ var dest_screen uintptr
 func v_MarkRect(x int32, y int32, width int32, height int32) {
 	// If we are temporarily using an alternate screen, do not
 	// affect the update box.
-	if dest_screen == (uintptr)(unsafe.Pointer(&I_VideoBuffer[0])) {
+	if reflect.DeepEqual(dest_screen, I_VideoBuffer) {
 		m_AddToBox(&dirtybox, x, y)
 		m_AddToBox(&dirtybox, x+width-1, y+height-1)
 	}
@@ -41046,21 +41045,20 @@ func v_MarkRect(x int32, y int32, width int32, height int32) {
 //	//
 //	// V_CopyRect
 //	//
-func v_CopyRect(srcx int32, srcy int32, source uintptr, width int32, height int32, destx int32, desty int32) {
-	var dest, src uintptr
+func v_CopyRect(srcx int32, srcy int32, source []byte, width int32, height int32, destx int32, desty int32) {
 	if srcx < 0 || srcx+width > SCREENWIDTH || srcy < 0 || srcy+height > SCREENHEIGHT || destx < 0 || destx+width > SCREENWIDTH || desty < 0 || desty+height > SCREENHEIGHT {
 		i_Error("Bad v_CopyRect")
 	}
 	v_MarkRect(destx, desty, width, height)
-	src = source + uintptr(SCREENWIDTH*srcy) + uintptr(srcx)
-	dest = dest_screen + uintptr(SCREENWIDTH*desty) + uintptr(destx)
+	srcPos := SCREENWIDTH*srcy + srcx
+	destPos := SCREENWIDTH*desty + destx
 	for {
 		if height <= 0 {
 			break
 		}
-		xmemcpy(dest, src, uint64(width))
-		src += SCREENWIDTH
-		dest += SCREENWIDTH
+		copy(dest_screen[destPos:destPos+width], source[srcPos:srcPos+width])
+		srcPos += SCREENWIDTH
+		destPos += SCREENWIDTH
 		goto _1
 	_1:
 		;
@@ -41075,7 +41073,6 @@ func v_CopyRect(srcx int32, srcy int32, source uintptr, width int32, height int3
 
 func v_DrawPatch(x int32, y int32, patch *patch_t) {
 	var col, w int32
-	var dest, desttop uintptr
 	y -= int32(patch.Ftopoffset)
 	x -= int32(patch.Fleftoffset)
 	if x < 0 || x+int32(patch.Fwidth) > SCREENWIDTH || y < 0 || y+int32(patch.Fheight) > SCREENHEIGHT {
@@ -41083,7 +41080,6 @@ func v_DrawPatch(x int32, y int32, patch *patch_t) {
 	}
 	v_MarkRect(x, y, int32(patch.Fwidth), int32(patch.Fheight))
 	col = 0
-	desttop = dest_screen + uintptr(y*SCREENWIDTH) + uintptr(x)
 	w = int32(patch.Fwidth)
 	for {
 		if col >= w {
@@ -41093,10 +41089,10 @@ func v_DrawPatch(x int32, y int32, patch *patch_t) {
 		// step through the posts in a column
 		for int32(column.Ftopdelta) != 0xff {
 			source := column.Data()
-			dest = desttop + uintptr(int32(column.Ftopdelta)*SCREENWIDTH)
+			pos := (y * SCREENWIDTH) + x + col + int32(column.Ftopdelta)*SCREENWIDTH
 			for i := int32(0); i < int32(column.Flength); i++ {
-				*(*uint8)(unsafe.Pointer(dest)) = source[i]
-				dest += SCREENWIDTH
+				dest_screen[pos] = source[i]
+				pos += SCREENWIDTH
 			}
 			column = column.Next()
 		}
@@ -41104,7 +41100,6 @@ func v_DrawPatch(x int32, y int32, patch *patch_t) {
 	_1:
 		;
 		col++
-		desttop++
 	}
 }
 
@@ -41116,7 +41111,7 @@ func v_DrawPatch(x int32, y int32, patch *patch_t) {
 
 func v_DrawPatchFlipped(x int32, y int32, patch *patch_t) {
 	var col, w int32
-	var dest, desttop uintptr
+	//var dest, desttop uintptr
 	y -= int32(patch.Ftopoffset)
 	x -= int32(patch.Fleftoffset)
 	if x < 0 || x+int32(patch.Fwidth) > SCREENWIDTH || y < 0 || y+int32(patch.Fheight) > SCREENHEIGHT {
@@ -41124,7 +41119,7 @@ func v_DrawPatchFlipped(x int32, y int32, patch *patch_t) {
 	}
 	v_MarkRect(x, y, int32(patch.Fwidth), int32(patch.Fheight))
 	col = 0
-	desttop = dest_screen + uintptr(y*SCREENWIDTH) + uintptr(x)
+	destTop := y*SCREENWIDTH + x
 	w = int32(patch.Fwidth)
 	for {
 		if col >= w {
@@ -41134,10 +41129,9 @@ func v_DrawPatchFlipped(x int32, y int32, patch *patch_t) {
 		// step through the posts in a column
 		for int32(column.Ftopdelta) != 0xff {
 			source := column.Data()
-			dest = desttop + uintptr(int32(column.Ftopdelta)*SCREENWIDTH)
+			destPos := destTop + int32(column.Ftopdelta)*SCREENWIDTH
 			for i := uint8(0); i < column.Flength; i++ {
-				*(*uint8)(unsafe.Pointer(dest)) = source[i]
-				dest += SCREENWIDTH
+				dest_screen[destPos+SCREENWIDTH*int32(i)] = source[i]
 			}
 			column = column.Next()
 		}
@@ -41145,7 +41139,7 @@ func v_DrawPatchFlipped(x int32, y int32, patch *patch_t) {
 	_1:
 		;
 		col++
-		desttop++
+		destTop++
 	}
 }
 
@@ -41164,23 +41158,22 @@ func v_DrawPatchDirect(x int32, y int32, patch *patch_t) {
 //
 
 func v_DrawBlock(x int32, y int32, width int32, height int32, src []byte) {
-	var dest uintptr
 	var v1 int32
 	var pos int32
 	if x < 0 || x+width > SCREENWIDTH || y < 0 || y+height > SCREENHEIGHT {
 		i_Error("Bad v_DrawBlock")
 	}
 	v_MarkRect(x, y, width, height)
-	dest = dest_screen + uintptr(y*SCREENWIDTH) + uintptr(x)
+	destPos := y*SCREENWIDTH + x
 	for {
 		v1 = height
 		height--
 		if v1 == 0 {
 			break
 		}
-		xmemcpy(dest, (uintptr)(unsafe.Pointer(&src[pos])), uint64(width))
+		copy(dest_screen[destPos:destPos+width], src)
 		pos += width
-		dest += SCREENWIDTH
+		destPos += SCREENWIDTH
 	}
 }
 
@@ -41230,14 +41223,14 @@ func v_Init() {
 
 // Set the buffer that the code draws to.
 
-func v_UseBuffer(buffer uintptr) {
+func v_UseBuffer(buffer []byte) {
 	dest_screen = buffer
 }
 
 // Restore screen buffer to the i_video screen buffer.
 
 func v_RestoreBuffer() {
-	dest_screen = (uintptr)(unsafe.Pointer(&I_VideoBuffer[0]))
+	dest_screen = I_VideoBuffer
 }
 
 func v_DrawMouseSpeedBox(speed int32) {
@@ -46000,7 +45993,7 @@ var spryscale fixed_t
 // C documentation
 //
 //	// graphics are drawn to a backing screen and blitted to the real screen
-var st_backing_screen uintptr
+var st_backing_screen []byte
 
 var startepisode int32
 
