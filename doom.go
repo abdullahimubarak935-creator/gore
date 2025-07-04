@@ -43,10 +43,6 @@ func xmalloc(n uint64) uintptr {
 	return res
 }
 
-func xfree(p uintptr) {
-	delete(dg_alloced, p)
-}
-
 // LIBC functions
 func xabs(j int32) int32 {
 	if j < 0 {
