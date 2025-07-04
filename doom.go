@@ -43683,15 +43683,6 @@ func z_Init() {
 	return
 }
 
-// C documentation
-//
-//	//
-//	// Z_Free
-//	//
-func z_Free(ptr uintptr) {
-	xfree(ptr)
-}
-
 //
 // Z_Malloc
 //
