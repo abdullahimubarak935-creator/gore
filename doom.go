@@ -6911,17 +6911,16 @@ func f_CastDrawer() {
 //	// F_DrawPatchCol
 //	//
 func f_DrawPatchCol(x int32, patch *patch_t, col int32) {
-	var dest, desttop uintptr
+	var dest int32
 	var count int32
 	column := patch.GetColumn(col)
-	desttop = (uintptr)(unsafe.Pointer(&I_VideoBuffer[x]))
 	// step through the posts in a column
 	for int32(column.Ftopdelta) != 0xff {
 		source := column.Data()
-		dest = desttop + uintptr(int32(column.Ftopdelta)*SCREENWIDTH)
+		dest = x + int32(column.Ftopdelta)*SCREENWIDTH
 		count = int32(column.Flength)
 		for i := int32(0); i < count; i++ {
-			*(*uint8)(unsafe.Pointer(dest)) = source[i]
+			I_VideoBuffer[dest] = source[i]
 			dest += SCREENWIDTH
 		}
 		column = column.Next()
@@ -7238,7 +7237,7 @@ func wipe_StartScreen(x int32, y int32, width int32, height int32) (r int32) {
 func wipe_EndScreen(x int32, y int32, width int32, height int32) (r int32) {
 	wipe_scr_end = make([]byte, SCREENWIDTH*SCREENHEIGHT)
 	i_ReadScreen(wipe_scr_end)
-	v_DrawBlock(x, y, width, height, (uintptr)(unsafe.Pointer(&wipe_scr_start[0]))) // restore start scr.
+	v_DrawBlock(x, y, width, height, wipe_scr_start) // restore start scr.
 	return 0
 }
 
@@ -41164,9 +41163,10 @@ func v_DrawPatchDirect(x int32, y int32, patch *patch_t) {
 // Draw a linear block of pixels into the view buffer.
 //
 
-func v_DrawBlock(x int32, y int32, width int32, height int32, src uintptr) {
+func v_DrawBlock(x int32, y int32, width int32, height int32, src []byte) {
 	var dest uintptr
 	var v1 int32
+	var pos int32
 	if x < 0 || x+width > SCREENWIDTH || y < 0 || y+height > SCREENHEIGHT {
 		i_Error("Bad v_DrawBlock")
 	}
@@ -41178,8 +41178,8 @@ func v_DrawBlock(x int32, y int32, width int32, height int32, src uintptr) {
 		if v1 == 0 {
 			break
 		}
-		xmemcpy(dest, src, uint64(width))
-		src += uintptr(width)
+		xmemcpy(dest, (uintptr)(unsafe.Pointer(&src[pos])), uint64(width))
+		pos += width
 		dest += SCREENWIDTH
 	}
 }
