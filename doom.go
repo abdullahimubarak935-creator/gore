@@ -2638,8 +2638,8 @@ func am_restoreScaleAndLoc() {
 		m_x = old_m_x
 		m_y = old_m_y
 	} else {
-		m_x = plr.Fmo.Fx - m_w/int32(2)
-		m_y = plr.Fmo.Fy - m_h/int32(2)
+		m_x = plr.Fmo.Fx - m_w/2
+		m_y = plr.Fmo.Fy - m_h/2
 	}
 	m_x2 = m_x + m_w
 	m_y2 = m_y + m_h
@@ -2654,8 +2654,8 @@ func am_restoreScaleAndLoc() {
 //	// adds a marker at the current location
 //	//
 func am_addMark() {
-	markpoints[markpointnum].Fx = m_x + m_w/int32(2)
-	markpoints[markpointnum].Fy = m_y + m_h/int32(2)
+	markpoints[markpointnum].Fx = m_x + m_w/2
+	markpoints[markpointnum].Fy = m_y + m_h/2
 	markpointnum = (markpointnum + 1) % AM_NUMMARKPOINTS
 }
 
@@ -2723,18 +2723,18 @@ func am_changeWindowLoc() {
 	}
 	m_x += m_paninc.Fx
 	m_y += m_paninc.Fy
-	if m_x+m_w/int32(2) > max_x {
-		m_x = max_x - m_w/int32(2)
+	if m_x+m_w/2 > max_x {
+		m_x = max_x - m_w/2
 	} else {
-		if m_x+m_w/int32(2) < min_x {
-			m_x = min_x - m_w/int32(2)
+		if m_x+m_w/2 < min_x {
+			m_x = min_x - m_w/2
 		}
 	}
-	if m_y+m_h/int32(2) > max_y {
-		m_y = max_y - m_h/int32(2)
+	if m_y+m_h/2 > max_y {
+		m_y = max_y - m_h/2
 	} else {
-		if m_y+m_h/int32(2) < min_y {
-			m_y = min_y - m_h/int32(2)
+		if m_y+m_h/2 < min_y {
+			m_y = min_y - m_h/2
 		}
 	}
 	m_x2 = m_x + m_w
@@ -2771,8 +2771,8 @@ func am_initVariables() {
 			}
 		}
 	}
-	m_x = plr.Fmo.Fx - m_w/int32(2)
-	m_y = plr.Fmo.Fy - m_h/int32(2)
+	m_x = plr.Fmo.Fx - m_w/2
+	m_y = plr.Fmo.Fy - m_h/2
 	am_changeWindowLoc()
 	// for saving & restoring
 	old_m_x = m_x
@@ -3100,8 +3100,8 @@ func am_changeWindowScale() {
 //	//
 func am_doFollowPlayer() {
 	if f_oldloc.Fx != plr.Fmo.Fx || f_oldloc.Fy != plr.Fmo.Fy {
-		m_x = fixedMul(fixedMul(plr.Fmo.Fx, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_w/int32(2)
-		m_y = fixedMul(fixedMul(plr.Fmo.Fy, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_h/int32(2)
+		m_x = fixedMul(fixedMul(plr.Fmo.Fx, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_w/2
+		m_y = fixedMul(fixedMul(plr.Fmo.Fy, scale_mtof)>>int32(16)<<int32(16), scale_ftom) - m_h/2
 		m_x2 = m_x + m_w
 		m_y2 = m_y + m_h
 		f_oldloc.Fx = plr.Fmo.Fx
@@ -3360,7 +3360,7 @@ func am_drawFline(fl *fline_t, color int32) {
 	x = fl.Fa.Fx
 	y = fl.Fa.Fy
 	if ax > ay {
-		d = ay - ax/int32(2)
+		d = ay - ax/2
 		for 1 != 0 {
 			fb[y*f_w+x] = uint8(color)
 			if x == fl.Fb.Fx {
@@ -3374,7 +3374,7 @@ func am_drawFline(fl *fline_t, color int32) {
 			d += ay
 		}
 	} else {
-		d = ax - ay/int32(2)
+		d = ax - ay/2
 		for 1 != 0 {
 			fb[y*f_w+x] = uint8(color)
 			if y == fl.Fb.Fy {
@@ -4340,9 +4340,9 @@ func oldNetSync() {
 			lasttime--
 			// printf ("-");
 		}
-		frameskip[frameon&int32(3)] = boolint32(oldnettics > recvtic)
+		frameskip[frameon&3] = boolint32(oldnettics > recvtic)
 		oldnettics = maketic
-		if frameskip[0] != 0 && frameskip[int32(1)] != 0 && frameskip[int32(2)] != 0 && frameskip[int32(3)] != 0 {
+		if frameskip[0] != 0 && frameskip[1] != 0 && frameskip[2] != 0 && frameskip[3] != 0 {
 			skiptics = 1
 			// printf ("+");
 		}
@@ -4846,7 +4846,7 @@ func d_Display() {
 		} else {
 			y = viewwindowy + 4
 		}
-		v_DrawPatchDirect(viewwindowx+(scaledviewwidth-int32(68))/int32(2), y, w_CacheLumpNameT("M_PAUSE"))
+		v_DrawPatchDirect(viewwindowx+(scaledviewwidth-int32(68))/2, y, w_CacheLumpNameT("M_PAUSE"))
 	}
 	// menus go directly to the screen
 	m_Drawer()  // menu is drawn even on top of everything
@@ -4901,9 +4901,9 @@ func d_BindVariables() {
 	m_BindMenuControls()
 	m_BindChatControls(MAXPLAYERS)
 	key_multi_msgplayer[0] = 'g'
-	key_multi_msgplayer[int32(1)] = 'i'
-	key_multi_msgplayer[int32(2)] = 'b'
-	key_multi_msgplayer[int32(3)] = 'r'
+	key_multi_msgplayer[1] = 'i'
+	key_multi_msgplayer[2] = 'b'
+	key_multi_msgplayer[3] = 'r'
 	m_BindVariable("mouse_sensitivity", &mouseSensitivity)
 	m_BindVariable("sfx_volume", &sfxVolume)
 	m_BindVariable("music_volume", &musicVolume)
@@ -5674,9 +5674,9 @@ func d_DoomMain() {
 		}
 		fprintf_ccgo(os.Stdout, "turbo scale: %d%%\n", scale)
 		forwardmove[0] = forwardmove[0] * int32(scale) / 100
-		forwardmove[int32(1)] = forwardmove[int32(1)] * int32(scale) / 100
+		forwardmove[1] = forwardmove[1] * int32(scale) / 100
 		sidemove[0] = sidemove[0] * int32(scale) / 100
-		sidemove[int32(1)] = sidemove[int32(1)] * int32(scale) / 100
+		sidemove[1] = sidemove[1] * int32(scale) / 100
 	}
 	// init subsystems
 	fprintf_ccgo(os.Stdout, "v_Init: allocate screens.\n")
@@ -5913,7 +5913,7 @@ func d_DoomMain() {
 			startmap = int32(v)
 		} else {
 			startepisode = int32(myargs[p+1][0] - '0')
-			if p+int32(2) < int32(len(myargs)) {
+			if p+2 < int32(len(myargs)) {
 				startmap = int32(myargs[p+2][0] - '0')
 			} else {
 				startmap = 1
@@ -5954,7 +5954,7 @@ func d_DoomMain() {
 	fprintf_ccgo(os.Stdout, "\nP_Init: Init Playloop state.\n")
 	p_Init()
 	fprintf_ccgo(os.Stdout, "s_Init: Setting up sound.\n")
-	s_Init(sfxVolume*int32(8), musicVolume*int32(8))
+	s_Init(sfxVolume*8, musicVolume*8)
 	fprintf_ccgo(os.Stdout, "d_CheckNetGame: Checking network game status.\n")
 	d_CheckNetGame()
 	printGameVersion()
@@ -6199,7 +6199,7 @@ func d_CheckNetGame() {
 	d_StartNetGame(settings, 0)
 	loadGameSettings(settings)
 	fprintf_ccgo(os.Stdout, "startskill %d  deathmatch: %d  startmap: %d  startepisode: %d\n", startskill, deathmatch, startmap, startepisode)
-	fprintf_ccgo(os.Stdout, "player %d of %d (%d nodes)\n", consoleplayer+int32(1), settings.Fnum_players, settings.Fnum_players)
+	fprintf_ccgo(os.Stdout, "player %d of %d (%d nodes)\n", consoleplayer+1, settings.Fnum_players, settings.Fnum_players)
 	// Show players here; the server might have specified a time limit
 	if timelimit > 0 && deathmatch != 0 {
 		// Gross hack to work like Vanilla:
@@ -6863,7 +6863,7 @@ func f_CastPrint(text string) {
 		width += w
 	}
 	// draw it
-	cx = 160 - width/int32(2)
+	cx = 160 - width/2
 	for i := 0; i < len(text); i++ {
 		c = xtoupper(int32(text[i])) - '!'
 		if c < 0 || c > '_'-'!'+1 {
@@ -6934,7 +6934,7 @@ func f_BunnyScroll() {
 	p1 := w_CacheLumpNameT("PFUB2")
 	p2 := w_CacheLumpNameT("PFUB1")
 	v_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT)
-	scrolled = 320 - (int32(finalecount)-int32(230))/int32(2)
+	scrolled = 320 - (int32(finalecount)-int32(230))/2
 	if scrolled > 320 {
 		scrolled = 320
 	}
@@ -7112,8 +7112,8 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 	copy(wipe_scr, wipe_scr_start)
 	// makes this wipe faster (in theory)
 	// to have stuff in column-major format
-	wipe_shittyColMajorXform(wipe_scr_start, width/int32(2), height)
-	wipe_shittyColMajorXform(wipe_scr_end, width/int32(2), height)
+	wipe_shittyColMajorXform(wipe_scr_start, width/2, height)
+	wipe_shittyColMajorXform(wipe_scr_end, width/2, height)
 	// setup initial column positions
 	// (y<0 => not ready to scroll yet)
 	y_screen = make([]int32, width)
@@ -7123,7 +7123,7 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 		if i >= width {
 			break
 		}
-		r = m_Random()%int32(3) - 1
+		r = m_Random()%3 - 1
 		y_screen[i] = y_screen[i-1] + r
 		if y_screen[i] > 0 {
 			y_screen[i] = 0
@@ -7659,18 +7659,18 @@ func g_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	v16 = 0
 	mousey = v16
 	mousex = v16
-	if forward > forwardmove[int32(1)] {
-		forward = forwardmove[int32(1)]
+	if forward > forwardmove[1] {
+		forward = forwardmove[1]
 	} else {
-		if forward < -forwardmove[int32(1)] {
-			forward = -forwardmove[int32(1)]
+		if forward < -forwardmove[1] {
+			forward = -forwardmove[1]
 		}
 	}
-	if side > forwardmove[int32(1)] {
-		side = forwardmove[int32(1)]
+	if side > forwardmove[1] {
+		side = forwardmove[1]
 	} else {
-		if side < -forwardmove[int32(1)] {
-			side = -forwardmove[int32(1)]
+		if side < -forwardmove[1] {
+			side = -forwardmove[1]
 		}
 	}
 	cmd.Fforwardmove += int8(forward)
@@ -7988,7 +7988,7 @@ func g_Ticker() {
 			if int32(cmd.Fforwardmove) > TURBOTHRESHOLD {
 				turbodetected[i] = 1
 			}
-			if gametic&int32(31) == 0 && gametic>>int32(5)%MAXPLAYERS == i && turbodetected[i] != 0 {
+			if gametic&int32(31) == 0 && gametic>>5%MAXPLAYERS == i && turbodetected[i] != 0 {
 				players[consoleplayer].Fmessage = fmt.Sprintf("%s is turbo!", player_names[i])
 				turbodetected[i] = 0
 			}
@@ -8700,10 +8700,10 @@ func g_DoNewGame() {
 	netgame = 0
 	deathmatch = 0
 	v2 = 0
-	playeringame[int32(3)] = v2
+	playeringame[3] = v2
 	v1 = v2
-	playeringame[int32(2)] = v1
-	playeringame[int32(1)] = v1
+	playeringame[2] = v1
+	playeringame[1] = v1
 	respawnparm = 0
 	fastparm = 0
 	nomonsters = 0
@@ -9110,7 +9110,7 @@ func g_DoPlayDemo() {
 		;
 		i++
 	}
-	if playeringame[int32(1)] != 0 || m_CheckParm("-solo-net") > 0 || m_CheckParm("-netdemo") > 0 {
+	if playeringame[1] != 0 || m_CheckParm("-solo-net") > 0 || m_CheckParm("-netdemo") > 0 {
 		netgame = 1
 		netdemo = 1
 	}
@@ -9170,10 +9170,10 @@ func g_CheckDemoStatus() {
 		netgame = 0
 		deathmatch = 0
 		v2 = 0
-		playeringame[int32(3)] = v2
+		playeringame[3] = v2
 		v1 = v2
-		playeringame[int32(2)] = v1
-		playeringame[int32(1)] = v1
+		playeringame[2] = v1
+		playeringame[1] = v1
 		respawnparm = 0
 		fastparm = 0
 		nomonsters = 0
@@ -9337,7 +9337,7 @@ func hulib_initSText(s *hu_stext_t, x int32, y int32, h int32, font []*patch_t, 
 	s.Flaston = 1
 	s.Fcl = 0
 	for i := int32(0); i < h; i++ {
-		hulib_initTextLine(&s.Fl[i], x, y-i*(int32(font[0].Fheight)+int32(1)), font, startchar)
+		hulib_initTextLine(&s.Fl[i], x, y-i*(int32(font[0].Fheight)+1), font, startchar)
 	}
 }
 
@@ -9715,7 +9715,7 @@ func hu_Start() {
 		hulib_addCharToTextLine(&w_title, byte(i))
 	}
 	// create the chat widget
-	hulib_initIText(&w_chat, HU_MSGX, HU_MSGY+HU_MSGHEIGHT*(int32(hu_font[0].Fheight)+int32(1)), hu_font[:], '!', &chat_on)
+	hulib_initIText(&w_chat, HU_MSGX, HU_MSGY+HU_MSGHEIGHT*(int32(hu_font[0].Fheight)+1), hu_font[:], '!', &chat_on)
 	// create the inputbuffer widgets
 	i = 0
 	for {
@@ -9789,7 +9789,7 @@ func hu_Ticker() {
 				} else {
 					rc = int32(hulib_keyInIText(&w_inputbuffer[i], uint8(c)))
 					if rc != 0 && int32(c) == KEY_ENTER {
-						if w_inputbuffer[i].Fl.Flen1 != 0 && (int32(chat_dest[i]) == consoleplayer+int32(1) || int32(chat_dest[i]) == HU_BROADCAST) {
+						if w_inputbuffer[i].Fl.Flen1 != 0 && (int32(chat_dest[i]) == consoleplayer+1 || int32(chat_dest[i]) == HU_BROADCAST) {
 							hulib_addMessageToSText(&w_message, player_names[i], gostring_bytes(w_inputbuffer[i].Fl.Fl[:]))
 							message_nottobefuckedwith = 1
 							message_on = 1
@@ -18279,7 +18279,7 @@ func i_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
 		*(*uint8)(unsafe.Pointer(value)) = dos_mem_dump[offset]
 		return 1
 	case 2:
-		*(*uint16)(unsafe.Pointer(value)) = uint16(int32(dos_mem_dump[offset]) | int32(dos_mem_dump[offset+1])<<int32(8))
+		*(*uint16)(unsafe.Pointer(value)) = uint16(int32(dos_mem_dump[offset]) | int32(dos_mem_dump[offset+1])<<8)
 		return 1
 	case 4:
 		*(*uint32)(unsafe.Pointer(value)) = uint32(int32(dos_mem_dump[offset]) | int32(dos_mem_dump[offset+1])<<8 | int32(dos_mem_dump[offset+2])<<16 | int32(dos_mem_dump[offset+3])<<24)
@@ -20136,20 +20136,20 @@ func m_DrawLoad() {
 //	//
 func m_DrawSaveLoadBorder(x int32, y int32) {
 	var i int32
-	v_DrawPatchDirect(x-int32(8), y+int32(7), w_CacheLumpNameT("M_LSLEFT"))
+	v_DrawPatchDirect(x-8, y+7, w_CacheLumpNameT("M_LSLEFT"))
 	i = 0
 	for {
 		if i >= 24 {
 			break
 		}
-		v_DrawPatchDirect(x, y+int32(7), w_CacheLumpNameT("M_LSCNTR"))
+		v_DrawPatchDirect(x, y+7, w_CacheLumpNameT("M_LSCNTR"))
 		x += 8
 		goto _1
 	_1:
 		;
 		i++
 	}
-	v_DrawPatchDirect(x, y+int32(7), w_CacheLumpNameT("M_LSRGHT"))
+	v_DrawPatchDirect(x, y+7, w_CacheLumpNameT("M_LSRGHT"))
 }
 
 // C documentation
@@ -20211,7 +20211,7 @@ func m_DoSave(slot int32) {
 	g_SaveGame(slot, savegamestrings[slot])
 	m_ClearMenus()
 	// PICK QUICKSAVE SLOT YET?
-	if quickSaveSlot == -int32(2) {
+	if quickSaveSlot == -2 {
 		quickSaveSlot = slot
 	}
 }
@@ -20268,7 +20268,7 @@ func m_QuickSave() {
 		m_StartControlPanel()
 		m_ReadSaveStrings()
 		m_SetupNextMenu(&SaveDef)
-		quickSaveSlot = -int32(2) // means to pick a slot now
+		quickSaveSlot = -2 // means to pick a slot now
 		return
 	}
 	tempstring := fmt.Sprintf("quicksave over your game named\n\n'%s'?\n\npress y or n.", savegamestrings[quickSaveSlot])
@@ -20396,7 +20396,7 @@ func m_SfxVol(choice int32) {
 		}
 		break
 	}
-	s_SetSfxVolume(sfxVolume * int32(8))
+	s_SetSfxVolume(sfxVolume * 8)
 }
 
 func m_MusicVol(choice int32) {
@@ -20411,7 +20411,7 @@ func m_MusicVol(choice int32) {
 		}
 		break
 	}
-	s_SetMusicVolume(musicVolume * int32(8))
+	s_SetMusicVolume(musicVolume * 8)
 }
 
 // C documentation
@@ -20454,7 +20454,7 @@ func m_VerifyNightmare(key int32) {
 	if key != key_menu_confirm {
 		return
 	}
-	g_DeferedInitNew(sk_nightmare, epi+int32(1), 1)
+	g_DeferedInitNew(sk_nightmare, epi+1, 1)
 	m_ClearMenus()
 }
 
@@ -20463,7 +20463,7 @@ func m_ChooseSkill(choice int32) {
 		m_StartMessage("are you sure? this skill level\nisn't even remotely fair.\n\npress y or n.", m_VerifyNightmare, 1)
 		return
 	}
-	g_DeferedInitNew(skill_t(choice), epi+int32(1), 1)
+	g_DeferedInitNew(skill_t(choice), epi+1, 1)
 	m_ClearMenus()
 }
 
@@ -20605,9 +20605,9 @@ var M_QuitResponse = func(key int32) {
 	}
 	if netgame == 0 {
 		if gamemode == commercial {
-			s_StartSound(nil, quitsounds2[gametic>>int32(2)&int32(7)])
+			s_StartSound(nil, quitsounds2[gametic>>2&7])
 		} else {
-			s_StartSound(nil, quitsounds[gametic>>int32(2)&int32(7)])
+			s_StartSound(nil, quitsounds[gametic>>2&7])
 		}
 	}
 	i_Quit()
@@ -20705,7 +20705,7 @@ func m_DrawThermo(x int32, y int32, thermWidth int32, thermDot int32) {
 		i++
 	}
 	v_DrawPatchDirect(xx, y, w_CacheLumpNameT("M_THERMR"))
-	v_DrawPatchDirect(x+int32(8)+thermDot*int32(8), y, w_CacheLumpNameT("M_THERMO"))
+	v_DrawPatchDirect(x+8+thermDot*8, y, w_CacheLumpNameT("M_THERMO"))
 }
 
 func m_StartMessage(string1 string, routine func(int32), input boolean) {
@@ -20852,15 +20852,15 @@ func m_Responder(ev *event_t) (r boolean) {
 				joywait = i_GetTime() + 2
 			}
 		}
-		if ev.Fdata1&int32(1) != 0 {
+		if ev.Fdata1&1 != 0 {
 			key = key_menu_forward
 			joywait = i_GetTime() + 5
 		}
-		if ev.Fdata1&int32(2) != 0 {
+		if ev.Fdata1&2 != 0 {
 			key = key_menu_back
 			joywait = i_GetTime() + 5
 		}
-		if joybmenu >= 0 && ev.Fdata1&(int32(1)<<joybmenu) != 0 {
+		if joybmenu >= 0 && ev.Fdata1&(1<<joybmenu) != 0 {
 			key = key_menu_activate
 			joywait = i_GetTime() + 5
 		}
@@ -20894,11 +20894,11 @@ func m_Responder(ev *event_t) (r boolean) {
 					mousex1 = lastx
 				}
 			}
-			if ev.Fdata1&int32(1) != 0 {
+			if ev.Fdata1&1 != 0 {
 				key = key_menu_forward
 				mousewait = i_GetTime() + 15
 			}
-			if ev.Fdata1&int32(2) != 0 {
+			if ev.Fdata1&2 != 0 {
 				key = key_menu_back
 				mousewait = i_GetTime() + 15
 			}
@@ -20980,7 +20980,7 @@ func m_Responder(ev *event_t) (r boolean) {
 				if automapactive != 0 || chat_on != 0 {
 					return 0
 				}
-				m_SizeDisplay(int32(1))
+				m_SizeDisplay(1)
 				s_StartSound(nil, int32(sfx_stnmov))
 				return 1
 			} else {
@@ -21079,7 +21079,7 @@ func m_Responder(ev *event_t) (r boolean) {
 	if key == key_menu_down {
 		// Move down to next item
 		for cond := true; cond; cond = int32(currentMenu.Fmenuitems[itemOn].Fstatus) == -1 {
-			if int32(itemOn)+int32(1) > int32(currentMenu.Fnumitems)-1 {
+			if int32(itemOn)+1 > int32(currentMenu.Fnumitems)-1 {
 				itemOn = 0
 			} else {
 				itemOn++
@@ -21233,7 +21233,7 @@ func m_Drawer() {
 	// Horiz. & Vertically center string and print it.
 	if messageToPrint != 0 {
 		start = 0
-		y2 = int16(SCREENHEIGHT/2 - m_StringHeight(messageString)/int32(2))
+		y2 = int16(SCREENHEIGHT/2 - m_StringHeight(messageString)/2)
 		for start < int32(len(messageString)) {
 			foundnewline = 0
 			i = 0
@@ -21256,7 +21256,7 @@ func m_Drawer() {
 				bp = messageString[start:]
 				start = int32(uint64(start) + uint64(len(bp)))
 			}
-			x = int16(SCREENWIDTH/2 - m_StringWidth(bp)/int32(2))
+			x = int16(SCREENWIDTH/2 - m_StringWidth(bp)/2)
 			m_WriteText(int32(x), int32(y2), bp)
 			y2 = int16(int32(y2) + int32(hu_font[0].Fheight))
 		}
@@ -21292,7 +21292,7 @@ func m_Drawer() {
 		i++
 	}
 	// DRAW SKULL
-	v_DrawPatchDirect(int32(x)+-int32(32), int32(currentMenu.Fy)-int32(5)+int32(itemOn)*LINEHEIGHT, w_CacheLumpNameT(skullName[whichSkull]))
+	v_DrawPatchDirect(int32(x)+-int32(32), int32(currentMenu.Fy)-5+int32(itemOn)*LINEHEIGHT, w_CacheLumpNameT(skullName[whichSkull]))
 }
 
 var x int16
@@ -22273,7 +22273,7 @@ func ev_VerticalDoor(line *line_t, thing *mobj_t) {
 		break
 	}
 	// if the sector has an active thinker, use it
-	sec = sides[line.Fsidenum[side^int32(1)]].Fsector
+	sec = sides[line.Fsidenum[side^1]].Fsector
 	if sec.Fspecialdata != nil {
 		special := sec.Fspecialdata
 		switch int32(line.Fspecial) {
@@ -22482,7 +22482,7 @@ func p_RecursiveSound(sec *sector_t, soundblocks int32) {
 	var other *sector_t
 	var i int32
 	// wake up all monsters in this sector
-	if sec.Fvalidcount == validcount && sec.Fsoundtraversed <= soundblocks+int32(1) {
+	if sec.Fvalidcount == validcount && sec.Fsoundtraversed <= soundblocks+1 {
 		return // already flooded
 	}
 	sec.Fvalidcount = validcount
@@ -22716,51 +22716,51 @@ func p_NewChaseDir(actor *mobj_t) {
 	deltax = actor.Ftarget.Fx - actor.Fx
 	deltay = actor.Ftarget.Fy - actor.Fy
 	if deltax > 10*(1<<FRACBITS) {
-		d[int32(1)] = DI_EAST
+		d[1] = DI_EAST
 	} else {
 		if deltax < -10*(1<<FRACBITS) {
-			d[int32(1)] = DI_WEST
+			d[1] = DI_WEST
 		} else {
-			d[int32(1)] = DI_NODIR
+			d[1] = DI_NODIR
 		}
 	}
 	if deltay < -10*(1<<FRACBITS) {
-		d[int32(2)] = DI_SOUTH
+		d[2] = DI_SOUTH
 	} else {
 		if deltay > 10*(1<<FRACBITS) {
-			d[int32(2)] = DI_NORTH
+			d[2] = DI_NORTH
 		} else {
-			d[int32(2)] = DI_NODIR
+			d[2] = DI_NODIR
 		}
 	}
 	// try direct route
-	if d[int32(1)] != DI_NODIR && d[int32(2)] != DI_NODIR {
-		actor.Fmovedir = diags[boolint32(deltay < 0)<<int32(1)+boolint32(deltax > 0)]
+	if d[1] != DI_NODIR && d[2] != DI_NODIR {
+		actor.Fmovedir = diags[boolint32(deltay < 0)<<1+boolint32(deltax > 0)]
 		if actor.Fmovedir != turnaround && p_TryWalk(actor) != 0 {
 			return
 		}
 	}
 	// try other directions
 	if p_Random() > 200 || xabs(deltay) > xabs(deltax) {
-		tdir = d[int32(1)]
-		d[int32(1)] = d[int32(2)]
-		d[int32(2)] = tdir
+		tdir = d[1]
+		d[1] = d[2]
+		d[2] = tdir
 	}
-	if d[int32(1)] == turnaround {
-		d[int32(1)] = DI_NODIR
+	if d[1] == turnaround {
+		d[1] = DI_NODIR
 	}
-	if d[int32(2)] == turnaround {
-		d[int32(2)] = DI_NODIR
+	if d[2] == turnaround {
+		d[2] = DI_NODIR
 	}
-	if d[int32(1)] != DI_NODIR {
-		actor.Fmovedir = d[int32(1)]
+	if d[1] != DI_NODIR {
+		actor.Fmovedir = d[1]
 		if p_TryWalk(actor) != 0 {
 			// either moved forward or attacked
 			return
 		}
 	}
-	if d[int32(2)] != DI_NODIR {
-		actor.Fmovedir = d[int32(2)]
+	if d[2] != DI_NODIR {
+		actor.Fmovedir = d[2]
 		if p_TryWalk(actor) != 0 {
 			return
 		}
@@ -22774,7 +22774,7 @@ func p_NewChaseDir(actor *mobj_t) {
 		}
 	}
 	// randomly determine direction of search
-	if p_Random()&int32(1) != 0 {
+	if p_Random()&1 != 0 {
 		tdir = DI_EAST
 		for {
 			if !(tdir <= DI_SOUTHEAST) {
@@ -22942,11 +22942,11 @@ seeyou:
 		case int32(sfx_posit2):
 			fallthrough
 		case int32(sfx_posit3):
-			sound = int32(sfx_posit1) + p_Random()%int32(3)
+			sound = int32(sfx_posit1) + p_Random()%3
 		case int32(sfx_bgsit1):
 			fallthrough
 		case int32(sfx_bgsit2):
-			sound = int32(sfx_bgsit1) + p_Random()%int32(2)
+			sound = int32(sfx_bgsit1) + p_Random()%2
 		default:
 			sound = actor.Finfo.Fseesound
 			break
@@ -23081,7 +23081,7 @@ func a_PosAttack(actor *mobj_t) {
 	slope = p_AimLineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS))
 	s_StartSound(&actor.degenmobj_t, int32(sfx_pistol))
 	angle += (p_Random() - p_Random()) << 20
-	damage = (p_Random()%int32(5) + 1) * 3
+	damage = (p_Random()%5 + 1) * 3
 	p_LineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS), slope, damage)
 }
 
@@ -23100,7 +23100,7 @@ func a_SPosAttack(actor *mobj_t) {
 			break
 		}
 		angle = bangle + (p_Random()-p_Random())<<int32(20)
-		damage = (p_Random()%int32(5) + 1) * 3
+		damage = (p_Random()%5 + 1) * 3
 		p_LineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS), slope, damage)
 		goto _1
 	_1:
@@ -23119,7 +23119,7 @@ func a_CPosAttack(actor *mobj_t) {
 	bangle = int32(actor.Fangle)
 	slope = p_AimLineAttack(actor, uint32(bangle), 32*64*(1<<FRACBITS))
 	angle = bangle + (p_Random()-p_Random())<<int32(20)
-	damage = (p_Random()%int32(5) + 1) * 3
+	damage = (p_Random()%5 + 1) * 3
 	p_LineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS), slope, damage)
 }
 
@@ -23167,7 +23167,7 @@ func a_TroopAttack(actor *mobj_t) {
 	a_FaceTarget(actor)
 	if p_CheckMeleeRange(actor) != 0 {
 		s_StartSound(&actor.degenmobj_t, int32(sfx_claw))
-		damage = (p_Random()%int32(8) + 1) * 3
+		damage = (p_Random()%8 + 1) * 3
 		p_DamageMobj(actor.Ftarget, actor, actor, damage)
 		return
 	}
@@ -23194,7 +23194,7 @@ func a_HeadAttack(actor *mobj_t) {
 	}
 	a_FaceTarget(actor)
 	if p_CheckMeleeRange(actor) != 0 {
-		damage = (p_Random()%int32(6) + 1) * 10
+		damage = (p_Random()%6 + 1) * 10
 		p_DamageMobj(actor.Ftarget, actor, actor, damage)
 		return
 	}
@@ -23217,7 +23217,7 @@ func a_BruisAttack(actor *mobj_t) {
 	}
 	if p_CheckMeleeRange(actor) != 0 {
 		s_StartSound(&actor.degenmobj_t, int32(sfx_claw))
-		damage = (p_Random()%int32(8) + 1) * 10
+		damage = (p_Random()%8 + 1) * 10
 		p_DamageMobj(actor.Ftarget, actor, actor, damage)
 		return
 	}
@@ -23253,7 +23253,7 @@ func a_Tracer(actor *mobj_t) {
 	var th *mobj_t
 	var dist, slope fixed_t
 	var exact angle_t
-	if gametic&int32(3) != 0 {
+	if gametic&3 != 0 {
 		return
 	}
 	// spawn a puff of smoke behind the rocket
@@ -23617,7 +23617,7 @@ func a_PainShootSkull(actor *mobj_t, angle angle_t) {
 	}
 	// okay, there's playe for another one
 	an = angle >> ANGLETOFINESHIFT
-	prestep = 4*(1<<FRACBITS) + 3*(actor.Finfo.Fradius+mobjinfo[mt_SKULL].Fradius)/int32(2)
+	prestep = 4*(1<<FRACBITS) + 3*(actor.Finfo.Fradius+mobjinfo[mt_SKULL].Fradius)/2
 	x = actor.Fx + fixedMul(prestep, finecosine[an])
 	y = actor.Fy + fixedMul(prestep, finesine[an])
 	z = actor.Fz + 8*(1<<FRACBITS)
@@ -23663,11 +23663,11 @@ func a_Scream(actor *mobj_t) {
 	case int32(sfx_podth2):
 		fallthrough
 	case int32(sfx_podth3):
-		sound = int32(sfx_podth1) + p_Random()%int32(3)
+		sound = int32(sfx_podth1) + p_Random()%3
 	case int32(sfx_bgdth1):
 		fallthrough
 	case int32(sfx_bgdth2):
-		sound = int32(sfx_bgdth1) + p_Random()%int32(2)
+		sound = int32(sfx_bgdth1) + p_Random()%2
 	default:
 		sound = actor.Finfo.Fdeathsound
 		break
@@ -23903,7 +23903,7 @@ func a_BrainScream(mo *mobj_t) {
 			break
 		}
 		y = mo.Fy - 320*(1<<FRACBITS)
-		z = 128 + p_Random()*int32(2)*(1<<FRACBITS)
+		z = 128 + p_Random()*2*(1<<FRACBITS)
 		th = p_SpawnMobj(x, y, z, mt_ROCKET)
 		th.Fmomz = p_Random() * 512
 		p_SetMobjState(th, s_BRAINEXPLODE1)
@@ -23924,7 +23924,7 @@ func a_BrainExplode(mo *mobj_t) {
 	var x, y, z int32
 	x = mo.Fx + (p_Random()-p_Random())*int32(2048)
 	y = mo.Fy
-	z = 128 + p_Random()*int32(2)*(1<<FRACBITS)
+	z = 128 + p_Random()*2*(1<<FRACBITS)
 	th = p_SpawnMobj(x, y, z, mt_ROCKET)
 	th.Fmomz = p_Random() * 512
 	p_SetMobjState(th, s_BRAINEXPLODE1)
@@ -25174,7 +25174,7 @@ func p_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int3
 		ang = r_PointToAngle2(inflictor.Fx, inflictor.Fy, target.Fx, target.Fy)
 		thrust = damage * (1 << FRACBITS >> 3) * 100 / target.Finfo.Fmass
 		// make fall forwards sometimes
-		if damage < 40 && damage > target.Fhealth && target.Fz-inflictor.Fz > 64*(1<<FRACBITS) && p_Random()&int32(1) != 0 {
+		if damage < 40 && damage > target.Fhealth && target.Fz-inflictor.Fz > 64*(1<<FRACBITS) && p_Random()&1 != 0 {
 			ang += uint32(ANG1803)
 			thrust *= 4
 		}
@@ -25223,7 +25223,7 @@ func p_DamageMobj(target *mobj_t, inflictor *mobj_t, source *mobj_t, damage int3
 		}
 		temp = v3
 		if player == &players[consoleplayer] {
-			i_Tactile(40, 10, 40+temp*int32(2))
+			i_Tactile(40, 10, 40+temp*2)
 		}
 	}
 	// do the damage
@@ -25408,7 +25408,7 @@ func p_SpawnStrobeFlash(sector *sector_t, fastOrSlow int32, inSync int32) {
 	// nothing special about it during gameplay
 	sector.Fspecial = 0
 	if inSync == 0 {
-		flashP.Fcount = p_Random()&int32(7) + 1
+		flashP.Fcount = p_Random()&7 + 1
 	} else {
 		flashP.Fcount = 1
 	}
@@ -25751,7 +25751,7 @@ func pit_CheckThing(thing *mobj_t) (r boolean) {
 	}
 	// check for skulls slamming into things
 	if tmthing.Fflags&MF_SKULLFLY != 0 {
-		damage = (p_Random()%int32(8) + 1) * tmthing.Finfo.Fdamage
+		damage = (p_Random()%8 + 1) * tmthing.Finfo.Fdamage
 		p_DamageMobj(thing, tmthing, tmthing, damage)
 		tmthing.Fflags &^= MF_SKULLFLY
 		v2 = 0
@@ -25790,7 +25790,7 @@ func pit_CheckThing(thing *mobj_t) (r boolean) {
 			return booluint32(thing.Fflags&MF_SOLID == 0)
 		}
 		// damage / explode
-		damage = (p_Random()%int32(8) + 1) * tmthing.Finfo.Fdamage
+		damage = (p_Random()%8 + 1) * tmthing.Finfo.Fdamage
 		p_DamageMobj(thing, tmthing, tmthing.Ftarget, damage)
 		// don't traverse any more
 		return 0
@@ -26568,7 +26568,7 @@ func pit_ChangeSector(thing *mobj_t) (r boolean) {
 	if crushchange != 0 && leveltime&3 == 0 {
 		p_DamageMobj(thing, nil, nil, 10)
 		// spray blood in a random direction
-		mo = p_SpawnMobj(thing.Fx, thing.Fy, thing.Fz+thing.Fheight/int32(2), mt_BLOOD)
+		mo = p_SpawnMobj(thing.Fx, thing.Fy, thing.Fz+thing.Fheight/2, mt_BLOOD)
 		mo.Fmomx = (p_Random() - p_Random()) << 12
 		mo.Fmomy = (p_Random() - p_Random()) << 12
 	}
@@ -26792,8 +26792,8 @@ func p_PointOnDivlineSide(x fixed_t, y fixed_t, line *divline_t) (r int32) {
 		} // (left is negative)
 		return 0
 	}
-	left = fixedMul(line.Fdy>>int32(8), dx>>int32(8))
-	right = fixedMul(dy>>int32(8), line.Fdx>>int32(8))
+	left = fixedMul(line.Fdy>>8, dx>>8)
+	right = fixedMul(dy>>8, line.Fdx>>8)
 	if right < left {
 		return 0
 	} // front side
@@ -26823,12 +26823,12 @@ func p_MakeDivline(li *line_t, dl *divline_t) {
 //	//
 func p_InterceptVector(v2 *divline_t, v1 *divline_t) (r fixed_t) {
 	var den, frac, num fixed_t
-	den = fixedMul(v1.Fdy>>int32(8), v2.Fdx) - fixedMul(v1.Fdx>>int32(8), v2.Fdy)
+	den = fixedMul(v1.Fdy>>8, v2.Fdx) - fixedMul(v1.Fdx>>8, v2.Fdy)
 	if den == 0 {
 		return 0
 	}
 	//	i_Error ("p_InterceptVector: parallel");
-	num = fixedMul((v1.Fx-v2.Fx)>>int32(8), v1.Fdy) + fixedMul((v2.Fy-v1.Fy)>>int32(8), v1.Fdx)
+	num = fixedMul((v1.Fx-v2.Fx)>>8, v1.Fdy) + fixedMul((v2.Fy-v1.Fy)>>8, v1.Fdx)
 	frac = fixedDiv(num, den)
 	return frac
 }
@@ -27253,7 +27253,7 @@ func interceptsMemoryOverrun(location int32, value int32) {
 				if intercepts_overrun[i].Fint16_array != 0 {
 					index = (location - offset) / 2
 					*(*int16)(unsafe.Pointer(addr + uintptr(index)*2)) = int16(value & 0xffff)
-					*(*int16)(unsafe.Pointer(addr + uintptr(index+int32(1))*2)) = int16(value >> 16 & 0xffff)
+					*(*int16)(unsafe.Pointer(addr + uintptr(index+1)*2)) = int16(value >> 16 & 0xffff)
 				} else {
 					index = (location - offset) / 4
 					*(*int32)(unsafe.Pointer(addr + uintptr(index)*4)) = value
@@ -27282,8 +27282,8 @@ func interceptsOverrun(num_intercepts int32, intercept *intercept_t) {
 	// address translated into the correct address value for
 	// Vanilla Doom.
 	interceptsMemoryOverrun(location, intercept.Ffrac)
-	interceptsMemoryOverrun(location+int32(4), int32(intercept.Fisaline))
-	interceptsMemoryOverrun(location+int32(8), int32(*(*uintptr)(unsafe.Pointer(&intercept.Fd))))
+	interceptsMemoryOverrun(location+4, int32(intercept.Fisaline))
+	interceptsMemoryOverrun(location+8, int32(*(*uintptr)(unsafe.Pointer(&intercept.Fd))))
 }
 
 // C documentation
@@ -27480,8 +27480,8 @@ func p_XYMovement(mo *mobj_t) {
 	ymove = mo.Fmomy
 	for cond := true; cond; cond = xmove != 0 || ymove != 0 {
 		if xmove > 30*(1<<FRACBITS)/2 || ymove > 30*(1<<FRACBITS)/2 {
-			ptryx = mo.Fx + xmove/int32(2)
-			ptryy = mo.Fy + ymove/int32(2)
+			ptryx = mo.Fx + xmove/2
+			ptryy = mo.Fy + ymove/2
 			xmove >>= 1
 			ymove >>= 1
 		} else {
@@ -27571,10 +27571,10 @@ func p_ZMovement(mo *mobj_t) {
 		if mo.Fflags&MF_SKULLFLY == 0 && mo.Fflags&MF_INFLOAT == 0 {
 			dist = p_AproxDistance(mo.Fx-mo.Ftarget.Fx, mo.Fy-mo.Ftarget.Fy)
 			delta = mo.Ftarget.Fz + mo.Fheight>>1 - mo.Fz
-			if delta < 0 && dist < -(delta*int32(3)) {
+			if delta < 0 && dist < -(delta*3) {
 				mo.Fz -= 1 << FRACBITS * 4
 			} else {
-				if delta > 0 && dist < delta*int32(3) {
+				if delta > 0 && dist < delta*3 {
 					mo.Fz += 1 << FRACBITS * 4
 				}
 			}
@@ -28861,7 +28861,7 @@ func a_FireBFG(player *player_t, psp *pspdef_t) {
 //	//
 func a_FirePlasma(player *player_t, psp *pspdef_t) {
 	decreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 1)
-	p_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate+p_Random()&int32(1))
+	p_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate+p_Random()&1)
 	p_SpawnPlayerMissile(player.Fmo, mt_PLASMA)
 }
 
@@ -28888,7 +28888,7 @@ func p_BulletSlope(mo *mobj_t) {
 func p_GunShot(mo *mobj_t, accurate boolean) {
 	var angle angle_t
 	var damage int32
-	damage = 5 * (p_Random()%int32(3) + 1)
+	damage = 5 * (p_Random()%3 + 1)
 	angle = mo.Fangle
 	if accurate == 0 {
 		angle += uint32((p_Random() - p_Random()) << 18)
@@ -28953,10 +28953,10 @@ func a_FireShotgun2(player *player_t, psp *pspdef_t) {
 		if i >= 20 {
 			break
 		}
-		damage = 5 * (p_Random()%int32(3) + 1)
+		damage = 5 * (p_Random()%3 + 1)
 		angle = player.Fmo.Fangle
 		angle += uint32((p_Random() - p_Random()) << 19)
-		p_LineAttack(player.Fmo, angle, 32*64*(1<<FRACBITS), bulletslope+(p_Random()-p_Random())<<int32(5), damage)
+		p_LineAttack(player.Fmo, angle, 32*64*(1<<FRACBITS), bulletslope+(p_Random()-p_Random())<<5, damage)
 		goto _1
 	_1:
 		;
@@ -29028,7 +29028,7 @@ func a_BFGSpray(mo *mobj_t) {
 			if j >= 15 {
 				break
 			}
-			damage += p_Random()&int32(7) + 1
+			damage += p_Random()&7 + 1
 			goto _2
 		_2:
 			;
@@ -29165,7 +29165,7 @@ func saveg_read16() (r int16) {
 
 func saveg_write16(value int16) {
 	saveg_write8(uint8(int32(value) & 0xff))
-	saveg_write8(uint8(int32(value) >> int32(8) & 0xff))
+	saveg_write8(uint8(int32(value) >> 8 & 0xff))
 }
 
 func saveg_read32() (r int32) {
@@ -29179,7 +29179,7 @@ func saveg_read32() (r int32) {
 
 func saveg_write32(value int32) {
 	saveg_write8(uint8(value & 0xff))
-	saveg_write8(uint8(value >> int32(8) & 0xff))
+	saveg_write8(uint8(value >> 8 & 0xff))
 	saveg_write8(uint8(value >> int32(16) & 0xff))
 	saveg_write8(uint8(value >> int32(24) & 0xff))
 }
@@ -30137,7 +30137,7 @@ func p_WriteSaveGameHeader(description string) {
 		i++
 	}
 	saveg_write8(uint8(leveltime >> int32(16) & 0xff))
-	saveg_write8(uint8(leveltime >> int32(8) & 0xff))
+	saveg_write8(uint8(leveltime >> 8 & 0xff))
 	saveg_write8(uint8(leveltime & 0xff))
 }
 
@@ -30191,7 +30191,7 @@ func p_ReadSaveGameHeader() (r boolean) {
 	a = saveg_read8()
 	b = saveg_read8()
 	c = saveg_read8()
-	leveltime = int32(a)<<int32(16) + int32(b)<<int32(8) + int32(c)
+	leveltime = int32(a)<<int32(16) + int32(b)<<8 + int32(c)
 	return 1
 }
 
@@ -30658,7 +30658,7 @@ func p_LoadSegs(lump int32) {
 		li.Fsidedef = &sides[ldef.Fsidenum[side]]
 		li.Ffrontsector = sides[ldef.Fsidenum[side]].Fsector
 		if int32(ldef.Fflags)&ML_TWOSIDED != 0 {
-			sidenum = int32(ldef.Fsidenum[side^int32(1)])
+			sidenum = int32(ldef.Fsidenum[side^1])
 			// If the sidenum is out of range, this may be a "glass hack"
 			// impassible window.  Point at side #0 (this may not be
 			// the correct Vanilla behavior; however, it seems to work for
@@ -31065,7 +31065,7 @@ func padRejectArray(array []uint8, len1 uint32) {
 	var rejectpad [4]uint32
 	// Values to pad the REJECT array with:
 	rejectpad = [4]uint32{
-		0: uint32((totallines*int32(4)+int32(3)) & ^3 + 24),
+		0: uint32((totallines*4+3) & ^3 + 24),
 		2: 50,
 		3: 0x1d4a11,
 	}
@@ -31267,12 +31267,12 @@ func p_DivlineSide(x fixed_t, y fixed_t, node *divline_t) (r int32) {
 //	//
 func p_InterceptVector2(v2 *divline_t, v1 *divline_t) (r fixed_t) {
 	var den, frac, num fixed_t
-	den = fixedMul(v1.Fdy>>int32(8), v2.Fdx) - fixedMul(v1.Fdx>>int32(8), v2.Fdy)
+	den = fixedMul(v1.Fdy>>8, v2.Fdx) - fixedMul(v1.Fdx>>8, v2.Fdy)
 	if den == 0 {
 		return 0
 	}
 	//	i_Error ("p_InterceptVector: parallel");
-	num = fixedMul((v1.Fx-v2.Fx)>>int32(8), v1.Fdy) + fixedMul((v2.Fy-v1.Fy)>>int32(8), v1.Fdx)
+	num = fixedMul((v1.Fx-v2.Fx)>>8, v1.Fdy) + fixedMul((v2.Fy-v1.Fy)>>8, v1.Fdx)
 	frac = fixedDiv(num, den)
 	return frac
 }
@@ -31445,7 +31445,7 @@ func p_CheckSight(t1 *mobj_t, t2 *mobj_t) (r boolean) {
 	}
 	// An unobstructed LOS is possible.
 	// Now look from eyes of t1 to any part of t2.
-	sightcounts[int32(1)]++
+	sightcounts[1]++
 	validcount++
 	sightzstart = t1.Fz + t1.Fheight - t1.Fheight>>2
 	topslope = t2.Fz + t2.Fheight - sightzstart
@@ -33070,12 +33070,12 @@ func p_ChangeSwitchTexture(line *line_t, useAgain int32) {
 	}
 	i = 0
 	for {
-		if i >= numswitches*int32(2) {
+		if i >= numswitches*2 {
 			break
 		}
 		if switchlist[i] == texTop {
 			s_StartSound(buttonlist[0].Fsoundorg, sound)
-			sides[line.Fsidenum[0]].Ftoptexture = int16(switchlist[i^int32(1)])
+			sides[line.Fsidenum[0]].Ftoptexture = int16(switchlist[i^1])
 			if useAgain != 0 {
 				p_StartButton(line, int32(top), switchlist[i], BUTTONTIME)
 			}
@@ -33083,7 +33083,7 @@ func p_ChangeSwitchTexture(line *line_t, useAgain int32) {
 		} else {
 			if switchlist[i] == texMid {
 				s_StartSound(buttonlist[0].Fsoundorg, sound)
-				sides[line.Fsidenum[0]].Fmidtexture = int16(switchlist[i^int32(1)])
+				sides[line.Fsidenum[0]].Fmidtexture = int16(switchlist[i^1])
 				if useAgain != 0 {
 					p_StartButton(line, int32(middle), switchlist[i], BUTTONTIME)
 				}
@@ -33091,7 +33091,7 @@ func p_ChangeSwitchTexture(line *line_t, useAgain int32) {
 			} else {
 				if switchlist[i] == texBot {
 					s_StartSound(buttonlist[0].Fsoundorg, sound)
-					sides[line.Fsidenum[0]].Fbottomtexture = int16(switchlist[i^int32(1)])
+					sides[line.Fsidenum[0]].Fbottomtexture = int16(switchlist[i^1])
 					if useAgain != 0 {
 						p_StartButton(line, int32(bottom), switchlist[i], BUTTONTIME)
 					}
@@ -33707,7 +33707,7 @@ func p_CalcHeight(player *player_t) {
 		return
 	}
 	angle = FINEANGLES / 20 * leveltime & (FINEANGLES - 1)
-	bob = fixedMul(player.Fbob/int32(2), finesine[angle])
+	bob = fixedMul(player.Fbob/2, finesine[angle])
 	// move viewheight
 	if player.Fplayerstate == Pst_LIVE {
 		player.Fviewheight += player.Fdeltaviewheight
@@ -33902,14 +33902,14 @@ func p_PlayerThink(player *player_t) {
 	}
 	// Handling colormaps.
 	if player.Fpowers[pw_invulnerability] != 0 {
-		if player.Fpowers[pw_invulnerability] > 4*32 || player.Fpowers[pw_invulnerability]&int32(8) != 0 {
+		if player.Fpowers[pw_invulnerability] > 4*32 || player.Fpowers[pw_invulnerability]&8 != 0 {
 			player.Ffixedcolormap = INVERSECOLORMAP
 		} else {
 			player.Ffixedcolormap = 0
 		}
 	} else {
 		if player.Fpowers[pw_infrared] != 0 {
-			if player.Fpowers[pw_infrared] > 4*32 || player.Fpowers[pw_infrared]&int32(8) != 0 {
+			if player.Fpowers[pw_infrared] > 4*32 || player.Fpowers[pw_infrared]&8 != 0 {
 				// almost full bright
 				player.Ffixedcolormap = 1
 			} else {
@@ -33996,7 +33996,7 @@ func r_ClipSolidWallSegment(first int32, last int32) {
 		}
 	}
 	// There is a fragment after *next.
-	r_StoreWallRange(solidsegs[next].Flast+int32(1), last)
+	r_StoreWallRange(solidsegs[next].Flast+1, last)
 	// Adjust the clip size.
 	solidsegs[start].Flast = last
 	// Remove start+1 to next from the clip list,
@@ -34051,14 +34051,14 @@ func r_ClipPassWallSegment(first int32, last int32) {
 	}
 	for last >= solidsegs[start+1].Ffirst-1 {
 		// There is a fragment between two posts.
-		r_StoreWallRange(solidsegs[start].Flast+int32(1), solidsegs[start+1].Ffirst-1)
+		r_StoreWallRange(solidsegs[start].Flast+1, solidsegs[start+1].Ffirst-1)
 		start++
 		if last <= solidsegs[start].Flast {
 			return
 		}
 	}
 	// There is a fragment after *next.
-	r_StoreWallRange(solidsegs[start].Flast+int32(1), last)
+	r_StoreWallRange(solidsegs[start].Flast+1, last)
 }
 
 // C documentation
@@ -34069,8 +34069,8 @@ func r_ClipPassWallSegment(first int32, last int32) {
 func r_ClearClipSegs() {
 	solidsegs[0].Ffirst = -int32(0x7fffffff)
 	solidsegs[0].Flast = -1
-	solidsegs[int32(1)].Ffirst = viewwidth
-	solidsegs[int32(1)].Flast = 0x7fffffff
+	solidsegs[1].Ffirst = viewwidth
+	solidsegs[1].Flast = 0x7fffffff
 	newend = 2
 }
 
@@ -34232,7 +34232,7 @@ func r_CheckBBox(bspcoord *box_t) (r boolean) {
 			boxy = 2
 		}
 	}
-	boxpos = boxy<<int32(2) + boxx
+	boxpos = boxy<<2 + boxx
 	if boxpos == 5 {
 		return 1
 	}
@@ -34353,7 +34353,7 @@ func r_RenderBSPNode(bspnum int32) {
 	r_RenderBSPNode(int32(bsp.Fchildren[side]))
 	// Possibly divide back space.
 	if r_CheckBBox(&bsp.Fbbox[side^1]) != 0 {
-		r_RenderBSPNode(int32(bsp.Fchildren[side^int32(1)]))
+		r_RenderBSPNode(int32(bsp.Fchildren[side^1]))
 	}
 }
 
@@ -34802,7 +34802,7 @@ func r_InitTextures() {
 		texturecolumnlump[i] = make([]int16, texture.Fwidth)
 		texturecolumnofs[i] = make([]uint16, texture.Fwidth)
 		j = 1
-		for j*int32(2) <= int32(texture.Fwidth) {
+		for j*2 <= int32(texture.Fwidth) {
 			j <<= 1
 		}
 		texturewidthmask[i] = j - 1
@@ -35212,7 +35212,7 @@ func r_DrawColumnLow() {
 	// Blocky mode, need to multiply by 2.
 	x = dc_x << 1
 	dest = ylookup[dc_yl] + uintptr(columnofs[x])
-	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+int32(1)])
+	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+1])
 	fracstep = dc_iscale
 	frac = dc_texturemid + (dc_yl-centery)*fracstep
 	for {
@@ -35375,7 +35375,7 @@ func r_DrawFuzzColumnLow() {
 		i_Error("r_DrawFuzzColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[x])
-	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+int32(1)])
+	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+1])
 	// Looks familiar.
 	fracstep = dc_iscale
 	frac = dc_texturemid + (dc_yl-centery)*fracstep
@@ -35459,7 +35459,7 @@ func r_DrawTranslatedColumnLow() {
 		i_Error("r_DrawColumn: %d to %d at %d", dc_yl, dc_yh, x)
 	}
 	dest = ylookup[dc_yl] + uintptr(columnofs[x])
-	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+int32(1)])
+	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+1])
 	// Looks familiar.
 	fracstep = dc_iscale
 	frac = dc_texturemid + (dc_yl-centery)*fracstep
@@ -35730,7 +35730,7 @@ func r_FillBackScreen() {
 		if x >= scaledviewwidth {
 			break
 		}
-		v_DrawPatch(viewwindowx+x, viewwindowy-int32(8), patch)
+		v_DrawPatch(viewwindowx+x, viewwindowy-8, patch)
 		goto _3
 	_3:
 		;
@@ -35754,7 +35754,7 @@ func r_FillBackScreen() {
 		if y >= viewheight {
 			break
 		}
-		v_DrawPatch(viewwindowx-int32(8), viewwindowy+y, patch)
+		v_DrawPatch(viewwindowx-8, viewwindowy+y, patch)
 		goto _5
 	_5:
 		;
@@ -35773,9 +35773,9 @@ func r_FillBackScreen() {
 		y += 8
 	}
 	// Draw beveled edge.
-	v_DrawPatch(viewwindowx-int32(8), viewwindowy-int32(8), w_CacheLumpNameT("brdr_tl"))
-	v_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy-int32(8), w_CacheLumpNameT("brdr_tr"))
-	v_DrawPatch(viewwindowx-int32(8), viewwindowy+viewheight, w_CacheLumpNameT("brdr_bl"))
+	v_DrawPatch(viewwindowx-8, viewwindowy-8, w_CacheLumpNameT("brdr_tl"))
+	v_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy-8, w_CacheLumpNameT("brdr_tr"))
+	v_DrawPatch(viewwindowx-8, viewwindowy+viewheight, w_CacheLumpNameT("brdr_bl"))
 	v_DrawPatch(viewwindowx+scaledviewwidth, viewwindowy+viewheight, w_CacheLumpNameT("brdr_br"))
 	v_RestoreBuffer()
 }
@@ -36104,7 +36104,7 @@ func r_InitTextureMapping() {
 				if t < -1 {
 					t = -1
 				} else {
-					if t > viewwidth+int32(1) {
+					if t > viewwidth+1 {
 						t = viewwidth + 1
 					}
 				}
@@ -36145,7 +36145,7 @@ func r_InitTextureMapping() {
 		if viewangletox[i] == -1 {
 			viewangletox[i] = 0
 		} else {
-			if viewangletox[i] == viewwidth+int32(1) {
+			if viewangletox[i] == viewwidth+1 {
 				viewangletox[i] = viewwidth
 			}
 		}
@@ -36178,7 +36178,7 @@ func r_InitLightTables() {
 			if j >= MAXLIGHTZ {
 				break
 			}
-			scale = fixedDiv(SCREENWIDTH/2*(1<<FRACBITS), (j+int32(1))<<LIGHTZSHIFT)
+			scale = fixedDiv(SCREENWIDTH/2*(1<<FRACBITS), (j+1)<<LIGHTZSHIFT)
 			scale >>= LIGHTSCALESHIFT
 			level = startmap - scale/DISTMAP
 			if level < 0 {
@@ -36265,9 +36265,9 @@ func r_ExecuteSetViewSize() {
 		if i >= viewheight {
 			break
 		}
-		dy = (i-viewheight/int32(2))<<FRACBITS + 1<<FRACBITS/2
+		dy = (i-viewheight/2)<<FRACBITS + 1<<FRACBITS/2
 		dy = xabs(dy)
-		yslope[i] = fixedDiv(viewwidth<<detailshift/int32(2)*(1<<FRACBITS), dy)
+		yslope[i] = fixedDiv(viewwidth<<detailshift/2*(1<<FRACBITS), dy)
 		goto _4
 	_4:
 		;
@@ -36842,7 +36842,7 @@ func r_RenderSegLoop() {
 		// mark floor / ceiling areas
 		yl = (topfrac + 1<<HEIGHTBITS - 1) >> HEIGHTBITS
 		// no space above wall?
-		if yl < int32(*(*int16)(unsafe.Pointer(ceilingclip_temp)))+int32(1) {
+		if yl < int32(*(*int16)(unsafe.Pointer(ceilingclip_temp)))+1 {
 			yl = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + 1
 		}
 		if markceiling != 0 {
@@ -37231,12 +37231,12 @@ func r_StoreWallRange(start int32, stop int32) {
 	r_RenderSegLoop()
 	// save sprite clipping info
 	if (drawsegs[ds_index].Fsilhouette&SIL_TOP != 0 || maskedtexture != 0) && drawsegs[ds_index].Fsprtopclip == 0 {
-		xmemcpy(lastopening, uintptr(unsafe.Pointer(&ceilingclip))+uintptr(start)*2, uint64(int32(2)*(rw_stopx-start)))
+		xmemcpy(lastopening, uintptr(unsafe.Pointer(&ceilingclip))+uintptr(start)*2, uint64(2*(rw_stopx-start)))
 		drawsegs[ds_index].Fsprtopclip = lastopening - uintptr(start)*2
 		lastopening += uintptr(rw_stopx-start) * 2
 	}
 	if (drawsegs[ds_index].Fsilhouette&SIL_BOTTOM != 0 || maskedtexture != 0) && drawsegs[ds_index].Fsprbottomclip == 0 {
-		xmemcpy(lastopening, uintptr(unsafe.Pointer(&floorclip))+uintptr(start)*2, uint64(int32(2)*(rw_stopx-start)))
+		xmemcpy(lastopening, uintptr(unsafe.Pointer(&floorclip))+uintptr(start)*2, uint64(2*(rw_stopx-start)))
 		drawsegs[ds_index].Fsprbottomclip = lastopening - uintptr(start)*2
 		lastopening += uintptr(rw_stopx-start) * 2
 	}
@@ -37812,7 +37812,7 @@ func r_DrawPSprite(psp *pspdef_t) {
 		vis.Fstartfrac += vis.Fxiscale * fixed_t(vis.Fx1-x1)
 	}
 	vis.Fpatch = lump
-	if viewplayer.Fpowers[pw_invisibility] > 4*32 || viewplayer.Fpowers[pw_invisibility]&int32(8) != 0 {
+	if viewplayer.Fpowers[pw_invisibility] > 4*32 || viewplayer.Fpowers[pw_invisibility]&8 != 0 {
 		// shadow draw
 		vis.Fcolormap = nil
 	} else {
@@ -38016,7 +38016,7 @@ func r_DrawSprite(spr *vissprite_t) {
 				if !(x <= r2) {
 					break
 				}
-				if int32(clipbot[x]) == -int32(2) {
+				if int32(clipbot[x]) == -2 {
 					clipbot[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprbottomclip + uintptr(x)*2))
 				}
 				goto _6
@@ -38032,7 +38032,7 @@ func r_DrawSprite(spr *vissprite_t) {
 					if !(x <= r2) {
 						break
 					}
-					if int32(cliptop[x]) == -int32(2) {
+					if int32(cliptop[x]) == -2 {
 						cliptop[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprtopclip + uintptr(x)*2))
 					}
 					goto _7
@@ -38048,10 +38048,10 @@ func r_DrawSprite(spr *vissprite_t) {
 						if !(x <= r2) {
 							break
 						}
-						if int32(clipbot[x]) == -int32(2) {
+						if int32(clipbot[x]) == -2 {
 							clipbot[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprbottomclip + uintptr(x)*2))
 						}
-						if int32(cliptop[x]) == -int32(2) {
+						if int32(cliptop[x]) == -2 {
 							cliptop[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprtopclip + uintptr(x)*2))
 						}
 						goto _8
@@ -38074,10 +38074,10 @@ func r_DrawSprite(spr *vissprite_t) {
 		if !(x <= spr.Fx2) {
 			break
 		}
-		if int32(clipbot[x]) == -int32(2) {
+		if int32(clipbot[x]) == -2 {
 			clipbot[x] = int16(viewheight)
 		}
-		if int32(cliptop[x]) == -int32(2) {
+		if int32(cliptop[x]) == -2 {
 			cliptop[x] = int16(-1)
 		}
 		goto _9
@@ -38145,9 +38145,9 @@ func sha1_Update(sha hash.Hash, buf []byte) {
 func sha1_UpdateInt32(sha hash.Hash, val uint32) {
 	var bp [4]byte
 	bp[0] = uint8(val >> 24 & 0xff)
-	bp[int32(1)] = uint8(val >> 16 & 0xff)
-	bp[int32(2)] = uint8(val >> 8 & 0xff)
-	bp[int32(3)] = uint8(val & 0xff)
+	bp[1] = uint8(val >> 16 & 0xff)
+	bp[2] = uint8(val >> 8 & 0xff)
+	bp[3] = uint8(val & 0xff)
 	sha1_Update(sha, bp[:])
 }
 
@@ -39260,7 +39260,7 @@ func stlib_drawNum(n *st_number_t, refresh boolean) {
 	}
 	// draw a minus sign if necessary
 	if neg != 0 {
-		v_DrawPatch(x-int32(8), n.Fy, sttminus)
+		v_DrawPatch(x-8, n.Fy, sttminus)
 	}
 }
 
@@ -39798,15 +39798,15 @@ func st_Responder(ev *event_t) (r boolean) {
 								// in the Ultimate Doom executable so that it would work for
 								// the Doom 1 music as well.
 								if gamemode == commercial || gameversion < exe_ultimate {
-									musnum = int32(mus_runnin) + (int32((param[0]))-'0')*int32(10) + int32(param[int32(1)]) - '0' - 1
-									if (int32(param[0])-'0')*int32(10)+int32(param[int32(1)])-'0' > 35 {
+									musnum = int32(mus_runnin) + (int32((param[0]))-'0')*int32(10) + int32(param[1]) - '0' - 1
+									if (int32(param[0])-'0')*int32(10)+int32(param[1])-'0' > 35 {
 										plyr.Fmessage = "IMPOSSIBLE SELECTION"
 									} else {
 										s_ChangeMusic(musnum, 1)
 									}
 								} else {
-									musnum = int32(mus_e1m1) + (int32(param[0])-'1')*9 + (int32(param[int32(1)]) - '1')
-									if (int32(param[0])-'1')*9+int32(param[int32(1)])-'1' > 31 {
+									musnum = int32(mus_e1m1) + (int32(param[0])-'1')*9 + (int32(param[1]) - '1')
+									if (int32(param[0])-'1')*9+int32(param[1])-'1' > 31 {
 										plyr.Fmessage = "IMPOSSIBLE SELECTION"
 									} else {
 										s_ChangeMusic(musnum, 1)
@@ -39892,10 +39892,10 @@ func st_Responder(ev *event_t) (r boolean) {
 				cht_GetParam(&cheat_clev, param[:])
 				if gamemode == commercial {
 					epsd = 1
-					map1 = (int32(param[0])-'0')*int32(10) + int32(param[int32(1)]) - '0'
+					map1 = (int32(param[0])-'0')*int32(10) + int32(param[1]) - '0'
 				} else {
 					epsd = int32(param[0]) - '0'
-					map1 = int32(param[int32(1)]) - '0'
+					map1 = int32(param[1]) - '0'
 				}
 				// Chex.exe always warps to episode 1.
 				if gameversion == exe_chex {
@@ -40075,7 +40075,7 @@ func st_updateFaceWidget() {
 	}
 	// look left or look right if the facecount has timed out
 	if st_facecount == 0 {
-		st_faceindex = st_calcPainOffset() + st_randomnumber%int32(3)
+		st_faceindex = st_calcPainOffset() + st_randomnumber%3
 		st_facecount = TICRATE / 2
 		priority = 0
 	}
@@ -40122,7 +40122,7 @@ func st_updateWidgets() {
 			v2 = -1
 		}
 		keyboxes[i] = v2
-		if plyr.Fcards[i+int32(3)] != 0 {
+		if plyr.Fcards[i+3] != 0 {
 			keyboxes[i] = i + 3
 		}
 		goto _1
@@ -40199,7 +40199,7 @@ func st_doPaletteStuff() {
 			}
 			palette += STARTBONUSPALS
 		} else {
-			if plyr.Fpowers[pw_ironfeet] > 4*32 || plyr.Fpowers[pw_ironfeet]&int32(8) != 0 {
+			if plyr.Fpowers[pw_ironfeet] > 4*32 || plyr.Fpowers[pw_ironfeet]&8 != 0 {
 				palette = RADIATIONPAL
 			} else {
 				palette = 0
@@ -40317,7 +40317,7 @@ func st_loadUnloadGraphics(callback func(string, **patch_t)) {
 		// gray #
 		callback(name, &arms[i][0])
 		// yellow #
-		arms[i][1] = shortnum[i+int32(2)]
+		arms[i][1] = shortnum[i+2]
 		goto _3
 	_3:
 		;
@@ -40437,7 +40437,7 @@ func st_createWidgets() {
 	stlib_initBinIcon(&w_armsbg, st_ARMSBGX, st_ARMSBGY, armsbg, &st_notdeathmatch, &st_statusbaron)
 	// weapons owned
 	for i := int32(0); i < 6; i++ {
-		stlib_initMultIcon(&w_arms[i], st_ARMSX+i%3*st_ARMSXSPACE, st_ARMSY+i/int32(3)*st_ARMSYSPACE, arms[i][:], (*int32)(unsafe.Pointer(&plyr.Fweaponowned[i+1])), &st_armson)
+		stlib_initMultIcon(&w_arms[i], st_ARMSX+i%3*st_ARMSXSPACE, st_ARMSY+i/3*st_ARMSYSPACE, arms[i][:], (*int32)(unsafe.Pointer(&plyr.Fweaponowned[i+1])), &st_armson)
 	}
 	// frags sum
 	stlib_initNum(&w_frags, st_FRAGSX, st_FRAGSY, tallnum[:], &st_fragscount, &st_fragson, st_FRAGSWIDTH)
@@ -40745,7 +40745,7 @@ func s_AdjustSoundParams(listener *degenmobj_t, source *degenmobj_t, vol *int32,
 	} else {
 		v1 = ady
 	}
-	approx_dist = adx + ady - v1>>int32(1)
+	approx_dist = adx + ady - v1>>1
 	if gamemap != 8 && approx_dist > 1200*(1<<FRACBITS) {
 		return 0
 	}
@@ -41266,15 +41266,15 @@ func v_DrawMouseSpeedBox(speed int32) {
 	if linelen > MOUSE_SPEED_BOX_WIDTH-1 {
 		linelen = MOUSE_SPEED_BOX_WIDTH - 1
 	}
-	v_DrawHorizLine(box_x+int32(1), box_y+int32(4), MOUSE_SPEED_BOX_WIDTH-2, black)
+	v_DrawHorizLine(box_x+1, box_y+4, MOUSE_SPEED_BOX_WIDTH-2, black)
 	if linelen < redline_x {
-		v_DrawHorizLine(box_x+int32(1), box_y+MOUSE_SPEED_BOX_HEIGHT/2, linelen, white)
+		v_DrawHorizLine(box_x+1, box_y+MOUSE_SPEED_BOX_HEIGHT/2, linelen, white)
 	} else {
-		v_DrawHorizLine(box_x+int32(1), box_y+MOUSE_SPEED_BOX_HEIGHT/2, redline_x, white)
+		v_DrawHorizLine(box_x+1, box_y+MOUSE_SPEED_BOX_HEIGHT/2, redline_x, white)
 		v_DrawHorizLine(box_x+redline_x, box_y+MOUSE_SPEED_BOX_HEIGHT/2, linelen-redline_x, yellow)
 	}
 	// Draw red line
-	v_DrawVertLine(box_x+redline_x, box_y+int32(1), MOUSE_SPEED_BOX_HEIGHT-2, red)
+	v_DrawVertLine(box_x+redline_x, box_y+1, MOUSE_SPEED_BOX_HEIGHT-2, red)
 }
 
 const DM_KILLERSX = 10
@@ -41885,10 +41885,10 @@ func wi_drawLF() {
 	y = WI_TITLEY
 	if gamemode != commercial || wbs.Flast < NUMCMAPS {
 		// draw <LevelName>
-		v_DrawPatch((SCREENWIDTH-int32(lnames[wbs.Flast].Fwidth))/int32(2), y, lnames[wbs.Flast])
+		v_DrawPatch((SCREENWIDTH-int32(lnames[wbs.Flast].Fwidth))/2, y, lnames[wbs.Flast])
 		// draw "Finished!"
 		y += 5 * int32(lnames[wbs.Flast].Fheight) / 4
-		v_DrawPatch((SCREENWIDTH-int32(finished.Fwidth))/int32(2), y, finished)
+		v_DrawPatch((SCREENWIDTH-int32(finished.Fwidth))/2, y, finished)
 	} else {
 		if wbs.Flast == NUMCMAPS {
 			// MAP33 - nothing is displayed!
@@ -41917,10 +41917,10 @@ func wi_drawEL() {
 	var y int32
 	y = WI_TITLEY
 	// draw "Entering"
-	v_DrawPatch((SCREENWIDTH-int32(entering.Fwidth))/int32(2), y, entering)
+	v_DrawPatch((SCREENWIDTH-int32(entering.Fwidth))/2, y, entering)
 	// draw level
 	y += 5 * int32(lnames[wbs.Fnext].Fheight) / 4
-	v_DrawPatch((SCREENWIDTH-int32(lnames[wbs.Fnext].Fwidth))/int32(2), y, lnames[wbs.Fnext])
+	v_DrawPatch((SCREENWIDTH-int32(lnames[wbs.Fnext].Fwidth))/2, y, lnames[wbs.Fnext])
 }
 
 func wi_drawOnLnode(n int32, c []*patch_t) {
@@ -42399,7 +42399,7 @@ func wi_updateDeathmatchStats() {
 				}
 			}
 		} else {
-			if dm_state&int32(1) != 0 {
+			if dm_state&1 != 0 {
 				cnt_pause--
 				v5 = cnt_pause
 				if v5 == 0 {
@@ -42418,7 +42418,7 @@ func wi_drawDeathmatchStats() {
 	wi_drawAnimatedBack()
 	wi_drawLF()
 	// draw stat titles (top line)
-	v_DrawPatch(DM_TOTALSX-int32(total.Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY+10, total)
+	v_DrawPatch(DM_TOTALSX-int32(total.Fwidth)/2, DM_MATRIXY-WI_SPACINGY+10, total)
 	v_DrawPatch(DM_KILLERSX, DM_KILLERSY, killers)
 	v_DrawPatch(DM_VICTIMSX, DM_VICTIMSY, victims)
 	// draw P?
@@ -42430,11 +42430,11 @@ func wi_drawDeathmatchStats() {
 			break
 		}
 		if playeringame[i] != 0 {
-			v_DrawPatch(x-int32(p[i].Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY, p[i])
-			v_DrawPatch(DM_MATRIXX-int32(p[i].Fwidth)/int32(2), y, p[i])
+			v_DrawPatch(x-int32(p[i].Fwidth)/2, DM_MATRIXY-WI_SPACINGY, p[i])
+			v_DrawPatch(DM_MATRIXX-int32(p[i].Fwidth)/2, y, p[i])
 			if i == me {
-				v_DrawPatch(x-int32(p[i].Fwidth)/int32(2), DM_MATRIXY-WI_SPACINGY, bstar)
-				v_DrawPatch(DM_MATRIXX-int32(p[i].Fwidth)/int32(2), y, star)
+				v_DrawPatch(x-int32(p[i].Fwidth)/2, DM_MATRIXY-WI_SPACINGY, bstar)
+				v_DrawPatch(DM_MATRIXX-int32(p[i].Fwidth)/2, y, star)
 			}
 		} else {
 			// v_DrawPatch(x-SHORT(bp[i]->width)/2,
@@ -42674,7 +42674,7 @@ func wi_updateNetgameStats() {
 							}
 						}
 					} else {
-						if ng_state&int32(1) != 0 {
+						if ng_state&1 != 0 {
 							cnt_pause--
 							v7 = cnt_pause
 							if v7 == 0 {
@@ -42697,11 +42697,11 @@ func wi_drawNetgameStats() {
 	wi_drawAnimatedBack()
 	wi_drawLF()
 	// draw stat titles (top line)
-	v_DrawPatch(32+int32(star.Fwidth)/int32(2)+int32(32)*boolint32(dofrags == 0)+NG_SPACINGX-int32(kills.Fwidth), NG_STATSY, kills)
-	v_DrawPatch(32+int32(star.Fwidth)/int32(2)+int32(32)*boolint32(dofrags == 0)+2*NG_SPACINGX-int32(items.Fwidth), NG_STATSY, items)
-	v_DrawPatch(32+int32(star.Fwidth)/int32(2)+int32(32)*boolint32(dofrags == 0)+3*NG_SPACINGX-int32(secret.Fwidth), NG_STATSY, secret)
+	v_DrawPatch(32+int32(star.Fwidth)/2+int32(32)*boolint32(dofrags == 0)+NG_SPACINGX-int32(kills.Fwidth), NG_STATSY, kills)
+	v_DrawPatch(32+int32(star.Fwidth)/2+int32(32)*boolint32(dofrags == 0)+2*NG_SPACINGX-int32(items.Fwidth), NG_STATSY, items)
+	v_DrawPatch(32+int32(star.Fwidth)/2+int32(32)*boolint32(dofrags == 0)+3*NG_SPACINGX-int32(secret.Fwidth), NG_STATSY, secret)
 	if dofrags != 0 {
-		v_DrawPatch(32+int32(star.Fwidth)/int32(2)+int32(32)*boolint32(dofrags == 0)+4*NG_SPACINGX-int32(frags.Fwidth), NG_STATSY, frags)
+		v_DrawPatch(32+int32(star.Fwidth)/2+int32(32)*boolint32(dofrags == 0)+4*NG_SPACINGX-int32(frags.Fwidth), NG_STATSY, frags)
 	}
 	// draw stats
 	y = NG_STATSY + int32(kills.Fheight)
@@ -42713,7 +42713,7 @@ func wi_drawNetgameStats() {
 		if playeringame[i] == 0 {
 			goto _1
 		}
-		x = 32 + int32(star.Fwidth)/int32(2) + 32*boolint32(dofrags == 0)
+		x = 32 + int32(star.Fwidth)/2 + 32*boolint32(dofrags == 0)
 		v_DrawPatch(x-int32(p[i].Fwidth), y, p[i])
 		if i == me {
 			v_DrawPatch(x-int32(p[i].Fwidth), y, star)
@@ -42828,7 +42828,7 @@ func wi_updateStats() {
 							}
 						}
 					} else {
-						if sp_state&int32(1) != 0 {
+						if sp_state&1 != 0 {
 							cnt_pause--
 							v1 = cnt_pause
 							if v1 == 0 {
@@ -42854,8 +42854,8 @@ func wi_drawStats() {
 	wi_drawPercent(SCREENWIDTH-SP_STATSX, SP_STATSY, cnt_kills[0])
 	v_DrawPatch(SP_STATSX, SP_STATSY+lh, items)
 	wi_drawPercent(SCREENWIDTH-SP_STATSX, SP_STATSY+lh, cnt_items[0])
-	v_DrawPatch(SP_STATSX, SP_STATSY+int32(2)*lh, sp_secret)
-	wi_drawPercent(SCREENWIDTH-SP_STATSX, SP_STATSY+int32(2)*lh, cnt_secret[0])
+	v_DrawPatch(SP_STATSX, SP_STATSY+2*lh, sp_secret)
+	wi_drawPercent(SCREENWIDTH-SP_STATSX, SP_STATSY+2*lh, cnt_secret[0])
 	v_DrawPatch(SP_TIMEX, SCREENHEIGHT-32, timepatch)
 	wi_drawTime(SCREENWIDTH/2-SP_TIMEX, SCREENHEIGHT-32, cnt_time)
 	if wbs.Fepsd < 3 {
@@ -42980,7 +42980,7 @@ func wi_loadUnloadData(callback func(string, **patch_t)) {
 						callback(bp1, &a.Fp[i])
 					} else {
 						// HACK ALERT!
-						a.Fp[i] = anims1[int32(1)][4].Fp[i]
+						a.Fp[i] = anims1[1][4].Fp[i]
 					}
 					goto _4
 				_4:
