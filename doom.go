@@ -7322,15 +7322,15 @@ func init() {
 
 // + slow turn
 
-var weapon_keys = [8]int32{
-	0: key_weapon1,
-	1: key_weapon2,
-	2: key_weapon3,
-	3: key_weapon4,
-	4: key_weapon5,
-	5: key_weapon6,
-	6: key_weapon7,
-	7: key_weapon8,
+var weapon_keys = [8]*int32{
+	0: &key_weapon1,
+	1: &key_weapon2,
+	2: &key_weapon3,
+	3: &key_weapon4,
+	4: &key_weapon5,
+	5: &key_weapon6,
+	6: &key_weapon7,
+	7: &key_weapon8,
 }
 
 // Set to -1 or +1 to switch to the previous or next weapon.
@@ -7590,7 +7590,7 @@ func g_BuildTiccmd(cmd *ticcmd_t, maketic int32) {
 	} else {
 		// Check weapon keys.
 		for i := 0; i < len(weapon_keys); i++ {
-			if gamekeydown[weapon_keys[i]] {
+			if gamekeydown[*weapon_keys[i]] {
 				cmd.Fbuttons |= bt_CHANGE
 				cmd.Fbuttons |= uint8(i << bt_WEAPONSHIFT)
 				break
