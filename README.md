@@ -33,6 +33,12 @@ The original C code was converted to Go using (modernc.org/ccgo/v4), by cznic (h
 - ✅ **Memory Safe**: Go's GC protects you from buffer overflows (but not from Cacodemons) (WIP - 95% complete)
 - ✅ **Cross Compilation**: Build for any target from any platform
 
+### Missing Features
+- One instance per process: Still has a lot of the original global variables, which prevent multiple instances from running
+- Random exported consts: The original C code used the standard convention of all upper case for const/enum values. This results in the Go code assuming these are exported values, when really they're internal state info
+- Nice external API for state inspection: It would be good to be able to change the running state externally, without exposing everything in such a raw way
+- `unsafe`: There are still some instances of `unsafe` in the code. It would be good to get rid of these to have better bounds access guarantees
+
 ## 🚀 INSTALLATION
 
 ### Prerequisites
