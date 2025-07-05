@@ -6518,11 +6518,10 @@ func f_Ticker() {
 
 func f_TextWrite() {
 	var c, count, cx, cy, w, x, y int32
-	var dest, src uintptr
 	var pos int
 	// erase the entire screen to a tiled background
-	src = w_CacheLumpName(finaleflat)
-	dest = (uintptr)(unsafe.Pointer(&I_VideoBuffer[0]))
+	src := w_CacheLumpNameBytes(finaleflat)
+	destPos := 0
 	y = 0
 	for {
 		if y >= SCREENHEIGHT {
@@ -6533,16 +6532,17 @@ func f_TextWrite() {
 			if x >= SCREENWIDTH/64 {
 				break
 			}
-			xmemcpy(dest, src+uintptr(y&63<<6), 64)
-			dest += uintptr(64)
+			copy(I_VideoBuffer[destPos:], src[uintptr(y&63<<6):uintptr(y&63<<6)+64])
+			destPos += 64
 			goto _2
 		_2:
 			;
 			x++
 		}
 		if SCREENWIDTH&63 != 0 {
-			xmemcpy(dest, src+uintptr(y&63<<6), SCREENWIDTH&63)
-			dest += SCREENWIDTH & 63
+			length := SCREENWIDTH & 63
+			copy(I_VideoBuffer[destPos:destPos+length], src[y&63<<6:])
+			destPos += length
 		}
 		goto _1
 	_1:
@@ -35669,7 +35669,7 @@ func r_InitBuffer(width int32, height int32) {
 //	// Also draws a beveled edge.
 //	//
 func r_FillBackScreen() {
-	var dest, src uintptr
+	var src []byte
 	var name, name1, name2 string
 	var patch *patch_t
 	var x, y int32
@@ -35694,8 +35694,8 @@ func r_FillBackScreen() {
 	} else {
 		name = name1
 	}
-	src = w_CacheLumpName(name)
-	dest = (uintptr)(unsafe.Pointer(&background_buffer[0]))
+	src = w_CacheLumpNameBytes(name)
+	destPos := 0
 	y = 0
 	for {
 		if y >= SCREENHEIGHT-SBARHEIGHT {
@@ -35706,16 +35706,17 @@ func r_FillBackScreen() {
 			if x >= SCREENWIDTH/64 {
 				break
 			}
-			xmemcpy(dest, src+uintptr(y&63<<6), 64)
-			dest += uintptr(64)
+			copy(background_buffer[destPos:destPos+64], src[uintptr(y&63<<6):])
+			destPos += 64
 			goto _2
 		_2:
 			;
 			x++
 		}
 		if SCREENWIDTH&63 != 0 {
-			xmemcpy(dest, src+uintptr(y&63<<6), SCREENWIDTH&63)
-			dest += SCREENWIDTH & 63
+			length := SCREENWIDTH & 63
+			copy(background_buffer[destPos:destPos+length], src[uintptr(y&63<<6):])
+			destPos += length
 		}
 		goto _1
 	_1:
@@ -43496,7 +43497,16 @@ func w_CacheLumpNum(lumpnum int32) (r uintptr) {
 	}
 	return (uintptr)(unsafe.Pointer(&lump.Fcache[0]))
 }
-
+func w_CacheLumpNumBytes(lumpnum int32) []byte {
+	if uint32(lumpnum) >= numlumps {
+		i_Error("w_CacheLumpNum: %d >= numlumps", lumpnum)
+	}
+	lump := &lumpinfo[lumpnum]
+	if lump.Fcache == nil {
+		lump.Fcache = w_ReadLumpBytes(uint32(lumpnum))
+	}
+	return lump.Fcache
+}
 func w_CacheLumpNumT[T lumpType](lumpnum int32) T {
 	var result uintptr
 	result = w_CacheLumpNum(lumpnum)
@@ -43513,6 +43523,10 @@ func w_CacheLumpNumT[T lumpType](lumpnum int32) T {
 //	//
 func w_CacheLumpName(name string) (r uintptr) {
 	return w_CacheLumpNum(w_GetNumForName(name))
+}
+
+func w_CacheLumpNameBytes(name string) []byte {
+	return w_CacheLumpNumBytes(w_GetNumForName(name))
 }
 
 func w_CacheLumpNameT[T lumpType](name string) T {
