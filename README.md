@@ -49,8 +49,7 @@ cd gore
 
 #### Terminal based
 This example renders the Doom output using ANSI color codes suitable for a 256-bit color capable terminal. It has very limited input support, as terminals typically do not support key-up events, or control-key support. So `fire` has been remapped to `,`, and it is necessary to repeatedly tap keys to get them to continue, as opposed to press & hold.
-```
-bash
+```bash
 go run ./example/termdoom -iwad doom1.wad
 ```
 
