@@ -11,6 +11,13 @@
                     .GO
 ```
 
+## TLDR
+Tired of reading already?
+```bash
+wget https://distro.ibiblio.org/slitaz/sources/packages/d/doom1.wad
+go run github.com/AndreRenaud/gore/example/termdoom@latest
+```
+
 ## 💀 WHAT FRESH HELL IS THIS?
 
 This is a **minimal, platform-agnostic Go port** of the legendary DOOM engine, transpiled from the `doomgeneric` codebase. No CGo. No platform dependencies. Just pure, unadulterated demon-slaying action powered by the glory of Go's cross-compilation.
