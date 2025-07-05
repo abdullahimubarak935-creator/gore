@@ -33,11 +33,24 @@ The original C code was converted to Go using (modernc.org/ccgo/v4), by cznic (h
 - A WAD file
 
 ### Running the examples
-These examples are both very minimal, and whilst technically run the game, they are not really fully complete games in their own right (ie: Missing key bindings etc...)
+These examples are both very minimal, and whilst technically run the game, they are not really fully complete games in their own right (ie: Missing key bindings etc...). They all assume that a Doom wad is available in the current directory. The shareware Doom wad is available at https://www.doomworld.com/classicdoom/info/shareware.php, or bring your own from a commercial copy.
+
+```bash
+git clone https://github.com/AndreRenaud/gore
+cd gore
+```
+
+#### Terminal based
+This example renders the Doom output using ANSI color codes suitable for a 256-bit color capable terminal. It has very limited input support, as terminals typically do not support key-up events, or control-key support. So `fire` has been remapped to `,`, and it is necessary to repeatedly tap keys to get them to continue, as opposed to press & hold.
+```
+bash
+go run ./example/termdoom -iwad doom1.wad
+```
+
+<video width="640" src="https://github.com/user-attachments/assets/c461e38f-5948-4485-bf84-7b6982580a4e"></video>
+
 #### Web based
 ```bash
-git clone <this-repo>
-cd gore
 go run ./example/webserver
 ```
 Now browse to http://localhost:8080 to play
