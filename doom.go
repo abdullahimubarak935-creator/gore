@@ -3928,7 +3928,7 @@ func searchDirectoryForIWAD(dir string, mask int32, mission *gamemission_t) stri
 	var i uint64
 	i = 0
 	for {
-		if i >= 336/24 {
+		if i >= uint64(len(iwads)) {
 			break
 		}
 		if 1<<iwads[i].Fmission&mask == 0 {
@@ -3956,7 +3956,7 @@ func identifyIWADByName(name string, mask int32) (r gamemission_t) {
 	mission = none
 	i = 0
 	for {
-		if i >= 336/24 {
+		if i >= uint64(len(iwads)) {
 			break
 		}
 		// Check if the filename is this IWAD name.
@@ -4098,7 +4098,7 @@ func d_SaveGameIWADName(gamemission gamemission_t) string {
 	// in the same place.
 	i = 0
 	for {
-		if i >= 336/24 {
+		if i >= uint64(len(iwads)) {
 			break
 		}
 		if gamemission == iwads[i].Fmission {
@@ -5136,7 +5136,7 @@ func getGameName(gamename string) string {
 	var version, v2, v3, v6, v7 int32
 	i = 0
 	for {
-		if i >= 56/8 {
+		if i >= uint64(len(banners)) {
 			break
 		}
 		// Has the banner been replaced?
@@ -6417,7 +6417,7 @@ func f_StartFinale() {
 	// Find the right screen and set the text and background
 	i = 0
 	for {
-		if i >= 704/32 {
+		if i >= uint64(len(textscreens)) {
 			break
 		}
 		screen = &textscreens[i]
@@ -7467,7 +7467,7 @@ func g_NextWeapon(direction int32) weapontype_t {
 	}
 	i = 0
 	for {
-		if uint64(i) >= 72/8 {
+		if i >= int32(len(weapon_order_table)) {
 			break
 		}
 		if weapon_order_table[i].Fweapon == weapon {
@@ -7482,7 +7482,7 @@ func g_NextWeapon(direction int32) weapontype_t {
 	start_i = i
 	for cond := true; cond; cond = i != start_i && weaponSelectable(weapon_order_table[i].Fweapon) == 0 {
 		i += direction
-		i = int32((uint64(i) + 72/8) % (72 / 8))
+		i = int32((int(i) + len(weapon_order_table)) % len(weapon_order_table))
 	}
 	return weapon_order_table[i].Fweapon_num
 }
@@ -43602,7 +43602,7 @@ func w_CheckCorrectIWAD(mission gamemission_t) {
 	var i, lumpnum int32
 	i = 0
 	for {
-		if uint64(i) >= 64/16 {
+		if i >= int32(len(unique_lumps)) {
 			break
 		}
 		if mission != unique_lumps[i].Fmission {
