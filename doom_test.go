@@ -137,8 +137,9 @@ func (d *doomTestHeadless) GetEvent(event *DoomEvent) bool {
 	}
 	retval := false
 	if d.keys[0].callback != nil {
+		callback := d.keys[0].callback
 		d.lock.Unlock()
-		d.keys[0].callback(d)
+		callback(d)
 		d.lock.Lock()
 	}
 	if d.keys[0].event.Key != 0 {
@@ -484,37 +485,45 @@ func TestWeapons(t *testing.T) {
 	dg_speed_ratio = 100.0
 	game := &doomTestHeadless{
 		t: t,
+		keys: []delayedEvent{
+			// Start a new game, and turn on all the weapons
+			{ticks: 1500, event: DoomEvent{Type: Ev_keydown, Key: KEY_ESCAPE}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keyup, Key: KEY_ESCAPE}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keyup, Key: KEY_ENTER}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keyup, Key: KEY_ENTER}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keyup, Key: KEY_ENTER}},
+			{ticks: 100, event: DoomEvent{Type: Ev_keydown, Key: 'i'}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keyup, Key: 'i'}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: 'd'}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keyup, Key: 'd'}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: 'f'}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keyup, Key: 'f'}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: 'a'}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keyup, Key: 'a'}},
+		},
 	}
+	// Cycle each weapon, get a screenshot to confirm it shows up, then fire it
+	// BFG & Plasma gun aren't available in the shareware wad, so we only test 1-5
+	// - Chainsaw, Pistol, Shotgun, Machine Gun, Rocket Launcher
+	for i := byte('1'); i <= '5'; i++ {
+		game.keys = append(game.keys, []delayedEvent{
+			{ticks: 300, event: DoomEvent{Type: Ev_keydown, Key: i}},
+			{ticks: 5, event: DoomEvent{Type: Ev_keyup, Key: i}},
+			{ticks: 2000, callback: func(d *doomTestHeadless) {
+				t.Logf("Enabled weapon %c", i)
+				compareScreen(d, fmt.Sprintf("weapon_%c", i), 5)
+			}},
+			{ticks: 50, event: DoomEvent{Type: Ev_keydown, Key: KEY_FIRE1}},
+			{ticks: 300, event: DoomEvent{Type: Ev_keyup, Key: KEY_FIRE1}},
+			{ticks: 10, event: DoomEvent{}},
+		}...)
+	}
+	// Quit the game
+	game.keys = append(game.keys, delayedEvent{ticks: 1000, callback: func(d *doomTestHeadless) { Stop() }})
 	defer game.Close()
-	go func() {
-		// Let things get settled
-		time.Sleep(20 * time.Millisecond)
-		// Start a game
-		game.InsertKey(KEY_ESCAPE) // Open menu
-		game.InsertKey(KEY_ENTER)
-		game.InsertKey(KEY_ENTER)
-		game.InsertKey(KEY_ENTER) // Start new game
-
-		time.Sleep(10 * time.Millisecond)
-		game.InsertKeySequence('i', 'd', 'f', 'a') // Give all weapons
-
-		// Test weapon switching - BFG & Plasma gun aren't available in the shareware wad
-		for i := uint8(1); i <= 5; i++ {
-			game.InsertKey('0' + i)
-			time.Sleep(10 * time.Millisecond) // Wait to simulate weapon switch
-			// Fire
-			game.InsertKeyChange(KEY_FIRE1, true)
-			time.Sleep(20 * time.Millisecond) // Wait to simulate firing
-			game.InsertKeyChange(KEY_FIRE1, false)
-			t.Logf("Switched to weapon %d", i)
-		}
-
-		// Exit
-		game.InsertKey(KEY_ESCAPE)   // Open menu
-		game.InsertKey(KEY_UPARROW1) // Go to quit
-		game.InsertKey(KEY_ENTER)    // Confirm quit
-		game.InsertKey('y')          // Confirm exit
-	}()
 	Run(game, []string{"-iwad", "doom1.wad"})
 }
 
