@@ -16,7 +16,6 @@ import (
 
 type termDoom struct {
 	outstandingKeys map[uint8]time.Time
-	width           uint
 }
 
 // Characters with progressively fewer filled pixels, to simulate brightness
@@ -47,8 +46,16 @@ func ascii(img *image.RGBA, writer io.Writer) {
 }
 
 func (t *termDoom) DrawFrame(frame *image.RGBA) {
-	height := (t.width * 200 / 320) / 2 // fixed width fonts are typically twice as high as wide
-	smaller := resize.Resize(t.width, height, frame, resize.Lanczos3)
+	// Fit the frame to the terminal size
+	width, height, err := term.GetSize(int(os.Stdout.Fd()))
+	if err != nil {
+		width = 120
+	}
+	// Make sure we're not going to scroll off the bottom of the visible terminal
+	width = min(height*320/200*2, width)
+
+	height = (width * 200 / 320) / 2 // fixed width fonts are typically twice as high as wide
+	smaller := resize.Resize(uint(width), uint(height), frame, resize.Lanczos3)
 	// Go back to 0,0
 	fmt.Print("\033[0;0H")
 	rgba, ok := smaller.(*image.RGBA)
@@ -62,7 +69,7 @@ func (t *termDoom) DrawFrame(frame *image.RGBA) {
 
 func (t *termDoom) GetEvent(event *gore.DoomEvent) bool {
 	for key, lastTime := range t.outstandingKeys {
-		if time.Since(lastTime) > 500*time.Millisecond {
+		if time.Since(lastTime) > 100*time.Millisecond {
 			delete(t.outstandingKeys, key)
 			event.Type = gore.Ev_keyup
 			event.Key = key
@@ -108,6 +115,9 @@ func (t *termDoom) GetEvent(event *gore.DoomEvent) bool {
 	case "y", "n", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0":
 		event.Type = gore.Ev_keydown
 		event.Key = buf[0]
+	case "\t":
+		event.Type = gore.Ev_keydown
+		event.Key = gore.KEY_TAB
 	default:
 		return false
 
@@ -127,15 +137,8 @@ func main() {
 	}
 	defer term.Restore(int(os.Stdin.Fd()), oldState)
 
-	width, height, err := term.GetSize(int(os.Stdout.Fd()))
-	if err != nil {
-		width = 120
-	}
-	// Make sure we're not going to scroll off the bottom of the visible terminal
-	width = min(height*320/200*2, width)
 	// Initialize termDoom and start the game loop
 	termGame := &termDoom{
-		width:           uint(width),
 		outstandingKeys: make(map[uint8]time.Time),
 	}
 
