@@ -48,7 +48,7 @@ func xtoupper(c int32) int32 {
 	return c
 }
 
-func xmemcpy(dest, src uintptr, n uint64) (r uintptr) {
+func xmemcpy(dest, src uintptr, n uint64) uintptr {
 	if n != 0 {
 		srcSlice := unsafe.Slice((*byte)(unsafe.Pointer(src)), n)
 		destSlice := unsafe.Slice((*byte)(unsafe.Pointer(dest)), n)
@@ -2915,7 +2915,7 @@ func am_maxOutWindowScale() {
 //	//
 //	// Handle events (user inputs) in automap mode
 //	//
-func am_Responder(ev *event_t) (r boolean) {
+func am_Responder(ev *event_t) boolean {
 	var key, rc int32
 	rc = 0
 	if automapactive == 0 {
@@ -3144,7 +3144,7 @@ func am_clearFB(color uint8) {
 //	// faster reject and precalculated slopes.  If the speed is needed,
 //	// use a hash algorithm to handle  the common cases.
 //	//
-func am_clipMline(ml *mline_t, fl *fline_t) (r boolean) {
+func am_clipMline(ml *mline_t, fl *fline_t) boolean {
 	var dx, dy, outcode1, outcode2, outside int32
 	var tmp fpoint_t
 	outcode1 = 0
@@ -3875,7 +3875,7 @@ func addIWADDir(dir string) {
 // Returns true if the specified path is a path to a file
 // of the specified name.
 
-func dirIsFile(path string, filename string) (r boolean) {
+func dirIsFile(path string, filename string) boolean {
 	if strings.HasPrefix(filename, path) && path[len(path)-1] == '/' {
 		return 1
 	}
@@ -3937,7 +3937,7 @@ func searchDirectoryForIWAD(dir string, mask int32, mission *gamemission_t) stri
 // When given an IWAD with the '-iwad' parameter,
 // attempt to identify it by its name.
 
-func identifyIWADByName(name string, mask int32) (r gamemission_t) {
+func identifyIWADByName(name string, mask int32) gamemission_t {
 	var i uint64
 	var mission gamemission_t
 	mission = none
@@ -4165,7 +4165,7 @@ var player_class int32
 
 // 35 fps clock adjusted by offsetms milliseconds
 
-func getAdjustedTime() (r int32) {
+func getAdjustedTime() int32 {
 	var time_ms int32
 	time_ms = I_GetTimeMS()
 	if new_sync != 0 {
@@ -4176,7 +4176,7 @@ func getAdjustedTime() (r int32) {
 	return time_ms * TICRATE / 1000
 }
 
-func buildNewTic() (r boolean) {
+func buildNewTic() boolean {
 	var cmd ticcmd_t
 	var gameticdiv int32
 	gameticdiv = gametic / ticdup
@@ -4268,7 +4268,7 @@ func d_StartNetGame(settings *net_gamesettings_t, callback netgame_startup_callb
 	new_sync = uint32(settings.Fnew_sync)
 }
 
-func d_InitNetGame(connect_data *net_connect_data_t) (r boolean) {
+func d_InitNetGame(connect_data *net_connect_data_t) boolean {
 	// Call d_QuitNetGame on exit:
 	i_AtExit(d_QuitNetGame, 1)
 	player_class = connect_data.Fplayer_class
@@ -4285,7 +4285,7 @@ func d_InitNetGame(connect_data *net_connect_data_t) (r boolean) {
 func d_QuitNetGame() {
 }
 
-func getLowTic() (r int32) {
+func getLowTic() int32 {
 	var lowtic int32
 	lowtic = maketic
 	return lowtic
@@ -4338,7 +4338,7 @@ func oldNetSync() {
 
 // Returns true if there are players in the game:
 
-func playersInGame() (r boolean) {
+func playersInGame() boolean {
 	var i uint32
 	var result boolean
 	result = 0
@@ -4922,7 +4922,7 @@ func d_BindVariables() {
 // Called to determine whether to grab the mouse pointer
 //
 
-func d_GrabMouseCallback() (r boolean) {
+func d_GrabMouseCallback() boolean {
 	// Drone players don't need mouse focus
 	if drone != 0 {
 		return 0
@@ -5367,7 +5367,7 @@ func d_SetGameDescription() {
 	}
 }
 
-func d_AddFile(filename string) (r boolean) {
+func d_AddFile(filename string) boolean {
 	var handle *os.File
 	fprintf_ccgo(os.Stdout, " adding %s\n", filename)
 	handle = w_AddFile(filename)
@@ -6445,7 +6445,7 @@ func f_StartFinale() {
 	finalecount = 0
 }
 
-func f_Responder(event *event_t) (r boolean) {
+func f_Responder(event *event_t) boolean {
 	if finalestage == F_STAGE_CAST {
 		return f_CastResponder(event)
 	}
@@ -6816,7 +6816,7 @@ _2:
 // F_CastResponder
 //
 
-func f_CastResponder(ev *event_t) (r boolean) {
+func f_CastResponder(ev *event_t) boolean {
 	if ev.Ftype1 != Ev_keydown {
 		return 0
 	}
@@ -7046,12 +7046,12 @@ func wipe_shittyColMajorXform(array []byte, width int32, height int32) {
 	copy(array, dest)
 }
 
-func wipe_initColorXForm(width int32, height int32, ticks int32) (r int32) {
+func wipe_initColorXForm(width int32, height int32, ticks int32) int32 {
 	copy(wipe_scr, wipe_scr_start)
 	return 0
 }
 
-func wipe_doColorXForm(width int32, height int32, ticks int32) (r int32) {
+func wipe_doColorXForm(width int32, height int32, ticks int32) int32 {
 	var changed boolean
 	var e, w int32
 	var newval int32
@@ -7086,7 +7086,7 @@ func wipe_doColorXForm(width int32, height int32, ticks int32) (r int32) {
 	return boolint32(changed == 0)
 }
 
-func wipe_exitColorXForm(width int32, height int32, ticks int32) (r int32) {
+func wipe_exitColorXForm(width int32, height int32, ticks int32) int32 {
 	return 0
 }
 
@@ -7126,7 +7126,7 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 	return 0
 }
 
-func wipe_doMelt(width int32, height int32, ticks int32) (r int32) {
+func wipe_doMelt(width int32, height int32, ticks int32) int32 {
 	var d, s int32
 	var done boolean
 	var dy, i, idx, j, v1, v3 int32
@@ -7204,27 +7204,27 @@ func wipe_doMelt(width int32, height int32, ticks int32) (r int32) {
 	return int32(done)
 }
 
-func wipe_exitMelt(width int32, height int32, ticks int32) (r int32) {
+func wipe_exitMelt(width int32, height int32, ticks int32) int32 {
 	y_screen = nil
 	wipe_scr_start = nil
 	wipe_scr_end = nil
 	return 0
 }
 
-func wipe_StartScreen(x int32, y int32, width int32, height int32) (r int32) {
+func wipe_StartScreen(x int32, y int32, width int32, height int32) int32 {
 	wipe_scr_start = make([]byte, SCREENWIDTH*SCREENHEIGHT)
 	i_ReadScreen(wipe_scr_start)
 	return 0
 }
 
-func wipe_EndScreen(x int32, y int32, width int32, height int32) (r int32) {
+func wipe_EndScreen(x int32, y int32, width int32, height int32) int32 {
 	wipe_scr_end = make([]byte, SCREENWIDTH*SCREENHEIGHT)
 	i_ReadScreen(wipe_scr_end)
 	v_DrawBlock(x, y, width, height, wipe_scr_start) // restore start scr.
 	return 0
 }
 
-func wipe_ScreenWipe(wipeno int32, x int32, y int32, width int32, height int32, ticks int32) (r int32) {
+func wipe_ScreenWipe(wipeno int32, x int32, y int32, width int32, height int32, ticks int32) int32 {
 	var rc int32
 	// initial stuff
 	if wipe_running == 0 {
@@ -7408,7 +7408,7 @@ func init() {
 	vanilla_demo_limit = 1
 }
 
-func weaponSelectable(weapon weapontype_t) (r boolean) {
+func weaponSelectable(weapon weapontype_t) boolean {
 	var v1 gamemission_t
 	var v3 bool
 	// Can't select the super shotgun in Doom 1.
@@ -7818,7 +7818,7 @@ func setMouseButtons(buttons_mask uint32) {
 //	// G_Responder
 //	// Get info needed to make ticcmd_ts for the players.
 //	//
-func g_Responder(ev *event_t) (r boolean) {
+func g_Responder(ev *event_t) boolean {
 	// allow spy mode changes even during the demo
 	if gamestate == gs_LEVEL && ev.Ftype1 == Ev_keydown && ev.Fdata1 == key_spy && (singledemo != 0 || deathmatch == 0) {
 		// spy mode
@@ -8099,7 +8099,7 @@ func g_PlayerReborn(player int32) {
 	}
 }
 
-func g_CheckSpot(playernum int32, mthing *mapthing_t) (r boolean) {
+func g_CheckSpot(playernum int32, mthing *mapthing_t) boolean {
 	var an, i int32
 	var mo *mobj_t
 	var ss *subsector_t
@@ -8939,7 +8939,7 @@ func g_RecordDemo(name string) {
 // C documentation
 //
 //	// Get the demo version code appropriate for the version set in gameversion.
-func g_VanillaVersionCode() (r int32) {
+func g_VanillaVersionCode() int32 {
 	switch gameversion {
 	case exe_doom_1_2:
 		i_Error("Doom 1.2 does not have a version code!")
@@ -8955,7 +8955,7 @@ func g_VanillaVersionCode() (r int32) {
 	default: // All other versions are variants on v1.9:
 		return 109
 	}
-	return r
+	return 0
 }
 
 func g_BeginRecording() {
@@ -9405,7 +9405,7 @@ func hulib_resetIText(it *hu_itext_t) {
 //
 //	// wrapper function for handling general keyed input.
 //	// returns true if it ate the key
-func hulib_keyInIText(it *hu_itext_t, ch uint8) (r boolean) {
+func hulib_keyInIText(it *hu_itext_t, ch uint8) boolean {
 	ch = uint8(xtoupper(int32(ch)))
 	if int32(ch) >= ' ' && int32(ch) <= '_' {
 		hulib_addCharToTextLine(&it.Fl, ch)
@@ -9812,7 +9812,7 @@ func hu_queueChatChar(c int8) {
 	}
 }
 
-func hu_dequeueChatChar() (r int8) {
+func hu_dequeueChatChar() int8 {
 	var c int8
 	if head != tail {
 		c = chatchars[tail]
@@ -9823,7 +9823,7 @@ func hu_dequeueChatChar() (r int8) {
 	return c
 }
 
-func hu_Responder(ev *event_t) (r boolean) {
+func hu_Responder(ev *event_t) boolean {
 	var c uint8
 	var eatkey, v2, v4 boolean
 	var i, numplayers int32
@@ -17837,7 +17837,7 @@ var sound_modules = []sound_module_t{}
 
 // Check if a sound device is in the given list of devices
 
-func sndDeviceInList(device snddevice_t, list []snddevice_t, len1 int32) (r boolean) {
+func sndDeviceInList(device snddevice_t, list []snddevice_t, len1 int32) boolean {
 	var i int32
 	i = 0
 	for {
@@ -17930,7 +17930,7 @@ func i_ShutdownSound() {
 	}
 }
 
-func i_GetSfxLumpNum(sfxinfo *sfxinfo_t) (r int32) {
+func i_GetSfxLumpNum(sfxinfo *sfxinfo_t) int32 {
 	if sound_module != nil {
 		return sound_module.FGetSfxLumpNum(sfxinfo)
 	} else {
@@ -17971,7 +17971,7 @@ func i_UpdateSoundParams(channel int32, vol int32, sep int32) {
 	}
 }
 
-func i_StartSound(sfxinfo *sfxinfo_t, channel int32, vol int32, sep int32) (r int32) {
+func i_StartSound(sfxinfo *sfxinfo_t, channel int32, vol int32, sep int32) int32 {
 	if sound_module != nil {
 		checkVolumeSeparation(&vol, &sep)
 		return sound_module.FStartSound(sfxinfo, channel, vol, sep)
@@ -17985,7 +17985,7 @@ func i_StopSound(channel int32) {
 	}
 }
 
-func i_SoundIsPlaying(channel int32) (r boolean) {
+func i_SoundIsPlaying(channel int32) boolean {
 	if sound_module != nil {
 		return sound_module.FSoundIsPlaying(channel)
 	}
@@ -18025,13 +18025,11 @@ func i_ResumeSong() {
 	}
 }
 
-func i_RegisterSong(data []byte) (r uintptr) {
+func i_RegisterSong(data []byte) uintptr {
 	if music_module != nil {
 		music_module.FRegisterSong(data)
-	} else {
-		return 0
 	}
-	return r
+	return 0
 }
 
 func i_UnRegisterSong(handle uintptr) {
@@ -18134,7 +18132,7 @@ func i_PrintStartupBanner(gamedescription string) {
 // Returns true if stdout is a real console, false if it is a file
 //
 
-func i_ConsoleStdout() (r boolean) {
+func i_ConsoleStdout() boolean {
 	return 0
 }
 
@@ -18213,7 +18211,7 @@ var mem_dump_custom [DOS_MEM_DUMP_SIZE]uint8
 
 var dos_mem_dump []byte = mem_dump_dos622[:]
 
-func i_GetMemoryValue(offset uint32, value uintptr, size int32) (r boolean) {
+func i_GetMemoryValue(offset uint32, value uintptr, size int32) boolean {
 	var i, p, v2 int32
 	if firsttime != 0 {
 		firsttime = 0
@@ -18278,11 +18276,11 @@ var firsttime = 1
 
 var basetime uint32 = 0
 
-func i_GetTicks() (r int32) {
+func i_GetTicks() int32 {
 	return int32(float64(time.Since(start_time).Milliseconds()) * dg_speed_ratio)
 }
 
-func i_GetTime() (r int32) {
+func i_GetTime() int32 {
 	var ticks uint32
 	ticks = uint32(i_GetTicks())
 	if basetime == 0 {
@@ -18296,7 +18294,7 @@ func i_GetTime() (r int32) {
 // Same as i_GetTime, but returns time in milliseconds
 //
 
-func I_GetTimeMS() (r int32) {
+func I_GetTimeMS() int32 {
 	var ticks uint32
 	ticks = uint32(i_GetTicks())
 	if basetime == 0 {
@@ -18319,7 +18317,7 @@ func i_Sleep(ms uint32) {
 // or 0 if not present
 //
 
-func m_CheckParmWithArgs(check string, num_args int32) (r int32) {
+func m_CheckParmWithArgs(check string, num_args int32) int32 {
 	for i := int32(1); i < int32(len(myargs))-num_args; i++ {
 		if strings.EqualFold(myargs[i], check) {
 			return i
@@ -18335,11 +18333,11 @@ func m_CheckParmWithArgs(check string, num_args int32) (r int32) {
 // line arguments, false if not.
 //
 
-func m_ParmExists(check string) (r boolean) {
+func m_ParmExists(check string) boolean {
 	return booluint32(m_CheckParm(check) != 0)
 }
 
-func m_CheckParm(check string) (r int32) {
+func m_CheckParm(check string) int32 {
 	return m_CheckParmWithArgs(check, 0)
 }
 
@@ -18408,7 +18406,7 @@ func m_AddToBox(box *box_t, x fixed_t, y fixed_t) {
 //	// Called in st_stuff module, which handles the input.
 //	// Returns a 1 if the cheat was successful, 0 if failed.
 //	//
-func cht_CheckCheat(cht *cheatseq_t, key int8) (r int32) {
+func cht_CheckCheat(cht *cheatseq_t, key int8) int32 {
 	var v1 int32
 	// if we make a short sequence on a cheat with parameters, this
 	// will not work in vanilla doom.  behave the same.
@@ -19598,7 +19596,7 @@ const INT_MAX7 = 2147483647
 
 // Fixme. __USE_C_FIXED__ or something.
 
-func fixedMul(a fixed_t, b fixed_t) (r fixed_t) {
+func fixedMul(a fixed_t, b fixed_t) fixed_t {
 	return int32(int64(a) * int64(b) >> FRACBITS)
 }
 
@@ -19606,7 +19604,7 @@ func fixedMul(a fixed_t, b fixed_t) (r fixed_t) {
 // fixedDiv, C version.
 //
 
-func fixedDiv(a fixed_t, b fixed_t) (r fixed_t) {
+func fixedDiv(a fixed_t, b fixed_t) fixed_t {
 	var result int64
 	var v1 int32
 	if xabs(a)>>int32(14) >= xabs(b) {
@@ -19620,7 +19618,6 @@ func fixedDiv(a fixed_t, b fixed_t) (r fixed_t) {
 		result = int64(a) << 16 / int64(b)
 		return int32(result)
 	}
-	return r
 }
 
 const LINEHEIGHT = 16
@@ -20712,7 +20709,7 @@ func m_StartMessage(string1 string, routine func(int32), input boolean) {
 //	//
 //	// Find string width from hu_font chars
 //	//
-func m_StringWidth(string1 string) (r int32) {
+func m_StringWidth(string1 string) int32 {
 	var c, w int32
 	w = 0
 	for i := 0; i < len(string1); i++ {
@@ -20731,7 +20728,7 @@ func m_StringWidth(string1 string) (r int32) {
 //	//
 //	//      Find string height from hu_font chars
 //	//
-func m_StringHeight(string1 string) (r int32) {
+func m_StringHeight(string1 string) int32 {
 	var h, height int32
 	height = int32(hu_font[0].Fheight)
 	h = height
@@ -20779,7 +20776,7 @@ func m_WriteText(x int32, y int32, string1 string) {
 // These keys evaluate to a "null" key in Vanilla Doom that allows weird
 // jumping in the menus. Preserve this behavior for accuracy.
 
-func isNullKey(key int32) (r boolean) {
+func isNullKey(key int32) boolean {
 	return booluint32(key == int32(KEY_PAUSE1) || key == 0x80+0x3a || key == 0x80+0x46 || key == 0x80+0x45)
 }
 
@@ -20792,7 +20789,7 @@ func isNullKey(key int32) (r boolean) {
 //	//
 //	// M_Responder
 //	//
-func m_Responder(ev *event_t) (r boolean) {
+func m_Responder(ev *event_t) boolean {
 	var ch, i, key int32
 	// In testcontrols mode, none of the function keys should do anything
 	// - the only key is escape to quit.
@@ -21383,7 +21380,7 @@ func m_MakeDirectory(path string) {
 
 // Check if a file exists
 
-func m_FileExists(filename string) (r boolean) {
+func m_FileExists(filename string) boolean {
 	if _, err := os.Stat(filename); err == nil {
 		return 1
 	}
@@ -21394,7 +21391,7 @@ func m_FileExists(filename string) (r boolean) {
 // M_WriteFile
 //
 
-func m_WriteFile(name string, source []byte) (r boolean) {
+func m_WriteFile(name string, source []byte) boolean {
 	if err := os.WriteFile(name, source, 0644); err != nil {
 		return 0
 	}
@@ -21702,12 +21699,12 @@ var rndtable = [256]uint8{
 // C documentation
 //
 //	// Which one is deterministic?
-func p_Random() (r int32) {
+func p_Random() int32 {
 	prndindex = (prndindex + 1) & 0xff
 	return int32(rndtable[prndindex])
 }
 
-func m_Random() (r int32) {
+func m_Random() int32 {
 	rndindex = (rndindex + 1) & 0xff
 	return int32(rndtable[rndindex])
 }
@@ -21810,7 +21807,7 @@ func t_MoveCeiling(ceiling *ceiling_t) {
 //	// EV_DoCeiling
 //	// Move a ceiling up/down and all around!
 //	//
-func ev_DoCeiling(line *line_t, type1 ceiling_e) (r int32) {
+func ev_DoCeiling(line *line_t, type1 ceiling_e) int32 {
 	var rtn, secnum, v1 int32
 	secnum = -1
 	rtn = 0
@@ -21947,7 +21944,7 @@ func p_ActivateInStasisCeiling(line *line_t) {
 //	// EV_CeilingCrushStop
 //	// Stop a ceiling from crushing!
 //	//
-func ev_CeilingCrushStop(line *line_t) (r int32) {
+func ev_CeilingCrushStop(line *line_t) int32 {
 	var i, rtn int32
 	rtn = 0
 	i = 0
@@ -22099,7 +22096,7 @@ func t_VerticalDoor(door *vldoor_t) {
 // Move a locked door up/down
 //
 
-func ev_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) (r int32) {
+func ev_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) int32 {
 	var p *player_t
 	p = thing.Fplayer
 	if p == nil {
@@ -22144,7 +22141,7 @@ func ev_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) (r int32) {
 	return ev_DoDoor(line, type1)
 }
 
-func ev_DoDoor(line *line_t, type1 vldoor_e) (r int32) {
+func ev_DoDoor(line *line_t, type1 vldoor_e) int32 {
 	var rtn, secnum, v1 int32
 	secnum = -1
 	rtn = 0
@@ -22524,7 +22521,7 @@ func p_NoiseAlert(target *mobj_t, emmiter *mobj_t) {
 //	//
 //	// P_CheckMeleeRange
 //	//
-func p_CheckMeleeRange(actor *mobj_t) (r boolean) {
+func p_CheckMeleeRange(actor *mobj_t) boolean {
 	var dist fixed_t
 	var pl *mobj_t
 	if actor.Ftarget == nil {
@@ -22546,7 +22543,7 @@ func p_CheckMeleeRange(actor *mobj_t) (r boolean) {
 //	//
 //	// P_CheckMissileRange
 //	//
-func p_CheckMissileRange(actor *mobj_t) (r boolean) {
+func p_CheckMissileRange(actor *mobj_t) boolean {
 	var dist fixed_t
 	if p_CheckSight(actor, actor.Ftarget) == 0 {
 		return 0
@@ -22614,7 +22611,7 @@ func init() {
 	}
 }
 
-func p_Move(actor *mobj_t) (r boolean) {
+func p_Move(actor *mobj_t) boolean {
 	var good, try_ok boolean
 	var tryx, tryy fixed_t
 	var v1 int32
@@ -22681,7 +22678,7 @@ func p_Move(actor *mobj_t) (r boolean) {
 //	// If a door is in the way,
 //	// an OpenDoor call is made to start it opening.
 //	//
-func p_TryWalk(actor *mobj_t) (r boolean) {
+func p_TryWalk(actor *mobj_t) boolean {
 	if p_Move(actor) == 0 {
 		return 0
 	}
@@ -22811,7 +22808,7 @@ func p_NewChaseDir(actor *mobj_t) {
 //	// If allaround is false, only look 180 degrees in front.
 //	// Returns true if a player is targeted.
 //	//
-func p_LookForPlayers(actor *mobj_t, allaround boolean) (r boolean) {
+func p_LookForPlayers(actor *mobj_t, allaround boolean) boolean {
 	var an angle_t
 	var c, stop, v2 int32
 	var dist fixed_t
@@ -23308,7 +23305,7 @@ func a_SkelFist(actor *mobj_t) {
 	}
 }
 
-func pit_VileCheck(thing *mobj_t) (r boolean) {
+func pit_VileCheck(thing *mobj_t) boolean {
 	var check boolean
 	var maxdist int32
 	var v1 fixed_t
@@ -23699,7 +23696,7 @@ func a_Explode(thingy *mobj_t) {
 // This behavior changed in v1.9, the most notable effect of which
 // was to break uac_dead.wad
 
-func checkBossEnd(motype mobjtype_t) (r boolean) {
+func checkBossEnd(motype mobjtype_t) boolean {
 	if gameversion < exe_ultimate {
 		if gamemap != 8 {
 			return 0
@@ -23727,7 +23724,6 @@ func checkBossEnd(motype mobjtype_t) (r boolean) {
 			return booluint32(gamemap == 8)
 		}
 	}
-	return r
 }
 
 // C documentation
@@ -24078,7 +24074,7 @@ const INT_MAX9 = 2147483647
 //	//
 //	// Move a plane (floor or ceiling) and check for crushing
 //	//
-func t_MovePlane(sector *sector_t, speed fixed_t, dest fixed_t, crush boolean, floorOrCeiling int32, direction int32) (r result_e) {
+func t_MovePlane(sector *sector_t, speed fixed_t, dest fixed_t, crush boolean, floorOrCeiling int32, direction int32) result_e {
 	var flag boolean
 	var lastpos fixed_t
 	switch floorOrCeiling {
@@ -24236,7 +24232,7 @@ func t_MoveFloor(floor *floormove_t) {
 //	//
 //	// HANDLE FLOOR TYPES
 //	//
-func ev_DoFloor(line *line_t, floortype floor_e) (r int32) {
+func ev_DoFloor(line *line_t, floortype floor_e) int32 {
 	var side *side_t
 	var sec *sector_t
 	var i, minsize, rtn, secnum, v1 int32
@@ -24395,7 +24391,7 @@ func ev_DoFloor(line *line_t, floortype floor_e) (r int32) {
 //	//
 //	// BUILD A STAIRCASE!
 //	//
-func ev_BuildStairs(line *line_t, type1 stair_e) (r int32) {
+func ev_BuildStairs(line *line_t, type1 stair_e) int32 {
 	var sec, tsec *sector_t
 	var height, i, newsecnum, ok, rtn, secnum, texture, v1 int32
 	var speed, stairsize fixed_t
@@ -24516,7 +24512,7 @@ func init() {
 // Returns false if the ammo can't be picked up at all
 //
 
-func p_GiveAmmo(player *player_t, ammo ammotype_t, num int32) (r boolean) {
+func p_GiveAmmo(player *player_t, ammo ammotype_t, num int32) boolean {
 	var oldammo int32
 	if ammo == am_noammo {
 		return 0
@@ -24591,7 +24587,7 @@ func p_GiveAmmo(player *player_t, ammo ammotype_t, num int32) (r boolean) {
 //	// P_GiveWeapon
 //	// The weapon name may have a mf_DROPPED flag ored in.
 //	//
-func p_GiveWeapon(player *player_t, weapon weapontype_t, dropped boolean) (r boolean) {
+func p_GiveWeapon(player *player_t, weapon weapontype_t, dropped boolean) boolean {
 	var gaveammo, gaveweapon boolean
 	if netgame != 0 && deathmatch != 2 && dropped == 0 {
 		// leave placed weapons forever on net games
@@ -24638,7 +24634,7 @@ func p_GiveWeapon(player *player_t, weapon weapontype_t, dropped boolean) (r boo
 //	// P_GiveBody
 //	// Returns false if the body isn't needed at all
 //	//
-func p_GiveBody(player *player_t, num int32) (r boolean) {
+func p_GiveBody(player *player_t, num int32) boolean {
 	if player.Fhealth >= MAXHEALTH {
 		return 0
 	}
@@ -24657,7 +24653,7 @@ func p_GiveBody(player *player_t, num int32) (r boolean) {
 //	// Returns false if the armor is worse
 //	// than the current armor.
 //	//
-func p_GiveArmor(player *player_t, armortype int32) (r boolean) {
+func p_GiveArmor(player *player_t, armortype int32) boolean {
 	var hits int32
 	hits = armortype * 100
 	if player.Farmorpoints >= hits {
@@ -24686,7 +24682,7 @@ func p_GiveCard(player *player_t, card card_t) {
 //	//
 //	// P_GivePower
 //	//
-func p_GivePower(player *player_t, power int32) (r boolean) {
+func p_GivePower(player *player_t, power int32) boolean {
 	if power == int32(pw_invulnerability) {
 		player.Fpowers[power] = INVULNTICS
 		return 1
@@ -25565,7 +25561,7 @@ const DEFAULT_SPECHIT_MAGIC = 29400216
 //	//
 //	// PIT_StompThing
 //	//
-func pit_StompThing(thing *mobj_t) (r boolean) {
+func pit_StompThing(thing *mobj_t) boolean {
 	var blockdist fixed_t
 	if thing.Fflags&mf_SHOOTABLE == 0 {
 		return 1
@@ -25592,7 +25588,7 @@ func pit_StompThing(thing *mobj_t) (r boolean) {
 //	//
 //	// P_TeleportMove
 //	//
-func p_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
+func p_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) boolean {
 	var bx, by, xh, xl, yh, yl int32
 	var newsubsec *subsector_t
 	var v1 fixed_t
@@ -25662,7 +25658,7 @@ func p_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 //	// PIT_CheckLine
 //	// Adjusts tmfloorz and tmceilingz as lines are contacted
 //	//
-func pit_CheckLine(ld *line_t) (r boolean) {
+func pit_CheckLine(ld *line_t) boolean {
 	if tmbbox[BOXRIGHT] <= ld.Fbbox[BOXLEFT] || tmbbox[BOXLEFT] >= ld.Fbbox[BOXRIGHT] || tmbbox[BOXTOP] <= ld.Fbbox[BOXBOTTOM] || tmbbox[BOXBOTTOM] >= ld.Fbbox[BOXTOP] {
 		return 1
 	}
@@ -25719,7 +25715,7 @@ func pit_CheckLine(ld *line_t) (r boolean) {
 //	//
 //	// PIT_CheckThing
 //	//
-func pit_CheckThing(thing *mobj_t) (r boolean) {
+func pit_CheckThing(thing *mobj_t) boolean {
 	var blockdist, v1, v2 fixed_t
 	var damage int32
 	var solid boolean
@@ -25823,7 +25819,7 @@ func pit_CheckThing(thing *mobj_t) (r boolean) {
 //	//  speciallines[]
 //	//  numspeciallines
 //	//
-func p_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
+func p_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) boolean {
 	var bx, by, xh, xl, yh, yl int32
 	var newsubsec *subsector_t
 	var v1 fixed_t
@@ -25920,7 +25916,7 @@ func p_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 //	// Attempt to move to a new position,
 //	// crossing special lines unless mf_TELEPORT is set.
 //	//
-func p_TryMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
+func p_TryMove(thing *mobj_t, x fixed_t, y fixed_t) boolean {
 	var oldside, side, v1 int32
 	var oldx, oldy fixed_t
 	mthing := thing
@@ -25987,7 +25983,7 @@ func p_TryMove(thing *mobj_t, x fixed_t, y fixed_t) (r boolean) {
 //	// the z will be set to the lowest value
 //	// and false will be returned.
 //	//
-func p_ThingHeightClip(thing *mobj_t) (r boolean) {
+func p_ThingHeightClip(thing *mobj_t) boolean {
 	var onfloor boolean
 	onfloor = booluint32(thing.Fz == thing.Ffloorz)
 	p_CheckPosition(thing, thing.Fx, thing.Fy)
@@ -26052,7 +26048,7 @@ func p_HitSlideLine(ld *line_t) {
 //	//
 //	// PTR_SlideTraverse
 //	//
-func ptr_SlideTraverse(in *intercept_t) (r boolean) {
+func ptr_SlideTraverse(in *intercept_t) boolean {
 	var li *line_t
 	if in.Fisaline == 0 {
 		i_Error("ptr_SlideTraverse: not a line?")
@@ -26181,7 +26177,7 @@ _2:
 //	// PTR_AimTraverse
 //	// Sets linetaget and aimslope when a target is aimed at.
 //	//
-func ptr_AimTraverse(in *intercept_t) (r boolean) {
+func ptr_AimTraverse(in *intercept_t) boolean {
 	var dist, slope, thingbottomslope, thingtopslope fixed_t
 	var th *mobj_t
 	var li *line_t
@@ -26250,7 +26246,7 @@ func ptr_AimTraverse(in *intercept_t) (r boolean) {
 //	//
 //	// PTR_ShootTraverse
 //	//
-func ptr_ShootTraverse(in *intercept_t) (r boolean) {
+func ptr_ShootTraverse(in *intercept_t) boolean {
 	var dist, frac, slope, thingbottomslope, thingtopslope, x, y, z fixed_t
 	var th *mobj_t
 	var li *line_t
@@ -26359,7 +26355,7 @@ func ptr_ShootTraverse(in *intercept_t) (r boolean) {
 //	//
 //	// P_AimLineAttack
 //	//
-func p_AimLineAttack(t1 *mobj_t, angle angle_t, distance fixed_t) (r fixed_t) {
+func p_AimLineAttack(t1 *mobj_t, angle angle_t, distance fixed_t) fixed_t {
 	var x2, y2 fixed_t
 	t1 = p_SubstNullMobj(t1)
 	angle >>= ANGLETOFINESHIFT
@@ -26399,7 +26395,7 @@ func p_LineAttack(t1 *mobj_t, angle angle_t, distance fixed_t, slope fixed_t, da
 	p_PathTraverse(t1.Fx, t1.Fy, x2, y2, PT_ADDLINES|PT_ADDTHINGS, ptr_ShootTraverse)
 }
 
-func ptr_UseTraverse(in *intercept_t) (r boolean) {
+func ptr_UseTraverse(in *intercept_t) boolean {
 	var side int32
 	line := in.Fd.Fthing.(*line_t)
 	if line.Fspecial == 0 {
@@ -26447,7 +26443,7 @@ func p_UseLines(player *player_t) {
 //	// "bombsource" is the creature
 //	// that caused the explosion at "bombspot".
 //	//
-func pit_RadiusAttack(thing *mobj_t) (r boolean) {
+func pit_RadiusAttack(thing *mobj_t) boolean {
 	var dist, dx, dy fixed_t
 	var v1 int32
 	if thing.Fflags&mf_SHOOTABLE == 0 {
@@ -26525,7 +26521,7 @@ func p_RadiusAttack(spot *mobj_t, source *mobj_t, damage int32) {
 //	//
 //	// PIT_ChangeSector
 //	//
-func pit_ChangeSector(thing *mobj_t) (r boolean) {
+func pit_ChangeSector(thing *mobj_t) boolean {
 	var mo *mobj_t
 	if p_ThingHeightClip(thing) != 0 {
 		// keep checking
@@ -26567,7 +26563,7 @@ func pit_ChangeSector(thing *mobj_t) (r boolean) {
 //	//
 //	// P_ChangeSector
 //	//
-func p_ChangeSector(sector *sector_t, crunch boolean) (r boolean) {
+func p_ChangeSector(sector *sector_t, crunch boolean) boolean {
 	var x, y int32
 	nofit = 0
 	crushchange = crunch
@@ -26670,7 +26666,7 @@ const INT_MAX11 = 2147483647
 // Gives an estimation of distance (not exact)
 //
 
-func p_AproxDistance(dx fixed_t, dy fixed_t) (r fixed_t) {
+func p_AproxDistance(dx fixed_t, dy fixed_t) fixed_t {
 	dx = xabs(dx)
 	dy = xabs(dy)
 	if dx < dy {
@@ -26685,7 +26681,7 @@ func p_AproxDistance(dx fixed_t, dy fixed_t) (r fixed_t) {
 //	// P_PointOnLineSide
 //	// Returns 0 or 1
 //	//
-func p_PointOnLineSide(x fixed_t, y fixed_t, line *line_t) (r int32) {
+func p_PointOnLineSide(x fixed_t, y fixed_t, line *line_t) int32 {
 	var dx, dy, left, right fixed_t
 	if line.Fdx == 0 {
 		if x <= line.Fv1.Fx {
@@ -26716,7 +26712,7 @@ func p_PointOnLineSide(x fixed_t, y fixed_t, line *line_t) (r int32) {
 //	// Considers the line to be infinite
 //	// Returns side 0 or 1, -1 if box crosses the line.
 //	//
-func p_BoxOnLineSide(tmbox *box_t, ld *line_t) (r int32) {
+func p_BoxOnLineSide(tmbox *box_t, ld *line_t) int32 {
 	var p1, p2 int32
 	p1 = 0
 	p2 = 0
@@ -26755,7 +26751,7 @@ func p_BoxOnLineSide(tmbox *box_t, ld *line_t) (r int32) {
 //	// P_PointOnDivlineSide
 //	// Returns 0 or 1.
 //	//
-func p_PointOnDivlineSide(x fixed_t, y fixed_t, line *divline_t) (r int32) {
+func p_PointOnDivlineSide(x fixed_t, y fixed_t, line *divline_t) int32 {
 	var dx, dy, left, right fixed_t
 	if line.Fdx == 0 {
 		if x <= line.Fx {
@@ -26807,7 +26803,7 @@ func p_MakeDivline(li *line_t, dl *divline_t) {
 //	// This is only called by the addthings
 //	// and addlines traversers.
 //	//
-func p_InterceptVector(v2 *divline_t, v1 *divline_t) (r fixed_t) {
+func p_InterceptVector(v2 *divline_t, v1 *divline_t) fixed_t {
 	var den, frac, num fixed_t
 	den = fixedMul(v1.Fdy>>8, v2.Fdx) - fixedMul(v1.Fdx>>8, v2.Fdy)
 	if den == 0 {
@@ -26952,7 +26948,7 @@ func p_SetThingPosition(thing *mobj_t) {
 //	// to p_BlockLinesIterator, then make one or more calls
 //	// to it.
 //	//
-func p_BlockLinesIterator(x int32, y int32, func1 func(*line_t) boolean) (r boolean) {
+func p_BlockLinesIterator(x int32, y int32, func1 func(*line_t) boolean) boolean {
 	var offset int32
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
 		return 1
@@ -26977,7 +26973,7 @@ func p_BlockLinesIterator(x int32, y int32, func1 func(*line_t) boolean) (r bool
 //	//
 //	// P_BlockThingsIterator
 //	//
-func p_BlockThingsIterator(x int32, y int32, func1 func(*mobj_t) boolean) (r boolean) {
+func p_BlockThingsIterator(x int32, y int32, func1 func(*mobj_t) boolean) boolean {
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
 		return 1
 	}
@@ -27009,7 +27005,7 @@ func p_BlockThingsIterator(x int32, y int32, func1 func(*mobj_t) boolean) (r boo
 //	// are on opposite sides of the trace.
 //	// Returns true if earlyout and a solid line hit.
 //	//
-func pit_AddLineIntercepts(ld *line_t) (r boolean) {
+func pit_AddLineIntercepts(ld *line_t) boolean {
 	var frac fixed_t
 	var s1, s2 int32
 	// avoid precision problems with two routines
@@ -27047,7 +27043,7 @@ func pit_AddLineIntercepts(ld *line_t) (r boolean) {
 //	//
 //	// PIT_AddThingIntercepts
 //	//
-func pit_AddThingIntercepts(thing *mobj_t) (r boolean) {
+func pit_AddThingIntercepts(thing *mobj_t) boolean {
 	var divline divline_t
 	var frac, x1, x2, y1, y2 fixed_t
 	var s1, s2 int32
@@ -27093,7 +27089,7 @@ func pit_AddThingIntercepts(thing *mobj_t) (r boolean) {
 //	// Returns true if the traverser function returns true
 //	// for all lines.
 //	//
-func p_TraverseIntercepts(func1 func(*intercept_t) boolean, maxfrac fixed_t) (r boolean) {
+func p_TraverseIntercepts(func1 func(*intercept_t) boolean, maxfrac fixed_t) boolean {
 	var count, v1 int32
 	var dist fixed_t
 	var in *intercept_t
@@ -27281,7 +27277,7 @@ func interceptsOverrun(num_intercepts int32, intercept *intercept_t) {
 //	// Returns true if the traverser function returns true
 //	// for all lines.
 //	//
-func p_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32, trav func(*intercept_t) boolean) (r boolean) {
+func p_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32, trav func(*intercept_t) boolean) boolean {
 	var count, mapx, mapxstep, mapy, mapystep int32
 	var partial, xintercept, xstep, xt1, xt2, yintercept, ystep, yt1, yt2 fixed_t
 	earlyout = uint32(flags & PT_EARLYOUT)
@@ -27382,7 +27378,7 @@ const ANG453 = 536870912
 const FRICTION = 59392
 const STOPSPEED = 4096
 
-func p_SetMobjState(mobj *mobj_t, state statenum_t) (r boolean) {
+func p_SetMobjState(mobj *mobj_t, state statenum_t) boolean {
 	for cond := true; cond; cond = mobj.Ftics == 0 {
 		if state == s_NULL {
 			mobj.Fstate = nil
@@ -28257,7 +28253,7 @@ func t_PlatRaise(plat *plat_t) {
 //	// Do Platforms
 //	//  "amount" is only used for SOME platforms.
 //	//
-func ev_DoPlat(line *line_t, type1 plattype_e, amount int32) (r int32) {
+func ev_DoPlat(line *line_t, type1 plattype_e, amount int32) int32 {
 	var sec *sector_t
 	var rtn, secnum, v1 int32
 	secnum = -1
@@ -28527,7 +28523,7 @@ func p_BringUpWeapon(player *player_t) {
 //	// Returns true if there is enough ammo to shoot.
 //	// If not, selects the next weapon to use.
 //	//
-func p_CheckAmmo(player *player_t) (r boolean) {
+func p_CheckAmmo(player *player_t) boolean {
 	var ammo ammotype_t
 	var count int32
 	ammo = weaponinfo[player.Freadyweapon].Fammo
@@ -29121,7 +29117,7 @@ func p_SaveGameFile(slot int32) string {
 
 // Endian-safe integer read/write functions
 
-func saveg_read8() (r uint8) {
+func saveg_read8() uint8 {
 	var val [1]byte
 	if _, err := save_stream.Read(val[:]); err != nil {
 		if savegame_error == 0 {
@@ -29142,7 +29138,7 @@ func saveg_write8(_value uint8) {
 	}
 }
 
-func saveg_read16() (r int16) {
+func saveg_read16() int16 {
 	var result int32
 	result = int32(saveg_read8())
 	result |= int32(saveg_read8()) << 8
@@ -29154,7 +29150,7 @@ func saveg_write16(value int16) {
 	saveg_write8(uint8(int32(value) >> 8 & 0xff))
 }
 
-func saveg_read32() (r int32) {
+func saveg_read32() int32 {
 	var result int32
 	result = int32(saveg_read8())
 	result |= int32(saveg_read8()) << 8
@@ -29208,7 +29204,7 @@ func saveg_write_pad() {
 
 // Pointers
 
-func saveg_readp() (r uintptr) {
+func saveg_readp() uintptr {
 	return uintptr(int64(saveg_read32()))
 }
 
@@ -30131,7 +30127,7 @@ func p_WriteSaveGameHeader(description string) {
 // Read the header for a savegame
 //
 
-func p_ReadSaveGameHeader() (r boolean) {
+func p_ReadSaveGameHeader() boolean {
 	var a, b, c uint8
 	var i int32
 	// skip the description field
@@ -30185,7 +30181,7 @@ func p_ReadSaveGameHeader() (r boolean) {
 // Read the end of file marker.  Returns true if read successfully.
 //
 
-func p_ReadSaveGameEOF() (r boolean) {
+func p_ReadSaveGameEOF() boolean {
 	var value int32
 	value = int32(saveg_read8())
 	return booluint32(value == SAVEGAME_EOF)
@@ -31198,7 +31194,7 @@ const NF_SUBSECTOR1 = 32768
 //	// P_DivlineSide
 //	// Returns side 0 (front), 1 (back), or 2 (on).
 //	//
-func p_DivlineSide(x fixed_t, y fixed_t, node *divline_t) (r int32) {
+func p_DivlineSide(x fixed_t, y fixed_t, node *divline_t) int32 {
 	var dx, dy, left, right fixed_t
 	if node.Fdx == 0 {
 		if x == node.Fx {
@@ -31239,7 +31235,7 @@ func p_DivlineSide(x fixed_t, y fixed_t, node *divline_t) (r int32) {
 //	// along the first divline.
 //	// This is only called by the addthings and addlines traversers.
 //	//
-func p_InterceptVector2(v2 *divline_t, v1 *divline_t) (r fixed_t) {
+func p_InterceptVector2(v2 *divline_t, v1 *divline_t) fixed_t {
 	var den, frac, num fixed_t
 	den = fixedMul(v1.Fdy>>8, v2.Fdx) - fixedMul(v1.Fdx>>8, v2.Fdy)
 	if den == 0 {
@@ -31258,7 +31254,7 @@ func p_InterceptVector2(v2 *divline_t, v1 *divline_t) (r fixed_t) {
 //	// Returns true
 //	//  if strace crosses the given subsector successfully.
 //	//
-func p_CrossSubsector(num int32) (r boolean) {
+func p_CrossSubsector(num int32) boolean {
 	var divline divline_t
 	var v1, v2 *vertex_t
 	var line *line_t
@@ -31366,7 +31362,7 @@ func p_CrossSubsector(num int32) (r boolean) {
 //	// Returns true
 //	//  if strace crosses the given node successfully.
 //	//
-func p_CrossBSPNode(bspnum int32) (r boolean) {
+func p_CrossBSPNode(bspnum int32) boolean {
 	var side int32
 	if bspnum&int32(NF_SUBSECTOR1) != 0 {
 		if bspnum == -1 {
@@ -31402,7 +31398,7 @@ func p_CrossBSPNode(bspnum int32) (r boolean) {
 //	//  if a straight line between t1 and t2 is unobstructed.
 //	// Uses REJECT.
 //	//
-func p_CheckSight(t1 *mobj_t, t2 *mobj_t) (r boolean) {
+func p_CheckSight(t1 *mobj_t, t2 *mobj_t) boolean {
 	var bitnum, bytenum, pnum, s1, s2 int32
 	// First check for trivial rejection.
 	// Determine subsector entries in REJECT table.
@@ -31710,7 +31706,7 @@ func getSector(currentSector int32, line int32, side int32) (r *sector_t) {
 //	// Given the sector number and the line number,
 //	//  it will tell you whether the line is two-sided or not.
 //	//
-func twoSided(sector int32, line int32) (r int32) {
+func twoSided(sector int32, line int32) int32 {
 	sec := &sectors[sector]
 	return int32(sec.Flines[line].Fflags & ml_TWOSIDED)
 }
@@ -31738,7 +31734,7 @@ func getNextSector(line *line_t, sec *sector_t) (r *sector_t) {
 //	// p_FindLowestFloorSurrounding()
 //	// FIND LOWEST FLOOR HEIGHT IN SURROUNDING SECTORS
 //	//
-func p_FindLowestFloorSurrounding(sec *sector_t) (r fixed_t) {
+func p_FindLowestFloorSurrounding(sec *sector_t) fixed_t {
 	var check *line_t
 	var other *sector_t
 	var floor fixed_t
@@ -31771,7 +31767,7 @@ func p_FindLowestFloorSurrounding(sec *sector_t) (r fixed_t) {
 //	// p_FindHighestFloorSurrounding()
 //	// FIND HIGHEST FLOOR HEIGHT IN SURROUNDING SECTORS
 //	//
-func p_FindHighestFloorSurrounding(sec *sector_t) (r fixed_t) {
+func p_FindHighestFloorSurrounding(sec *sector_t) fixed_t {
 	var check *line_t
 	var other *sector_t
 	var floor fixed_t
@@ -31807,7 +31803,7 @@ func p_FindHighestFloorSurrounding(sec *sector_t) (r fixed_t) {
 
 // 20 adjoining sectors max!
 
-func p_FindNextHighestFloor(sec *sector_t, currentheight int32) (r fixed_t) {
+func p_FindNextHighestFloor(sec *sector_t, currentheight int32) fixed_t {
 	var check *line_t
 	var other *sector_t
 	var h, i, min, v2 int32
@@ -31871,7 +31867,7 @@ func p_FindNextHighestFloor(sec *sector_t, currentheight int32) (r fixed_t) {
 //	//
 //	// FIND LOWEST CEILING IN THE SURROUNDING SECTORS
 //	//
-func p_FindLowestCeilingSurrounding(sec *sector_t) (r fixed_t) {
+func p_FindLowestCeilingSurrounding(sec *sector_t) fixed_t {
 	var check *line_t
 	var other *sector_t
 	var height fixed_t
@@ -31903,7 +31899,7 @@ func p_FindLowestCeilingSurrounding(sec *sector_t) (r fixed_t) {
 //	//
 //	// FIND HIGHEST CEILING IN THE SURROUNDING SECTORS
 //	//
-func p_FindHighestCeilingSurrounding(sec *sector_t) (r fixed_t) {
+func p_FindHighestCeilingSurrounding(sec *sector_t) fixed_t {
 	var check *line_t
 	var other *sector_t
 	var height fixed_t
@@ -31935,7 +31931,7 @@ func p_FindHighestCeilingSurrounding(sec *sector_t) (r fixed_t) {
 //	//
 //	// RETURN NEXT SECTOR # THAT LINE TAG REFERS TO
 //	//
-func p_FindSectorFromLineTag(line *line_t, start int32) (r int32) {
+func p_FindSectorFromLineTag(line *line_t, start int32) int32 {
 	var i int32
 	i = start + 1
 	for {
@@ -31958,7 +31954,7 @@ func p_FindSectorFromLineTag(line *line_t, start int32) (r int32) {
 //	//
 //	// Find minimum light from an adjacent sector
 //	//
-func p_FindMinSurroundingLight(sector *sector_t, max int32) (r int32) {
+func p_FindMinSurroundingLight(sector *sector_t, max int32) int32 {
 	var line *line_t
 	var check *sector_t
 	var i, min int32
@@ -32559,7 +32555,7 @@ var tmp_s3_floorpic int32
 //	//
 //	// Special Stuff that can not be categorized
 //	//
-func ev_DoDonut(line *line_t) (r int32) {
+func ev_DoDonut(line *line_t) int32 {
 	var s1, s2, s3 *sector_t
 	var rtn, secnum, v1 int32
 	secnum = -1
@@ -33087,7 +33083,7 @@ func p_ChangeSwitchTexture(line *line_t, useAgain int32) {
 //	// Called when a thing uses a special line.
 //	// Only the front sides of lines are usable.
 //	//
-func p_UseSpecialLine(thing *mobj_t, line *line_t, side int32) (r boolean) {
+func p_UseSpecialLine(thing *mobj_t, line *line_t, side int32) boolean {
 	// Err...
 	// Use the back sides of VERY SPECIAL lines...
 	if side != 0 {
@@ -33454,7 +33450,7 @@ func p_UseSpecialLine(thing *mobj_t, line *line_t, side int32) (r boolean) {
 //	//
 //	// TELEPORTATION
 //	//
-func ev_Teleport(line *line_t, side int32, thing *mobj_t) (r int32) {
+func ev_Teleport(line *line_t, side int32, thing *mobj_t) int32 {
 	var an uint32
 	var fog *mobj_t
 	var thinker *thinker_t
@@ -34181,7 +34177,7 @@ func init() {
 	}
 }
 
-func r_CheckBBox(bspcoord *box_t) (r boolean) {
+func r_CheckBBox(bspcoord *box_t) boolean {
 	var angle1, angle2, span, tspan angle_t
 	var boxpos, boxx, boxy, sx1, sx2 int32
 	var start int
@@ -34921,7 +34917,7 @@ func r_InitData() {
 //	// R_FlatNumForName
 //	// Retrieval, get a flat number for a flat name.
 //	//
-func r_FlatNumForName(name string) (r int32) {
+func r_FlatNumForName(name string) int32 {
 	var i int32
 	i = w_CheckNumForName(name)
 	if i == -1 {
@@ -34937,7 +34933,7 @@ func r_FlatNumForName(name string) (r int32) {
 //	// Check whether texture is available.
 //	// Filter out NoTexture indicator.
 //	//
-func r_CheckTextureNumForName(name string) (r int32) {
+func r_CheckTextureNumForName(name string) int32 {
 	var key int32
 	var texture *texture_t
 	// "NoTexture" marker.
@@ -34962,7 +34958,7 @@ func r_CheckTextureNumForName(name string) (r int32) {
 //	// Calls r_CheckTextureNumForName,
 //	//  aborts with error message.
 //	//
-func r_TextureNumForName(name string) (r int32) {
+func r_TextureNumForName(name string) int32 {
 	var i int32
 	i = r_CheckTextureNumForName(name)
 	if i == -1 {
@@ -35828,7 +35824,7 @@ func init() {
 //	//  check point against partition plane.
 //	// Returns side 0 (front) or 1 (back).
 //	//
-func r_PointOnSide(x fixed_t, y fixed_t, node *node_t) (r int32) {
+func r_PointOnSide(x fixed_t, y fixed_t, node *node_t) int32 {
 	var dx, dy, left, right fixed_t
 	if node.Fdx == 0 {
 		if x <= node.Fx {
@@ -35862,7 +35858,7 @@ func r_PointOnSide(x fixed_t, y fixed_t, node *node_t) (r int32) {
 	return 1
 }
 
-func r_PointOnSegSide(x fixed_t, y fixed_t, line *seg_t) (r int32) {
+func r_PointOnSegSide(x fixed_t, y fixed_t, line *seg_t) int32 {
 	var dx, dy, ldx, ldy, left, lx, ly, right fixed_t
 	lx = line.Fv1.Fx
 	ly = line.Fv1.Fy
@@ -35911,7 +35907,7 @@ func r_PointOnSegSide(x fixed_t, y fixed_t, line *seg_t) (r int32) {
 
 //
 
-func r_PointToAngle(x fixed_t, y fixed_t) (r angle_t) {
+func r_PointToAngle(x fixed_t, y fixed_t) angle_t {
 	x -= viewx
 	y -= viewy
 	if x == 0 && y == 0 {
@@ -35966,13 +35962,13 @@ func r_PointToAngle(x fixed_t, y fixed_t) (r angle_t) {
 	return 0
 }
 
-func r_PointToAngle2(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t) (r angle_t) {
+func r_PointToAngle2(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t) angle_t {
 	viewx = x1
 	viewy = y1
 	return r_PointToAngle(x2, y2)
 }
 
-func r_PointToDist(x fixed_t, y fixed_t) (r fixed_t) {
+func r_PointToDist(x fixed_t, y fixed_t) fixed_t {
 	var angle int32
 	var dist, dx, dy, frac, temp fixed_t
 	dx = xabs(x - viewx)
@@ -36012,7 +36008,7 @@ func r_InitPointToAngle() {
 //	//  at the given angle.
 //	// rw_distance must be calculated first.
 //	//
-func r_ScaleFromGlobalAngle(visangle angle_t) (r fixed_t) {
+func r_ScaleFromGlobalAngle(visangle angle_t) fixed_t {
 	var anglea, angleb angle_t
 	var den, sinea, sineb int32
 	var num, scale fixed_t
@@ -39670,7 +39666,7 @@ func st_refreshBackground() {
 //
 //	// Respond to keyboard input events,
 //	//  intercept cheats.
-func st_Responder(ev *event_t) (r boolean) {
+func st_Responder(ev *event_t) boolean {
 	var epsd, i, map1, musnum int32
 	var v6, v8 gamemission_t
 	var v10 bool
@@ -39907,7 +39903,7 @@ func st_Responder(ev *event_t) (r boolean) {
 	return 0
 }
 
-func st_calcPainOffset() (r int32) {
+func st_calcPainOffset() int32 {
 	var health, v1 int32
 	if plyr.Fhealth > 100 {
 		v1 = 100
@@ -40647,7 +40643,7 @@ func s_StopSound(origin *degenmobj_t) {
 //   If none available, return -1.  Otherwise channel #.
 //
 
-func s_GetChannel(origin *degenmobj_t, sfxinfo *sfxinfo_t) (r int32) {
+func s_GetChannel(origin *degenmobj_t, sfxinfo *sfxinfo_t) int32 {
 	var cnum int32
 	// Find an open channel
 	cnum = 0
@@ -40706,7 +40702,7 @@ func s_GetChannel(origin *degenmobj_t, sfxinfo *sfxinfo_t) (r int32) {
 // Otherwise, modifies parameters and returns 1.
 //
 
-func s_AdjustSoundParams(listener *degenmobj_t, source *degenmobj_t, vol *int32, sep *int32) (r int32) {
+func s_AdjustSoundParams(listener *degenmobj_t, source *degenmobj_t, vol *int32, sep *int32) int32 {
 	var adx, ady, approx_dist fixed_t
 	var angle angle_t
 	var v1 int32
@@ -40946,7 +40942,7 @@ func s_StopMusic() {
 // which is looked up in the tantoangle[] table.  The +1 size is to handle
 // the case when x==y without additional checking.
 
-func slopeDiv(num uint32, den uint32) (r int32) {
+func slopeDiv(num uint32, den uint32) int32 {
 	var ans uint32
 	if den < 512 {
 		return SLOPERANGE
@@ -40958,7 +40954,6 @@ func slopeDiv(num uint32, den uint32) (r int32) {
 			return SLOPERANGE
 		}
 	}
-	return r
 }
 
 func init() {
@@ -42040,7 +42035,7 @@ func wi_drawAnimatedBack() {
 // Returns new x position.
 //
 
-func wi_drawNum(x int32, y int32, n int32, digits int32) (r int32) {
+func wi_drawNum(x int32, y int32, n int32, digits int32) int32 {
 	var fontwidth, neg, temp, v1 int32
 	fontwidth = int32(num[0].Fwidth)
 	if digits < 0 {
@@ -42214,7 +42209,7 @@ func wi_drawNoState() {
 	wi_drawShowNextLoc()
 }
 
-func wi_fragSum(playernum int32) (r int32) {
+func wi_fragSum(playernum int32) int32 {
 	var frags, i int32
 	frags = 0
 	i = 0
@@ -43148,7 +43143,7 @@ func wi_Start(wbstartstruct *wbstartstruct_t) {
 
 var open_wadfiles []*os.File
 
-func getFileNumber(handle *os.File) (r int32) {
+func getFileNumber(handle *os.File) int32 {
 	for i := 0; i < len(open_wadfiles); i++ {
 		if open_wadfiles[i] == handle {
 			return int32(i)
@@ -43196,7 +43191,7 @@ func w_OpenFile(path string) *os.File {
 	return f
 }
 
-func w_Read(wad *os.File, offset uint32, buffer uintptr, buffer_len uint64) (r uint64) {
+func w_Read(wad *os.File, offset uint32, buffer uintptr, buffer_len uint64) uint64 {
 	buf := unsafe.Slice((*byte)(unsafe.Pointer(buffer)), buffer_len)
 	n, err := wad.ReadAt(buf, int64(offset))
 	if err != nil {
@@ -43213,7 +43208,7 @@ func w_Read(wad *os.File, offset uint32, buffer uintptr, buffer_len uint64) (r u
 // Parse the command line, merging WAD files that are sppecified.
 // Returns true if at least one file was added.
 
-func w_ParseCommandLine() (r boolean) {
+func w_ParseCommandLine() boolean {
 	var filename string
 	var modifiedgame boolean
 	var p, v1 int32
@@ -43262,7 +43257,7 @@ var lumphash []*lumpinfo_t
 
 // Hash function used for lump names.
 
-func w_LumpNameHash(s string) (r uint32) {
+func w_LumpNameHash(s string) uint32 {
 	// This is the djb2 string hash function, modded to work on strings
 	// that have a maximum length of 8.
 	result := uint32(5381)
@@ -43367,7 +43362,7 @@ func w_AddFile(filename string) *os.File {
 // Returns -1 if name not found.
 //
 
-func w_CheckNumForName(name string) (r int32) {
+func w_CheckNumForName(name string) int32 {
 	// Do we have a hash table yet?
 	if lumphash != nil {
 		// We do! Excellent.
@@ -43397,7 +43392,7 @@ func w_CheckNumForName(name string) (r int32) {
 //	// W_GetNumForName
 //	// Calls w_CheckNumForName, but bombs out if not found.
 //	//
-func w_GetNumForName(name string) (r int32) {
+func w_GetNumForName(name string) int32 {
 	var i int32
 	i = w_CheckNumForName(name)
 	if i < 0 {
@@ -43412,7 +43407,7 @@ func w_GetNumForName(name string) (r int32) {
 //	// W_LumpLength
 //	// Returns the buffer size needed to load the given lump.
 //	//
-func w_LumpLength(lump uint32) (r int32) {
+func w_LumpLength(lump uint32) int32 {
 	if lump >= numlumps {
 		i_Error("w_LumpLength: %d >= numlumps", lump)
 	}
@@ -43440,7 +43435,7 @@ func w_ReadLumpBytes(lump uint32) []byte {
 // the lump data.
 //
 
-func w_CacheLumpNum(lumpnum int32) (r uintptr) {
+func w_CacheLumpNum(lumpnum int32) uintptr {
 	if uint32(lumpnum) >= numlumps {
 		i_Error("w_CacheLumpNum: %d >= numlumps", lumpnum)
 	}
@@ -43474,7 +43469,7 @@ func w_CacheLumpNumT[T lumpType](lumpnum int32) T {
 //	//
 //	// W_CacheLumpName
 //	//
-func w_CacheLumpName(name string) (r uintptr) {
+func w_CacheLumpName(name string) uintptr {
 	return w_CacheLumpNum(w_GetNumForName(name))
 }
 
@@ -43793,7 +43788,7 @@ var shiftxform = [128]uint8{
 
 // Get the equivalent ASCII (Unicode?) character for a keypress.
 
-func getTypedChar(key uint8) (r uint8) {
+func getTypedChar(key uint8) uint8 {
 	// Is shift held down?  If so, perform a translation.
 	if shiftdown > 0 {
 		if key >= 0 && key < 128 {
