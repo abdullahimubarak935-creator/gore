@@ -1672,8 +1672,6 @@ type mobj_t struct {
 	Ftracer       *mobj_t
 }
 
-type grabmouse_callback_t = uintptr
-
 type patch_t struct {
 	Fwidth      int16
 	Fheight     int16
@@ -1751,7 +1749,7 @@ type side_t struct {
 	Fsector        *sector_t
 }
 
-type slopetype_t = int32
+type slopetype_t int32
 
 type box_t [4]fixed_t
 
@@ -4532,7 +4530,7 @@ type sfxinfo_t struct {
 type musicinfo_t struct {
 	Fname    string
 	Flumpnum int32
-	Fdata    uintptr
+	Fdata    []byte
 	Fhandle  uintptr
 }
 
@@ -4565,7 +4563,7 @@ type music_module_t struct {
 	FSetMusicVolume    func(volume int32)
 	FPauseMusic        func()
 	FResumeMusic       func()
-	FRegisterSong      func(data uintptr, len1 int32) (r uintptr)
+	FRegisterSong      func(data []byte) uintptr
 	FUnRegisterSong    func(handle uintptr)
 	FPlaySong          func(handle uintptr, looping boolean) (r boolean)
 	FStopSong          func()
@@ -18027,9 +18025,9 @@ func i_ResumeSong() {
 	}
 }
 
-func i_RegisterSong(data uintptr, len1 int32) (r uintptr) {
+func i_RegisterSong(data []byte) (r uintptr) {
 	if music_module != nil {
-		music_module.FRegisterSong(data, len1)
+		music_module.FRegisterSong(data)
 	} else {
 		return 0
 	}
@@ -40922,8 +40920,8 @@ func s_ChangeMusic(musicnum int32, looping int32) {
 		bp := fmt.Sprintf("d_%s", music.Fname)
 		music.Flumpnum = w_GetNumForName(bp)
 	}
-	music.Fdata = w_CacheLumpNum(music.Flumpnum)
-	handle = i_RegisterSong(music.Fdata, w_LumpLength(uint32(music.Flumpnum)))
+	music.Fdata = w_CacheLumpNumBytes(music.Flumpnum)
+	handle = i_RegisterSong(music.Fdata)
 	music.Fhandle = handle
 	i_PlaySong(handle, uint32(looping))
 	mus_playing = music
@@ -40937,7 +40935,7 @@ func s_StopMusic() {
 		i_StopSong()
 		i_UnRegisterSong(mus_playing.Fhandle)
 		w_ReleaseLumpNum(mus_playing.Flumpnum)
-		mus_playing.Fdata = 0
+		mus_playing.Fdata = nil
 		mus_playing = nil
 	}
 }
