@@ -4799,7 +4799,7 @@ func d_Display() {
 	}
 	// clean up border stuff
 	if gamestate != oldgamestate1 && gamestate != gs_LEVEL {
-		i_SetPalette(w_CacheLumpName("PLAYPAL"))
+		i_SetPalette(w_CacheLumpNameBytes("PLAYPAL"))
 	}
 	// see if the border needs to be initially drawn
 	if gamestate == gs_LEVEL && oldgamestate1 != gs_LEVEL {
@@ -21033,7 +21033,7 @@ func m_Responder(ev *event_t) boolean {
 																usegamma = 0
 															}
 															players[consoleplayer].Fmessage = gammamsg[usegamma]
-															i_SetPalette(w_CacheLumpName("PLAYPAL"))
+															i_SetPalette(w_CacheLumpNameBytes("PLAYPAL"))
 															return 1
 														}
 													}
@@ -40139,7 +40139,7 @@ var st_palette int32 = 0
 
 func st_doPaletteStuff() {
 	var bzc, cnt, palette int32
-	var pal uintptr
+	var pal []byte
 	cnt = plyr.Fdamagecount
 	if plyr.Fpowers[pw_strength] != 0 {
 		// slowly fade the berzerk out
@@ -40186,7 +40186,7 @@ func st_doPaletteStuff() {
 	}
 	if palette != st_palette {
 		st_palette = palette
-		pal = w_CacheLumpNum(lu_palette) + uintptr(palette*int32(768))
+		pal = w_CacheLumpNumBytes(lu_palette)[palette*768:]
 		i_SetPalette(pal)
 	}
 }
@@ -40447,7 +40447,7 @@ func st_Stop() {
 	if st_stopped != 0 {
 		return
 	}
-	i_SetPalette(w_CacheLumpNum(lu_palette))
+	i_SetPalette(w_CacheLumpNumBytes(lu_palette))
 	st_stopped = 1
 }
 
@@ -43945,12 +43945,11 @@ func i_ReadScreen(scr []byte) {
 // I_SetPalette
 //
 
-func i_SetPalette(palette uintptr) {
+func i_SetPalette(palette []byte) {
 	for i := range 256 {
-		colors[i].R = *(*uint8)(unsafe.Pointer(palette))
-		colors[i].G = *(*uint8)(unsafe.Pointer(palette + 1))
-		colors[i].B = *(*uint8)(unsafe.Pointer(palette + 2))
-		palette += 3
+		colors[i].R = palette[i*3]
+		colors[i].G = palette[i*3+1]
+		colors[i].B = palette[i*3+2]
 	}
 }
 
