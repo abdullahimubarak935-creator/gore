@@ -32,17 +32,6 @@ var start_time time.Time
 
 type boolean = uint32
 
-// Horrible memory allocation hack to avoid Go GC
-// Once we're done with libc, this should go
-var dg_alloced = make(map[uintptr][]byte)
-
-func xmalloc(n uint64) uintptr {
-	data := make([]byte, n)
-	res := uintptr(unsafe.Pointer(&data[0]))
-	dg_alloced[res] = data
-	return res
-}
-
 // LIBC functions
 func xabs(j int32) int32 {
 	if j < 0 {
@@ -5584,7 +5573,6 @@ func d_Endoom() {
 	}
 	endoom = w_CacheLumpName("ENDOOM")
 	i_Endoom(endoom)
-	log.Printf("Exiting - outstanding memory: %d", len(dg_alloced))
 	dg_exiting = true
 }
 
@@ -30905,33 +30893,21 @@ func p_LoadSideDefs(lump int32) {
 //	// P_LoadBlockMap
 //	//
 func p_LoadBlockMap(lump int32) {
-	var count, i, lumplen int32
-	lumplen = w_LumpLength(uint32(lump))
-	count = lumplen / 2
-	rawLump := z_Malloc(lumplen)
-	w_ReadLump(uint32(lump), rawLump)
-	blockmaplump = unsafe.Slice((*int16)(unsafe.Pointer(rawLump)), count)
+	rawLump := w_ReadLumpBytes(uint32(lump))
+	blockmaplump = make([]int16, len(rawLump)/2)
+	for i := 0; i < len(rawLump); i += 2 {
+		blockmaplump[i/2] = int16(rawLump[i]) | int16(rawLump[i+1])<<8
+	}
 	blockmap = blockmaplump[4:]
 	// Swap all short integers to native byte ordering.
 	// TODO: GORE: We've lost endian fixes here
-	i = 0
-	for {
-		if i >= count {
-			break
-		}
-		blockmaplump[i] = blockmaplump[i]
-		goto _1
-	_1:
-		;
-		i++
-	}
 	// Read the header
 	bmaporgx = int32(blockmaplump[0]) << FRACBITS
 	bmaporgy = int32(blockmaplump[1]) << FRACBITS
 	bmapwidth = int32(blockmaplump[2])
 	bmapheight = int32(blockmaplump[3])
 	// Clear out mobj chains
-	count = int32(uint64(bmapwidth) * uint64(bmapheight))
+	count := int32(uint64(bmapwidth) * uint64(bmapheight))
 	blocklinks = make([]*mobj_t, count)
 }
 
@@ -43445,27 +43421,6 @@ func w_LumpLength(lump uint32) (r int32) {
 	return lumpinfo[lump].Fsize
 }
 
-// C documentation
-//
-//	//
-//	// W_ReadLump
-//	// Loads the lump into the given buffer,
-//	//  which must be >= w_LumpLength().
-//	//
-func w_ReadLump(lump uint32, dest uintptr) {
-	var c int32
-	if lump >= numlumps {
-		i_Error("w_ReadLump: %d >= numlumps", lump)
-	}
-	l := &lumpinfo[lump]
-	i_BeginRead()
-	c = int32(w_Read(l.Fwad_file, uint32(l.Fposition), dest, uint64(l.Fsize)))
-	if c < l.Fsize {
-		i_Error("w_ReadLump: only read %d of %d on lump %d", c, l.Fsize, lump)
-	}
-	i_EndRead()
-}
-
 func w_ReadLumpBytes(lump uint32) []byte {
 	if lump >= numlumps {
 		i_Error("w_ReadLumpBytes: %d >= numlumps", lump)
@@ -43691,14 +43646,6 @@ const ZONEID = 1919505
 //	//
 func z_Init() {
 	return
-}
-
-//
-// Z_Malloc
-//
-
-func z_Malloc(size int32) (r uintptr) {
-	return xmalloc(uint64(size))
 }
 
 // Read data from the specified position in the file into the
@@ -44035,12 +43982,6 @@ func i_GetPaletteIndex(r int32, g int32, b int32) (r1 int32) {
 		}
 	}
 	return best
-}
-
-func i_BeginRead() {
-}
-
-func i_EndRead() {
 }
 
 func i_SetWindowTitle(title string) {
