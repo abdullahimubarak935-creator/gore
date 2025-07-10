@@ -36807,11 +36807,11 @@ func r_RenderMaskedSegRange(ds *drawseg_t, x1 int32, x2 int32) {
 func r_RenderSegLoop() {
 	var angle angle_t
 	var bottom, mid, top, yh, yl int32
-	var ceilingclip_temp, floorclip_temp uintptr
+	var ceilingclip_pos, floorclip_pos int32
 	var index uint32
 	var texturecolumn fixed_t
-	ceilingclip_temp = uintptr(unsafe.Pointer(&ceilingclip)) + uintptr(rw_x)*2
-	floorclip_temp = uintptr(unsafe.Pointer(&floorclip)) + uintptr(rw_x)*2
+	ceilingclip_pos = rw_x
+	floorclip_pos = rw_x
 	for {
 		if rw_x >= rw_stopx {
 			break
@@ -36819,14 +36819,14 @@ func r_RenderSegLoop() {
 		// mark floor / ceiling areas
 		yl = (topfrac + 1<<HEIGHTBITS - 1) >> HEIGHTBITS
 		// no space above wall?
-		if yl < int32(*(*int16)(unsafe.Pointer(ceilingclip_temp)))+1 {
-			yl = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + 1
+		if yl < int32(ceilingclip[ceilingclip_pos])+1 {
+			yl = int32(ceilingclip[ceilingclip_pos]) + 1
 		}
 		if markceiling != 0 {
 			top = int32(ceilingclip[rw_x]) + 1
 			bottom = yl - 1
-			if bottom >= int32(*(*int16)(unsafe.Pointer(floorclip_temp))) {
-				bottom = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - 1
+			if bottom >= int32(floorclip[floorclip_pos]) {
+				bottom = int32(floorclip[floorclip_pos]) - 1
 			}
 			if top <= bottom {
 				ceilingplane.Ftop[rw_x] = uint8(top)
@@ -36834,14 +36834,14 @@ func r_RenderSegLoop() {
 			}
 		}
 		yh = bottomfrac >> HEIGHTBITS
-		if yh >= int32(*(*int16)(unsafe.Pointer(floorclip_temp))) {
-			yh = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - 1
+		if yh >= int32(floorclip[floorclip_pos]) {
+			yh = int32(floorclip[floorclip_pos]) - 1
 		}
 		if markfloor != 0 {
 			top = yh + 1
-			bottom = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - 1
-			if top <= int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) {
-				top = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + 1
+			bottom = int32(floorclip[floorclip_pos]) - 1
+			if top <= int32(ceilingclip[ceilingclip_pos]) {
+				top = int32(ceilingclip[ceilingclip_pos]) + 1
 			}
 			if top <= bottom {
 				floorplane.Ftop[rw_x] = uint8(top)
@@ -36877,16 +36877,16 @@ func r_RenderSegLoop() {
 			dc_texturemid = rw_midtexturemid
 			dc_source = r_GetColumn(midtexture, texturecolumn)
 			colfunc()
-			*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(viewheight)
-			*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(-1)
+			ceilingclip[ceilingclip_pos] = int16(viewheight)
+			floorclip[floorclip_pos] = int16(-1)
 		} else {
 			// two sided line
 			if toptexture != 0 {
 				// top wall
 				mid = pixhigh >> HEIGHTBITS
 				pixhigh += pixhighstep
-				if mid >= int32(*(*int16)(unsafe.Pointer(floorclip_temp))) {
-					mid = int32(*(*int16)(unsafe.Pointer(floorclip_temp))) - 1
+				if mid >= int32(floorclip[floorclip_pos]) {
+					mid = int32(floorclip[floorclip_pos]) - 1
 				}
 				if mid >= yl {
 					dc_yl = yl
@@ -36894,14 +36894,14 @@ func r_RenderSegLoop() {
 					dc_texturemid = rw_toptexturemid
 					dc_source = r_GetColumn(toptexture, texturecolumn)
 					colfunc()
-					*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(mid)
+					ceilingclip[ceilingclip_pos] = int16(mid)
 				} else {
-					*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(yl - 1)
+					ceilingclip[ceilingclip_pos] = int16(yl - 1)
 				}
 			} else {
 				// no top wall
 				if markceiling != 0 {
-					*(*int16)(unsafe.Pointer(ceilingclip_temp)) = int16(yl - 1)
+					ceilingclip[ceilingclip_pos] = int16(yl - 1)
 				}
 			}
 			if bottomtexture != 0 {
@@ -36909,8 +36909,8 @@ func r_RenderSegLoop() {
 				mid = (pixlow + 1<<HEIGHTBITS - 1) >> HEIGHTBITS
 				pixlow += pixlowstep
 				// no space above wall?
-				if mid <= int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) {
-					mid = int32(*(*int16)(unsafe.Pointer(ceilingclip_temp))) + 1
+				if mid <= int32(ceilingclip[ceilingclip_pos]) {
+					mid = int32(ceilingclip[ceilingclip_pos]) + 1
 				}
 				if mid <= yh {
 					dc_yl = mid
@@ -36918,14 +36918,14 @@ func r_RenderSegLoop() {
 					dc_texturemid = rw_bottomtexturemid
 					dc_source = r_GetColumn(bottomtexture, texturecolumn)
 					colfunc()
-					*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(mid)
+					floorclip[floorclip_pos] = int16(mid)
 				} else {
-					*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(yh + 1)
+					floorclip[floorclip_pos] = int16(yh + 1)
 				}
 			} else {
 				// no bottom wall
 				if markfloor != 0 {
-					*(*int16)(unsafe.Pointer(floorclip_temp)) = int16(yh + 1)
+					floorclip[floorclip_pos] = int16(yh + 1)
 				}
 			}
 			if maskedtexture != 0 {
@@ -36937,8 +36937,8 @@ func r_RenderSegLoop() {
 		rw_scale += rw_scalestep
 		topfrac += topstep
 		bottomfrac += bottomstep
-		ceilingclip_temp += 2
-		floorclip_temp += 2
+		ceilingclip_pos++
+		floorclip_pos++
 		goto _1
 	_1:
 		;
