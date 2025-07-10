@@ -4392,19 +4392,10 @@ func ticdupSquash(set *ticcmd_set_t) {
 // except the local player.
 
 func singlePlayerClear(set *ticcmd_set_t) {
-	var i uint32
-	i = 0
-	for {
-		if i >= NET_MAXPLAYERS {
-			break
-		}
-		if i != uint32(localplayer) {
+	for i := int32(0); i < NET_MAXPLAYERS; i++ {
+		if i != localplayer {
 			set.Fingame[i] = 0
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -4413,7 +4404,7 @@ func singlePlayerClear(set *ticcmd_set_t) {
 //
 
 func tryRunTics() {
-	var availabletics, counts, entertic, i, lowtic, realtics, v1 int32
+	var availabletics, counts, entertic, lowtic, realtics, v1 int32
 	var set *ticcmd_set_t
 	// get real tics
 	entertic = i_GetTime() / ticdup
@@ -4480,11 +4471,7 @@ func tryRunTics() {
 		if net_client_connected == 0 {
 			singlePlayerClear(set)
 		}
-		i = 0
-		for {
-			if i >= ticdup {
-				break
-			}
+		for i := int32(0); i < ticdup; i++ {
 			if gametic/ticdup > lowtic {
 				i_Error("gametic>lowtic")
 			}
@@ -4493,10 +4480,6 @@ func tryRunTics() {
 			gametic++
 			// modify command for duplicated tics
 			ticdupSquash(set)
-			goto _2
-		_2:
-			;
-			i++
 		}
 		netUpdate() // check for new console commands
 	}
@@ -4878,7 +4861,6 @@ var borderdrawcount int32
 //
 
 func d_BindVariables() {
-	var i int32
 	m_ApplyPlatformDefaults()
 	i_BindVideoVariables()
 	i_BindJoystickVariables()
@@ -4903,17 +4885,9 @@ func d_BindVariables() {
 	m_BindVariable("vanilla_demo_limit", &vanilla_demo_limit)
 	m_BindVariable("show_endoom", &show_endoom)
 	// Multiplayer chat macros
-	i = 0
-	for {
-		if i >= 10 {
-			break
-		}
+	for i := 0; i < len(chat_macros); i++ {
 		name := fmt.Sprintf("chatmacro%d", i)
 		m_BindVariable(name, &chat_macros[i])
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -5120,13 +5094,8 @@ var banners = [7]string{
 
 func getGameName(gamename string) string {
 	var deh_sub string
-	var i uint64
 	var version, v2, v3, v6, v7 int32
-	i = 0
-	for {
-		if i >= uint64(len(banners)) {
-			break
-		}
+	for i := 0; i < len(banners); i++ {
 		// Has the banner been replaced?
 		deh_sub = banners[i]
 		if deh_sub != banners[i] {
@@ -5161,10 +5130,6 @@ func getGameName(gamename string) string {
 			}
 			return gamename
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return gamename
 }
@@ -5206,7 +5171,6 @@ var packs = [3]struct {
 //
 
 func d_IdentifyVersion() {
-	var i uint32
 	var p int32
 	var v2, v3 gamemission_t
 	// gamemission is set up by the d_FindIWAD function.  But if
@@ -5215,11 +5179,7 @@ func d_IdentifyVersion() {
 	// any known IWAD name, we may have a dilemma.  Try to
 	// identify by its contents.
 	if gamemission == none {
-		i = 0
-		for {
-			if i >= numlumps {
-				break
-			}
+		for i := uint32(0); i < numlumps; i++ {
 			if strings.EqualFold(lumpinfo[i].Name(), "MAP01") {
 				gamemission = doom2
 				break
@@ -5229,10 +5189,6 @@ func d_IdentifyVersion() {
 					break
 				}
 			}
-			goto _1
-		_1:
-			;
-			i++
 		}
 		if gamemission == none {
 			// Still no idea.  I don't think this is going to work.
@@ -5582,7 +5538,7 @@ func d_Endoom() {
 //	//
 func d_DoomMain() {
 	var argDemoName string
-	var i, p, v1 int32
+	var p, v1 int32
 	i_AtExit(d_Endoom, 0)
 	// print banner
 	i_PrintBanner("Doom Generic 0.1")
@@ -5800,18 +5756,10 @@ func d_DoomMain() {
 		// Check for fake IWAD with right name,
 		// but w/o all the lumps of the registered version.
 		if gamemode == registered {
-			i = 0
-			for {
-				if i >= 23 {
-					break
-				}
+			for i := 0; i < len(levelLumps); i++ {
 				if w_CheckNumForName(levelLumps[i]) < 0 {
 					i_Error("\nThis is not the registered version.")
 				}
-				goto _2
-			_2:
-				;
-				i++
 			}
 		}
 	}
@@ -6046,20 +5994,11 @@ func playerQuitGame(player *player_t) {
 var exitmsg string
 
 func runTic(cmds []ticcmd_t, ingame []boolean) {
-	var i uint32
 	// Check for player quits.
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := 0; i < MAXPLAYERS; i++ {
 		if demoplayback == 0 && playeringame[i] != 0 && ingame[i] == 0 {
 			playerQuitGame(&players[i])
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	netcmds = cmds
 	// check that there are players in the game.  if not, we cannot
@@ -6379,7 +6318,6 @@ var textscreens = [22]textscreen_t{
 //	// F_StartFinale
 //	//
 func f_StartFinale() {
-	var i uint64
 	var screen *textscreen_t
 	var v1, v4, v6 gamemission_t
 	var v8 bool
@@ -6402,11 +6340,7 @@ func f_StartFinale() {
 		s_ChangeMusic(int32(mus_read_m), 1)
 	}
 	// Find the right screen and set the text and background
-	i = 0
-	for {
-		if i >= uint64(len(textscreens)) {
-			break
-		}
+	for i := 0; i < len(textscreens); i++ {
 		screen = &textscreens[i]
 		// Hack for Chex Quest
 		if gameversion == exe_chex && screen.Fmission == doom {
@@ -6436,10 +6370,6 @@ func f_StartFinale() {
 			finaletext = screen.Ftext
 			finaleflat = screen.Fbackground
 		}
-		goto _3
-	_3:
-		;
-		i++
 	}
 	// Do dehacked substitutions of strings
 	finalestage = F_STAGE_TEXT
@@ -6463,18 +6393,10 @@ func f_Ticker() {
 	// check for skipping
 	if gamemode == commercial && finalecount > 50 {
 		// go on to the next level
-		i = 0
-		for {
-			if i >= uint64(MAXPLAYERS) {
-				break
-			}
+		for i = 0; i < MAXPLAYERS; i++ {
 			if players[i].Fcmd.Fbuttons != 0 {
 				break
 			}
-			goto _1
-		_1:
-			;
-			i++
 		}
 		if i < uint64(MAXPLAYERS) {
 			if gamemap == 30 {
@@ -6504,37 +6426,21 @@ func f_Ticker() {
 }
 
 func f_TextWrite() {
-	var c, count, cx, cy, w, x, y int32
+	var c, count, cx, cy, w int32
 	var pos int
 	// erase the entire screen to a tiled background
 	src := w_CacheLumpNameBytes(finaleflat)
 	destPos := 0
-	y = 0
-	for {
-		if y >= SCREENHEIGHT {
-			break
-		}
-		x = 0
-		for {
-			if x >= SCREENWIDTH/64 {
-				break
-			}
+	for y := 0; y < SCREENHEIGHT; y++ {
+		for x := 0; x < SCREENWIDTH/64; x++ {
 			copy(I_VideoBuffer[destPos:], src[uintptr(y&63<<6):uintptr(y&63<<6)+64])
 			destPos += 64
-			goto _2
-		_2:
-			;
-			x++
 		}
 		if SCREENWIDTH&63 != 0 {
 			length := SCREENWIDTH & 63
 			copy(I_VideoBuffer[destPos:destPos+length], src[y&63<<6:])
 			destPos += length
 		}
-		goto _1
-	_1:
-		;
-		y++
 	}
 	v_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT)
 	// draw some of the text onto the screen
@@ -6917,7 +6823,7 @@ func f_DrawPatchCol(x int32, patch *patch_t, col int32) {
 //	// F_BunnyScroll
 //	//
 func f_BunnyScroll() {
-	var scrolled, stage, x int32
+	var scrolled, stage int32
 	p1 := w_CacheLumpNameT("PFUB2")
 	p2 := w_CacheLumpNameT("PFUB1")
 	v_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT)
@@ -6928,20 +6834,12 @@ func f_BunnyScroll() {
 	if scrolled < 0 {
 		scrolled = 0
 	}
-	x = 0
-	for {
-		if x >= SCREENWIDTH {
-			break
-		}
+	for x := int32(0); x < SCREENWIDTH; x++ {
 		if x+scrolled < 320 {
 			f_DrawPatchCol(x, p1, x+scrolled)
 		} else {
 			f_DrawPatchCol(x, p2, x+scrolled-int32(320))
 		}
-		goto _1
-	_1:
-		;
-		x++
 	}
 	if finalecount < 1130 {
 		return
@@ -7020,29 +6918,12 @@ var wipe_scr []byte
 
 // TODO: Stop doing width*2
 func wipe_shittyColMajorXform(array []byte, width int32, height int32) {
-	var x, y int32
 	dest := make([]byte, width*2*height)
-	y = 0
-	for {
-		if y >= height {
-			break
-		}
-		x = 0
-		for {
-			if x >= width {
-				break
-			}
+	for y := int32(0); y < height; y++ {
+		for x := int32(0); x < width; x++ {
 			dest[(x*height+y)*2] = array[(y*width+x)*2]
 			dest[(x*height+y)*2+1] = array[(y*width+x)*2+1]
-			goto _2
-		_2:
-			;
-			x++
 		}
-		goto _1
-	_1:
-		;
-		y++
 	}
 	copy(array, dest)
 }
