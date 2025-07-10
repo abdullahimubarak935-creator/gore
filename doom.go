@@ -26,7 +26,8 @@ type DoomFrontend interface {
 }
 
 var dg_frontend DoomFrontend
-var dg_speed_ratio float64 = 1.0 // ratio of real time we're going to run at. We adjust this to make testing easier.
+var dg_run_full_speed bool = false // If true, don't ever sleep, and just tick up once-per-frame
+var dg_fake_tics uint64
 var dg_exiting bool
 var start_time time.Time
 
@@ -18276,8 +18277,14 @@ var firsttime = 1
 
 var basetime uint32 = 0
 
+var last_tick int32 = 0
+
 func i_GetTicks() int32 {
-	return int32(float64(time.Since(start_time).Milliseconds()) * dg_speed_ratio)
+	if dg_run_full_speed {
+		// Just increment by 1 each frame
+		return int32(dg_fake_tics)
+	}
+	return int32(float64(time.Since(start_time).Milliseconds()))
 }
 
 func i_GetTime() int32 {
@@ -18306,7 +18313,11 @@ func I_GetTimeMS() int32 {
 // Sleep for a specified number of ms
 
 func i_Sleep(ms uint32) {
-	time.Sleep(time.Duration(float64(ms)/dg_speed_ratio) * time.Millisecond)
+	if dg_run_full_speed {
+		dg_fake_tics++
+	} else {
+		time.Sleep(time.Duration(float64(ms)) * time.Millisecond)
+	}
 }
 
 //

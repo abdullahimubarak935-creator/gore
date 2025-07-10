@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"image"
+	"image/draw"
 	"image/png"
 	"io"
 	"math/rand"
@@ -17,9 +18,10 @@ import (
 )
 
 type delayedEvent struct {
-	ticks    int32 // How many game ticks before we trigger this event, since the last one
-	event    DoomEvent
-	callback func(*doomTestHeadless)
+	ticks       int32 // How many game ticks before we trigger this event, since the last one
+	event       DoomEvent
+	autoRelease bool // If set, auto release 1 tick later
+	callback    func(*doomTestHeadless)
 }
 
 type doomTestHeadless struct {
@@ -102,7 +104,7 @@ func (d *doomTestHeadless) DrawFrame(frame *image.RGBA) {
 	if d.lastImage == nil {
 		d.lastImage = image.NewRGBA(frame.Rect)
 	}
-	copy(d.lastImage.Pix, frame.Pix)
+	draw.Draw(d.lastImage, d.lastImage.Rect, frame, frame.Bounds().Min, draw.Src)
 }
 
 func (d *doomTestHeadless) SetTitle(title string) {
@@ -117,7 +119,7 @@ func (d *doomTestHeadless) GetScreen() *image.RGBA {
 	}
 	// Return a copy of the last image
 	screenCopy := image.NewRGBA(d.lastImage.Rect)
-	copy(screenCopy.Pix, d.lastImage.Pix)
+	draw.Draw(screenCopy, screenCopy.Rect, d.lastImage, d.lastImage.Bounds().Min, draw.Src)
 	return screenCopy
 }
 
@@ -147,7 +149,14 @@ func (d *doomTestHeadless) GetEvent(event *DoomEvent) bool {
 		retval = true
 	}
 	//d.t.Logf("Key event: %#v, delta=%d (%d remaining)", *event, delta, len(d.keys)-1)
-	d.keys = d.keys[1:]
+	if d.keys[0].autoRelease && d.keys[0].event.Type == Ev_keydown {
+		// If it's a down & auto-release, just replace it with the up event 1-tick later
+		d.keys[0].event.Type = Ev_keyup
+		d.keys[0].autoRelease = false
+		d.keys[0].ticks = 1
+	} else {
+		d.keys = d.keys[1:]
+	}
 	d.lastEventTick = now
 	return retval
 }
@@ -167,16 +176,9 @@ func (d *doomTestHeadless) InsertKeySequence(keys ...uint8) {
 				Type: Ev_keydown,
 				Key:  key,
 			},
-			ticks: 1,
-		},
-			delayedEvent{
-				event: DoomEvent{
-					Type: Ev_keyup,
-					Key:  key,
-				},
-				ticks: 1,
-			},
-		)
+			ticks:       1,
+			autoRelease: true,
+		})
 	}
 	d.lock.Unlock()
 	// Wait for the last key event to be processed
@@ -219,7 +221,7 @@ func (d *doomTestHeadless) InsertKeyChange(Key uint8, pressed bool) {
 
 // Run the demo at super speed to make sure it all goes ok
 func TestDoomDemo(t *testing.T) {
-	dg_speed_ratio = 100.0
+	dg_run_full_speed = true
 	game := &doomTestHeadless{
 		t: t,
 	}
@@ -262,73 +264,106 @@ func loadPNG(filename string) (image.Image, error) {
 }
 
 func TestLoadSave(t *testing.T) {
-	dg_speed_ratio = 100.0
+	dg_run_full_speed = true
+	var imgPlayedGame, imgNewGame, imgLoadedGame *image.RGBA
 	game := &doomTestHeadless{
 		t: t,
+		keys: []delayedEvent{
+			// Start a new game
+			{ticks: 50, event: DoomEvent{Type: Ev_keydown, Key: KEY_ESCAPE}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}, autoRelease: true},
+
+			// Run straight into the opposing wall - to make the screen as different as possible
+			{ticks: 10, event: DoomEvent{Type: Ev_keydown, Key: KEY_UPARROW1}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: uint8(key_speed)}},
+			{ticks: 5000, event: DoomEvent{Type: Ev_keyup, Key: KEY_UPARROW1}},
+			{ticks: 1, event: DoomEvent{Type: Ev_keyup, Key: uint8(key_speed)}},
+
+			// Grab a screenshot (but give it some time to slow down)
+			{ticks: 500, callback: func(d *doomTestHeadless) { imgPlayedGame = d.GetScreen() }},
+
+			// Go to the menu and save
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ESCAPE}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_DOWNARROW1}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_DOWNARROW1}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_DOWNARROW1}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}, autoRelease: true},
+
+			// Clear the old name
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_BACKSPACE1}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_BACKSPACE1}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_BACKSPACE1}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_BACKSPACE1}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_BACKSPACE1}, autoRelease: true},
+
+			// Enter a new name
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: 't'}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: 'e'}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: 's'}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: 't'}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}, autoRelease: true},
+
+			// Start a new game
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ESCAPE}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_UPARROW1}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_UPARROW1}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_UPARROW1}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}, autoRelease: true},
+
+			// Grab a screenshot of the new game
+			{ticks: 500, callback: func(d *doomTestHeadless) { imgNewGame = d.GetScreen() }},
+
+			// Load the saved game
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ESCAPE}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_DOWNARROW1}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_DOWNARROW1}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}, autoRelease: true},
+			{ticks: 1, event: DoomEvent{Type: Ev_keydown, Key: KEY_ENTER}, autoRelease: true},
+
+			// Grab a screenshot after loading the save
+			{ticks: 500, callback: func(d *doomTestHeadless) { imgLoadedGame = d.GetScreen() }},
+
+			// Compare all the screenshots - before saving should match post-load, and new game should be different
+			{ticks: 10, callback: func(d *doomTestHeadless) {
+				// Compare the screenshots
+				diffImg, percent, err := diff.CompareImages(imgPlayedGame, imgLoadedGame)
+				if err != nil {
+					d.t.Errorf("save/load comparison failed: %v", err)
+					return
+				}
+				d.t.Logf("Load game screenshot comparison: %f%% difference", percent)
+				if percent > 2 { // Allow a small margin of error
+					savePNG("doom_test_screenshot1.png", imgPlayedGame)
+					savePNG("doom_test_screenshot2.png", imgLoadedGame)
+					savePNG("doom_test_diff.png", diffImg)
+					d.t.Errorf("Screenshots do not match after loading save: %f%% difference", percent)
+				}
+
+				diffImg, percent, err = diff.CompareImages(imgPlayedGame, imgNewGame)
+				if err != nil {
+					t.Errorf("new game comparison failed: %v", err)
+				}
+				t.Logf("New game screenshot comparison: %f%% difference", percent)
+				if percent < 70 { // They should be different, so allow a very large margin of error
+					savePNG("doom_test_screenshot1.png", imgPlayedGame)
+					savePNG("doom_test_screenshot_new.png", imgNewGame)
+					t.Errorf("New game screenshot matches the original: %f%% difference", percent)
+				}
+			}},
+			{ticks: 1000, callback: func(d *doomTestHeadless) { Stop() }},
+		},
 	}
-	go func() {
-		time.Sleep(20 * time.Millisecond) // Let things get settled
-		// Start a new game
-		game.InsertKeySequence(KEY_ESCAPE, KEY_ENTER, KEY_ENTER, KEY_ENTER)
-		time.Sleep(5 * time.Millisecond) // Wait for the game to start
-		// Move around in the game a bit
-		game.InsertKeyChange(KEY_UPARROW1, true)
-		time.Sleep(20 * time.Millisecond) // Move up for a bit
-		game.InsertKeyChange(KEY_UPARROW1, false)
-		game.InsertKeyChange(KEY_LEFTARROW1, true)
-		time.Sleep(20 * time.Millisecond) // Move left for a bit
-		game.InsertKeyChange(KEY_LEFTARROW1, false)
-		time.Sleep(10 * time.Millisecond)
-		// Grab a screenshot
-		img1 := game.GetScreen()
-		// Go to the menu and save
-		game.InsertKeySequence(KEY_ESCAPE, KEY_DOWNARROW1, KEY_DOWNARROW1, KEY_DOWNARROW1, KEY_ENTER, KEY_ENTER)
-		// Clear the old name
-		game.InsertKeySequence(KEY_BACKSPACE1, KEY_BACKSPACE1, KEY_BACKSPACE1, KEY_BACKSPACE1, KEY_BACKSPACE1, KEY_BACKSPACE1)
-		// Enter a new name
-		game.InsertKeySequence('t', 'e', 's', 't', KEY_ENTER)
-		// Start a new game
-		game.InsertKeySequence(KEY_ESCAPE, KEY_UPARROW1, KEY_UPARROW1, KEY_UPARROW1, KEY_ENTER, KEY_ENTER, KEY_ENTER) // Open menu
-		time.Sleep(10 * time.Millisecond)                                                                             // Wait for the game to start
-		// New games must have a different screenshot
-		imgNew := game.GetScreen()
-		// Load the saved game
-		game.InsertKeySequence(KEY_ESCAPE, KEY_DOWNARROW1, KEY_DOWNARROW1, KEY_ENTER, KEY_ENTER)
-		time.Sleep(10 * time.Millisecond) // Wait for the game to load
-		img2 := game.GetScreen()
-		// Check if the images are the same
-		diffImg, percent, err := diff.CompareImages(img1, img2)
-		if err != nil {
-			t.Errorf("save/load comparison failed: %v", err)
-		}
-		t.Logf("Load game screenshot comparison: %f%% difference", percent)
-		if percent > 2 { // Allow a small margin of error
-			savePNG("doom_test_screenshot1.png", img1)
-			savePNG("doom_test_screenshot2.png", img2)
-			savePNG("doom_test_diff.png", diffImg)
-			t.Errorf("Screenshots do not match after loading save: %f%% difference", percent)
-		}
-
-		diffImg, percent, err = diff.CompareImages(img1, imgNew)
-		if err != nil {
-			t.Errorf("new game comparison failed: %v", err)
-		}
-		t.Logf("New game screenshot comparison: %f%% difference", percent)
-		if percent < 50 { // They should be different, so allow a very large margin of error
-			savePNG("doom_test_screenshot1.png", img1)
-			savePNG("doom_test_screenshot_new.png", imgNew)
-			t.Errorf("New game screenshot matches the original: %f%% difference", percent)
-		}
-
-		// Quit
-		game.InsertKeySequence(KEY_ESCAPE, KEY_DOWNARROW1, KEY_DOWNARROW1, KEY_DOWNARROW1, KEY_ENTER, 'y')
-	}()
 	defer game.Close()
 	Run(game, []string{"-iwad", "doom1.wad"})
 }
 
 func TestDoomRandom(t *testing.T) {
-	dg_speed_ratio = 200.0
+	dg_run_full_speed = true
 	game := &doomTestHeadless{
 		t: t,
 	}
@@ -400,7 +435,7 @@ func compareScreen(game *doomTestHeadless, testdataPrefix string, percentOk floa
 }
 
 func TestDoomLevels(t *testing.T) {
-	dg_speed_ratio = 100.0
+	dg_run_full_speed = true
 	var game *doomTestHeadless
 	game = &doomTestHeadless{
 		t: t,
@@ -444,7 +479,7 @@ func TestDoomLevels(t *testing.T) {
 }
 
 func TestDoomMap(t *testing.T) {
-	dg_speed_ratio = 100.0
+	dg_run_full_speed = true
 	game := &doomTestHeadless{
 		t: t,
 	}
@@ -482,7 +517,7 @@ func TestDoomMap(t *testing.T) {
 }
 
 func TestWeapons(t *testing.T) {
-	dg_speed_ratio = 100.0
+	dg_run_full_speed = true
 	game := &doomTestHeadless{
 		t: t,
 		keys: []delayedEvent{
@@ -560,7 +595,7 @@ func confirmMenu(t *testing.T, game *doomTestHeadless, name string) {
 
 // TestMenus walks through the menus and checks the screenshots
 func TestMenus(t *testing.T) {
-	dg_speed_ratio = 100.0
+	dg_run_full_speed = true
 	game := &doomTestHeadless{
 		t: t,
 	}
