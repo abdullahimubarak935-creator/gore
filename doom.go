@@ -7184,8 +7184,8 @@ func wipe_doMelt(width int32, height int32, ticks int32) int32 {
 						if j == 0 {
 							break
 						}
-						wipe_scr[d+idx*2] = wipe_scr_end[s]
-						wipe_scr[d+idx*2+1] = wipe_scr_end[s+1]
+						wipe_scr[d+idx*2] = wipe_scr_start[s]
+						wipe_scr[d+idx*2+1] = wipe_scr_start[s+1]
 						s += 2
 						idx += width
 						goto _6
