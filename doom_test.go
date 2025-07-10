@@ -372,14 +372,16 @@ func TestDoomRandom(t *testing.T) {
 		// Let things get settled
 		time.Sleep(20 * time.Millisecond)
 		// Start a game
-		game.InsertKey(KEY_ESCAPE) // Open menu
-		game.InsertKey(KEY_ENTER)
-		game.InsertKey(KEY_ENTER)
-		game.InsertKey(KEY_ENTER) // Start new game
+		game.InsertKey(KEY_ESCAPE)     // Open menu
+		game.InsertKey(KEY_ENTER)      // New Game
+		game.InsertKey(KEY_ENTER)      // Knee-Deep in the Dead
+		game.InsertKey(KEY_DOWNARROW1) // Ultra Violence
+		game.InsertKey(KEY_ENTER)      // Start new game
 
 		time.Sleep(10 * time.Millisecond)
 		keys := []uint8{
-			KEY_UPARROW1, KEY_DOWNARROW1, KEY_LEFTARROW1,
+			KEY_UPARROW1, KEY_UPARROW1, KEY_UPARROW1, KEY_UPARROW1, // Make forward movement more likely
+			KEY_DOWNARROW1, KEY_LEFTARROW1,
 			KEY_RIGHTARROW1, KEY_FIRE1, KEY_USE1,
 		}
 		// Press shift to run
