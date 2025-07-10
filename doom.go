@@ -35530,7 +35530,7 @@ func r_DrawSpan() {
 		spot = int32(xtemp | ytemp)
 		// Lookup pixel from flat texture tile,
 		//  re-index using light/colormap.
-		I_VideoBuffer[dest] = ds_colormap[*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot)))]
+		I_VideoBuffer[dest] = ds_colormap[ds_source[spot]]
 		dest++
 		position += step
 		goto _2
@@ -35573,9 +35573,9 @@ func r_DrawSpanLow() {
 		spot = int32(xtemp | ytemp)
 		// Lowres/blocky mode does it twice,
 		//  while scale is adjusted appropriately.
-		I_VideoBuffer[dest] = ds_colormap[*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot)))]
+		I_VideoBuffer[dest] = ds_colormap[ds_source[spot]]
 		dest++
-		I_VideoBuffer[dest] = ds_colormap[*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot)))]
+		I_VideoBuffer[dest] = ds_colormap[ds_source[spot]]
 		dest++
 		position += step
 		goto _2
@@ -36638,7 +36638,7 @@ func r_DrawPlanes() {
 		}
 		// regular flat
 		lumpnum = firstflat + flattranslation[pl.Fpicnum]
-		ds_source = w_CacheLumpNum(lumpnum)
+		ds_source = w_CacheLumpNumBytes(lumpnum)
 		planeheight = xabs(pl.Fheight - viewz)
 		light = pl.Flightlevel>>LIGHTSEGSHIFT + extralight
 		if light >= LIGHTLEVELS {
@@ -44643,7 +44643,7 @@ var ds_index int
 // C documentation
 //
 //	// start of a 64*64 tile image
-var ds_source uintptr
+var ds_source []byte
 
 var ds_x1 int32
 
