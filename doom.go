@@ -21222,7 +21222,7 @@ func m_StartControlPanel() {
 func m_Drawer() {
 	var bp string
 	var foundnewline, start int32
-	var i, max uint32
+	var max uint32
 	inhelpscreens = 0
 	// Horiz. & Vertically center string and print it.
 	if messageToPrint != 0 {
@@ -21230,21 +21230,13 @@ func m_Drawer() {
 		y2 = int16(SCREENHEIGHT/2 - m_StringHeight(messageString)/2)
 		for start < int32(len(messageString)) {
 			foundnewline = 0
-			i = 0
-			for {
-				if uint64(i) >= uint64(len(messageString[start:])) {
-					break
-				}
+			for i := uint32(0); i < uint32(len(messageString[start:])); i++ {
 				if messageString[start+int32(i)] == '\n' {
 					bp = messageString[start : start+int32(i)]
 					foundnewline = 1
 					start = int32(uint32(start) + (i + 1))
 					break
 				}
-				goto _1
-			_1:
-				;
-				i++
 			}
 			if foundnewline == 0 {
 				bp = messageString[start:]
@@ -21270,20 +21262,12 @@ func m_Drawer() {
 	x = currentMenu.Fx
 	y2 = currentMenu.Fy
 	max = uint32(currentMenu.Fnumitems)
-	i = 0
-	for {
-		if i >= max {
-			break
-		}
+	for i := uint32(0); i < max; i++ {
 		name := currentMenu.Fmenuitems[i].Fname[:]
 		if name != "" {
 			v_DrawPatchDirect(int32(x), int32(y2), w_CacheLumpNameT(name))
 		}
 		y2 = int16(int32(y2) + LINEHEIGHT)
-		goto _2
-	_2:
-		;
-		i++
 	}
 	// DRAW SKULL
 	v_DrawPatchDirect(int32(x)+-int32(32), int32(currentMenu.Fy)-5+int32(itemOn)*LINEHEIGHT, w_CacheLumpNameT(skullName[whichSkull]))
@@ -21893,20 +21877,11 @@ func ev_DoCeiling(line *line_t, type1 ceiling_e) int32 {
 //	// Add an active ceiling
 //	//
 func p_AddActiveCeiling(c *ceiling_t) {
-	var i int32
-	i = 0
-	for {
-		if i >= MAXCEILINGS {
-			break
-		}
+	for i := int32(0); i < MAXCEILINGS; i++ {
 		if activeceilings[i] == nil {
 			activeceilings[i] = c
 			return
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -21932,20 +21907,11 @@ func p_RemoveActiveCeiling(c *ceiling_t) {
 //	// Restart a ceiling that's in-stasis
 //	//
 func p_ActivateInStasisCeiling(line *line_t) {
-	var i int32
-	i = 0
-	for {
-		if i >= MAXCEILINGS {
-			break
-		}
+	for i := int32(0); i < MAXCEILINGS; i++ {
 		if activeceilings[i] != nil && activeceilings[i].Ftag == int32(line.Ftag) && activeceilings[i].Fdirection == 0 {
 			activeceilings[i].Fdirection = activeceilings[i].Folddirection
 			activeceilings[i].Fthinker.Ffunction = activeceilings[i]
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -21956,23 +21922,15 @@ func p_ActivateInStasisCeiling(line *line_t) {
 //	// Stop a ceiling from crushing!
 //	//
 func ev_CeilingCrushStop(line *line_t) int32 {
-	var i, rtn int32
+	var rtn int32
 	rtn = 0
-	i = 0
-	for {
-		if i >= MAXCEILINGS {
-			break
-		}
+	for i := int32(0); i < MAXCEILINGS; i++ {
 		if activeceilings[i] != nil && activeceilings[i].Ftag == int32(line.Ftag) && activeceilings[i].Fdirection != 0 {
 			activeceilings[i].Folddirection = activeceilings[i].Fdirection
 			activeceilings[i].Fthinker.Ffunction = nil
 			activeceilings[i].Fdirection = 0 // in-stasis
 			rtn = 1
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return rtn
 }
@@ -22474,7 +22432,6 @@ func init() {
 func p_RecursiveSound(sec *sector_t, soundblocks int32) {
 	var check *line_t
 	var other *sector_t
-	var i int32
 	// wake up all monsters in this sector
 	if sec.Fvalidcount == validcount && sec.Fsoundtraversed <= soundblocks+1 {
 		return // already flooded
@@ -22482,18 +22439,14 @@ func p_RecursiveSound(sec *sector_t, soundblocks int32) {
 	sec.Fvalidcount = validcount
 	sec.Fsoundtraversed = soundblocks + 1
 	sec.Fsoundtarget = soundtarget
-	i = 0
-	for {
-		if i >= sec.Flinecount {
-			break
-		}
+	for i := int32(0); i < sec.Flinecount; i++ {
 		check = sec.Flines[i]
 		if int32(check.Fflags)&ml_TWOSIDED == 0 {
-			goto _1
+			continue
 		}
 		p_LineOpening(check)
 		if openrange <= 0 {
-			goto _1
+			continue
 		} // closed door
 		if sides[check.Fsidenum[0]].Fsector == sec {
 			other = sides[check.Fsidenum[1]].Fsector
@@ -22507,10 +22460,6 @@ func p_RecursiveSound(sec *sector_t, soundblocks int32) {
 		} else {
 			p_RecursiveSound(other, soundblocks)
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -23080,7 +23029,7 @@ func a_PosAttack(actor *mobj_t) {
 }
 
 func a_SPosAttack(actor *mobj_t) {
-	var angle, bangle, damage, i, slope int32
+	var angle, bangle, damage, slope int32
 	if actor.Ftarget == nil {
 		return
 	}
@@ -23088,18 +23037,10 @@ func a_SPosAttack(actor *mobj_t) {
 	a_FaceTarget(actor)
 	bangle = int32(actor.Fangle)
 	slope = p_AimLineAttack(actor, uint32(bangle), 32*64*(1<<FRACBITS))
-	i = 0
-	for {
-		if i >= 3 {
-			break
-		}
+	for i := 0; i < 3; i++ {
 		angle = bangle + (p_Random()-p_Random())<<int32(20)
 		damage = (p_Random()%5 + 1) * 3
 		p_LineAttack(actor, uint32(angle), 32*64*(1<<FRACBITS), slope, damage)
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -23760,18 +23701,10 @@ func a_BossDeath(mo *mobj_t) {
 		}
 	}
 	// make sure there is a player alive for victory
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i = int32(0); i < MAXPLAYERS; i++ {
 		if playeringame[i] != 0 && players[i].Fhealth > 0 {
 			break
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	if i == MAXPLAYERS {
 		return
@@ -24246,7 +24179,7 @@ func t_MoveFloor(floor *floormove_t) {
 func ev_DoFloor(line *line_t, floortype floor_e) int32 {
 	var side *side_t
 	var sec *sector_t
-	var i, minsize, rtn, secnum, v1 int32
+	var minsize, rtn, secnum, v1 int32
 	secnum = -1
 	rtn = 0
 	for {
@@ -24331,11 +24264,7 @@ func ev_DoFloor(line *line_t, floortype floor_e) int32 {
 			floorP.Fdirection = 1
 			floorP.Fsector = sec
 			floorP.Fspeed = 1 << FRACBITS
-			i = 0
-			for {
-				if i >= sec.Flinecount {
-					break
-				}
+			for i := int32(0); i < sec.Flinecount; i++ {
 				if twoSided(secnum, i) != 0 {
 					side = getSide(secnum, i, 0)
 					if int32(side.Fbottomtexture) >= 0 {
@@ -24350,10 +24279,6 @@ func ev_DoFloor(line *line_t, floortype floor_e) int32 {
 						}
 					}
 				}
-				goto _2
-			_2:
-				;
-				i++
 			}
 			floorP.Ffloordestheight = floorP.Fsector.Ffloorheight + minsize
 		case int32(lowerAndChange):
@@ -24362,11 +24287,7 @@ func ev_DoFloor(line *line_t, floortype floor_e) int32 {
 			floorP.Fspeed = 1 << FRACBITS
 			floorP.Ffloordestheight = p_FindLowestFloorSurrounding(sec)
 			floorP.Ftexture = sec.Ffloorpic
-			i = 0
-			for {
-				if i >= sec.Flinecount {
-					break
-				}
+			for i := int32(0); i < sec.Flinecount; i++ {
 				if twoSided(secnum, i) != 0 {
 					if sectorIndex(getSide(secnum, i, 0).Fsector) == secnum {
 						sec = getSector(secnum, i, 1)
@@ -24384,10 +24305,6 @@ func ev_DoFloor(line *line_t, floortype floor_e) int32 {
 						}
 					}
 				}
-				goto _3
-			_3:
-				;
-				i++
 			}
 			fallthrough
 		default:
@@ -24404,7 +24321,7 @@ func ev_DoFloor(line *line_t, floortype floor_e) int32 {
 //	//
 func ev_BuildStairs(line *line_t, type1 stair_e) int32 {
 	var sec, tsec *sector_t
-	var height, i, newsecnum, ok, rtn, secnum, texture, v1 int32
+	var height, newsecnum, ok, rtn, secnum, texture, v1 int32
 	var speed, stairsize fixed_t
 	stairsize = 0
 	speed = 0
@@ -24447,27 +24364,23 @@ func ev_BuildStairs(line *line_t, type1 stair_e) int32 {
 		// 2.	Other side is the next sector to raise
 		for cond := true; cond; cond = ok != 0 {
 			ok = 0
-			i = 0
-			for {
-				if i >= sec.Flinecount {
-					break
-				}
+			for i := int32(0); i < sec.Flinecount; i++ {
 				if int32(sec.Flines[i].Fflags)&ml_TWOSIDED == 0 {
-					goto _2
+					continue
 				}
 				tsec = sec.Flines[i].Ffrontsector
 				newsecnum = sectorIndex(tsec)
 				if secnum != newsecnum {
-					goto _2
+					continue
 				}
 				tsec = sec.Flines[i].Fbacksector
 				newsecnum = sectorIndex(tsec)
 				if int32(tsec.Ffloorpic) != texture {
-					goto _2
+					continue
 				}
 				height += stairsize
 				if tsec.Fspecialdata != 0 {
-					goto _2
+					continue
 				}
 				sec = tsec
 				secnum = newsecnum
@@ -24481,10 +24394,6 @@ func ev_BuildStairs(line *line_t, type1 stair_e) int32 {
 				floorP.Ffloordestheight = height
 				ok = 1
 				break
-				goto _2
-			_2:
-				;
-				i++
 			}
 		}
 	}
@@ -24730,7 +24639,7 @@ func p_GivePower(player *player_t, power int32) boolean {
 //	//
 func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 	var delta fixed_t
-	var i, sound int32
+	var sound int32
 	var player *player_t
 	delta = special.Fz - toucher.Fz
 	if delta > toucher.Fheight || delta < -8*(1<<FRACBITS) {
@@ -24964,29 +24873,13 @@ func p_TouchSpecialThing(special *mobj_t, toucher *mobj_t) {
 		player.Fmessage = "Picked up a box of shotgun shells."
 	case spr_BPAK:
 		if player.Fbackpack == 0 {
-			i = 0
-			for {
-				if i >= NUMAMMO {
-					break
-				}
+			for i := int32(0); i < NUMAMMO; i++ {
 				player.Fmaxammo[i] *= 2
-				goto _1
-			_1:
-				;
-				i++
 			}
 			player.Fbackpack = 1
 		}
-		i = 0
-		for {
-			if i >= NUMAMMO {
-				break
-			}
+		for i := int32(0); i < NUMAMMO; i++ {
 			p_GiveAmmo(player, ammotype_t(i), 1)
-			goto _2
-		_2:
-			;
-			i++
 		}
 		player.Fmessage = "Picked up a backpack full of ammo!"
 		break
@@ -25436,41 +25329,25 @@ func ev_StartLightStrobing(line *line_t) {
 //	// TURN LINE'S TAG LIGHTS OFF
 //	//
 func ev_TurnTagLightsOff(line *line_t) {
-	var i, j, min int32
+	var min int32
 	var templine *line_t
 	var tsec *sector_t
-	j = 0
-	for {
-		if j >= numsectors {
-			break
-		}
+	for j := int32(0); j < numsectors; j++ {
 		sector := &sectors[j]
 		if int32(sector.Ftag) == int32(line.Ftag) {
 			min = int32(sector.Flightlevel)
-			i = 0
-			for {
-				if i >= sector.Flinecount {
-					break
-				}
+			for i := int32(0); i < sector.Flinecount; i++ {
 				templine = sector.Flines[i]
 				tsec = getNextSector(templine, sector)
 				if tsec == nil {
-					goto _2
+					continue
 				}
 				if int32(tsec.Flightlevel) < min {
 					min = int32(tsec.Flightlevel)
 				}
-				goto _2
-			_2:
-				;
-				i++
 			}
 			sector.Flightlevel = int16(min)
 		}
-		goto _1
-	_1:
-		;
-		j++
 	}
 }
 
@@ -25480,45 +25357,28 @@ func ev_TurnTagLightsOff(line *line_t) {
 //	// TURN LINE'S TAG LIGHTS ON
 //	//
 func ev_LightTurnOn(line *line_t, bright int32) {
-	var i, j int32
 	var temp *sector_t
 	var templine *line_t
-	i = 0
-	for {
-		if i >= numsectors {
-			break
-		}
+	for i := int32(0); i < numsectors; i++ {
 		sector := &sectors[i]
 		if int32(sector.Ftag) == int32(line.Ftag) {
 			// bright = 0 means to search
 			// for highest light level
 			// surrounding sector
 			if bright == 0 {
-				j = 0
-				for {
-					if j >= sector.Flinecount {
-						break
-					}
+				for j := int32(0); j < sector.Flinecount; j++ {
 					templine = sector.Flines[j]
 					temp = getNextSector(templine, sector)
 					if temp == nil {
-						goto _2
+						continue
 					}
 					if int32(temp.Flightlevel) > bright {
 						bright = int32(temp.Flightlevel)
 					}
-					goto _2
-				_2:
-					;
-					j++
 				}
 			}
 			sector.Flightlevel = int16(bright)
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -26988,18 +26848,10 @@ func p_BlockThingsIterator(x int32, y int32, func1 func(*mobj_t) boolean) boolea
 	if x < 0 || y < 0 || x >= bmapwidth || y >= bmapheight {
 		return 1
 	}
-	mobj := blocklinks[y*bmapwidth+x]
-	for {
-		if mobj == nil {
-			break
-		}
+	for mobj := blocklinks[y*bmapwidth+x]; mobj != nil; mobj = mobj.Fbnext {
 		if func1(mobj) == 0 {
 			return 0
 		}
-		goto _1
-	_1:
-		;
-		mobj = mobj.Fbnext
 	}
 	return 1
 }
@@ -27289,7 +27141,7 @@ func interceptsOverrun(num_intercepts int32, intercept *intercept_t) {
 //	// for all lines.
 //	//
 func p_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32, trav func(*intercept_t) boolean) boolean {
-	var count, mapx, mapxstep, mapy, mapystep int32
+	var mapx, mapxstep, mapy, mapystep int32
 	var partial, xintercept, xstep, xt1, xt2, yintercept, ystep, yt1, yt2 fixed_t
 	earlyout = uint32(flags & PT_EARLYOUT)
 	validcount++
@@ -27349,11 +27201,7 @@ func p_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32,
 	// from skipping the break.
 	mapx = xt1
 	mapy = yt1
-	count = 0
-	for {
-		if count >= 64 {
-			break
-		}
+	for count := 0; count < 64; count++ {
 		if flags&PT_ADDLINES != 0 {
 			if p_BlockLinesIterator(mapx, mapy, pit_AddLineIntercepts) == 0 {
 				return 0
@@ -27376,10 +27224,6 @@ func p_PathTraverse(x1 fixed_t, y1 fixed_t, x2 fixed_t, y2 fixed_t, flags int32,
 				mapy += mapystep
 			}
 		}
-		goto _1
-	_1:
-		;
-		count++
 	}
 	// go through the sorted list
 	return p_TraverseIntercepts(trav, 1<<FRACBITS)
@@ -27849,18 +27693,10 @@ func p_RespawnSpecials() {
 	mo = p_SpawnMobj(x, y, ss.Fsector.Ffloorheight, mt_IFOG)
 	s_StartSound(&mo.degenmobj_t, int32(sfx_itmbk))
 	// find which type to spawn
-	i = 0
-	for {
-		if i >= NUMMOBJTYPES {
-			break
-		}
+	for i := 0; i < NUMMOBJTYPES; i++ {
 		if int32(mthing.Ftype1) == mobjinfo[i].Fdoomednum {
 			break
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// spawn it
 	if mobjinfo[i].Fflags&mf_SPAWNCEILING != 0 {
@@ -27884,7 +27720,6 @@ func p_RespawnSpecials() {
 //	//  between levels.
 //	//
 func p_SpawnPlayer(mthing *mapthing_t) {
-	var i int32
 	var mobj *mobj_t
 	var p *player_t
 	var x, y, z fixed_t
@@ -27923,16 +27758,8 @@ func p_SpawnPlayer(mthing *mapthing_t) {
 	p_SetupPsprites(p)
 	// give all cards in death match mode
 	if deathmatch != 0 {
-		i = 0
-		for {
-			if i >= NUMCARDS {
-				break
-			}
+		for i := 0; i < NUMCARDS; i++ {
 			p.Fcards[i] = 1
-			goto _1
-		_1:
-			;
-			i++
 		}
 	}
 	if int32(mthing.Ftype1)-1 == consoleplayer {
@@ -27993,18 +27820,10 @@ func p_SpawnMapThing(mthing *mapthing_t) {
 		return
 	}
 	// find which type to spawn
-	i = 0
-	for {
-		if i >= NUMMOBJTYPES {
-			break
-		}
+	for i = 0; i < NUMMOBJTYPES; i++ {
 		if int32(mthing.Ftype1) == mobjinfo[i].Fdoomednum {
 			break
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	if i == NUMMOBJTYPES {
 		i_Error("p_SpawnMapThing: Unknown type %d at (%d, %d)", int32(mthing.Ftype1), int32(mthing.Fx), int32(mthing.Fy))
@@ -28354,78 +28173,42 @@ func ev_DoPlat(line *line_t, type1 plattype_e, amount int32) int32 {
 }
 
 func p_ActivateInStasis(tag int32) {
-	var i int32
-	i = 0
-	for {
-		if i >= MAXPLATS {
-			break
-		}
+	for i := 0; i < MAXPLATS; i++ {
 		if activeplats[i] != nil && activeplats[i].Ftag == tag && activeplats[i].Fstatus == int32(in_stasis) {
 			activeplats[i].Fstatus = activeplats[i].Foldstatus
 			activeplats[i].Fthinker.Ffunction = activeplats[i]
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
 func ev_StopPlat(line *line_t) {
-	var j int32
-	j = 0
-	for {
-		if j >= MAXPLATS {
-			break
-		}
+	for j := 0; j < MAXPLATS; j++ {
 		if activeplats[j] != nil && activeplats[j].Fstatus != int32(in_stasis) && activeplats[j].Ftag == int32(line.Ftag) {
 			activeplats[j].Foldstatus = activeplats[j].Fstatus
 			activeplats[j].Fstatus = int32(in_stasis)
 			activeplats[j].Fthinker.Ffunction = nil
 		}
-		goto _1
-	_1:
-		;
-		j++
 	}
 }
 
 func p_AddActivePlat(plat *plat_t) {
-	var i int32
-	i = 0
-	for {
-		if i >= MAXPLATS {
-			break
-		}
+	for i := 0; i < MAXPLATS; i++ {
 		if activeplats[i] == nil {
 			activeplats[i] = plat
 			return
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	i_Error("p_AddActivePlat: no more plats!")
 }
 
 func p_RemoveActivePlat(plat *plat_t) {
-	var i int32
-	i = 0
-	for {
-		if i >= MAXPLATS {
-			break
-		}
+	for i := 0; i < MAXPLATS; i++ {
 		if plat == activeplats[i] {
 			activeplats[i].Fsector.Fspecialdata = nil
 			p_RemoveThinker(&activeplats[i].Fthinker)
 			activeplats[i] = nil
 			return
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	i_Error("p_RemoveActivePlat: can't find plat!")
 }
@@ -28909,22 +28692,13 @@ func a_FirePistol(player *player_t, psp *pspdef_t) {
 //	// A_FireShotgun
 //	//
 func a_FireShotgun(player *player_t, psp *pspdef_t) {
-	var i int32
 	s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_shotgn))
 	p_SetMobjState(player.Fmo, s_PLAY_ATK2)
 	decreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 1)
 	p_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
 	p_BulletSlope(player.Fmo)
-	i = 0
-	for {
-		if i >= 7 {
-			break
-		}
+	for i := 0; i < 7; i++ {
 		p_GunShot(player.Fmo, 0)
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -28935,25 +28709,17 @@ func a_FireShotgun(player *player_t, psp *pspdef_t) {
 //	//
 func a_FireShotgun2(player *player_t, psp *pspdef_t) {
 	var angle angle_t
-	var damage, i int32
+	var damage int32
 	s_StartSound(&player.Fmo.degenmobj_t, int32(sfx_dshtgn))
 	p_SetMobjState(player.Fmo, s_PLAY_ATK2)
 	decreaseAmmo(player, weaponinfo[player.Freadyweapon].Fammo, 2)
 	p_SetPsprite(player, int32(ps_flash), weaponinfo[player.Freadyweapon].Fflashstate)
 	p_BulletSlope(player.Fmo)
-	i = 0
-	for {
-		if i >= 20 {
-			break
-		}
+	for i := 0; i < 20; i++ {
 		damage = 5 * (p_Random()%3 + 1)
 		angle = player.Fmo.Fangle
 		angle += uint32((p_Random() - p_Random()) << 19)
 		p_LineAttack(player.Fmo, angle, 32*64*(1<<FRACBITS), bulletslope+(p_Random()-p_Random())<<5, damage)
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
