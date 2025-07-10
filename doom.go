@@ -35135,7 +35135,7 @@ var background_buffer []byte
 //	//
 func r_DrawColumn() {
 	var count, v1 int32
-	var dest uintptr
+	var dest int32
 	var frac, fracstep fixed_t
 	count = dc_yh - dc_yl
 	// Zero length, column does not exceed a pixel.
@@ -35148,7 +35148,7 @@ func r_DrawColumn() {
 	// Framebuffer destination address.
 	// Use ylookup LUT to avoid multiply with ScreenWidth.
 	// Use columnofs LUT for subwindows?
-	dest = ylookup[dc_yl] + uintptr(columnofs[dc_x])
+	dest = ylookup[dc_yl] + (columnofs[dc_x])
 	// Determine scaling,
 	//  which is the only mapping to be done.
 	fracstep = dc_iscale
@@ -35159,7 +35159,7 @@ func r_DrawColumn() {
 	for {
 		// Re-map color indices from wall texture column
 		//  using a lighting/special effects LUT.
-		*(*uint8)(unsafe.Pointer(dest)) = dc_colormap[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS&int32(127))))]
+		I_VideoBuffer[dest] = dc_colormap[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS&int32(127))))]
 		dest += SCREENWIDTH
 		frac += fracstep
 		goto _2
@@ -35178,7 +35178,7 @@ func r_DrawColumn() {
 
 func r_DrawColumnLow() {
 	var count, x, v1 int32
-	var dest, dest2 uintptr
+	var dest, dest2 int32
 	var frac, fracstep fixed_t
 	var v3 uint8
 	count = dc_yh - dc_yl
@@ -35192,15 +35192,15 @@ func r_DrawColumnLow() {
 	//	dccount++;
 	// Blocky mode, need to multiply by 2.
 	x = dc_x << 1
-	dest = ylookup[dc_yl] + uintptr(columnofs[x])
-	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+1])
+	dest = ylookup[dc_yl] + (columnofs[x])
+	dest2 = ylookup[dc_yl] + (columnofs[x+1])
 	fracstep = dc_iscale
 	frac = dc_texturemid + (dc_yl-centery)*fracstep
 	for {
 		// Hack. Does not work corretly.
 		v3 = dc_colormap[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS&int32(127))))]
-		*(*uint8)(unsafe.Pointer(dest)) = v3
-		*(*uint8)(unsafe.Pointer(dest2)) = v3
+		I_VideoBuffer[dest] = v3
+		I_VideoBuffer[dest2] = v3
 		dest += SCREENWIDTH
 		dest2 += SCREENWIDTH
 		frac += fracstep
@@ -35282,7 +35282,7 @@ func init() {
 //	//
 func r_DrawFuzzColumn() {
 	var count, v1, v3 int32
-	var dest uintptr
+	var dest int32
 	var frac, fracstep fixed_t
 	// Adjust borders. Low...
 	if dc_yl == 0 {
@@ -35300,7 +35300,7 @@ func r_DrawFuzzColumn() {
 	if uint32(dc_x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
 		i_Error("r_DrawFuzzColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
 	}
-	dest = ylookup[dc_yl] + uintptr(columnofs[dc_x])
+	dest = ylookup[dc_yl] + (columnofs[dc_x])
 	// Looks familiar.
 	fracstep = dc_iscale
 	frac = dc_texturemid + (dc_yl-centery)*fracstep
@@ -35312,7 +35312,7 @@ func r_DrawFuzzColumn() {
 		//  a pixel that is either one column
 		//  left or right of the current one.
 		// Add index from colormap to index.
-		*(*uint8)(unsafe.Pointer(dest)) = colormaps[6*256+int32(*(*uint8)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos]))))]
+		I_VideoBuffer[dest] = colormaps[6*256+int(I_VideoBuffer[dest+fuzzoffset[fuzzpos]])]
 		// Clamp table lookup index.
 		fuzzpos++
 		v3 = fuzzpos
@@ -35335,7 +35335,7 @@ func r_DrawFuzzColumn() {
 // low detail mode version
 func r_DrawFuzzColumnLow() {
 	var count, x, v1, v3 int32
-	var dest, dest2 uintptr
+	var dest, dest2 int32
 	var frac, fracstep fixed_t
 	// Adjust borders. Low...
 	if dc_yl == 0 {
@@ -35355,8 +35355,8 @@ func r_DrawFuzzColumnLow() {
 	if uint32(x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
 		i_Error("r_DrawFuzzColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
 	}
-	dest = ylookup[dc_yl] + uintptr(columnofs[x])
-	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+1])
+	dest = ylookup[dc_yl] + (columnofs[x])
+	dest2 = ylookup[dc_yl] + (columnofs[x+1])
 	// Looks familiar.
 	fracstep = dc_iscale
 	frac = dc_texturemid + (dc_yl-centery)*fracstep
@@ -35368,8 +35368,8 @@ func r_DrawFuzzColumnLow() {
 		//  a pixel that is either one column
 		//  left or right of the current one.
 		// Add index from colormap to index.
-		*(*uint8)(unsafe.Pointer(dest)) = colormaps[6*256+int32(*(*uint8)(unsafe.Pointer(dest + uintptr(fuzzoffset[fuzzpos]))))]
-		*(*uint8)(unsafe.Pointer(dest2)) = colormaps[6*256+int32(*(*uint8)(unsafe.Pointer(dest2 + uintptr(fuzzoffset[fuzzpos]))))]
+		I_VideoBuffer[dest] = colormaps[6*256+int(I_VideoBuffer[dest+fuzzoffset[fuzzpos]])]
+		I_VideoBuffer[dest2] = colormaps[6*256+int(I_VideoBuffer[dest2+fuzzoffset[fuzzpos]])]
 		// Clamp table lookup index.
 		fuzzpos++
 		v3 = fuzzpos
@@ -35392,7 +35392,7 @@ func r_DrawFuzzColumnLow() {
 
 func r_DrawTranslatedColumn() {
 	var count, v1 int32
-	var dest uintptr
+	var dest int32
 	var frac, fracstep fixed_t
 	count = dc_yh - dc_yl
 	if count < 0 {
@@ -35401,7 +35401,7 @@ func r_DrawTranslatedColumn() {
 	if uint32(dc_x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
 		i_Error("r_DrawColumn: %d to %d at %d", dc_yl, dc_yh, dc_x)
 	}
-	dest = ylookup[dc_yl] + uintptr(columnofs[dc_x])
+	dest = ylookup[dc_yl] + (columnofs[dc_x])
 	// Looks familiar.
 	fracstep = dc_iscale
 	frac = dc_texturemid + (dc_yl-centery)*fracstep
@@ -35412,7 +35412,7 @@ func r_DrawTranslatedColumn() {
 		//  used with PLAY sprites.
 		// Thus the "green" ramp of the player 0 sprite
 		//  is mapped to gray, red, black/indigo.
-		*(*uint8)(unsafe.Pointer(dest)) = dc_colormap[dc_translation[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS)))]]
+		I_VideoBuffer[dest] = dc_colormap[dc_translation[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS)))]]
 		dest += SCREENWIDTH
 		frac += fracstep
 		goto _2
@@ -35428,7 +35428,7 @@ func r_DrawTranslatedColumn() {
 
 func r_DrawTranslatedColumnLow() {
 	var count, x, v1 int32
-	var dest, dest2 uintptr
+	var dest, dest2 int32
 	var frac, fracstep fixed_t
 	count = dc_yh - dc_yl
 	if count < 0 {
@@ -35439,8 +35439,8 @@ func r_DrawTranslatedColumnLow() {
 	if uint32(x) >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT {
 		i_Error("r_DrawColumn: %d to %d at %d", dc_yl, dc_yh, x)
 	}
-	dest = ylookup[dc_yl] + uintptr(columnofs[x])
-	dest2 = ylookup[dc_yl] + uintptr(columnofs[x+1])
+	dest = ylookup[dc_yl] + (columnofs[x])
+	dest2 = ylookup[dc_yl] + (columnofs[x+1])
 	// Looks familiar.
 	fracstep = dc_iscale
 	frac = dc_texturemid + (dc_yl-centery)*fracstep
@@ -35451,8 +35451,8 @@ func r_DrawTranslatedColumnLow() {
 		//  used with PLAY sprites.
 		// Thus the "green" ramp of the player 0 sprite
 		//  is mapped to gray, red, black/indigo.
-		*(*uint8)(unsafe.Pointer(dest)) = dc_colormap[dc_translation[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS)))]]
-		*(*uint8)(unsafe.Pointer(dest2)) = dc_colormap[dc_translation[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS)))]]
+		I_VideoBuffer[dest] = dc_colormap[dc_translation[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS)))]]
+		I_VideoBuffer[dest2] = dc_colormap[dc_translation[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS)))]]
 		dest += SCREENWIDTH
 		dest2 += SCREENWIDTH
 		frac += fracstep
@@ -35508,8 +35508,7 @@ func r_InitTranslationTables() {
 //	//
 //	// Draws the actual span.
 func r_DrawSpan() {
-	var count, spot, v1 int32
-	var dest, v3 uintptr
+	var count, spot, v1, dest int32
 	var position, step, xtemp, ytemp uint32
 	if ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= SCREENWIDTH || uint32(ds_y) > SCREENHEIGHT {
 		i_Error("r_DrawSpan: %d to %d at %d", ds_x1, ds_x2, ds_y)
@@ -35521,7 +35520,7 @@ func r_DrawSpan() {
 	// bottom 10 bits are the fractional part of the pixel position.
 	position = uint32(ds_xfrac<<10)&0xffff0000 | uint32(ds_yfrac>>6&0x0000ffff)
 	step = uint32(ds_xstep<<10)&0xffff0000 | uint32(ds_ystep>>6&0x0000ffff)
-	dest = ylookup[ds_y] + uintptr(columnofs[ds_x1])
+	dest = ylookup[ds_y] + columnofs[ds_x1]
 	// We do not check for zero spans here?
 	count = ds_x2 - ds_x1
 	for {
@@ -35531,9 +35530,8 @@ func r_DrawSpan() {
 		spot = int32(xtemp | ytemp)
 		// Lookup pixel from flat texture tile,
 		//  re-index using light/colormap.
-		v3 = dest
+		I_VideoBuffer[dest] = ds_colormap[*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot)))]
 		dest++
-		*(*uint8)(unsafe.Pointer(v3)) = ds_colormap[*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot)))]
 		position += step
 		goto _2
 	_2:
@@ -35555,8 +35553,7 @@ func r_DrawSpan() {
 //	// Again..
 //	//
 func r_DrawSpanLow() {
-	var count, spot, v1 int32
-	var dest, v3, v4 uintptr
+	var count, spot, v1, dest int32
 	var position, step, xtemp, ytemp uint32
 	if ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= SCREENWIDTH || uint32(ds_y) > SCREENHEIGHT {
 		i_Error("r_DrawSpan: %d to %d at %d", ds_x1, ds_x2, ds_y)
@@ -35568,7 +35565,7 @@ func r_DrawSpanLow() {
 	// Blocky mode, need to multiply by 2.
 	ds_x1 <<= 1
 	ds_x2 <<= 1
-	dest = ylookup[ds_y] + uintptr(columnofs[ds_x1])
+	dest = ylookup[ds_y] + columnofs[ds_x1]
 	for {
 		// Calculate current texture index in u,v.
 		ytemp = position >> 4 & 0x0fc0
@@ -35576,12 +35573,10 @@ func r_DrawSpanLow() {
 		spot = int32(xtemp | ytemp)
 		// Lowres/blocky mode does it twice,
 		//  while scale is adjusted appropriately.
-		v3 = dest
+		I_VideoBuffer[dest] = ds_colormap[*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot)))]
 		dest++
-		*(*uint8)(unsafe.Pointer(v3)) = ds_colormap[*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot)))]
-		v4 = dest
+		I_VideoBuffer[dest] = ds_colormap[*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot)))]
 		dest++
-		*(*uint8)(unsafe.Pointer(v4)) = ds_colormap[*(*uint8)(unsafe.Pointer(ds_source + uintptr(spot)))]
 		position += step
 		goto _2
 	_2:
@@ -35633,7 +35628,7 @@ func r_InitBuffer(width int32, height int32) {
 		if i >= height {
 			break
 		}
-		ylookup[i] = (uintptr)(unsafe.Pointer(&I_VideoBuffer[(i+viewwindowy)*SCREENWIDTH]))
+		ylookup[i] = (i + viewwindowy) * SCREENWIDTH
 		goto _2
 	_2:
 		;
@@ -46293,7 +46288,7 @@ var xspeed [8]fixed_t
 //	// from clipangle to -clipangle.
 var xtoviewangle [321]angle_t
 
-var ylookup [832]uintptr
+var ylookup [832]int32
 
 var yslope [200]fixed_t
 
