@@ -2491,10 +2491,7 @@ func init() {
 }
 
 var cheating int32 = 0
-var grid int32 = 0
-
-var finit_width int32 = SCREENWIDTH
-var finit_height int32 = SCREENHEIGHT - 32
+var grid bool
 
 // C documentation
 //
@@ -2655,18 +2652,14 @@ func am_addMark() {
 //	//
 func am_findMinMaxBoundaries() {
 	var a, b, v1, v2 fixed_t
-	var i, v4 int32
+	var v4 int32
 	v1 = INT_MAX1
 	min_y = v1
 	min_x = v1
 	v2 = -INT_MAX1
 	max_y = v2
 	max_x = v2
-	i = 0
-	for {
-		if i >= numvertexes {
-			break
-		}
+	for i := int32(0); i < numvertexes; i++ {
 		if vertexes[i].Fx < min_x {
 			min_x = vertexes[i].Fx
 		} else {
@@ -2681,10 +2674,6 @@ func am_findMinMaxBoundaries() {
 				max_y = vertexes[i].Fy
 			}
 		}
-		goto _3
-	_3:
-		;
-		i++
 	}
 	max_w = max_x - min_x
 	max_h = max_y - min_y
@@ -2782,50 +2771,23 @@ var st_notify = event_t{
 //	//
 //	//
 func am_loadPics() {
-	var i int32
-	i = 0
-	for {
-		if i >= 10 {
-			break
-		}
+	for i := range 10 {
 		name := fmt.Sprintf("AMMNUM%d", i)
 		marknums[i] = w_CacheLumpNameT(name)
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
 func am_unloadPics() {
-	var i int32
-	i = 0
-	for {
-		if i >= 10 {
-			break
-		}
+	for i := range 10 {
 		name := fmt.Sprintf("AMMNUM%d", i)
 		w_ReleaseLumpName(name)
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
 func am_clearMarks() {
-	var i int32
-	i = 0
-	for {
-		if i >= AM_NUMMARKPOINTS {
-			break
-		}
+	for i := range AM_NUMMARKPOINTS {
 		markpoints[i].Fx = -1
-		goto _1
-	_1:
-		;
-		i++
-	} // means empty
+	}
 	markpointnum = 0
 }
 
@@ -2838,8 +2800,8 @@ func am_clearMarks() {
 func am_LevelInit() {
 	f_y = 0
 	f_x = 0
-	f_w = finit_width
-	f_h = finit_height
+	f_w = SCREENWIDTH
+	f_h = SCREENHEIGHT - 32
 	am_clearMarks()
 	am_findMinMaxBoundaries()
 	scale_mtof = fixedDiv(min_scale_mtof, float2fixed(0.7))
@@ -2989,8 +2951,8 @@ func am_Responder(ev *event_t) boolean {
 												}
 											} else {
 												if key == key_map_grid {
-													grid = boolint32(grid == 0)
-													if grid != 0 {
+													grid = !grid
+													if grid {
 														plr.Fmessage = "Grid ON"
 													} else {
 														plr.Fmessage = "Grid OFF"
@@ -3410,18 +3372,10 @@ func am_drawGrid(color int32) {
 	// draw vertical gridlines
 	bp.Fa.Fy = m_y
 	bp.Fb.Fy = m_y + m_h
-	x = start
-	for {
-		if x >= end {
-			break
-		}
+	for x = start; x < end; x += MAPBLOCKUNITS << FRACBITS {
 		bp.Fa.Fx = x
 		bp.Fb.Fx = x
 		am_drawMline(bp, color)
-		goto _1
-	_1:
-		;
-		x += MAPBLOCKUNITS << FRACBITS
 	}
 	// Figure out start of horizontal gridlines
 	start = m_y
@@ -3432,18 +3386,10 @@ func am_drawGrid(color int32) {
 	// draw horizontal gridlines
 	bp.Fa.Fx = m_x
 	bp.Fb.Fx = m_x + m_w
-	y = start
-	for {
-		if y >= end {
-			break
-		}
+	for y = start; y < end; y += MAPBLOCKUNITS << FRACBITS {
 		bp.Fa.Fy = y
 		bp.Fb.Fy = y
 		am_drawMline(bp, color)
-		goto _2
-	_2:
-		;
-		y += MAPBLOCKUNITS << FRACBITS
 	}
 }
 
@@ -3618,7 +3564,7 @@ func am_Drawer() {
 		return
 	}
 	am_clearFB(BLACK)
-	if grid != 0 {
+	if grid {
 		am_drawGrid(6*16 + GRAYSRANGE/2)
 	}
 	am_drawWalls()
@@ -3759,8 +3705,6 @@ func init() {
 	}
 }
 
-const MAX_IWAD_DIRS = 128
-
 type iwad_t struct {
 	Fname        string
 	Fmission     gamemission_t
@@ -3855,17 +3799,10 @@ var iwads = [14]iwad_t{
 }
 
 // Array of locations to search for IWAD files
-//
-// "128 IWAD search directories should be enough for anybody".
-
-var iwad_dirs [128]string
-var num_iwad_dirs int32 = 0
+var iwad_dirs []string
 
 func addIWADDir(dir string) {
-	if num_iwad_dirs < MAX_IWAD_DIRS {
-		iwad_dirs[num_iwad_dirs] = dir
-		num_iwad_dirs++
-	}
+	iwad_dirs = append(iwad_dirs, dir)
 }
 
 // This is Windows-specific code that automatically finds the location
@@ -3913,24 +3850,15 @@ func checkDirectoryHasIWAD(dir string, iwadname string) string {
 
 func searchDirectoryForIWAD(dir string, mask int32, mission *gamemission_t) string {
 	var filename string
-	var i uint64
-	i = 0
-	for {
-		if i >= uint64(len(iwads)) {
-			break
-		}
+	for i := 0; i < len(iwads); i++ {
 		if 1<<iwads[i].Fmission&mask == 0 {
-			goto _1
+			continue
 		}
 		filename = checkDirectoryHasIWAD(dir, iwads[i].Fname)
 		if filename != "" {
 			*mission = iwads[i].Fmission
 			return filename
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return ""
 }
@@ -3939,28 +3867,19 @@ func searchDirectoryForIWAD(dir string, mask int32, mission *gamemission_t) stri
 // attempt to identify it by its name.
 
 func identifyIWADByName(name string, mask int32) gamemission_t {
-	var i uint64
 	var mission gamemission_t
 	mission = none
-	i = 0
-	for {
-		if i >= uint64(len(iwads)) {
-			break
-		}
+	for i := 0; i < len(iwads); i++ {
 		// Check if the filename is this IWAD name.
 		// Only use supported missions:
 		if 1<<iwads[i].Fmission&mask == 0 {
-			goto _1
+			continue
 		}
 		// Check if it ends in this IWAD name.
 		if name == iwads[i].Fname {
 			mission = iwads[i].Fmission
 			break
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return mission
 }
@@ -3978,18 +3897,13 @@ func buildIWADDirList() {
 //
 
 func d_FindWADByName(name string) string {
-	var i int32
 	// Absolute path?
 	if m_FileExists(name) != 0 {
 		return name
 	}
 	buildIWADDirList()
 	// Search through all IWAD paths for a file with the given name.
-	i = 0
-	for {
-		if i >= num_iwad_dirs {
-			break
-		}
+	for i := 0; i < len(iwad_dirs); i++ {
 		// As a special case, if this is in DOOMWADDIR or DOOMWADPATH,
 		// the "directory" may actually refer directly to an IWAD
 		// file.
@@ -4001,10 +3915,6 @@ func d_FindWADByName(name string) string {
 		if m_FileExists(path) != 0 {
 			return path
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// File not found
 	return ""
@@ -4034,7 +3944,7 @@ func d_TryFindWADByName(filename string) string {
 //
 
 func d_FindIWAD(mask int32, mission *gamemission_t) string {
-	var i, iwadparm int32
+	var iwadparm int32
 	var result string
 	var iwadfile string
 	// Check for the -iwad parameter
@@ -4057,16 +3967,11 @@ func d_FindIWAD(mask int32, mission *gamemission_t) string {
 		fprintf_ccgo(os.Stdout, "-iwad not specified, trying a few iwad names\n")
 		result = ""
 		buildIWADDirList()
-		i = 0
-		for {
-			if !(result == "" && i < num_iwad_dirs) {
+		for i := 0; i < len(iwad_dirs); i++ {
+			result = searchDirectoryForIWAD(iwad_dirs[i], mask, mission)
+			if result != "" {
 				break
 			}
-			result = searchDirectoryForIWAD(iwad_dirs[i], mask, mission)
-			goto _1
-		_1:
-			;
-			i++
 		}
 	}
 	return result
@@ -4077,25 +3982,16 @@ func d_FindIWAD(mask int32, mission *gamemission_t) string {
 //
 
 func d_SaveGameIWADName(gamemission gamemission_t) string {
-	var i uint64
 	// Determine the IWAD name to use for savegames.
 	// This determines the directory the savegame files get put into.
 	//
 	// Note that we match on gamemission rather than on IWAD name.
 	// This ensures that doom1.wad and doom.wad saves are stored
 	// in the same place.
-	i = 0
-	for {
-		if i >= uint64(len(iwads)) {
-			break
-		}
+	for i := 0; i < len(iwads); i++ {
 		if gamemission == iwads[i].Fmission {
 			return iwads[i].Fname
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// Default fallback:
 	return "unknown.wad"
@@ -4215,7 +4111,7 @@ func buildNewTic() boolean {
 }
 
 func netUpdate() {
-	var i, newtics, nowtime int32
+	var newtics, nowtime int32
 	// If we are running with singletics (timing a demo), this
 	// is all done separately.
 	if singletics != 0 {
@@ -4233,18 +4129,10 @@ func netUpdate() {
 		newtics = 0
 	}
 	// build new ticcmds for console player
-	i = 0
-	for {
-		if i >= newtics {
-			break
-		}
+	for i := int32(0); i < newtics; i++ {
 		if buildNewTic() == 0 {
 			break
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -4297,25 +4185,16 @@ var frameskip [4]int32
 var oldnettics int32
 
 func oldNetSync() {
-	var i uint32
 	var keyplayer int32
 	keyplayer = -1
 	frameon++
 	// ideally maketic should be 1 - 3 tics above lowtic
 	// if we are consistantly slower, speed up time
-	i = 0
-	for {
-		if i >= NET_MAXPLAYERS {
-			break
-		}
+	for i := 0; i < NET_MAXPLAYERS; i++ {
 		if local_playeringame[i] != 0 {
 			keyplayer = int32(i)
 			break
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	if keyplayer < 0 {
 		// If there are no players, we can never advance anyway
@@ -4340,22 +4219,13 @@ func oldNetSync() {
 // Returns true if there are players in the game:
 
 func playersInGame() boolean {
-	var i uint32
 	var result boolean
 	result = 0
 	// If we are connected to a server, check if there are any players
 	// in the game.
 	if net_client_connected != 0 {
-		i = 0
-		for {
-			if i >= NET_MAXPLAYERS {
-				break
-			}
+		for i := 0; i < NET_MAXPLAYERS; i++ {
 			result = booluint32(result != 0 || local_playeringame[i] != 0)
-			goto _1
-		_1:
-			;
-			i++
 		}
 	}
 	// Whether single or multi-player, unless we are running as a drone,
@@ -4370,21 +4240,12 @@ func playersInGame() boolean {
 // the duplicate ticcmds.
 
 func ticdupSquash(set *ticcmd_set_t) {
-	var i uint32
-	i = 0
-	for {
-		if i >= NET_MAXPLAYERS {
-			break
-		}
+	for i := 0; i < NET_MAXPLAYERS; i++ {
 		cmd := &set.Fcmds[i]
 		cmd.Fchatchar = 0
 		if int32(cmd.Fbuttons)&bt_SPECIAL != 0 {
 			cmd.Fbuttons = 0
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -6975,7 +6836,7 @@ func wipe_exitColorXForm(width int32, height int32, ticks int32) int32 {
 var y_screen []int32
 
 func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
-	var i, r int32
+	var r int32
 	// copy start screen to main screen
 	copy(wipe_scr, wipe_scr_start)
 	// makes this wipe faster (in theory)
@@ -6986,11 +6847,7 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 	// (y<0 => not ready to scroll yet)
 	y_screen = make([]int32, width)
 	y_screen[0] = -(m_Random() % 16)
-	i = 1
-	for {
-		if i >= width {
-			break
-		}
+	for i := int32(1); i < width; i++ {
 		r = m_Random()%3 - 1
 		y_screen[i] = y_screen[i-1] + r
 		if y_screen[i] > 0 {
@@ -7000,10 +6857,6 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 				y_screen[i] = -15
 			}
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return 0
 }
@@ -7011,7 +6864,7 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 func wipe_doMelt(width int32, height int32, ticks int32) int32 {
 	var d, s int32
 	var done boolean
-	var dy, i, idx, j, v1, v3 int32
+	var dy, idx, v1, v3 int32
 	done = 1
 	width /= 2
 	for {
@@ -7020,11 +6873,7 @@ func wipe_doMelt(width int32, height int32, ticks int32) int32 {
 		if v1 == 0 {
 			break
 		}
-		i = 0
-		for {
-			if i >= width {
-				break
-			}
+		for i := int32(0); i < width; i++ {
 			if y_screen[i] < 0 {
 				y_screen[i]++
 				done = 0
@@ -7042,45 +6891,25 @@ func wipe_doMelt(width int32, height int32, ticks int32) int32 {
 					s = (i*height + y_screen[i]) * 2
 					d = (y_screen[i]*width + i) * 2
 					idx = 0
-					j = dy
-					for {
-						if j == 0 {
-							break
-						}
+					for j := dy; j > 0; j-- {
 						wipe_scr[d+idx*2] = wipe_scr_end[s]
 						wipe_scr[d+idx*2+1] = wipe_scr_end[s+1]
 						s += 2
 						idx += width
-						goto _4
-					_4:
-						;
-						j--
 					}
 					y_screen[i] += dy
 					s = (i * height) * 2
 					d = (y_screen[i]*width + i) * 2
 					idx = 0
-					j = height - y_screen[i]
-					for {
-						if j == 0 {
-							break
-						}
+					for j := height - y_screen[i]; j > 0; j-- {
 						wipe_scr[d+idx*2] = wipe_scr_start[s]
 						wipe_scr[d+idx*2+1] = wipe_scr_start[s+1]
 						s += 2
 						idx += width
-						goto _6
-					_6:
-						;
-						j--
 					}
 					done = 0
 				}
 			}
-			goto _2
-		_2:
-			;
-			i++
 		}
 	}
 	return int32(done)
@@ -7333,18 +7162,10 @@ func g_NextWeapon(direction int32) weapontype_t {
 	} else {
 		weapon = players[consoleplayer].Fpendingweapon
 	}
-	i = 0
-	for {
-		if i >= int32(len(weapon_order_table)) {
-			break
-		}
+	for i = 0; i < int32(len(weapon_order_table)); i++ {
 		if weapon_order_table[i].Fweapon == weapon {
 			break
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// Switch weapon. Don't loop forever.
 	start_i = i
@@ -7572,7 +7393,7 @@ var carry int16
 //	// G_DoLoadLevel
 //	//
 func g_DoLoadLevel() {
-	var i, v2, v3, v4 int32
+	var v2, v3, v4 int32
 	var skytexturename string
 	var v5, v6 boolean
 	// Set the sky map.
@@ -7600,20 +7421,12 @@ func g_DoLoadLevel() {
 		wipegamestate = -1
 	} // force a wipe
 	gamestate = gs_LEVEL
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := 0; i < MAXPLAYERS; i++ {
 		turbodetected[i] = 0
 		if playeringame[i] != 0 && players[i].Fplayerstate == Pst_DEAD {
 			players[i].Fplayerstate = Pst_REBORN
 		}
 		clear(players[i].Ffrags[:])
-		goto _1
-	_1:
-		;
-		i++
 	}
 	p_SetupLevel(gameepisode, gamemap, 0, gameskill)
 	displayplayer = consoleplayer // view the guy you are playing
@@ -7641,12 +7454,8 @@ func g_DoLoadLevel() {
 }
 
 func setJoyButtons(buttons_mask uint32) {
-	var button_on, i int32
-	i = 0
-	for {
-		if i >= MAX_JOY_BUTTONS {
-			break
-		}
+	var button_on int32
+	for i := int32(0); i < MAX_JOY_BUTTONS; i++ {
 		button_on = boolint32(buttons_mask&uint32(1<<i) != 0)
 		// Detect button press:
 		if joyButton(i) && button_on != 0 {
@@ -7660,21 +7469,12 @@ func setJoyButtons(buttons_mask uint32) {
 			}
 		}
 		setJoyButton(i, button_on != 0)
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
 func setMouseButtons(buttons_mask uint32) {
 	var button_on uint32
-	var i int32
-	i = 0
-	for {
-		if i >= MAX_MOUSE_BUTTONS {
-			break
-		}
+	for i := int32(0); i < MAX_MOUSE_BUTTONS; i++ {
 		button_on = booluint32(buttons_mask&uint32(1<<i) != 0)
 		// Detect button press:
 		if !mouseButton(i) && button_on != 0 {
@@ -7687,10 +7487,6 @@ func setMouseButtons(buttons_mask uint32) {
 			}
 		}
 		setMouseButton(i, button_on != 0)
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -7791,21 +7587,13 @@ func g_Responder(ev *event_t) boolean {
 //	// Make ticcmd_ts for the players.
 //	//
 func g_Ticker() {
-	var buf, i int32
+	var buf int32
 	var cmd *ticcmd_t
 	// do player reborns if needed
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := int32(0); i < MAXPLAYERS; i++ {
 		if playeringame[i] != 0 && players[i].Fplayerstate == Pst_REBORN {
 			g_DoReborn(i)
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// do things to change the game state
 	for gameaction != ga_nothing {
@@ -7833,11 +7621,7 @@ func g_Ticker() {
 	// get commands, check consistancy,
 	// and build new consistancy check
 	buf = gametic / ticdup % BACKUPTICS
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := int32(0); i < MAXPLAYERS; i++ {
 		if playeringame[i] != 0 {
 			cmd = &players[i].Fcmd
 			*cmd = netcmds[i]
@@ -7871,17 +7655,9 @@ func g_Ticker() {
 				}
 			}
 		}
-		goto _2
-	_2:
-		;
-		i++
 	}
 	// check for special buttons
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := int32(0); i < MAXPLAYERS; i++ {
 		if playeringame[i] != 0 {
 			if int32(players[i].Fcmd.Fbuttons)&bt_SPECIAL != 0 {
 				switch int32(players[i].Fcmd.Fbuttons) & bt_SPECIALMASK {
@@ -7902,10 +7678,6 @@ func g_Ticker() {
 				}
 			}
 		}
-		goto _3
-	_3:
-		;
-		i++
 	}
 	// Have we just finished displaying an intermission screen?
 	if oldgamestate == gs_INTERMISSION && gamestate != gs_INTERMISSION {
@@ -7982,24 +7754,16 @@ func g_PlayerReborn(player int32) {
 }
 
 func g_CheckSpot(playernum int32, mthing *mapthing_t) boolean {
-	var an, i int32
+	var an int32
 	var mo *mobj_t
 	var ss *subsector_t
 	var x, xa, y, ya, v2 fixed_t
 	if players[playernum].Fmo == nil {
 		// first spawn of level, before corpses
-		i = 0
-		for {
-			if i >= playernum {
-				break
-			}
+		for i := int32(0); i < playernum; i++ {
 			if players[i].Fmo.Fx == int32(mthing.Fx)<<FRACBITS && players[i].Fmo.Fy == int32(mthing.Fy)<<FRACBITS {
 				return 0
 			}
-			goto _1
-		_1:
-			;
-			i++
 		}
 		return 1
 	}
@@ -8079,26 +7843,18 @@ func g_CheckSpot(playernum int32, mthing *mapthing_t) boolean {
 //	// called at level load and each death
 //	//
 func g_DeathMatchSpawnPlayer(playernum int32) {
-	var i, j, selections int32
+	var i, selections int32
 	selections = int32(deathmatch_pos)
 	if selections < 4 {
 		i_Error("Only %d deathmatch spots, 4 required", selections)
 	}
-	j = 0
-	for {
-		if j >= 20 {
-			break
-		}
+	for range 20 {
 		i = p_Random() % selections
 		if g_CheckSpot(playernum, &deathmatchstarts[i]) != 0 {
 			deathmatchstarts[i].Ftype1 = int16(playernum + 1)
 			p_SpawnPlayer(&deathmatchstarts[i])
 			return
 		}
-		goto _1
-	_1:
-		;
-		j++
 	}
 	// no good spot, so the player will probably get stuck
 	p_SpawnPlayer(&playerstarts[playernum])
@@ -8110,7 +7866,6 @@ func g_DeathMatchSpawnPlayer(playernum int32) {
 //	// G_DoReborn
 //	//
 func g_DoReborn(playernum int32) {
-	var i int32
 	if netgame == 0 {
 		// reload the level from scratch
 		gameaction = ga_loadlevel
@@ -8128,11 +7883,7 @@ func g_DoReborn(playernum int32) {
 			return
 		}
 		// try to spawn at one of the other players spots
-		i = 0
-		for {
-			if i >= MAXPLAYERS {
-				break
-			}
+		for i := range MAXPLAYERS {
 			if g_CheckSpot(playernum, &playerstarts[i]) != 0 {
 				playerstarts[i].Ftype1 = int16(playernum + 1) // fake as other player
 				p_SpawnPlayer(&playerstarts[i])
@@ -8140,10 +7891,6 @@ func g_DoReborn(playernum int32) {
 				return
 			}
 			// he's going to be inside something.  Too bad.
-			goto _1
-		_1:
-			;
-			i++
 		}
 		p_SpawnPlayer(&playerstarts[playernum])
 	}
@@ -8244,20 +7991,11 @@ func g_SecretExitLevel() {
 }
 
 func g_DoCompleted() {
-	var i int32
 	gameaction = ga_nothing
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range int32(MAXPLAYERS) {
 		if playeringame[i] != 0 {
 			g_PlayerFinishLevel(i)
 		}
-		goto _1
-	_1:
-		;
-		i++
 	} // take away cards and stuff
 	if automapactive != 0 {
 		am_Stop()
@@ -8272,34 +8010,13 @@ func g_DoCompleted() {
 		} else {
 			switch gamemap {
 			case 8:
-				goto _2
+				gameaction = ga_victory
+				return
 			case 9:
-				goto _3
+				for i := range MAXPLAYERS {
+					players[i].Fdidsecret = 1
+				}
 			}
-			goto _4
-		_2:
-			;
-			gameaction = ga_victory
-			return
-		_3:
-			;
-			i = 0
-		_7:
-			;
-			if i >= MAXPLAYERS {
-				goto _5
-			}
-			players[i].Fdidsecret = 1
-			goto _6
-		_6:
-			;
-			i++
-			goto _7
-			goto _5
-		_5:
-			;
-			goto _4
-		_4:
 		}
 	}
 	//#if 0  Hmmm - why?
@@ -8310,16 +8027,8 @@ func g_DoCompleted() {
 	}
 	if gamemap == 9 && gamemode != commercial {
 		// exit secret level
-		i = 0
-		for {
-			if i >= MAXPLAYERS {
-				break
-			}
+		for i := range MAXPLAYERS {
 			players[i].Fdidsecret = 1
-			goto _8
-		_8:
-			;
-			i++
 		}
 	}
 	//#endif
@@ -8385,21 +8094,13 @@ func g_DoCompleted() {
 		}
 	}
 	wminfo.Fpnum = consoleplayer
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		wminfo.Fplyr[i].Fin = playeringame[i]
 		wminfo.Fplyr[i].Fskills = players[i].Fkillcount
 		wminfo.Fplyr[i].Fsitems = players[i].Fitemcount
 		wminfo.Fplyr[i].Fssecret = players[i].Fsecretcount
 		wminfo.Fplyr[i].Fstime = leveltime
 		wminfo.Fplyr[i].Ffrags = players[i].Ffrags
-		goto _9
-	_9:
-		;
-		i++
 	}
 	gamestate = gs_INTERMISSION
 	viewactive = 0
@@ -8678,16 +8379,8 @@ func g_InitNew(skill skill_t, episode int32, map1 int32) {
 		}
 	}
 	// force players to be initialized upon first level load
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		players[i].Fplayerstate = Pst_REBORN
-		goto _3
-	_3:
-		;
-		i++
 	}
 	usergame = 1 // will be set false if a demo
 	paused = 0
@@ -8841,7 +8534,6 @@ func g_VanillaVersionCode() int32 {
 }
 
 func g_BeginRecording() {
-	var i int32
 	//!
 	// @category demo
 	//
@@ -8878,16 +8570,8 @@ func g_BeginRecording() {
 	demo_pos++
 	demobuffer[demo_pos] = uint8(consoleplayer)
 	demo_pos++
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		demobuffer[demo_pos] = uint8(playeringame[i])
-		goto _11
-	_11:
-		;
-		i++
 	}
 }
 
@@ -8928,7 +8612,7 @@ func demoVersionDescription(version int32) string {
 }
 
 func g_DoPlayDemo() {
-	var demoversion, episode, i, map1 int32
+	var demoversion, episode, map1 int32
 	var skill skill_t
 	gameaction = ga_nothing
 	num := w_GetNumForName(defdemoname)
@@ -8966,17 +8650,9 @@ func g_DoPlayDemo() {
 	demo_pos++
 	consoleplayer = int32(demobuffer[demo_pos])
 	demo_pos++
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		playeringame[i] = uint32(demobuffer[demo_pos])
 		demo_pos++
-		goto _11
-	_11:
-		;
-		i++
 	}
 	if playeringame[1] != 0 || m_CheckParm("-solo-net") > 0 || m_CheckParm("-netdemo") > 0 {
 		netgame = 1
@@ -9131,14 +8807,10 @@ func hulib_delCharFromTextLine(t *hu_textline_t) boolean {
 
 func hulib_drawTextLine(l *hu_textline_t, drawcursor boolean) {
 	var c uint8
-	var i, w, x int32
+	var w, x int32
 	// draw the new stuff
 	x = l.Fx
-	i = 0
-	for {
-		if i >= l.Flen1 {
-			break
-		}
+	for i := range l.Flen1 {
 		c = uint8(xtoupper(int32(l.Fl[i])))
 		if int32(c) != ' ' && int32(c) >= l.Fsc && int32(c) <= '_' {
 			w = int32(l.Ff[int32(c)-l.Fsc].Fwidth)
@@ -9153,10 +8825,6 @@ func hulib_drawTextLine(l *hu_textline_t, drawcursor boolean) {
 				break
 			}
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// draw the cursor if requested
 	if drawcursor != 0 && x+int32(l.Ff['_'-l.Fsc].Fwidth) <= SCREENWIDTH {
@@ -9536,7 +9204,6 @@ func hu_Stop() {
 }
 
 func hu_Start() {
-	var i int32
 	var v1 gamemission_t
 	var s string
 	if headsupactive != 0 {
@@ -9585,16 +9252,8 @@ func hu_Start() {
 	// create the chat widget
 	hulib_initIText(&w_chat, HU_MSGX, HU_MSGY+HU_MSGHEIGHT*(int32(hu_font[0].Fheight)+1), hu_font[:], '!', &chat_on)
 	// create the inputbuffer widgets
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		hulib_initIText(&w_inputbuffer[i], 0, 0, nil, 0, &always_off)
-		goto _4
-	_4:
-		;
-		i++
 	}
 	headsupactive = 1
 }
@@ -9615,7 +9274,7 @@ func hu_Erase() {
 
 func hu_Ticker() {
 	var c, v4 int8
-	var i, rc, v1 int32
+	var rc, v1 int32
 	var v2, v5 bool
 	// tick down message counter if message is up
 	if v2 = message_counter != 0; v2 {
@@ -9639,13 +9298,9 @@ func hu_Ticker() {
 	} // else message_on = false;
 	// check for incoming chat characters
 	if netgame != 0 {
-		i = 0
-		for {
-			if i >= MAXPLAYERS {
-				break
-			}
+		for i := range int32(MAXPLAYERS) {
 			if playeringame[i] == 0 {
-				goto _3
+				continue
 			}
 			if v5 = i != consoleplayer; v5 {
 				v4 = int8(players[i].Fcmd.Fchatchar)
@@ -9673,10 +9328,6 @@ func hu_Ticker() {
 				}
 				players[i].Fcmd.Fchatchar = 0
 			}
-			goto _3
-		_3:
-			;
-			i++
 		}
 	}
 }
@@ -9708,20 +9359,12 @@ func hu_dequeueChatChar() int8 {
 func hu_Responder(ev *event_t) boolean {
 	var c uint8
 	var eatkey, v2, v4 boolean
-	var i, numplayers int32
+	var numplayers int32
 	var macromessage string
 	eatkey = 0
 	numplayers = 0
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		numplayers = int32(uint32(numplayers) + playeringame[i])
-		goto _1
-	_1:
-		;
-		i++
 	}
 	if ev.Fdata1 == 0x80+0x36 {
 		return 0
@@ -9748,11 +9391,7 @@ func hu_Responder(ev *event_t) boolean {
 				hu_queueChatChar(int8(HU_BROADCAST))
 			} else {
 				if netgame != 0 && numplayers > 2 {
-					i = 0
-					for {
-						if i >= MAXPLAYERS {
-							break
-						}
+					for i := range int32(MAXPLAYERS) {
 						if ev.Fdata2 == key_multi_msgplayer[i] {
 							if playeringame[i] != 0 && i != consoleplayer {
 								v4 = 1
@@ -9784,10 +9423,6 @@ func hu_Responder(ev *event_t) boolean {
 								}
 							}
 						}
-						goto _3
-					_3:
-						;
-						i++
 					}
 				}
 			}
@@ -17649,7 +17284,6 @@ var joystick_physical_buttons = [10]int32{
 }
 
 func i_BindJoystickVariables() {
-	var i int32
 	m_BindVariable("use_joystick", &usejoystick)
 	m_BindVariable("joystick_index", &joystick_index)
 	m_BindVariable("joystick_x_axis", &joystick_x_axis)
@@ -17658,17 +17292,9 @@ func i_BindJoystickVariables() {
 	m_BindVariable("joystick_x_invert", &joystick_x_invert)
 	m_BindVariable("joystick_y_invert", &joystick_y_invert)
 	m_BindVariable("joystick_strafe_invert", &joystick_strafe_invert)
-	i = 0
-	for {
-		if i >= NUM_VIRTUAL_BUTTONS {
-			break
-		}
+	for i := range NUM_VIRTUAL_BUTTONS {
 		name := fmt.Sprintf("joystick_physical_button%d", i)
 		m_BindVariable(name, &joystick_physical_buttons[i])
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -17720,19 +17346,10 @@ var sound_modules = []sound_module_t{}
 // Check if a sound device is in the given list of devices
 
 func sndDeviceInList(device snddevice_t, list []snddevice_t, len1 int32) boolean {
-	var i int32
-	i = 0
-	for {
-		if i >= len1 {
-			break
-		}
+	for i := range len1 {
 		if device == list[i] {
 			return 1
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return 0
 }
@@ -17985,17 +17602,8 @@ func i_PrintBanner(msg string) {
 }
 
 func i_PrintDivider() {
-	var i int32
-	i = 0
-	for {
-		if i >= 75 {
-			break
-		}
+	for range 75 {
 		fmt.Print("=")
-		goto _1
-	_1:
-		;
-		i++
 	}
 	fmt.Print("\n")
 }
@@ -18094,10 +17702,9 @@ var mem_dump_custom [DOS_MEM_DUMP_SIZE]uint8
 var dos_mem_dump []byte = mem_dump_dos622[:]
 
 func i_GetMemoryValue(offset uint32, value uintptr, size int32) boolean {
-	var i, p, v2 int32
+	var p int32
 	if firsttime != 0 {
 		firsttime = 0
-		i = 0
 		//!
 		// @category compat
 		// @arg <version>
@@ -18117,23 +17724,13 @@ func i_GetMemoryValue(offset uint32, value uintptr, size int32) boolean {
 				if strings.EqualFold(myargs[p+1], "dosbox") {
 					dos_mem_dump = mem_dump_dosbox[:]
 				} else {
-					i = 0
-					for {
-						if i >= DOS_MEM_DUMP_SIZE {
-							break
-						}
+					for i := range DOS_MEM_DUMP_SIZE {
 						p++
 						if p >= int32(len(myargs)) || myargs[p][0] == '-' {
 							break
 						}
 						f, _ := strconv.Atoi(myargs[p])
-						v2 = i
-						i++
-						mem_dump_custom[v2] = uint8(f)
-						goto _1
-					_1:
-						;
-						i++
+						mem_dump_custom[i] = uint8(f)
 					}
 					dos_mem_dump = mem_dump_custom[:]
 				}
@@ -18241,19 +17838,10 @@ func loadResponseFile(argv_index int32) {
 //
 
 func m_FindResponseFile() {
-	var i int32
-	i = 1
-	for {
-		if i >= int32(len(myargs)) {
-			break
-		}
+	for i := int32(1); i < int32(len(myargs)); i++ {
 		if myargs[i][0] == '@' {
 			loadResponseFile(i)
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -19098,19 +18686,10 @@ var extra_defaults = default_collection_t{
 // Search a collection for a variable
 
 func searchCollection(collection *default_collection_t, name string) *default_t {
-	var i int32
-	i = 0
-	for {
-		if i >= collection.Fnumdefaults {
-			break
-		}
+	for i := range collection.Fnumdefaults {
 		if strings.EqualFold(name, collection.Fdefaults[i].Fname) {
 			return &collection.Fdefaults[i]
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return nil
 }
@@ -19459,19 +19038,10 @@ func m_BindMenuControls() {
 }
 
 func m_BindChatControls(num_players uint32) {
-	var i uint32
 	m_BindVariable("key_multi_msg", &key_multi_msg)
-	i = 0
-	for {
-		if i >= num_players {
-			break
-		}
+	for i := range num_players {
 		name := fmt.Sprintf("key_multi_msgplayer%d", i+1)
 		m_BindVariable(name, &key_multi_msgplayer[i])
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -19956,29 +19526,20 @@ func init() {
 //	//  read the strings from the savegame files
 //	//
 func m_ReadSaveStrings() {
-	var i int32
-	i = 0
-	for {
+	for i := range int32(load_end) {
 		var thisString [SAVESTRINGSIZE]byte
-		if i >= int32(load_end) {
-			break
-		}
 		var err error
 		handle, err := os.Open(p_SaveGameFile(i))
 		if err != nil {
 			savegamestrings[i] = "empty slot"
 			LoadMenu[i].Fstatus = 0
-			goto _1
+			continue
 		}
 
 		handle.Read(thisString[:])
 		savegamestrings[i] = gostring_bytes(thisString[:])
 		handle.Close()
 		LoadMenu[i].Fstatus = 1
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -19988,19 +19549,10 @@ func m_ReadSaveStrings() {
 //	// m_LoadGame & Cie.
 //	//
 func m_DrawLoad() {
-	var i int32
 	v_DrawPatchDirect(72, 28, w_CacheLumpNameT("M_LOADG"))
-	i = 0
-	for {
-		if i >= int32(load_end) {
-			break
-		}
+	for i := range int32(load_end) {
 		m_DrawSaveLoadBorder(int32(LoadDef.Fx), int32(LoadDef.Fy)+LINEHEIGHT*i)
 		m_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+LINEHEIGHT*i, savegamestrings[i])
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -35704,7 +35256,7 @@ func r_InitTables() {
 //	//
 func r_InitTextureMapping() {
 	var focallength fixed_t
-	var i, t, x int32
+	var t int32
 	// Use tangent table to generate viewangletox:
 	//  viewangletox will give the next greatest x
 	//  after the view angle.
@@ -35712,11 +35264,7 @@ func r_InitTextureMapping() {
 	// Calc focallength
 	//  so FIELDOFVIEW angles covers SCREENWIDTH.
 	focallength = fixedDiv(centerxfrac, finetangent[FINEANGLES/4+FIELDOFVIEW/2])
-	i = 0
-	for {
-		if i >= FINEANGLES/2 {
-			break
-		}
+	for i := 0; i < FINEANGLES/2; i++ {
 		if finetangent[i] > 1<<FRACBITS*2 {
 			t = -1
 		} else {
@@ -35735,35 +35283,19 @@ func r_InitTextureMapping() {
 			}
 		}
 		viewangletox[i] = t
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// Scan viewangletox[] to generate xtoviewangle[]:
 	//  xtoviewangle will give the smallest view angle
 	//  that maps to x.
-	x = 0
-	for {
-		if !(x <= viewwidth) {
-			break
-		}
-		i = 0
+	for x := int32(0); x < viewwidth; x++ {
+		i := int32(0)
 		for viewangletox[i] > x {
 			i++
 		}
 		xtoviewangle[x] = uint32(i<<ANGLETOFINESHIFT - int32(ANG909))
-		goto _2
-	_2:
-		;
-		x++
 	}
 	// Take out the fencepost cases from viewangletox.
-	i = 0
-	for {
-		if i >= FINEANGLES/2 {
-			break
-		}
+	for i := range FINEANGLES / 2 {
 		t = fixedMul(finetangent[i], focallength)
 		t = centerx - t
 		if viewangletox[i] == -1 {
@@ -35773,10 +35305,6 @@ func r_InitTextureMapping() {
 				viewangletox[i] = viewwidth
 			}
 		}
-		goto _3
-	_3:
-		;
-		i++
 	}
 	clipangle = xtoviewangle[0]
 }
@@ -35788,20 +35316,12 @@ func r_InitTextureMapping() {
 //
 
 func r_InitLightTables() {
-	var i, j, level, scale, startmap int32
+	var level, scale, startmap int32
 	// Calculate the light levels to use
 	//  for each level / distance combination.
-	i = 0
-	for {
-		if i >= LIGHTLEVELS {
-			break
-		}
+	for i := range int32(LIGHTLEVELS) {
 		startmap = (LIGHTLEVELS - 1 - i) * 2 * NUMCOLORMAPS / LIGHTLEVELS
-		j = 0
-		for {
-			if j >= MAXLIGHTZ {
-				break
-			}
+		for j := range int32(MAXLIGHTZ) {
 			scale = fixedDiv(SCREENWIDTH/2*(1<<FRACBITS), (j+1)<<LIGHTZSHIFT)
 			scale >>= LIGHTSCALESHIFT
 			level = startmap - scale/DISTMAP
@@ -35812,15 +35332,7 @@ func r_InitLightTables() {
 				level = NUMCOLORMAPS - 1
 			}
 			zlight[i][j] = colormaps[level*int32(256):]
-			goto _2
-		_2:
-			;
-			j++
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -35837,7 +35349,7 @@ func r_SetViewSize(blocks int32, detail int32) {
 //	//
 func r_ExecuteSetViewSize() {
 	var cosadj, dy fixed_t
-	var i, j, level, startmap int32
+	var level, startmap int32
 	setsizeneeded = 0
 	if setblocks == 11 {
 		scaledviewwidth = SCREENWIDTH
@@ -35872,56 +35384,24 @@ func r_ExecuteSetViewSize() {
 	pspritescale = 1 << FRACBITS * viewwidth / SCREENWIDTH
 	pspriteiscale = 1 << FRACBITS * SCREENWIDTH / viewwidth
 	// thing clipping
-	i = 0
-	for {
-		if i >= viewwidth {
-			break
-		}
+	for i := range viewwidth {
 		screenheightarray[i] = int16(viewheight)
-		goto _3
-	_3:
-		;
-		i++
 	}
 	// planes
-	i = 0
-	for {
-		if i >= viewheight {
-			break
-		}
+	for i := range viewheight {
 		dy = (i-viewheight/2)<<FRACBITS + 1<<FRACBITS/2
 		dy = xabs(dy)
 		yslope[i] = fixedDiv(viewwidth<<detailshift/2*(1<<FRACBITS), dy)
-		goto _4
-	_4:
-		;
-		i++
 	}
-	i = 0
-	for {
-		if i >= viewwidth {
-			break
-		}
+	for i := range viewwidth {
 		cosadj = xabs(finecosine[xtoviewangle[i]>>ANGLETOFINESHIFT])
 		distscale[i] = fixedDiv(1<<FRACBITS, cosadj)
-		goto _5
-	_5:
-		;
-		i++
 	}
 	// Calculate the light levels to use
 	//  for each level / scale combination.
-	i = 0
-	for {
-		if i >= LIGHTLEVELS {
-			break
-		}
+	for i := range int32(LIGHTLEVELS) {
 		startmap = (LIGHTLEVELS - 1 - i) * 2 * NUMCOLORMAPS / LIGHTLEVELS
-		j = 0
-		for {
-			if j >= MAXLIGHTSCALE {
-				break
-			}
+		for j := range int32(MAXLIGHTSCALE) {
 			level = startmap - j*SCREENWIDTH/(viewwidth<<detailshift)/DISTMAP
 			if level < 0 {
 				level = 0
@@ -35930,15 +35410,7 @@ func r_ExecuteSetViewSize() {
 				level = NUMCOLORMAPS - 1
 			}
 			scalelight[i][j] = colormaps[level*256:]
-			goto _7
-		_7:
-			;
-			j++
 		}
-		goto _6
-	_6:
-		;
-		i++
 	}
 }
 
@@ -35990,7 +35462,6 @@ func r_PointInSubsector(x fixed_t, y fixed_t) *subsector_t {
 //	// R_SetupFrame
 //	//
 func r_SetupFrame(player *player_t) {
-	var i int32
 	viewplayer = player
 	viewx = player.Fmo.Fx
 	viewy = player.Fmo.Fy
@@ -36002,16 +35473,8 @@ func r_SetupFrame(player *player_t) {
 	if player.Ffixedcolormap != 0 {
 		fixedcolormap = colormaps[player.Ffixedcolormap*int32(256):]
 		walllights = scalelightfixed
-		i = 0
-		for {
-			if i >= MAXLIGHTSCALE {
-				break
-			}
+		for i := range MAXLIGHTSCALE {
 			scalelightfixed[i] = fixedcolormap
-			goto _1
-		_1:
-			;
-			i++
 		}
 	} else {
 		fixedcolormap = nil
@@ -36121,19 +35584,10 @@ func r_MapPlane(y int32, x1 int32, x2 int32) {
 //	//
 func r_ClearPlanes() {
 	var angle angle_t
-	var i int32
 	// opening / clipping determination
-	i = 0
-	for {
-		if i >= viewwidth {
-			break
-		}
+	for i := range viewwidth {
 		floorclip[i] = int16(viewheight)
 		ceilingclip[i] = int16(-1)
-		goto _1
-	_1:
-		;
-		i++
 	}
 	lastvisplane_index = 0
 	lastopening = uintptr(unsafe.Pointer(&openings))
@@ -36899,7 +36353,6 @@ const INT_MAX17 = 2147483647
 //	// Local function for r_InitSprites.
 //	//
 func r_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation uint32, flipped boolean) {
-	var r int32
 	if frame >= 29 || rotation > 8 {
 		i_Error("r_InstallSpriteLump: Bad frame characters in lump %d", lump)
 	}
@@ -36915,18 +36368,9 @@ func r_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation u
 			i_Error("r_InitSprites: Sprite %s frame %c has rotations and a rot=0 lump", spritename, 'A'+frame)
 		}
 		sprtemp[frame].Frotate = 0
-		r = 0
-		for {
-			if r >= 8 {
-				break
-			}
-
+		for r := range 8 {
 			sprtemp[frame].Flump[r] = int16(lump - firstspritelump)
 			sprtemp[frame].Fflip[r] = uint8(flipped)
-			goto _1
-		_1:
-			;
-			r++
 		}
 		return
 	}
@@ -36962,7 +36406,7 @@ func r_InstallSpriteLump(spritename string, lump int32, frame uint32, rotation u
 //	// The rotation character can be 0 to signify no rotations.
 //	//
 func r_InitSpriteDefs(namelist []string) {
-	var end, frame, i, l, patched, rotation, start int32
+	var end, frame, l, patched, rotation, start int32
 	// count the number of sprite names
 	numsprites = int32(len(namelist))
 	if numsprites == 0 {
@@ -36974,11 +36418,7 @@ func r_InitSpriteDefs(namelist []string) {
 	// scan all the lump names for each of the names,
 	//  noting the highest frame letter.
 	// Just compare 4 characters as ints
-	i = 0
-	for {
-		if i >= numsprites {
-			break
-		}
+	for i := range numsprites {
 
 		spritename := namelist[i][:4]
 		for i := range sprtemp {
@@ -37019,68 +36459,30 @@ func r_InitSpriteDefs(namelist []string) {
 		// check the frames that were found for completeness
 		if maxframe == -1 {
 			sprites[i].Fnumframes = 0
-			goto _1
+			continue
 		}
 		maxframe++
-		frame = 0
-		for {
-			if frame >= maxframe {
-				break
-			}
+		for frame := range maxframe {
 			switch int32(sprtemp[frame].Frotate) {
 			case -1:
-				goto _4
+				// no rotations were found for that frame at all
+				i_Error("r_InitSprites: No patches found for %s frame %c", spritename, frame+'A')
+				break
 			case 0:
-				goto _5
+				break
 			case 1:
-				goto _6
+				// must have all 8 frames
+				for rotation := range 8 {
+					if int32(sprtemp[frame].Flump[rotation]) == -1 {
+						i_Error("r_InitSprites: Sprite %s frame %c is missing rotations", spritename, frame+'A')
+					}
+				}
 			}
-			goto _7
-		_4:
-			;
-			// no rotations were found for that frame at all
-			i_Error("r_InitSprites: No patches found for %s frame %c", spritename, frame+'A')
-			goto _7
-		_5:
-			;
-			// only the first rotation is needed
-			goto _7
-		_6:
-			;
-			// must have all 8 frames
-			rotation = 0
-		_10:
-			;
-			if rotation >= 8 {
-				goto _8
-			}
-			if int32(sprtemp[frame].Flump[rotation]) == -1 {
-				i_Error("r_InitSprites: Sprite %s frame %c is missing rotations", spritename, frame+'A')
-			}
-			goto _9
-		_9:
-			;
-			rotation++
-			goto _10
-			goto _8
-		_8:
-			;
-			goto _7
-		_7:
-			;
-			goto _3
-		_3:
-			;
-			frame++
 		}
 		// allocate space for the frames present and copy sprtemp to it
 		sprites[i].Fnumframes = maxframe
 		sprites[i].Fspriteframes = make([]spriteframe_t, maxframe)
 		copy(sprites[i].Fspriteframes, sprtemp[:maxframe])
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -37091,17 +36493,8 @@ func r_InitSpriteDefs(namelist []string) {
 //	// Called at program start.
 //	//
 func r_InitSprites(namelist []string) {
-	var i int32
-	i = 0
-	for {
-		if i >= SCREENWIDTH {
-			break
-		}
+	for i := range SCREENWIDTH {
 		negonearray[i] = int16(-1)
-		goto _1
-	_1:
-		;
-		i++
 	}
 	r_InitSpriteDefs(namelist)
 }
@@ -37462,7 +36855,7 @@ func r_DrawPSprite(psp *pspdef_t) {
 //	// R_DrawPlayerSprites
 //	//
 func r_DrawPlayerSprites() {
-	var i, lightnum int32
+	var lightnum int32
 	// get light level
 	lightnum = int32(viewplayer.Fmo.Fsubsector.Fsector.Flightlevel)>>LIGHTSEGSHIFT + extralight
 	if lightnum < 0 {
@@ -37478,19 +36871,11 @@ func r_DrawPlayerSprites() {
 	mfloorclip = uintptr(unsafe.Pointer(&screenheightarray))
 	mceilingclip = uintptr(unsafe.Pointer(&negonearray))
 	// add all active psprites
-	i = 0
-	for {
-		if i >= NUMPSPRITES {
-			break
-		}
+	for i := range NUMPSPRITES {
 		psp := &viewplayer.Fpsprites[i]
 		if psp.Fstate != nil {
 			r_DrawPSprite(psp)
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -37498,7 +36883,7 @@ func r_SortVisSprites() {
 	bp := &vissprite_t{}
 	var best, ds *vissprite_t
 	var bestscale fixed_t
-	var count, i int32
+	var count int32
 	count = int32(vissprite_n)
 	bp.Fprev = bp
 	bp.Fnext = bp
@@ -37525,11 +36910,7 @@ func r_SortVisSprites() {
 	// pull the vissprites out by scale
 	vsprsortedhead.Fprev = &vsprsortedhead
 	vsprsortedhead.Fnext = &vsprsortedhead
-	i = 0
-	for {
-		if i >= count {
-			break
-		}
+	for range count {
 		bestscale = int32(INT_MAX17)
 		best = (*bp).Fnext
 		ds = (*bp).Fnext
@@ -37552,10 +36933,6 @@ func r_SortVisSprites() {
 		best.Fprev = vsprsortedhead.Fprev
 		vsprsortedhead.Fprev.Fnext = best
 		vsprsortedhead.Fprev = best
-		goto _4
-	_4:
-		;
-		i++
 	}
 }
 
@@ -37570,20 +36947,12 @@ var cliptop [320]int16
 func r_DrawSprite(spr *vissprite_t) {
 	var ds int
 	var lowscale, scale fixed_t
-	var r1, r2, silhouette, x, v4, v5 int32
+	var r1, r2, silhouette, v4, v5 int32
 	var v2 int16
-	x = spr.Fx1
-	for {
-		if !(x <= spr.Fx2) {
-			break
-		}
+	for x := spr.Fx1; x <= spr.Fx2; x++ {
 		v2 = int16(-2)
 		cliptop[x] = v2
 		clipbot[x] = v2
-		goto _1
-	_1:
-		;
-		x++
 	}
 	// Scan drawsegs from end to start for obscuring segs.
 	// The first drawseg that has a greater scale
@@ -37635,53 +37004,29 @@ func r_DrawSprite(spr *vissprite_t) {
 		}
 		if silhouette == 1 {
 			// bottom sil
-			x = r1
-			for {
-				if !(x <= r2) {
-					break
-				}
+			for x := r1; x <= r2; x++ {
 				if int32(clipbot[x]) == -2 {
 					clipbot[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprbottomclip + uintptr(x)*2))
 				}
-				goto _6
-			_6:
-				;
-				x++
 			}
 		} else {
 			if silhouette == 2 {
 				// top sil
-				x = r1
-				for {
-					if !(x <= r2) {
-						break
-					}
+				for x := r1; x <= r2; x++ {
 					if int32(cliptop[x]) == -2 {
 						cliptop[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprtopclip + uintptr(x)*2))
 					}
-					goto _7
-				_7:
-					;
-					x++
 				}
 			} else {
 				if silhouette == 3 {
 					// both
-					x = r1
-					for {
-						if !(x <= r2) {
-							break
-						}
+					for x := r1; x <= r2; x++ {
 						if int32(clipbot[x]) == -2 {
 							clipbot[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprbottomclip + uintptr(x)*2))
 						}
 						if int32(cliptop[x]) == -2 {
 							cliptop[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprtopclip + uintptr(x)*2))
 						}
-						goto _8
-					_8:
-						;
-						x++
 					}
 				}
 			}
@@ -37693,21 +37038,13 @@ func r_DrawSprite(spr *vissprite_t) {
 	}
 	// all clipping has been performed, so draw the sprite
 	// check for unclipped columns
-	x = spr.Fx1
-	for {
-		if !(x <= spr.Fx2) {
-			break
-		}
+	for x := spr.Fx1; x <= spr.Fx2; x++ {
 		if int32(clipbot[x]) == -2 {
 			clipbot[x] = int16(viewheight)
 		}
 		if int32(cliptop[x]) == -2 {
 			cliptop[x] = int16(-1)
 		}
-		goto _9
-	_9:
-		;
-		x++
 	}
 	mfloorclip = uintptr(unsafe.Pointer(&clipbot))
 	mceilingclip = uintptr(unsafe.Pointer(&cliptop))
@@ -39320,7 +38657,7 @@ func st_refreshBackground() {
 //	// Respond to keyboard input events,
 //	//  intercept cheats.
 func st_Responder(ev *event_t) boolean {
-	var epsd, i, map1, musnum int32
+	var epsd, map1, musnum int32
 	var v6, v8 gamemission_t
 	var v10 bool
 	// Filter automap on/off.
@@ -39351,65 +38688,25 @@ func st_Responder(ev *event_t) boolean {
 					if cht_CheckCheat(&cheat_ammonokey, int8(ev.Fdata2)) != 0 {
 						plyr.Farmorpoints = DEH_DEFAULT_IDFA_ARMOR
 						plyr.Farmortype = DEH_DEFAULT_IDFA_ARMOR_CLASS
-						i = 0
-						for {
-							if i >= NUMWEAPONS {
-								break
-							}
+						for i := range NUMWEAPONS {
 							plyr.Fweaponowned[i] = 1
-							goto _1
-						_1:
-							;
-							i++
 						}
-						i = 0
-						for {
-							if i >= NUMAMMO {
-								break
-							}
+						for i := range NUMAMMO {
 							plyr.Fammo[i] = plyr.Fmaxammo[i]
-							goto _2
-						_2:
-							;
-							i++
 						}
 						plyr.Fmessage = "Ammo (no keys) Added"
 					} else {
 						if cht_CheckCheat(&cheat_ammo, int8(ev.Fdata2)) != 0 {
 							plyr.Farmorpoints = DEH_DEFAULT_IDKFA_ARMOR
 							plyr.Farmortype = DEH_DEFAULT_IDKFA_ARMOR_CLASS
-							i = 0
-							for {
-								if i >= NUMWEAPONS {
-									break
-								}
+							for i := range NUMWEAPONS {
 								plyr.Fweaponowned[i] = 1
-								goto _3
-							_3:
-								;
-								i++
 							}
-							i = 0
-							for {
-								if i >= NUMAMMO {
-									break
-								}
+							for i := range NUMAMMO {
 								plyr.Fammo[i] = plyr.Fmaxammo[i]
-								goto _4
-							_4:
-								;
-								i++
 							}
-							i = 0
-							for {
-								if i >= NUMCARDS {
-									break
-								}
+							for i := range NUMCARDS {
 								plyr.Fcards[i] = 1
-								goto _5
-							_5:
-								;
-								i++
 							}
 							plyr.Fmessage = "Very Happy Ammo Added"
 						} else {
@@ -39473,11 +38770,7 @@ func st_Responder(ev *event_t) boolean {
 					}
 				}
 				// 'behold?' power-up cheats
-				i = 0
-				for {
-					if i >= 6 {
-						break
-					}
+				for i := range int32(6) {
 					if cht_CheckCheat(&cheat_powerup[i], int8(ev.Fdata2)) != 0 {
 						if plyr.Fpowers[i] == 0 {
 							p_GivePower(plyr, i)
@@ -39490,10 +38783,6 @@ func st_Responder(ev *event_t) boolean {
 						}
 						plyr.Fmessage = "Power-up Toggled"
 					}
-					goto _11
-				_11:
-					;
-					i++
 				}
 				// 'behold' power-up menu
 				if cht_CheckCheat(&cheat_powerup[6], int8(ev.Fdata2)) != 0 {
@@ -39599,19 +38888,11 @@ func st_updateFaceWidget() {
 		if plyr.Fbonuscount != 0 {
 			// picking up bonus
 			doevilgrin = 0
-			i = 0
-			for {
-				if i >= NUMWEAPONS {
-					break
-				}
+			for i := range NUMWEAPONS {
 				if oldweaponsowned[i] != plyr.Fweaponowned[i] {
 					doevilgrin = 1
 					oldweaponsowned[i] = plyr.Fweaponowned[i]
 				}
-				goto _1
-			_1:
-				;
-				i++
 			}
 			if doevilgrin != 0 {
 				// evil grin if just picked up weapon
@@ -39711,7 +38992,7 @@ var lastattackdown int32 = -1
 var priority int32
 
 func st_updateWidgets() {
-	var i, v2 int32
+	var v2 int32
 	// must redirect the pointer if the ready weapon has changed.
 	//  if (w_ready.data != plyr->readyweapon)
 	//  {
@@ -39735,11 +39016,7 @@ func st_updateWidgets() {
 	// refresh weapon change
 	//  }
 	// update keycard multiple widgets
-	i = 0
-	for {
-		if i >= 3 {
-			break
-		}
+	for i := range int32(3) {
 		if plyr.Fcards[i] != 0 {
 			v2 = i
 		} else {
@@ -39749,10 +39026,6 @@ func st_updateWidgets() {
 		if plyr.Fcards[i+3] != 0 {
 			keyboxes[i] = i + 3
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// refresh everything if this is him coming back to life
 	st_updateFaceWidget()
@@ -39763,20 +39036,12 @@ func st_updateWidgets() {
 	// used by w_frags widget
 	st_fragson = booluint32(deathmatch != 0 && st_statusbaron != 0)
 	st_fragscount = 0
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range int32(MAXPLAYERS) {
 		if i != consoleplayer {
 			st_fragscount += plyr.Ffrags[i]
 		} else {
 			st_fragscount -= plyr.Ffrags[i]
 		}
-		goto _3
-	_3:
-		;
-		i++
 	}
 }
 
@@ -39897,55 +39162,31 @@ func st_Drawer(fullscreen boolean, refresh boolean) {
 // the variable they use, invoking the specified callback function.
 
 func st_loadUnloadGraphics(callback func(string, **patch_t)) {
-	var facenum, i, j int32
+	var facenum int32
 	// Load the numbers, tall and short
-	i = 0
-	for {
-		if i >= 10 {
-			break
-		}
+	for i := range 10 {
 		bp := fmt.Sprintf("STTNUM%d", i)
 		callback(bp, &tallnum[i])
 		bp = fmt.Sprintf("STYSNUM%d", i)
 		callback(bp, &shortnum[i])
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// Load percent key.
 	//Note: why not load STMINUS here, too?
 	callback("STTPRCNT", &tallpercent)
 	// key cards
-	i = 0
-	for {
-		if i >= NUMCARDS {
-			break
-		}
+	for i := range NUMCARDS {
 		name := fmt.Sprintf("STKEYS%d", i)
 		callback(name, &keys[i])
-		goto _2
-	_2:
-		;
-		i++
 	}
 	// arms background
 	callback("STARMS", &armsbg)
 	// arms ownership widgets
-	i = 0
-	for {
-		if i >= 6 {
-			break
-		}
+	for i := range 6 {
 		name := fmt.Sprintf("STGNUM%d", i+2)
 		// gray #
 		callback(name, &arms[i][0])
 		// yellow #
 		arms[i][1] = shortnum[i+2]
-		goto _3
-	_3:
-		;
-		i++
 	}
 	// face backgrounds for different color players
 	name := fmt.Sprintf("STFB%d", consoleplayer)
@@ -39954,23 +39195,11 @@ func st_loadUnloadGraphics(callback func(string, **patch_t)) {
 	callback("STBAR", &sbar)
 	// face states
 	facenum = 0
-	i = 0
-	for {
-		if i >= st_NUMPAINFACES {
-			break
-		}
-		j = 0
-		for {
-			if j >= st_NUMSTRAIGHTFACES {
-				break
-			}
+	for i := range st_NUMPAINFACES {
+		for j := range st_NUMSTRAIGHTFACES {
 			name := fmt.Sprintf("STFST%d%d", i, j)
 			callback(name, &faces[facenum])
 			facenum++
-			goto _5
-		_5:
-			;
-			j++
 		}
 		name := fmt.Sprintf("STFTR%d0", i) // turn right
 		callback(name, &faces[facenum])
@@ -39987,10 +39216,6 @@ func st_loadUnloadGraphics(callback func(string, **patch_t)) {
 		name = fmt.Sprintf("STFKILL%d", i) // pissed off
 		callback(name, &faces[facenum])
 		facenum++
-		goto _4
-	_4:
-		;
-		i++
 	}
 	callback("STFGOD0", &faces[facenum])
 	facenum++
@@ -40012,34 +39237,17 @@ func st_loadData() {
 }
 
 func st_initData() {
-	var i int32
 	st_firsttime = 1
 	plyr = &players[consoleplayer]
 	st_statusbaron = 1
 	st_faceindex = 0
 	st_palette = -1
 	st_oldhealth = -1
-	i = 0
-	for {
-		if i >= NUMWEAPONS {
-			break
-		}
+	for i := range NUMWEAPONS {
 		oldweaponsowned[i] = plyr.Fweaponowned[i]
-		goto _2
-	_2:
-		;
-		i++
 	}
-	i = 0
-	for {
-		if i >= 3 {
-			break
-		}
+	for i := range keyboxes {
 		keyboxes[i] = -1
-		goto _3
-	_3:
-		;
-		i++
 	}
 	stlib_init()
 }
@@ -40164,7 +39372,7 @@ var mus_playing *musicinfo_t
 //
 
 func s_Init(sfxVolume int32, musicVolume int32) {
-	var i, v3 int32
+	var v3 int32
 	i_PrecacheSounds(S_sfx[:])
 	s_SetSfxVolume(sfxVolume)
 	s_SetMusicVolume(musicVolume)
@@ -40175,18 +39383,10 @@ func s_Init(sfxVolume int32, musicVolume int32) {
 	// no sounds are playing, and they are not mus_paused
 	mus_paused = 0
 	// Note that sounds have not been cached (yet).
-	i = 1
-	for {
-		if i >= NUMSFX {
-			break
-		}
+	for i := 1; i < NUMSFX; i++ {
 		v3 = -1
 		S_sfx[i].Fusefulness = v3
 		S_sfx[i].Flumpnum = v3
-		goto _2
-	_2:
-		;
-		i++
 	}
 	i_AtExit(s_Shutdown, 1)
 }
@@ -40197,7 +39397,6 @@ func s_Shutdown() {
 }
 
 func s_StopChannel(cnum int32) {
-	var i int32
 	c := &channels[cnum]
 	if c.Fsfxinfo != nil {
 		// stop the sound playing
@@ -40205,18 +39404,10 @@ func s_StopChannel(cnum int32) {
 			i_StopSound(c.Fhandle)
 		}
 		// check to see if other channels are playing the sound
-		i = 0
-		for {
-			if i >= snd_channels {
-				break
-			}
+		for i := range snd_channels {
 			if cnum != i && c.Fsfxinfo == channels[i].Fsfxinfo {
 				break
 			}
-			goto _1
-		_1:
-			;
-			i++
 		}
 		// degrade usefulness of sound data
 		c.Fsfxinfo.Fusefulness--
@@ -40231,22 +39422,14 @@ func s_StopChannel(cnum int32) {
 //
 
 func s_Start() {
-	var cnum, mnum int32
+	var mnum int32
 	var spmus [9]int32
 	// kill all playing sounds at start of level
 	//  (trust me - a good idea)
-	cnum = 0
-	for {
-		if cnum >= snd_channels {
-			break
-		}
+	for cnum := range snd_channels {
 		if channels[cnum].Fsfxinfo != nil {
 			s_StopChannel(cnum)
 		}
-		goto _1
-	_1:
-		;
-		cnum++
 	}
 	// start new music for the level
 	mus_paused = 0
@@ -40274,20 +39457,11 @@ func s_Start() {
 }
 
 func s_StopSound(origin *degenmobj_t) {
-	var cnum int32
-	cnum = 0
-	for {
-		if cnum >= snd_channels {
-			break
-		}
+	for cnum := range snd_channels {
 		if channels[cnum].Fsfxinfo != nil && channels[cnum].Forigin == origin {
 			s_StopChannel(cnum)
 			break
 		}
-		goto _1
-	_1:
-		;
-		cnum++
 	}
 }
 
@@ -40299,11 +39473,7 @@ func s_StopSound(origin *degenmobj_t) {
 func s_GetChannel(origin *degenmobj_t, sfxinfo *sfxinfo_t) int32 {
 	var cnum int32
 	// Find an open channel
-	cnum = 0
-	for {
-		if cnum >= snd_channels {
-			break
-		}
+	for cnum = range snd_channels {
 		if channels[cnum].Fsfxinfo == nil {
 			break
 		} else {
@@ -40312,26 +39482,14 @@ func s_GetChannel(origin *degenmobj_t, sfxinfo *sfxinfo_t) int32 {
 				break
 			}
 		}
-		goto _1
-	_1:
-		;
-		cnum++
 	}
 	// None available
 	if cnum == snd_channels {
 		// Look for lower priority
-		cnum = 0
-		for {
-			if cnum >= snd_channels {
-				break
-			}
+		for cnum = range snd_channels {
 			if channels[cnum].Fsfxinfo.Fpriority >= sfxinfo.Fpriority {
 				break
 			}
-			goto _2
-		_2:
-			;
-			cnum++
 		}
 		if cnum == snd_channels {
 			// FUCK!  No lower priority.  Sorry, Charlie.
@@ -40474,14 +39632,10 @@ func s_ResumeSound() {
 
 func s_UpdateSounds(listener *degenmobj_t) {
 	var volume, channel int32
-	var audible, cnum int32
+	var audible int32
 	var sfx *sfxinfo_t
 	i_UpdateSound()
-	cnum = 0
-	for {
-		if cnum >= snd_channels {
-			break
-		}
+	for cnum := range snd_channels {
 		c := &channels[cnum]
 		sfx = c.Fsfxinfo
 		if sfx != nil {
@@ -40493,7 +39647,7 @@ func s_UpdateSounds(listener *degenmobj_t) {
 					volume += sfx.Fvolume
 					if volume < 1 {
 						s_StopChannel(cnum)
-						goto _1
+						continue
 					} else {
 						if volume > snd_SfxVolume {
 							volume = snd_SfxVolume
@@ -40517,10 +39671,6 @@ func s_UpdateSounds(listener *degenmobj_t) {
 				s_StopChannel(cnum)
 			}
 		}
-		goto _1
-	_1:
-		;
-		cnum++
 	}
 }
 
@@ -41572,18 +40722,13 @@ func wi_drawOnLnode(n int32, c []*patch_t) {
 
 func wi_initAnimatedBack() {
 	var a *anim_t1
-	var i int32
 	if gamemode == commercial {
 		return
 	}
 	if wbs.Fepsd > 2 {
 		return
 	}
-	i = 0
-	for {
-		if i >= NUMANIMS[wbs.Fepsd] {
-			break
-		}
+	for i := range NUMANIMS[wbs.Fepsd] {
 		a = &anims1[wbs.Fepsd][i]
 		// init variables
 		a.Fctr = -1
@@ -41599,27 +40744,18 @@ func wi_initAnimatedBack() {
 				}
 			}
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
 func wi_updateAnimatedBack() {
 	var a *anim_t1
-	var i int32
 	if gamemode == commercial {
 		return
 	}
 	if wbs.Fepsd > 2 {
 		return
 	}
-	i = 0
-	for {
-		if i >= NUMANIMS[wbs.Fepsd] {
-			break
-		}
+	for i := range NUMANIMS[wbs.Fepsd] {
 		a = &anims1[wbs.Fepsd][i]
 		if bcnt == a.Fnexttic {
 			switch a.Ftype1 {
@@ -41649,35 +40785,22 @@ func wi_updateAnimatedBack() {
 				break
 			}
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
 func wi_drawAnimatedBack() {
 	var a *anim_t1
-	var i int32
 	if gamemode == commercial {
 		return
 	}
 	if wbs.Fepsd > 2 {
 		return
 	}
-	i = 0
-	for {
-		if i >= NUMANIMS[wbs.Fepsd] {
-			break
-		}
+	for i := range NUMANIMS[wbs.Fepsd] {
 		a = &anims1[wbs.Fepsd][i]
 		if a.Fctr >= 0 {
 			v_DrawPatch(a.Floc.Fx, a.Floc.Fy, a.Fp[a.Fctr])
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -41815,7 +40938,7 @@ func wi_updateShowNextLoc() {
 }
 
 func wi_drawShowNextLoc() {
-	var i, last, v1 int32
+	var last, v1 int32
 	wi_slamBackground()
 	// draw animated background
 	wi_drawAnimatedBack()
@@ -41831,16 +40954,8 @@ func wi_drawShowNextLoc() {
 		}
 		last = v1
 		// draw a splat on taken cities.
-		i = 0
-		for {
-			if !(i <= last) {
-				break
-			}
+		for i := int32(0); i <= last; i++ {
 			wi_drawOnLnode(i, splat[:])
-			goto _2
-		_2:
-			;
-			i++
 		}
 		// splat the secret level?
 		if wbs.Fdidsecret != 0 {
@@ -41863,20 +40978,12 @@ func wi_drawNoState() {
 }
 
 func wi_fragSum(playernum int32) int32 {
-	var frags, i int32
+	var frags int32
 	frags = 0
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range int32(MAXPLAYERS) {
 		if playeringame[i] != 0 && i != playernum {
 			frags += plrs[playernum].Ffrags[i]
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// JDC hack - negative frags.
 	frags -= plrs[playernum].Ffrags[playernum]
@@ -41890,71 +40997,38 @@ var dm_frags [4][4]int32
 var dm_totals [4]int32
 
 func wi_initDeathmatchStats() {
-	var i, j int32
 	state = StatCount
 	acceleratestage = 0
 	dm_state = 1
 	cnt_pause = TICRATE
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		if playeringame[i] != 0 {
-			j = 0
-			for {
-				if j >= MAXPLAYERS {
-					break
-				}
+			for j := range MAXPLAYERS {
 				if playeringame[j] != 0 {
 					dm_frags[i][j] = 0
 				}
-				goto _2
-			_2:
-				;
-				j++
 			}
 			dm_totals[i] = 0
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	wi_initAnimatedBack()
 }
 
 func wi_updateDeathmatchStats() {
-	var i, j, v5 int32
+	var v5 int32
 	var stillticking boolean
 	wi_updateAnimatedBack()
 	if acceleratestage != 0 && dm_state != 4 {
 		acceleratestage = 0
-		i = 0
-		for {
-			if i >= MAXPLAYERS {
-				break
-			}
+		for i := range int32(MAXPLAYERS) {
 			if playeringame[i] != 0 {
-				j = 0
-				for {
-					if j >= MAXPLAYERS {
-						break
-					}
+				for j := range MAXPLAYERS {
 					if playeringame[j] != 0 {
 						dm_frags[i][j] = plrs[i].Ffrags[j]
 					}
-					goto _2
-				_2:
-					;
-					j++
 				}
 				dm_totals[i] = wi_fragSum(i)
 			}
-			goto _1
-		_1:
-			;
-			i++
 		}
 		s_StartSound(nil, int32(sfx_barexp))
 		dm_state = 4
@@ -41964,17 +41038,9 @@ func wi_updateDeathmatchStats() {
 			s_StartSound(nil, int32(sfx_pistol))
 		}
 		stillticking = 0
-		i = 0
-		for {
-			if i >= MAXPLAYERS {
-				break
-			}
+		for i := range int32(MAXPLAYERS) {
 			if playeringame[i] != 0 {
-				j = 0
-				for {
-					if j >= MAXPLAYERS {
-						break
-					}
+				for j := range MAXPLAYERS {
 					if playeringame[j] != 0 && dm_frags[i][j] != plrs[i].Ffrags[j] {
 						if plrs[i].Ffrags[j] < 0 {
 							dm_frags[i][j]--
@@ -41989,10 +41055,6 @@ func wi_updateDeathmatchStats() {
 						}
 						stillticking = 1
 					}
-					goto _4
-				_4:
-					;
-					j++
 				}
 				dm_totals[i] = wi_fragSum(i)
 				if dm_totals[i] > 99 {
@@ -42002,10 +41064,6 @@ func wi_updateDeathmatchStats() {
 					dm_totals[i] = -99
 				}
 			}
-			goto _3
-		_3:
-			;
-			i++
 		}
 		if stillticking == 0 {
 			s_StartSound(nil, int32(sfx_barexp))
@@ -42035,7 +41093,7 @@ func wi_updateDeathmatchStats() {
 }
 
 func wi_drawDeathmatchStats() {
-	var i, j, w, x, y int32
+	var w, x, y int32
 	wi_slamBackground()
 	// draw animated background
 	wi_drawAnimatedBack()
@@ -42047,11 +41105,7 @@ func wi_drawDeathmatchStats() {
 	// draw P?
 	x = DM_MATRIXX + DM_SPACINGX
 	y = DM_MATRIXY
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range int32(MAXPLAYERS) {
 		if playeringame[i] != 0 {
 			v_DrawPatch(x-int32(p[i].Fwidth)/2, DM_MATRIXY-WI_SPACINGY, p[i])
 			v_DrawPatch(DM_MATRIXX-int32(p[i].Fwidth)/2, y, p[i])
@@ -42067,42 +41121,22 @@ func wi_drawDeathmatchStats() {
 		}
 		x += DM_SPACINGX
 		y += WI_SPACINGY
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// draw stats
 	y = DM_MATRIXY + 10
 	w = int32(num[0].Fwidth)
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		x = DM_MATRIXX + DM_SPACINGX
 		if playeringame[i] != 0 {
-			j = 0
-			for {
-				if j >= MAXPLAYERS {
-					break
-				}
+			for j := range MAXPLAYERS {
 				if playeringame[j] != 0 {
 					wi_drawNum(x+w, y, dm_frags[i][j], 2)
 				}
 				x += DM_SPACINGX
-				goto _3
-			_3:
-				;
-				j++
 			}
 			wi_drawNum(DM_TOTALSX+w, y, dm_totals[i], 2)
 		}
 		y += WI_SPACINGY
-		goto _2
-	_2:
-		;
-		i++
 	}
 }
 
@@ -42111,18 +41145,14 @@ var dofrags int32
 var ng_state int32
 
 func wi_initNetgameStats() {
-	var i, v2, v3, v4 int32
+	var v2, v3, v4 int32
 	state = StatCount
 	acceleratestage = 0
 	ng_state = 1
 	cnt_pause = TICRATE
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range int32(MAXPLAYERS) {
 		if playeringame[i] == 0 {
-			goto _1
+			continue
 		}
 		v4 = 0
 		cnt_frags[i] = v4
@@ -42132,28 +41162,20 @@ func wi_initNetgameStats() {
 		cnt_items[i] = v2
 		cnt_kills[i] = v2
 		dofrags += wi_fragSum(i)
-		goto _1
-	_1:
-		;
-		i++
 	}
 	dofrags = boolint32(dofrags != 0)
 	wi_initAnimatedBack()
 }
 
 func wi_updateNetgameStats() {
-	var fsum, i, v6, v7 int32
+	var fsum, v6, v7 int32
 	var stillticking boolean
 	wi_updateAnimatedBack()
 	if acceleratestage != 0 && ng_state != 10 {
 		acceleratestage = 0
-		i = 0
-		for {
-			if i >= MAXPLAYERS {
-				break
-			}
+		for i := range int32(MAXPLAYERS) {
 			if playeringame[i] == 0 {
-				goto _1
+				continue
 			}
 			cnt_kills[i] = plrs[i].Fskills * 100 / wbs.Fmaxkills
 			cnt_items[i] = plrs[i].Fsitems * 100 / wbs.Fmaxitems
@@ -42161,10 +41183,6 @@ func wi_updateNetgameStats() {
 			if dofrags != 0 {
 				cnt_frags[i] = wi_fragSum(i)
 			}
-			goto _1
-		_1:
-			;
-			i++
 		}
 		s_StartSound(nil, int32(sfx_barexp))
 		ng_state = 10
@@ -42174,13 +41192,9 @@ func wi_updateNetgameStats() {
 			s_StartSound(nil, int32(sfx_pistol))
 		}
 		stillticking = 0
-		i = 0
-		for {
-			if i >= MAXPLAYERS {
-				break
-			}
+		for i := range MAXPLAYERS {
 			if playeringame[i] == 0 {
-				goto _2
+				continue
 			}
 			cnt_kills[i] += 2
 			if cnt_kills[i] >= plrs[i].Fskills*int32(100)/wbs.Fmaxkills {
@@ -42188,10 +41202,6 @@ func wi_updateNetgameStats() {
 			} else {
 				stillticking = 1
 			}
-			goto _2
-		_2:
-			;
-			i++
 		}
 		if stillticking == 0 {
 			s_StartSound(nil, int32(sfx_barexp))
@@ -42203,13 +41213,9 @@ func wi_updateNetgameStats() {
 				s_StartSound(nil, int32(sfx_pistol))
 			}
 			stillticking = 0
-			i = 0
-			for {
-				if i >= MAXPLAYERS {
-					break
-				}
+			for i := range MAXPLAYERS {
 				if playeringame[i] == 0 {
-					goto _3
+					continue
 				}
 				cnt_items[i] += 2
 				if cnt_items[i] >= plrs[i].Fsitems*int32(100)/wbs.Fmaxitems {
@@ -42217,10 +41223,6 @@ func wi_updateNetgameStats() {
 				} else {
 					stillticking = 1
 				}
-				goto _3
-			_3:
-				;
-				i++
 			}
 			if stillticking == 0 {
 				s_StartSound(nil, int32(sfx_barexp))
@@ -42232,13 +41234,9 @@ func wi_updateNetgameStats() {
 					s_StartSound(nil, int32(sfx_pistol))
 				}
 				stillticking = 0
-				i = 0
-				for {
-					if i >= MAXPLAYERS {
-						break
-					}
+				for i := range MAXPLAYERS {
 					if playeringame[i] == 0 {
-						goto _4
+						continue
 					}
 					cnt_secret[i] += 2
 					if cnt_secret[i] >= plrs[i].Fssecret*int32(100)/wbs.Fmaxsecret {
@@ -42246,10 +41244,6 @@ func wi_updateNetgameStats() {
 					} else {
 						stillticking = 1
 					}
-					goto _4
-				_4:
-					;
-					i++
 				}
 				if stillticking == 0 {
 					s_StartSound(nil, int32(sfx_barexp))
@@ -42261,13 +41255,9 @@ func wi_updateNetgameStats() {
 						s_StartSound(nil, int32(sfx_pistol))
 					}
 					stillticking = 0
-					i = 0
-					for {
-						if i >= MAXPLAYERS {
-							break
-						}
+					for i := range int32(MAXPLAYERS) {
 						if playeringame[i] == 0 {
-							goto _5
+							continue
 						}
 						cnt_frags[i] += 1
 						v6 = wi_fragSum(i)
@@ -42277,10 +41267,6 @@ func wi_updateNetgameStats() {
 						} else {
 							stillticking = 1
 						}
-						goto _5
-					_5:
-						;
-						i++
 					}
 					if stillticking == 0 {
 						s_StartSound(nil, int32(sfx_pldeth))
@@ -42313,7 +41299,7 @@ func wi_updateNetgameStats() {
 }
 
 func wi_drawNetgameStats() {
-	var i, pwidth, x, y int32
+	var pwidth, x, y int32
 	pwidth = int32(percent.Fwidth)
 	wi_slamBackground()
 	// draw animated background
@@ -42328,13 +41314,9 @@ func wi_drawNetgameStats() {
 	}
 	// draw stats
 	y = NG_STATSY + int32(kills.Fheight)
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range int32(MAXPLAYERS) {
 		if playeringame[i] == 0 {
-			goto _1
+			continue
 		}
 		x = 32 + int32(star.Fwidth)/2 + 32*boolint32(dofrags == 0)
 		v_DrawPatch(x-int32(p[i].Fwidth), y, p[i])
@@ -42352,10 +41334,6 @@ func wi_drawNetgameStats() {
 			wi_drawNum(x, y+int32(10), cnt_frags[i], -1)
 		}
 		y += WI_SPACINGY
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -42550,33 +41528,15 @@ func wi_Ticker() {
 // lumps to be loaded/unloaded into memory.
 
 func wi_loadUnloadData(callback func(string, **patch_t)) {
-	var a *anim_t1
-	var i, j int32
 	if gamemode == commercial {
-		i = 0
-		for {
-			if i >= NUMCMAPS {
-				break
-			}
+		for i := range NUMCMAPS {
 			bp1 := fmt.Sprintf("CWILV%2.2d", i)
 			callback(bp1, &lnames[i])
-			goto _1
-		_1:
-			;
-			i++
 		}
 	} else {
-		i = 0
-		for {
-			if i >= NUMMAPS {
-				break
-			}
+		for i := range NUMMAPS {
 			bp1 := fmt.Sprintf("WILV%d%d", wbs.Fepsd, i)
 			callback(bp1, &lnames[i])
-			goto _2
-		_2:
-			;
-			i++
 		}
 		// you are here
 		callback("WIURH0", &yah[0])
@@ -42585,17 +41545,9 @@ func wi_loadUnloadData(callback func(string, **patch_t)) {
 		// splat
 		callback("WISPLAT", &splat[0])
 		if wbs.Fepsd < 3 {
-			j = 0
-			for {
-				if j >= NUMANIMS[wbs.Fepsd] {
-					break
-				}
-				a = &anims1[wbs.Fepsd][j]
-				i = 0
-				for {
-					if i >= a.Fnanims {
-						break
-					}
+			for j := range NUMANIMS[wbs.Fepsd] {
+				a := &anims1[wbs.Fepsd][j]
+				for i := range a.Fnanims {
 					// MONDO HACK!
 					if wbs.Fepsd != 1 || j != 8 {
 						// animations
@@ -42605,32 +41557,16 @@ func wi_loadUnloadData(callback func(string, **patch_t)) {
 						// HACK ALERT!
 						a.Fp[i] = anims1[1][4].Fp[i]
 					}
-					goto _4
-				_4:
-					;
-					i++
 				}
-				goto _3
-			_3:
-				;
-				j++
 			}
 		}
 	}
 	// More hacks on minus sign.
 	callback("WIMINUS", &wiminus)
-	i = 0
-	for {
-		if i >= 10 {
-			break
-		}
+	for i := range 10 {
 		// numbers 0-9
 		bp1 := fmt.Sprintf("WINUM%d", i)
 		callback(bp1, &num[i])
-		goto _5
-	_5:
-		;
-		i++
 	}
 	// percent sign
 	callback("WIPCNT", &percent)
@@ -42671,21 +41607,13 @@ func wi_loadUnloadData(callback func(string, **patch_t)) {
 	callback("WIVCTMS", &victims)
 	// "total"
 	callback("WIMSTT", &total)
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		// "1,2,3,4"
 		bp1 := fmt.Sprintf("STPB%d", i)
 		callback(bp1, &p[i])
 		// "1,2,3,4"
 		bp1 = fmt.Sprintf("WIBP%d", i+1)
 		callback(bp1, &bp[i])
-		goto _6
-	_6:
-		;
-		i++
 	}
 	// Background image
 	var bp1 string
@@ -42815,22 +41743,12 @@ func checksumAddLump(sha hash.Hash, lump *lumpinfo_t) {
 }
 
 func w_Checksum(digest *sha1_digest_t) {
-	var i uint32
-	//SHA1_Init(bp)
 	sha := sha1.New()
 	open_wadfiles = nil
 	// Go through each entry in the WAD directory, adding information
 	// about each entry to the SHA1 hash.
-	i = 0
-	for {
-		if i >= numlumps {
-			break
-		}
+	for i := range numlumps {
 		checksumAddLump(sha, &lumpinfo[i])
-		goto _1
-	_1:
-		;
-		i++
 	}
 	copy(digest[:], sha.Sum(nil))
 }
@@ -43163,25 +42081,17 @@ func w_ReleaseLumpName(name string) {
 // Generate a hash table for fast lookups
 
 func w_GenerateHashTable() {
-	var hash, i uint32
+	var hash uint32
 	// Free the old hash table, if there is one
 	lumphash = nil
 	// Generate hash table
 	if numlumps > 0 {
 		lumphash = make([]*lumpinfo_t, numlumps)
-		i = 0
-		for {
-			if i >= numlumps {
-				break
-			}
+		for i := range numlumps {
 			hash = w_LumpNameHash(lumpinfo[i].Name()) % numlumps
 			// Hook into the hash table
 			lumpinfo[i].Fnext = lumphash[hash]
 			lumphash[hash] = &lumpinfo[i]
-			goto _1
-		_1:
-			;
-			i++
 		}
 	}
 	// All done!
@@ -43214,22 +42124,13 @@ var unique_lumps = [4]struct {
 }
 
 func w_CheckCorrectIWAD(mission gamemission_t) {
-	var i, lumpnum int32
-	i = 0
-	for {
-		if i >= int32(len(unique_lumps)) {
-			break
-		}
+	for i := range len(unique_lumps) {
 		if mission != unique_lumps[i].Fmission {
-			lumpnum = w_CheckNumForName(unique_lumps[i].Flumpname)
+			lumpnum := w_CheckNumForName(unique_lumps[i].Flumpname)
 			if lumpnum >= 0 {
 				i_Error("\nYou are trying to use a %s IWAD file with the %s%s binary.\nThis isn't going to work.\nYou probably want to use the %s%s binary.", d_SuggestGameName(unique_lumps[i].Fmission, indetermined), "doomgeneric", d_GameMissionString(mission), "doomgeneric", d_GameMissionString(unique_lumps[i].Fmission))
 			}
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
