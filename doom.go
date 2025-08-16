@@ -5285,8 +5285,7 @@ func initGameVersion() {
 	//
 	p = m_CheckParmWithArgs("-gameversion", 1)
 	if p != 0 {
-		i = 0
-		for {
+		for i := 0; ; i++ {
 			if gameversions[i].Fdescription == "" {
 				break
 			}
@@ -5294,23 +5293,14 @@ func initGameVersion() {
 				gameversion = gameversions[i].Fversion
 				break
 			}
-			goto _1
-		_1:
-			;
-			i++
 		}
 		if gameversions[i].Fdescription == "" {
 			fprintf_ccgo(os.Stdout, "Supported game versions:\n")
-			i = 0
-			for {
+			for i := 0; ; i++ {
 				if gameversions[i].Fdescription == "" {
 					break
 				}
 				fprintf_ccgo(os.Stdout, "\t%s (%s)\n", gameversions[i].Fcmdline, gameversions[i].Fdescription)
-				goto _2
-			_2:
-				;
-				i++
 			}
 			i_Error("Unknown game version '%s'", myargs[p+1])
 		}
@@ -5361,8 +5351,7 @@ func initGameVersion() {
 
 func printGameVersion() {
 	var i int32
-	i = 0
-	for {
+	for i = 0; ; i++ {
 		if gameversions[i].Fdescription == "" {
 			break
 		}
@@ -5370,10 +5359,6 @@ func printGameVersion() {
 			fprintf_ccgo(os.Stdout, "Emulating the behavior of the '%s' executable.\n", gameversions[i].Fdescription)
 			break
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -6312,10 +6297,7 @@ func f_TextWrite() {
 	if count < 0 {
 		count = 0
 	}
-	for {
-		if count == 0 {
-			break
-		}
+	for ; count > 0; count-- {
 		c = int32(finaletext[pos])
 		pos++
 		if c == 0 {
@@ -6324,12 +6306,12 @@ func f_TextWrite() {
 		if c == '\n' {
 			cx = 10
 			cy += 11
-			goto _3
+			continue
 		}
 		c = xtoupper(c) - '!'
 		if c < 0 || c > '_'-'!'+1 {
 			cx += 4
-			goto _3
+			continue
 		}
 		w = int32(hu_font[c].Fwidth)
 		if cx+w > SCREENWIDTH {
@@ -6337,10 +6319,6 @@ func f_TextWrite() {
 		}
 		v_DrawPatch(cx, cy, hu_font[c])
 		cx += w
-		goto _3
-	_3:
-		;
-		count--
 	}
 }
 
@@ -8282,7 +8260,6 @@ func g_DoNewGame() {
 }
 
 func g_InitNew(skill skill_t, episode int32, map1 int32) {
-	var i int32
 	var skytexturename string
 	if paused != 0 {
 		paused = 0
@@ -8346,32 +8323,16 @@ func g_InitNew(skill skill_t, episode int32, map1 int32) {
 		respawnmonsters = 0
 	}
 	if fastparm != 0 || skill == sk_nightmare && gameskill != sk_nightmare {
-		i = s_SARG_RUN1
-		for {
-			if !(i <= s_SARG_PAIN2) {
-				break
-			}
+		for i := s_SARG_RUN1; i <= s_SARG_PAIN2; i++ {
 			states[i].Ftics >>= 1
-			goto _1
-		_1:
-			;
-			i++
 		}
 		mobjinfo[mt_BRUISERSHOT].Fspeed = 20 * (1 << FRACBITS)
 		mobjinfo[mt_HEADSHOT].Fspeed = 20 * (1 << FRACBITS)
 		mobjinfo[mt_TROOPSHOT].Fspeed = 20 * (1 << FRACBITS)
 	} else {
 		if skill != sk_nightmare && gameskill == sk_nightmare {
-			i = s_SARG_RUN1
-			for {
-				if !(i <= s_SARG_PAIN2) {
-					break
-				}
+			for i := s_SARG_RUN1; i <= s_SARG_PAIN2; i++ {
 				states[i].Ftics <<= 1
-				goto _2
-			_2:
-				;
-				i++
 			}
 			mobjinfo[mt_BRUISERSHOT].Fspeed = 15 * (1 << FRACBITS)
 			mobjinfo[mt_HEADSHOT].Fspeed = 10 * (1 << FRACBITS)
@@ -9180,22 +9141,13 @@ func init() {
 }
 
 func hu_Init() {
-	var i, j, v2 int32
+	var j int32
 	// load the heads-up font
 	j = '!'
-	i = 0
-	for {
-		if i >= '_'-'!'+1 {
-			break
-		}
-		v2 = j
+	for i := 0; i < '_'-'!'+1; i++ {
+		name := fmt.Sprintf("STCFN%.3d", j)
 		j++
-		name := fmt.Sprintf("STCFN%.3d", v2)
 		hu_font[i] = w_CacheLumpNameT(name)
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -19562,19 +19514,10 @@ func m_DrawLoad() {
 //	// Draw border for the savegame description
 //	//
 func m_DrawSaveLoadBorder(x int32, y int32) {
-	var i int32
 	v_DrawPatchDirect(x-8, y+7, w_CacheLumpNameT("M_LSLEFT"))
-	i = 0
-	for {
-		if i >= 24 {
-			break
-		}
+	for range 24 {
 		v_DrawPatchDirect(x, y+7, w_CacheLumpNameT("M_LSCNTR"))
 		x += 8
-		goto _1
-	_1:
-		;
-		i++
 	}
 	v_DrawPatchDirect(x, y+7, w_CacheLumpNameT("M_LSRGHT"))
 }
@@ -19609,22 +19552,13 @@ func m_LoadGame(choice int32) {
 //	//  m_SaveGame & Cie.
 //	//
 func m_DrawSave() {
-	var i int32
 	v_DrawPatchDirect(72, 28, w_CacheLumpNameT("M_SAVEG"))
-	i = 0
-	for {
-		if i >= int32(load_end) {
-			break
-		}
+	for i := range int32(load_end) {
 		m_DrawSaveLoadBorder(int32(LoadDef.Fx), int32(LoadDef.Fy)+LINEHEIGHT*i)
 		m_WriteText(int32(LoadDef.Fx), int32(LoadDef.Fy)+LINEHEIGHT*i, savegamestrings[i])
-		goto _1
-	_1:
-		;
-		i++
 	}
 	if saveStringEnter != 0 {
-		i = m_StringWidth(savegamestrings[saveSlot])
+		i := m_StringWidth(savegamestrings[saveSlot])
 		m_WriteText(int32(LoadDef.Fx)+i, int32(LoadDef.Fy)+LINEHEIGHT*saveSlot, "_")
 	}
 }
@@ -20115,21 +20049,13 @@ func m_SizeDisplay(choice int32) {
 //	//      Menu Functions
 //	//
 func m_DrawThermo(x int32, y int32, thermWidth int32, thermDot int32) {
-	var i, xx int32
+	var xx int32
 	xx = x
 	v_DrawPatchDirect(xx, y, w_CacheLumpNameT("M_THERML"))
 	xx += 8
-	i = 0
-	for {
-		if i >= thermWidth {
-			break
-		}
+	for range thermWidth {
 		v_DrawPatchDirect(xx, y, w_CacheLumpNameT("M_THERMM"))
 		xx += 8
-		goto _1
-	_1:
-		;
-		i++
 	}
 	v_DrawPatchDirect(xx, y, w_CacheLumpNameT("M_THERMR"))
 	v_DrawPatchDirect(x+8+thermDot*8, y, w_CacheLumpNameT("M_THERMO"))
@@ -20234,7 +20160,7 @@ func isNullKey(key int32) boolean {
 //	// M_Responder
 //	//
 func m_Responder(ev *event_t) boolean {
-	var ch, i, key int32
+	var ch, key int32
 	// In testcontrols mode, none of the function keys should do anything
 	// - the only key is escape to quit.
 	if testcontrols != 0 {
@@ -20575,35 +20501,19 @@ func m_Responder(ev *event_t) boolean {
 								return 1
 							} else {
 								if ch != 0 || isNullKey(key) != 0 {
-									i = int32(itemOn) + 1
-									for {
-										if i >= int32(currentMenu.Fnumitems) {
-											break
-										}
+									for i := int32(itemOn) + 1; i < int32(currentMenu.Fnumitems); i++ {
 										if int32(currentMenu.Fmenuitems[i].FalphaKey) == ch {
 											itemOn = int16(i)
 											s_StartSound(nil, int32(sfx_pstop))
 											return 1
 										}
-										goto _2
-									_2:
-										;
-										i++
 									}
-									i = 0
-									for {
-										if !(i <= int32(itemOn)) {
-											break
-										}
+									for i := range itemOn {
 										if int32(currentMenu.Fmenuitems[i].FalphaKey) == ch {
 											itemOn = int16(i)
 											s_StartSound(nil, int32(sfx_pstop))
 											return 1
 										}
-										goto _3
-									_3:
-										;
-										i++
 									}
 								}
 							}
@@ -22151,38 +22061,22 @@ func p_NewChaseDir(actor *mobj_t) {
 	}
 	// randomly determine direction of search
 	if p_Random()&1 != 0 {
-		tdir = DI_EAST
-		for {
-			if !(tdir <= DI_SOUTHEAST) {
-				break
-			}
+		for tdir := dirtype_t(DI_EAST); tdir <= DI_SOUTHEAST; tdir++ {
 			if tdir != turnaround {
 				actor.Fmovedir = tdir
 				if p_TryWalk(actor) != 0 {
 					return
 				}
 			}
-			goto _1
-		_1:
-			;
-			tdir++
 		}
 	} else {
-		tdir = DI_SOUTHEAST
-		for {
-			if tdir == DI_EAST-1 {
-				break
-			}
+		for tdir := dirtype_t(DI_SOUTHEAST); tdir < DI_EAST-1; tdir++ {
 			if tdir != turnaround {
 				actor.Fmovedir = tdir
 				if p_TryWalk(actor) != 0 {
 					return
 				}
 			}
-			goto _2
-		_2:
-			;
-			tdir--
 		}
 	}
 	if turnaround != DI_NODIR {
@@ -22727,7 +22621,7 @@ func pit_VileCheck(thing *mobj_t) boolean {
 //	// Check for ressurecting a body
 //	//
 func a_VileChase(actor *mobj_t) {
-	var bx, by, xh, xl, yh, yl int32
+	var xh, xl, yh, yl int32
 	var temp *mobj_t
 	var info *mobjinfo_t
 	if actor.Fmovedir != DI_NODIR {
@@ -22738,16 +22632,8 @@ func a_VileChase(actor *mobj_t) {
 		xh = (viletryx - bmaporgx + 32*(1<<FRACBITS)*2) >> (FRACBITS + 7)
 		yl = (viletryy - bmaporgy - 32*(1<<FRACBITS)*2) >> (FRACBITS + 7)
 		yh = (viletryy - bmaporgy + 32*(1<<FRACBITS)*2) >> (FRACBITS + 7)
-		bx = xl
-		for {
-			if !(bx <= xh) {
-				break
-			}
-			by = yl
-			for {
-				if !(by <= yh) {
-					break
-				}
+		for bx := xl; bx <= xh; bx++ {
+			for by := yl; by <= yh; by++ {
 				// Call pit_VileCheck to check
 				// whether object is a corpse
 				// that canbe raised.
@@ -22767,15 +22653,7 @@ func a_VileChase(actor *mobj_t) {
 					corpsehit.Ftarget = nil
 					return
 				}
-				goto _2
-			_2:
-				;
-				by++
 			}
-			goto _1
-		_1:
-			;
-			bx++
 		}
 	}
 	// Return to normal attack.
@@ -28199,38 +28077,22 @@ func a_Light2(player *player_t, psp *pspdef_t) {
 //	//
 func a_BFGSpray(mo *mobj_t) {
 	var an angle_t
-	var damage, i, j int32
+	var damage int32
 	// offset angles from its attack angle
-	i = 0
-	for {
-		if i >= 40 {
-			break
-		}
+	for i := range 40 {
 		an = mo.Fangle - uint32(ANG905/2) + uint32(ANG905/40*i)
 		// mo->target is the originator (player)
 		//  of the missile
 		p_AimLineAttack(mo.Ftarget, an, 16*64*(1<<FRACBITS))
 		if linetarget == nil {
-			goto _1
+			continue
 		}
 		p_SpawnMobj(linetarget.Fx, linetarget.Fy, linetarget.Fz+linetarget.Fheight>>2, mt_EXTRABFG)
 		damage = 0
-		j = 0
-		for {
-			if j >= 15 {
-				break
-			}
+		for range 15 {
 			damage += p_Random()&7 + 1
-			goto _2
-		_2:
-			;
-			j++
 		}
 		p_DamageMobj(linetarget, mo.Ftarget, mo.Ftarget, damage)
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -28250,18 +28112,9 @@ func a_BFGsound(player *player_t, psp *pspdef_t) {
 //	// Called at start of level for each player.
 //	//
 func p_SetupPsprites(player *player_t) {
-	var i int32
 	// remove all psprites
-	i = 0
-	for {
-		if i >= NUMPSPRITES {
-			break
-		}
+	for i := range NUMPSPRITES {
 		player.Fpsprites[i].Fstate = nil
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// spawn the gun
 	player.Fpendingweapon = player.Freadyweapon
@@ -28275,13 +28128,8 @@ func p_SetupPsprites(player *player_t) {
 //	// Called every tic by player thinking routine.
 //	//
 func p_MovePsprites(player *player_t) {
-	var i int32
 	var v2 *state_t
-	i = 0
-	for {
-		if i >= NUMPSPRITES {
-			break
-		}
+	for i := range int32(NUMPSPRITES) {
 		psp := &player.Fpsprites[i]
 		// a null state means not active
 		v2 = psp.Fstate
@@ -28295,10 +28143,6 @@ func p_MovePsprites(player *player_t) {
 				}
 			}
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	player.Fpsprites[ps_flash].Fsx = player.Fpsprites[ps_weapon].Fsx
 	player.Fpsprites[ps_flash].Fsy = player.Fpsprites[ps_weapon].Fsy
@@ -28379,36 +28223,20 @@ func saveg_write32(value int32) {
 // Pad to 4-byte boundaries
 
 func saveg_read_pad() {
-	var i, padding int32
+	var padding int32
 	pos, _ := save_stream.Seek(0, io.SeekCurrent)
 	padding = int32((4 - uint64(pos)&uint64(3)) & uint64(3))
-	i = 0
-	for {
-		if i >= padding {
-			break
-		}
+	for range padding {
 		saveg_read8()
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
 func saveg_write_pad() {
-	var i, padding int32
+	var padding int32
 	pos, _ := save_stream.Seek(0, io.SeekCurrent)
 	padding = int32((4 - uint64(pos)&uint64(3)) & uint64(3))
-	i = 0
-	for {
-		if i >= padding {
-			break
-		}
+	for range padding {
 		saveg_write8(0)
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -28825,7 +28653,6 @@ func saveg_read_player_t(str *player_t) {
 }
 
 func saveg_write_player_t(str *player_t) {
-	var i int32
 	// mobj_t* mo;
 	saveg_writep(uintptr(unsafe.Pointer(str.Fmo)))
 	// playerstate_t playerstate;
@@ -28847,82 +28674,34 @@ func saveg_write_player_t(str *player_t) {
 	// int armortype;
 	saveg_write32(str.Farmortype)
 	// int powers[NUMPOWERS];
-	i = 0
-	for {
-		if i >= NUMPOWERS {
-			break
-		}
+	for i := range NUMPOWERS {
 		saveg_write32(str.Fpowers[i])
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// boolean cards[NUMCARDS];
-	i = 0
-	for {
-		if i >= NUMCARDS {
-			break
-		}
+	for i := range NUMCARDS {
 		saveg_write32(int32(str.Fcards[i]))
-		goto _2
-	_2:
-		;
-		i++
 	}
 	// boolean backpack;
 	saveg_write32(int32(str.Fbackpack))
 	// int frags[MAXPLAYERS];
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		saveg_write32(str.Ffrags[i])
-		goto _3
-	_3:
-		;
-		i++
 	}
 	// weapontype_t readyweapon;
 	saveg_write32(int32(str.Freadyweapon))
 	// weapontype_t pendingweapon;
 	saveg_write32(int32(str.Fpendingweapon))
 	// boolean weaponowned[NUMWEAPONS];
-	i = 0
-	for {
-		if i >= NUMWEAPONS {
-			break
-		}
+	for i := range NUMWEAPONS {
 		saveg_write32(int32(str.Fweaponowned[i]))
-		goto _4
-	_4:
-		;
-		i++
 	}
 	// int ammo[NUMAMMO];
-	i = 0
-	for {
-		if i >= NUMAMMO {
-			break
-		}
+	for i := range NUMAMMO {
 		saveg_write32(str.Fammo[i])
-		goto _5
-	_5:
-		;
-		i++
 	}
 	// int maxammo[NUMAMMO];
-	i = 0
-	for {
-		if i >= NUMAMMO {
-			break
-		}
+	for i := range NUMAMMO {
 		saveg_write32(str.Fmaxammo[i])
-		goto _6
-	_6:
-		;
-		i++
 	}
 	// int attackdown;
 	saveg_write32(str.Fattackdown)
@@ -28957,16 +28736,8 @@ func saveg_write_player_t(str *player_t) {
 	// int colormap;
 	saveg_write32(str.Fcolormap)
 	// pspdef_t psprites[NUMPSPRITES];
-	i = 0
-	for {
-		if i >= NUMPSPRITES {
-			break
-		}
+	for i := range NUMPSPRITES {
 		saveg_write_pspdef_t(&str.Fpsprites[i])
-		goto _7
-	_7:
-		;
-		i++
 	}
 	// boolean didsecret;
 	saveg_write32(int32(str.Fdidsecret))
@@ -29293,8 +29064,7 @@ func saveg_write_glow_t(str *glow_t) {
 //
 
 func p_WriteSaveGameHeader(description string) {
-	var i int
-	for i = 0; i < SAVESTRINGSIZE; i++ {
+	for i := 0; i < SAVESTRINGSIZE; i++ {
 		if i < len(description) {
 			saveg_write8(uint8(description[i]))
 		} else {
@@ -29302,31 +29072,18 @@ func p_WriteSaveGameHeader(description string) {
 		}
 	}
 	bp := fmt.Sprintf("version %d", g_VanillaVersionCode())
-	i = 0
-	for {
-		if i >= VERSIONSIZE {
-			break
-		}
+	for i := range VERSIONSIZE {
 		if i < len(bp) {
 			saveg_write8(uint8(bp[i]))
 		} else {
 			saveg_write8(0)
 		}
-		i++
 	}
 	saveg_write8(uint8(gameskill))
 	saveg_write8(uint8(gameepisode))
 	saveg_write8(uint8(gamemap))
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		saveg_write8(uint8(playeringame[i]))
-		goto _4
-	_4:
-		;
-		i++
 	}
 	saveg_write8(uint8(leveltime >> int32(16) & 0xff))
 	saveg_write8(uint8(leveltime >> 8 & 0xff))
@@ -29339,27 +29096,13 @@ func p_WriteSaveGameHeader(description string) {
 
 func p_ReadSaveGameHeader() boolean {
 	var a, b, c uint8
-	var i int32
 	// skip the description field
-	i = 0
-	for {
-		if i >= SAVESTRINGSIZE {
-			break
-		}
+	for range SAVESTRINGSIZE {
 		saveg_read8()
-		goto _1
-	_1:
-		;
-		i++
 	}
-	i = 0
 	var bp [VERSIONSIZE]byte
-	for {
-		if i >= VERSIONSIZE {
-			break
-		}
+	for i := range VERSIONSIZE {
 		bp[i] = saveg_read8()
-		i++
 	}
 	vanilla := fmt.Sprintf("version %d", g_VanillaVersionCode())
 	if vanilla != gostring_bytes(bp[:]) {
@@ -29368,16 +29111,8 @@ func p_ReadSaveGameHeader() boolean {
 	gameskill = skill_t(saveg_read8())
 	gameepisode = int32(saveg_read8())
 	gamemap = int32(saveg_read8())
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		playeringame[i] = uint32(saveg_read8())
-		goto _3
-	_3:
-		;
-		i++
 	}
 	// get the times
 	a = saveg_read8()
@@ -29411,20 +29146,12 @@ func p_WriteSaveGameEOF() {
 //	// P_ArchivePlayers
 //	//
 func p_ArchivePlayers() {
-	var i int32
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		if playeringame[i] == 0 {
-			goto _1
+			continue
 		}
 		saveg_write_pad()
 		saveg_write_player_t(&players[i])
-		goto _1
-	_1:
-		;
 		i++
 	}
 }
@@ -30123,7 +29850,7 @@ func p_LoadBlockMap(lump int32) {
 //	// Finds block bounding boxes for sectors.
 //	//
 func p_GroupLines() {
-	var block, i, j, v10, v7, v8, v9 int32
+	var block, v10, v7, v8, v9 int32
 	// look up sector number for each subsector
 	for i := int32(0); i < numsubsectors; i++ {
 		ss := &subsectors[i]
@@ -30142,21 +29869,13 @@ func p_GroupLines() {
 		}
 	}
 	// build line tables for each sector
-	i = 0
-	for {
-		if i >= numsectors {
-			break
-		}
+	for i := range numsectors {
 		// Assign the line buffer for this sector
 		sector := &sectors[i]
 		sector.Flines = make([]*line_t, sector.Flinecount)
 		// Reset linecount to zero so in the next stage we can count
 		// lines into the list.
 		sector.Flinecount = 0
-		goto _3
-	_3:
-		;
-		i++
 	}
 	// Assign lines to sectors
 	for i := int32(0); i < numlines; i++ {
@@ -30171,26 +29890,14 @@ func p_GroupLines() {
 		}
 	}
 	// Generate bounding boxes for sectors
-	i = 0
-	for {
-		if i >= numsectors {
-			break
-		}
+	for i := range numsectors {
 		var box box_t
 		sector := &sectors[i]
 		m_ClearBox(&box)
-		j = 0
-		for {
-			if j >= sector.Flinecount {
-				break
-			}
+		for j := range sector.Flinecount {
 			li := sector.Flines[j]
 			m_AddToBox(&box, li.Fv1.Fx, li.Fv1.Fy)
 			m_AddToBox(&box, li.Fv2.Fx, li.Fv2.Fy)
-			goto _6
-		_6:
-			;
-			j++
 		}
 		// set the degenmobj_t to the middle of the bounding box
 		sector.Fsoundorg.Fx = (box[BOXRIGHT] + box[BOXLEFT]) / 2
@@ -30228,10 +29935,6 @@ func p_GroupLines() {
 		}
 		block = v10
 		sector.Fblockbox[BOXLEFT] = block
-		goto _5
-	_5:
-		;
-		i++
 	}
 }
 
@@ -30295,29 +29998,16 @@ func p_LoadReject(lumpnum int32) {
 //	// P_SetupLevel
 //	//
 func p_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
-	var i, lumpnum, v1, v2, v3, v5, v6, v8 int32
-	v3 = 0
-	wminfo.Fmaxfrags = v3
-	v2 = v3
-	totalsecret = v2
-	v1 = v2
-	totalitems = v1
-	totalkills = v1
+	var lumpnum int32
+	wminfo.Fmaxfrags = 0
+	totalsecret = 0
+	totalitems = 0
+	totalkills = 0
 	wminfo.Fpartime = 180
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
-		v6 = 0
-		players[i].Fitemcount = v6
-		v5 = v6
-		players[i].Fsecretcount = v5
-		players[i].Fkillcount = v5
-		goto _4
-	_4:
-		;
-		i++
+	for i := range MAXPLAYERS {
+		players[i].Fitemcount = 0
+		players[i].Fsecretcount = 0
+		players[i].Fkillcount = 0
 	}
 	// Initial height of PointOfView
 	// will be set by player think.
@@ -30355,25 +30045,16 @@ func p_SetupLevel(episode int32, map1 int32, playermask int32, skill skill_t) {
 	p_LoadThings(lumpnum + ml_THINGS)
 	// if deathmatch, randomly spawn the active players
 	if deathmatch != 0 {
-		i = 0
-		for {
-			if i >= MAXPLAYERS {
-				break
-			}
+		for i := range int32(MAXPLAYERS) {
 			if playeringame[i] != 0 {
 				players[i].Fmo = nil
 				g_DeathMatchSpawnPlayer(i)
 			}
-			goto _7
-		_7:
-			;
-			i++
 		}
 	}
 	// clear special respawning que
-	v8 = 0
-	iquetail = v8
-	iquehead = v8
+	iquetail = 0
+	iquehead = 0
 	// set up world state
 	p_SpawnSpecials()
 	// build subsector connect matrix
@@ -30948,25 +30629,16 @@ func p_FindLowestFloorSurrounding(sec *sector_t) fixed_t {
 	var check *line_t
 	var other *sector_t
 	var floor fixed_t
-	var i int32
 	floor = sec.Ffloorheight
-	i = 0
-	for {
-		if i >= sec.Flinecount {
-			break
-		}
+	for i := range sec.Flinecount {
 		check = sec.Flines[i]
 		other = getNextSector(check, sec)
 		if other == nil {
-			goto _1
+			continue
 		}
 		if other.Ffloorheight < floor {
 			floor = other.Ffloorheight
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return floor
 }
@@ -30981,25 +30653,16 @@ func p_FindHighestFloorSurrounding(sec *sector_t) fixed_t {
 	var check *line_t
 	var other *sector_t
 	var floor fixed_t
-	var i int32
 	floor = -500 * (1 << FRACBITS)
-	i = 0
-	for {
-		if i >= sec.Flinecount {
-			break
-		}
+	for i := range sec.Flinecount {
 		check = sec.Flines[i]
 		other = getNextSector(check, sec)
 		if other == nil {
-			goto _1
+			continue
 		}
 		if other.Ffloorheight > floor {
 			floor = other.Ffloorheight
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return floor
 }
@@ -31016,20 +30679,16 @@ func p_FindHighestFloorSurrounding(sec *sector_t) fixed_t {
 func p_FindNextHighestFloor(sec *sector_t, currentheight int32) fixed_t {
 	var check *line_t
 	var other *sector_t
-	var h, i, min, v2 int32
+	var h, min int32
 	var height fixed_t
 	var heightlist [22]fixed_t
 	height = currentheight
-	i = 0
 	h = 0
-	for {
-		if i >= sec.Flinecount {
-			break
-		}
+	for i := range sec.Flinecount {
 		check = sec.Flines[i]
 		other = getNextSector(check, sec)
 		if other == nil {
-			goto _1
+			continue
 		}
 		if other.Ffloorheight > height {
 			// Emulation of memory (stack) overflow
@@ -31041,14 +30700,9 @@ func p_FindNextHighestFloor(sec *sector_t, currentheight int32) fixed_t {
 					i_Error("Sector with more than 22 adjoining sectors. Vanilla will crash here")
 				}
 			}
-			v2 = h
+			heightlist[h] = other.Ffloorheight
 			h++
-			heightlist[v2] = other.Ffloorheight
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// Find lowest height in list
 	if h == 0 {
@@ -31056,18 +30710,10 @@ func p_FindNextHighestFloor(sec *sector_t, currentheight int32) fixed_t {
 	}
 	min = heightlist[0]
 	// Range checking?
-	i = 1
-	for {
-		if i >= h {
-			break
-		}
+	for i := int32(1); i < h; i++ {
 		if heightlist[i] < min {
 			min = heightlist[i]
 		}
-		goto _3
-	_3:
-		;
-		i++
 	}
 	return min
 }
