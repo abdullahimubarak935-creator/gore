@@ -4265,7 +4265,7 @@ func singlePlayerClear(set *ticcmd_set_t) {
 //
 
 func tryRunTics() {
-	var availabletics, counts, entertic, lowtic, realtics, v1 int32
+	var availabletics, counts, entertic, lowtic, realtics int32
 	var set *ticcmd_set_t
 	// get real tics
 	entertic = i_GetTime() / ticdup
@@ -4319,12 +4319,7 @@ func tryRunTics() {
 		i_Sleep(1)
 	}
 	// run the count * ticdup dics
-	for {
-		v1 = counts
-		counts--
-		if v1 == 0 {
-			break
-		}
+	for ; counts > 0; counts-- {
 		if playersInGame() == 0 {
 			return
 		}
@@ -4969,8 +4964,6 @@ func getGameName(gamename string) string {
 				if len(gamename) >= 1 {
 					v2 = int32(gamename[0])
 					v3 = boolint32(v2 == ' ' || uint32(v2)-'\t' < 5)
-					goto _4
-				_4:
 				}
 				if !(len(gamename) >= 1 && v3 != 0) {
 					break
@@ -4981,8 +4974,6 @@ func getGameName(gamename string) string {
 				if len(gamename) >= 1 {
 					v6 = int32(gamename[len(gamename)-1])
 					v7 = boolint32(v6 == ' ' || uint32(v6)-'\t' < 5)
-					goto _8
-				_8:
 				}
 				if !(len(gamename) >= 1 && v7 != 0) {
 					break
@@ -6842,15 +6833,10 @@ func wipe_initMelt(width int32, height int32, ticks int32) (r1 int32) {
 func wipe_doMelt(width int32, height int32, ticks int32) int32 {
 	var d, s int32
 	var done boolean
-	var dy, idx, v1, v3 int32
+	var dy, idx, v3 int32
 	done = 1
 	width /= 2
-	for {
-		v1 = ticks
-		ticks--
-		if v1 == 0 {
-			break
-		}
+	for ; ticks > 0; ticks-- {
 		for i := int32(0); i < width; i++ {
 			if y_screen[i] < 0 {
 				y_screen[i]++
@@ -8805,10 +8791,7 @@ func hulib_eraseTextLine(l *hu_textline_t) {
 		lh = int32(l.Ff[0].Fheight) + 1
 		y = l.Fy
 		yoffset = y * SCREENWIDTH
-		for {
-			if y >= l.Fy+lh {
-				break
-			}
+		for ; y < l.Fy+lh; y++ {
 			if y < viewwindowy || y >= viewwindowy+viewheight {
 				r_VideoErase(uint32(yoffset), SCREENWIDTH)
 			} else {
@@ -8816,10 +8799,6 @@ func hulib_eraseTextLine(l *hu_textline_t) {
 				r_VideoErase(uint32(yoffset+viewwindowx+viewwidth), viewwindowx)
 				// erase right border
 			}
-			goto _1
-		_1:
-			;
-			y++
 			yoffset += SCREENWIDTH
 		}
 	}
@@ -21454,15 +21433,9 @@ func ev_DoLockedDoor(line *line_t, type1 vldoor_e, thing *mobj_t) int32 {
 }
 
 func ev_DoDoor(line *line_t, type1 vldoor_e) int32 {
-	var rtn, secnum, v1 int32
-	secnum = -1
+	var rtn int32
 	rtn = 0
-	for {
-		v1 = p_FindSectorFromLineTag(line, secnum)
-		secnum = v1
-		if !(v1 >= 0) {
-			break
-		}
+	for secnum := p_FindSectorFromLineTag(line, -1); secnum >= 0; secnum = p_FindSectorFromLineTag(line, secnum) {
 		sec := &sectors[secnum]
 		if sec.Fspecialdata != nil {
 			continue
@@ -21917,7 +21890,6 @@ func init() {
 func p_Move(actor *mobj_t) boolean {
 	var good, try_ok boolean
 	var tryx, tryy fixed_t
-	var v1 int32
 	if actor.Fmovedir == DI_NODIR {
 		return 0
 	}
@@ -21945,7 +21917,7 @@ func p_Move(actor *mobj_t) boolean {
 		actor.Fmovedir = DI_NODIR
 		good = 0
 		for {
-			v1 = numspechit
+			v1 := numspechit
 			numspechit--
 			if v1 == 0 {
 				break
@@ -22147,27 +22119,18 @@ func p_LookForPlayers(actor *mobj_t, allaround boolean) boolean {
 //	// Uses special tag 666.
 //	//
 func a_KeenDie(mo *mobj_t) {
-	var th *thinker_t
 	a_Fall(mo)
 	// scan the remaining thinkers
 	// to see if all Keens are dead
-	th = thinkercap.Fnext
-	for {
-		if th == &thinkercap {
-			break
-		}
+	for th := thinkercap.Fnext; th != &thinkercap; th = th.Fnext {
 		mo2, ok := th.Ffunction.(*mobj_t)
 		if !ok {
-			goto _1
+			continue
 		}
 		if mo2 != mo && mo2.Ftype1 == mo.Ftype1 && mo2.Fhealth > 0 {
 			// other Keen not dead
 			return
 		}
-		goto _1
-	_1:
-		;
-		th = th.Fnext
 	}
 	line := &line_t{Ftag: 666}
 	ev_DoDoor(line, int32(vld_open))
@@ -22998,7 +22961,6 @@ func checkBossEnd(motype mobjtype_t) boolean {
 //	//
 func a_BossDeath(mo *mobj_t) {
 	var i int32
-	var th *thinker_t
 	if gamemode == commercial {
 		if gamemap != 7 {
 			return
@@ -23022,23 +22984,15 @@ func a_BossDeath(mo *mobj_t) {
 	} // no one left alive, so do not end game
 	// scan the remaining thinkers to see
 	// if all bosses are dead
-	th = thinkercap.Fnext
-	for {
-		if th == &thinkercap {
-			break
-		}
+	for th := thinkercap.Fnext; th != &thinkercap; th = th.Fnext {
 		mo2, ok := th.Ffunction.(*mobj_t)
 		if !ok {
-			goto _2
+			continue
 		}
 		if mo2 != mo && mo2.Ftype1 == mo.Ftype1 && mo2.Fhealth > 0 {
 			// other boss not dead
 			return
 		}
-		goto _2
-	_2:
-		;
-		th = th.Fnext
 	}
 	// victory!
 	if gamemode == commercial {
@@ -24771,7 +24725,7 @@ func pit_StompThing(thing *mobj_t) boolean {
 //	// P_TeleportMove
 //	//
 func p_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) boolean {
-	var bx, by, xh, xl, yh, yl int32
+	var xh, xl, yh, yl int32
 	var newsubsec *subsector_t
 	var v1 fixed_t
 	// kill anything occupying the position
@@ -24800,28 +24754,12 @@ func p_TeleportMove(thing *mobj_t, x fixed_t, y fixed_t) boolean {
 	xh = (tmbbox[BOXRIGHT] - bmaporgx + 32*(1<<FRACBITS)) >> (FRACBITS + 7)
 	yl = (tmbbox[BOXBOTTOM] - bmaporgy - 32*(1<<FRACBITS)) >> (FRACBITS + 7)
 	yh = (tmbbox[BOXTOP] - bmaporgy + 32*(1<<FRACBITS)) >> (FRACBITS + 7)
-	bx = xl
-	for {
-		if !(bx <= xh) {
-			break
-		}
-		by = yl
-		for {
-			if !(by <= yh) {
-				break
-			}
+	for bx := xl; bx <= xh; bx++ {
+		for by := yl; by <= yh; by++ {
 			if p_BlockThingsIterator(bx, by, pit_StompThing) == 0 {
 				return 0
 			}
-			goto _3
-		_3:
-			;
-			by++
 		}
-		goto _2
-	_2:
-		;
-		bx++
 	}
 	// the move is ok,
 	// so link the thing into its new position
@@ -25002,7 +24940,7 @@ func pit_CheckThing(thing *mobj_t) boolean {
 //	//  numspeciallines
 //	//
 func p_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) boolean {
-	var bx, by, xh, xl, yh, yl int32
+	var xh, xl, yh, yl int32
 	var newsubsec *subsector_t
 	var v1 fixed_t
 	tmthing = thing
@@ -25037,56 +24975,24 @@ func p_CheckPosition(thing *mobj_t, x fixed_t, y fixed_t) boolean {
 	xh = (tmbbox[BOXRIGHT] - bmaporgx + 32*(1<<FRACBITS)) >> (FRACBITS + 7)
 	yl = (tmbbox[BOXBOTTOM] - bmaporgy - 32*(1<<FRACBITS)) >> (FRACBITS + 7)
 	yh = (tmbbox[BOXTOP] - bmaporgy + 32*(1<<FRACBITS)) >> (FRACBITS + 7)
-	bx = xl
-	for {
-		if !(bx <= xh) {
-			break
-		}
-		by = yl
-		for {
-			if !(by <= yh) {
-				break
-			}
+	for bx := xl; bx <= xh; bx++ {
+		for by := yl; by <= yh; by++ {
 			if p_BlockThingsIterator(bx, by, pit_CheckThing) == 0 {
 				return 0
 			}
-			goto _3
-		_3:
-			;
-			by++
 		}
-		goto _2
-	_2:
-		;
-		bx++
 	}
 	// check lines
 	xl = (tmbbox[BOXLEFT] - bmaporgx) >> (FRACBITS + 7)
 	xh = (tmbbox[BOXRIGHT] - bmaporgx) >> (FRACBITS + 7)
 	yl = (tmbbox[BOXBOTTOM] - bmaporgy) >> (FRACBITS + 7)
 	yh = (tmbbox[BOXTOP] - bmaporgy) >> (FRACBITS + 7)
-	bx = xl
-	for {
-		if !(bx <= xh) {
-			break
-		}
-		by = yl
-		for {
-			if !(by <= yh) {
-				break
-			}
+	for bx := xl; bx <= xh; bx++ {
+		for by := yl; by <= yh; by++ {
 			if p_BlockLinesIterator(bx, by, pit_CheckLine) == 0 {
 				return 0
 			}
-			goto _5
-		_5:
-			;
-			by++
 		}
-		goto _4
-	_4:
-		;
-		bx++
 	}
 	return 1
 }
