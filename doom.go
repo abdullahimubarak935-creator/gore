@@ -33554,7 +33554,7 @@ func r_DrawColumn() {
 	// Inner loop that does the actual texture mapping,
 	//  e.g. a DDA-lile scaling.
 	// This is as fast as it gets.
-	for ; count > 0; count-- {
+	for ; count >= 0; count-- {
 		// Re-map color indices from wall texture column
 		//  using a lighting/special effects LUT.
 		I_VideoBuffer[dest] = dc_colormap[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS&int32(127))))]
