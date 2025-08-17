@@ -32922,6 +32922,10 @@ type maptexture_t struct {
 	Fpatches    [1]mappatch_t
 }
 
+func (m *maptexture_t) Patches() []mappatch_t {
+	return unsafe.Slice((*mappatch_t)(unsafe.Pointer(&m.Fpatches[0])), int(m.Fpatchcount))
+}
+
 // C documentation
 //
 //	// A single patch from a texture definition,
@@ -33139,7 +33143,7 @@ func generateTextureHashTable() {
 //	//  with the textures from the world map.
 //	//
 func r_InitTextures() {
-	var directory, maptex, maptex2, mpatch, name_p, names uintptr
+	var directory, maptex, maptex2, name_p, names uintptr
 	var j, maxoff, maxoff2, nummappatches, numtextures1, numtextures2, offset, temp1, temp2, temp3, totalwidth int32
 	// Load the patch names from pnames.lmp.
 	names = w_CacheLumpName("PNAMES")
@@ -33156,7 +33160,7 @@ func r_InitTextures() {
 	maptex = w_CacheLumpName("TEXTURE1")
 	numtextures1 = *(*int32)(unsafe.Pointer(maptex))
 	maxoff = w_LumpLength(uint32(w_GetNumForName("TEXTURE1")))
-	directory = maptex + uintptr(1)*4
+	directory = maptex + 4
 	if w_CheckNumForName("TEXTURE2") != -1 {
 		maptex2 = w_CacheLumpName("TEXTURE2")
 		numtextures2 = *(*int32)(unsafe.Pointer(maptex2))
@@ -33215,16 +33219,14 @@ func r_InitTextures() {
 		texture.Fheight = mtexture.Fheight
 		texture.Fpatchcount = mtexture.Fpatchcount
 		copy(texture.Fname[:], mtexture.Fname[:])
-		mpatch = uintptr(unsafe.Pointer(&mtexture.Fpatches[0]))
-		for j := range texture.Fpatchcount {
+		for j, mpatch := range mtexture.Patches() {
 			patch := &texture.Fpatches[j]
-			patch.Foriginx = (*mappatch_t)(unsafe.Pointer(mpatch)).Foriginx
-			patch.Foriginy = (*mappatch_t)(unsafe.Pointer(mpatch)).Foriginy
-			patch.Fpatch = patchlookup[(*mappatch_t)(unsafe.Pointer(mpatch)).Fpatch]
+			patch.Foriginx = mpatch.Foriginx
+			patch.Foriginy = mpatch.Foriginy
+			patch.Fpatch = patchlookup[mpatch.Fpatch]
 			if patch.Fpatch == -1 {
 				i_Error("r_InitTextures: Missing patch in texture %s", gostring_bytes(texture.Fname[:]))
 			}
-			mpatch += unsafe.Sizeof(mappatch_t{})
 		}
 		texturecolumnlump[i] = make([]int16, texture.Fwidth)
 		texturecolumnofs[i] = make([]uint16, texture.Fwidth)
