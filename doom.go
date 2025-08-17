@@ -2223,8 +2223,6 @@ func (l *lumpinfo_t) Name() string {
 	return string(l.Fname[:])
 }
 
-type netgame_startup_callback_t = uintptr
-
 type loop_interface_t struct {
 	FProcessEvents func()
 	FBuildTiccmd   func(*ticcmd_t, int32)
@@ -4175,7 +4173,7 @@ func d_StartGameLoop() {
 	lasttime = getAdjustedTime() / ticdup
 }
 
-func d_StartNetGame(settings *net_gamesettings_t, callback netgame_startup_callback_t) {
+func d_StartNetGame(settings *net_gamesettings_t, callback func()) {
 	settings.Fconsoleplayer = 0
 	settings.Fnum_players = 1
 	settings.Fplayer_classes[0] = player_class
@@ -5988,7 +5986,7 @@ func d_CheckNetGame() {
 	}
 	d_RegisterLoopCallbacks(&doom_loop_interface)
 	saveGameSettings(settings)
-	d_StartNetGame(settings, 0)
+	d_StartNetGame(settings, nil)
 	loadGameSettings(settings)
 	fprintf_ccgo(os.Stdout, "startskill %d  deathmatch: %d  startmap: %d  startepisode: %d\n", startskill, deathmatch, startmap, startepisode)
 	fprintf_ccgo(os.Stdout, "player %d of %d (%d nodes)\n", consoleplayer+1, settings.Fnum_players, settings.Fnum_players)
