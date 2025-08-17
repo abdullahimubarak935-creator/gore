@@ -23105,26 +23105,16 @@ func a_BrainPain(mo *mobj_t) {
 }
 
 func a_BrainScream(mo *mobj_t) {
-	var th *mobj_t
-	var x, y, z int32
-	x = mo.Fx - 196*(1<<FRACBITS)
-	for {
-		if x >= mo.Fx+320*(1<<FRACBITS) {
-			break
-		}
-		y = mo.Fy - 320*(1<<FRACBITS)
-		z = 128 + p_Random()*2*(1<<FRACBITS)
-		th = p_SpawnMobj(x, y, z, mt_ROCKET)
+	for x := mo.Fx - 196*(1<<FRACBITS); x < mo.Fx+320*(1<<FRACBITS); x += 1 << FRACBITS * 8 {
+		y := mo.Fy - 320*(1<<FRACBITS)
+		z := 128 + p_Random()*2*(1<<FRACBITS)
+		th := p_SpawnMobj(x, y, z, mt_ROCKET)
 		th.Fmomz = p_Random() * 512
 		p_SetMobjState(th, s_BRAINEXPLODE1)
 		th.Ftics -= p_Random() & 7
 		if th.Ftics < 1 {
 			th.Ftics = 1
 		}
-		goto _1
-	_1:
-		;
-		x += 1 << FRACBITS * 8
 	}
 	s_StartSound(nil, int32(sfx_bosdth))
 }
@@ -33082,11 +33072,7 @@ func r_GenerateLookup(texnum int32) {
 			colofs[x] = uint16(realpatch.Fcolumnofs[x-x1] + 3)
 		}
 	}
-	x = 0
-	for {
-		if x >= int32(texture.Fwidth) {
-			break
-		}
+	for x := range texture.Fwidth {
 		if widths[x] == 0 {
 			fprintf_ccgo(os.Stdout, "r_GenerateLookup: column without a patch (%s)\n", gostring_bytes(texture.Fname[:]))
 			return
@@ -33101,10 +33087,6 @@ func r_GenerateLookup(texnum int32) {
 			}
 			texturecompositesize[texnum] += int32(texture.Fheight)
 		}
-		goto _3
-	_3:
-		;
-		x++
 	}
 }
 
@@ -33159,8 +33141,8 @@ func generateTextureHashTable() {
 //	//  with the textures from the world map.
 //	//
 func r_InitTextures() {
-	var directory, maptex, maptex2, mpatch, name_p, names, v2 uintptr
-	var i, j, maxoff, maxoff2, nummappatches, numtextures1, numtextures2, offset, temp1, temp2, temp3, totalwidth int32
+	var directory, maptex, maptex2, mpatch, name_p, names uintptr
+	var j, maxoff, maxoff2, nummappatches, numtextures1, numtextures2, offset, temp1, temp2, temp3, totalwidth int32
 	// Load the patch names from pnames.lmp.
 	names = w_CacheLumpName("PNAMES")
 	nummappatches = *(*int32)(unsafe.Pointer(names))
@@ -33173,8 +33155,7 @@ func r_InitTextures() {
 	// Load the map texture definitions from textures.lmp.
 	// The data is contained in one or two lumps,
 	//  TEXTURE1 for shareware, plus TEXTURE2 for commercial.
-	v2 = w_CacheLumpName("TEXTURE1")
-	maptex = v2
+	maptex = w_CacheLumpName("TEXTURE1")
 	numtextures1 = *(*int32)(unsafe.Pointer(maptex))
 	maxoff = w_LumpLength(uint32(w_GetNumForName("TEXTURE1")))
 	directory = maptex + uintptr(1)*4
@@ -33213,11 +33194,7 @@ func r_InitTextures() {
 			fprintf_ccgo(os.Stdout, "\x08")
 		}
 	}
-	i = 0
-	for {
-		if i >= numtextures {
-			break
-		}
+	for i := range numtextures {
 		if i&63 == 0 {
 			fprintf_ccgo(os.Stdout, ".")
 		}
@@ -33260,10 +33237,6 @@ func r_InitTextures() {
 		texturewidthmask[i] = j - 1
 		textureheight[i] = int32(texture.Fheight) << FRACBITS
 		totalwidth += int32(texture.Fwidth)
-		goto _5
-	_5:
-		;
-		i++
 		directory += 4
 	}
 	w_ReleaseLumpName("TEXTURE1")
@@ -33271,29 +33244,13 @@ func r_InitTextures() {
 		w_ReleaseLumpName("TEXTURE2")
 	}
 	// Precalculate whatever possible.
-	i = 0
-	for {
-		if i >= numtextures {
-			break
-		}
+	for i := range numtextures {
 		r_GenerateLookup(i)
-		goto _8
-	_8:
-		;
-		i++
 	}
 	// Create translation table for global animation.
 	texturetranslation = make([]int32, numtextures+1)
-	i = 0
-	for {
-		if i >= numtextures {
-			break
-		}
+	for i := range numtextures {
 		texturetranslation[i] = i
-		goto _9
-	_9:
-		;
-		i++
 	}
 	generateTextureHashTable()
 }
@@ -33304,22 +33261,13 @@ func r_InitTextures() {
 //	// R_InitFlats
 //	//
 func r_InitFlats() {
-	var i int32
 	firstflat = w_GetNumForName("F_START") + 1
 	lastflat = w_GetNumForName("F_END") - 1
 	numflats = lastflat - firstflat + 1
 	// Create translation table for global animation.
 	flattranslation = make([]int32, numflats+1)
-	i = 0
-	for {
-		if i >= numflats {
-			break
-		}
+	for i := range numflats {
 		flattranslation[i] = i
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -33332,18 +33280,13 @@ func r_InitFlats() {
 //	//  just for having the header info ready during rendering.
 //	//
 func r_InitSpriteLumps() {
-	var i int32
 	firstspritelump = w_GetNumForName("S_START") + 1
 	lastspritelump = w_GetNumForName("S_END") - 1
 	numspritelumps = lastspritelump - firstspritelump + 1
 	spritewidth = make([]fixed_t, numspritelumps)
 	spriteoffset = make([]fixed_t, numspritelumps)
 	spritetopoffset = make([]fixed_t, numspritelumps)
-	i = 0
-	for {
-		if i >= numspritelumps {
-			break
-		}
+	for i := range numspritelumps {
 		if i&63 == 0 {
 			fprintf_ccgo(os.Stdout, ".")
 		}
@@ -33351,10 +33294,6 @@ func r_InitSpriteLumps() {
 		spritewidth[i] = int32(patch.Fwidth) << FRACBITS
 		spriteoffset[i] = int32(patch.Fleftoffset) << FRACBITS
 		spritetopoffset[i] = int32(patch.Ftopoffset) << FRACBITS
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -35686,10 +35625,7 @@ func r_DrawMaskedColumn(column *column_t) {
 	var basetexturemid fixed_t
 	var bottomscreen, topscreen int32
 	basetexturemid = dc_texturemid
-	for {
-		if int32(column.Ftopdelta) == 0xff {
-			break
-		}
+	for ; column.Ftopdelta != 0xff; column = column.Next() {
 		// calculate unclipped screen coordinates
 		//  for post
 		topscreen = sprtopscreen + spryscale*int32(column.Ftopdelta)
@@ -35710,9 +35646,6 @@ func r_DrawMaskedColumn(column *column_t) {
 			//  or (SHADOW) r_DrawFuzzColumn.
 			colfunc()
 		}
-		column = column.Next()
-		goto _1
-	_1:
 	}
 	dc_texturemid = basetexturemid
 }
@@ -35743,20 +35676,12 @@ func r_DrawVisSprite(vis *vissprite_t, x1 int32, x2 int32) {
 	frac = vis.Fstartfrac
 	spryscale = vis.Fscale
 	sprtopscreen = centeryfrac - fixedMul(dc_texturemid, spryscale)
-	dc_x = vis.Fx1
-	for {
-		if !(dc_x <= vis.Fx2) {
-			break
-		}
+	for dc_x = vis.Fx1; dc_x <= vis.Fx2; dc_x++ {
 		texturecolumn = frac >> FRACBITS
 		if texturecolumn < 0 || texturecolumn >= int32(patch.Fwidth) {
 			i_Error("R_DrawSpriteRange: bad texturecolumn")
 		}
 		r_DrawMaskedColumn(patch.GetColumn(texturecolumn))
-		goto _1
-	_1:
-		;
-		dc_x++
 		frac += vis.Fxiscale
 	}
 	colfunc = basecolfunc
@@ -35895,7 +35820,6 @@ func r_ProjectSprite(thing *mobj_t) {
 //	//
 func r_AddSprites(sec *sector_t) {
 	var lightnum int32
-	var thing *mobj_t
 	// BSP is traversed by subsector.
 	// A sector might have been split into several
 	//  subsectors during BSP building.
@@ -35916,16 +35840,8 @@ func r_AddSprites(sec *sector_t) {
 		}
 	}
 	// Handle all things in sector.
-	thing = sec.Fthinglist
-	for {
-		if thing == nil {
-			break
-		}
+	for thing := sec.Fthinglist; thing != nil; thing = thing.Fsnext {
 		r_ProjectSprite(thing)
-		goto _1
-	_1:
-		;
-		thing = thing.Fsnext
 	}
 }
 
@@ -36046,7 +35962,7 @@ func r_DrawPlayerSprites() {
 
 func r_SortVisSprites() {
 	bp := &vissprite_t{}
-	var best, ds *vissprite_t
+	var best *vissprite_t
 	var bestscale fixed_t
 	var count int32
 	count = int32(vissprite_n)
@@ -36078,19 +35994,11 @@ func r_SortVisSprites() {
 	for range count {
 		bestscale = int32(INT_MAX17)
 		best = (*bp).Fnext
-		ds = (*bp).Fnext
-		for {
-			if ds == bp {
-				break
-			}
+		for ds := (*bp).Fnext; ds != bp; ds = ds.Fnext {
 			if ds.Fscale < bestscale {
 				bestscale = ds.Fscale
 				best = ds
 			}
-			goto _5
-		_5:
-			;
-			ds = ds.Fnext
 		}
 		best.Fnext.Fprev = best.Fprev
 		best.Fprev.Fnext = best.Fnext
@@ -36110,40 +36018,31 @@ var clipbot [320]int16
 var cliptop [320]int16
 
 func r_DrawSprite(spr *vissprite_t) {
-	var ds int
 	var lowscale, scale fixed_t
-	var r1, r2, silhouette, v4, v5 int32
-	var v2 int16
+	var r1, r2, silhouette int32
 	for x := spr.Fx1; x <= spr.Fx2; x++ {
-		v2 = int16(-2)
-		cliptop[x] = v2
-		clipbot[x] = v2
+		cliptop[x] = -2
+		clipbot[x] = -2
 	}
 	// Scan drawsegs from end to start for obscuring segs.
 	// The first drawseg that has a greater scale
 	//  is the clip seg.
-	ds = ds_index - 1
-	for {
-		if !(ds >= 0) {
-			break
-		}
+	for ds := ds_index - 1; ds >= 0; ds-- {
 		// determine if the drawseg obscures the sprite
 		if drawsegs[ds].Fx1 > spr.Fx2 || drawsegs[ds].Fx2 < spr.Fx1 || drawsegs[ds].Fsilhouette == 0 && drawsegs[ds].Fmaskedtexturecol == 0 {
 			// does not cover sprite
-			goto _3
+			continue
 		}
 		if drawsegs[ds].Fx1 < spr.Fx1 {
-			v4 = spr.Fx1
+			r1 = spr.Fx1
 		} else {
-			v4 = drawsegs[ds].Fx1
+			r1 = drawsegs[ds].Fx1
 		}
-		r1 = v4
 		if drawsegs[ds].Fx2 > spr.Fx2 {
-			v5 = spr.Fx2
+			r2 = spr.Fx2
 		} else {
-			v5 = drawsegs[ds].Fx2
+			r2 = drawsegs[ds].Fx2
 		}
-		r2 = v5
 		if drawsegs[ds].Fscale1 > drawsegs[ds].Fscale2 {
 			lowscale = drawsegs[ds].Fscale2
 			scale = drawsegs[ds].Fscale1
@@ -36157,7 +36056,7 @@ func r_DrawSprite(spr *vissprite_t) {
 				r_RenderMaskedSegRange(&drawsegs[ds], r1, r2)
 			}
 			// seg is behind sprite
-			goto _3
+			continue
 		}
 		// clip this piece of the sprite
 		silhouette = drawsegs[ds].Fsilhouette
@@ -36196,10 +36095,6 @@ func r_DrawSprite(spr *vissprite_t) {
 				}
 			}
 		}
-		goto _3
-	_3:
-		;
-		ds -= 1
 	}
 	// all clipping has been performed, so draw the sprite
 	// check for unclipped columns
@@ -36222,35 +36117,18 @@ func r_DrawSprite(spr *vissprite_t) {
 //	// R_DrawMasked
 //	//
 func r_DrawMasked() {
-	var spr *vissprite_t
 	r_SortVisSprites()
 	if vissprite_n > 0 {
 		// draw all vissprites back to front
-		spr = vsprsortedhead.Fnext
-		for {
-			if spr == &vsprsortedhead {
-				break
-			}
+		for spr := vsprsortedhead.Fnext; spr != &vsprsortedhead; spr = spr.Fnext {
 			r_DrawSprite(spr)
-			goto _1
-		_1:
-			;
-			spr = spr.Fnext
 		}
 	}
 	// render any remaining masked mid textures
-	ds := ds_index - 1
-	for {
-		if ds < 0 {
-			break
-		}
+	for ds := ds_index - 1; ds >= 0; ds-- {
 		if drawsegs[ds].Fmaskedtexturecol != 0 {
 			r_RenderMaskedSegRange(&drawsegs[ds], drawsegs[ds].Fx1, drawsegs[ds].Fx2)
 		}
-		goto _2
-	_2:
-		;
-		ds -= 1
 	}
 	// draw the psprites on top of everything
 	//  but does not draw on side views
@@ -38986,17 +38864,10 @@ func v_CopyRect(srcx int32, srcy int32, source []byte, width int32, height int32
 	v_MarkRect(destx, desty, width, height)
 	srcPos := SCREENWIDTH*srcy + srcx
 	destPos := SCREENWIDTH*desty + destx
-	for {
-		if height <= 0 {
-			break
-		}
+	for ; height > 0; height-- {
 		copy(dest_screen[destPos:destPos+width], source[srcPos:srcPos+width])
 		srcPos += SCREENWIDTH
 		destPos += SCREENWIDTH
-		goto _1
-	_1:
-		;
-		height--
 	}
 }
 
@@ -39006,19 +38877,13 @@ func v_CopyRect(srcx int32, srcy int32, source []byte, width int32, height int32
 //
 
 func v_DrawPatch(x int32, y int32, patch *patch_t) {
-	var col, w int32
 	y -= int32(patch.Ftopoffset)
 	x -= int32(patch.Fleftoffset)
 	if x < 0 || x+int32(patch.Fwidth) > SCREENWIDTH || y < 0 || y+int32(patch.Fheight) > SCREENHEIGHT {
 		i_Error("Bad v_DrawPatch x=%d y=%d patch.width=%d patch.height=%d topoffset=%d leftoffset=%d", x, y, int32(patch.Fwidth), int32(patch.Fheight), int32(patch.Ftopoffset), int32(patch.Fleftoffset))
 	}
 	v_MarkRect(x, y, int32(patch.Fwidth), int32(patch.Fheight))
-	col = 0
-	w = int32(patch.Fwidth)
-	for {
-		if col >= w {
-			break
-		}
+	for col := range int32(patch.Fwidth) {
 		column := patch.GetColumn(col)
 		// step through the posts in a column
 		for int32(column.Ftopdelta) != 0xff {
@@ -39030,10 +38895,6 @@ func v_DrawPatch(x int32, y int32, patch *patch_t) {
 			}
 			column = column.Next()
 		}
-		goto _1
-	_1:
-		;
-		col++
 	}
 }
 
@@ -39044,7 +38905,7 @@ func v_DrawPatch(x int32, y int32, patch *patch_t) {
 //
 
 func v_DrawPatchFlipped(x int32, y int32, patch *patch_t) {
-	var col, w int32
+	var w int32
 	//var dest, desttop uintptr
 	y -= int32(patch.Ftopoffset)
 	x -= int32(patch.Fleftoffset)
@@ -39052,13 +38913,9 @@ func v_DrawPatchFlipped(x int32, y int32, patch *patch_t) {
 		i_Error("Bad v_DrawPatchFlipped")
 	}
 	v_MarkRect(x, y, int32(patch.Fwidth), int32(patch.Fheight))
-	col = 0
 	destTop := y*SCREENWIDTH + x
 	w = int32(patch.Fwidth)
-	for {
-		if col >= w {
-			break
-		}
+	for col := range w {
 		column := patch.GetColumn(w - 1 - col)
 		// step through the posts in a column
 		for int32(column.Ftopdelta) != 0xff {
@@ -39069,10 +38926,6 @@ func v_DrawPatchFlipped(x int32, y int32, patch *patch_t) {
 			}
 			column = column.Next()
 		}
-		goto _1
-	_1:
-		;
-		col++
 		destTop++
 	}
 }
@@ -39092,19 +38945,13 @@ func v_DrawPatchDirect(x int32, y int32, patch *patch_t) {
 //
 
 func v_DrawBlock(x int32, y int32, width int32, height int32, src []byte) {
-	var v1 int32
 	var pos int32
 	if x < 0 || x+width > SCREENWIDTH || y < 0 || y+height > SCREENHEIGHT {
 		i_Error("Bad v_DrawBlock")
 	}
 	v_MarkRect(x, y, width, height)
 	destPos := y*SCREENWIDTH + x
-	for {
-		v1 = height
-		height--
-		if v1 == 0 {
-			break
-		}
+	for ; height <= 0; height-- {
 		copy(dest_screen[destPos:destPos+width], src)
 		pos += width
 		destPos += SCREENWIDTH
@@ -39977,7 +39824,7 @@ func wi_drawAnimatedBack() {
 //
 
 func wi_drawNum(x int32, y int32, n int32, digits int32) int32 {
-	var fontwidth, neg, temp, v1 int32
+	var fontwidth, neg, temp int32
 	fontwidth = int32(num[0].Fwidth)
 	if digits < 0 {
 		if n == 0 {
@@ -40002,12 +39849,7 @@ func wi_drawNum(x int32, y int32, n int32, digits int32) int32 {
 		return 0
 	}
 	// draw the new number
-	for {
-		v1 = digits
-		digits--
-		if v1 == 0 {
-			break
-		}
+	for ; digits >= 0; digits-- {
 		x -= fontwidth
 		v_DrawPatch(x, y, num[n%int32(10)])
 		n /= 10
