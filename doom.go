@@ -1835,8 +1835,8 @@ type drawseg_t struct {
 	Fsilhouette       int32
 	Fbsilheight       fixed_t
 	Ftsilheight       fixed_t
-	Fsprtopclip       uintptr
-	Fsprbottomclip    uintptr
+	Fsprtopclip       []int16
+	Fsprbottomclip    []int16
 	Fmaskedtexturecol uintptr
 }
 
@@ -35163,7 +35163,7 @@ func r_StoreWallRange(start int32, stop int32) {
 	var hyp, sineval, vtop, v3, v4 fixed_t
 	var lightnum, v2, v5, v6 int32
 	var v10, v7, v8 boolean
-	var v11, v9 uintptr
+	var v11 uintptr
 	// don't overflow and crash
 	if ds_index >= len(drawsegs) {
 		return
@@ -35233,15 +35233,14 @@ func r_StoreWallRange(start int32, stop int32) {
 		}
 		rw_midtexturemid += sidedef.Frowoffset
 		drawsegs[ds_index].Fsilhouette = SIL_BOTH
-		drawsegs[ds_index].Fsprtopclip = uintptr(unsafe.Pointer(&screenheightarray))
-		drawsegs[ds_index].Fsprbottomclip = uintptr(unsafe.Pointer(&negonearray))
+		drawsegs[ds_index].Fsprtopclip = screenheightarray[:]
+		drawsegs[ds_index].Fsprbottomclip = negonearray[:]
 		drawsegs[ds_index].Fbsilheight = int32(INT_MAX15)
 		drawsegs[ds_index].Ftsilheight = -1 - 0x7fffffff
 	} else {
 		// two sided line
-		v9 = 0
-		drawsegs[ds_index].Fsprbottomclip = v9
-		drawsegs[ds_index].Fsprtopclip = v9
+		drawsegs[ds_index].Fsprbottomclip = nil
+		drawsegs[ds_index].Fsprtopclip = nil
 		drawsegs[ds_index].Fsilhouette = 0
 		if frontsector.Ffloorheight > backsector.Ffloorheight {
 			drawsegs[ds_index].Fsilhouette = SIL_BOTTOM
@@ -35264,12 +35263,12 @@ func r_StoreWallRange(start int32, stop int32) {
 			}
 		}
 		if backsector.Fceilingheight <= frontsector.Ffloorheight {
-			drawsegs[ds_index].Fsprbottomclip = uintptr(unsafe.Pointer(&negonearray))
+			drawsegs[ds_index].Fsprbottomclip = negonearray[:]
 			drawsegs[ds_index].Fbsilheight = int32(INT_MAX15)
 			drawsegs[ds_index].Fsilhouette |= SIL_BOTTOM
 		}
 		if backsector.Ffloorheight >= frontsector.Fceilingheight {
-			drawsegs[ds_index].Fsprtopclip = uintptr(unsafe.Pointer(&screenheightarray))
+			drawsegs[ds_index].Fsprtopclip = screenheightarray[:]
 			drawsegs[ds_index].Ftsilheight = -1 - 0x7fffffff
 			drawsegs[ds_index].Fsilhouette |= SIL_TOP
 		}
@@ -35412,14 +35411,14 @@ func r_StoreWallRange(start int32, stop int32) {
 	}
 	r_RenderSegLoop()
 	// save sprite clipping info
-	if (drawsegs[ds_index].Fsilhouette&SIL_TOP != 0 || maskedtexture != 0) && drawsegs[ds_index].Fsprtopclip == 0 {
+	if (drawsegs[ds_index].Fsilhouette&SIL_TOP != 0 || maskedtexture != 0) && drawsegs[ds_index].Fsprtopclip == nil {
 		xmemcpy(lastopening, uintptr(unsafe.Pointer(&ceilingclip))+uintptr(start)*2, uint64(2*(rw_stopx-start)))
-		drawsegs[ds_index].Fsprtopclip = lastopening - uintptr(start)*2
+		drawsegs[ds_index].Fsprtopclip = unsafe.Slice((*int16)(unsafe.Pointer((lastopening - uintptr(start)*2))), 320)
 		lastopening += uintptr(rw_stopx-start) * 2
 	}
-	if (drawsegs[ds_index].Fsilhouette&SIL_BOTTOM != 0 || maskedtexture != 0) && drawsegs[ds_index].Fsprbottomclip == 0 {
+	if (drawsegs[ds_index].Fsilhouette&SIL_BOTTOM != 0 || maskedtexture != 0) && drawsegs[ds_index].Fsprbottomclip == nil {
 		xmemcpy(lastopening, uintptr(unsafe.Pointer(&floorclip))+uintptr(start)*2, uint64(2*(rw_stopx-start)))
-		drawsegs[ds_index].Fsprbottomclip = lastopening - uintptr(start)*2
+		drawsegs[ds_index].Fsprbottomclip = unsafe.Slice((*int16)(unsafe.Pointer((lastopening - uintptr(start)*2))), 320)
 		lastopening += uintptr(rw_stopx-start) * 2
 	}
 	if maskedtexture != 0 && drawsegs[ds_index].Fsilhouette&SIL_TOP == 0 {
@@ -35632,11 +35631,11 @@ func r_DrawMaskedColumn(column *column_t) {
 		bottomscreen = topscreen + spryscale*int32(column.Flength)
 		dc_yl = (topscreen + 1<<FRACBITS - 1) >> FRACBITS
 		dc_yh = (bottomscreen - 1) >> FRACBITS
-		if dc_yh >= int32(*(*int16)(unsafe.Pointer(mfloorclip + uintptr(dc_x)*2))) {
-			dc_yh = int32(*(*int16)(unsafe.Pointer(mfloorclip + uintptr(dc_x)*2))) - 1
+		if dc_yh >= int32(mfloorclip[dc_x]) {
+			dc_yh = int32(mfloorclip[dc_x]) - 1
 		}
-		if dc_yl <= int32(*(*int16)(unsafe.Pointer(mceilingclip + uintptr(dc_x)*2))) {
-			dc_yl = int32(*(*int16)(unsafe.Pointer(mceilingclip + uintptr(dc_x)*2))) + 1
+		if dc_yl <= int32(mceilingclip[dc_x]) {
+			dc_yl = int32(mceilingclip[dc_x]) + 1
 		}
 		if dc_yl <= dc_yh {
 			dc_source = (uintptr)(unsafe.Pointer(column)) + uintptr(3)
@@ -35949,8 +35948,8 @@ func r_DrawPlayerSprites() {
 		}
 	}
 	// clip to screen bounds
-	mfloorclip = uintptr(unsafe.Pointer(&screenheightarray))
-	mceilingclip = uintptr(unsafe.Pointer(&negonearray))
+	mfloorclip = screenheightarray[:]
+	mceilingclip = negonearray[:]
 	// add all active psprites
 	for i := range NUMPSPRITES {
 		psp := &viewplayer.Fpsprites[i]
@@ -36070,7 +36069,7 @@ func r_DrawSprite(spr *vissprite_t) {
 			// bottom sil
 			for x := r1; x <= r2; x++ {
 				if int32(clipbot[x]) == -2 {
-					clipbot[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprbottomclip + uintptr(x)*2))
+					clipbot[x] = drawsegs[ds].Fsprbottomclip[x]
 				}
 			}
 		} else {
@@ -36078,7 +36077,7 @@ func r_DrawSprite(spr *vissprite_t) {
 				// top sil
 				for x := r1; x <= r2; x++ {
 					if int32(cliptop[x]) == -2 {
-						cliptop[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprtopclip + uintptr(x)*2))
+						cliptop[x] = drawsegs[ds].Fsprtopclip[x]
 					}
 				}
 			} else {
@@ -36086,10 +36085,10 @@ func r_DrawSprite(spr *vissprite_t) {
 					// both
 					for x := r1; x <= r2; x++ {
 						if int32(clipbot[x]) == -2 {
-							clipbot[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprbottomclip + uintptr(x)*2))
+							clipbot[x] = drawsegs[ds].Fsprbottomclip[x]
 						}
 						if int32(cliptop[x]) == -2 {
-							cliptop[x] = *(*int16)(unsafe.Pointer(drawsegs[ds].Fsprtopclip + uintptr(x)*2))
+							cliptop[x] = drawsegs[ds].Fsprtopclip[x]
 						}
 					}
 				}
@@ -36106,8 +36105,8 @@ func r_DrawSprite(spr *vissprite_t) {
 			cliptop[x] = int16(-1)
 		}
 	}
-	mfloorclip = uintptr(unsafe.Pointer(&clipbot))
-	mceilingclip = uintptr(unsafe.Pointer(&cliptop))
+	mfloorclip = clipbot[:]
+	mceilingclip = cliptop[:]
 	r_DrawVisSprite(spr, spr.Fx1, spr.Fx2)
 }
 
@@ -42715,7 +42714,7 @@ var maxammo [4]int32
 
 var maxframe int32
 
-var mceilingclip uintptr
+var mceilingclip []int16
 
 var menuactive boolean
 
@@ -42748,7 +42747,7 @@ var message_dontfuckwithme boolean
 //	// Masked means: partly transparent, i.e. stored
 //	//  in posts/runs of opaque pixels.
 //	//
-var mfloorclip uintptr
+var mfloorclip []int16
 
 var midtexture int32
 
