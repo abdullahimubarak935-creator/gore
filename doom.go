@@ -23084,28 +23084,18 @@ func a_CloseShotgun2(player *player_t, psp *pspdef_t) {
 }
 
 func a_BrainAwake(mo *mobj_t) {
-	var thinker *thinker_t
 	// find all the target spots
 	numbraintargets = 0
 	braintargeton = 0
-	thinker = thinkercap.Fnext
-	thinker = thinkercap.Fnext
-	for {
-		if thinker == &thinkercap {
-			break
-		}
+	for thinker := thinkercap.Fnext; thinker != &thinkercap; thinker = thinker.Fnext {
 		m, ok := thinker.Ffunction.(*mobj_t)
 		if !ok {
-			goto _1
+			continue
 		} // not a mobj
 		if m.Ftype1 == mt_BOSSTARGET {
 			braintargets[numbraintargets] = m
 			numbraintargets++
 		}
-		goto _1
-	_1:
-		;
-		thinker = thinker.Fnext
 	}
 	s_StartSound(nil, int32(sfx_bossit))
 }
@@ -23473,15 +23463,9 @@ func t_MoveFloor(floor *floormove_t) {
 func ev_DoFloor(line *line_t, floortype floor_e) int32 {
 	var side *side_t
 	var sec *sector_t
-	var minsize, rtn, secnum, v1 int32
-	secnum = -1
+	var minsize, rtn int32
 	rtn = 0
-	for {
-		v1 = p_FindSectorFromLineTag(line, secnum)
-		secnum = v1
-		if !(v1 >= 0) {
-			break
-		}
+	for secnum := p_FindSectorFromLineTag(line, -1); secnum >= 0; secnum = p_FindSectorFromLineTag(line, secnum) {
 		sec = &sectors[secnum]
 		// ALREADY MOVING?  IF SO, KEEP GOING...
 		if sec.Fspecialdata != nil {
@@ -23615,18 +23599,12 @@ func ev_DoFloor(line *line_t, floortype floor_e) int32 {
 //	//
 func ev_BuildStairs(line *line_t, type1 stair_e) int32 {
 	var sec, tsec *sector_t
-	var height, newsecnum, ok, rtn, secnum, texture, v1 int32
+	var height, newsecnum, ok, rtn, texture int32
 	var speed, stairsize fixed_t
 	stairsize = 0
 	speed = 0
-	secnum = -1
 	rtn = 0
-	for {
-		v1 = p_FindSectorFromLineTag(line, secnum)
-		secnum = v1
-		if !(v1 >= 0) {
-			break
-		}
+	for secnum := p_FindSectorFromLineTag(line, -1); secnum >= 0; secnum = p_FindSectorFromLineTag(line, secnum) {
 		sec = &sectors[secnum]
 		// ALREADY MOVING?  IF SO, KEEP GOING...
 		if sec.Fspecialdata != nil {
@@ -23647,7 +23625,6 @@ func ev_BuildStairs(line *line_t, type1 stair_e) int32 {
 		case int32(turbo16):
 			speed = 1 << FRACBITS * 4
 			stairsize = 16 * (1 << FRACBITS)
-			break
 		}
 		floorP.Fspeed = speed
 		height = sec.Ffloorheight + stairsize
@@ -24601,14 +24578,7 @@ func p_SpawnStrobeFlash(sector *sector_t, fastOrSlow int32, inSync int32) {
 //	//
 func ev_StartLightStrobing(line *line_t) {
 	var sec *sector_t
-	var secnum, v1 int32
-	secnum = -1
-	for {
-		v1 = p_FindSectorFromLineTag(line, secnum)
-		secnum = v1
-		if !(v1 >= 0) {
-			break
-		}
+	for secnum := p_FindSectorFromLineTag(line, -1); secnum >= 0; secnum = p_FindSectorFromLineTag(line, secnum) {
 		sec = &sectors[secnum]
 		if sec.Fspecialdata != nil {
 			continue
@@ -25601,7 +25571,7 @@ func pit_RadiusAttack(thing *mobj_t) boolean {
 //	//
 func p_RadiusAttack(spot *mobj_t, source *mobj_t, damage int32) {
 	var dist fixed_t
-	var x, xh, xl, y, yh, yl int32
+	var xh, xl, yh, yl int32
 	dist = (damage + 32*(1<<FRACBITS)) << FRACBITS
 	yh = (spot.Fy + dist - bmaporgy) >> (FRACBITS + 7)
 	yl = (spot.Fy - dist - bmaporgy) >> (FRACBITS + 7)
@@ -25610,26 +25580,10 @@ func p_RadiusAttack(spot *mobj_t, source *mobj_t, damage int32) {
 	bombspot = spot
 	bombsource = source
 	bombdamage = damage
-	y = yl
-	for {
-		if !(y <= yh) {
-			break
-		}
-		x = xl
-		for {
-			if !(x <= xh) {
-				break
-			}
+	for y := yl; y <= yh; y++ {
+		for x := xl; x <= xh; x++ {
 			p_BlockThingsIterator(x, y, pit_RadiusAttack)
-			goto _2
-		_2:
-			;
-			x++
 		}
-		goto _1
-	_1:
-		;
-		y++
 	}
 }
 
@@ -25681,30 +25635,13 @@ func pit_ChangeSector(thing *mobj_t) boolean {
 //	// P_ChangeSector
 //	//
 func p_ChangeSector(sector *sector_t, crunch boolean) boolean {
-	var x, y int32
 	nofit = 0
 	crushchange = crunch
 	// re-check heights for all things near the moving sector
-	x = sector.Fblockbox[BOXLEFT]
-	for {
-		if !(x <= sector.Fblockbox[BOXRIGHT]) {
-			break
-		}
-		y = sector.Fblockbox[BOXBOTTOM]
-		for {
-			if !(y <= sector.Fblockbox[BOXTOP]) {
-				break
-			}
+	for x := sector.Fblockbox[BOXLEFT]; x <= sector.Fblockbox[BOXRIGHT]; x++ {
+		for y := sector.Fblockbox[BOXBOTTOM]; y <= sector.Fblockbox[BOXTOP]; y++ {
 			p_BlockThingsIterator(x, y, pit_ChangeSector)
-			goto _2
-		_2:
-			;
-			y++
 		}
-		goto _1
-	_1:
-		;
-		x++
 	}
 	return nofit
 }
@@ -26199,16 +26136,9 @@ func pit_AddThingIntercepts(thing *mobj_t) boolean {
 //	// for all lines.
 //	//
 func p_TraverseIntercepts(func1 func(*intercept_t) boolean, maxfrac fixed_t) boolean {
-	var count, v1 int32
 	var dist fixed_t
 	var in *intercept_t
-	count = intercept_pos
-	for {
-		v1 = count
-		count--
-		if v1 == 0 {
-			break
-		}
+	for count := intercept_pos; count > 0; count-- {
 		dist = int32(INT_MAX11)
 		for scan := int32(0); scan < intercept_pos; scan++ {
 			if intercepts[scan].Ffrac < dist {
@@ -27331,8 +27261,7 @@ func t_PlatRaise(plat *plat_t) {
 //	//
 func ev_DoPlat(line *line_t, type1 plattype_e, amount int32) int32 {
 	var sec *sector_t
-	var rtn, secnum, v1 int32
-	secnum = -1
+	var rtn int32
 	rtn = 0
 	//	Activate all <type> plats that are in_stasis
 	switch type1 {
@@ -27341,12 +27270,7 @@ func ev_DoPlat(line *line_t, type1 plattype_e, amount int32) int32 {
 	default:
 		break
 	}
-	for {
-		v1 = p_FindSectorFromLineTag(line, secnum)
-		secnum = v1
-		if !(v1 >= 0) {
-			break
-		}
+	for secnum := p_FindSectorFromLineTag(line, -1); secnum >= 0; secnum = p_FindSectorFromLineTag(line, secnum) {
 		sec = &sectors[secnum]
 		if sec.Fspecialdata != nil {
 			continue
@@ -29197,24 +29121,14 @@ const tc_mobj = 1
 //	// P_ArchiveThinkers
 //	//
 func p_ArchiveThinkers() {
-	var th *thinker_t
 	// save off the current thinkers
-	th = thinkercap.Fnext
-	for {
-		if th == &thinkercap {
-			break
-		}
+	for th := thinkercap.Fnext; th != &thinkercap; th = th.Fnext {
 		if mo, ok := th.Ffunction.(*mobj_t); ok {
 			saveg_write8(uint8(tc_mobj))
 			saveg_write_pad()
 			saveg_write_mobj_t(mo)
-			goto _1
 		}
 		// i_Error ("p_ArchiveThinkers: Unknown thinker function");
-		goto _1
-	_1:
-		;
-		th = th.Fnext
 	}
 	// add a terminating marker
 	saveg_write8(uint8(tc_end))
@@ -29288,81 +29202,64 @@ const tc_endspecials = 7
 //	// t_PlatRaise, (plat_t: sector_t *), - active list
 //	//
 func p_ArchiveSpecials() {
-	var i int32
-	var th *thinker_t
 	// save off the current thinkers
-	th = thinkercap.Fnext
-	for {
-		if th == &thinkercap {
-			break
-		}
+	for th := thinkercap.Fnext; th != &thinkercap; th = th.Fnext {
 		if th.Ffunction == nil {
-			i = 0
-			for {
-				if i >= MAXCEILINGS {
-					break
-				}
+			var i int32
+			for i = 0; i < MAXCEILINGS; i++ {
 				if &activeceilings[i].Fthinker == th {
 					break
 				}
-				goto _2
-			_2:
-				;
-				i++
 			}
 			if i < MAXCEILINGS {
 				saveg_write8(uint8(tc_ceiling))
 				saveg_write_pad()
 				saveg_write_ceiling_t((*ceiling_t)(unsafe.Pointer(th)))
 			}
-			goto _1
+			continue
 		}
 		if ceiling, ok := th.Ffunction.(*ceiling_t); ok {
 			saveg_write8(uint8(tc_ceiling))
 			saveg_write_pad()
 			saveg_write_ceiling_t(ceiling)
-			goto _1
+			continue
 		}
 		if vldoor, ok := th.Ffunction.(*vldoor_t); ok {
 			saveg_write8(uint8(tc_door))
 			saveg_write_pad()
 			saveg_write_vldoor_t(vldoor)
-			goto _1
+			continue
 		}
 		if floor, ok := th.Ffunction.(*floormove_t); ok {
 			saveg_write8(uint8(tc_floor))
 			saveg_write_pad()
 			saveg_write_floormove_t(floor)
-			goto _1
+			continue
 		}
 		if plat, ok := th.Ffunction.(*plat_t); ok {
 			saveg_write8(uint8(tc_plat))
 			saveg_write_pad()
 			saveg_write_plat_t(plat)
-			goto _1
+			continue
 		}
 		if light, ok := th.Ffunction.(*lightflash_t); ok {
 			saveg_write8(uint8(tc_flash))
 			saveg_write_pad()
 			saveg_write_lightflash_t(light)
-			goto _1
+			continue
 		}
 		if strobe, ok := th.Ffunction.(*strobe_t); ok {
 			saveg_write8(uint8(tc_strobe))
 			saveg_write_pad()
 			saveg_write_strobe_t(strobe)
-			goto _1
+			continue
 		}
 		if glow, ok := th.Ffunction.(*glow_t); ok {
 			saveg_write8(uint8(tc_glow))
 			saveg_write_pad()
 			saveg_write_glow_t(glow)
-			goto _1
+			continue
 		}
-		goto _1
-	_1:
-		;
-		th = th.Fnext
 	}
 	// add a terminating marker
 	saveg_write8(uint8(tc_endspecials))
@@ -30662,25 +30559,16 @@ func p_FindLowestCeilingSurrounding(sec *sector_t) fixed_t {
 	var check *line_t
 	var other *sector_t
 	var height fixed_t
-	var i int32
 	height = int32(INT_MAX13)
-	i = 0
-	for {
-		if i >= sec.Flinecount {
-			break
-		}
+	for i := int32(0); i < sec.Flinecount; i++ {
 		check = sec.Flines[i]
 		other = getNextSector(check, sec)
 		if other == nil {
-			goto _1
+			continue
 		}
 		if other.Fceilingheight < height {
 			height = other.Fceilingheight
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return height
 }
@@ -30694,25 +30582,16 @@ func p_FindHighestCeilingSurrounding(sec *sector_t) fixed_t {
 	var check *line_t
 	var other *sector_t
 	var height fixed_t
-	var i int32
 	height = 0
-	i = 0
-	for {
-		if i >= sec.Flinecount {
-			break
-		}
+	for i := int32(0); i < sec.Flinecount; i++ {
 		check = sec.Flines[i]
 		other = getNextSector(check, sec)
 		if other == nil {
-			goto _1
+			continue
 		}
 		if other.Fceilingheight > height {
 			height = other.Fceilingheight
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return height
 }
@@ -30723,19 +30602,10 @@ func p_FindHighestCeilingSurrounding(sec *sector_t) fixed_t {
 //	// RETURN NEXT SECTOR # THAT LINE TAG REFERS TO
 //	//
 func p_FindSectorFromLineTag(line *line_t, start int32) int32 {
-	var i int32
-	i = start + 1
-	for {
-		if i >= numsectors {
-			break
-		}
+	for i := start + 1; i < numsectors; i++ {
 		if sectors[i].Ftag == line.Ftag {
 			return i
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return -1
 }
@@ -30748,25 +30618,17 @@ func p_FindSectorFromLineTag(line *line_t, start int32) int32 {
 func p_FindMinSurroundingLight(sector *sector_t, max int32) int32 {
 	var line *line_t
 	var check *sector_t
-	var i, min int32
+	var min int32
 	min = max
-	i = 0
-	for {
-		if i >= sector.Flinecount {
-			break
-		}
+	for i := int32(0); i < sector.Flinecount; i++ {
 		line = sector.Flines[i]
 		check = getNextSector(line, sector)
 		if check == nil {
-			goto _1
+			continue
 		}
 		if int32(check.Flightlevel) < min {
 			min = int32(check.Flightlevel)
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return min
 }
@@ -31199,7 +31061,7 @@ func p_PlayerInSpecialSector(player *player_t) {
 }
 
 func p_UpdateSpecials() {
-	var i, pic int32
+	var pic int32
 	//	LEVEL TIMER
 	if levelTimer == 1 {
 		levelTimeCount--
@@ -31213,27 +31075,18 @@ func p_UpdateSpecials() {
 		if anim == lastanim {
 			break
 		}
-		i = anim.Fbasepic
-		for {
-			if i >= anim.Fbasepic+anim.Fnumpics {
-				break
-			}
+		for i := anim.Fbasepic; i < anim.Fbasepic+anim.Fnumpics; i++ {
 			pic = anim.Fbasepic + (leveltime/anim.Fspeed+i)%anim.Fnumpics
 			if anim.Fistexture != 0 {
 				texturetranslation[i] = pic
 			} else {
 				flattranslation[i] = pic
 			}
-			i++
 		}
 
 	}
 	//	ANIMATE LINE SPECIALS
-	i = 0
-	for {
-		if i >= int32(numlinespecials) {
-			break
-		}
+	for i := range numlinespecials {
 		line := linespeciallist[i]
 		switch int32(line.Fspecial) {
 		case 48:
@@ -31241,17 +31094,9 @@ func p_UpdateSpecials() {
 			sides[line.Fsidenum[0]].Ftextureoffset += 1 << FRACBITS
 			break
 		}
-		goto _3
-	_3:
-		;
-		i++
 	}
 	//	DO BUTTONS
-	i = 0
-	for {
-		if i >= MAXBUTTONS {
-			break
-		}
+	for i := range MAXBUTTONS {
 		if buttonlist[i].Fbtimer != 0 {
 			buttonlist[i].Fbtimer--
 			if buttonlist[i].Fbtimer == 0 {
@@ -31268,10 +31113,6 @@ func p_UpdateSpecials() {
 				buttonlist[i] = button_t{}
 			}
 		}
-		goto _4
-	_4:
-		;
-		i++
 	}
 }
 
@@ -31348,15 +31189,9 @@ var tmp_s3_floorpic int32
 //	//
 func ev_DoDonut(line *line_t) int32 {
 	var s1, s2, s3 *sector_t
-	var rtn, secnum, v1 int32
-	secnum = -1
+	var rtn int32
 	rtn = 0
-	for {
-		v1 = p_FindSectorFromLineTag(line, secnum)
-		secnum = v1
-		if !(v1 >= 0) {
-			break
-		}
+	for secnum := p_FindSectorFromLineTag(line, -1); secnum >= 0; secnum = p_FindSectorFromLineTag(line, secnum) {
 		s1 = &sectors[secnum]
 		// ALREADY MOVING?  IF SO, KEEP GOING...
 		if s1.Fspecialdata != nil {
@@ -31429,7 +31264,6 @@ func ev_DoDonut(line *line_t) int32 {
 //
 //	// Parses command line parameters.
 func p_SpawnSpecials() {
-	var i int32
 	// See if -TIMER was specified.
 	if timelimit > 0 && deathmatch != 0 {
 		levelTimer = 1
@@ -31438,14 +31272,10 @@ func p_SpawnSpecials() {
 		levelTimer = 0
 	}
 	//	Init special SECTORs.
-	i = 0
-	for {
-		if i >= numsectors {
-			break
-		}
+	for i := range numsectors {
 		sector := &sectors[i]
 		if sector.Fspecial == 0 {
-			goto _1
+			continue
 		}
 		switch int32(sector.Fspecial) {
 		case 1:
@@ -31481,20 +31311,11 @@ func p_SpawnSpecials() {
 			p_SpawnDoorRaiseIn5Mins(sector, i)
 		case 17:
 			p_SpawnFireFlicker(sector)
-			break
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	//	Init line EFFECTs
 	numlinespecials = 0
-	i = 0
-	for {
-		if i >= numlines {
-			break
-		}
+	for i := range numlines {
 		switch int32(lines[i].Fspecial) {
 		case 48:
 			if int32(numlinespecials) >= MAXLINEANIMS {
@@ -31505,10 +31326,6 @@ func p_SpawnSpecials() {
 			numlinespecials++
 			break
 		}
-		goto _2
-	_2:
-		;
-		i++
 	}
 	clear(activeceilings[:])
 	clear(activeplats[:])
@@ -31733,7 +31550,7 @@ func init() {
 //	// Only called at game initialization.
 //	//
 func p_InitSwitchList() {
-	var episode, i, index, v2, v3 int32
+	var episode, index int32
 	episode = 1
 	if gamemode == registered || gamemode == retail {
 		episode = 2
@@ -31743,28 +31560,18 @@ func p_InitSwitchList() {
 		}
 	}
 	index = 0
-	i = 0
-	for {
-		if i >= MAXSWITCHES {
-			break
-		}
+	for i := range MAXSWITCHES {
 		if alphSwitchList[i].Fepisode == 0 {
 			numswitches = index / 2
 			switchlist[index] = -1
 			break
 		}
 		if int32(alphSwitchList[i].Fepisode) <= episode {
-			v2 = index
+			switchlist[index] = r_TextureNumForName(alphSwitchList[i].Fname2)
 			index++
-			switchlist[v2] = r_TextureNumForName(alphSwitchList[i].Fname2)
-			v3 = index
+			switchlist[index] = r_TextureNumForName(alphSwitchList[i].Fname1)
 			index++
-			switchlist[v3] = r_TextureNumForName(alphSwitchList[i].Fname1)
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -31774,26 +31581,13 @@ func p_InitSwitchList() {
 //	// Start a button counting down till it turns off.
 //	//
 func p_StartButton(line *line_t, w bwhere_e, texture int32, time int32) {
-	var i int32
 	// See if button is already pressed
-	i = 0
-	for {
-		if i >= MAXBUTTONS {
-			break
-		}
+	for i := range MAXBUTTONS {
 		if buttonlist[i].Fbtimer != 0 && buttonlist[i].Fline == line {
 			return
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
-	i = 0
-	for {
-		if i >= MAXBUTTONS {
-			break
-		}
+	for i := range MAXBUTTONS {
 		if buttonlist[i].Fbtimer == 0 {
 			buttonlist[i].Fline = line
 			buttonlist[i].Fwhere = w
@@ -31802,10 +31596,6 @@ func p_StartButton(line *line_t, w bwhere_e, texture int32, time int32) {
 			buttonlist[i].Fsoundorg = &line.Ffrontsector.Fsoundorg
 			return
 		}
-		goto _2
-	_2:
-		;
-		i++
 	}
 	i_Error("p_StartButton: no button slots left!")
 }
@@ -31817,7 +31607,7 @@ func p_StartButton(line *line_t, w bwhere_e, texture int32, time int32) {
 //	// Tell it if switch is ok to use again (1=yes, it's a button).
 //	//
 func p_ChangeSwitchTexture(line *line_t, useAgain int32) {
-	var i, sound, texBot, texMid, texTop int32
+	var sound, texBot, texMid, texTop int32
 	if useAgain == 0 {
 		line.Fspecial = 0
 	}
@@ -31829,11 +31619,7 @@ func p_ChangeSwitchTexture(line *line_t, useAgain int32) {
 	if int32(line.Fspecial) == 11 {
 		sound = int32(sfx_swtchx)
 	}
-	i = 0
-	for {
-		if i >= numswitches*2 {
-			break
-		}
+	for i := range numswitches * 2 {
 		if switchlist[i] == texTop {
 			s_StartSound(buttonlist[0].Fsoundorg, sound)
 			sides[line.Fsidenum[0]].Ftoptexture = int16(switchlist[i^1])
@@ -31860,10 +31646,6 @@ func p_ChangeSwitchTexture(line *line_t, useAgain int32) {
 				}
 			}
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -32244,9 +32026,7 @@ func p_UseSpecialLine(thing *mobj_t, line *line_t, side int32) boolean {
 func ev_Teleport(line *line_t, side int32, thing *mobj_t) int32 {
 	var an uint32
 	var fog *mobj_t
-	var thinker *thinker_t
 	var sector *sector_t
-	var i int32
 	var tag int16
 	var oldx, oldy, oldz, v3, v4 fixed_t
 	// don't teleport missiles
@@ -32259,31 +32039,22 @@ func ev_Teleport(line *line_t, side int32, thing *mobj_t) int32 {
 		return 0
 	}
 	tag = line.Ftag
-	i = 0
-	for {
-		if i >= numsectors {
-			break
-		}
+	for i := range numsectors {
 		if sectors[i].Ftag == tag {
-			thinker = thinkercap.Fnext
-			thinker = thinkercap.Fnext
-			for {
-				if thinker == &thinkercap {
-					break
-				}
+			for thinker := thinkercap.Fnext; thinker != &thinkercap; thinker = thinker.Fnext {
 				// not a mobj
 				m, ok := thinker.Ffunction.(*mobj_t)
 				if !ok {
-					goto _2
+					continue
 				}
 				// not a teleportman
 				if m.Ftype1 != mt_TELEPORTMAN {
-					goto _2
+					continue
 				}
 				sector = m.Fsubsector.Fsector
 				// wrong sector
 				if sectorIndex(sector) != i {
-					goto _2
+					continue
 				}
 				oldx = thing.Fx
 				oldy = thing.Fy
@@ -32319,16 +32090,8 @@ func ev_Teleport(line *line_t, side int32, thing *mobj_t) int32 {
 				thing.Fmomy = v3
 				thing.Fmomx = v3
 				return 1
-				goto _2
-			_2:
-				;
-				thinker = thinker.Fnext
 			}
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	return 0
 }
@@ -32393,7 +32156,6 @@ func p_RunThinkers() {
 //
 
 func p_Ticker() {
-	var i int32
 	// run the tic
 	if paused != 0 {
 		return
@@ -32402,18 +32164,10 @@ func p_Ticker() {
 	if netgame == 0 && menuactive != 0 && demoplayback == 0 && players[consoleplayer].Fviewz != 1 {
 		return
 	}
-	i = 0
-	for {
-		if i >= MAXPLAYERS {
-			break
-		}
+	for i := range MAXPLAYERS {
 		if playeringame[i] != 0 {
 			p_PlayerThink(&players[i])
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	p_RunThinkers()
 	p_UpdateSpecials()
@@ -33254,18 +33008,14 @@ func r_DrawColumnInCache(patch *column_t, cache []byte, originy int32, cacheheig
 func r_GenerateComposite(texnum int32) {
 	var collump []int16
 	var colofs []uint16
-	var i, x, x1, x2 int32
+	var x, x1, x2 int32
 	var texture *texture_t
 	texture = textures[texnum]
 	texturecomposite[texnum] = make([]byte, texturecompositesize[texnum])
 	collump = texturecolumnlump[texnum]
 	colofs = texturecolumnofs[texnum]
 	// Composite the columns together.
-	i = 0
-	for {
-		if i >= int32(texture.Fpatchcount) {
-			break
-		}
+	for i := range texture.Fpatchcount {
 		patch := &texture.Fpatches[i]
 		realpatch := w_CacheLumpNumT(patch.Fpatch)
 		x1 = int32(patch.Foriginx)
@@ -33286,10 +33036,6 @@ func r_GenerateComposite(texnum int32) {
 			patchcol := realpatch.GetColumn(x - x1)
 			r_DrawColumnInCache(patchcol, texturecomposite[texnum][colofs[x]:], int32(patch.Foriginy), int32(texture.Fheight))
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// Now that the texture has been built in column cache,
 	//  it is purgable from zone memory.
@@ -33305,7 +33051,7 @@ func r_GenerateLookup(texnum int32) {
 	var colofs []uint16
 	var collump []int16
 	var texture *texture_t
-	var i, x, x1, x2 int32
+	var x, x1, x2 int32
 	texture = textures[texnum]
 	// Composited texture not created yet.
 	texturecomposite[texnum] = nil
@@ -33317,11 +33063,7 @@ func r_GenerateLookup(texnum int32) {
 	// Fill in the lump / offset, so columns
 	//  with only a single patch are all done.
 	widths := make([]int32, texture.Fwidth)
-	i = 0
-	for {
-		if i >= int32(texture.Fpatchcount) {
-			break
-		}
+	for i := range texture.Fpatchcount {
 		patch := &texture.Fpatches[i]
 		realpatch = w_CacheLumpNumT(patch.Fpatch)
 		x1 = int32(patch.Foriginx)
@@ -33334,22 +33076,11 @@ func r_GenerateLookup(texnum int32) {
 		if x2 > int32(texture.Fwidth) {
 			x2 = int32(texture.Fwidth)
 		}
-		for {
-			if x >= x2 {
-				break
-			}
+		for ; x < x2; x++ {
 			widths[x]++
 			collump[x] = int16(patch.Fpatch)
 			colofs[x] = uint16(realpatch.Fcolumnofs[x-x1] + 3)
-			goto _2
-		_2:
-			;
-			x++
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 	x = 0
 	for {
@@ -33397,15 +33128,11 @@ func r_GetColumn(tex int32, col int32) uintptr {
 }
 
 func generateTextureHashTable() {
-	var i, key int32
+	var key int32
 	var rover **texture_t
 	textures_hashtable = make([]*texture_t, numtextures)
 	// Add all textures to hash table
-	i = 0
-	for {
-		if i >= numtextures {
-			break
-		}
+	for i := range numtextures {
 		// Store index
 		textures[i].Findex = i
 		// Vanilla Doom does a linear search of the texures array
@@ -33421,10 +33148,6 @@ func generateTextureHashTable() {
 		// Hook into hash table
 		textures[i].Fnext = nil
 		*rover = textures[i]
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -33443,16 +33166,8 @@ func r_InitTextures() {
 	nummappatches = *(*int32)(unsafe.Pointer(names))
 	name_p = names + uintptr(4)
 	patchlookup := make([]int32, nummappatches)
-	i = 0
-	for {
-		if i >= nummappatches {
-			break
-		}
+	for i := range nummappatches {
 		patchlookup[i] = w_CheckNumForName(gostring_n(name_p+uintptr(i*8), 8))
-		goto _1
-	_1:
-		;
-		i++
 	}
 	w_ReleaseLumpName("PNAMES")
 	// Load the map texture definitions from textures.lmp.
@@ -33490,28 +33205,12 @@ func r_InitTextures() {
 	// the box.  If stdout is a file, don't draw the box.
 	if i_ConsoleStdout() != 0 {
 		fprintf_ccgo(os.Stdout, "[")
-		i = 0
-		for {
-			if i >= temp3+9 {
-				break
-			}
+		for range temp3 + 9 {
 			fprintf_ccgo(os.Stdout, " ")
-			goto _3
-		_3:
-			;
-			i++
 		}
 		fprintf_ccgo(os.Stdout, "]")
-		i = 0
-		for {
-			if i >= temp3+int32(10) {
-				break
-			}
+		for range temp3 + 10 {
 			fprintf_ccgo(os.Stdout, "\x08")
-			goto _4
-		_4:
-			;
-			i++
 		}
 	}
 	i = 0
@@ -33542,11 +33241,7 @@ func r_InitTextures() {
 		texture.Fpatchcount = mtexture.Fpatchcount
 		copy(texture.Fname[:], mtexture.Fname[:])
 		mpatch = uintptr(unsafe.Pointer(&mtexture.Fpatches[0]))
-		j = 0
-		for {
-			if j >= int32(texture.Fpatchcount) {
-				break
-			}
+		for j := range texture.Fpatchcount {
 			patch := &texture.Fpatches[j]
 			patch.Foriginx = (*mappatch_t)(unsafe.Pointer(mpatch)).Foriginx
 			patch.Foriginy = (*mappatch_t)(unsafe.Pointer(mpatch)).Foriginy
@@ -33554,11 +33249,7 @@ func r_InitTextures() {
 			if patch.Fpatch == -1 {
 				i_Error("r_InitTextures: Missing patch in texture %s", gostring_bytes(texture.Fname[:]))
 			}
-			goto _7
-		_7:
-			;
-			j++
-			mpatch += 10
+			mpatch += unsafe.Sizeof(mappatch_t{})
 		}
 		texturecolumnlump[i] = make([]int16, texture.Fwidth)
 		texturecolumnofs[i] = make([]uint16, texture.Fwidth)
@@ -33761,54 +33452,29 @@ func r_TextureNumForName(name string) int32 {
 func r_PrecacheLevel() {
 	var texture *texture_t
 	var sf *spriteframe_t
-	var th *thinker_t
-	var i, j, k, lump int32
+	var lump int32
 	if demoplayback != 0 {
 		return
 	}
 	// Precache flats.
 	flatpresent := make([]int8, numflats)
-	i = 0
-	for {
-		if i >= numsectors {
-			break
-		}
+	for i := range numsectors {
 		sector := &sectors[i]
 		flatpresent[sector.Ffloorpic] = 1
 		flatpresent[sector.Fceilingpic] = 1
-		goto _1
-	_1:
-		;
-		i++
 	}
-	i = 0
-	for {
-		if i >= numflats {
-			break
-		}
+	for i := range numflats {
 		if flatpresent[i] != 0 {
 			lump = firstflat + i
 			w_CacheLumpNum(lump)
 		}
-		goto _2
-	_2:
-		;
-		i++
 	}
 	// Precache textures.
 	texturepresent := make([]int8, numtextures)
-	i = 0
-	for {
-		if i >= numsides {
-			break
-		}
+	for i := range numsides {
 		texturepresent[sides[i].Ftoptexture] = 1
 		texturepresent[sides[i].Fmidtexture] = 1
 		texturepresent[sides[i].Fbottomtexture] = 1
-		goto _3
-	_3:
-		;
-		i++
 	}
 	// Sky texture is always present.
 	// Note that F_SKY1 is the name used to
@@ -33817,82 +33483,34 @@ func r_PrecacheLevel() {
 	//  a wall texture, with an episode dependend
 	//  name.
 	texturepresent[skytexture] = 1
-	i = 0
-	for {
-		if i >= numtextures {
-			break
-		}
+	for i := range numtextures {
 		if texturepresent[i] != 0 {
-			goto _4
+			continue
 		}
 		texture = textures[i]
-		j = 0
-		for {
-			if j >= int32(texture.Fpatchcount) {
-				break
-			}
+		for j := range texture.Fpatchcount {
 			lump = texture.Fpatches[j].Fpatch
 			w_CacheLumpNum(lump)
-			goto _5
-		_5:
-			;
-			j++
 		}
-		goto _4
-	_4:
-		;
-		i++
 	}
 	// Precache sprites.
 	spritepresent := make([]int8, numsprites)
-	th = thinkercap.Fnext
-	for {
-		if th == &thinkercap {
-			break
-		}
+	for th := thinkercap.Fnext; th != &thinkercap; th = th.Fnext {
 		if mo, ok := th.Ffunction.(*mobj_t); ok {
 			spritepresent[mo.Fsprite] = 1
 		}
-		goto _6
-	_6:
-		;
-		th = th.Fnext
 	}
-	i = 0
-	for {
-		if i >= numsprites {
-			break
-		}
+	for i := range numsprites {
 		if spritepresent[i] == 0 {
-			goto _7
+			continue
 		}
-		j = 0
-		for {
-			if j >= sprites[i].Fnumframes {
-				break
-			}
+		for j := range sprites[i].Fnumframes {
 			sf = &sprites[i].Fspriteframes[j]
-			k = 0
-			for {
-				if k >= 8 {
-					break
-				}
+			for k := range 8 {
 				lump = firstspritelump + int32(sf.Flump[k])
 				w_CacheLumpNum(lump)
-				goto _9
-			_9:
-				;
-				k++
 			}
-			goto _8
-		_8:
-			;
-			j++
 		}
-		goto _7
-	_7:
-		;
-		i++
 	}
 }
 
@@ -33914,7 +33532,7 @@ var background_buffer []byte
 //	//  be used. It has also been used with Wolfenstein 3D.
 //	//
 func r_DrawColumn() {
-	var count, v1 int32
+	var count int32
 	var dest int32
 	var frac, fracstep fixed_t
 	count = dc_yh - dc_yl
@@ -33936,20 +33554,12 @@ func r_DrawColumn() {
 	// Inner loop that does the actual texture mapping,
 	//  e.g. a DDA-lile scaling.
 	// This is as fast as it gets.
-	for {
+	for ; count > 0; count-- {
 		// Re-map color indices from wall texture column
 		//  using a lighting/special effects LUT.
 		I_VideoBuffer[dest] = dc_colormap[*(*uint8)(unsafe.Pointer(dc_source + uintptr(frac>>FRACBITS&int32(127))))]
 		dest += SCREENWIDTH
 		frac += fracstep
-		goto _2
-	_2:
-		;
-		v1 = count
-		count--
-		if v1 == 0 {
-			break
-		}
 	}
 }
 
@@ -34257,29 +33867,20 @@ func r_DrawTranslatedColumnLow() {
 //	// Could be read from a lump instead.
 //	//
 func r_InitTranslationTables() {
-	var i int32
 	translationtables = make([]byte, 256*3)
 	// translate just the 16 green colors
-	i = 0
-	for {
-		if i >= 256 {
-			break
-		}
+	for i := range 256 {
 		if i >= 0x70 && i <= 0x7f {
 			// map green ramp to gray, brown, red
-			translationtables[i] = uint8(0x60 + i&int32(0xf))
-			translationtables[i+256] = uint8(0x40 + i&int32(0xf))
-			translationtables[i+512] = uint8(0x20 + i&int32(0xf))
+			translationtables[i] = uint8(0x60 + i&0xf)
+			translationtables[i+256] = uint8(0x40 + i&0xf)
+			translationtables[i+512] = uint8(0x20 + i&0xf)
 		} else {
 			// Keep all other colors as is.
 			translationtables[i+512] = uint8(i)
 			translationtables[i+256] = uint8(i)
 			translationtables[i] = uint8(i)
 		}
-		goto _1
-	_1:
-		;
-		i++
 	}
 }
 
@@ -34379,22 +33980,13 @@ func r_DrawSpanLow() {
 //	//  of a pixel to draw.
 //	//
 func r_InitBuffer(width int32, height int32) {
-	var i int32
 	// Handle resize,
 	//  e.g. smaller view windows
 	//  with border and/or status bar.
 	viewwindowx = (SCREENWIDTH - width) >> 1
 	// Column offset. For windows.
-	i = 0
-	for {
-		if i >= width {
-			break
-		}
+	for i := range width {
 		columnofs[i] = viewwindowx + i
-		goto _1
-	_1:
-		;
-		i++
 	}
 	// Samw with base row offset.
 	if width == SCREENWIDTH {
@@ -34403,16 +33995,8 @@ func r_InitBuffer(width int32, height int32) {
 		viewwindowy = (SCREENHEIGHT - SBARHEIGHT - height) >> 1
 	}
 	// Preclaculate all row offsets.
-	i = 0
-	for {
-		if i >= height {
-			break
-		}
+	for i := range height {
 		ylookup[i] = (i + viewwindowy) * SCREENWIDTH
-		goto _2
-	_2:
-		;
-		i++
 	}
 }
 
