@@ -1,0 +1,9 @@
+doomgeneric repository invoke:
+
+$ cd doomgeneric
+$ make clean
+$ go mod init example.com/doom
+$ go get modernc.org/libc@latest modernc.org/libX11@latest
+$ ccgo --doom -exec make CC=gcc
+$ CGO_ENABLED=0 go build doomgeneric.go
+If you prefer using clang, omit the 'CC=gcc' part above.
